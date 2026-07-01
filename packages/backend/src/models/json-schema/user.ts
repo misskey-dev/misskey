@@ -608,6 +608,7 @@ export const packedMeDetailedOnlySchema = {
 				renote: { optional: true, ...notificationRecieveConfig },
 				quote: { optional: true, ...notificationRecieveConfig },
 				reaction: { optional: true, ...notificationRecieveConfig },
+				spReaction: { optional: true, ...notificationRecieveConfig },
 				pollEnded: { optional: true, ...notificationRecieveConfig },
 				scheduledNotePosted: { optional: true, ...notificationRecieveConfig },
 				scheduledNotePostFailed: { optional: true, ...notificationRecieveConfig },

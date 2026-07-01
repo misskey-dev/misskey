@@ -56,6 +56,13 @@ export type MiNotification = {
 	noteId: MiNote['id'];
 	reaction: string;
 } | {
+	type: 'spReaction';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+	noteId: MiNote['id'];
+	reaction: string;
+} | {
 	type: 'pollEnded';
 	id: string;
 	createdAt: string;

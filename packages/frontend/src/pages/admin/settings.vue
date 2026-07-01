@@ -96,6 +96,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkFolder>
 				</SearchMarker>
 
+				<SearchMarker v-slot="slotProps" :keywords="['features']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+						<template #icon><SearchIcon><i class="ti ti-puzzle"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts._serverSettings.features }}</SearchLabel></template>
+						<template v-if="featuresForm.modified.value" #footer>
+							<MkFormFooter :form="featuresForm"/>
+						</template>
+
+						<div class="_gaps">
+							<SearchMarker>
+								<MkSwitch v-model="featuresForm.state.enableSpReaction">
+									<template #label><SearchLabel>{{ i18n.ts._serverSettings._spReactions.enable }}</SearchLabel><span v-if="featuresForm.modifiedStates.enableSpReaction" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption>
+										<SearchText>{{ i18n.ts._serverSettings._spReactions.description1 }}</SearchText>
+										<div>{{ i18n.ts._serverSettings._spReactions.description2 }}</div>
+									</template>
+								</MkSwitch>
+							</SearchMarker>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+
 				<SearchMarker v-slot="slotProps" :keywords="['pinned', 'users']">
 					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 						<template #icon><SearchIcon><i class="ti ti-user-star"></i></SearchIcon></template>
@@ -422,6 +444,15 @@ const infoForm = useForm({
 		inquiryUrl: state.inquiryUrl,
 		repositoryUrl: state.repositoryUrl,
 		impressumUrl: state.impressumUrl,
+	});
+	fetchInstance(true);
+});
+
+const featuresForm = useForm({
+	enableSpReaction: meta.enableSpReaction,
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		enableSpReaction: state.enableSpReaction,
 	});
 	fetchInstance(true);
 });

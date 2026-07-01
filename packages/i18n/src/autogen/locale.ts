@@ -7016,6 +7016,24 @@ export interface Locale extends ILocale {
          * アクティビティを表示する
          */
         "showActivitiesForVisitor": string;
+        /**
+         * 機能
+         */
+        "features": string;
+        "_spReactions": {
+            /**
+             * スペシャルリアクションを有効にする
+             */
+            "enable": string;
+            /**
+             * 通常のリアクションより目立つ「スペシャルリアクション」をノートに送れる機能です。
+             */
+            "description1": string;
+            /**
+             * 有効にする場合、ロールポリシーで、毎月送ることのできる最大数を設定してください。
+             */
+            "description2": string;
+        };
         "_userGeneratedContentsVisibilityForVisitor": {
             /**
              * 全て公開
@@ -11021,6 +11039,10 @@ export interface Locale extends ILocale {
              * リアクション
              */
             "reaction": string;
+            /**
+             * スペシャルリアクション
+             */
+            "spReaction": string;
             /**
              * アンケートが終了
              */
