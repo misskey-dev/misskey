@@ -13,6 +13,7 @@
 		"module": "nodenext",
 		"moduleResolution": "nodenext",
 		"removeComments": false,
+		"skipLibCheck": true,
 		"noLib": false,
 		"strict": true,
 		"strictNullChecks": true,

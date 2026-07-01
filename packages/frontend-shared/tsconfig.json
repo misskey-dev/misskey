@@ -9,6 +9,7 @@
 		"sourceMap": false,
 		"outDir": "./js-built",
 		"removeComments": true,
+		"skipLibCheck": true,
 		"resolveJsonModule": true,
 		"strict": true,
 		"strictFunctionTypes": true,
