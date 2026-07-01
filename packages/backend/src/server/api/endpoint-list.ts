@@ -72,6 +72,8 @@ export * as 'admin/queue/remove-job' from './endpoints/admin/queue/remove-job.js
 export * as 'admin/queue/show-job' from './endpoints/admin/queue/show-job.js';
 export * as 'admin/queue/show-job-logs' from './endpoints/admin/queue/show-job-logs.js';
 export * as 'admin/queue/promote-jobs' from './endpoints/admin/queue/promote-jobs.js';
+export * as 'admin/queue/pause' from './endpoints/admin/queue/pause.js';
+export * as 'admin/queue/resume' from './endpoints/admin/queue/resume.js';
 export * as 'admin/queue/jobs' from './endpoints/admin/queue/jobs.js';
 export * as 'admin/queue/stats' from './endpoints/admin/queue/stats.js';
 export * as 'admin/queue/queues' from './endpoints/admin/queue/queues.js';
@@ -102,6 +104,7 @@ export * as 'admin/system-webhook/list' from './endpoints/admin/system-webhook/l
 export * as 'admin/system-webhook/show' from './endpoints/admin/system-webhook/show.js';
 export * as 'admin/system-webhook/test' from './endpoints/admin/system-webhook/test.js';
 export * as 'admin/system-webhook/update' from './endpoints/admin/system-webhook/update.js';
+export * as 'admin/unset-mfa' from './endpoints/admin/unset-mfa.js';
 export * as 'admin/unset-user-avatar' from './endpoints/admin/unset-user-avatar.js';
 export * as 'admin/unset-user-banner' from './endpoints/admin/unset-user-banner.js';
 export * as 'admin/unsuspend-user' from './endpoints/admin/unsuspend-user.js';
@@ -115,6 +118,7 @@ export * as 'antennas/create' from './endpoints/antennas/create.js';
 export * as 'antennas/delete' from './endpoints/antennas/delete.js';
 export * as 'antennas/list' from './endpoints/antennas/list.js';
 export * as 'antennas/notes' from './endpoints/antennas/notes.js';
+export * as 'antennas/remove-note' from './endpoints/antennas/remove-note.js';
 export * as 'antennas/show' from './endpoints/antennas/show.js';
 export * as 'antennas/update' from './endpoints/antennas/update.js';
 export * as 'ap/get' from './endpoints/ap/get.js';

@@ -9,6 +9,7 @@
 
 import cluster from 'node:cluster';
 import { EventEmitter } from 'node:events';
+import { writeHeapSnapshot } from 'node:v8';
 import chalk from 'chalk';
 import Xev from 'xev';
 import { forkReplacementWorker } from '@/boot/cluster.js';
@@ -96,10 +97,35 @@ process.on('message', msg => {
 	if (msg === 'gc') {
 		if (global.gc != null) {
 			logger.info('Manual GC triggered');
-			global.gc();
+			for (let i = 0; i < 3; i++) {
+				global.gc();
+			}
 			if (process.send != null) process.send('gc ok');
 		} else {
 			logger.warn('Manual GC requested but gc is not available. Start the process with --expose-gc to enable this feature.');
+			if (process.send != null) process.send('gc unavailable');
+		}
+	} else if (msg === 'memory usage') {
+		if (process.send != null) {
+			process.send({
+				type: 'memory usage',
+				value: process.memoryUsage(),
+			});
+		}
+	} else if (msg != null && typeof msg === 'object' && 'type' in msg && msg.type === 'heap snapshot' && 'path' in msg && typeof msg.path === 'string') {
+		if (process.send != null) {
+			try {
+				const path = writeHeapSnapshot(msg.path);
+				process.send({
+					type: 'heap snapshot',
+					path,
+				});
+			} catch (err) {
+				process.send({
+					type: 'heap snapshot error',
+					message: err instanceof Error ? err.message : String(err),
+				});
+			}
 		}
 	}
 });

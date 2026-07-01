@@ -8,6 +8,7 @@ import * as process from 'node:process';
 import { NestFactory } from '@nestjs/core';
 import { init } from 'slacc';
 import { NestLogger } from '@/NestLogger.js';
+import { envOption } from '@/env.js';
 import type { Config } from '@/config.js';
 
 let slaccInitialized = false;
@@ -34,7 +35,7 @@ export async function server(options: { startStatsDaemons?: boolean } = {}) {
 	const serverService = app.get(ServerService);
 	await serverService.launch();
 
-	if (process.env.NODE_ENV !== 'test') {
+	if (process.env.NODE_ENV !== 'test' && !envOption.noDaemons) {
 		const { ChartManagementService } = await import('../core/chart/ChartManagementService.js');
 
 		app.get(ChartManagementService).start();
@@ -60,7 +61,9 @@ export async function jobQueue() {
 	});
 
 	jobQueue.get(QueueProcessorService).start();
-	jobQueue.get(ChartManagementService).start();
+	if (!envOption.noDaemons) {
+		jobQueue.get(ChartManagementService).start();
+	}
 
 	return jobQueue;
 }

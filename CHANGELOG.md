@@ -1,13 +1,78 @@
-## Unreleased
+## 2026.6.1
+
+### Note
+
+**今回のリリースではMisskeyの各種動作要件が変更されます。必ずアップグレード前にお使いの環境をご確認ください。**
+
+- センシティブメディアの判定 (NSFW検出) が、本体に内蔵された nsfwjs による推論から、外部サービス [sensitive-detector](https://github.com/misskey-dev/sensitive-detector) への HTTP 呼び出し方式に変更されました。
+	- これに伴い、本体から `nsfwjs` / `@tensorflow/tfjs` / `@tensorflow/tfjs-node` および同梱の NSFW 判定モデルが削除され、インストール要件 (ネイティブ ML スタック) が緩和されました。
+	- **センシティブ判定機能を利用しているサーバーは対応が必要です。** 別途 [sensitive-detector](https://github.com/misskey-dev/sensitive-detector) サービスを立ち上げ、コントロールパネルの「モデレーション > センシティブなメディアの検出」で接続先 URL を設定してください。接続先が未設定の場合、センシティブ判定は行われません (すべて非センシティブ扱い)。
+	- 画像の正規化・動画フレームの抽出・しきい値判定・集約は引き続き本体側で行われ、外部サービスには正規化済み画像の推論のみを委譲します。
+- Node.js v24, v26 をサポートしました。**Node.js v22 でも動作しますが、今後のリリースで v22 のサポートを終了する予定**ですので、Node.js のアップデートをご検討ください。
+  - Node.js のセキュリティアップデートに伴い、最低動作バージョンを 22.22.2 / 24.17.0 / 26.4.0 に引き上げました。
+  - Docker Image は Node.js 26.4.0-trixie に更新されています。
+- バックエンドで画像処理に用いているライブラリ sharp のシステム要件の変更により、**SSE4.2 命令セットをサポートしていない x86_64 CPU では Misskey が正しく動作しなくなります**。仮想マシンに Misskey をデプロイしている場合や、古いハードウェアをお使いの場合は、アップデート前にお使いの環境をご確認ください。なお、ARM64 など x86_64 ではない環境においてはこの変更による影響はありません。
 
 ### General
--
+- Feat: コントロールパネルから二要素認証を解除できるように
 
 ### Client
--
+- Fix: チャットでIMEの変換を確定するEnterでメッセージが送信されてしまうことがある問題を修正
+- 2025.4.0 以前の設定情報の移行処理が削除されました
+	- 2025.4.0 から直接 2026.6.0 以上にアップデートする場合は設定が移行されませんので注意してください。移行したい場合は一度 2026.5.1 を経由してください。
 
 ### Server
+- Enhance: センシティブメディアの判定を外部サービス ([sensitive-detector](https://github.com/misskey-dev/sensitive-detector)) に分離し、`nsfwjs` / `@tensorflow/tfjs(-node)` の同梱と NSFW 判定モデルを廃止 (#16804)
+- Enhance: Node.js 22.23.0以降、24.17.0以降、26.4.0以降をサポートするように
+- Enhance: Docker Image の Node.js を 26.4.0 に、Debian を trixie (v13) に更新
 - Enhance: 1つのMisskeyで複数のHTTPサーバプロセスを起動できるように ( #13662 )
+- Fix: `/stats` API のレスポンス型が正しくない問題を修正
+
+## 2026.6.0
+
+### General
+- Feat: ジョブキュー管理画面からキューの一時停止/再開ができるように
+- Feat: アンテナのタイムラインから個別のノートを削除できるように
+- Feat: ノート検索で投稿日時の期間を条件に加えられるように(#16035)
+- Fix: コンパネからrootユーザーのパスワードをリセットしようとした際にエラーが通知されない問題を修正
+
+### Client
+- Enhance: ユーザーページのファイルタブでスクロール位置が保持されるように
+- Enhance: ドライブページでスクロール位置が保持されるように
+- Enhance: 絵文字のメニューから直接絵文字パレットに絵文字を追加できるように
+- Fix: URLプレビューのプレイヤーをウィンドウで開いたとき、プレイヤーが読み込まれるまでの間 `Invalid URL` と表示される問題を修正
+- Fix: 一部の実績が正しく表示されない問題を修正
+- Fix: アクセストークン発行時のダイアログのタイトルが「確認コード」となっているのを修正
+- Fix: 一部のUI要素の色が正しく表示されない問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1243)
+- Fix: 「D」キーでダークモードを切り替える際にsyncDeviceDarkModeのチェックがバイパスされる問題を修正
+- Fix: パスキー登録完了時の認証ダイアログの入力値が使われていない問題を修正
+- Fix: メンションのサジェスト時に表示されるアイコン表示が画像サイズ次第で崩れる問題を修正
+- Fix: ノートの下書きをリセットする際、未アップロードのファイルについては添付予定が解除されない問題を修正
+- Fix: 画像アップロード時、フレームのキャプション付与が正しく行われないことがある問題を修正
+
+### Server
+- Enhance: リモートノートクリーニングジョブのスキップ処理のパフォーマンス改善
+- Enhance: リモートノートクリーニングジョブの削除対象検索処理のパフォーマンス改善
+- Enhance: ActivityPub の画像添付に width/height を含めるように
+- Enhance: URLプレビューのデフォルトの User Agent に Misskey サーバーのURLを含めるように
+- Fix: backend バンドルで `@tensorflow/tfjs-node` を external に含めず、起動時に `@mapbox/node-pre-gyp` の `find()` が backend の package.json を誤検出して `is not node-pre-gyp ready` エラーを永続的に吐く問題を修正
+- Fix: MemoryKVCacheのキャッシュGC処理において、更新されたキャッシュが期限切れにならないことがある問題を修正
+- Fix: PerUserDriveChart がシステム所有ファイル (userId が null) の更新で `"group"` の非NULL制約違反によりクラッシュする問題を修正 (#17498)
+- Fix: センシティブメディア自動検出周りの依存関係・ファイルの解決に失敗する問題を修正
+- Fix: フォロワー限定投稿を指名投稿で引用した際に、引用した投稿の公開範囲が意図せず変更される問題を修正
+- Fix: `actor` を持たない不正なInboxアクティビティを受信した際に配送ジョブが `TypeError` でクラッシュする問題を修正 (受信時に検証して400で返し、ジョブを積まないように変更)
+- Fix: Startup and shutdown failures (port-in-use, socket permission denied, plugin timeouts, leaked WebSocket connections) are now reported through the misskey logger instead of an UnhandledPromiseRejectionWarning stack trace
+- Fix: リモートのノートに対するメンション数制限が、サーバーが解決できたユーザー数ベースで行われていた問題を修正
+- Fix: セキュリティに関する修正
+
+## 2026.5.4
+
+### General
+- セキュリティに関する修正
+
+### Client
+- Fix: ビルドに失敗することがある問題を修正
 
 
 ## 2026.5.3

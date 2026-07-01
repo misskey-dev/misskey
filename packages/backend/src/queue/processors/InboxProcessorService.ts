@@ -21,7 +21,7 @@ import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
-import { JsonLdService } from '@/core/activitypub/JsonLdService.js';
+import { JsonLdError, JsonLdService } from '@/core/activitypub/JsonLdService.js';
 import { ApInboxService } from '@/core/activitypub/ApInboxService.js';
 import { bindThis } from '@/decorators.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
@@ -163,28 +163,42 @@ export class InboxProcessorService implements OnApplicationShutdown {
 
 				const jsonLd = this.jsonLdService.use();
 
-				// LD-Signature検証
-				const verified = await jsonLd.verifyRsaSignature2017(activity, authUser.key.keyPem).catch(() => false);
-				if (!verified) {
-					throw new Bull.UnrecoverableError('skip: LD-Signatureの検証に失敗しました');
-				}
-
-				// アクティビティを正規化
 				delete activity.signature;
 				try {
 					activity = await jsonLd.compact(activity) as IActivity;
-				} catch (e) {
-					throw new Bull.UnrecoverableError(`skip: failed to compact activity: ${e}`);
+				} catch (error) {
+					throw new Bull.UnrecoverableError(`skip: failed to compact activity: ${error}`);
 				}
-				// TODO: 元のアクティビティと非互換な形に正規化される場合は転送をスキップする
-				// https://github.com/mastodon/mastodon/blob/664b0ca/app/services/activitypub/process_collection_service.rb#L24-L29
-				activity.signature = ldSignature;
+				try {
+					jsonLd.checkForForbiddenDirectives(activity);
+				} catch (error) {
+					throw new Bull.UnrecoverableError(`skip: ${error}`);
+				}
 
 				//#region Log
 				const compactedInfo = Object.assign({}, activity);
 				delete compactedInfo['@context'];
 				this.logger.debug(`compacted: ${JSON.stringify(compactedInfo, null, 2)}`);
 				//#endregion
+
+				activity.signature = ldSignature;
+
+				jsonLd.freeze();
+
+				// LD-Signature検証
+				let verified;
+				try {
+					verified = await jsonLd.verifyRsaSignature2017(activity, authUser.key.keyPem);
+					if (!verified) {
+						throw new Bull.UnrecoverableError('skip: LD-Signatureの検証に失敗しました');
+					}
+				} catch (error) {
+					if (error instanceof JsonLdError) {
+						throw new Bull.UnrecoverableError(`skip: encountered a JSON-LD error while verifying signature: ${error}`);
+					} else {
+						throw error;
+					}
+				}
 
 				// もう一度actorチェック
 				if (authUser.user.uri !== getApId(activity.actor)) {
