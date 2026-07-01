@@ -30,7 +30,7 @@ jobs:
         with:
           submodules: true
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6.0.3
+        uses: pnpm/action-setup@v6.0.9
       - name: Install FFmpeg
         run: |
           sudo apt install -y ffmpeg
