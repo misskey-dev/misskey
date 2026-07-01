@@ -240,6 +240,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 										</ul>
 									</div>
 								</div>
+
+								<SearchMarker :keywords="['deny', 'list']">
+									<MkTextarea v-model="urlPreviewForm.state.urlPreviewSensitiveList" tall>
+										<template #label><SearchLabel>{{ i18n.ts.urlPreviewSensitiveList }}</SearchLabel><span v-if="urlPreviewForm.modifiedStates.urlPreviewSensitiveList" class="_modified">{{ i18n.ts.modified }}</span></template>
+										<template #caption>{{ i18n.ts.urlPreviewSensitiveListDescription }}</template>
+									</MkTextarea>
+								</SearchMarker>
 							</template>
 						</div>
 					</MkFolder>
@@ -465,6 +472,7 @@ const urlPreviewForm = useForm({
 	urlPreviewRequireContentLength: meta.urlPreviewRequireContentLength,
 	urlPreviewUserAgent: meta.urlPreviewUserAgent ?? '',
 	urlPreviewSummaryProxyUrl: meta.urlPreviewSummaryProxyUrl ?? '',
+	urlPreviewSensitiveList: meta.urlPreviewSensitiveList.join('\n'),
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		urlPreviewEnabled: state.urlPreviewEnabled,
@@ -474,6 +482,7 @@ const urlPreviewForm = useForm({
 		urlPreviewRequireContentLength: state.urlPreviewRequireContentLength,
 		urlPreviewUserAgent: state.urlPreviewUserAgent,
 		urlPreviewSummaryProxyUrl: state.urlPreviewSummaryProxyUrl,
+		urlPreviewSensitiveList: state.urlPreviewSensitiveList.split('\n'),
 	});
 	fetchInstance(true);
 });

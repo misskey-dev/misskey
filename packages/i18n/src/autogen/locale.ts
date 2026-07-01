@@ -5691,6 +5691,14 @@ export interface Locale extends ILocale {
      * 先頭に追加
      */
     "prepend": string;
+    /**
+     * サムネイルの表示を制限するURL
+     */
+    "urlPreviewSensitiveList": string;
+    /**
+     * スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、サムネイルが表示されなくなります。
+     */
+    "urlPreviewSensitiveListDescription": string;
     "_imageEditing": {
         "_vars": {
             /**

@@ -15,6 +15,8 @@
 
 ### General
 - Feat: コントロールパネルから二要素認証を解除できるように
+- Feat: 条件に一致したURLプレビューのサムネイルを隠すことができるように  
+  (Based on https://github.com/MisskeyIO/misskey/pull/214)
 
 ### Client
 - Fix: チャットでIMEの変換を確定するEnterでメッセージが送信されてしまうことがある問題を修正

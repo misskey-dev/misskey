@@ -11,6 +11,7 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type Logger from '@/logger.js';
 import { query } from '@/misc/prelude/url.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { ApiError } from '@/server/api/error.js';
 import { MiMeta } from '@/models/Meta.js';
@@ -29,6 +30,7 @@ export class UrlPreviewService {
 		private meta: MiMeta,
 
 		private httpRequestService: HttpRequestService,
+		private utilityService: UtilityService,
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('url-preview');
@@ -94,6 +96,10 @@ export class UrlPreviewService {
 
 			summary.icon = this.wrap(summary.icon);
 			summary.thumbnail = this.wrap(summary.thumbnail);
+
+			if (summary.sensitive !== true) {
+				summary.sensitive = this.utilityService.isKeyWordIncluded(summary.url, this.meta.urlPreviewSensitiveList);
+			}
 
 			// Cache 1day
 			reply.header('Cache-Control', 'max-age=86400, immutable');
