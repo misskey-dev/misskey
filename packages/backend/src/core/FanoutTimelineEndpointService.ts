@@ -181,25 +181,30 @@ export class FanoutTimelineEndpointService {
 				redisTimeline.push(...gotFromDb);
 				lastSuccessfulRate = gotFromDb.length / noteIds.length;
 
-				if (ps.allowPartial ? redisTimeline.length !== 0 : redisTimeline.length >= ps.limit) {
-					// 十分Redisからとれた
+				// allowPartial のみ早期 return 許可。
+				// それ以外は Redis 上位 limit 件範囲内の歯抜け検出が原理的に不可能なため
+				// (Redis 内に存在しない歯抜け ID の有無を Redis データだけからは判別できない)、
+				// 常に最終 dbFallback の全範囲取り直しに進ませて上位 limit 件を正しく再構築する。
+				if (ps.allowPartial && redisTimeline.length !== 0) {
 					return redisTimeline.slice(0, ps.limit);
+				}
+				if (redisTimeline.length >= ps.limit) {
+					break;
 				}
 			}
 
-			// まだ足りない分はDBにフォールバック
-			const remainingToRead = ps.limit - redisTimeline.length;
-			let dbUntil: string | null;
-			let dbSince: string | null;
-			if (ascending) {
-				dbUntil = ps.untilId;
-				dbSince = noteIds[noteIds.length - 1];
-			} else {
-				dbUntil = noteIds[noteIds.length - 1];
-				dbSince = ps.sinceId;
-			}
-			const gotFromDb = await ps.dbFallback(dbUntil, dbSince, remainingToRead);
-			return [...redisTimeline, ...gotFromDb];
+			// 常に最終 dbFallback で全範囲を取り直し、Redis 由来と dedupe + sort + slice する。
+			// Redis 最古/最新を境界に使うと、Redis 上の飛び石歯抜け
+			// (3分ガード拒否, TTL evict, LREM 等) や、Redis ループでの古い ID 消費による
+			// ページネーション境界のずれで取りこぼしが発生するため、ps.untilId/ps.sinceId の
+			// 全範囲を引いて上位 limit 件を再構築する。
+			// gotFromDb にも filter を適用するのは、Redis 経由のフィルタ (excludeReplies,
+			// excludeNoFiles, ミュート/ブロック等) を DB 由来のノートにも揃えるため。
+			const gotFromDb = await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
+			const seen = new Set(redisTimeline.map(n => n.id));
+			const merged = [...redisTimeline, ...gotFromDb.filter(n => !seen.has(n.id) && filter(n))];
+			merged.sort((a, b) => idCompare(a.id, b.id));
+			return merged.slice(0, ps.limit);
 		}
 
 		return await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
