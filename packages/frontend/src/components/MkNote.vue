@@ -38,19 +38,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 		</div>
 	</div>
-	<div v-if="isRenote && note.renote == null" :class="$style.deleted">
-		{{ i18n.ts.deletedNote }}
-	</div>
-	<div v-else-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
-		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview/>
+	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
+		<MkNoteUserAvatar :class="$style.collapsedRenoteTargetAvatar" :note="appearNote" link preview/>
 		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :nyaize="'respect'" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
 	</div>
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
-		<MkAvatar :class="[$style.avatar, prefer.s.useStickyIcons ? $style.useSticky : null]" :user="appearNote.user" :link="!mock" :preview="!mock"/>
+		<MkNoteUserAvatar :class="[$style.avatar, prefer.s.useStickyIcons ? $style.useSticky : null]" :note="appearNote" :link="!mock" :preview="!mock"/>
 		<div :class="$style.main">
 			<MkNoteHeader :note="appearNote" :mini="true"/>
-			<MkInstanceTicker v-if="showTicker" :host="appearNote.user.host" :instance="appearNote.user.instance"/>
+			<MkInstanceTicker v-if="!appearNote.deletedAt && showTicker" :host="appearNote.user.host" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
 					<Mfm
@@ -67,8 +64,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
+						<span v-if="appearNote.deletedAt" style="opacity: 0.5">({{ i18n.ts.deletedNote }})</span>
 						<Mfm
-							v-if="appearNote.text"
+							v-else-if="appearNote.text"
 							:parsedNodes="parsed"
 							:text="appearNote.text"
 							:author="appearNote.user"
@@ -113,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<MkReactionsViewer
-				v-if="appearNote.reactionAcceptance !== 'likeOnly'"
+				v-if="!appearNote.deletedAt && appearNote.reactionAcceptance !== 'likeOnly'"
 				style="margin-top: 6px;"
 				:reactions="$appearNote.reactions"
 				:reactionEmojis="$appearNote.reactionEmojis"
@@ -127,12 +125,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkReactionsViewer>
 			<footer :class="$style.footer">
-				<button :class="$style.footerButton" class="_button" @click="reply()">
+				<button v-if="!appearNote.deletedAt" :class="$style.footerButton" class="_button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.repliesCount) }}</p>
 				</button>
+				<button v-else :class="$style.footerButton" class="_button" disabled>
+					<i class="ti ti-ban"></i>
+				</button>
 				<button
-					v-if="canRenote"
+					v-if="canRenote && !appearNote.deletedAt"
 					ref="renoteButton"
 					:class="$style.footerButton"
 					class="_button"
@@ -144,16 +145,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-else :class="$style.footerButton" class="_button" disabled>
 					<i class="ti ti-ban"></i>
 				</button>
-				<button ref="reactButton" :class="$style.footerButton" class="_button" @click="toggleReact()">
+				<button v-if="!appearNote.deletedAt" ref="reactButton" :class="$style.footerButton" class="_button" @click="toggleReact()">
 					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && $appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--MI_THEME-love);"></i>
 					<i v-else-if="$appearNote.myReaction != null" class="ti ti-minus" style="color: var(--MI_THEME-accent);"></i>
 					<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 					<i v-else class="ti ti-plus"></i>
 					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || prefer.s.showReactionsCount) && $appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number($appearNote.reactionCount) }}</p>
 				</button>
-				<button v-if="prefer.s.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown.prevent="clip()">
-					<i class="ti ti-paperclip"></i>
+				<button v-else :class="$style.footerButton" class="_button" disabled>
+					<i class="ti ti-ban"></i>
 				</button>
+				<template v-if="prefer.s.showClipButtonInNoteFooter">
+					<button v-if="!appearNote.deletedAt" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown.prevent="clip()">
+						<i class="ti ti-paperclip"></i>
+					</button>
+					<button v-else :class="$style.noteFooterButton" class="_button" disabled>
+						<i class="ti ti-ban"></i>
+					</button>
+				</template>
 				<button ref="menuButton" :class="$style.footerButton" class="_button" @mousedown.prevent="showMenu()">
 					<i class="ti ti-dots"></i>
 				</button>
@@ -164,23 +173,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-else-if="!hardMuted && !hideByPlugin" :class="$style.muted" @click="muted = false">
 	<I18n v-if="muted === 'sensitiveMute'" :src="i18n.ts.userSaysSomethingSensitive" tag="small">
 		<template #name>
-			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
-				<MkUserName :user="appearNote.user"/>
-			</MkA>
+			<MkNoteUserName :note="appearNote" link/>
 		</template>
 	</I18n>
 	<I18n v-else-if="showSoftWordMutedWord !== true" :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
-			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
-				<MkUserName :user="appearNote.user"/>
-			</MkA>
+			<MkNoteUserName :note="appearNote" link/>
 		</template>
 	</I18n>
 	<I18n v-else :src="i18n.ts.userSaysSomethingAbout" tag="small">
 		<template #name>
-			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
-				<MkUserName :user="appearNote.user"/>
-			</MkA>
+			<MkNoteUserName :note="appearNote"/>
 		</template>
 		<template #word>
 			{{ Array.isArray(muted) ? muted.map(words => Array.isArray(words) ? words.join() : words).slice(0, 3).join(' ') : muted }}
@@ -209,6 +212,8 @@ import type { Keymap } from '@/utility/hotkey.js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
+import MkNoteUserAvatar from '@/components/MkNoteUserAvatar.vue';
+import MkNoteUserName from '@/components/MkNoteUserName.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkReactionsViewerDetails from '@/components/MkReactionsViewer.details.vue';
 import MkMediaList from '@/components/MkMediaList.vue';

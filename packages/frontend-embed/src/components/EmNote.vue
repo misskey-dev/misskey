@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[$style.root]"
 	:tabindex="isDeleted ? '-1' : '0'"
 >
-	<EmNoteSub v-if="appearNote.reply" :note="appearNote.reply" :class="$style.replyTo"/>
+	<EmNoteSub v-if="appearNote.replyId" :note="appearNote.reply ?? null" :class="$style.replyTo"/>
 	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
 	<!--<div v-if="appearNote._prId_" class="tip"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
@@ -54,6 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<EmA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></EmA>
+						<span v-if="appearNote.deletedAt" style="opacity: 0.5">({{ i18n.ts.deletedNote }})</span>
 						<EmMfm
 							v-if="appearNote.text"
 							:parsedNodes="parsed"
@@ -69,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<EmMediaList :mediaList="appearNote.files" :originalEntityUrl="`${url}/notes/${appearNote.id}`"/>
 					</div>
 					<EmPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :readOnly="true" :class="$style.poll"/>
-					<div v-if="appearNote.renote" :class="$style.quote"><EmNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
+					<div v-if="appearNote.renoteId != null" :class="$style.quote"><EmNoteSimple :note="appearNote.renote ?? null" :class="$style.quoteNote"/></div>
 					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
 						<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
 					</button>
@@ -149,7 +150,7 @@ const isRenote = Misskey.note.isPureRenote(note.value);
 
 const rootEl = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
-const appearNote = computed(() => getAppearNote(note.value));
+const appearNote = computed(() => getAppearNote(note.value) ?? note.value);
 const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
 const isLong = shouldCollapsed(appearNote.value, []);
