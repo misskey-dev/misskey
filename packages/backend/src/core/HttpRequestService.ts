@@ -9,6 +9,7 @@ import * as net from 'node:net';
 import * as stream from 'node:stream';
 import ipaddr from 'ipaddr.js';
 import CacheableLookup from 'cacheable-lookup';
+import type { StatusCode } from 'hono/utils/http-status';
 import fetch from 'node-fetch';
 import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
 import { Inject, Injectable } from '@nestjs/common';
@@ -344,7 +345,7 @@ export class HttpRequestService {
 		});
 
 		if (!res.ok && extra.throwErrorWhenResponseNotOk) {
-			throw new StatusError(`${res.status} ${res.statusText}`, res.status, res.statusText);
+			throw new StatusError(`${res.status} ${res.statusText}`, res.status as StatusCode, res.statusText);
 		}
 
 		if (res.ok) {

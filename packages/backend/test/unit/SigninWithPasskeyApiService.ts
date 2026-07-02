@@ -3,13 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { IncomingHttpHeaders } from 'node:http';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
+import { Hono } from 'hono';
 import { Test, TestingModule } from '@nestjs/testing';
-import { FastifyReply, FastifyRequest } from 'fastify';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
-import { HttpHeader } from 'fastify/types/utils.js';
 import { MiUser } from '@/models/User.js';
 import { MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
@@ -21,6 +19,8 @@ import { RateLimiterService } from '@/server/api/RateLimiterService.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { SigninService } from '@/server/api/SigninService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { dummyContextMiddleware } from '../utils.js';
+import type { ApiEnv } from '@/server/api/ApiServerTypes.js';
 
 class FakeLimiter {
 	public async limit() {
@@ -34,33 +34,9 @@ class FakeSigninService {
 	}
 }
 
-class DummyFastifyReply {
-	public statusCode: number;
-	code(num: number): void {
-		this.statusCode = num;
-	}
-	header(_key: HttpHeader, _value: any): void {
-	}
-}
-class DummyFastifyRequest {
-	public ip: string;
-	public body: {credential: any, context: string};
-	public headers: IncomingHttpHeaders = { 'accept': 'application/json' };
-	constructor(body?: any) {
-		this.ip = '0.0.0.0';
-		this.body = body;
-	}
-}
-
-type ApiFastifyRequestType = FastifyRequest<{
-	Body: {
-		credential?: AuthenticationResponseJSON;
-		context?: string;
-	};
-}>;
-
 describe('SigninWithPasskeyApiService', () => {
 	let app: TestingModule;
+	let honoApp: Hono<ApiEnv>;
 	let passkeyApiService: SigninWithPasskeyApiService;
 	let usersRepository: UsersRepository;
 	let userProfilesRepository: UserProfilesRepository;
@@ -101,6 +77,12 @@ describe('SigninWithPasskeyApiService', () => {
 		userProfilesRepository = app.get<UserProfilesRepository>(DI.userProfilesRepository);
 		webAuthnService = app.get<WebAuthnService>(WebAuthnService);
 		idService = app.get<IdService>(IdService);
+
+		honoApp = new Hono();
+		honoApp.post('/signin-with-passkey', dummyContextMiddleware, async (ctx) => {
+			const json = await ctx.req.json();
+			return ctx.json(await passkeyApiService.signin(ctx, json));
+		});
 	});
 
 	beforeEach(async () => {
@@ -128,50 +110,66 @@ describe('SigninWithPasskeyApiService', () => {
 
 	describe('Get Passkey Options', () => {
 		it('Should return passkey Auth Options', async () => {
-			const req = new DummyFastifyRequest({}) as ApiFastifyRequestType;
-			const res = new DummyFastifyReply() as unknown as FastifyReply;
-			const res_body = await passkeyApiService.signin(req, res);
-			expect(res.statusCode).toBe(200);
-			expect((res_body as any).option).toBeDefined();
+			const res = await honoApp.request('/signin-with-passkey', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: '{}',
+			});
+			expect(res.status).toBe(200);
+			const res_body = await res.json();
+			expect(res_body).toHaveProperty('option');
 			expect(typeof (res_body as any).context).toBe('string');
 		});
 	});
 	describe('Try Passkey Auth', () => {
 		it('Should Success', async () => {
-			const req = new DummyFastifyRequest({ context: 'auth-context', credential: { dummy: [] } }) as ApiFastifyRequestType;
-			const res = new DummyFastifyReply() as FastifyReply;
-			const res_body = await passkeyApiService.signin(req, res);
+			const res = await honoApp.request('/signin-with-passkey', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ context: 'auth-context', credential: { dummy: [] } as unknown as AuthenticationResponseJSON }),
+			});
+			expect(res.status).toBe(200);
+			const res_body = await res.json();
 			expect((res_body as any).signinResponse).toBeDefined();
 		});
 
 		it('Should return 400 Without Auth Context', async () => {
-			const req = new DummyFastifyRequest({ credential: { dummy: [] } }) as ApiFastifyRequestType;
-			const res = new DummyFastifyReply() as FastifyReply;
-			const res_body = await passkeyApiService.signin(req, res);
-			expect(res.statusCode).toBe(400);
+			const res = await honoApp.request('/signin-with-passkey', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ credential: { dummy: [] } as unknown as AuthenticationResponseJSON }),
+			});
+			expect(res.status).toBe(400);
+			const res_body = await res.json();
 			expect((res_body as any).error?.id).toStrictEqual('1658cc2e-4495-461f-aee4-d403cdf073c1');
 		});
 
 		it('Should return 403 When Challenge Verify fail', async () => {
-			const req = new DummyFastifyRequest({ context: 'misskey-1234', credential: { dummy: [] } }) as ApiFastifyRequestType;
-			const res = new DummyFastifyReply() as FastifyReply;
 			vi.spyOn(webAuthnService, 'verifySignInWithPasskeyAuthentication')
 				.mockImplementation(async () => {
 					throw new IdentifiableError('THIS_ERROR_CODE_SHOULD_BE_FORWARDED');
 				});
-			const res_body = await passkeyApiService.signin(req, res);
-			expect(res.statusCode).toBe(403);
+			const res = await honoApp.request('/signin-with-passkey', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ context: 'misskey-1234', credential: { dummy: [] } as unknown as AuthenticationResponseJSON }),
+			});
+			expect(res.status).toBe(403);
+			const res_body = await res.json();
 			expect((res_body as any).error?.id).toStrictEqual('THIS_ERROR_CODE_SHOULD_BE_FORWARDED');
 		});
 
 		it('Should return 403 When The user not Enabled Passwordless login', async () => {
-			const req = new DummyFastifyRequest({ context: 'misskey-1234', credential: { dummy: [] } }) as ApiFastifyRequestType;
-			const res = new DummyFastifyReply() as FastifyReply;
 			const userId = await FakeWebauthnVerify();
 			const data = { userId: userId, usePasswordLessLogin: false };
 			await userProfilesRepository.update({ userId: userId }, data);
-			const res_body = await passkeyApiService.signin(req, res);
-			expect(res.statusCode).toBe(403);
+			const res = await honoApp.request('/signin-with-passkey', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ context: 'misskey-1234', credential: { dummy: [] } as unknown as AuthenticationResponseJSON }),
+			});
+			expect(res.status).toBe(403);
+			const res_body = await res.json();
 			expect((res_body as any).error?.id).toStrictEqual('2d84773e-f7b7-4d0b-8f72-bb69b584c912');
 		});
 	});

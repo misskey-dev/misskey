@@ -52,6 +52,8 @@ minimumReleaseAgeExclude:
   - slacc-win32-arm64-msvc
   - slacc-win32-x64-msvc
   - '@typescript/native-preview*'
+  - hono
+  - '@hono/node-server'
   - vite # そのうち消す
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'

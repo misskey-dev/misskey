@@ -15,11 +15,11 @@ import { SignupService } from '@/core/SignupService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmailService } from '@/core/EmailService.js';
 import { MiLocalUser } from '@/models/User.js';
-import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
+import { HttpStatusError } from '@/misc/http-status-error.js';
 import { bindThis } from '@/decorators.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { SigninService } from './SigninService.js';
-import type { FastifyRequest, FastifyReply } from 'fastify';
+import type { ApiContext } from './ApiServerTypes.js';
 
 @Injectable()
 export class SignupApiService {
@@ -56,54 +56,50 @@ export class SignupApiService {
 
 	@bindThis
 	public async signup(
-		request: FastifyRequest<{
-			Body: {
-				username: string;
-				password: string;
-				host?: string;
-				invitationCode?: string;
-				emailAddress?: string;
-				'hcaptcha-response'?: string;
-				'g-recaptcha-response'?: string;
-				'turnstile-response'?: string;
-				'm-captcha-response'?: string;
-				'testcaptcha-response'?: string;
-			}
-		}>,
-		reply: FastifyReply,
+		ctx: ApiContext,
+		body: {
+			username?: string;
+			password?: string;
+			host?: string;
+			invitationCode?: string;
+			emailAddress?: string;
+			'hcaptcha-response'?: string;
+			'g-recaptcha-response'?: string;
+			'turnstile-response'?: string;
+			'm-captcha-response'?: string;
+			'testcaptcha-response'?: string;
+		},
 	) {
-		const body = request.body;
-
 		// Verify *Captcha
 		// ただしテスト時はこの機構は障害となるため無効にする
 		if (process.env.NODE_ENV !== 'test') {
 			if (this.meta.enableHcaptcha && this.meta.hcaptchaSecretKey) {
 				await this.captchaService.verifyHcaptcha(this.meta.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
-					throw new FastifyReplyError(400, err);
+					throw new HttpStatusError(400, err);
 				});
 			}
 
 			if (this.meta.enableMcaptcha && this.meta.mcaptchaSecretKey && this.meta.mcaptchaSitekey && this.meta.mcaptchaInstanceUrl) {
 				await this.captchaService.verifyMcaptcha(this.meta.mcaptchaSecretKey, this.meta.mcaptchaSitekey, this.meta.mcaptchaInstanceUrl, body['m-captcha-response']).catch(err => {
-					throw new FastifyReplyError(400, err);
+					throw new HttpStatusError(400, err);
 				});
 			}
 
 			if (this.meta.enableRecaptcha && this.meta.recaptchaSecretKey) {
 				await this.captchaService.verifyRecaptcha(this.meta.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
-					throw new FastifyReplyError(400, err);
+					throw new HttpStatusError(400, err);
 				});
 			}
 
 			if (this.meta.enableTurnstile && this.meta.turnstileSecretKey) {
 				await this.captchaService.verifyTurnstile(this.meta.turnstileSecretKey, body['turnstile-response']).catch(err => {
-					throw new FastifyReplyError(400, err);
+					throw new HttpStatusError(400, err);
 				});
 			}
 
 			if (this.meta.enableTestcaptcha) {
 				await this.captchaService.verifyTestcaptcha(body['testcaptcha-response']).catch(err => {
-					throw new FastifyReplyError(400, err);
+					throw new HttpStatusError(400, err);
 				});
 			}
 		}
@@ -114,15 +110,25 @@ export class SignupApiService {
 		const invitationCode = body['invitationCode'];
 		const emailAddress = body['emailAddress'];
 
+		if (typeof username !== 'string' || typeof password !== 'string') {
+			ctx.status(400);
+			return;
+		}
+
+		if (host != null && typeof host !== 'string') {
+			ctx.status(400);
+			return;
+		}
+
 		if (this.meta.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {
-				reply.code(400);
+				ctx.status(400);
 				return;
 			}
 
 			const res = await this.emailService.validateEmailForAccount(emailAddress);
 			if (!res.available) {
-				reply.code(400);
+				ctx.status(400);
 				return;
 			}
 		}
@@ -132,7 +138,7 @@ export class SignupApiService {
 		// テスト時はこの機構は障害となるため無効にする
 		if (process.env.NODE_ENV !== 'test' && this.meta.disableRegistration) {
 			if (invitationCode == null || typeof invitationCode !== 'string') {
-				reply.code(400);
+				ctx.status(400);
 				return;
 			}
 
@@ -141,12 +147,12 @@ export class SignupApiService {
 			});
 
 			if (ticket == null || ticket.usedById != null) {
-				reply.code(400);
+				ctx.status(400);
 				return;
 			}
 
 			if (ticket.expiresAt && ticket.expiresAt < new Date()) {
-				reply.code(400);
+				ctx.status(400);
 				return;
 			}
 
@@ -154,34 +160,34 @@ export class SignupApiService {
 			if (this.meta.emailRequiredForSignup) {
 				// メアド認証済みならエラー
 				if (ticket.usedBy) {
-					reply.code(400);
+					ctx.status(400);
 					return;
 				}
 
 				// 認証しておらず、メール送信から30分以内ならエラー
 				if (ticket.usedAt && ticket.usedAt.getTime() + (1000 * 60 * 30) > Date.now()) {
-					reply.code(400);
+					ctx.status(400);
 					return;
 				}
 			} else if (ticket.usedAt) {
-				reply.code(400);
+				ctx.status(400);
 				return;
 			}
 		}
 
 		if (this.meta.emailRequiredForSignup) {
 			if (await this.usersRepository.exists({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
-				throw new FastifyReplyError(400, 'DUPLICATED_USERNAME');
+				throw new HttpStatusError(400, 'DUPLICATED_USERNAME');
 			}
 
 			// Check deleted username duplication
 			if (await this.usedUsernamesRepository.exists({ where: { username: username.toLowerCase() } })) {
-				throw new FastifyReplyError(400, 'USED_USERNAME');
+				throw new HttpStatusError(400, 'USED_USERNAME');
 			}
 
 			const isPreserved = this.meta.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
 			if (isPreserved) {
-				throw new FastifyReplyError(400, 'DENIED_USERNAME');
+				throw new HttpStatusError(400, 'DENIED_USERNAME');
 			}
 
 			const code = secureRndstr(16, { chars: L_CHARS });
@@ -211,7 +217,7 @@ export class SignupApiService {
 				});
 			}
 
-			reply.code(204);
+			ctx.status(204);
 			return;
 		} else {
 			try {
@@ -237,22 +243,20 @@ export class SignupApiService {
 					token: secret,
 				};
 			} catch (err) {
-				throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
+				throw new HttpStatusError(400, typeof err === 'string' ? err : (err as Error).toString());
 			}
 		}
 	}
 
 	@bindThis
-	public async signupPending(request: FastifyRequest<{ Body: { code: string; } }>, reply: FastifyReply) {
-		const body = request.body;
-
+	public async signupPending(ctx: ApiContext, body: { code?: string; }) {
 		const code = body['code'];
 
 		try {
 			const pendingUser = await this.userPendingsRepository.findOneByOrFail({ code });
 
 			if (this.idService.parse(pendingUser.id).date.getTime() + (1000 * 60 * 30) < Date.now()) {
-				throw new FastifyReplyError(400, 'EXPIRED');
+				throw new HttpStatusError(400, 'EXPIRED');
 			}
 
 			const { account } = await this.signupService.signup({
@@ -281,9 +285,9 @@ export class SignupApiService {
 				});
 			}
 
-			return this.signinService.signin(request, reply, account as MiLocalUser);
+			return this.signinService.signin(ctx, account as MiLocalUser);
 		} catch (err) {
-			throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
+			throw new HttpStatusError(400, typeof err === 'string' ? err : (err as Error).toString());
 		}
 	}
 }

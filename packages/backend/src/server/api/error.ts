@@ -2,15 +2,16 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { StatusCode } from 'hono/utils/http-status';
 
-type E = { message: string, code: string, id: string, kind?: 'client' | 'server' | 'permission', httpStatusCode?: number };
+type E = { message: string, code: string, id: string, kind?: 'client' | 'server' | 'permission', httpStatusCode?: StatusCode };
 
 export class ApiError extends Error {
 	public message: string;
 	public code: string;
 	public id: string;
 	public kind: string;
-	public httpStatusCode?: number;
+	public httpStatusCode?: StatusCode;
 	public info?: any;
 
 	constructor(err?: E | null | undefined, info?: any | null | undefined) {

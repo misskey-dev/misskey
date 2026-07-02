@@ -1,6 +1,7 @@
 import { portToPid } from 'pid-port';
 import fkill from 'fkill';
-import Fastify from 'fastify';
+import { Hono } from 'hono';
+import { serve } from '@hono/node-server';
 import { NestFactory } from '@nestjs/core';
 import { MainModule } from '@/MainModule.js';
 import { ServerService } from '@/server/ServerService.js';
@@ -67,22 +68,24 @@ async function killTestServer() {
  * @param port
  */
 async function startControllerEndpoints(port = config.port + 1000) {
-	const fastify = Fastify();
+	const hono = new Hono();
 
-	fastify.post<{ Body: { key?: string, value?: string } }>('/env', async (req, res) => {
-		console.log(req.body);
-		const key = req.body['key'];
+	hono.post('/env', async (c) => {
+		const req = await c.req.json<{ key?: string, value?: string }>();
+		console.log(req);
+		const key = req['key'];
 		if (!key) {
-			res.code(400).send({ success: false });
-			return;
+			c.status(400);
+			return c.json({ success: false });
 		}
 
-		process.env[key] = req.body['value'];
+		process.env[key] = req['value'];
 
-		res.code(200).send({ success: true });
+		c.status(200);
+		return c.json({ success: true });
 	});
 
-	fastify.post<{ Body: { key?: string, value?: string } }>('/env-reset', async (req, res) => {
+	hono.post('/env-reset', async (c) => {
 		process.env = JSON.parse(originEnv);
 
 		await serverService.dispose();
@@ -98,8 +101,13 @@ async function startControllerEndpoints(port = config.port + 1000) {
 		serverService = app.get(ServerService);
 		await serverService.launch();
 
-		res.code(200).send({ success: true });
+		c.status(200);
+		return c.json({ success: true });
 	});
 
-	await fastify.listen({ port: port, host: 'localhost' });
+	serve({
+		fetch: hono.fetch,
+		port,
+		hostname: 'localhost',
+	});
 }

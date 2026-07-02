@@ -21,9 +21,9 @@ import { ApiError } from './error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
-import type { FastifyRequest, FastifyReply } from 'fastify';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import type { IEndpointMeta, IEndpoint } from './endpoints.js';
+import type { ApiContext, ApiMultipartData } from './ApiServerTypes.js';
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -67,46 +67,46 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 	}
 
-	#sendApiError(reply: FastifyReply, err: ApiError): void {
+	#sendApiError(ctx: ApiContext, err: ApiError): Response {
 		let statusCode = err.httpStatusCode;
 		if (err.httpStatusCode === 401) {
-			reply.header('WWW-Authenticate', 'Bearer realm="Misskey"');
+			ctx.header('WWW-Authenticate', 'Bearer realm="Misskey"');
 		} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
 			const info: unknown = err.info;
 			const unixEpochInSeconds = Date.now();
 			if (typeof(info) === 'object' && info && 'resetMs' in info && typeof(info.resetMs) === 'number') {
 				const cooldownInSeconds = Math.ceil((info.resetMs - unixEpochInSeconds) / 1000);
 				// もしかするとマイナスになる可能性がなくはないのでマイナスだったら0にしておく
-				reply.header('Retry-After', Math.max(cooldownInSeconds, 0).toString(10));
+				ctx.header('Retry-After', Math.max(cooldownInSeconds, 0).toString(10));
 			} else {
 				this.logger.warn(`rate limit information has unexpected type ${typeof(err.info?.reset)}`);
 			}
 		} else if (err.kind === 'client') {
-			reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_request", error_description="${err.message}"`);
+			ctx.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_request", error_description="${err.message}"`);
 			statusCode = statusCode ?? 400;
 		} else if (err.kind === 'permission') {
 			// (ROLE_PERMISSION_DENIEDは関係ない)
 			if (err.code === 'PERMISSION_DENIED') {
-				reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="insufficient_scope", error_description="${err.message}"`);
+				ctx.header('WWW-Authenticate', `Bearer realm="Misskey", error="insufficient_scope", error_description="${err.message}"`);
 			}
 			statusCode = statusCode ?? 403;
 		} else if (!statusCode) {
 			statusCode = 500;
 		}
-		this.send(reply, statusCode, err);
+		return this.send(ctx, statusCode, err);
 	}
 
-	#sendAuthenticationError(reply: FastifyReply, err: unknown): void {
+	#sendAuthenticationError(ctx: ApiContext, err: unknown): Response {
 		if (err instanceof AuthenticationError) {
 			const message = 'Authentication failed. Please ensure your token is correct.';
-			reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_token", error_description="${message}"`);
-			this.send(reply, 401, new ApiError({
+			ctx.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_token", error_description="${message}"`);
+			return this.send(ctx, 401, new ApiError({
 				message: 'Authentication failed. Please ensure your token is correct.',
 				code: 'AUTHENTICATION_FAILED',
 				id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
 			}));
 		} else {
-			this.send(reply, 500, new ApiError());
+			return this.send(ctx, 500, new ApiError());
 		}
 	}
 
@@ -156,107 +156,106 @@ export class ApiCallService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public handleRequest(
+	public async handleRequest(
 		endpoint: IEndpoint & { exec: any },
-		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
-		reply: FastifyReply,
-	): void {
-		const body = request.method === 'GET'
-			? request.query
-			: request.body;
+		ctx: ApiContext,
+		bodyData?: Record<string, unknown>,
+	): Promise<Response> {
+		const body = ctx.req.method === 'GET'
+			? ctx.req.query()
+			: bodyData;
 
 		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1 (case sensitive)
-		const token = request.headers.authorization?.startsWith('Bearer ')
-			? request.headers.authorization.slice(7)
+		const authorization = ctx.req.header('authorization');
+		const token = authorization?.startsWith('Bearer ')
+			? authorization.slice(7)
 			: body?.['i'];
 		if (token != null && typeof token !== 'string') {
-			reply.code(400);
-			return;
+			return ctx.body(null, 400);
 		}
-		this.authenticateService.authenticate(token).then(([user, app]) => {
-			this.call(endpoint, user, app, body, null, request).then((res) => {
-				if (request.method === 'GET' && endpoint.meta.cacheSec && !token && !user) {
-					reply.header('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
-				}
-				this.send(reply, res);
-			}).catch((err: ApiError) => {
-				this.#sendApiError(reply, err);
-			});
 
-			if (user) {
-				this.logIp(request, user);
+		try {
+			const [user, app] = await this.authenticateService.authenticate(token);
+			const res = await this.call(endpoint, user, app, body, null, ctx);
+			if (ctx.req.method === 'GET' && endpoint.meta.cacheSec && !token && !user) {
+				ctx.header('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
 			}
-		}).catch(err => {
-			this.#sendAuthenticationError(reply, err);
-		});
+			if (user) {
+				this.logIp(ctx.var.ip, user);
+			}
+			return this.send(ctx, res);
+		} catch (err) {
+			if (err instanceof ApiError) {
+				return this.#sendApiError(ctx, err);
+			}
+
+			return this.#sendAuthenticationError(ctx, err);
+		}
 	}
 
 	@bindThis
 	public async handleMultipartRequest(
 		endpoint: IEndpoint & { exec: any },
-		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
-		reply: FastifyReply,
-	): Promise<void> {
-		const multipartData = await request.file().catch(() => {
-			/* Fastify throws if the remote didn't send multipart data. Return 400 below. */
-		});
+		ctx: ApiContext,
+		multipartData: ApiMultipartData | null,
+	): Promise<Response> {
 		if (multipartData == null) {
-			reply.code(400);
-			reply.send();
-			return;
+			return ctx.body(null, 400);
 		}
 
 		const [path, cleanup] = await createTemp();
 		await stream.pipeline(multipartData.file, fs.createWriteStream(path));
 
-		// ファイルサイズが制限を超えていた場合
-		// なお truncated はストリームを読み切ってからでないと機能しないため、stream.pipeline より後にある必要がある
-		if (multipartData.file.truncated) {
+		if (multipartData.truncated) {
 			cleanup();
-			reply.code(413);
-			reply.send();
-			return;
+			return ctx.body(null, 413);
 		}
 
 		const fields = {} as Record<string, unknown>;
 		for (const [k, v] of Object.entries(multipartData.fields)) {
-			fields[k] = typeof v === 'object' && 'value' in v ? v.value : undefined;
+			fields[k] = v;
 		}
 
 		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1 (case sensitive)
-		const token = request.headers.authorization?.startsWith('Bearer ')
-			? request.headers.authorization.slice(7)
+		const authorization = ctx.req.header('authorization');
+		const token = authorization?.startsWith('Bearer ')
+			? authorization.slice(7)
 			: fields['i'];
 		if (token != null && typeof token !== 'string') {
-			reply.code(400);
-			return;
+			return ctx.body(null, 400);
 		}
-		this.authenticateService.authenticate(token).then(([user, app]) => {
-			this.call(endpoint, user, app, fields, {
+
+		try {
+			const [user, app] = await this.authenticateService.authenticate(token);
+			const res = await this.call(endpoint, user, app, fields, {
 				name: multipartData.filename,
 				path: path,
-			}, request).then((res) => {
-				this.send(reply, res);
-			}).catch((err: ApiError) => {
-				this.#sendApiError(reply, err);
-			});
-
+			}, ctx);
 			if (user) {
-				this.logIp(request, user);
+				this.logIp(ctx.var.ip, user);
 			}
-		}).catch(err => {
-			this.#sendAuthenticationError(reply, err);
-		});
+
+			return this.send(ctx, res);
+		} catch (err) {
+			cleanup();
+			if (err instanceof ApiError) {
+				return this.#sendApiError(ctx, err);
+			}
+
+			return this.#sendAuthenticationError(ctx, err);
+		}
 	}
 
 	@bindThis
-	private send(reply: FastifyReply, x?: any, y?: ApiError) {
+	private send(ctx: ApiContext, x?: any, y?: ApiError): Response {
+		if (x instanceof Response) {
+			return x;
+		}
+
 		if (x == null) {
-			reply.code(204);
-			reply.send();
+			return ctx.body(null, 204);
 		} else if (typeof x === 'number' && y) {
-			reply.code(x);
-			reply.send({
+			return ctx.json({
 				error: {
 					message: y!.message,
 					code: y!.code,
@@ -264,17 +263,21 @@ export class ApiCallService implements OnApplicationShutdown {
 					kind: y!.kind,
 					...(y!.info ? { info: y!.info } : {}),
 				},
-			});
+			}, x as never);
 		} else {
 			// 文字列を返す場合は、JSON.stringify通さないとJSONと認識されない
-			reply.send(typeof x === 'string' ? JSON.stringify(x) : x);
+			if (typeof x === 'string') {
+				ctx.header('Content-Type', 'application/json');
+				return ctx.body(JSON.stringify(x));
+			}
+
+			return ctx.json(x);
 		}
 	}
 
 	@bindThis
-	private logIp(request: FastifyRequest, user: MiLocalUser) {
+	private logIp(ip: string, user: MiLocalUser) {
 		if (!this.meta.enableIpLogging) return;
-		const ip = request.ip;
 		const ips = this.userIpHistories.get(user.id);
 		if (ips == null || !ips.has(ip)) {
 			if (ips == null) {
@@ -304,7 +307,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			name: string;
 			path: string;
 		} | null,
-		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
+		ctx: ApiContext,
 	) {
 		const isSecure = user != null && token == null;
 
@@ -312,16 +315,18 @@ export class ApiCallService implements OnApplicationShutdown {
 			throw new ApiError(accessDenied);
 		}
 
+		const ip = ctx.var.ip;
+
 		if (ep.meta.limit) {
 			let limitActor: string | null = null;
 			if (user) {
 				limitActor = user.id;
 			} else if (this.config.enableIpRateLimit) {
-				if (process.env.NODE_ENV === 'production' && (request.ip === '::1' || request.ip === '127.0.0.1')) {
+				if (process.env.NODE_ENV === 'production' && (ip === '::1' || ip === '127.0.0.1')) {
 					this.logger.warn('Recieved API request from localhost IP address for rate limiting in production environment. This is likely due to an improper trustProxy setting in the config file.');
 				}
 
-				limitActor = getIpHash(request.ip);
+				limitActor = getIpHash(ip);
 			}
 
 			const limit = Object.assign({}, ep.meta.limit);
@@ -420,7 +425,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		// Cast non JSON input
-		if ((ep.meta.requireFile || request.method === 'GET') && ep.params.properties) {
+		if ((ep.meta.requireFile || ctx.req.method === 'GET') && ep.params.properties) {
 			for (const k of Object.keys(ep.params.properties)) {
 				const param = ep.params.properties![k];
 				if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
@@ -444,10 +449,10 @@ export class ApiCallService implements OnApplicationShutdown {
 		if (this.Sentry != null) {
 			return await this.Sentry.startSpan({
 				name: 'API: ' + ep.name,
-			}, () => ep.exec(data, user, token, file, request.ip, request.headers)
+			}, () => ep.exec(data, user, token, file, ip, ctx.req.header())
 				.catch((err: Error) => this.#onExecError(ep, data, err, user?.id)));
 		} else {
-			return await ep.exec(data, user, token, file, request.ip, request.headers)
+			return await ep.exec(data, user, token, file, ip, ctx.req.header())
 				.catch((err: Error) => this.#onExecError(ep, data, err, user?.id));
 		}
 	}
