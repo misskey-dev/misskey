@@ -9,6 +9,8 @@ import type { MiMeta } from '@/models/Meta.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -16,6 +18,15 @@ export const meta = {
 	requireCredential: true,
 	requireAdmin: true,
 	kind: 'write:admin:meta',
+
+	errors: {
+		fanoutTimelineTransitionInProgress: {
+			message: 'A fanout timeline toggle is currently being applied. Please wait until the purge job completes before changing enableFanoutTimeline again.',
+			code: 'FANOUT_TIMELINE_TRANSITION_IN_PROGRESS',
+			id: '65b9b26a-700c-41ea-96f7-96b9a7902301',
+			httpStatusCode: 409,
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -234,6 +245,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private metaService: MetaService,
 		private moderationLogService: ModerationLogService,
+		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const set = {} as Partial<MiMeta>;
@@ -668,10 +680,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				set.manifestJsonOverride = ps.manifestJsonOverride;
 			}
 
-			if (ps.enableFanoutTimeline !== undefined) {
-				set.enableFanoutTimeline = ps.enableFanoutTimeline;
-			}
-
 			if (ps.enableFanoutTimelineDbFallback !== undefined) {
 				set.enableFanoutTimelineDbFallback = ps.enableFanoutTimelineDbFallback;
 			}
@@ -784,11 +792,32 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const before = await this.metaService.fetch(true);
 
+			// enableFanoutTimeline をトグルする場合、Redis 上の list:* キャッシュを BullMQ
+			// ジョブで一括 purge してから fanoutTimelineActive=true に戻す。過渡期 (active=false)
+			// 中はデータプレーンが FTTL を読み書きしないため、push と purge の競合・MetaService
+			// キャッシュ伝播ラグ・大規模インスタンスでの HTTP タイムアウト等を一掃できる。
+			// 過渡期中に enableFanoutTimeline をさらに変更するリクエストは 409 で拒否する。
+			if (ps.enableFanoutTimeline !== undefined) {
+				if (ps.enableFanoutTimeline !== before.enableFanoutTimeline) {
+					// 過渡期 = enableFanoutTimeline と fanoutTimelineActive が乖離している状態
+					// (purge ジョブ進行中)。stable な OFF/OFF や ON/ON からのトグルは受理する。
+					if (before.enableFanoutTimeline !== before.fanoutTimelineActive) {
+						throw new ApiError(meta.errors.fanoutTimelineTransitionInProgress);
+					}
+					set.fanoutTimelineActive = false;
+				}
+				set.enableFanoutTimeline = ps.enableFanoutTimeline;
+			}
+
 			await this.metaService.update(set);
 
 			const after = await this.metaService.fetch(true);
 
-			this.moderationLogService.log(me, 'updateServerSettings', {
+			if (before.enableFanoutTimeline !== after.enableFanoutTimeline) {
+				await this.queueService.createPurgeFanoutTimelinesJob(after.enableFanoutTimeline);
+			}
+
+			await this.moderationLogService.log(me, 'updateServerSettings', {
 				before,
 				after,
 			});

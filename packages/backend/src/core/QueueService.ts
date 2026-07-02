@@ -546,6 +546,30 @@ export class QueueService {
 		});
 	}
 
+	/**
+	 * `enableFanoutTimeline` トグル時に Redis 上の list:* キャッシュを一掃するジョブ。
+	 * 完了後に `MetaService.update({ fanoutTimelineActive: targetState })` で
+	 * データプレーン側のスイッチを入れ直す。
+	 * 固定 jobId にしているので、過渡期中の二重 enqueue は BullMQ 側で抑止される。
+	 */
+	@bindThis
+	public createPurgeFanoutTimelinesJob(targetState: boolean) {
+		return this.systemQueue.add('purgeFanoutTimelines', { targetState }, {
+			jobId: 'purgeFanoutTimelines',
+			attempts: 3,
+			backoff: {
+				type: 'exponential',
+				delay: 5000,
+			},
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+			},
+		});
+	}
+
 	@bindThis
 	public createDeleteAccountJob(user: ThinUser, opts: { soft?: boolean; } = {}) {
 		return this.dbQueue.add('deleteAccount', {

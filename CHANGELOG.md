@@ -52,6 +52,7 @@
 - Fix: 画像アップロード時、フレームのキャプション付与が正しく行われないことがある問題を修正
 
 ### Server
+- Fix: 管理画面で `enableFanoutTimeline` を切り替えるとタイムラインにギャップが生じノートが取りこぼされる問題を修正 (過渡期フラグ `fanoutTimelineActive` を導入し、トグル中は BullMQ ジョブで Redis 上の `list:*` をパージしてからデータプレーンを切り替える方式に変更。過渡期中はデータプレーンが FTTL を一切使用せず DB 直行となり、過渡期中の `enableFanoutTimeline` 再変更は 409 で拒否される)
 - Enhance: リモートノートクリーニングジョブのスキップ処理のパフォーマンス改善
 - Enhance: リモートノートクリーニングジョブの削除対象検索処理のパフォーマンス改善
 - Enhance: ActivityPub の画像添付に width/height を含めるように

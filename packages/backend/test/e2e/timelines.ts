@@ -9,13 +9,14 @@
 // pnpm jest -- e2e/timelines.ts
 
 import * as assert from 'assert';
-import { describe, beforeAll, test } from 'vitest';
+import { describe, beforeAll, afterAll, test } from 'vitest';
 import { setTimeout } from 'node:timers/promises';
 import { entities } from 'misskey-js';
 import { Redis } from 'ioredis';
 import { SignupResponse, Note } from 'misskey-js/entities.js';
-import { api, initTestDb, post, randomString, sendEnvUpdateRequest, signup, uploadUrl, UserToken } from '../utils.js';
+import { api, initTestDb, post, randomString, sendEnvUpdateRequest, signup, startJobQueue, uploadUrl, UserToken } from '../utils.js';
 import { loadConfig } from '@/config.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 function genHost() {
 	return randomString() + '.example.com';
@@ -3325,5 +3326,150 @@ describe('Timelines', () => {
 		});
 		// TODO: リノートミュート済みユーザーのテスト
 		// TODO: ページネーションのテスト
+	});
+
+	// `enableFanoutTimeline` を ON → OFF → ON のように切り替えると、
+	// OFF 期間中に投稿されたノートは Redis 上のキャッシュリストに乗らないまま、
+	// ON 復帰後の新規投稿だけが Redis 先頭に追加されるため、Redis 上の時系列に
+	// ギャップが生じ、タイムライン取得時にギャップ範囲のノートが取りこぼされる問題に対する回帰テスト。
+	// 修正方針: enableFanoutTimeline をトグルすると過渡期 (fanoutTimelineActive=false) に入り、
+	// BullMQ の purgeFanoutTimelines ジョブが Redis 上の list:* をパージしてから
+	// fanoutTimelineActive=true に戻す。過渡期中はデータプレーンが FTTL を一切触らない。
+	describe('FTT toggle purge', () => {
+		// E2E ランナー (test-server/entry.ts) ではジョブキューワーカーがデフォルト無効。
+		// 過渡期解消には purgeFanoutTimelines ジョブの完走が必要なので、ここだけ起動する。
+		let queue: INestApplicationContext;
+
+		beforeAll(async () => {
+			queue = await startJobQueue();
+		}, 1000 * 60 * 2);
+
+		afterAll(async () => {
+			await queue.close();
+		});
+
+		// 直前のトグルが起こしたパージジョブが完走するまで待つ。
+		// `enableFanoutTimeline === fanoutTimelineActive` になったらジョブは終わって
+		// データプレーンが新しい状態に切り替わっている。
+		async function waitForFanoutTimelineSettled(): Promise<void> {
+			for (let i = 0; i < 100; i++) {
+				const res = await api('admin/meta', {}, root);
+				const body = res.body as { enableFanoutTimeline: boolean; fanoutTimelineActive: boolean };
+				if (body.enableFanoutTimeline === body.fanoutTimelineActive) return;
+				await setTimeout(100);
+			}
+			throw new Error('fanoutTimelineActive did not settle in time');
+		}
+
+		test('過渡期中の enableFanoutTimeline 変更は 409 で拒否される', async () => {
+			await api('admin/update-meta', { enableFanoutTimeline: true }, root);
+			await waitForFanoutTimelineSettled();
+
+			// OFF にして過渡期に入れる (パージジョブが走り終わるまでは active=false)
+			const offRes = await api('admin/update-meta', { enableFanoutTimeline: false }, root);
+			assert.strictEqual(offRes.status, 204);
+
+			// active=false の間に enableFanoutTimeline を変えようとすると 409
+			const conflictRes = await api('admin/update-meta', { enableFanoutTimeline: true }, root);
+			assert.strictEqual(conflictRes.status, 400);
+			assert.strictEqual((conflictRes.body as { error: { code: string } }).error.code, 'FANOUT_TIMELINE_TRANSITION_IN_PROGRESS');
+
+			// ジョブ完了後は同じトグルが受理される
+			await waitForFanoutTimelineSettled();
+			const okRes = await api('admin/update-meta', { enableFanoutTimeline: true }, root);
+			assert.strictEqual(okRes.status, 204);
+			await waitForFanoutTimelineSettled();
+		});
+
+		test('enableFanoutTimeline を ON → OFF → ON と切り替えた前後の投稿が全て取得できる (HTL)', async () => {
+			const alice = await signup();
+
+			await api('admin/update-meta', { enableFanoutTimeline: true }, root);
+			await waitForFanoutTimelineSettled();
+
+			// FTT ON 期間 1: 5 件投稿 (Redis に lpush される)
+			const phase1Ids: string[] = [];
+			for (let i = 0; i < 5; i++) {
+				const n = await post(alice, { text: `phase1 ${i}` });
+				phase1Ids.push(n.id);
+			}
+			await setTimeout(500);
+
+			// FTT OFF: 過渡期中はジョブが Redis を purge する。完了で active=false に確定。
+			await api('admin/update-meta', { enableFanoutTimeline: false }, root);
+			await waitForFanoutTimelineSettled();
+
+			// OFF 期間中の投稿: FanoutTimelineService.push が呼ばれず Redis に乗らない
+			const phase2Ids: string[] = [];
+			for (let i = 0; i < 5; i++) {
+				const n = await post(alice, { text: `phase2 ${i}` });
+				phase2Ids.push(n.id);
+			}
+			await setTimeout(500);
+
+			// FTT ON 復帰: 過渡期中は push も get も走らず、ジョブ完了で active=true に戻る
+			await api('admin/update-meta', { enableFanoutTimeline: true }, root);
+			await waitForFanoutTimelineSettled();
+
+			// ON 復帰後の投稿: Redis 先頭に lpush される
+			const phase3Ids: string[] = [];
+			for (let i = 0; i < 5; i++) {
+				const n = await post(alice, { text: `phase3 ${i}` });
+				phase3Ids.push(n.id);
+			}
+			await setTimeout(500);
+
+			const res = await api('notes/timeline', { limit: 20 }, alice);
+			const returnedIds = (res.body as Note[]).map(n => n.id);
+
+			// 期待: 投稿した全 15 件 (phase1 + phase2 + phase3) が返る
+			for (const id of [...phase1Ids, ...phase2Ids, ...phase3Ids]) {
+				assert.ok(returnedIds.includes(id), `missing ${id} in HTL result`);
+			}
+			assert.strictEqual(returnedIds.length, 15);
+		});
+
+		test('enableFanoutTimeline を ON → OFF → ON と切り替えた前後の投稿が全て取得できる (Channel TL)', async () => {
+			const alice = await signup();
+			const channel = await createChannel('fttl-toggle-' + randomString(), alice);
+
+			await api('admin/update-meta', { enableFanoutTimeline: true }, root);
+			await waitForFanoutTimelineSettled();
+
+			const phase1Ids: string[] = [];
+			for (let i = 0; i < 5; i++) {
+				const n = await post(alice, { text: `phase1 ${i}`, channelId: channel.id });
+				phase1Ids.push(n.id);
+			}
+			await setTimeout(500);
+
+			await api('admin/update-meta', { enableFanoutTimeline: false }, root);
+			await waitForFanoutTimelineSettled();
+
+			const phase2Ids: string[] = [];
+			for (let i = 0; i < 5; i++) {
+				const n = await post(alice, { text: `phase2 ${i}`, channelId: channel.id });
+				phase2Ids.push(n.id);
+			}
+			await setTimeout(500);
+
+			await api('admin/update-meta', { enableFanoutTimeline: true }, root);
+			await waitForFanoutTimelineSettled();
+
+			const phase3Ids: string[] = [];
+			for (let i = 0; i < 5; i++) {
+				const n = await post(alice, { text: `phase3 ${i}`, channelId: channel.id });
+				phase3Ids.push(n.id);
+			}
+			await setTimeout(500);
+
+			const res = await api('channels/timeline', { channelId: channel.id, limit: 20 });
+			const returnedIds = (res.body as Note[]).map(n => n.id);
+
+			for (const id of [...phase1Ids, ...phase2Ids, ...phase3Ids]) {
+				assert.ok(returnedIds.includes(id), `missing ${id} in Channel TL result`);
+			}
+			assert.strictEqual(returnedIds.length, 15);
+		});
 	});
 });
