@@ -2489,6 +2489,14 @@ export interface Locale extends ILocale {
      */
     "updateRemoteUser": string;
     /**
+     * 二要素認証を解除
+     */
+    "unsetMfa": string;
+    /**
+     * 二要素認証を解除しますか？
+     */
+    "unsetMfaConfirm": string;
+    /**
      * アイコンを解除
      */
     "unsetUserAvatar": string;
@@ -5457,14 +5465,6 @@ export interface Locale extends ILocale {
      */
     "directMessage_short": string;
     /**
-     * 旧設定情報を移行
-     */
-    "migrateOldSettings": string;
-    /**
-     * 通常これは自動で行われていますが、何らかの理由により上手く移行されなかった場合は手動で移行処理をトリガーできます。現在の設定情報は上書きされます。
-     */
-    "migrateOldSettings_description": string;
-    /**
      * 圧縮
      */
     "compress": string;
@@ -5484,10 +5484,6 @@ export interface Locale extends ILocale {
      * 埋め込み
      */
     "embed": string;
-    /**
-     * 設定を移行しています。しばらくお待ちください... (後ほど、設定→その他→旧設定情報を移行 で手動で移行することもできます)
-     */
-    "settingsMigrating": string;
     /**
      * 読み取り専用
      */
@@ -9615,6 +9611,10 @@ export interface Locale extends ILocale {
          */
         "write:admin:suspend-user": string;
         /**
+         * ユーザーの二要素認証を解除する
+         */
+        "write:admin:unset-mfa": string;
+        /**
          * ユーザーのアバターを削除する
          */
         "write:admin:unset-user-avatar": string;
@@ -11584,6 +11584,10 @@ export interface Locale extends ILocale {
          * アイコンデコレーションを削除
          */
         "deleteAvatarDecoration": string;
+        /**
+         * ユーザーの二要素認証を解除
+         */
+        "unsetMfa": string;
         /**
          * ユーザーのアイコンを解除
          */

@@ -41,37 +41,25 @@ const REQUEST_COUNT = readIntegerEnv('MK_MEMORY_REQUEST_COUNT', 10, 0);
 const HEAP_SNAPSHOT = readBooleanEnv('MK_MEMORY_HEAP_SNAPSHOT', false);
 const HEAP_SNAPSHOT_TIMEOUT = readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_TIMEOUT_MS', 120000, 1);
 const HEAP_SNAPSHOT_BREAKDOWN_TOP_N = readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_BREAKDOWN_TOP_N', 6, 1);
+const HEAP_SNAPSHOT_SAVE_PATH = process.env.MK_MEMORY_HEAP_SNAPSHOT_SAVE_PATH;
 
 const procStatusKeys = ['VmPeak', 'VmSize', 'VmHWM', 'VmRSS', 'VmData', 'VmStk', 'VmExe', 'VmLib', 'VmPTE', 'VmSwap'] as const;
 const smapsRollupKeys = ['Pss', 'Shared_Clean', 'Shared_Dirty', 'Private_Clean', 'Private_Dirty', 'Swap', 'SwapPss'] as const;
 
-const typedArrayNames = new Set([
-	'ArrayBuffer',
-	'SharedArrayBuffer',
-	'DataView',
-	'Int8Array',
-	'Uint8Array',
-	'Uint8ClampedArray',
-	'Int16Array',
-	'Uint16Array',
-	'Int32Array',
-	'Uint32Array',
-	'Float16Array',
-	'Float32Array',
-	'Float64Array',
-	'BigInt64Array',
-	'BigUint64Array',
-	'system / JSArrayBufferData',
-]);
-
-const otherJsNodeTypes = new Set([
-	'object',
-	'closure',
-	'regexp',
-	'number',
-	'symbol',
-	'bigint',
-]);
+type GcMessage = 'gc ok' | 'gc unavailable';
+type RuntimeMemoryUsageMessage = {
+	type: 'memory usage';
+	value: NodeJS.MemoryUsage;
+};
+type HeapSnapshotMessage = {
+	type: 'heap snapshot';
+	path?: string;
+};
+type HeapSnapshotErrorMessage = {
+	type: 'heap snapshot error';
+	message: string;
+};
+type HeapSnapshotResponseMessage = HeapSnapshotMessage | HeapSnapshotErrorMessage;
 
 function parseMemoryFile<KS extends readonly string[]>(content: string, keys: KS, path: string, required: boolean): Record<KS[number], number> {
 	const result = {} as Record<KS[number], number>;
@@ -91,29 +79,6 @@ function bytesToKiB(value: number) {
 	return Math.round(value / 1024);
 }
 
-function isTypedArrayNode(type, name) {
-	return typedArrayNames.has(name) ||
-		(type === 'native' && (name.includes('ArrayBuffer') || name.includes('TypedArray')));
-}
-
-function isSystemNode(type, name) {
-	return type === 'hidden' ||
-		type === 'synthetic' ||
-		type === 'object shape' ||
-		name.startsWith('system /') ||
-		name.startsWith('(system ');
-}
-
-function classifyHeapSnapshotNode(type, name): keyof typeof heapSnapshotCategory {
-	if (type === 'code') return 'code';
-	if (type === 'string' || type === 'concatenated string' || type === 'sliced string') return 'strings';
-	if (isTypedArrayNode(type, name)) return 'typedArrays';
-	if (type === 'array' || (type === 'object' && name === 'Array')) return 'jsArrays';
-	if (isSystemNode(type, name)) return 'systemObjects';
-	if (otherJsNodeTypes.has(type)) return 'otherJsObjects';
-	return 'otherNonJsObjects';
-}
-
 function sanitizeHeapSnapshotBreakdownLabel(value, fallback = 'unknown') {
 	const label = String(value ?? '').replace(/\s+/g, ' ').trim();
 	if (label === '') return fallback;
@@ -125,17 +90,13 @@ function classifyHeapSnapshotBreakdown(category: keyof typeof heapSnapshotCatego
 	if (category === 'strings') return type;
 
 	if (category === 'jsArrays') {
-		if (type === 'array') return 'array nodes';
+		if (type === 'array elements') return 'Array elements';
 		if (type === 'object' && name === 'Array') return 'Array objects';
 		return sanitizeHeapSnapshotBreakdownLabel(`${type}: ${name}`);
 	}
 
 	if (category === 'typedArrays') {
 		if (name === 'system / JSArrayBufferData') return 'ArrayBuffer data';
-		if (name === 'Uint8Array') return 'Uint8Array / Buffer';
-		if (typedArrayNames.has(name)) return name;
-		if (type === 'native' && name.includes('ArrayBuffer')) return 'native ArrayBuffer';
-		if (type === 'native' && name.includes('TypedArray')) return 'native TypedArray';
 		return sanitizeHeapSnapshotBreakdownLabel(`${type}: ${name}`);
 	}
 
@@ -151,6 +112,7 @@ function classifyHeapSnapshotBreakdown(category: keyof typeof heapSnapshotCatego
 	}
 
 	if (category === 'otherNonJsObjects') {
+		if (type === 'extra native bytes') return 'Extra native bytes';
 		if (type === 'native') return sanitizeHeapSnapshotBreakdownLabel(`native: ${name}`, 'native: unknown');
 		return sanitizeHeapSnapshotBreakdownLabel(`${type}: ${name}`, type);
 	}
@@ -188,32 +150,56 @@ function collapseHeapSnapshotBreakdown(breakdowns: Record<string, Record<string,
 	return collapsed;
 }
 
+// Keep these buckets aligned with Chrome DevTools' heap snapshot Statistics view.
 function analyzeHeapSnapshot(snapshot) {
 	const meta = snapshot?.snapshot?.meta;
 	const nodes = snapshot?.nodes;
+	const edges = snapshot?.edges;
 	const strings = snapshot?.strings;
-	if (meta == null || !Array.isArray(nodes) || !Array.isArray(strings)) {
+	if (meta == null || !Array.isArray(nodes) || !Array.isArray(edges) || !Array.isArray(strings)) {
 		throw new Error('Invalid heap snapshot format');
 	}
 
 	const nodeFields = meta.node_fields;
 	if (!Array.isArray(nodeFields)) throw new Error('Invalid heap snapshot node fields');
+	const edgeFields = meta.edge_fields;
+	if (!Array.isArray(edgeFields)) throw new Error('Invalid heap snapshot edge fields');
 
 	const typeOffset = nodeFields.indexOf('type');
 	const nameOffset = nodeFields.indexOf('name');
 	const selfSizeOffset = nodeFields.indexOf('self_size');
-	if (typeOffset < 0 || nameOffset < 0 || selfSizeOffset < 0) {
+	const edgeCountOffset = nodeFields.indexOf('edge_count');
+	if (typeOffset < 0 || nameOffset < 0 || selfSizeOffset < 0 || edgeCountOffset < 0) {
 		throw new Error('Heap snapshot is missing required node fields');
+	}
+	const edgeTypeOffset = edgeFields.indexOf('type');
+	const edgeNameOffset = edgeFields.indexOf('name_or_index');
+	const edgeToNodeOffset = edgeFields.indexOf('to_node');
+	if (edgeTypeOffset < 0 || edgeNameOffset < 0 || edgeToNodeOffset < 0) {
+		throw new Error('Heap snapshot is missing required edge fields');
 	}
 
 	const nodeTypeNames = meta.node_types?.[typeOffset];
 	if (!Array.isArray(nodeTypeNames)) throw new Error('Invalid heap snapshot node types');
+	const edgeTypeNames = meta.edge_types?.[edgeTypeOffset];
+	if (!Array.isArray(edgeTypeNames)) throw new Error('Invalid heap snapshot edge types');
 
 	function createEmptyHeapSnapshotCategoryMap() {
 		return Object.fromEntries(Object.keys(heapSnapshotCategory).map(category => [category, 0])) as Record<keyof typeof heapSnapshotCategory, number>;
 	}
 
-	const fieldCount = nodeFields.length;
+	const nodeFieldCount = nodeFields.length;
+	const edgeFieldCount = edgeFields.length;
+	const nativeType = nodeTypeNames.indexOf('native');
+	const codeType = nodeTypeNames.indexOf('code');
+	const hiddenType = nodeTypeNames.indexOf('hidden');
+	const stringTypes = new Set([
+		nodeTypeNames.indexOf('string'),
+		nodeTypeNames.indexOf('concatenated string'),
+		nodeTypeNames.indexOf('sliced string'),
+	]);
+	const internalEdgeType = edgeTypeNames.indexOf('internal');
+	const extraNativeBytes = Number.isFinite(snapshot.snapshot.extra_native_bytes) ? snapshot.snapshot.extra_native_bytes : 0;
 	const categories = createEmptyHeapSnapshotCategoryMap();
 	const nodeCounts = createEmptyHeapSnapshotCategoryMap();
 	const breakdowns = Object.fromEntries(
@@ -226,17 +212,104 @@ function analyzeHeapSnapshot(snapshot) {
 		map[key] = (map[key] ?? 0) + value;
 	}
 
-	for (let offset = 0; offset < nodes.length; offset += fieldCount) {
-		const type = nodeTypeNames[nodes[offset + typeOffset]] ?? 'unknown';
-		const name = strings[nodes[offset + nameOffset]] ?? '';
-		const selfSize = nodes[offset + selfSizeOffset] ?? 0;
-		const category = classifyHeapSnapshotNode(type, name);
+	const edgeStartIndexes = new Map<number, number>();
+	const retainerCounts = new Map<number, number>();
+	let edgeIndex = 0;
+	for (let nodeIndex = 0; nodeIndex < nodes.length; nodeIndex += nodeFieldCount) {
+		edgeStartIndexes.set(nodeIndex, edgeIndex);
+		const edgeCount = nodes[nodeIndex + edgeCountOffset] ?? 0;
+		for (let i = 0; i < edgeCount; i++, edgeIndex += edgeFieldCount) {
+			const toNodeIndex = edges[edgeIndex + edgeToNodeOffset];
+			retainerCounts.set(toNodeIndex, (retainerCounts.get(toNodeIndex) ?? 0) + 1);
+		}
+	}
 
-		categories[category] += selfSize;
+	const jsArrayElementNodeIndexes = new Set<number>();
+
+	function addCategoryValue(category: keyof typeof heapSnapshotCategory, value: number, type: string, name: string, nodeIndex: number | null = null) {
+		if (value <= 0) return;
+		categories[category] += value;
+		addValue(breakdowns[category], classifyHeapSnapshotBreakdown(category, type, name), value);
+		if (nodeIndex != null) nodeCounts[category]++;
+	}
+
+	function addJsArrayElementSize(nodeIndex: number) {
+		const beginEdgeIndex = edgeStartIndexes.get(nodeIndex) ?? 0;
+		const edgeCount = nodes[nodeIndex + edgeCountOffset] ?? 0;
+		for (let i = 0, currentEdgeIndex = beginEdgeIndex; i < edgeCount; i++, currentEdgeIndex += edgeFieldCount) {
+			const edgeType = edges[currentEdgeIndex + edgeTypeOffset];
+			if (edgeType !== internalEdgeType) continue;
+
+			const edgeName = strings[edges[currentEdgeIndex + edgeNameOffset]];
+			if (edgeName !== 'elements') continue;
+
+			const elementsNodeIndex = edges[currentEdgeIndex + edgeToNodeOffset];
+			if ((retainerCounts.get(elementsNodeIndex) ?? 0) === 1) {
+				const elementsSize = nodes[elementsNodeIndex + selfSizeOffset] ?? 0;
+				addCategoryValue('jsArrays', elementsSize, 'array elements', 'Array elements', elementsNodeIndex);
+				jsArrayElementNodeIndexes.add(elementsNodeIndex);
+			}
+			break;
+		}
+	}
+
+	if (extraNativeBytes > 0) {
+		addCategoryValue('otherNonJsObjects', extraNativeBytes, 'extra native bytes', 'extra native bytes');
+	}
+
+	for (let nodeIndex = 0; nodeIndex < nodes.length; nodeIndex += nodeFieldCount) {
+		const typeId = nodes[nodeIndex + typeOffset];
+		const type = nodeTypeNames[typeId] ?? 'unknown';
+		const name = strings[nodes[nodeIndex + nameOffset]] ?? '';
+		const selfSize = nodes[nodeIndex + selfSizeOffset] ?? 0;
 		categories.total += selfSize;
-		nodeCounts[category]++;
 		nodeCounts.total++;
-		addValue(breakdowns[category], classifyHeapSnapshotBreakdown(category, type, name), selfSize);
+
+		if (typeId === hiddenType) {
+			addCategoryValue('systemObjects', selfSize, type, name, nodeIndex);
+			continue;
+		}
+
+		if (typeId === nativeType) {
+			if (name === 'system / JSArrayBufferData') {
+				addCategoryValue('typedArrays', selfSize, type, name, nodeIndex);
+			} else {
+				addCategoryValue('otherNonJsObjects', selfSize, type, name, nodeIndex);
+			}
+			continue;
+		}
+
+		if (typeId === codeType) {
+			addCategoryValue('code', selfSize, type, name, nodeIndex);
+			continue;
+		}
+
+		if (stringTypes.has(typeId)) {
+			addCategoryValue('strings', selfSize, type, name, nodeIndex);
+			continue;
+		}
+
+		if (name === 'Array') {
+			addCategoryValue('jsArrays', selfSize, type, name, nodeIndex);
+			addJsArrayElementSize(nodeIndex);
+			continue;
+		}
+	}
+
+	categories.total += extraNativeBytes;
+
+	for (let nodeIndex = 0; nodeIndex < nodes.length; nodeIndex += nodeFieldCount) {
+		if (jsArrayElementNodeIndexes.has(nodeIndex)) continue;
+
+		const typeId = nodes[nodeIndex + typeOffset];
+		if (typeId === hiddenType || typeId === nativeType || typeId === codeType || stringTypes.has(typeId)) continue;
+
+		const name = strings[nodes[nodeIndex + nameOffset]] ?? '';
+		if (name === 'Array') continue;
+
+		const type = nodeTypeNames[typeId] ?? 'unknown';
+		const selfSize = nodes[nodeIndex + selfSizeOffset] ?? 0;
+		addCategoryValue('otherJsObjects', selfSize, type, name, nodeIndex);
 	}
 
 	return {
@@ -258,14 +331,32 @@ async function getSmapsRollupMemoryUsage(pid: number) {
 	return parseMemoryFile(smapsRollup, smapsRollupKeys, path, false);
 }
 
-function waitForMessage(serverProcess: ChildProcess, predicate: (message: any) => boolean, description: string, timeout = IPC_TIMEOUT) {
-	return new Promise((resolve, reject) => {
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return value != null && typeof value === 'object';
+}
+
+function isGcMessage(message: unknown): message is GcMessage {
+	return message === 'gc ok' || message === 'gc unavailable';
+}
+
+function isRuntimeMemoryUsageMessage(message: unknown): message is RuntimeMemoryUsageMessage {
+	return isRecord(message) && message.type === 'memory usage' && isRecord(message.value);
+}
+
+function isHeapSnapshotResponseMessage(message: unknown): message is HeapSnapshotResponseMessage {
+	if (!isRecord(message)) return false;
+	if (message.type === 'heap snapshot') return true;
+	return message.type === 'heap snapshot error' && typeof message.message === 'string';
+}
+
+function waitForMessage<T>(serverProcess: ChildProcess, predicate: (message: unknown) => message is T, description: string, timeout = IPC_TIMEOUT) {
+	return new Promise<T>((resolve, reject) => {
 		const timer = globalThis.setTimeout(() => {
 			serverProcess.off('message', onMessage);
 			reject(new Error(`Timed out waiting for ${description}`));
 		}, timeout);
 
-		const onMessage = (message: any) => {
+		const onMessage = (message: unknown) => {
 			if (!predicate(message)) return;
 			globalThis.clearTimeout(timer);
 			serverProcess.off('message', onMessage);
@@ -279,7 +370,7 @@ function waitForMessage(serverProcess: ChildProcess, predicate: (message: any) =
 async function getRuntimeMemoryUsage(serverProcess: ChildProcess) {
 	const response = waitForMessage(
 		serverProcess,
-		message => message != null && typeof message === 'object' && message.type === 'memory usage',
+		isRuntimeMemoryUsageMessage,
 		'memory usage',
 	);
 
@@ -302,7 +393,7 @@ async function getHeapSnapshotStatistics(serverProcess: ChildProcess): Promise<H
 	const snapshotPath = join(tmpdir(), `misskey-backend-heap-${process.pid}-${serverProcess.pid}-${Date.now()}.heapsnapshot`);
 	const response = waitForMessage(
 		serverProcess,
-		message => message != null && typeof message === 'object' && (message.type === 'heap snapshot' || message.type === 'heap snapshot error'),
+		isHeapSnapshotResponseMessage,
 		'heap snapshot',
 		HEAP_SNAPSHOT_TIMEOUT,
 	);
@@ -320,6 +411,11 @@ async function getHeapSnapshotStatistics(serverProcess: ChildProcess): Promise<H
 	const writtenPath = typeof message.path === 'string' ? message.path : snapshotPath;
 
 	try {
+		if (HEAP_SNAPSHOT_SAVE_PATH != null && HEAP_SNAPSHOT_SAVE_PATH !== '') {
+			await fs.mkdir(dirname(HEAP_SNAPSHOT_SAVE_PATH), { recursive: true });
+			await fs.copyFile(writtenPath, HEAP_SNAPSHOT_SAVE_PATH);
+		}
+
 		const snapshot = JSON.parse(await fs.readFile(writtenPath, 'utf-8'));
 		return analyzeHeapSnapshot(snapshot);
 	} finally {
@@ -379,7 +475,7 @@ async function measureMemory() {
 	async function triggerGc() {
 		const ok = waitForMessage(
 			serverProcess,
-			message => message === 'gc ok' || message === 'gc unavailable',
+			isGcMessage,
 			'GC completion',
 		);
 
