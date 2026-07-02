@@ -1665,9 +1665,6 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: false でフォローしているユーザーからの自分への返信が含まれる', async () => {
-				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */
-				if (!enableFanoutTimeline) return;
-
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				await api('following/create', { userId: bob.id }, alice);
@@ -1695,16 +1692,13 @@ describe('Timelines', () => {
 
 				await waitForPushToTl();
 
-				const res = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+				const res = await api('notes/hybrid-timeline', { limit: 100, withReplies: true }, alice);
 
 				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 				assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 			});
 
 			test('withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの visibility: followers な投稿への返信が含まれる', async () => {
-				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */
-				if (!enableFanoutTimeline) return;
-
 				const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 				await api('following/create', { userId: bob.id }, alice);
@@ -1717,7 +1711,7 @@ describe('Timelines', () => {
 
 				await waitForPushToTl();
 
-				const res = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+				const res = await api('notes/hybrid-timeline', { limit: 100, withReplies: true }, alice);
 
 				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 				assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
@@ -1725,9 +1719,6 @@ describe('Timelines', () => {
 			});
 
 			test('withReplies: true でフォローしているユーザーの自分の visibility: followers な投稿への返信が含まれる', async () => {
-				/* FIXME: https://github.com/misskey-dev/misskey/issues/12065 */
-				if (!enableFanoutTimeline) return;
-
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				await api('following/create', { userId: bob.id }, alice);
@@ -1739,7 +1730,7 @@ describe('Timelines', () => {
 
 				await waitForPushToTl();
 
-				const res = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+				const res = await api('notes/hybrid-timeline', { limit: 100, withReplies: true }, alice);
 
 				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
 				assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
