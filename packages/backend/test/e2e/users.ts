@@ -128,6 +128,7 @@ describe('ユーザー', () => {
 			preventAiLearning: user.preventAiLearning,
 			isExplorable: user.isExplorable,
 			isDeleted: user.isDeleted,
+			hiddenRoleIds: user.hiddenRoleIds ?? [],
 			twoFactorBackupCodesStock: user.twoFactorBackupCodesStock,
 			hideOnlineStatus: user.hideOnlineStatus,
 			hasUnreadSpecifiedNotes: user.hasUnreadSpecifiedNotes,
@@ -660,12 +661,15 @@ describe('ユーザー', () => {
 			description: rolePublic.description,
 			isModerator: rolePublic.isModerator,
 			isAdministrator: rolePublic.isAdministrator,
+			asBadge: rolePublic.asBadge,
+			isPublicDisplayRequired: rolePublic.isPublicDisplayRequired,
 			displayOrder: rolePublic.displayOrder,
 		}]);
 	});
 	test('を取得することができ、バッヂロールがセットされていること', async () => {
 		const response = await successfulApiCall({ endpoint: 'users/show', parameters: { userId: userRoleBadge.id }, user: alice });
 		assert.deepStrictEqual(response.badgeRoles, [{
+			id: roleBadge.id,
 			name: roleBadge.name,
 			iconUrl: roleBadge.iconUrl,
 			displayOrder: roleBadge.displayOrder,
@@ -678,8 +682,40 @@ describe('ユーザー', () => {
 			description: roleBadge.description,
 			isModerator: roleBadge.isModerator,
 			isAdministrator: roleBadge.isAdministrator,
+			asBadge: roleBadge.asBadge,
+			isPublicDisplayRequired: roleBadge.isPublicDisplayRequired,
 			displayOrder: roleBadge.displayOrder,
 		}]);
+	});
+	test('i/updateでhiddenRoleIdsが保存時に表示可能な割り当て済みロールだけへsanitizeされること', async () => {
+		const user = await signup({ username: 'userHiddenRoles' });
+		const visibleRole = await role(root, { isPublic: true, name: 'Hideable Role' });
+		const secondVisibleRole = await role(root, { isPublic: true, name: 'Second Hideable Role' });
+		const privateRole = await role(root, { isPublic: false, name: 'Private Role' });
+		const forcedRole = await role(root, { isPublic: true, isPublicDisplayRequired: true, name: 'Forced Role' });
+		const unassignedRole = await role(root, { isPublic: true, name: 'Unassigned Role' });
+
+		await api('admin/roles/assign', { userId: user.id, roleId: visibleRole.id }, root);
+		await api('admin/roles/assign', { userId: user.id, roleId: secondVisibleRole.id }, root);
+		await api('admin/roles/assign', { userId: user.id, roleId: privateRole.id }, root);
+		await api('admin/roles/assign', { userId: user.id, roleId: forcedRole.id }, root);
+
+		const response = await successfulApiCall({
+			endpoint: 'i/update',
+			parameters: {
+				hiddenRoleIds: [
+					secondVisibleRole.id,
+					'unknownroleid',
+					unassignedRole.id,
+					privateRole.id,
+					forcedRole.id,
+					visibleRole.id,
+				],
+			},
+			user,
+		});
+
+		assert.deepStrictEqual(response.hiddenRoleIds, [secondVisibleRole.id, visibleRole.id]);
 	});
 	test('をID指定のリスト形式で取得することができる（空）', async () => {
 		const parameters = { userIds: [] };

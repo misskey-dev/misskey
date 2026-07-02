@@ -32,6 +32,7 @@ export const paramDef = {
 		target: { type: 'string', enum: ['manual', 'conditional'] },
 		condFormula: { type: 'object' },
 		isPublic: { type: 'boolean' },
+		isPublicDisplayRequired: { type: 'boolean', default: false },
 		isModerator: { type: 'boolean' },
 		isAdministrator: { type: 'boolean' },
 		isExplorable: { type: 'boolean', default: false }, // optional for backward compatibility

@@ -1098,6 +1098,7 @@ likeOnlyForRemote: "全て (リモートはいいねのみ)"
 nonSensitiveOnly: "非センシティブのみ"
 nonSensitiveOnlyForLocalLikeOnlyForRemote: "非センシティブのみ (リモートはいいねのみ)"
 rolesAssignedToMe: "自分に割り当てられたロール"
+roleSettings: "ロール設定"
 resetPasswordConfirm: "パスワードリセットしますか？"
 sensitiveWords: "センシティブワード"
 sensitiveWordsDescription: "設定したワードが含まれるノートの公開範囲をホームにします。改行で区切って複数設定できます。"
@@ -2081,6 +2082,8 @@ _role:
   isConditionalRole: "これはコンディショナルロールです。"
   isPublic: "公開ロール"
   descriptionOfIsPublic: "ユーザーのプロフィールでこのロールが表示されます。"
+  isPublicDisplayRequired: "非表示を許可しない（常に表示）"
+  descriptionOfIsPublicDisplayRequired: "有効にすると、ユーザーはこの公開ロール/ロールバッジを非表示にできません。"
   options: "オプション"
   policies: "ポリシー"
   baseRole: "ベースロール"
@@ -3242,6 +3245,12 @@ _gridComponent:
     columnTypeNotSupport: "正規表現によるバリデーションはtype:textのカラムのみサポートします。"
     patternNotMatch: "この値は{pattern}のパターンに一致しません"
     notUnique: "この値は一意である必要があります"
+
+_roleDisplay:
+  title: "表示するロール/ロールバッジ"
+  description: "自分のプロフィールやノートに表示する公開ロールを選択します。"
+  alwaysShownByAdmin: "管理者により常に表示するよう設定されています。"
+  noRoles: "表示できる公開ロールはありません。"
 
 _roleSelectDialog:
   notSelected: "選択されていません"

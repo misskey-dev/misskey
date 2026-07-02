@@ -3,32 +3,82 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-import type { StoryObj } from '@storybook/vue3';
+import { expect, waitFor, within } from '@storybook/test';
 import { HttpResponse, http } from 'msw';
 import { userDetailed } from '../../../.storybook/fakes.js';
 import { commonHandlers } from '../../../.storybook/mocks.js';
 import home_ from './home.vue';
+import type { StoryObj } from '@storybook/vue3';
+import { $i } from '@/i.js';
+
+type UserDetailed = ReturnType<typeof userDetailed>;
+type ProfileRole = UserDetailed['roles'][number] & {
+	isPublicDisplayRequired?: boolean;
+};
+type MeRoleDisplay = NonNullable<typeof $i> & {
+	hiddenRoleIds?: string[];
+};
+
+function createProfileRole(id: string, name: string, color: string, isPublicDisplayRequired = false): ProfileRole {
+	return {
+		id,
+		name,
+		color,
+		iconUrl: null,
+		description: `${name} description`,
+		isModerator: false,
+		isAdministrator: false,
+		asBadge: false,
+		displayOrder: 0,
+		isPublicDisplayRequired,
+	};
+}
+
+const visibleRole = createProfileRole('role-display-visible', 'Visible Role', '#3b82f6');
+const hiddenRole = createProfileRole('role-display-hidden', 'Hidden Role', '#ef4444');
+const forcedRole = createProfileRole('role-display-forced', 'Forced Role', '#22c55e', true);
+
+const roleDisplayUser = {
+	...userDetailed(),
+	roles: [visibleRole, hiddenRole, forcedRole],
+};
+
+function setStoryAccount(user: UserDetailed, hiddenRoleIds: string[]): void {
+	if ($i == null) return;
+
+	Object.assign($i as MeRoleDisplay, {
+		id: user.id,
+		username: user.username,
+		host: user.host,
+		name: user.name,
+		hiddenRoleIds,
+	});
+}
+
+function renderHome(args: UserDetailedHomeArgs, hiddenRoleIds: string[] = []) {
+	return {
+		components: {
+			home_,
+		},
+		setup() {
+			setStoryAccount(args.user, hiddenRoleIds);
+
+			return {
+				props: args,
+			};
+		},
+		template: '<home_ v-bind="props" />',
+	};
+}
+
+type UserDetailedHomeArgs = {
+	user: UserDetailed;
+	disableNotes?: boolean;
+};
+
 export const Default = {
 	render(args) {
-		return {
-			components: {
-				home_,
-			},
-			setup() {
-				return {
-					args,
-				};
-			},
-			computed: {
-				props() {
-					return {
-						...this.args,
-					};
-				},
-			},
-			template: '<home_ v-bind="props" />',
-		};
+		return renderHome(args);
 	},
 	args: {
 		user: userDetailed(),
@@ -77,5 +127,23 @@ export const Default = {
 			// `XActivity` is not compatible with Chromatic for now
 			disableSnapshot: true,
 		},
+	},
+} satisfies StoryObj<typeof home_>;
+
+export const RoleDisplayVisibility = {
+	...Default,
+	render(args) {
+		return renderHome(args, [hiddenRole.id]);
+	},
+	async play({ canvasElement }) {
+		const canvas = within(canvasElement);
+
+		await expect(await canvas.findByText(visibleRole.name)).toBeInTheDocument();
+		await expect(await canvas.findByText(forcedRole.name)).toBeInTheDocument();
+		await waitFor(() => expect(canvas.queryByText(hiddenRole.name)).not.toBeInTheDocument());
+	},
+	args: {
+		...Default.args,
+		user: roleDisplayUser,
 	},
 } satisfies StoryObj<typeof home_>;

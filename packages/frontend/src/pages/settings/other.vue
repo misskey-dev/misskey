@@ -49,17 +49,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker :keywords="['roles']">
-				<MkFolder>
-					<template #icon><SearchIcon><i class="ti ti-badges"></i></SearchIcon></template>
-					<template #label><SearchLabel>{{ i18n.ts.rolesAssignedToMe }}</SearchLabel></template>
-
-					<div class="_gaps_s">
-						<MkRolePreview v-for="role in $i.roles" :key="role.id" :role="role" :forModeration="false"/>
-					</div>
-				</MkFolder>
-			</SearchMarker>
-
 			<SearchMarker :keywords="['account', 'move', 'migration']">
 				<MkFolder>
 					<template #icon><SearchIcon><i class="ti ti-plane"></i></SearchIcon></template>
@@ -166,7 +155,6 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import FormSection from '@/components/form/section.vue';
 import { prefer } from '@/preferences.js';
-import MkRolePreview from '@/components/MkRolePreview.vue';
 import { signout } from '@/signout.js';
 import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
 import { suggestReload } from '@/utility/reload-suggest.js';

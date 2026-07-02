@@ -4405,6 +4405,10 @@ export interface Locale extends ILocale {
      */
     "rolesAssignedToMe": string;
     /**
+     * ロール設定
+     */
+    "roleSettings": string;
+    /**
      * パスワードリセットしますか？
      */
     "resetPasswordConfirm": string;
@@ -8018,6 +8022,14 @@ export interface Locale extends ILocale {
          * ユーザーのプロフィールでこのロールが表示されます。
          */
         "descriptionOfIsPublic": string;
+        /**
+         * 非表示を許可しない（常に表示）
+         */
+        "isPublicDisplayRequired": string;
+        /**
+         * 有効にすると、ユーザーはこの公開ロール/ロールバッジを非表示にできません。
+         */
+        "descriptionOfIsPublicDisplayRequired": string;
         /**
          * オプション
          */
@@ -12170,6 +12182,24 @@ export interface Locale extends ILocale {
              */
             "notUnique": string;
         };
+    };
+    "_roleDisplay": {
+        /**
+         * 表示するロール/ロールバッジ
+         */
+        "title": string;
+        /**
+         * 自分のプロフィールやノートに表示する公開ロールを選択します。
+         */
+        "description": string;
+        /**
+         * 管理者により常に表示するよう設定されています。
+         */
+        "alwaysShownByAdmin": string;
+        /**
+         * 表示できる公開ロールはありません。
+         */
+        "noRoles": string;
     };
     "_roleSelectDialog": {
         /**

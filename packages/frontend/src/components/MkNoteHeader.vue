@@ -13,8 +13,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkA>
 	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
 	<div :class="$style.username"><MkAcct :user="note.user"/></div>
-	<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
-		<img v-for="(role, i) in note.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
+	<div v-if="badgeRoles" :class="$style.badgeRoles">
+		<img v-for="role in badgeRoles" :key="role.id" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
 	</div>
 	<div :class="$style.info">
 		<div v-if="mock">
@@ -35,17 +35,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue';
+import { computed, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 import { DI } from '@/di.js';
 
-defineProps<{
+const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
+type BadgeRoleWithId = NonNullable<Misskey.entities.Note['user']['badgeRoles']>[number] & {
+	id: string;
+};
+
+const badgeRoles = computed(() => props.note.user.badgeRoles as BadgeRoleWithId[] | undefined);
 const mock = inject(DI.mock, false);
 </script>
 
