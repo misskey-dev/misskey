@@ -26,7 +26,6 @@ declare module 'probe-image-size' {
 	function probeImageSize(src: string | ReadStream, callback: (err: Error | null, result?: ProbeResult) => void): void;
 	function probeImageSize(src: string | ReadStream, options: ProbeOptions, callback: (err: Error | null, result?: ProbeResult) => void): void;
 
-	namespace probeImageSize {} // Hack
-
-	export = probeImageSize;
+	// eslint-disable-next-line import/no-default-export
+	export { probeImageSize as default };
 }
