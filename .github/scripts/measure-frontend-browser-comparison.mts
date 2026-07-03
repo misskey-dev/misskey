@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { spawn, spawnSync, type ChildProcessWithoutNullStreams } from 'node:child_process';
+import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { copyFile, mkdir, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import * as util from './utility.mts';
@@ -14,7 +14,6 @@ import type { BrowserMeasurement, NetworkRequest, NetworkSummary } from './chrom
 const [baseDirArg, headDirArg, baseOutputArg, headOutputArg, headHeapSnapshotOutputArg] = process.argv.slice(2);
 
 const baseUrl = process.env.FRONTEND_BROWSER_METRICS_URL ?? 'http://127.0.0.1:61812';
-const serverReadyTimeoutMs = util.readIntegerEnv('FRONTEND_BROWSER_METRICS_SERVER_READY_TIMEOUT_MS', 120_000, 1);
 const scenarioTimeoutMs = util.readIntegerEnv('FRONTEND_BROWSER_METRICS_SCENARIO_TIMEOUT_MS', 90_000, 1);
 const settleMs = util.readIntegerEnv('FRONTEND_BROWSER_METRICS_SETTLE_MS', 1_000, 0);
 const sampleCount = util.readIntegerEnv('FRONTEND_BROWSER_METRICS_SAMPLE_COUNT', 5, 1);
@@ -36,94 +35,6 @@ type BrowserMetricsReport = {
 	summary: BrowserMeasurement;
 	samples: BrowserMeasurementSample[];
 };
-
-function startServer(label: string, repoDir: string) {
-	process.stderr.write(`[${label}] Starting Misskey test server\n`);
-	const child = spawn(util.commandName('pnpm'), ['start:test'], {
-		cwd: repoDir,
-		env: process.env,
-		stdio: ['ignore', 'pipe', 'pipe'],
-		detached: process.platform !== 'win32',
-	});
-	child.stdout.on('data', data => process.stderr.write(`[server:${label}] ${data}`));
-	child.stderr.on('data', data => process.stderr.write(`[server:${label}] ${data}`));
-	return child;
-}
-
-async function stopServer(child: ChildProcessWithoutNullStreams) {
-	if (child.exitCode != null) return;
-
-	if (process.platform === 'win32') {
-		spawnSync('taskkill', ['/pid', String(child.pid), '/t', '/f'], { stdio: 'ignore' });
-	} else if (child.pid != null) {
-		try {
-			process.kill(-child.pid, 'SIGTERM');
-		} catch {
-			child.kill('SIGTERM');
-		}
-	}
-
-	await new Promise<void>(resolvePromise => {
-		if (child.exitCode != null) {
-			resolvePromise();
-			return;
-		}
-		child.once('exit', () => resolvePromise());
-		setTimeout(() => {
-			if (child.pid != null) {
-				try {
-					if (process.platform === 'win32') {
-						spawnSync('taskkill', ['/pid', String(child.pid), '/t', '/f'], { stdio: 'ignore' });
-					} else {
-						process.kill(-child.pid, 'SIGKILL');
-					}
-				} catch {
-					child.kill('SIGKILL');
-				}
-			}
-			resolvePromise();
-		}, 10_000).unref();
-	});
-}
-
-async function waitForServer(child: ChildProcessWithoutNullStreams) {
-	const startedAt = Date.now();
-	while (Date.now() - startedAt < serverReadyTimeoutMs) {
-		if (child.exitCode != null) throw new Error(`Misskey server exited early with code ${child.exitCode}`);
-		try {
-			const response = await fetch(`${baseUrl}/`, { redirect: 'manual' });
-			if (response.status < 500) return;
-		} catch {
-			// retry
-		}
-		await util.sleep(1_000);
-	}
-	throw new Error(`Timed out waiting for ${baseUrl}`);
-}
-
-async function api(endpoint: string, body: Record<string, unknown>) {
-	const response = await fetch(`${baseUrl}/api/${endpoint}`, {
-		method: 'POST',
-		headers: {
-			'content-type': 'application/json',
-		},
-		body: JSON.stringify(body),
-	});
-	if (!response.ok) {
-		throw new Error(`/api/${endpoint} returned ${response.status}: ${await response.text()}`);
-	}
-	if (response.status === 204) return null;
-	return await response.json();
-}
-
-async function prepareInstance() {
-	await api('reset-db', {});
-	await api('admin/accounts/create', {
-		username: 'admin',
-		password: 'admin1234',
-		setupPassword: 'example_password_please_change_this_or_you_will_get_hacked',
-	});
-}
 
 async function runSignupAndPostScenario(chrome: Chrome) {
 	const noteText = `Frontend browser metrics ${Date.now()}`;
@@ -312,7 +223,7 @@ function summarizeSamples(label: 'base' | 'head', samples: BrowserMeasurementSam
 }
 
 async function measureSample(label: 'base' | 'head', round: number, heapSnapshotSavePath?: string) {
-	await prepareInstance();
+	await util.prepareInstance(baseUrl);
 
 	return await Chrome.with(label, { scenarioTimeoutMs }, async chrome => {
 		await chrome.enableNetworkTracking();
@@ -356,8 +267,8 @@ async function measureRepo(label: 'base' | 'head', repoDir: string, outputPath: 
 	let server: ChildProcessWithoutNullStreams | null = null;
 
 	try {
-		server = startServer(label, repoDir);
-		await waitForServer(server);
+		server = util.startServer(label, repoDir);
+		await util.waitForServer(baseUrl, server);
 
 		if (label === 'head' && heapSnapshotSavePath != null) {
 			await rm(headHeapSnapshotWorkDir, { recursive: true, force: true });
@@ -382,7 +293,7 @@ async function measureRepo(label: 'base' | 'head', repoDir: string, outputPath: 
 			await saveRepresentativeHeadHeapSnapshot(report, heapSnapshotSavePath);
 		}
 	} finally {
-		if (server != null) await stopServer(server);
+		if (server != null) await util.stopServer(server);
 	}
 }
 
