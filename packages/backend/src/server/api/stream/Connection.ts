@@ -23,6 +23,7 @@ import { LocalTimelineChannel } from '@/server/api/stream/channels/local-timelin
 import { HybridTimelineChannel } from '@/server/api/stream/channels/hybrid-timeline.js';
 import { GlobalTimelineChannel } from '@/server/api/stream/channels/global-timeline.js';
 import { UserListChannel } from '@/server/api/stream/channels/user-list.js';
+import { ClipChannel } from '@/server/api/stream/channels/clip.js';
 import { HashtagChannel } from '@/server/api/stream/channels/hashtag.js';
 import { RoleTimelineChannel } from '@/server/api/stream/channels/role-timeline.js';
 import { AntennaChannel } from '@/server/api/stream/channels/antenna.js';
@@ -326,6 +327,7 @@ export default class Connection {
 			case 'hybridTimeline': return HybridTimelineChannel;
 			case 'globalTimeline': return GlobalTimelineChannel;
 			case 'userList': return UserListChannel;
+			case 'clip': return ClipChannel;
 			case 'hashtag': return HashtagChannel;
 			case 'roleTimeline': return RoleTimelineChannel;
 			case 'antenna': return AntennaChannel;
