@@ -128,7 +128,6 @@
 		"reflect-metadata": "0.2.2",
 		"rename": "1.0.4",
 		"rss-parser": "3.13.0",
-		"rxjs": "7.8.2",
 		"sanitize-html": "2.17.5",
 		"secure-json-parse": "4.1.0",
 		"semver": "7.8.5",
