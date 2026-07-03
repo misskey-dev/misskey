@@ -18,6 +18,7 @@ export type BrowserMeasurement = {
 	durationMs: number;
 	network: {
 		requestCount: number;
+		webSocketConnectionCount?: number;
 		finishedRequestCount: number;
 		failedRequestCount: number;
 		cachedRequestCount: number;
@@ -157,6 +158,10 @@ function resourceTypeSampleBytes(sample: BrowserMeasurementSample, resourceTypes
 	return resourceTypeBytes(sample, resourceTypes);
 }
 
+function webSocketConnectionCount(report: BrowserMeasurement) {
+	return report.network.webSocketConnectionCount ?? report.network.byResourceType.WebSocket?.requests ?? 0;
+}
+
 function getMetric(report: BrowserMeasurement, key: string) {
 	return report.performance.cdpMetrics[key];
 }
@@ -165,6 +170,7 @@ function renderSummaryTable(base: BrowserMetricsReport, head: BrowserMetricsRepo
 	const rows = [
 		//metricRow('Scenario duration', base, head, summary => summary.durationMs, sample => sample.durationMs, formatMs),
 		metricRow('Requests', base, head, summary => summary.network.requestCount, sample => sample.network.requestCount, util.formatNumber),
+		metricRow('WebSocket connections', base, head, webSocketConnectionCount, webSocketConnectionCount, util.formatNumber),
 		//metricRow('Failed requests', base, head, summary => summary.network.failedRequestCount, sample => sample.network.failedRequestCount, util.formatNumber),
 		metricRow('Encoded network', base, head, summary => summary.network.totalEncodedBytes, sample => sample.network.totalEncodedBytes, util.formatBytes, 10000),
 		metricRow('Decoded body', base, head, summary => summary.network.totalDecodedBodyBytes, sample => sample.network.totalDecodedBodyBytes, util.formatBytes, 10000),

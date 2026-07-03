@@ -5,7 +5,7 @@
 
 // NOTE: このファイルはworkflow上でバックエンドからも参照されるため、side effectがあってはならない
 
-import { ChildProcessWithoutNullStreams, spawn, spawnSync } from 'node:child_process';
+import { spawn, spawnSync, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 

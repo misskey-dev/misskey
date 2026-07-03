@@ -132,6 +132,7 @@ function summarizeNetworkSamples(samples: BrowserMeasurementSample[]): NetworkSu
 
 	return {
 		requestCount: finiteMedian(samples.map(sample => sample.network.requestCount)),
+		webSocketConnectionCount: finiteMedian(samples.map(sample => sample.network.webSocketConnectionCount)),
 		finishedRequestCount: finiteMedian(samples.map(sample => sample.network.finishedRequestCount)),
 		failedRequestCount: finiteMedian(samples.map(sample => sample.network.failedRequestCount)),
 		cachedRequestCount: finiteMedian(samples.map(sample => sample.network.cachedRequestCount)),
@@ -242,7 +243,7 @@ async function measureSample(label: 'base' | 'head', round: number, heapSnapshot
 			url: baseUrl,
 			scenario: 'fresh browser signup, first timeline note, after the note becomes visible',
 			durationMs,
-			network: summarizeNetwork(chrome.networkRequests, baseUrl),
+			network: summarizeNetwork(chrome.networkRequests, baseUrl, chrome.webSocketConnections),
 			networkRequests: chrome.networkRequests,
 			performance,
 			heapSnapshot,

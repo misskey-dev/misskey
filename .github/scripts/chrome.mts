@@ -42,8 +42,23 @@ export type NetworkRequest = {
 	errorText?: string;
 };
 
+export type WebSocketConnection = {
+	requestId: string;
+	url: string;
+	createdAt: number;
+	handshakeRequestHeaders?: Record<string, string>;
+	handshakeResponseStatus?: number;
+	handshakeResponseStatusText?: string;
+	handshakeResponseHeaders?: Record<string, string>;
+	closedAt?: number;
+	sentFrameCount: number;
+	receivedFrameCount: number;
+	errorCount: number;
+};
+
 export type NetworkSummary = {
 	requestCount: number;
+	webSocketConnectionCount: number;
 	finishedRequestCount: number;
 	failedRequestCount: number;
 	cachedRequestCount: number;
@@ -332,6 +347,7 @@ export class Chrome {
 	private handle: ChromeHandle;
 	public cdp: CdpClient;
 	public networkRequests: NetworkRequest[] = [];
+	public webSocketConnections: WebSocketConnection[] = [];
 	private scenarioTimeoutMs: number;
 	private pendingNetworkDetailReads: Promise<void>[] = [];
 
@@ -369,6 +385,7 @@ export class Chrome {
 
 	public async enableNetworkTracking() {
 		const requests = new Map<string, NetworkRequest>();
+		const webSockets = new Map<string, WebSocketConnection>();
 
 		const readRequestBody = (row: NetworkRequest) => {
 			if (!row.hasRequestBody || row.requestBody != null) return;
@@ -403,6 +420,58 @@ export class Chrome {
 			};
 			requests.set(params.requestId, row);
 			this.networkRequests.push(row);
+		});
+
+		this.cdp.on('Network.webSocketCreated', params => {
+			if (params.requestId == null || params.url == null) return;
+			const row: WebSocketConnection = {
+				requestId: params.requestId,
+				url: params.url,
+				createdAt: params.timestamp ?? 0,
+				sentFrameCount: 0,
+				receivedFrameCount: 0,
+				errorCount: 0,
+			};
+			webSockets.set(params.requestId, row);
+			this.webSocketConnections.push(row);
+		});
+
+		this.cdp.on('Network.webSocketWillSendHandshakeRequest', params => {
+			const row = webSockets.get(params.requestId);
+			if (row == null) return;
+			row.handshakeRequestHeaders = normalizeHeaders(params.request?.headers);
+		});
+
+		this.cdp.on('Network.webSocketHandshakeResponseReceived', params => {
+			const row = webSockets.get(params.requestId);
+			if (row == null) return;
+			row.handshakeResponseStatus = params.response?.status;
+			row.handshakeResponseStatusText = params.response?.statusText;
+			row.handshakeResponseHeaders = normalizeHeaders(params.response?.headers);
+		});
+
+		this.cdp.on('Network.webSocketFrameSent', params => {
+			const row = webSockets.get(params.requestId);
+			if (row == null) return;
+			row.sentFrameCount += 1;
+		});
+
+		this.cdp.on('Network.webSocketFrameReceived', params => {
+			const row = webSockets.get(params.requestId);
+			if (row == null) return;
+			row.receivedFrameCount += 1;
+		});
+
+		this.cdp.on('Network.webSocketFrameError', params => {
+			const row = webSockets.get(params.requestId);
+			if (row == null) return;
+			row.errorCount += 1;
+		});
+
+		this.cdp.on('Network.webSocketClosed', params => {
+			const row = webSockets.get(params.requestId);
+			if (row == null) return;
+			row.closedAt = params.timestamp ?? 0;
 		});
 
 		this.cdp.on('Network.responseReceived', params => {
@@ -609,7 +678,7 @@ function isMeasurableRequest(row: NetworkRequest) {
 	return !row.url.startsWith('data:') && !row.url.startsWith('blob:') && !row.url.startsWith('devtools:');
 }
 
-export function summarizeNetwork(requestRows: NetworkRequest[], baseUrl: string): NetworkSummary {
+export function summarizeNetwork(requestRows: NetworkRequest[], baseUrl: string, webSocketRows?: WebSocketConnection[]): NetworkSummary {
 	const origin = new URL(baseUrl).origin;
 	const rows = requestRows.filter(isMeasurableRequest);
 	const byResourceType = {} as NetworkSummary['byResourceType'];
@@ -636,6 +705,9 @@ export function summarizeNetwork(requestRows: NetworkRequest[], baseUrl: string)
 
 	return {
 		requestCount: rows.length,
+		webSocketConnectionCount: webSocketRows == null
+			? rows.filter(row => row.resourceType === 'WebSocket').length
+			: webSocketRows.length,
 		finishedRequestCount: rows.filter(row => row.finished).length,
 		failedRequestCount: rows.filter(row => row.failed).length,
 		cachedRequestCount: rows.filter(row => row.fromDiskCache).length,
