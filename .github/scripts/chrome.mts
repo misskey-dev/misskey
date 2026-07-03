@@ -93,6 +93,10 @@ export type NetworkSummary = {
 	}[];
 };
 
+export type TabMemory = {
+	totalBytes: number;
+};
+
 export type BrowserMeasurement = {
 	label: string;
 	timestamp: string;
@@ -106,6 +110,7 @@ export type BrowserMeasurement = {
 			usedSize: number;
 			totalSize: number;
 		};
+		tabMemory: TabMemory;
 		webVitals: {
 			firstPaintMs?: number;
 			firstContentfulPaintMs?: number;
@@ -639,6 +644,7 @@ export class Chrome {
 		const cdpMetricsResult = await this.cdp.send<{ metrics: { name: string; value: number }[] }>('Performance.getMetrics');
 		const cdpMetrics = Object.fromEntries(cdpMetricsResult.metrics.map(metric => [metric.name, metric.value]));
 		const runtimeHeap = await this.cdp.send<{ usedSize: number; totalSize: number }>('Runtime.getHeapUsage').catch(() => undefined);
+		const tabMemory = await this.collectTabMemory();
 		const webVitals = await this.evaluate<BrowserMeasurement['performance']['webVitals']>(`(() => {
 			const navigation = performance.getEntriesByType('navigation')[0];
 			const paintEntries = Object.fromEntries(performance.getEntriesByType('paint').map(entry => [entry.name, entry.startTime]));
@@ -660,7 +666,24 @@ export class Chrome {
 		return {
 			cdpMetrics,
 			runtimeHeap,
+			tabMemory,
 			webVitals,
+		};
+	}
+
+	public async collectTabMemory(): Promise<TabMemory> {
+		const userAgentSpecificMemory = await this.evaluate<{ bytes?: number }>(`(async () => {
+			const result = await performance.measureUserAgentSpecificMemory();
+			return { bytes: result.bytes };
+		})()`, 10_000);
+
+		const userAgentSpecificBytes = userAgentSpecificMemory?.bytes;
+		if (!Number.isFinite(userAgentSpecificBytes)) {
+			throw new Error('performance.measureUserAgentSpecificMemory() did not return finite bytes');
+		}
+
+		return {
+			totalBytes: userAgentSpecificBytes as number,
 		};
 	}
 

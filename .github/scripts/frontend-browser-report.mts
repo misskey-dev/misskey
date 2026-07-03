@@ -56,6 +56,9 @@ export type BrowserMeasurement = {
 			usedSize: number;
 			totalSize: number;
 		};
+		tabMemory: {
+			totalBytes: number;
+		};
 		webVitals: {
 			firstPaintMs?: number;
 			firstContentfulPaintMs?: number;
@@ -196,6 +199,7 @@ function renderSummaryTable(base: BrowserMetricsReport, head: BrowserMetricsRepo
 		metricRow('WebSocket connections', base, head, summary => summary.network.webSocketConnectionCount, sample => sample.network.webSocketConnectionCount, util.formatNumber),
 		metricRow('WebSocket sent', base, head, summary => summary.network.webSocketSentBytes, sample => sample.network.webSocketSentBytes, util.formatBytes, 10000),
 		metricRow('WebSocket received', base, head, summary => summary.network.webSocketReceivedBytes, sample => sample.network.webSocketReceivedBytes, util.formatBytes, 10000),
+		metricRow('Tab memory', base, head, summary => summary.performance.tabMemory.totalBytes, sample => sample.performance.tabMemory.totalBytes, util.formatBytes, 100000),
 	].filter(row => row != null);
 
 	return [

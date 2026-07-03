@@ -185,6 +185,9 @@ function summarizePerformanceSamples(samples: BrowserMeasurementSample[]): Brows
 			usedSize: finiteMedian(samples.map(sample => sample.performance.runtimeHeap?.usedSize)),
 			totalSize: finiteMedian(samples.map(sample => sample.performance.runtimeHeap?.totalSize)),
 		},
+		tabMemory: {
+			totalBytes: finiteMedian(samples.map(sample => sample.performance.tabMemory.totalBytes)),
+		},
 		webVitals,
 	};
 }
