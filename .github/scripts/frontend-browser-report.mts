@@ -147,7 +147,7 @@ function metricRow(
 	const deltaMedian = formatDelta(summary.median, formatter, colorThreshold);
 
 	//return `| **${label}** | ${formatValueWithSpread(base, baseValue, getSampleValue, formatter)} | ${formatValueWithSpread(head, headValue, getSampleValue, formatter)} | ${deltaMedian} | ${summary == null ? '-' : formatter(summary.mad)} | ${summary == null ? '-' : formatDelta(summary.min, formatter)} | ${summary == null ? '-' : formatDelta(summary.max, formatter)} |`;
-	return `| **${label}** | ${formatter(baseValue)} | ${formatter(headValue)} | ${deltaMedian} | ${summary == null ? '-' : formatter(summary.mad)} | ${summary == null ? '-' : formatDelta(summary.min, formatter)} | ${summary == null ? '-' : formatDelta(summary.max, formatter)} |`;
+	return `| **${label}** | ${formatter(baseValue)} | ${formatter(headValue)} | ${deltaMedian} | ${summary == null ? '-' : formatter(summary.mad)} | ${summary == null ? '-' : formatDelta(summary.min, formatter, colorThreshold)} | ${summary == null ? '-' : formatDelta(summary.max, formatter, colorThreshold)} |`;
 }
 
 function resourceTypeBytes(report: BrowserMeasurement, resourceTypes: string[]) {
