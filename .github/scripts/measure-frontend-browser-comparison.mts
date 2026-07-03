@@ -133,6 +133,8 @@ function summarizeNetworkSamples(samples: BrowserMeasurementSample[]): NetworkSu
 	return {
 		requestCount: finiteMedian(samples.map(sample => sample.network.requestCount)),
 		webSocketConnectionCount: finiteMedian(samples.map(sample => sample.network.webSocketConnectionCount)),
+		webSocketSentBytes: finiteMedian(samples.map(sample => sample.network.webSocketSentBytes)),
+		webSocketReceivedBytes: finiteMedian(samples.map(sample => sample.network.webSocketReceivedBytes)),
 		finishedRequestCount: finiteMedian(samples.map(sample => sample.network.finishedRequestCount)),
 		failedRequestCount: finiteMedian(samples.map(sample => sample.network.failedRequestCount)),
 		cachedRequestCount: finiteMedian(samples.map(sample => sample.network.cachedRequestCount)),

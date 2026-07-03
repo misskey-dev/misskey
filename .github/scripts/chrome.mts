@@ -53,12 +53,16 @@ export type WebSocketConnection = {
 	closedAt?: number;
 	sentFrameCount: number;
 	receivedFrameCount: number;
+	sentBytes: number;
+	receivedBytes: number;
 	errorCount: number;
 };
 
 export type NetworkSummary = {
 	requestCount: number;
 	webSocketConnectionCount: number;
+	webSocketSentBytes: number;
+	webSocketReceivedBytes: number;
 	finishedRequestCount: number;
 	failedRequestCount: number;
 	cachedRequestCount: number;
@@ -267,6 +271,12 @@ function normalizeHeaders(headers: Record<string, unknown> | undefined) {
 	return normalized;
 }
 
+function webSocketFramePayloadBytes(frame: { opcode?: number; payloadData?: string } | undefined) {
+	if (frame?.payloadData == null) return 0;
+	if (frame.opcode === 1) return Buffer.byteLength(frame.payloadData, 'utf8');
+	return Buffer.byteLength(frame.payloadData, 'base64');
+}
+
 class CdpClient {
 	private nextId = 1;
 	private callbacks = new Map<number, {
@@ -430,6 +440,8 @@ export class Chrome {
 				createdAt: params.timestamp ?? 0,
 				sentFrameCount: 0,
 				receivedFrameCount: 0,
+				sentBytes: 0,
+				receivedBytes: 0,
 				errorCount: 0,
 			};
 			webSockets.set(params.requestId, row);
@@ -454,12 +466,14 @@ export class Chrome {
 			const row = webSockets.get(params.requestId);
 			if (row == null) return;
 			row.sentFrameCount += 1;
+			row.sentBytes += webSocketFramePayloadBytes(params.response);
 		});
 
 		this.cdp.on('Network.webSocketFrameReceived', params => {
 			const row = webSockets.get(params.requestId);
 			if (row == null) return;
 			row.receivedFrameCount += 1;
+			row.receivedBytes += webSocketFramePayloadBytes(params.response);
 		});
 
 		this.cdp.on('Network.webSocketFrameError', params => {
@@ -708,6 +722,8 @@ export function summarizeNetwork(requestRows: NetworkRequest[], baseUrl: string,
 		webSocketConnectionCount: webSocketRows == null
 			? rows.filter(row => row.resourceType === 'WebSocket').length
 			: webSocketRows.length,
+		webSocketSentBytes: webSocketRows?.reduce((sum, row) => sum + row.sentBytes, 0) ?? 0,
+		webSocketReceivedBytes: webSocketRows?.reduce((sum, row) => sum + row.receivedBytes, 0) ?? 0,
 		finishedRequestCount: rows.filter(row => row.finished).length,
 		failedRequestCount: rows.filter(row => row.failed).length,
 		cachedRequestCount: rows.filter(row => row.fromDiskCache).length,
