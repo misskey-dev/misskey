@@ -43,7 +43,7 @@ jobs:
         ports:
           - 56312:6379
       meilisearch:
-        image: getmeili/meilisearch:v1.42.1
+        image: getmeili/meilisearch:v1.48.1
         ports:
           - 57712:7700
         env:
@@ -51,11 +51,11 @@ jobs:
           MEILI_ENV: development
 
     steps:
-    - uses: actions/checkout@v6.0.2
+    - uses: actions/checkout@v6.0.3
       with:
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.3
+      uses: pnpm/action-setup@v6.0.9
     - name: Install FFmpeg
       run: |
         sudo apt install -y ffmpeg
@@ -103,11 +103,11 @@ jobs:
           - 56312:6379
 
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
         with:
           submodules: true
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6.0.3
+        uses: pnpm/action-setup@v6.0.9
       - name: Use Node.js
         uses: actions/setup-node@v6.4.0
         with:
@@ -147,11 +147,11 @@ jobs:
           POSTGRES_HOST_AUTH_METHOD: trust
 
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
         with:
           submodules: true
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6.0.3
+        uses: pnpm/action-setup@v6.0.9
       - name: Get current date
         id: current-date
         run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT

@@ -46,7 +46,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</SearchMarker>
 
 							<SearchMarker :keywords="['api', 'key', 'token', 'sensitive']">
-								<MkInput v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetectionApiKey" type="password">
+								<MkInput v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetectionApiKey" type="password" autocomplete="new-password">
+									<template #prefix><i class="ti ti-key"></i></template>
 									<template #label><SearchLabel>{{ i18n.ts._sensitiveMediaDetection.apiKey }}</SearchLabel></template>
 									<template #caption><SearchText>{{ i18n.ts._sensitiveMediaDetection.apiKeyDescription }}</SearchText></template>
 								</MkInput>

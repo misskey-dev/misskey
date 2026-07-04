@@ -28,11 +28,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6.0.2
+    - uses: actions/checkout@v6.0.3
       with:
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.3
+      uses: pnpm/action-setup@v6.0.9
     - name: Use Node.js
       uses: actions/setup-node@v6.4.0
       with:
@@ -76,7 +76,7 @@ jobs:
           - 56312:6379
 
     steps:
-    - uses: actions/checkout@v6.0.2
+    - uses: actions/checkout@v6.0.3
       with:
         submodules: true
     # https://github.com/cypress-io/cypress-docker-images/issues/150
@@ -86,7 +86,7 @@ jobs:
     #- uses: browser-actions/setup-firefox@latest
     #  if: ${{ matrix.browser == 'firefox' }}
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.3
+      uses: pnpm/action-setup@v6.0.9
     - name: Use Node.js
       uses: actions/setup-node@v6.4.0
       with:
@@ -105,7 +105,7 @@ jobs:
     - name: Cypress install
       run: pnpm exec cypress install
     - name: Cypress run
-      uses: cypress-io/github-action@v7.1.9
+      uses: cypress-io/github-action@v7.4.0
       timeout-minutes: 15
       with:
         install: false
