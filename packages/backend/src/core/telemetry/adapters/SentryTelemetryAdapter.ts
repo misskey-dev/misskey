@@ -6,6 +6,34 @@
 import type { Config } from '@/config.js';
 import type { TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
 
+type SentryIntegrationsOption = NonNullable<import('@sentry/node').NodeOptions['integrations']>;
+type SentryIntegrationFactory = Extract<SentryIntegrationsOption, (integrations: any[]) => any[]>;
+type SentryIntegration = Parameters<SentryIntegrationFactory>[0][number];
+
+type BuildSentryIntegrationsOptions = {
+	disabledIntegrations?: string[];
+	enableNodeProfiling: boolean;
+	nodeProfilingIntegration?: () => SentryIntegration;
+	warn?: (message: string) => void;
+};
+
+export function buildSentryIntegrations(options: BuildSentryIntegrationsOptions): SentryIntegrationFactory {
+	return (defaults) => {
+		const disabledIntegrations = new Set(options.disabledIntegrations ?? []);
+		const defaultIntegrationNames = new Set(defaults.map((integration) => integration.name));
+		const unknownIntegrations = [...disabledIntegrations].filter((name) => !defaultIntegrationNames.has(name));
+
+		if (unknownIntegrations.length > 0) {
+			(options.warn ?? console.warn)(`Unknown Sentry integration configured in sentryForBackend.disabledIntegrations: ${unknownIntegrations.join(', ')}`);
+		}
+
+		return [
+			...defaults.filter((integration) => !disabledIntegrations.has(integration.name)),
+			...(options.enableNodeProfiling && options.nodeProfilingIntegration != null ? [options.nodeProfilingIntegration()] : []),
+		];
+	};
+}
+
 export class SentryTelemetryAdapter implements TelemetryAdapter {
 	private constructor(
 		private readonly Sentry: typeof import('@sentry/node'),
@@ -17,10 +45,6 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 		const { nodeProfilingIntegration } = await import('@sentry/profiling-node');
 
 		Sentry.init({
-			integrations: [
-				...(config.enableNodeProfiling ? [nodeProfilingIntegration()] : []),
-			],
-
 			// Performance Monitoring
 			tracesSampleRate: 1.0, //  Capture 100% of the transactions
 
@@ -30,6 +54,12 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 			maxBreadcrumbs: 0,
 
 			...config.options,
+
+			integrations: buildSentryIntegrations({
+				disabledIntegrations: config.disabledIntegrations,
+				enableNodeProfiling: config.enableNodeProfiling,
+				nodeProfilingIntegration,
+			}),
 		});
 
 		return new SentryTelemetryAdapter(Sentry);
