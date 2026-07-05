@@ -98,9 +98,6 @@ export class UrlPreviewService implements OnApplicationShutdown {
 					return undefined;
 				}
 
-				result.icon = this.wrap(result.icon);
-				result.thumbnail = this.wrap(result.thumbnail);
-
 				return result;
 			};
 
@@ -111,6 +108,9 @@ export class UrlPreviewService implements OnApplicationShutdown {
 			}
 
 			this.logger.succ(`Got preview of ${url}: ${summary.title}`);
+
+			summary.icon = this.wrap(summary.icon);
+			summary.thumbnail = this.wrap(summary.thumbnail);
 
 			if (summary.sensitive !== true) {
 				summary.sensitive = this.utilityService.isKeyWordIncluded(summary.url, this.meta.urlPreviewSensitiveList);
