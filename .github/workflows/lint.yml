@@ -17,7 +17,9 @@ on:
       - packages/misskey-bubble-game/**
       - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
+      - scripts/check-dts*.mjs
       - .github/workflows/lint.yml
+      - package.json
   pull_request:
     paths:
       - packages/backend/**
@@ -31,17 +33,19 @@ on:
       - packages/misskey-bubble-game/**
       - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
+      - scripts/check-dts*.mjs
       - .github/workflows/lint.yml
+      - package.json
 jobs:
   pnpm_install:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6.0.2
+    - uses: actions/checkout@v6.0.3
       with:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.3
+      uses: pnpm/action-setup@v6.0.9
     - uses: actions/setup-node@v6.4.0
       with:
         node-version-file: '.node-version'
@@ -69,12 +73,12 @@ jobs:
       eslint-cache-version: v1
       eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.workspace }}
     steps:
-    - uses: actions/checkout@v6.0.2
+    - uses: actions/checkout@v6.0.3
       with:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.3
+      uses: pnpm/action-setup@v6.0.9
     - uses: actions/setup-node@v6.4.0
       with:
         node-version-file: '.node-version'
@@ -100,6 +104,25 @@ jobs:
         - sw
         - misskey-js
     steps:
+    - uses: actions/checkout@v6.0.3
+      with:
+        fetch-depth: 0
+        submodules: true
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v6.0.9
+    - uses: actions/setup-node@v6.4.0
+      with:
+        node-version-file: '.node-version'
+        cache: 'pnpm'
+    - run: pnpm i --frozen-lockfile
+    - run: pnpm --filter "${{ matrix.workspace }}^..." run build
+    - run: pnpm --filter ${{ matrix.workspace }} run typecheck
+
+  check-dts:
+    needs: [pnpm_install]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
     - uses: actions/checkout@v6.0.2
       with:
         fetch-depth: 0
@@ -111,5 +134,5 @@ jobs:
         node-version-file: '.node-version'
         cache: 'pnpm'
     - run: pnpm i --frozen-lockfile
-    - run: pnpm --filter "${{ matrix.workspace }}^..." run build
-    - run: pnpm --filter ${{ matrix.workspace }} run typecheck
+    - run: node --test scripts/check-dts.test.mjs
+    - run: pnpm check-dts

@@ -9,6 +9,7 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { TelemetryService } from '@/core/telemetry/TelemetryService.js';
 import { CheckModeratorsActivityProcessorService } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 import { UserWebhookDeliverProcessorService } from './processors/UserWebhookDeliverProcessorService.js';
 import { SystemWebhookDeliverProcessorService } from './processors/SystemWebhookDeliverProcessorService.js';
@@ -92,6 +93,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private config: Config,
 
 		private queueLoggerService: QueueLoggerService,
+		private telemetryService: TelemetryService,
 		private userWebhookDeliverProcessorService: UserWebhookDeliverProcessorService,
 		private systemWebhookDeliverProcessorService: SystemWebhookDeliverProcessorService,
 		private endedPollNotificationProcessorService: EndedPollNotificationProcessorService,
@@ -156,13 +158,6 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			};
 		}
 
-		let Sentry: typeof import('@sentry/node') | undefined;
-		if (this.config.sentryForBackend) {
-			import('@sentry/node').then((mod) => {
-				Sentry = mod;
-			});
-		}
-
 		//#region system
 		{
 			const processer = (job: Bull.Job) => {
@@ -181,11 +176,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			};
 
 			this.systemQueueWorker = new Bull.Worker(QUEUE.SYSTEM, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: System: ' + job.name }, () => processer(job));
-				} else {
-					return processer(job);
-				}
+				return this.telemetryService.startSpan('Queue: System: ' + job.name, () => processer(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.SYSTEM),
 				autorun: false,
@@ -198,12 +189,10 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				.on('completed', (job, result) => logger.debug(`completed(${result}) id=${job.id}`))
 				.on('failed', (job, err: Error) => {
 					logger.error(`failed(${err.name}: ${err.message}) id=${job?.id ?? '?'}`, { job: renderJob(job), e: renderError(err) });
-					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: System: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
-							level: 'error',
-							extra: { job, err },
-						});
-					}
+					this.telemetryService.captureMessage(`Queue: System: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
+						level: 'error',
+						extra: { job, err },
+					});
 				})
 				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
 				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
@@ -238,11 +227,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			};
 
 			this.dbQueueWorker = new Bull.Worker(QUEUE.DB, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: DB: ' + job.name }, () => processer(job));
-				} else {
-					return processer(job);
-				}
+				return this.telemetryService.startSpan('Queue: DB: ' + job.name, () => processer(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.DB),
 				autorun: false,
@@ -255,12 +240,10 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				.on('completed', (job, result) => logger.debug(`completed(${result}) id=${job.id}`))
 				.on('failed', (job, err) => {
 					logger.error(`failed(${err.name}: ${err.message}) id=${job?.id ?? '?'}`, { job: renderJob(job), e: renderError(err) });
-					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: DB: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
-							level: 'error',
-							extra: { job, err },
-						});
-					}
+					this.telemetryService.captureMessage(`Queue: DB: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
+						level: 'error',
+						extra: { job, err },
+					});
 				})
 				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
 				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
@@ -270,11 +253,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region deliver
 		{
 			this.deliverQueueWorker = new Bull.Worker(QUEUE.DELIVER, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: Deliver' }, () => this.deliverProcessorService.process(job));
-				} else {
-					return this.deliverProcessorService.process(job);
-				}
+				return this.telemetryService.startSpan('Queue: Deliver', () => this.deliverProcessorService.process(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.DELIVER),
 				autorun: false,
@@ -295,12 +274,10 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				.on('completed', (job, result) => logger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
 				.on('failed', (job, err) => {
 					logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`);
-					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: Deliver: ${err.name}: ${err.message}`, {
-							level: 'error',
-							extra: { job, err },
-						});
-					}
+					this.telemetryService.captureMessage(`Queue: Deliver: ${err.name}: ${err.message}`, {
+						level: 'error',
+						extra: { job, err },
+					});
 				})
 				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
 				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
@@ -310,11 +287,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region inbox
 		{
 			this.inboxQueueWorker = new Bull.Worker(QUEUE.INBOX, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: Inbox' }, () => this.inboxProcessorService.process(job));
-				} else {
-					return this.inboxProcessorService.process(job);
-				}
+				return this.telemetryService.startSpan('Queue: Inbox', () => this.inboxProcessorService.process(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.INBOX),
 				autorun: false,
@@ -335,12 +308,10 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				.on('completed', (job, result) => logger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
 				.on('failed', (job, err) => {
 					logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`, { job: renderJob(job), e: renderError(err) });
-					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: Inbox: ${err.name}: ${err.message}`, {
-							level: 'error',
-							extra: { job, err },
-						});
-					}
+					this.telemetryService.captureMessage(`Queue: Inbox: ${err.name}: ${err.message}`, {
+						level: 'error',
+						extra: { job, err },
+					});
 				})
 				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
 				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
@@ -350,11 +321,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region user-webhook deliver
 		{
 			this.userWebhookDeliverQueueWorker = new Bull.Worker(QUEUE.USER_WEBHOOK_DELIVER, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: UserWebhookDeliver' }, () => this.userWebhookDeliverProcessorService.process(job));
-				} else {
-					return this.userWebhookDeliverProcessorService.process(job);
-				}
+				return this.telemetryService.startSpan('Queue: UserWebhookDeliver', () => this.userWebhookDeliverProcessorService.process(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.USER_WEBHOOK_DELIVER),
 				autorun: false,
@@ -375,12 +342,10 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				.on('completed', (job, result) => logger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
 				.on('failed', (job, err) => {
 					logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`);
-					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: UserWebhookDeliver: ${err.name}: ${err.message}`, {
-							level: 'error',
-							extra: { job, err },
-						});
-					}
+					this.telemetryService.captureMessage(`Queue: UserWebhookDeliver: ${err.name}: ${err.message}`, {
+						level: 'error',
+						extra: { job, err },
+					});
 				})
 				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
 				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
@@ -390,11 +355,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region system-webhook deliver
 		{
 			this.systemWebhookDeliverQueueWorker = new Bull.Worker(QUEUE.SYSTEM_WEBHOOK_DELIVER, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: SystemWebhookDeliver' }, () => this.systemWebhookDeliverProcessorService.process(job));
-				} else {
-					return this.systemWebhookDeliverProcessorService.process(job);
-				}
+				return this.telemetryService.startSpan('Queue: SystemWebhookDeliver', () => this.systemWebhookDeliverProcessorService.process(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.SYSTEM_WEBHOOK_DELIVER),
 				autorun: false,
@@ -415,12 +376,10 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				.on('completed', (job, result) => logger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
 				.on('failed', (job, err) => {
 					logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`);
-					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: SystemWebhookDeliver: ${err.name}: ${err.message}`, {
-							level: 'error',
-							extra: { job, err },
-						});
-					}
+					this.telemetryService.captureMessage(`Queue: SystemWebhookDeliver: ${err.name}: ${err.message}`, {
+						level: 'error',
+						extra: { job, err },
+					});
 				})
 				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
 				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
@@ -440,11 +399,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			};
 
 			this.relationshipQueueWorker = new Bull.Worker(QUEUE.RELATIONSHIP, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: Relationship: ' + job.name }, () => processer(job));
-				} else {
-					return processer(job);
-				}
+				return this.telemetryService.startSpan('Queue: Relationship: ' + job.name, () => processer(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.RELATIONSHIP),
 				autorun: false,
@@ -462,12 +417,10 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				.on('completed', (job, result) => logger.debug(`completed(${result}) id=${job.id}`))
 				.on('failed', (job, err) => {
 					logger.error(`failed(${err.name}: ${err.message}) id=${job?.id ?? '?'}`, { job: renderJob(job), e: renderError(err) });
-					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: Relationship: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
-							level: 'error',
-							extra: { job, err },
-						});
-					}
+					this.telemetryService.captureMessage(`Queue: Relationship: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
+						level: 'error',
+						extra: { job, err },
+					});
 				})
 				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
 				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
@@ -485,11 +438,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			};
 
 			this.objectStorageQueueWorker = new Bull.Worker(QUEUE.OBJECT_STORAGE, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: ObjectStorage: ' + job.name }, () => processer(job));
-				} else {
-					return processer(job);
-				}
+				return this.telemetryService.startSpan('Queue: ObjectStorage: ' + job.name, () => processer(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.OBJECT_STORAGE),
 				autorun: false,
@@ -503,12 +452,10 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				.on('completed', (job, result) => logger.debug(`completed(${result}) id=${job.id}`))
 				.on('failed', (job, err) => {
 					logger.error(`failed(${err.name}: ${err.message}) id=${job?.id ?? '?'}`, { job: renderJob(job), e: renderError(err) });
-					if (Sentry != null) {
-						Sentry.captureMessage(`Queue: ObjectStorage: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
-							level: 'error',
-							extra: { job, err },
-						});
-					}
+					this.telemetryService.captureMessage(`Queue: ObjectStorage: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
+						level: 'error',
+						extra: { job, err },
+					});
 				})
 				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
 				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
@@ -518,11 +465,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region ended poll notification
 		{
 			this.endedPollNotificationQueueWorker = new Bull.Worker(QUEUE.ENDED_POLL_NOTIFICATION, (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: EndedPollNotification' }, () => this.endedPollNotificationProcessorService.process(job));
-				} else {
-					return this.endedPollNotificationProcessorService.process(job);
-				}
+				return this.telemetryService.startSpan('Queue: EndedPollNotification', () => this.endedPollNotificationProcessorService.process(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.ENDED_POLL_NOTIFICATION),
 				autorun: false,
@@ -533,11 +476,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region post scheduled note
 		{
 			this.postScheduledNoteQueueWorker = new Bull.Worker(QUEUE.POST_SCHEDULED_NOTE, async (job) => {
-				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: PostScheduledNote' }, () => this.postScheduledNoteProcessorService.process(job));
-				} else {
-					return this.postScheduledNoteProcessorService.process(job);
-				}
+				return this.telemetryService.startSpan('Queue: PostScheduledNote', () => this.postScheduledNoteProcessorService.process(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.POST_SCHEDULED_NOTE),
 				autorun: false,
