@@ -20,13 +20,8 @@ async function loadConfig() {
 	return fs.readFile(configPath, 'utf-8').then(data => loadYaml(data)).catch(() => null);
 }
 
-async function copyFrontendFonts() {
-	await fs.cp('./packages/frontend/node_modules/three/examples/fonts', './built/_frontend_dist_/fonts', { dereference: true, recursive: true });
-}
-
 async function build() {
 	await Promise.all([
-		copyFrontendFonts(),
 		loadConfig().then(config => config?.publishTarballInsteadOfProvideRepositoryUrl && buildTarball()),
 	]);
 }
