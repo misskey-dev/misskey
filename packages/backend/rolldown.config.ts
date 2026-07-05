@@ -75,6 +75,7 @@ export default defineConfig((args) => {
 		're2',
 		'ipaddr.js',
 		'file-type',
+		'pg',
 	];
 
 	const define: Record<string, string> = {
