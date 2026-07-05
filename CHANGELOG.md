@@ -28,7 +28,7 @@
 - Enhance: Docker Image の Node.js を 26.4.0 に、Debian を trixie (v13) に更新
 - Fix: `/stats` API のレスポンス型が正しくない問題を修正
 - Fix: ハッシュタグに関連するデータを更新する際のエラーハンドリングを修正
-- Fix: Sentry 使用環境下にて、Misskey が発行したクエリが span に含まれない問題を修正
+- Fix: Sentry 使用環境下にて、Misskey が発行した SQL クエリが span に含まれない問題を修正
 
 ## 2026.6.0
 
