@@ -303,6 +303,18 @@ id: 'aidx'
 
 #sentryForBackend:
 #  enableNodeProfiling: true
+#  # Specify Sentry integration names to disable individual auto-instrumentation.
+#  # The names are integration .name values, not factory function names.
+#  # To check enabled names, set `options.debug: true` and see
+#  # "Integration installed: <name>" in the Sentry logs.
+#  #
+#  # As of 2026-07-05 / @sentry/node 10.59.0, useful names for Misskey include:
+#  #   Postgres  ... DB queries (when pg is externalized)
+#  #   Redis     ... ioredis commands
+#  #   Fastify   ... inbound HTTP routes
+#  #   Http      ... inbound/outbound HTTP; disabling this can also affect request isolation
+#  #   NodeFetch ... fetch/undici requests
+#  disabledIntegrations: ['Postgres']
 #  options:
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 

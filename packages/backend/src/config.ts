@@ -20,6 +20,12 @@ type RedisOptionsSource = Partial<RedisOptions> & {
 	prefix?: string;
 };
 
+type SentryBackendConfig = {
+	options: Partial<Sentry.NodeOptions>;
+	enableNodeProfiling: boolean;
+	disabledIntegrations?: string[];
+};
+
 /**
  * 設定ファイルの型
  */
@@ -64,7 +70,7 @@ type Source = {
 		index: string;
 		scope?: 'local' | 'global' | string[];
 	};
-	sentryForBackend?: { options: Partial<Sentry.NodeOptions>; enableNodeProfiling: boolean; };
+	sentryForBackend?: SentryBackendConfig;
 	sentryForFrontend?: {
 		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
 		vueIntegration?: SentryVue.VueIntegrationOptions | null;
@@ -201,7 +207,7 @@ export type Config = {
 	redisForJobQueue: RedisOptions & RedisOptionsSource;
 	redisForTimelines: RedisOptions & RedisOptionsSource;
 	redisForReactions: RedisOptions & RedisOptionsSource;
-	sentryForBackend: { options: Partial<Sentry.NodeOptions>; enableNodeProfiling: boolean; } | undefined;
+	sentryForBackend: SentryBackendConfig | undefined;
 	sentryForFrontend: {
 		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
 		vueIntegration?: SentryVue.VueIntegrationOptions | null;
