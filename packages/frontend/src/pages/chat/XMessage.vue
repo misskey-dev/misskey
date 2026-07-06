@@ -182,10 +182,10 @@ function showMenu(ev: PointerEvent, contextmenu = false) {
 			text: i18n.ts.reportAbuse,
 			icon: 'ti ti-exclamation-circle',
 			action: async () => {
-				const localUrl = `${url}/chat/messages/${props.message.id}`;
+				const localHost = `${url}/chat/messages/${props.message.id}`;
 				const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkAbuseReportWindow.vue').then(x => x.default), {
 					user: props.message.fromUser!,
-					initialComment: `${localUrl}\n-----\n`,
+					initialComment: `${localHost}\n-----\n`,
 				}, {
 					closed: () => dispose(),
 				});

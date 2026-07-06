@@ -137,7 +137,7 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 						resource));
 
 			const fromAcct = (acct: Acct.Acct): FindOptionsWhere<MiUser> | number =>
-				!acct.host || acct.host === this.config.host.toLowerCase() ? {
+				!acct.host || acct.host === this.config.host.toLowerCase() || acct.host === this.config.localHost.toLowerCase() ? {
 					usernameLower: acct.username.toLowerCase(),
 					host: IsNull(),
 					isSuspended: false,
@@ -162,7 +162,7 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 				return;
 			}
 
-			const subject = `acct:${user.username}@${this.config.host}`;
+			const subject = `acct:${user.username}@${this.config.localHost}`;
 			const self = {
 				rel: 'self',
 				type: 'application/activity+json',

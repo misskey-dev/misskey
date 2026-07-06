@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { host } from '@@/js/config.js';
+import { localHost } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
@@ -84,7 +84,7 @@ async function onClick() {
 	const isLoggedIn = await pleaseLogin({
 		openOnRemote: {
 			type: 'web',
-			path: `/@${props.user.username}@${props.user.host ?? host}`,
+			path: `/@${props.user.username}@${props.user.host ?? localHost}`,
 		},
 	});
 	if (!isLoggedIn) return;

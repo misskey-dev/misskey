@@ -213,7 +213,7 @@ export class ServerService implements OnApplicationShutdown {
 			const user = await this.usersRepository.findOne({
 				where: {
 					usernameLower: username.toLowerCase(),
-					host: (host == null) || (host === this.config.host) ? IsNull() : host,
+					host: (host == null) || (host === this.config.host) || (host === this.config.localHost) ? IsNull() : host,
 					isSuspended: false,
 				},
 			});

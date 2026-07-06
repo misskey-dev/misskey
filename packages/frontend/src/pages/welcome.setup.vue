@@ -60,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
 						<template #label>{{ i18n.ts.username }} <div v-tooltip:dialog="i18n.ts.usernameInfo" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
 						<template #prefix>@</template>
-						<template #suffix>@{{ host }}</template>
+						<template #suffix>@{{ localHost }}</template>
 					</MkInput>
 					<MkInput v-model="password" type="password" data-cy-admin-password>
 						<template #label>{{ i18n.ts.password }}</template>
@@ -125,7 +125,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { host, version } from '@@/js/config.js';
+import { localHost, version } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';

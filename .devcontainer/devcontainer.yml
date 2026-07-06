@@ -8,6 +8,11 @@
 # Final accessible URL seen by a user.
 url: http://127.0.0.1:3000/
 
+# Use a seperate hostname for federation. All users on this
+# instance will appear with this host instead of the one with
+# the misskey web url if set.
+#localHost: '127.0.0.1:3000'
+
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
 # URL SETTINGS AFTER THAT!
 

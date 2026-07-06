@@ -5,7 +5,7 @@
 
 import { defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { apiUrl, host } from '@@/js/config.js';
+import { apiUrl, localHost } from '@@/js/config.js';
 import type { MenuItem } from '@/types/menu.js';
 import { showSuspendedDialog } from '@/utility/show-suspended-dialog.js';
 import { i18n } from '@/i18n.js';
@@ -131,7 +131,7 @@ export function updateCurrentAccount(accountData: Misskey.entities.MeDetailed) {
 	for (const [key, value] of Object.entries(accountData)) {
 		($i[key as keyof typeof accountData] as any) = value;
 	}
-	store.set('accountInfos', { ...store.s.accountInfos, [host + '/' + $i.id]: $i });
+	store.set('accountInfos', { ...store.s.accountInfos, [localHost + '/' + $i.id]: $i });
 	$i.token = token;
 	miLocalStorage.setItem('account', JSON.stringify($i));
 }
@@ -142,7 +142,7 @@ export function updateCurrentAccountPartial(accountData: Partial<Misskey.entitie
 		($i[key as keyof typeof accountData] as any) = value;
 	}
 
-	store.set('accountInfos', { ...store.s.accountInfos, [host + '/' + $i.id]: $i });
+	store.set('accountInfos', { ...store.s.accountInfos, [localHost + '/' + $i.id]: $i });
 
 	miLocalStorage.setItem('account', JSON.stringify($i));
 }
@@ -152,7 +152,7 @@ export async function refreshCurrentAccount() {
 	const me = $i;
 	return fetchAccount($i.token, $i.id).then(updateCurrentAccount).catch(reason => {
 		if (reason === isAccountDeleted) {
-			removeAccount(host, me.id);
+			removeAccount(localHost, me.id);
 			if (Object.keys(store.s.accountTokens).length > 0) {
 				login(Object.values(store.s.accountTokens)[0]);
 			} else {
@@ -181,7 +181,7 @@ export async function login(token: AccountWithToken['token'], redirect?: string)
 		token,
 	}));
 
-	await addAccount(host, me, token);
+	await addAccount(localHost, me, token);
 
 	if (redirect) {
 		// 他のタブは再読み込みするだけ
@@ -296,7 +296,7 @@ export async function getAccountMenu(opts: {
 		});
 
 		if (opts.includeCurrentAccount) {
-			menuItems.push(createItem(host, $i.id, $i.username, $i, $i.token));
+			menuItems.push(createItem(localHost, $i.id, $i.username, $i, $i.token));
 		}
 
 		menuItems.push(...accountItems);
@@ -319,7 +319,7 @@ export async function getAccountMenu(opts: {
 				action: () => {
 					getAccountWithSignupDialog().then(res => {
 						if (res != null) {
-							switchAccount(host, res.id);
+							switchAccount(localHost, res.id);
 						}
 					});
 				},
@@ -332,7 +332,7 @@ export async function getAccountMenu(opts: {
 		});
 	} else {
 		if (opts.includeCurrentAccount) {
-			menuItems.push(createItem(host, $i.id, $i.username, $i, $i.token));
+			menuItems.push(createItem(localHost, $i.id, $i.username, $i, $i.token));
 		}
 
 		menuItems.push(...accountItems);
@@ -346,7 +346,7 @@ export function getAccountWithSigninDialog(): Promise<{ id: string, token: strin
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {}, {
 			done: async (res: Misskey.entities.SigninFlowResponse & { finished: true }) => {
 				const user = await fetchAccount(res.i, res.id, true);
-				await addAccount(host, user, res.i);
+				await addAccount(localHost, user, res.i);
 				resolve({ id: res.id, token: res.i });
 			},
 			cancelled: () => {
@@ -365,7 +365,7 @@ export function getAccountWithSignupDialog(): Promise<{ id: string, token: strin
 			done: async (res: Misskey.entities.SignupResponse) => {
 				const user = JSON.parse(JSON.stringify(res));
 				delete user.token;
-				await addAccount(host, user, res.token);
+				await addAccount(localHost, user, res.token);
 				resolve({ id: res.id, token: res.token });
 			},
 			cancelled: () => {
