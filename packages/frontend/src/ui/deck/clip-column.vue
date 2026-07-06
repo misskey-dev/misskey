@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<MkResult v-if="notFound" type="notFound"/>
-	<MkNotesTimeline v-else-if="column.clipId" :paginator="paginator"/>
+	<MkNotesTimeline v-else-if="column.clipId" :paginator="paginator" :withControl="false" :noGap="true"/>
 </XColumn>
 </template>
 
