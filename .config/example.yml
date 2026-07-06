@@ -325,6 +325,10 @@ id: 'aidx'
 # To configure them in reverse proxy instead, set this to false.
 #enableIpRateLimit: true
 
+# Enable COOP/COEP headers to make browser contexts cross-origin isolated.
+# This can affect popup opener relationships and cross-origin resource loading.
+#enableCrossOriginIsolation: false
+
 # Number of worker processes
 #clusterLimit: 1
 
