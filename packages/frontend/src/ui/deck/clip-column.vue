@@ -27,7 +27,9 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { clipsCache, favoritedClipsCache } from '@/cache.js';
 import { useStream } from '@/stream.js';
+import { $i } from '@/i.js';
 import { Paginator } from '@/utility/paginator.js';
+import { getClipColumnReloadDelayMs } from './clip-column.js';
 
 const props = defineProps<{
 	column: Column;
@@ -49,15 +51,20 @@ let connection: Misskey.IChannelConnection<Misskey.Channels['clip']> | null = nu
 
 // 同じクリップを大勢が購読していると、更新の度に全員が同時にreloadしリクエストがスパイクしうるため、
 // 受信直後ではなくランダムな遅延を挟んでからreloadし、着火タイミングを分散させる
-const RELOAD_JITTER_MAX_MS = 5000;
 let reloadTimer: number | null = null;
 
 function scheduleReload() {
 	if (reloadTimer != null) return;
+	const delay = getClipColumnReloadDelayMs(clip.value?.userId, $i?.id);
+	if (delay === 0) {
+		paginator.reload();
+		return;
+	}
+
 	reloadTimer = window.setTimeout(() => {
 		reloadTimer = null;
 		paginator.reload();
-	}, Math.random() * RELOAD_JITTER_MAX_MS);
+	}, delay);
 }
 
 function cancelScheduledReload() {
@@ -149,6 +156,8 @@ async function setClip() {
 	if (canceled || chosenClipId == null) return;
 
 	const chosenClip = [...myClips, ...favoritedClips].find(x => x.id === chosenClipId)!;
+	clip.value = chosenClip;
+	notFound.value = false;
 	updateColumn(props.column.id, {
 		clipId: chosenClip.id,
 		timelineNameCache: chosenClip.name,
