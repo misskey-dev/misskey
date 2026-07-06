@@ -510,7 +510,7 @@ describe('Streaming', () => {
 			test('withReplies: true のとき自分のfollowers投稿に対するリプライが流れる', async () => {
 				const erinNote = await post(erin, { text: 'hi', visibility: 'followers' });
 				const fired = await waitFire(
-					erin, 'homeTimeline',	// erin:home
+					erin, 'hybridTimeline',	// erin:Hybrid
 					() => api('notes/create', { text: 'hello', replyId: erinNote.id }, ayano),	// ayano reply to erin's followers post
 					msg => msg.type === 'note' && msg.body.userId === ayano.id,	// wait ayano
 				);
@@ -521,7 +521,7 @@ describe('Streaming', () => {
 			test('withReplies: false でも自分の投稿に対するリプライが流れる', async () => {
 				const ayanoNote = await post(ayano, { text: 'hi', visibility: 'followers' });
 				const fired = await waitFire(
-					ayano, 'homeTimeline',	// ayano:home
+					ayano, 'hybridTimeline',	// ayano:Hybrid
 					() => api('notes/create', { text: 'hello', replyId: ayanoNote.id }, erin),	// erin reply to ayano's followers post
 					msg => msg.type === 'note' && msg.body.userId === erin.id,	// wait erin
 				);
@@ -530,9 +530,12 @@ describe('Streaming', () => {
 			});
 
 			test('withReplies: true のフォローしていない人のfollowersノートに対するリプライが流れない', async () => {
+				// ayano は kyoko をフォローしているため kyoko の followers 投稿にリプライできるが、
+				// erin は kyoko をフォローしていないため、そのリプライは erin の Hybrid Timeline には流れないはず
+				const kyokoFollowersNote = await post(kyoko, { text: 'hi', visibility: 'followers' });
 				const fired = await waitFire(
-					erin, 'homeTimeline',	// erin:home
-					() => api('notes/create', { text: 'hello', replyId: chitose.id }, ayano),	// ayano reply to chitose's post
+					erin, 'hybridTimeline',	// erin:Hybrid
+					() => api('notes/create', { text: 'hello', replyId: kyokoFollowersNote.id }, ayano),	// ayano reply to kyoko's followers post
 					msg => msg.type === 'note' && msg.body.userId === ayano.id,	// wait ayano
 				);
 
@@ -680,7 +683,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					chitose, 'userList',
 					() => api('notes/create', { text: 'foo' }, takumi),
-					msg => msg.type === 'note' && msg.body.userId === kyoko.id,
+					msg => msg.type === 'note' && msg.body.userId === takumi.id,
 					{ listId: list.id },
 				);
 

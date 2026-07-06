@@ -6,6 +6,7 @@
 import cluster from 'node:cluster';
 import { envOption } from '@/env.js';
 import { loadConfig } from '@/config.js';
+import { initTelemetry } from '@/core/telemetry/telemetry-registry.js';
 import { initExtraThreadPool, jobQueue, server } from './common.js';
 
 /**
@@ -16,26 +17,7 @@ export async function workerMain() {
 
 	initExtraThreadPool(config);
 
-	if (config.sentryForBackend) {
-		const Sentry = await import('@sentry/node');
-		const { nodeProfilingIntegration } = await import('@sentry/profiling-node');
-
-		Sentry.init({
-			integrations: [
-				...(config.sentryForBackend.enableNodeProfiling ? [nodeProfilingIntegration()] : []),
-			],
-
-			// Performance Monitoring
-			tracesSampleRate: 1.0, //  Capture 100% of the transactions
-
-			// Set sampling rate for profiling - this is relative to tracesSampleRate
-			profilesSampleRate: 1.0,
-
-			maxBreadcrumbs: 0,
-
-			...config.sentryForBackend.options,
-		});
-	}
+	await initTelemetry(config);
 
 	if (envOption.onlyServer) {
 		await server();

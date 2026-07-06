@@ -6,9 +6,11 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { describe, beforeAll, beforeEach, test } from 'vitest';
+import { describe, beforeAll, beforeEach, test, vi } from 'vitest';
 import { UserToken, api, post, signup } from '../utils.js';
 import type * as misskey from 'misskey-js';
+
+const waitForPushToTlOptions = { timeout: 3000, interval: 25 };
 
 describe('API visibility', () => {
 	describe('Note visibility', () => {
@@ -409,10 +411,12 @@ describe('API visibility', () => {
 
 		//#region HTL
 		test('[HTL] public-post が 自分が見れる', async () => {
-			const res = await api('notes/timeline', { limit: 100 }, alice);
-			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter(n => n.id === pub.id);
-			assert.strictEqual(notes[0].text, 'x');
+			await vi.waitFor(async () => {
+				const res = await api('notes/timeline', { limit: 100 }, alice);
+				assert.strictEqual(res.status, 200);
+				const notes = res.body.filter(n => n.id === pub.id);
+				assert.strictEqual(notes[0].text, 'x');
+			}, waitForPushToTlOptions);
 		});
 
 		test('[HTL] public-post が 非フォロワーから見れない', async () => {
@@ -423,10 +427,12 @@ describe('API visibility', () => {
 		});
 
 		test('[HTL] followers-post が フォロワーから見れる', async () => {
-			const res = await api('notes/timeline', { limit: 100 }, follower);
-			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter(n => n.id === fol.id);
-			assert.strictEqual(notes[0].text, 'x');
+			await vi.waitFor(async () => {
+				const res = await api('notes/timeline', { limit: 100 }, follower);
+				assert.strictEqual(res.status, 200);
+				const notes = res.body.filter(n => n.id === fol.id);
+				assert.strictEqual(notes[0].text, 'x');
+			}, waitForPushToTlOptions);
 		});
 		//#endregion
 
