@@ -109,32 +109,22 @@ async function fetchChannels() {
 	channels.value.splice(0, 0, ...res);
 }
 
-async function chooseChannel() {
-	let selectedChannel: Misskey.entities.Channel | null = null;
-	await os.popupMenu([
-		{
-			type: 'label',
-			text: i18n.ts.selectChannel,
+function chooseChannel() {
+	os.popupMenu([{
+		type: 'label',
+		text: i18n.ts.selectChannel,
+	}, ...channels.value.map<MenuItem>(it => ({
+		type: 'button',
+		text: it.name,
+		active: it.id === currentChannel.value?.id,
+		action: () => {
+			currentChannel.value = it;
+			emit('changeChannel', it);
+			nextTick(() => {
+				if (modal.value) modal.value.close();
+			});
 		},
-		...channels.value.map<MenuItem>(it => ({
-			type: 'button',
-			text: it.name,
-			active: it.id === currentChannel.value?.id,
-			action: (_) => {
-				selectedChannel = it;
-				currentChannel.value = it;
-			},
-		}))],
-		channelsButton.value,
-	);
-
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (selectedChannel) {
-		emit('changeChannel', selectedChannel);
-		nextTick(() => {
-			if (modal.value) modal.value.close();
-		});
-	}
+	}))], channelsButton.value);
 }
 
 function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
