@@ -31,6 +31,7 @@ allowBuilds:
   v-code-diff: true
   vue-demi: true
   exifreader: false
+  protobufjs: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@misskey-dev/*'

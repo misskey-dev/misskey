@@ -4,6 +4,7 @@
  */
 
 import type { Config } from '@/config.js';
+import { OpenTelemetryAdapter } from './adapters/OpenTelemetryAdapter.js';
 import { SentryTelemetryAdapter } from './adapters/SentryTelemetryAdapter.js';
 import type { TelemetryAdapter, TelemetryCaptureMessageOptions } from './adapters/TelemetryAdapter.js';
 
@@ -15,18 +16,32 @@ import type { TelemetryAdapter, TelemetryCaptureMessageOptions } from './adapter
 const adapters: TelemetryAdapter[] = [];
 
 export async function initTelemetry(config: Config): Promise<void> {
-	if (config.sentryForBackend) {
+	// SentryとOTelを同時に使う場合はproviderを分けず、Sentry側へOTLP processorを追加する。
+	if (config.sentryForBackend && config.otelForBackend) {
+		adapters.push(await SentryTelemetryAdapter.createWithOtlpExport(config.sentryForBackend, config.otelForBackend));
+	} else if (config.sentryForBackend) {
+		// Sentry単体時は既存のSentry adapterだけを登録する。
 		adapters.push(await SentryTelemetryAdapter.create(config.sentryForBackend));
+	} else if (config.otelForBackend) {
+		// OTel単体時だけMisskey自身でNodeTracerProviderを立てる。
+		adapters.push(await OpenTelemetryAdapter.create(config.otelForBackend));
 	}
 }
 
 export function captureMessage(message: string, opts: TelemetryCaptureMessageOptions): void {
+	// 有効なadapterすべてへ通知し、宛先ごとの差異はadapter内に閉じ込める。
 	for (const adapter of adapters) {
 		adapter.captureMessage(message, opts);
 	}
 }
 
 export function startSpan<T>(name: string, fn: () => T): T {
+	// 有効なadapterが無い/1つだけの場合(実運用上の大半のケース)は、
+	// 毎リクエスト/ジョブでreduceRightのclosureを組み立てる無駄を避ける。
+	if (adapters.length === 0) return fn();
+	if (adapters.length === 1) return adapters[0].startSpan(name, fn);
+
+	// 複数adapterがある場合でも同じ処理を入れ子に包み、呼び出し側のAPIは1回のstartSpanに保つ。
 	const wrapped = adapters.reduceRight<() => T>(
 		(inner, adapter) => () => adapter.startSpan(name, inner),
 		fn,
@@ -35,5 +50,6 @@ export function startSpan<T>(name: string, fn: () => T): T {
 }
 
 export async function shutdownTelemetry(): Promise<void> {
+	// 終了時は登録済みadapterを並列にflush/shutdownする。
 	await Promise.all(adapters.map(adapter => adapter.shutdown()));
 }

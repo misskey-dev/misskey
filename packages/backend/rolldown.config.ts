@@ -63,6 +63,7 @@ export default defineConfig((args) => {
 		'class-validator',
 		/^@sentry\/.*/,
 		/^@sentry-internal\/.*/,
+		/^@opentelemetry\/.*/,
 		'@nestjs/websockets/socket-module',
 		'@nestjs/microservices/microservices-module',
 		'@nestjs/microservices',
