@@ -83,7 +83,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'changeVisibility', v: typeof Misskey.noteVisibilities[number]): void;
-	(ev: 'changeChannel', v: MinimalChannel): void;
+	(ev: 'changeChannel', v: MinimalChannel | null): void;
 	(ev: 'closed'): void;
 }>();
 
@@ -140,6 +140,7 @@ async function chooseChannel() {
 function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
 	v.value = visibility;
 	emit('changeVisibility', visibility);
+	emit('changeChannel', null);
 	nextTick(() => {
 		if (modal.value) modal.value.close();
 	});
