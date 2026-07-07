@@ -6,7 +6,7 @@
 process.env.NODE_ENV = 'test';
 
 import { describe, expect, test } from 'vitest';
-import { buildSentryNodeOptions } from './SentryTelemetryAdapter.js';
+import { buildSentryNodeOptions } from '../../../../../src/core/telemetry/adapters/SentryTelemetryAdapter.js';
 
 describe('buildSentryNodeOptions', () => {
 	test('disables outbound trace propagation by default', () => {

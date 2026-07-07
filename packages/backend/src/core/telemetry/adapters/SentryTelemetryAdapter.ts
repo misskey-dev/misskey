@@ -7,6 +7,7 @@ import type { Config } from '@/config.js';
 import type { TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
 
 type SentryIntegrationsOption = NonNullable<import('@sentry/node').NodeOptions['integrations']>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SentryIntegrationFactory = Extract<SentryIntegrationsOption, (integrations: any[]) => any[]>;
 type SentryIntegration = Parameters<SentryIntegrationFactory>[0][number];
 type SentryNodeOptions = import('@sentry/node').NodeOptions;
