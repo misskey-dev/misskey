@@ -17,8 +17,8 @@ class ReactionPicker {
 	}
 
 	public init() {
-		watch([prefer.r.emojiPaletteForReaction, prefer.r.emojiPalettes], () => {
-			this.reactionsRef.value = prefer.s.emojiPaletteForReaction == null ? prefer.s.emojiPalettes[0].emojis : prefer.s.emojiPalettes.find(palette => palette.id === prefer.s.emojiPaletteForReaction)?.emojis ?? [];
+		watch([prefer.r.emojiPaletteForReaction, prefer.r.emojiPalettes], ([newId, newPalettes]) => {
+			this.reactionsRef.value = newId == null ? newPalettes[0].emojis : newPalettes.find(palette => palette.id === newId)?.emojis ?? [];
 		}, {
 			immediate: true,
 		});

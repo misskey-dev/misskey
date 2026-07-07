@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
+import { themeManager } from '@/theme.js';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 import { initChart } from '@/utility/init-chart.js';
 
@@ -43,7 +44,7 @@ onMounted(() => {
 			labels: props.data.map(x => x.name),
 			datasets: [{
 				backgroundColor: props.data.map(x => x.color ?? '#000'),
-				borderColor: getComputedStyle(window.document.documentElement).getPropertyValue('--MI_THEME-panel'),
+				borderColor: themeManager.currentCompiledTheme!.panel,
 				borderWidth: 2,
 				hoverOffset: 0,
 				data: props.data.map(x => x.value),

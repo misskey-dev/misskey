@@ -20,6 +20,12 @@ type RedisOptionsSource = Partial<RedisOptions> & {
 	prefix?: string;
 };
 
+type SentryBackendConfig = {
+	options: Partial<Sentry.NodeOptions>;
+	enableNodeProfiling: boolean;
+	disabledIntegrations?: string[];
+};
+
 /**
  * 設定ファイルの型
  */
@@ -64,7 +70,7 @@ type Source = {
 		index: string;
 		scope?: 'local' | 'global' | string[];
 	};
-	sentryForBackend?: { options: Partial<Sentry.NodeOptions>; enableNodeProfiling: boolean; };
+	sentryForBackend?: SentryBackendConfig;
 	sentryForFrontend?: {
 		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
 		vueIntegration?: SentryVue.VueIntegrationOptions | null;
@@ -85,6 +91,7 @@ type Source = {
 	maxFileSize?: number;
 
 	clusterLimit?: number;
+	threadPoolSize?: number;
 
 	id: string;
 
@@ -158,6 +165,7 @@ export type Config = {
 	allowedPrivateNetworks: string[] | undefined;
 	maxFileSize: number;
 	clusterLimit: number | undefined;
+	threadPoolSize: number;
 	id: string;
 	outgoingAddress: string | undefined;
 	outgoingAddressFamily: 'ipv4' | 'ipv6' | 'dual' | undefined;
@@ -199,7 +207,7 @@ export type Config = {
 	redisForJobQueue: RedisOptions & RedisOptionsSource;
 	redisForTimelines: RedisOptions & RedisOptionsSource;
 	redisForReactions: RedisOptions & RedisOptionsSource;
-	sentryForBackend: { options: Partial<Sentry.NodeOptions>; enableNodeProfiling: boolean; } | undefined;
+	sentryForBackend: SentryBackendConfig | undefined;
 	sentryForFrontend: {
 		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
 		vueIntegration?: SentryVue.VueIntegrationOptions | null;
@@ -313,6 +321,7 @@ export function loadConfig(): Config {
 		allowedPrivateNetworks: config.allowedPrivateNetworks,
 		maxFileSize: config.maxFileSize ?? 262144000,
 		clusterLimit: config.clusterLimit,
+		threadPoolSize: config.threadPoolSize ?? 1,
 		outgoingAddress: config.outgoingAddress,
 		outgoingAddressFamily: config.outgoingAddressFamily,
 		deliverJobConcurrency: config.deliverJobConcurrency,

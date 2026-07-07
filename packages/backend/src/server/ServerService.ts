@@ -242,16 +242,16 @@ export class ServerService implements OnApplicationShutdown {
 
 		this.streamingApiServerService.attach(fastify.server);
 
-		fastify.server.on('error', err => {
-			switch ((err as any).code) {
+		const handleListenError = (err: unknown): void => {
+			switch ((err as NodeJS.ErrnoException).code) {
 				case 'EACCES':
-					this.logger.error(`You do not have permission to listen on port ${this.config.port}.`);
+					this.logger.error(`You do not have permission to listen on ${this.config.socket ?? `port ${this.config.port}`}.`);
 					break;
 				case 'EADDRINUSE':
-					this.logger.error(`Port ${this.config.port} is already in use by another process.`);
+					this.logger.error(`${this.config.socket ?? `Port ${this.config.port}`} is already in use by another process.`);
 					break;
 				default:
-					this.logger.error(err);
+					this.logger.error(err as Error);
 					break;
 			}
 
@@ -261,28 +261,39 @@ export class ServerService implements OnApplicationShutdown {
 				// disableClustering
 				process.exit(1);
 			}
-		});
+		};
 
-		if (this.config.socket) {
-			if (fs.existsSync(this.config.socket)) {
-				fs.unlinkSync(this.config.socket);
-			}
-			fastify.listen({ path: this.config.socket }, (err, address) => {
-				if (this.config.chmodSocket) {
-					fs.chmodSync(this.config.socket!, this.config.chmodSocket);
+		try {
+			if (this.config.socket) {
+				if (fs.existsSync(this.config.socket)) {
+					fs.unlinkSync(this.config.socket);
 				}
-			});
-		} else {
-			fastify.listen({ port: this.config.port, host: '0.0.0.0' });
+				await fastify.listen({ path: this.config.socket });
+				if (this.config.chmodSocket) {
+					fs.chmodSync(this.config.socket, this.config.chmodSocket);
+				}
+			} else {
+				await fastify.listen({ port: this.config.port, host: '0.0.0.0' });
+			}
+			await fastify.ready();
+		} catch (err) {
+			handleListenError(err);
+			return;
 		}
-
-		await fastify.ready();
 	}
 
 	@bindThis
 	public async dispose(): Promise<void> {
 		await this.streamingApiServerService.detach();
-		await this.#fastify.close();
+		// fastify@5 close() waits for upgraded WebSocket connections to drain.
+		// streamingApiServerService.attach() adds raw ws.Server upgrades that
+		// fastify does not track in its connection registry, so close() can hang
+		// forever during OnApplicationShutdown. Cap at 5s so PM2/systemd/k8s
+		// shutdown timeouts aren't held hostage.
+		await Promise.race([
+			this.#fastify.close(),
+			new Promise<void>(resolve => setTimeout(resolve, 5_000)),
+		]).catch(err => this.logger.error('fastify.close() failed', err as Error));
 	}
 
 	/**

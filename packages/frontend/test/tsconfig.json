@@ -23,7 +23,8 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"paths": {
-			"@/*": ["../src/*"]
+			"@/*": ["../src/*"],
+			"@@/*": ["../../frontend-shared/*"]
 		},
 		"typeRoots": [
 			"../node_modules/@types"
@@ -37,6 +38,7 @@
 	"compileOnSave": false,
 	"include": [
 		"./**/*.ts",
-		"../src/**/*.vue"
+		"../src/**/*.vue",
+		"../@types/**/*.d.ts"
 	]
 }

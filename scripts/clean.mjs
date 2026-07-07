@@ -10,7 +10,6 @@ const __dirname = import.meta.dirname;
 (async () => {
 	fs.rmSync(__dirname + '/../packages/backend/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/backend/src-js', { recursive: true, force: true });
-	fs.rmSync(__dirname + '/../packages/frontend-shared/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/frontend/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/frontend-embed/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/icons-subsetter/built', { recursive: true, force: true });

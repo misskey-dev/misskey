@@ -9,6 +9,7 @@
 		"sourceMap": false,
 		"outDir": "./built",
 		"removeComments": true,
+		"skipLibCheck": true,
 		"strict": true,
 		"strictFunctionTypes": true,
 		"strictNullChecks": true,

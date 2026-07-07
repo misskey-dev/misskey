@@ -14,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div>
 				<XReloadSuggestion v-if="shouldSuggestReload"/>
 				<XPreferenceRestore v-if="shouldSuggestRestoreBackup"/>
+				<XThemePreviewing v-if="isThemePreviewMode"/>
 				<XAnnouncements v-if="$i"/>
 				<XStatusBars :class="$style.statusbars"/>
 			</div>
@@ -40,8 +41,10 @@ import type { PageMetadata } from '@/page.js';
 import XMobileFooterMenu from '@/ui/_common_/mobile-footer-menu.vue';
 import XPreferenceRestore from '@/ui/_common_/PreferenceRestore.vue';
 import XReloadSuggestion from '@/ui/_common_/ReloadSuggestion.vue';
+import XThemePreviewing from '@/ui/_common_/ThemePreviewing.vue';
 import XTitlebar from '@/ui/_common_/titlebar.vue';
 import XSidebar from '@/ui/_common_/navbar.vue';
+import { isPreviewMode as isThemePreviewMode } from '@/theme.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';

@@ -1,12 +1,12 @@
 {
 	"name": "misskey",
-	"version": "2026.5.1",
+	"version": "2026.7.0-alpha.2",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@10.33.2",
+	"packageManager": "pnpm@11.9.0",
 	"workspaces": [
 		"packages/misskey-js",
 		"packages/i18n",
@@ -39,7 +39,8 @@
 		"migrateandstart": "pnpm migrate && pnpm start",
 		"watch": "pnpm dev",
 		"dev": "node scripts/dev.mjs",
-		"lint": "pnpm --no-bail -r lint",
+		"check-dts": "node scripts/check-dts.mjs",
+		"lint": "pnpm --no-bail -r lint && pnpm check-dts",
 		"cy:open": "pnpm cypress open --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
 		"e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
@@ -53,44 +54,26 @@
 		"cleanall": "pnpm clean-all"
 	},
 	"dependencies": {
-		"cssnano": "7.1.7",
-		"esbuild": "0.28.0",
+		"esbuild": "0.28.1",
 		"execa": "9.6.1",
-		"ignore-walk": "8.0.0",
-		"js-yaml": "4.1.1",
-		"postcss": "8.5.10",
-		"tar": "7.5.13",
-		"terser": "5.46.2"
+		"ignore-walk": "9.0.0",
+		"js-yaml": "5.2.0",
+		"tar": "7.5.19"
 	},
 	"devDependencies": {
 		"@eslint/js": "9.39.4",
 		"@misskey-dev/eslint-plugin": "2.1.0",
-		"@types/js-yaml": "4.0.9",
-		"@types/node": "24.12.2",
-		"@typescript-eslint/eslint-plugin": "8.59.0",
-		"@typescript-eslint/parser": "8.59.0",
+		"@types/node": "26.0.1",
+		"@typescript-eslint/eslint-plugin": "8.62.0",
+		"@typescript-eslint/parser": "8.62.0",
 		"@typescript/native-preview": "7.0.0-dev.20260426.1",
 		"cross-env": "10.1.0",
-		"cypress": "15.14.1",
+		"cypress": "15.18.0",
 		"eslint": "9.39.4",
-		"globals": "17.5.0",
+		"globals": "17.7.0",
 		"ncp": "2.0.0",
-		"pnpm": "10.33.2",
-		"start-server-and-test": "3.0.2",
+		"pnpm": "11.9.0",
+		"start-server-and-test": "3.0.11",
 		"typescript": "5.9.3"
-	},
-	"optionalDependencies": {
-		"@tensorflow/tfjs-core": "4.22.0"
-	},
-	"pnpm": {
-		"overrides": {
-			"@aiscript-dev/aiscript-languageserver": "-",
-			"chokidar": "5.0.0",
-			"lodash": "4.18.1"
-		},
-		"ignoredBuiltDependencies": [
-			"@sentry-internal/node-cpu-profiler",
-			"exifreader"
-		]
 	}
 }

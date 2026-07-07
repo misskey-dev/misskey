@@ -60,6 +60,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 );
 
 let intervalId: number | null = null;
+let rafRequestId: number | null = null;
 const ss = ref('');
 const ms = ref('');
 const showColon = ref(false);
@@ -81,18 +82,34 @@ const tick = () => {
 	prevSec = ss.value;
 };
 
-tick();
-
-watch(() => widgetProps.showMs, () => {
-	if (intervalId) window.clearInterval(intervalId);
-	intervalId = window.setInterval(tick, widgetProps.showMs ? 10 : 1000);
-}, { immediate: true });
-
-onUnmounted(() => {
+const clearTimers = () => {
 	if (intervalId) {
 		window.clearInterval(intervalId);
 		intervalId = null;
 	}
+	if (rafRequestId) {
+		window.cancelAnimationFrame(rafRequestId);
+		rafRequestId = null;
+	}
+};
+
+tick();
+
+watch(() => widgetProps.showMs, (to) => {
+	clearTimers();
+
+	if (to) {
+		rafRequestId = window.requestAnimationFrame(function loop() {
+			tick();
+			rafRequestId = window.requestAnimationFrame(loop);
+		});
+	} else {
+		intervalId = window.setInterval(tick, 1000);
+	}
+}, { immediate: true });
+
+onUnmounted(() => {
+	clearTimers();
 });
 
 defineExpose<WidgetComponentExpose>({

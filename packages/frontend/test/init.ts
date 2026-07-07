@@ -7,17 +7,45 @@ import { vi } from 'vitest';
 import createFetchMock from 'vitest-fetch-mock';
 import type { Ref } from 'vue';
 import { ref } from 'vue';
-// Set i18n
-import locales from 'i18n';
-import { updateI18n } from '@/i18n.js';
 
 const fetchMocker = createFetchMock(vi);
 fetchMocker.enableMocks();
 
-updateI18n(locales['en-US']);
-
 // XXX: misskey-js panics if WebSocket is not defined
 vi.stubGlobal('WebSocket', class WebSocket extends EventTarget { static CLOSING = 2; });
+
+// XXX: localStorageがない場合がある
+const localStorageMock = (() => {
+	const store = new Map<string, string>();
+	return {
+		getItem(key: string) {
+			return store.get(key) ?? null;
+		},
+		setItem(key: string, value: string) {
+			store.set(key, value);
+		},
+		removeItem(key: string) {
+			store.delete(key);
+		},
+		clear() {
+			store.clear();
+		},
+	};
+})();
+vi.stubGlobal('localStorage', localStorageMock);
+
+// 中でlocalStorageを使うので上と順番を変えてはいけない
+const { default: locales } = await import('i18n');
+
+fetchMocker.mockIf(/^\/assets\/locales\/.*\.json$/, async () => {
+	return {
+		status: 200,
+		body: JSON.stringify(locales['en-US']),
+	};
+});
+
+const { updateI18n } = await import('@/i18n.js');
+updateI18n(locales['en-US']);
 
 export const preferState: Record<string, unknown> = {
 

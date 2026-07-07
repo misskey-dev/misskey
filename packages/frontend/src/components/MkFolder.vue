@@ -100,6 +100,7 @@ import { nextTick, onMounted, ref, useTemplateRef, watch } from 'vue';
 import { prefer } from '@/preferences.js';
 import { getBgColor } from '@/utility/get-bg-color.js';
 import { pageFolderTeleportCount, popup } from '@/os.js';
+import { themeManager } from '@/theme.js';
 import MkFolderPage from '@/components/MkFolderPage.vue';
 import { deviceKind } from '@/utility/device-kind.js';
 
@@ -192,9 +193,9 @@ async function toggle(ev: PointerEvent) {
 }
 
 onMounted(() => {
-	const computedStyle = getComputedStyle(window.document.documentElement);
+	const themeValue = themeManager.currentCompiledTheme!;
 	const parentBg = getBgColor(rootEl.value?.parentElement) ?? 'transparent';
-	const myBg = computedStyle.getPropertyValue('--MI_THEME-panel');
+	const myBg = themeValue.panel;
 	bgSame.value = parentBg === myBg;
 });
 

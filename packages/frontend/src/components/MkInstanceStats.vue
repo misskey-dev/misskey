@@ -73,6 +73,7 @@ import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
 import MkRetentionLineChart from '@/components/MkRetentionLineChart.vue';
 import { initChart } from '@/utility/init-chart.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
+import { themeManager } from '@/theme.js';
 
 initChart();
 
@@ -186,7 +187,7 @@ function createDoughnut(chartEl: HTMLCanvasElement, tooltip: ReturnType<typeof u
 			labels: data.map(x => x.name),
 			datasets: [{
 				backgroundColor: data.map(x => x.color),
-				borderColor: getComputedStyle(window.document.documentElement).getPropertyValue('--MI_THEME-panel'),
+				borderColor: themeManager.currentCompiledTheme!.panel,
 				borderWidth: 2,
 				hoverOffset: 0,
 				data: data.map(x => x.value),

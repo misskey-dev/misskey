@@ -170,6 +170,9 @@ export type ModerationLog = {
 	type: 'updateAbuseReportNote';
 	info: ModerationLogPayloads['updateAbuseReportNote'];
 } | {
+	type: 'unsetMfa';
+	info: ModerationLogPayloads['unsetMfa'];
+} | {
 	type: 'unsetUserAvatar';
 	info: ModerationLogPayloads['unsetUserAvatar'];
 } | {

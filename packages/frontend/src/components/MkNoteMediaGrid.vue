@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div
 		v-if="isHiding(file)"
 		:class="[$style.filePreview, { [$style.square]: square }]"
+		:data-scroll-anchor="`${note.id}:${file.id}`"
 		@click="reveal(file)"
 	>
 		<MkDriveFileThumbnail
@@ -26,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-	<MkA v-else :class="[$style.filePreview, { [$style.square]: square }]" :to="notePage(note)">
+	<MkA v-else :class="[$style.filePreview, { [$style.square]: square }]" :data-scroll-anchor="`${note.id}:${file.id}`" :to="notePage(note)">
 		<MkDriveFileThumbnail
 			:file="file"
 			fit="cover"

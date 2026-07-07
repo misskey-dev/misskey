@@ -1391,6 +1391,7 @@ schedule: "Agendar"
 scheduled: "Agendado"
 widgets: "Widgets"
 presets: "Predefinições"
+previewingThemeRestore: "Restaurar"
 _imageEditing:
   _vars:
     filename: "Nome do Ficheiro"

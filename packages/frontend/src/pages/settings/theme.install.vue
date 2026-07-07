@@ -20,7 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed } from 'vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkButton from '@/components/MkButton.vue';
-import { parseThemeCode, previewTheme, installTheme } from '@/theme.js';
+import { themeManager, installTheme, handleThemeInstallError } from '@/theme.js';
+import { parseThemeCode } from '@@/js/theme.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
@@ -28,6 +29,19 @@ import { useRouter } from '@/router.js';
 
 const router = useRouter();
 const installThemeCode = ref<string | null>(null);
+
+function previewTheme(code: string): void {
+	try {
+		const theme = parseThemeCode(code);
+		themeManager.previewTheme(theme);
+	} catch (err) {
+		os.alert({
+			type: 'error',
+			text: i18n.ts._theme.invalid,
+		});
+		console.error(err);
+	}
+}
 
 async function install(code: string): Promise<void> {
 	try {
@@ -40,22 +54,7 @@ async function install(code: string): Promise<void> {
 		installThemeCode.value = null;
 		router.push('/settings/theme');
 	} catch (err: any) {
-		switch (err.message.toLowerCase()) {
-			case 'this theme is already installed':
-				os.alert({
-					type: 'info',
-					text: i18n.ts._theme.alreadyInstalled,
-				});
-				break;
-
-			default:
-				os.alert({
-					type: 'error',
-					text: i18n.ts._theme.invalid,
-				});
-				break;
-		}
-		console.error(err);
+		handleThemeInstallError(err);
 	}
 }
 
