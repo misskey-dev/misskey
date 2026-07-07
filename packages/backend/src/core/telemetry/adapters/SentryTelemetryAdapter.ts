@@ -9,6 +9,7 @@ import type { TelemetryAdapter, TelemetryCaptureMessageOptions } from './Telemet
 type SentryIntegrationsOption = NonNullable<import('@sentry/node').NodeOptions['integrations']>;
 type SentryIntegrationFactory = Extract<SentryIntegrationsOption, (integrations: any[]) => any[]>;
 type SentryIntegration = Parameters<SentryIntegrationFactory>[0][number];
+type SentryNodeOptions = import('@sentry/node').NodeOptions;
 
 type BuildSentryIntegrationsOptions = {
 	disabledIntegrations?: string[];
@@ -34,6 +35,33 @@ export function buildSentryIntegrations(options: BuildSentryIntegrationsOptions)
 	};
 }
 
+export function buildSentryNodeOptions(
+	config: NonNullable<Config['sentryForBackend']>,
+	nodeProfilingIntegration?: () => SentryIntegration,
+): SentryNodeOptions {
+	return {
+		// Do not send Sentry trace headers to remote ActivityPub/Webhook/etc. hosts by default.
+		// Admins can opt in for trusted internal services via sentryForBackend.options.
+		tracePropagationTargets: [],
+
+		// Performance Monitoring
+		tracesSampleRate: 1.0, //  Capture 100% of the transactions
+
+		// Set sampling rate for profiling - this is relative to tracesSampleRate
+		profilesSampleRate: 1.0,
+
+		maxBreadcrumbs: 0,
+
+		...config.options,
+
+		integrations: buildSentryIntegrations({
+			disabledIntegrations: config.disabledIntegrations,
+			enableNodeProfiling: config.enableNodeProfiling,
+			nodeProfilingIntegration,
+		}),
+	};
+}
+
 export class SentryTelemetryAdapter implements TelemetryAdapter {
 	private constructor(
 		private readonly Sentry: typeof import('@sentry/node'),
@@ -44,23 +72,7 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 		const Sentry = await import('@sentry/node');
 		const { nodeProfilingIntegration } = await import('@sentry/profiling-node');
 
-		Sentry.init({
-			// Performance Monitoring
-			tracesSampleRate: 1.0, //  Capture 100% of the transactions
-
-			// Set sampling rate for profiling - this is relative to tracesSampleRate
-			profilesSampleRate: 1.0,
-
-			maxBreadcrumbs: 0,
-
-			...config.options,
-
-			integrations: buildSentryIntegrations({
-				disabledIntegrations: config.disabledIntegrations,
-				enableNodeProfiling: config.enableNodeProfiling,
-				nodeProfilingIntegration,
-			}),
-		});
+		Sentry.init(buildSentryNodeOptions(config, nodeProfilingIntegration));
 
 		return new SentryTelemetryAdapter(Sentry);
 	}
