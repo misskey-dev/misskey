@@ -33,7 +33,7 @@ pnpm build
 pnpm e2e                # 内部で pnpm start:test を起動し http://localhost:61812 を待って Playwright を実行
 ```
 
-- 設定: ルート [playwright.config.ts](../../../../../packages/frontend/playwright.config.ts) で、`packages/frontend/test/e2e/` 配下の `*.spec.ts` を対象にする
+- 設定: ルート [packages/frontend/playwright.config.ts](../../../../../packages/frontend/playwright.config.ts) で、`packages/frontend/test/e2e/` 配下の `*.spec.ts` を対象にする
 - テスト本体は [packages/frontend/test/e2e/](../../../../../packages/frontend/test/e2e/) 配下に配置する。
 
 新規 frontend 機能の E2E は Playwright に書くのが基本。ただし対象は主要 UI フロー (login / post / drive etc) に限定し、細かい単位テストは Vitest または Storybook で代替する慣習。
