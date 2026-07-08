@@ -20,13 +20,12 @@ export const followAppendDirective = {
 		let isBottom = true;
 
 		const container = getScrollContainer(src)!;
-		const scrollHandler = () => {
+		container.addEventListener('scroll', () => {
 			const pos = getScrollPosition(container);
 			const viewHeight = container.clientHeight;
 			const height = container.scrollHeight;
 			isBottom = (pos + viewHeight > height - 32);
-		};
-		container.addEventListener('scroll', scrollHandler, { passive: true, signal: abortController.signal });
+		}, { passive: true, signal: abortController.signal });
 		container.scrollTop = container.scrollHeight;
 
 		const ro = new ResizeObserver(() => {
