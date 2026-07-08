@@ -7,30 +7,38 @@ import type { Directive } from 'vue';
 import { makeHotkey } from '@/utility/hotkey.js';
 import type { Keymap } from '@/utility/hotkey.js';
 
-interface HTMLElementWithHotkey extends HTMLElement {
-	_hotkey_global?: boolean;
-	_keyHandler?: (ev: KeyboardEvent) => void;
-}
+const states = new WeakMap<HTMLElement, {
+	isGlobal: boolean;
+	keyHandler: (ev: KeyboardEvent) => void;
+}>();
 
 export const hotkeyDirective = {
 	mounted(el, binding) {
-		el._hotkey_global = binding.modifiers.global === true;
+		const isGlobal = (binding.modifiers.global === true);
+		const keyHandler = makeHotkey(binding.value);
 
-		el._keyHandler = makeHotkey(binding.value);
-
-		if (el._hotkey_global) {
-			window.document.addEventListener('keydown', el._keyHandler, { passive: false });
+		if (isGlobal) {
+			window.document.addEventListener('keydown', keyHandler, { passive: false });
 		} else {
-			el.addEventListener('keydown', el._keyHandler, { passive: false });
+			el.addEventListener('keydown', keyHandler, { passive: false });
 		}
+
+		states.set(el, {
+			isGlobal,
+			keyHandler,
+		});
 	},
 
-	unmounted(el) {
-		if (el._keyHandler == null) return;
-		if (el._hotkey_global) {
-			window.document.removeEventListener('keydown', el._keyHandler);
+	beforeUnmount(el) {
+		const state = states.get(el);
+		if (!state) return;
+
+		if (state.isGlobal) {
+			window.document.removeEventListener('keydown', state.keyHandler);
 		} else {
-			el.removeEventListener('keydown', el._keyHandler);
+			el.removeEventListener('keydown', state.keyHandler);
 		}
+
+		states.delete(el);
 	},
-} as Directive<HTMLElementWithHotkey, Keymap>;
+} as Directive<HTMLElement, Keymap>;

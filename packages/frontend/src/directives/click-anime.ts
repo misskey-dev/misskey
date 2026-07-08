@@ -6,6 +6,14 @@
 import type { Directive } from 'vue';
 import { prefer } from '@/preferences.js';
 
+type ClickAnimeDirectiveState = {
+	mousedownHandler: (ev: MouseEvent) => void;
+	clickHandler: (ev: MouseEvent) => void;
+	animationendHandler: (ev: AnimationEvent) => void;
+};
+
+const states = new WeakMap<HTMLElement, ClickAnimeDirectiveState>();
+
 export const clickAnimeDirective = {
 	mounted(el) {
 		if (!prefer.s.animation) return;
@@ -16,7 +24,7 @@ export const clickAnimeDirective = {
 
 		target.classList.add('_anime_bounce_standBy');
 
-		el.addEventListener('mousedown', () => {
+		const mousedownHandler = () => {
 			target.classList.remove('_anime_bounce');
 
 			target.classList.add('_anime_bounce_standBy');
@@ -25,16 +33,38 @@ export const clickAnimeDirective = {
 			target.addEventListener('mouseleave', () => {
 				target.classList.remove('_anime_bounce_ready');
 			});
-		});
+		};
 
-		el.addEventListener('click', () => {
+		const clickHandler = () => {
 			target.classList.add('_anime_bounce');
 			target.classList.remove('_anime_bounce_ready');
-		});
+		};
 
-		el.addEventListener('animationend', () => {
+		const animationendHandler = () => {
 			target.classList.remove('_anime_bounce');
 			target.classList.add('_anime_bounce_standBy');
+		};
+
+		el.addEventListener('mousedown', mousedownHandler);
+		el.addEventListener('click', clickHandler);
+		el.addEventListener('animationend', animationendHandler);
+
+		states.set(el, {
+			mousedownHandler,
+			clickHandler,
+			animationendHandler,
 		});
+	},
+
+	beforeUnmount(el) {
+		if (!prefer.s.animation) return;
+
+		const state = states.get(el);
+		if (state == null) return;
+
+		el.removeEventListener('mousedown', state.mousedownHandler);
+		el.removeEventListener('click', state.clickHandler);
+		el.removeEventListener('animationend', state.animationendHandler);
+		states.delete(el);
 	},
 } as Directive<HTMLElement>;

@@ -6,9 +6,11 @@
 import type { Directive } from 'vue';
 import { getScrollContainer, getScrollPosition } from '@@/js/scroll.js';
 
-interface HTMLElementWithRO extends HTMLElement {
-	_ro_?: ResizeObserver;
-}
+const states = new WeakMap<HTMLElement, {
+	observer: ResizeObserver;
+	scrollHandlerTarget: HTMLElement;
+	scrollHandler: (ev: Event) => void;
+}>();
 
 export const followAppendDirective = {
 	mounted(src, binding) {
@@ -17,15 +19,16 @@ export const followAppendDirective = {
 		let isBottom = true;
 
 		const container = getScrollContainer(src)!;
-		container.addEventListener('scroll', () => {
+		const scrollHandler = () => {
 			const pos = getScrollPosition(container);
 			const viewHeight = container.clientHeight;
 			const height = container.scrollHeight;
 			isBottom = (pos + viewHeight > height - 32);
-		}, { passive: true });
+		};
+		container.addEventListener('scroll', scrollHandler, { passive: true });
 		container.scrollTop = container.scrollHeight;
 
-		const ro = new ResizeObserver((entries, observer) => {
+		const ro = new ResizeObserver(() => {
 			if (isBottom) {
 				const height = container.scrollHeight;
 				container.scrollTop = height;
@@ -34,11 +37,19 @@ export const followAppendDirective = {
 
 		ro.observe(src);
 
-		// TODO: 新たにプロパティを作るのをやめMapを使う
-		src._ro_ = ro;
+		states.set(src, {
+			observer: ro,
+			scrollHandlerTarget: container,
+			scrollHandler,
+		});
 	},
 
-	unmounted(src) {
-		if (src._ro_) src._ro_.unobserve(src);
+	beforeUnmount(src) {
+		const state = states.get(src);
+		if (!state) return;
+
+		state.observer.disconnect();
+		state.scrollHandlerTarget.removeEventListener('scroll', state.scrollHandler);
+		states.delete(src);
 	},
-} as Directive<HTMLElementWithRO, boolean>;
+} as Directive<HTMLElement, boolean>;
