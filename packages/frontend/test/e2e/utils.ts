@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Locator, Page, APIRequestContext } from 'playwright';
+import type { Locator, Page } from 'playwright';
 
 export const BASE_URL = 'http://localhost:61812';
 export const ADMIN_SETUP_PASSWORD = 'example_password_please_change_this_or_you_will_get_hacked';

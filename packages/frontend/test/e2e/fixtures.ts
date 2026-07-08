@@ -28,6 +28,9 @@ export const test = base.extend<{ _installIgnorableErrorHandlers: void }>({
 					event.preventDefault();
 				}
 			});
+
+			//@ts-ignore
+			window.isPlaywright = true;
 		}, [...IGNORABLE_ERROR_MESSAGES]);
 
 		// Playwright側で収集されるページエラーも同じ基準で握りつぶす。
