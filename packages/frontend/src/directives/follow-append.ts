@@ -8,13 +8,14 @@ import { getScrollContainer, getScrollPosition } from '@@/js/scroll.js';
 
 const states = new WeakMap<HTMLElement, {
 	observer: ResizeObserver;
-	scrollHandlerTarget: HTMLElement;
-	scrollHandler: (ev: Event) => void;
+	abortController: AbortController;
 }>();
 
 export const followAppendDirective = {
 	mounted(src, binding) {
 		if (binding.value === false) return;
+
+		const abortController = new AbortController();
 
 		let isBottom = true;
 
@@ -25,7 +26,7 @@ export const followAppendDirective = {
 			const height = container.scrollHeight;
 			isBottom = (pos + viewHeight > height - 32);
 		};
-		container.addEventListener('scroll', scrollHandler, { passive: true });
+		container.addEventListener('scroll', scrollHandler, { passive: true, signal: abortController.signal });
 		container.scrollTop = container.scrollHeight;
 
 		const ro = new ResizeObserver(() => {
@@ -39,8 +40,7 @@ export const followAppendDirective = {
 
 		states.set(src, {
 			observer: ro,
-			scrollHandlerTarget: container,
-			scrollHandler,
+			abortController,
 		});
 	},
 
@@ -49,7 +49,7 @@ export const followAppendDirective = {
 		if (!state) return;
 
 		state.observer.disconnect();
-		state.scrollHandlerTarget.removeEventListener('scroll', state.scrollHandler);
+		state.abortController.abort();
 		states.delete(src);
 	},
 } as Directive<HTMLElement, boolean>;

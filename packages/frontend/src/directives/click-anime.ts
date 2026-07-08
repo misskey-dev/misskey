@@ -6,13 +6,7 @@
 import type { Directive } from 'vue';
 import { prefer } from '@/preferences.js';
 
-type ClickAnimeDirectiveState = {
-	mousedownHandler: (ev: MouseEvent) => void;
-	clickHandler: (ev: MouseEvent) => void;
-	animationendHandler: (ev: AnimationEvent) => void;
-};
-
-const states = new WeakMap<HTMLElement, ClickAnimeDirectiveState>();
+const abortControllers = new WeakMap<HTMLElement, AbortController>();
 
 export const clickAnimeDirective = {
 	mounted(el) {
@@ -22,9 +16,12 @@ export const clickAnimeDirective = {
 
 		if (target == null) return;
 
+		const abortController = new AbortController();
+		abortControllers.set(el, abortController);
+
 		target.classList.add('_anime_bounce_standBy');
 
-		const mousedownHandler = () => {
+		el.addEventListener('mousedown', () => {
 			target.classList.remove('_anime_bounce');
 
 			target.classList.add('_anime_bounce_standBy');
@@ -33,38 +30,26 @@ export const clickAnimeDirective = {
 			target.addEventListener('mouseleave', () => {
 				target.classList.remove('_anime_bounce_ready');
 			});
-		};
+		}, { signal: abortController.signal });
 
-		const clickHandler = () => {
+		el.addEventListener('click', () => {
 			target.classList.add('_anime_bounce');
 			target.classList.remove('_anime_bounce_ready');
-		};
+		}, { signal: abortController.signal });
 
-		const animationendHandler = () => {
+		el.addEventListener('animationend', () => {
 			target.classList.remove('_anime_bounce');
 			target.classList.add('_anime_bounce_standBy');
-		};
-
-		el.addEventListener('mousedown', mousedownHandler);
-		el.addEventListener('click', clickHandler);
-		el.addEventListener('animationend', animationendHandler);
-
-		states.set(el, {
-			mousedownHandler,
-			clickHandler,
-			animationendHandler,
-		});
+		}, { signal: abortController.signal });
 	},
 
 	beforeUnmount(el) {
 		if (!prefer.s.animation) return;
 
-		const state = states.get(el);
-		if (state == null) return;
-
-		el.removeEventListener('mousedown', state.mousedownHandler);
-		el.removeEventListener('click', state.clickHandler);
-		el.removeEventListener('animationend', state.animationendHandler);
-		states.delete(el);
+		const abortController = abortControllers.get(el);
+		if (abortController) {
+			abortController.abort();
+			abortControllers.delete(el);
+		}
 	},
 } as Directive<HTMLElement>;

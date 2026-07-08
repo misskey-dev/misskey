@@ -20,13 +20,9 @@ type TooltipDirectiveState = {
 	show: () => void;
 	close: () => void;
 
+	abortController: AbortController;
 	showTimer: number | null;
 	hideTimer: number | null;
-	checkTimer: number | null;
-	dialogClickHandler?: (ev: MouseEvent) => void;
-	selectstartHandler?: (ev: Event) => void;
-	hoverStartHandler?: (ev: Event) => void;
-	hoverEndHandler?: (ev: Event) => void;
 };
 
 const states = new WeakMap<HTMLElement, TooltipDirectiveState>();
@@ -41,31 +37,30 @@ export const tooltipDirective = {
 		const state = {
 			text: binding.value,
 			_close: null,
+			abortController: new AbortController(),
 			showTimer: null,
 			hideTimer: null,
-			checkTimer: null,
 		} as TooltipDirectiveState;
 
 		state.close = () => {
 			if (state._close) {
-				if (state.checkTimer) window.clearInterval(state.checkTimer);
 				state._close();
 				state._close = null;
 			}
 		};
 
 		if (binding.arg === 'dialog') {
-			state.dialogClickHandler = (ev) => {
-				if (binding.value == null) return;
+			el.addEventListener('click', (ev) => {
+				const text = state.text ?? undefined;
+				if (text == null) return;
 				ev.preventDefault();
 				ev.stopPropagation();
 				alert({
 					type: 'info',
-					text: binding.value,
+					text,
 				});
 				return false;
-			};
-			el.addEventListener('click', state.dialogClickHandler);
+			}, { signal: state.abortController.signal });
 		}
 
 		state.show = () => {
@@ -89,11 +84,11 @@ export const tooltipDirective = {
 			};
 		};
 
-		state.selectstartHandler = (ev) => {
+		el.addEventListener('selectstart', (ev) => {
 			ev.preventDefault();
-		};
+		}, { signal: state.abortController.signal });
 
-		state.hoverStartHandler = (ev) => {
+		el.addEventListener(start, () => {
 			if (state.showTimer) window.clearTimeout(state.showTimer);
 			if (state.hideTimer) window.clearTimeout(state.hideTimer);
 			if (delay === 0) {
@@ -101,9 +96,9 @@ export const tooltipDirective = {
 			} else {
 				state.showTimer = window.setTimeout(state.show, delay);
 			}
-		};
+		}, { passive: true, signal: state.abortController.signal });
 
-		state.hoverEndHandler = (ev) => {
+		el.addEventListener(end, () => {
 			if (state.showTimer) window.clearTimeout(state.showTimer);
 			if (state.hideTimer) window.clearTimeout(state.hideTimer);
 			if (delay === 0) {
@@ -111,12 +106,12 @@ export const tooltipDirective = {
 			} else {
 				state.hideTimer = window.setTimeout(state.close, delay);
 			}
-		};
+		}, { passive: true, signal: state.abortController.signal });
 
-		el.addEventListener(start, state.hoverStartHandler, { passive: true });
-		el.addEventListener(end, state.hoverEndHandler, { passive: true });
-		el.addEventListener('click', state.close, { passive: true });
-		el.addEventListener('selectstart', state.selectstartHandler);
+		el.addEventListener('click', () => {
+			if (state.showTimer) window.clearTimeout(state.showTimer);
+			state.close();
+		}, { passive: true, signal: state.abortController.signal });
 
 		states.set(el, state);
 	},
@@ -133,14 +128,9 @@ export const tooltipDirective = {
 
 		if (state.showTimer) window.clearTimeout(state.showTimer);
 		if (state.hideTimer) window.clearTimeout(state.hideTimer);
-		if (state.checkTimer) window.clearInterval(state.checkTimer);
 
 		state.close();
-
-		if (state.dialogClickHandler) el.removeEventListener('click', state.dialogClickHandler);
-		if (state.hoverStartHandler) el.removeEventListener(start, state.hoverStartHandler);
-		if (state.hoverEndHandler) el.removeEventListener(end, state.hoverEndHandler);
-		if (state.selectstartHandler) el.removeEventListener('selectstart', state.selectstartHandler);
+		state.abortController.abort();
 
 		states.delete(el);
 	},

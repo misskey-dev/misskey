@@ -9,6 +9,7 @@ import { prefer } from '@/preferences.js';
 import { popup } from '@/os.js';
 
 const handlers = new WeakMap<HTMLElement, (ev: MouseEvent) => void>();
+const abortControllers = new WeakMap<HTMLElement, AbortController>();
 
 export const rippleDirective = {
 	mounted(el, binding) {
@@ -16,7 +17,9 @@ export const rippleDirective = {
 		if (binding.value === false) return;
 		if (!prefer.s.animation) return;
 
-		const clickHandler = () => {
+		const abortController = new AbortController();
+
+		el.addEventListener('click', () => {
 			const rect = el.getBoundingClientRect();
 
 			const x = rect.left + (el.offsetWidth / 2);
@@ -25,17 +28,16 @@ export const rippleDirective = {
 			const { dispose } = popup(MkRippleEffect, { x, y }, {
 				end: () => dispose(),
 			});
-		};
+		}, { passive: true, signal: abortController.signal });
 
-		el.addEventListener('click', clickHandler, { passive: true });
-		handlers.set(el, clickHandler);
+		abortControllers.set(el, abortController);
 	},
 
 	beforeUnmount(el) {
-		const clickHandler = handlers.get(el);
-		if (clickHandler) {
-			el.removeEventListener('click', clickHandler);
-			handlers.delete(el);
+		const abortController = abortControllers.get(el);
+		if (abortController) {
+			abortController.abort();
+			abortControllers.delete(el);
 		}
 	},
 } as Directive<HTMLElement, boolean | null | undefined>;

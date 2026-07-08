@@ -7,38 +7,28 @@ import type { Directive } from 'vue';
 import { makeHotkey } from '@/utility/hotkey.js';
 import type { Keymap } from '@/utility/hotkey.js';
 
-const states = new WeakMap<HTMLElement, {
-	isGlobal: boolean;
-	keyHandler: (ev: KeyboardEvent) => void;
-}>();
+const abortControllers = new WeakMap<HTMLElement, AbortController>();
 
 export const hotkeyDirective = {
 	mounted(el, binding) {
 		const isGlobal = (binding.modifiers.global === true);
 		const keyHandler = makeHotkey(binding.value);
+		const abortController = new AbortController();
 
 		if (isGlobal) {
-			window.document.addEventListener('keydown', keyHandler, { passive: false });
+			window.document.addEventListener('keydown', keyHandler, { passive: false, signal: abortController.signal });
 		} else {
-			el.addEventListener('keydown', keyHandler, { passive: false });
+			el.addEventListener('keydown', keyHandler, { passive: false, signal: abortController.signal });
 		}
 
-		states.set(el, {
-			isGlobal,
-			keyHandler,
-		});
+		abortControllers.set(el, abortController);
 	},
 
 	beforeUnmount(el) {
-		const state = states.get(el);
-		if (!state) return;
-
-		if (state.isGlobal) {
-			window.document.removeEventListener('keydown', state.keyHandler);
-		} else {
-			el.removeEventListener('keydown', state.keyHandler);
+		const abortController = abortControllers.get(el);
+		if (abortController) {
+			abortController.abort();
+			abortControllers.delete(el);
 		}
-
-		states.delete(el);
 	},
 } as Directive<HTMLElement, Keymap>;
