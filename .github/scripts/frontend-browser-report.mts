@@ -140,19 +140,22 @@ function metricRow(
 	getSummaryValue: (summary: BrowserMeasurement) => number,
 	getSampleValue: (sample: BrowserMeasurementSample) => number,
 	formatter: (value: number) => string,
-	colorThreshold = 0
+	significantThreshold = 0
 ) {
 	const baseValue = getSummaryValue(base.summary);
 	const headValue = getSummaryValue(head.summary);
 	if (baseValue == null || headValue == null || !Number.isFinite(baseValue) || !Number.isFinite(headValue)) return null;
 
 	const summary = util.pairedDeltaSummary(base.samples, head.samples, sample => getSampleValue(sample));
+	// 有意な閾値に満たない場合はそもそもrowとして出力しない
+	if (summary == null || Math.abs(summary.median) < significantThreshold) return null;
+
 	const percent = baseValue === 0 ? null : summary.median * 100 / baseValue;
 	//const deltaMedian = `${formatDelta(summary.median, formatter, colorThreshold)}<br>${percent == null ? '-' : util.formatDeltaPercent(percent, 0.1).replaceAll('\\%', '\\\\%')}`;
-	const deltaMedian = formatDelta(summary.median, formatter, colorThreshold);
+	const deltaMedian = formatDelta(summary.median, formatter, significantThreshold);
 
 	//return `| **${label}** | ${formatValueWithSpread(base, baseValue, getSampleValue, formatter)} | ${formatValueWithSpread(head, headValue, getSampleValue, formatter)} | ${deltaMedian} | ${summary == null ? '-' : formatter(summary.mad)} | ${summary == null ? '-' : formatDelta(summary.min, formatter)} | ${summary == null ? '-' : formatDelta(summary.max, formatter)} |`;
-	return `| **${label}** | ${formatter(baseValue)} | ${formatter(headValue)} | ${deltaMedian} | ${summary == null ? '-' : formatter(summary.mad)} | ${summary == null ? '-' : formatDelta(summary.min, formatter, colorThreshold)} | ${summary == null ? '-' : formatDelta(summary.max, formatter, colorThreshold)} |`;
+	return `| **${label}** | ${formatter(baseValue)} | ${formatter(headValue)} | ${deltaMedian} | ${summary == null ? '-' : formatter(summary.mad)} | ${summary == null ? '-' : formatDelta(summary.min, formatter, significantThreshold)} | ${summary == null ? '-' : formatDelta(summary.max, formatter, significantThreshold)} |`;
 }
 
 function resourceTypeBytes(report: BrowserMeasurement, resourceTypes: string[]) {
@@ -315,6 +318,8 @@ export function renderFrontendBrowserReport(base: BrowserMetricsReport, head: Br
 	const heapSnapshotTable = heapSnapshotUtil.renderHeapSnapshotTable(toHeapSnapshotReport(base), toHeapSnapshotReport(head));
 	const lines = [
 		'## 🖥 Frontend Browser Metrics',
+		'',
+		'Only metrics showing significant changes are displayed.',
 		'',
 		renderSummaryTable(base, head),
 		'',
