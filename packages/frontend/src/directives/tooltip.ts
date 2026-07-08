@@ -115,10 +115,8 @@ export const tooltipDirective = {
 			}
 		};
 
-		el.addEventListener('mouseover', self.hoverStartHandler, { passive: true });
-		el.addEventListener('mouseleave', self.hoverEndHandler, { passive: true });
-		el.addEventListener('touchstart', self.hoverStartHandler, { passive: true });
-		el.addEventListener('touchend', self.hoverEndHandler, { passive: true });
+		el.addEventListener(start, self.hoverStartHandler, { passive: true });
+		el.addEventListener(end, self.hoverEndHandler, { passive: true });
 		el.addEventListener('click', self.close, { passive: true });
 		el.addEventListener('selectstart', self.selectstartHandler);
 	},
@@ -137,14 +135,8 @@ export const tooltipDirective = {
 		if (self.checkTimer) window.clearTimeout(self.checkTimer);
 		if (self.dialogClickHandler) el.removeEventListener('click', self.dialogClickHandler);
 		if (self.selectstartHandler) el.removeEventListener('selectstart', self.selectstartHandler);
-		if (self.hoverStartHandler) {
-			el.removeEventListener('mouseover', self.hoverStartHandler);
-			el.removeEventListener('touchstart', self.hoverStartHandler);
-		}
-		if (self.hoverEndHandler) {
-			el.removeEventListener('mouseleave', self.hoverEndHandler);
-			el.removeEventListener('touchend', self.hoverEndHandler);
-		}
+		if (self.hoverStartHandler) el.removeEventListener(start, self.hoverStartHandler);
+		if (self.hoverEndHandler) el.removeEventListener(end, self.hoverEndHandler);
 		self.close();
 	},
 } as Directive<TooltipDirectiveElement, string | null | undefined, TooltipDirectiveModifiers, TooltipDirectiveArg>;
