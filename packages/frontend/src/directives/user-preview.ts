@@ -113,8 +113,7 @@ export const userPreviewDirective = {
 		if (binding.value == null) return;
 		if (isTouchUsing) return;
 
-		// TODO: 新たにプロパティを作るのをやめMapを使う
-		// ただメモリ的には↓の方が省メモリかもしれないので検討中
+		// メモリ的にはWeakMapを使わずに要素にプロパティを生やしたほうが省メモリかもしれないので検討中
 		const preview = new UserPreview(el, binding.value);
 		states.set(el, preview);
 	},
