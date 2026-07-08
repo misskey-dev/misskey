@@ -140,7 +140,8 @@ function metricRow(
 	getSummaryValue: (summary: BrowserMeasurement) => number,
 	getSampleValue: (sample: BrowserMeasurementSample) => number,
 	formatter: (value: number) => string,
-	significantThreshold = 0
+	significantThreshold = 0,
+	skipIfNotSignificant = true
 ) {
 	const baseValue = getSummaryValue(base.summary);
 	const headValue = getSummaryValue(head.summary);
@@ -148,7 +149,7 @@ function metricRow(
 
 	const summary = util.pairedDeltaSummary(base.samples, head.samples, sample => getSampleValue(sample));
 	// 有意な閾値に満たない場合はそもそもrowとして出力しない
-	if (Math.abs(summary.median) < significantThreshold) return null;
+	if (skipIfNotSignificant && (Math.abs(summary.median) < significantThreshold)) return null;
 
 	const percent = baseValue === 0 ? null : summary.median * 100 / baseValue;
 	//const deltaMedian = `${formatDelta(summary.median, formatter, colorThreshold)}<br>${percent == null ? '-' : util.formatDeltaPercent(percent, 0.1).replaceAll('\\%', '\\\\%')}`;
@@ -170,20 +171,20 @@ function getMetric(report: BrowserMeasurement, key: string) {
 	return report.performance.cdpMetrics[key];
 }
 
-function renderSummaryTable(base: BrowserMetricsReport, head: BrowserMetricsReport) {
+function renderSummaryTable(base: BrowserMetricsReport, head: BrowserMetricsReport, all = false) {
 	const rows = [
 		//metricRow('Scenario duration', base, head, summary => summary.durationMs, sample => sample.durationMs, formatMs),
-		metricRow('Requests', base, head, summary => summary.network.requestCount, sample => sample.network.requestCount, util.formatNumber, 1),
+		metricRow('Requests', base, head, summary => summary.network.requestCount, sample => sample.network.requestCount, util.formatNumber, 1, !all),
 		//metricRow('Failed requests', base, head, summary => summary.network.failedRequestCount, sample => sample.network.failedRequestCount, util.formatNumber),
-		metricRow('Encoded network', base, head, summary => summary.network.totalEncodedBytes, sample => sample.network.totalEncodedBytes, util.formatBytes, 10000),
-		metricRow('Decoded body', base, head, summary => summary.network.totalDecodedBodyBytes, sample => sample.network.totalDecodedBodyBytes, util.formatBytes, 10000),
-		metricRow('Same-origin encoded', base, head, summary => summary.network.sameOriginEncodedBytes, sample => sample.network.sameOriginEncodedBytes, util.formatBytes, 10000),
-		metricRow('Third-party encoded', base, head, summary => summary.network.thirdPartyEncodedBytes, sample => sample.network.thirdPartyEncodedBytes, util.formatBytes, 10000),
-		metricRow('Script encoded', base, head, summary => resourceTypeBytes(summary, ['Script']), sample => resourceTypeSampleBytes(sample, ['Script']), util.formatBytes, 10000),
-		metricRow('Stylesheet encoded', base, head, summary => resourceTypeBytes(summary, ['Stylesheet']), sample => resourceTypeSampleBytes(sample, ['Stylesheet']), util.formatBytes, 10000),
-		metricRow('Fetch/XHR encoded', base, head, summary => resourceTypeBytes(summary, ['Fetch', 'XHR']), sample => resourceTypeSampleBytes(sample, ['Fetch', 'XHR']), util.formatBytes, 10000),
-		metricRow('Image encoded', base, head, summary => resourceTypeBytes(summary, ['Image']), sample => resourceTypeSampleBytes(sample, ['Image']), util.formatBytes, 10000),
-		metricRow('Font encoded', base, head, summary => resourceTypeBytes(summary, ['Font']), sample => resourceTypeSampleBytes(sample, ['Font']), util.formatBytes, 10000),
+		metricRow('Encoded network', base, head, summary => summary.network.totalEncodedBytes, sample => sample.network.totalEncodedBytes, util.formatBytes, 10000, !all),
+		metricRow('Decoded body', base, head, summary => summary.network.totalDecodedBodyBytes, sample => sample.network.totalDecodedBodyBytes, util.formatBytes, 10000, !all),
+		metricRow('Same-origin encoded', base, head, summary => summary.network.sameOriginEncodedBytes, sample => sample.network.sameOriginEncodedBytes, util.formatBytes, 10000, !all),
+		metricRow('Third-party encoded', base, head, summary => summary.network.thirdPartyEncodedBytes, sample => sample.network.thirdPartyEncodedBytes, util.formatBytes, 10000, !all),
+		metricRow('Script encoded', base, head, summary => resourceTypeBytes(summary, ['Script']), sample => resourceTypeSampleBytes(sample, ['Script']), util.formatBytes, 10000, !all),
+		metricRow('Stylesheet encoded', base, head, summary => resourceTypeBytes(summary, ['Stylesheet']), sample => resourceTypeSampleBytes(sample, ['Stylesheet']), util.formatBytes, 10000, !all),
+		metricRow('Fetch/XHR encoded', base, head, summary => resourceTypeBytes(summary, ['Fetch', 'XHR']), sample => resourceTypeSampleBytes(sample, ['Fetch', 'XHR']), util.formatBytes, 10000, !all),
+		metricRow('Image encoded', base, head, summary => resourceTypeBytes(summary, ['Image']), sample => resourceTypeSampleBytes(sample, ['Image']), util.formatBytes, 10000, !all),
+		metricRow('Font encoded', base, head, summary => resourceTypeBytes(summary, ['Font']), sample => resourceTypeSampleBytes(sample, ['Font']), util.formatBytes, 10000, !all),
 		//metricRow('First contentful paint', base, head, summary => summary.performance.webVitals.firstContentfulPaintMs, sample => sample.performance.webVitals.firstContentfulPaintMs, formatMs),
 		//metricRow('Load event end', base, head, summary => summary.performance.webVitals.loadEventEndMs, sample => sample.performance.webVitals.loadEventEndMs, formatMs),
 		//metricRow('Long tasks', base, head, summary => summary.performance.webVitals.longTaskCount, sample => sample.performance.webVitals.longTaskCount, util.formatNumber),
@@ -199,10 +200,10 @@ function renderSummaryTable(base: BrowserMetricsReport, head: BrowserMetricsRepo
 		//metricRow('Recalc style count', base, head, summary => getMetric(summary, 'RecalcStyleCount'), sample => getMetric(sample, 'RecalcStyleCount'), util.formatNumber),
 		//metricRow('Script duration', base, head, summary => getMetric(summary, 'ScriptDuration'), sample => getMetric(sample, 'ScriptDuration'), formatSecondsAsMs),
 		//metricRow('Task duration', base, head, summary => getMetric(summary, 'TaskDuration'), sample => getMetric(sample, 'TaskDuration'), formatSecondsAsMs),
-		metricRow('WebSocket connections', base, head, summary => summary.network.webSocketConnectionCount, sample => sample.network.webSocketConnectionCount, util.formatNumber, 1),
-		metricRow('WebSocket sent', base, head, summary => summary.network.webSocketSentBytes, sample => sample.network.webSocketSentBytes, util.formatBytes, 10000),
-		metricRow('WebSocket received', base, head, summary => summary.network.webSocketReceivedBytes, sample => sample.network.webSocketReceivedBytes, util.formatBytes, 10000),
-		metricRow('Tab memory', base, head, summary => summary.performance.tabMemory.totalBytes, sample => sample.performance.tabMemory.totalBytes, util.formatBytes, 10000),
+		metricRow('WebSocket connections', base, head, summary => summary.network.webSocketConnectionCount, sample => sample.network.webSocketConnectionCount, util.formatNumber, 1, !all),
+		metricRow('WebSocket sent', base, head, summary => summary.network.webSocketSentBytes, sample => sample.network.webSocketSentBytes, util.formatBytes, 10000, !all),
+		metricRow('WebSocket received', base, head, summary => summary.network.webSocketReceivedBytes, sample => sample.network.webSocketReceivedBytes, util.formatBytes, 10000, !all),
+		metricRow('Tab memory', base, head, summary => summary.performance.tabMemory.totalBytes, sample => sample.performance.tabMemory.totalBytes, util.formatBytes, 10000, !all),
 	].filter(row => row != null);
 
 	return [
