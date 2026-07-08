@@ -6,9 +6,11 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { describe, beforeAll, test } from 'vitest';
+import { describe, beforeAll, test, vi } from 'vitest';
 import { api, castAsError, post, signup } from '../utils.js';
 import type * as misskey from 'misskey-js';
+
+const waitForPushToTlOptions = { timeout: 3000, interval: 25 };
 
 describe('Block', () => {
 	// alice blocks bob
@@ -75,13 +77,15 @@ describe('Block', () => {
 		const bobNote = await post(bob, { text: 'hi' });
 		const carolNote = await post(carol, { text: 'hi' });
 
-		const res = await api('notes/local-timeline', {}, bob);
-		const body = res.body as misskey.entities.Note[];
+		await vi.waitFor(async () => {
+			const res = await api('notes/local-timeline', {}, bob);
+			const body = res.body as misskey.entities.Note[];
 
-		assert.strictEqual(res.status, 200);
-		assert.strictEqual(Array.isArray(res.body), true);
-		assert.strictEqual(body.some(note => note.id === aliceNote.id), false);
-		assert.strictEqual(body.some(note => note.id === bobNote.id), true);
-		assert.strictEqual(body.some(note => note.id === carolNote.id), true);
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(Array.isArray(res.body), true);
+			assert.strictEqual(body.some(note => note.id === aliceNote.id), false);
+			assert.strictEqual(body.some(note => note.id === bobNote.id), true);
+			assert.strictEqual(body.some(note => note.id === carolNote.id), true);
+		}, waitForPushToTlOptions);
 	});
 });

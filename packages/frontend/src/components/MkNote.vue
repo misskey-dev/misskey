@@ -192,25 +192,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 		MkDateSeparatedList uses TransitionGroup which requires single element in the child elements
 		so MkNote create empty div instead of no elements
 	-->
-	</div>
+</div>
 </template>
 
 <script lang="ts" setup>
 import { inject, ref, useTemplateRef, provide, computed } from 'vue';
 import type { Ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { $i } from '@/i.js';
 import { useNote } from '@/composables/use-note.js';
 import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 import { userPage } from '@/filters/user.js';
-import { noteEvents } from '@/composables/use-note-capture.js';
 import { getNoteSummary } from '@/utility/get-note-summary.js';
 import { isEnabledUrlPreview } from '@/utility/url-preview.js';
 import { focusPrev, focusNext } from '@/utility/focus.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import number from '@/filters/number.js';
-import * as sound from '@/utility/sound.js';
 import { DI } from '@/di.js';
 import type { Keymap } from '@/utility/hotkey.js';
 

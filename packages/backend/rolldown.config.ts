@@ -75,6 +75,8 @@ export default defineConfig((args) => {
 		're2',
 		'ipaddr.js',
 		'file-type',
+		// バンドルするとSentryの自動計装が正しく行われなくなるため外しておく
+		'pg',
 	];
 
 	const define: Record<string, string> = {
