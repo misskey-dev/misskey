@@ -89,14 +89,6 @@ export class ServerService implements OnApplicationShutdown {
 			});
 		}
 
-		if (this.config.enableCrossOriginIsolation) {
-			fastify.addHook('onRequest', (request, reply, done) => {
-				reply.header('Cross-Origin-Opener-Policy', 'same-origin');
-				reply.header('Cross-Origin-Embedder-Policy', 'credentialless');
-				done();
-			});
-		}
-
 		// Register raw-body parser for ActivityPub HTTP signature validation.
 		await fastify.register(fastifyRawBody, {
 			global: false,

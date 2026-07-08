@@ -31,7 +31,6 @@ type Source = {
 	chmodSocket?: string;
 	enableIpRateLimit?: boolean;
 	disableHsts?: boolean;
-	enableCrossOriginIsolation?: boolean;
 	db: {
 		host: string;
 		port: number;
@@ -126,7 +125,6 @@ export type Config = {
 	chmodSocket: string | undefined;
 	enableIpRateLimit: boolean;
 	disableHsts: boolean | undefined;
-	enableCrossOriginIsolation: boolean;
 	db: {
 		host: string;
 		port: number;
@@ -290,7 +288,6 @@ export function loadConfig(): Config {
 		chmodSocket: config.chmodSocket,
 		disableHsts: config.disableHsts,
 		enableIpRateLimit: config.enableIpRateLimit ?? true,
-		enableCrossOriginIsolation: config.enableCrossOriginIsolation ?? false,
 		host,
 		hostname,
 		scheme,
