@@ -24,6 +24,7 @@
 - Fix: デバイスタイプをスマートフォンに固定している状態で画面幅が広いとき、画面左上のアイコンが表示されない問題を修正
 - Fix: チャットでIMEの変換を確定するEnterでメッセージが送信されてしまうことがある問題を修正
 - Fix: 自分へのメンションに対する色分けで、判定が大文字/小文字を区別していた問題を修正
+- Fix: いくつかのイベントリスナーが正しく解除されない問題を修正（メモリ使用量の改善）
 
 ### Server
 - Enhance: センシティブメディアの判定を外部サービス ([sensitive-detector](https://github.com/misskey-dev/sensitive-detector)) に分離し、`nsfwjs` / `@tensorflow/tfjs(-node)` の同梱と NSFW 判定モデルを廃止 (#16804)
