@@ -419,7 +419,7 @@ export class HeadlessChromeController {
 			if (typeof measureMemory !== 'function') return {};
 			const result = await measureMemory.call(performance);
 			return { bytes: result.bytes };
-		})()`, 10_000);
+		})()`, 60_000);
 
 		const userAgentSpecificBytes = userAgentSpecificMemory?.bytes;
 		if (!Number.isFinite(userAgentSpecificBytes)) {
