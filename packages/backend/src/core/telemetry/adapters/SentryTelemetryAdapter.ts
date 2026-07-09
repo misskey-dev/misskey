@@ -3,12 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import Logger from '@/logger.js';
+import { registerDiagLogger } from '@/core/telemetry/telemetry-diag.js';
 import type * as SentryNode from '@sentry/node';
 import type { NodeOptions } from '@sentry/node';
-import type { OtelBackendConfig, SentryBackendConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
+import type { OtelBackendRuntimeConfig, SentryBackendConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
 
 // OpenTelemetryAdapterのDEFAULT_SHUTDOWN_TIMEOUTと揃え、Sentryのtransportが詰まってもプロセス終了を妨げないようにする。
 const DEFAULT_SHUTDOWN_TIMEOUT = 5000;
+const logger = new Logger('telemetry', 'green');
 
 type SentryIntegrationsOption = NonNullable<NodeOptions['integrations']>;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,9 +72,10 @@ export function buildSentryNodeOptions(
 
 type BuildSentryOtlpInitOptions = {
 	sentryConfig: SentryBackendConfig;
-	otelConfig: OtelBackendConfig;
+	otelConfig: OtelBackendRuntimeConfig;
 	otlpProcessor: unknown;
 	nodeProfilingIntegration?: () => SentryIntegration;
+	warn?: (message: string) => void;
 };
 
 export function buildSentryOtlpInitOptions(options: BuildSentryOtlpInitOptions): SentryNodeOptions {
@@ -79,6 +83,15 @@ export function buildSentryOtlpInitOptions(options: BuildSentryOtlpInitOptions):
 	// propagateTraceToRemote: true か、options.tracePropagationTargets の明示指定がある場合のみ既定を上書きする。
 	const { tracePropagationTargets, ...sentryOptions } = options.sentryConfig.options;
 	const propagateTraceToRemote = options.otelConfig.propagateTraceToRemote === true || tracePropagationTargets != null;
+	const warn = options.warn ?? ((message: string) => logger.warn(message));
+
+	if (options.otelConfig.sampleRate != null) {
+		warn('otelForBackend.sampleRate is ignored when sentryForBackend is also configured; configure sentryForBackend.options.tracesSampleRate or tracesSampler instead.');
+	}
+
+	if (options.otelConfig.resourceAttributes != null) {
+		warn('otelForBackend.resourceAttributes is ignored when sentryForBackend is also configured; configure OTEL_RESOURCE_ATTRIBUTES instead.');
+	}
 
 	return {
 		...buildSentryNodeOptions({
@@ -114,12 +127,15 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 
 	public static async createWithOtlpExport(
 		sentryConfig: SentryBackendConfig,
-		otelConfig: OtelBackendConfig,
+		otelConfig: OtelBackendRuntimeConfig,
 	): Promise<SentryTelemetryAdapter> {
 		const Sentry = await import('@sentry/node');
 		const { nodeProfilingIntegration } = await import('@sentry/profiling-node');
+		const { diag, DiagLogLevel } = await import('@opentelemetry/api');
 		const { BatchSpanProcessor } = await import('@opentelemetry/sdk-trace-base');
 		const { OTLPTraceExporter } = await import('@opentelemetry/exporter-trace-otlp-proto');
+
+		registerDiagLogger(diag, DiagLogLevel.WARN);
 
 		// OTLP送信だけを担うprocessorを作り、provider生成はSentry.init側に任せる。
 		const otlpProcessor = new BatchSpanProcessor(new OTLPTraceExporter({

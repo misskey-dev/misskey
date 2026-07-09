@@ -6,11 +6,11 @@
 import * as os from 'node:os';
 import cluster from 'node:cluster';
 import { envOption } from '@/env.js';
-import Logger from '@/logger.js';
-import type { DiagAPI, DiagLogger, DiagLogLevel, Span, SpanStatusCode, Tracer } from '@opentelemetry/api';
+import { registerDiagLogger } from '@/core/telemetry/telemetry-diag.js';
+import type { Span, SpanStatusCode, Tracer } from '@opentelemetry/api';
 import type { Resource, ResourceDetector } from '@opentelemetry/resources';
 import type { ParentBasedSampler, Sampler } from '@opentelemetry/sdk-trace-base';
-import type { OtelBackendConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
+import type { OtelBackendRuntimeConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
 
 const DEFAULT_SHUTDOWN_TIMEOUT = 5000;
 
@@ -36,6 +36,8 @@ type CreateResourceDeps = {
 	envDetector: ResourceDetector;
 	serviceNameAttribute: string;
 	serviceInstanceIdAttribute: string;
+	serviceVersionAttribute: string;
+	serviceVersion: string;
 };
 
 export class OpenTelemetryAdapter implements TelemetryAdapter {
@@ -44,7 +46,7 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 	) {
 	}
 
-	public static async create(config: OtelBackendConfig): Promise<OpenTelemetryAdapter> {
+	public static async create(config: OtelBackendRuntimeConfig): Promise<OpenTelemetryAdapter> {
 		const [
 			{ diag, DiagLogLevel, SpanStatusCode, trace },
 			{ W3CTraceContextPropagator },
@@ -52,7 +54,7 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 			{ defaultResource, detectResources, envDetector, resourceFromAttributes },
 			{ BatchSpanProcessor, ParentBasedSampler, TraceIdRatioBasedSampler },
 			{ NodeTracerProvider },
-			{ ATTR_SERVICE_INSTANCE_ID, ATTR_SERVICE_NAME },
+			{ ATTR_SERVICE_INSTANCE_ID, ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION },
 		] = await Promise.all([
 			import('@opentelemetry/api'),
 			import('@opentelemetry/core'),
@@ -82,6 +84,8 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 				envDetector,
 				serviceNameAttribute: ATTR_SERVICE_NAME,
 				serviceInstanceIdAttribute: ATTR_SERVICE_INSTANCE_ID,
+				serviceVersionAttribute: ATTR_SERVICE_VERSION,
+				serviceVersion: config.serviceVersion,
 			}),
 			...(config.sampleRate != null ? { sampler: createSampler(config.sampleRate, {
 				ParentBasedSampler,
@@ -167,12 +171,13 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 	}
 }
 
-export function createResource(config: OtelBackendConfig, deps: CreateResourceDeps): Resource {
+export function createResource(config: OtelBackendRuntimeConfig, deps: CreateResourceDeps): Resource {
 	// resourceを明示指定するとSDKのdefaultResource()は自動付与されなくなる(マージではなく上書き)ため、
 	// telemetry.sdk.*等の標準属性を失わないよう明示的にmergeする。
 	const misskeyDefaultResource = deps.resourceFromAttributes({
 		[deps.serviceNameAttribute]: 'misskey-backend',
 		[deps.serviceInstanceIdAttribute]: `${os.hostname()}:${process.pid}`,
+		[deps.serviceVersionAttribute]: deps.serviceVersion,
 		'misskey.process.role': getMisskeyProcessRole(),
 	});
 
@@ -208,39 +213,6 @@ function recordError(span: Span, error: unknown, spanStatusCodeError: SpanStatus
 
 function isPromiseLike<T>(value: T): value is T & PromiseLike<Awaited<T>> {
 	return value != null && typeof (value as { then?: unknown }).then === 'function';
-}
-
-function registerDiagLogger(
-	diagApi: DiagAPI,
-	diagLogLevelWarn: DiagLogLevel,
-): void {
-	// diagはプロセスグローバルなので、通常運用で必要なWARN以上だけをMisskeyのログに流す。
-	const logger = new Logger('otel', 'green');
-	const diagLogger: DiagLogger = {
-		error: (message, ...args) => logger.error(formatDiagMessage(message, args)),
-		warn: (message, ...args) => logger.warn(formatDiagMessage(message, args)),
-		info: (message, ...args) => logger.info(formatDiagMessage(message, args)),
-		debug: (message, ...args) => logger.debug(formatDiagMessage(message, args)),
-		verbose: (message, ...args) => logger.debug(formatDiagMessage(message, args)),
-	};
-
-	diagApi.setLogger(diagLogger, {
-		logLevel: diagLogLevelWarn,
-		suppressOverrideMessage: true,
-	});
-}
-
-function formatDiagMessage(message: string, args: unknown[]): string {
-	if (args.length === 0) return message;
-	return `${message} ${args.map(arg => {
-		if (arg instanceof Error) return arg.stack ?? arg.message;
-		if (typeof arg === 'string') return arg;
-		try {
-			return JSON.stringify(arg);
-		} catch {
-			return String(arg);
-		}
-	}).join(' ')}`;
 }
 
 export function getMisskeyProcessRole(): string {

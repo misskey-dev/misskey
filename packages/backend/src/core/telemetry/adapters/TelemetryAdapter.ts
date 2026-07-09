@@ -7,6 +7,9 @@ import type { Config } from '@/config.js';
 
 export type SentryBackendConfig = NonNullable<Config['sentryForBackend']>;
 export type OtelBackendConfig = NonNullable<Config['otelForBackend']>;
+export type OtelBackendRuntimeConfig = OtelBackendConfig & {
+	serviceVersion: string;
+};
 
 export interface TelemetryCaptureMessageOptions {
 	/** 現在はエラー通知用途だけに絞る。追加する場合は各adapterでの扱いを揃えること。 */

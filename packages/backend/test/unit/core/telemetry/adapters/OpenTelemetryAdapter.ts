@@ -7,7 +7,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { SpanStatusCode } from '@opentelemetry/api';
 import { defaultResource, detectResources, envDetector, resourceFromAttributes } from '@opentelemetry/resources';
 import { ParentBasedSampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-base';
-import { ATTR_SERVICE_INSTANCE_ID, ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
+import { ATTR_SERVICE_INSTANCE_ID, ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import { OpenTelemetryAdapter, createResource, createSampler, getMisskeyProcessRole } from '@/core/telemetry/adapters/OpenTelemetryAdapter.js';
 
 const mocks = vi.hoisted(() => {
@@ -228,6 +228,7 @@ describe('createResource', () => {
 
 		try {
 			const resource = createResource({
+				serviceVersion: '2026.1.0',
 				resourceAttributes: {
 					[ATTR_SERVICE_NAME]: 'config-service',
 					'deployment.environment': 'production',
@@ -237,14 +238,17 @@ describe('createResource', () => {
 				defaultResource,
 				resourceFromAttributes,
 				detectResources,
-				envDetector,
-				serviceNameAttribute: ATTR_SERVICE_NAME,
-				serviceInstanceIdAttribute: ATTR_SERVICE_INSTANCE_ID,
-			});
+					envDetector,
+					serviceNameAttribute: ATTR_SERVICE_NAME,
+					serviceInstanceIdAttribute: ATTR_SERVICE_INSTANCE_ID,
+					serviceVersionAttribute: ATTR_SERVICE_VERSION,
+					serviceVersion: '2026.1.0',
+				});
 
-			expect(resource.attributes[ATTR_SERVICE_NAME]).toBe('config-service');
-			expect(resource.attributes[ATTR_SERVICE_INSTANCE_ID]).toBe('env-instance');
-			expect(resource.attributes['deployment.environment']).toBe('production');
+				expect(resource.attributes[ATTR_SERVICE_NAME]).toBe('config-service');
+				expect(resource.attributes[ATTR_SERVICE_INSTANCE_ID]).toBe('env-instance');
+				expect(resource.attributes[ATTR_SERVICE_VERSION]).toBe('2026.1.0');
+				expect(resource.attributes['deployment.environment']).toBe('production');
 			expect(resource.attributes['misskey.process.role']).toBe('env-role');
 			expect(resource.attributes['env.only']).toBe('value');
 			expect(resource.attributes['config.only']).toBe('value');

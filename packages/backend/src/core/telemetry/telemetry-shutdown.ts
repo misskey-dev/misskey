@@ -6,7 +6,7 @@
 import Logger from '@/logger.js';
 import { shutdownTelemetry as defaultShutdownTelemetry } from './telemetry-registry.js';
 
-const logger = new Logger('otel', 'green');
+const logger = new Logger('telemetry', 'green');
 
 type SignalProcess = {
 	once(event: 'SIGTERM' | 'SIGINT', listener: () => Promise<void>): unknown;
@@ -44,7 +44,7 @@ export function installTelemetrySignalHandlers(options: InstallTelemetrySignalHa
 			// (DB/Redis/queue/HTTPサーバーのgraceful closeはここでは行わない。上記の注意を参照。)
 			await shutdownTelemetry();
 		} catch {
-			// Keep signal handling bounded: telemetry flush failures must not block process exit.
+			// telemetry flushの失敗でプロセス終了が止まらないよう、ここでは握り潰す。
 		} finally {
 			// 既存挙動と同じく、telemetry flush後はプロセスを終了する。
 			exit(0);
