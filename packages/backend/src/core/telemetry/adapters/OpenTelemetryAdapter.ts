@@ -145,13 +145,15 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 	public async shutdown(): Promise<void> {
 		// BatchSpanProcessorのflushが詰まってもプロセス終了を妨げないよう、上限時間を設ける。
 		// タイムアウト側のtimerは、flushが先に終わった場合にイベントループを無駄に引き留めないようclearする。
-		let timer: NodeJS.Timeout;
+		let timer: NodeJS.Timeout | undefined;
 		await Promise.race([
 			this.deps.provider.shutdown(),
 			new Promise<void>(resolve => {
 				timer = setTimeout(resolve, this.deps.shutdownTimeout);
 			}),
-		]).finally(() => clearTimeout(timer));
+		]).finally(() => {
+			if (timer != null) clearTimeout(timer);
+		});
 	}
 }
 
