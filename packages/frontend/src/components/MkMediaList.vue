@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<template v-for="media in mediaList.filter(media => previewable(media))">
 				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media"/>
-				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
+				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :disableImageLink="true" :class="$style.media" :data-id="media.id" :image="media" :raw="raw" @click="openGallery(media.id)"/>
 			</template>
 		</div>
 	</div>
@@ -31,9 +31,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import PhotoSwipeLightbox from 'photoswipe/lightbox';
-import PhotoSwipe from 'photoswipe';
-import 'photoswipe/style.css';
 import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
@@ -48,18 +45,7 @@ const props = defineProps<{
 }>();
 
 const gallery = useTemplateRef('gallery');
-const pswpZIndex = os.claimZIndex('middle');
-window.document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
 const count = computed(() => props.mediaList.filter(media => previewable(media)).length);
-let lightbox: PhotoSwipeLightbox | null = null;
-
-let activeEl: HTMLElement | null = null;
-
-const popstateHandler = (): void => {
-	if (lightbox?.pswp && lightbox.pswp.isOpen === true) {
-		lightbox.pswp.close();
-	}
-};
 
 async function calcAspectRatio() {
 	if (!gallery.value) return;
@@ -96,121 +82,9 @@ onMounted(() => {
 	calcAspectRatio();
 
 	if (gallery.value == null) return; // TSを黙らすため
-
-	lightbox = new PhotoSwipeLightbox({
-		dataSource: props.mediaList
-			.filter(media => {
-				if (media.type === 'image/svg+xml') return true; // svgのwebpublicはpngなのでtrue
-				return media.type.startsWith('image') && FILE_TYPE_BROWSERSAFE.includes(media.type);
-			})
-			.map(media => {
-				const item = {
-					src: media.url,
-					w: media.properties.width,
-					h: media.properties.height,
-					// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-					alt: media.comment || media.name,
-					// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-					comment: media.comment || media.name,
-				};
-				if (media.properties.orientation != null && media.properties.orientation >= 5) {
-					[item.w, item.h] = [item.h, item.w];
-				}
-				return item;
-			}),
-		gallery: gallery.value,
-		mainClass: 'pswp',
-		children: '.image',
-		thumbSelector: '.image',
-		loop: false,
-		padding: window.innerWidth > 500 ? {
-			top: 32,
-			bottom: 90,
-			left: 32,
-			right: 32,
-		} : {
-			top: 0,
-			bottom: 78,
-			left: 0,
-			right: 0,
-		},
-		imageClickAction: 'close',
-		tapAction: 'close',
-		bgOpacity: 1,
-		showAnimationDuration: 100,
-		hideAnimationDuration: 100,
-		returnFocus: false,
-		pswpModule: PhotoSwipe,
-	});
-
-	lightbox.addFilter('itemData', (itemData) => {
-		// element is children
-		const { element } = itemData;
-
-		const id = element?.dataset.id;
-		const file = props.mediaList.find(media => media.id === id);
-		if (!file) return itemData;
-
-		itemData.src = file.url;
-		itemData.w = Number(file.properties.width);
-		itemData.h = Number(file.properties.height);
-		if (file.properties.orientation != null && file.properties.orientation >= 5) {
-			[itemData.w, itemData.h] = [itemData.h, itemData.w];
-		}
-		itemData.msrc = file.thumbnailUrl ?? undefined;
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-		itemData.alt = file.comment || file.name;
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-		itemData.comment = file.comment || file.name;
-		itemData.thumbCropped = true;
-
-		return itemData;
-	});
-
-	lightbox.on('uiRegister', () => {
-		lightbox?.pswp?.ui?.registerElement({
-			name: 'altText',
-			className: 'pswp__alt-text-container',
-			appendTo: 'wrapper',
-			onInit: (el, pswp) => {
-				const textBox = window.document.createElement('p');
-				textBox.className = 'pswp__alt-text _acrylic';
-				el.appendChild(textBox);
-
-				pswp.on('change', () => {
-					textBox.textContent = pswp.currSlide?.data.comment;
-				});
-			},
-		});
-	});
-
-	lightbox.on('afterInit', () => {
-		activeEl = window.document.activeElement instanceof HTMLElement ? window.document.activeElement : null;
-		focusParent(activeEl, true, true);
-		lightbox?.pswp?.element?.focus({
-			preventScroll: true,
-		});
-		window.history.pushState(null, '', '#pswp');
-	});
-
-	lightbox.on('destroy', () => {
-		focusParent(activeEl, true, false);
-		activeEl = null;
-		if (window.location.hash === '#pswp') {
-			window.history.back();
-		}
-	});
-
-	window.addEventListener('popstate', popstateHandler);
-
-	lightbox.init();
 });
 
 onUnmounted(() => {
-	window.removeEventListener('popstate', popstateHandler);
-	lightbox?.destroy();
-	lightbox = null;
-	activeEl = null;
 });
 
 const previewable = (file: Misskey.entities.DriveFile): boolean => {
@@ -219,11 +93,20 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
 };
 
-const openGallery = () => {
-	if (props.mediaList.filter(media => previewable(media)).length > 0) {
-		lightbox?.loadAndOpen(0);
-	}
-};
+async function openGallery(id: string) {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageGallery.vue').then(x => x.default), {
+		defaultId: id,
+		images: props.mediaList.filter(media => previewable(media)).map(media => ({
+			id: media.id,
+			src: media.url,
+			width: media.properties.width ?? 0,
+			height: media.properties.height ?? 0,
+			sourceElement: gallery.value?.querySelector(`.image[data-id="${media.id}"]`) as HTMLElement | undefined,
+		})),
+	}, {
+		closed: () => dispose(),
+	});
+}
 
 defineExpose({
 	openGallery,
