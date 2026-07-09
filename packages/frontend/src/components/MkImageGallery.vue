@@ -54,7 +54,13 @@ const imagesOffset = ref(currentIndex.value * -window.innerWidth);
 let currentScrollLeft = imagesOffset.value;
 
 function onHorizontalSwipe(offset: number) {
-	imagesOffset.value = currentScrollLeft + offset;
+	if (currentIndex.value === 0 && offset > 0) { // これ以上戻れない
+		imagesOffset.value = currentScrollLeft + (offset / 3);
+	} else if (currentIndex.value === props.images.length - 1 && offset < 0) { // これ以上進めない
+		imagesOffset.value = currentScrollLeft + (offset / 3);
+	} else {
+		imagesOffset.value = currentScrollLeft + offset;
+	}
 }
 
 function scrollToCurrentIndex() {
