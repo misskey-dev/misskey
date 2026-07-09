@@ -5,6 +5,7 @@
 
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { SpanStatusCode } from '@opentelemetry/api';
+import { ParentBasedSampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-base';
 import { OpenTelemetryAdapter, createSampler, getMisskeyProcessRole } from '@/core/telemetry/adapters/OpenTelemetryAdapter.js';
 
 const mocks = vi.hoisted(() => {
@@ -30,6 +31,11 @@ vi.mock('node:cluster', () => ({
 	},
 }));
 
+const samplerDeps = {
+	ParentBasedSampler,
+	TraceIdRatioBasedSampler,
+};
+
 describe('OpenTelemetryAdapter', () => {
 	test('wraps async work in an active span and ends it after success', async () => {
 		const span = {
@@ -47,6 +53,7 @@ describe('OpenTelemetryAdapter', () => {
 			tracer,
 			provider,
 			getActiveSpan: () => undefined,
+			spanStatusCodeError: SpanStatusCode.ERROR,
 			shutdownTimeout: 10,
 		});
 
@@ -72,6 +79,7 @@ describe('OpenTelemetryAdapter', () => {
 			tracer,
 			provider: { shutdown: vi.fn() },
 			getActiveSpan: () => undefined,
+			spanStatusCodeError: SpanStatusCode.ERROR,
 			shutdownTimeout: 10,
 		});
 
@@ -96,6 +104,7 @@ describe('OpenTelemetryAdapter', () => {
 			tracer: { startActiveSpan: vi.fn() },
 			provider: { shutdown: vi.fn() },
 			getActiveSpan: () => activeSpan as any,
+			spanStatusCodeError: SpanStatusCode.ERROR,
 			shutdownTimeout: 10,
 		});
 
@@ -119,6 +128,7 @@ describe('OpenTelemetryAdapter', () => {
 			tracer: { startActiveSpan: vi.fn() },
 			provider: { shutdown: vi.fn(() => new Promise<void>(() => {})) },
 			getActiveSpan: () => undefined,
+			spanStatusCodeError: SpanStatusCode.ERROR,
 			shutdownTimeout: 50,
 		});
 
@@ -136,6 +146,7 @@ describe('OpenTelemetryAdapter', () => {
 			tracer: { startActiveSpan: vi.fn() },
 			provider: { shutdown: vi.fn().mockResolvedValue(undefined) },
 			getActiveSpan: () => undefined,
+			spanStatusCodeError: SpanStatusCode.ERROR,
 			shutdownTimeout: 5000,
 		});
 
@@ -159,6 +170,7 @@ describe('OpenTelemetryAdapter', () => {
 			tracer: tracer as any,
 			provider: { shutdown: vi.fn() },
 			getActiveSpan: () => undefined,
+			spanStatusCodeError: SpanStatusCode.ERROR,
 			shutdownTimeout: 10,
 		});
 
@@ -181,22 +193,22 @@ describe('OpenTelemetryAdapter', () => {
 
 describe('createSampler', () => {
 	test('accepts sample rates within [0, 1]', () => {
-		expect(() => createSampler(0)).not.toThrow();
-		expect(() => createSampler(0.5)).not.toThrow();
-		expect(() => createSampler(1)).not.toThrow();
+		expect(() => createSampler(0, samplerDeps)).not.toThrow();
+		expect(() => createSampler(0.5, samplerDeps)).not.toThrow();
+		expect(() => createSampler(1, samplerDeps)).not.toThrow();
 	});
 
 	test('rejects sample rates outside [0, 1]', () => {
-		expect(() => createSampler(-0.1)).toThrow();
-		expect(() => createSampler(1.1)).toThrow();
+		expect(() => createSampler(-0.1, samplerDeps)).toThrow();
+		expect(() => createSampler(1.1, samplerDeps)).toThrow();
 	});
 
 	test('rejects NaN instead of silently disabling sampling', () => {
-		expect(() => createSampler(Number.NaN)).toThrow();
+		expect(() => createSampler(Number.NaN, samplerDeps)).toThrow();
 	});
 
 	test('rejects non-number values that pass through YAML as strings', () => {
-		expect(() => createSampler('0.5' as unknown as number)).toThrow();
+		expect(() => createSampler('0.5' as unknown as number, samplerDeps)).toThrow();
 	});
 });
 

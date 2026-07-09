@@ -3,17 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Config } from '@/config.js';
-import type { TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
+import type * as SentryNode from '@sentry/node';
+import type { NodeOptions } from '@sentry/node';
+import type { OtelBackendConfig, SentryBackendConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
 
 // OpenTelemetryAdapterのDEFAULT_SHUTDOWN_TIMEOUTと揃え、Sentryのtransportが詰まってもプロセス終了を妨げないようにする。
 const DEFAULT_SHUTDOWN_TIMEOUT = 5000;
 
-type SentryIntegrationsOption = NonNullable<import('@sentry/node').NodeOptions['integrations']>;
+type SentryIntegrationsOption = NonNullable<NodeOptions['integrations']>;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SentryIntegrationFactory = Extract<SentryIntegrationsOption, (integrations: any[]) => any[]>;
 type SentryIntegration = Parameters<SentryIntegrationFactory>[0][number];
-type SentryNodeOptions = import('@sentry/node').NodeOptions;
+type SentryNodeOptions = NodeOptions;
 
 type BuildSentryIntegrationsOptions = {
 	disabledIntegrations?: string[];
@@ -40,7 +41,7 @@ export function buildSentryIntegrations(options: BuildSentryIntegrationsOptions)
 }
 
 export function buildSentryNodeOptions(
-	config: NonNullable<Config['sentryForBackend']>,
+	config: SentryBackendConfig,
 	nodeProfilingIntegration?: () => SentryIntegration,
 ): SentryNodeOptions {
 	return {
@@ -67,8 +68,8 @@ export function buildSentryNodeOptions(
 }
 
 type BuildSentryOtlpInitOptions = {
-	sentryConfig: NonNullable<Config['sentryForBackend']>;
-	otelConfig: NonNullable<Config['otelForBackend']>;
+	sentryConfig: SentryBackendConfig;
+	otelConfig: OtelBackendConfig;
 	otlpProcessor: unknown;
 	nodeProfilingIntegration?: () => SentryIntegration;
 };
@@ -98,11 +99,11 @@ export function buildSentryOtlpInitOptions(options: BuildSentryOtlpInitOptions):
 
 export class SentryTelemetryAdapter implements TelemetryAdapter {
 	private constructor(
-		private readonly Sentry: typeof import('@sentry/node'),
+		private readonly Sentry: typeof SentryNode,
 	) {
 	}
 
-	public static async create(config: NonNullable<Config['sentryForBackend']>): Promise<SentryTelemetryAdapter> {
+	public static async create(config: SentryBackendConfig): Promise<SentryTelemetryAdapter> {
 		const Sentry = await import('@sentry/node');
 		const { nodeProfilingIntegration } = await import('@sentry/profiling-node');
 
@@ -112,8 +113,8 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 	}
 
 	public static async createWithOtlpExport(
-		sentryConfig: NonNullable<Config['sentryForBackend']>,
-		otelConfig: NonNullable<Config['otelForBackend']>,
+		sentryConfig: SentryBackendConfig,
+		otelConfig: OtelBackendConfig,
 	): Promise<SentryTelemetryAdapter> {
 		const Sentry = await import('@sentry/node');
 		const { nodeProfilingIntegration } = await import('@sentry/profiling-node');
