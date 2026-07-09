@@ -13,6 +13,7 @@ export interface TelemetryCaptureMessageOptions {
 	level: 'error';
 
 	/** Sentryではuser.idへ渡す。OTel adapterは現在span属性へ付与していないため、必要ならadapter側で拡張する。 */
+	userId?: string;
 
 	/** queue名やendpoint名など、通知先で調査に使う補助情報。 */
 	extra?: Record<string, unknown>;

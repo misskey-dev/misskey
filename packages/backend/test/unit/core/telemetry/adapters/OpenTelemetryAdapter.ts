@@ -5,8 +5,10 @@
 
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { SpanStatusCode } from '@opentelemetry/api';
+import { defaultResource, detectResources, envDetector, resourceFromAttributes } from '@opentelemetry/resources';
 import { ParentBasedSampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-base';
-import { OpenTelemetryAdapter, createSampler, getMisskeyProcessRole } from '@/core/telemetry/adapters/OpenTelemetryAdapter.js';
+import { ATTR_SERVICE_INSTANCE_ID, ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
+import { OpenTelemetryAdapter, createResource, createSampler, getMisskeyProcessRole } from '@/core/telemetry/adapters/OpenTelemetryAdapter.js';
 
 const mocks = vi.hoisted(() => {
 	return {
@@ -179,7 +181,7 @@ describe('OpenTelemetryAdapter', () => {
 			extra: { queue: 'deliver' },
 		});
 
-		expect(tracer.startActiveSpan).toHaveBeenCalledWith('captureMessage: Queue: Deliver failed', expect.any(Function));
+		expect(tracer.startActiveSpan).toHaveBeenCalledWith('captureMessage', expect.any(Function));
 		expect(reportSpan.recordException).toHaveBeenCalledWith(expect.objectContaining({
 			message: 'Queue: Deliver failed',
 		}));
@@ -209,6 +211,55 @@ describe('createSampler', () => {
 
 	test('rejects non-number values that pass through YAML as strings', () => {
 		expect(() => createSampler('0.5' as unknown as number, samplerDeps)).toThrow();
+	});
+});
+
+describe('createResource', () => {
+	test('lets explicit config override OTEL resource env, and env override Misskey defaults', () => {
+		const previousServiceName = process.env['OTEL_SERVICE_NAME'];
+		const previousResourceAttributes = process.env['OTEL_RESOURCE_ATTRIBUTES'];
+		process.env['OTEL_SERVICE_NAME'] = 'env-service';
+		process.env['OTEL_RESOURCE_ATTRIBUTES'] = [
+			'deployment.environment=staging',
+			'misskey.process.role=env-role',
+			'service.instance.id=env-instance',
+			'env.only=value',
+		].join(',');
+
+		try {
+			const resource = createResource({
+				resourceAttributes: {
+					[ATTR_SERVICE_NAME]: 'config-service',
+					'deployment.environment': 'production',
+					'config.only': 'value',
+				},
+			}, {
+				defaultResource,
+				resourceFromAttributes,
+				detectResources,
+				envDetector,
+				serviceNameAttribute: ATTR_SERVICE_NAME,
+				serviceInstanceIdAttribute: ATTR_SERVICE_INSTANCE_ID,
+			});
+
+			expect(resource.attributes[ATTR_SERVICE_NAME]).toBe('config-service');
+			expect(resource.attributes[ATTR_SERVICE_INSTANCE_ID]).toBe('env-instance');
+			expect(resource.attributes['deployment.environment']).toBe('production');
+			expect(resource.attributes['misskey.process.role']).toBe('env-role');
+			expect(resource.attributes['env.only']).toBe('value');
+			expect(resource.attributes['config.only']).toBe('value');
+		} finally {
+			if (previousServiceName == null) {
+				delete process.env['OTEL_SERVICE_NAME'];
+			} else {
+				process.env['OTEL_SERVICE_NAME'] = previousServiceName;
+			}
+			if (previousResourceAttributes == null) {
+				delete process.env['OTEL_RESOURCE_ATTRIBUTES'];
+			} else {
+				process.env['OTEL_RESOURCE_ATTRIBUTES'] = previousResourceAttributes;
+			}
+		}
 	});
 });
 

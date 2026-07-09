@@ -8,6 +8,7 @@ import cluster from 'node:cluster';
 import { envOption } from '@/env.js';
 import Logger from '@/logger.js';
 import type { DiagAPI, DiagLogger, DiagLogLevel, Span, SpanStatusCode, Tracer } from '@opentelemetry/api';
+import type { Resource, ResourceDetector } from '@opentelemetry/resources';
 import type { ParentBasedSampler, Sampler } from '@opentelemetry/sdk-trace-base';
 import type { OtelBackendConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
 
@@ -28,6 +29,15 @@ type CreateSamplerDeps = {
 	TraceIdRatioBasedSampler: new (sampleRate: number) => Sampler;
 };
 
+type CreateResourceDeps = {
+	defaultResource: () => Resource;
+	resourceFromAttributes: (attributes: Record<string, string>) => Resource;
+	detectResources: (config: { detectors: ResourceDetector[] }) => Resource;
+	envDetector: ResourceDetector;
+	serviceNameAttribute: string;
+	serviceInstanceIdAttribute: string;
+};
+
 export class OpenTelemetryAdapter implements TelemetryAdapter {
 	public constructor(
 		private readonly deps: OpenTelemetryAdapterDeps,
@@ -39,7 +49,7 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 			{ diag, DiagLogLevel, SpanStatusCode, trace },
 			{ W3CTraceContextPropagator },
 			{ OTLPTraceExporter },
-			{ defaultResource, resourceFromAttributes },
+			{ defaultResource, detectResources, envDetector, resourceFromAttributes },
 			{ BatchSpanProcessor, ParentBasedSampler, TraceIdRatioBasedSampler },
 			{ NodeTracerProvider },
 			{ ATTR_SERVICE_INSTANCE_ID, ATTR_SERVICE_NAME },
@@ -64,15 +74,15 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 		const spanProcessor = new BatchSpanProcessor(exporter);
 
 		// SDK 2.xではSpanProcessorをprovider生成時に渡す。ここでOTel単体用のproviderを作る。
-		// resourceを明示指定するとSDKのdefaultResource()は自動付与されなくなる(マージではなく上書き)ため、
-		// telemetry.sdk.*等の標準属性を失わないよう明示的にmergeする。
 		const provider = new NodeTracerProvider({
-			resource: defaultResource().merge(resourceFromAttributes({
-				[ATTR_SERVICE_NAME]: 'misskey-backend',
-				[ATTR_SERVICE_INSTANCE_ID]: `${os.hostname()}:${process.pid}`,
-				'misskey.process.role': getMisskeyProcessRole(),
-				...(config.resourceAttributes ?? {}),
-			})),
+			resource: createResource(config, {
+				defaultResource,
+				resourceFromAttributes,
+				detectResources,
+				envDetector,
+				serviceNameAttribute: ATTR_SERVICE_NAME,
+				serviceInstanceIdAttribute: ATTR_SERVICE_INSTANCE_ID,
+			}),
 			...(config.sampleRate != null ? { sampler: createSampler(config.sampleRate, {
 				ParentBasedSampler,
 				TraceIdRatioBasedSampler,
@@ -105,7 +115,7 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 			return;
 		}
 
-		this.deps.tracer.startActiveSpan(`captureMessage: ${message}`, reportSpan => {
+		this.deps.tracer.startActiveSpan('captureMessage', reportSpan => {
 			recordError(reportSpan, new Error(message), this.deps.spanStatusCodeError);
 			reportSpan.end();
 		});
@@ -155,6 +165,23 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 			if (timer != null) clearTimeout(timer);
 		});
 	}
+}
+
+export function createResource(config: OtelBackendConfig, deps: CreateResourceDeps): Resource {
+	// resourceを明示指定するとSDKのdefaultResource()は自動付与されなくなる(マージではなく上書き)ため、
+	// telemetry.sdk.*等の標準属性を失わないよう明示的にmergeする。
+	const misskeyDefaultResource = deps.resourceFromAttributes({
+		[deps.serviceNameAttribute]: 'misskey-backend',
+		[deps.serviceInstanceIdAttribute]: `${os.hostname()}:${process.pid}`,
+		'misskey.process.role': getMisskeyProcessRole(),
+	});
+
+	// OTel標準の OTEL_SERVICE_NAME / OTEL_RESOURCE_ATTRIBUTES を尊重する。
+	// mergeは右辺が優先されるため、config.resourceAttributesを最優先にする。
+	return deps.defaultResource()
+		.merge(misskeyDefaultResource)
+		.merge(deps.detectResources({ detectors: [deps.envDetector] }))
+		.merge(deps.resourceFromAttributes(config.resourceAttributes ?? {}));
 }
 
 export function createSampler(sampleRate: number, deps: CreateSamplerDeps): ParentBasedSampler {
