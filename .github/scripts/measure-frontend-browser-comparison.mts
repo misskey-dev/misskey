@@ -40,8 +40,25 @@ async function runSignupAndPostScenario(chrome: HeadlessChromeController) {
 
 	await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
 
-	// TODO
+	await page.getByTestId('signup').click();
+	await page.getByTestId('signup-rules-continue').waitFor({ state: 'visible' });
+	await chrome.page.locator('[data-testid="signup-rules-notes-agree"] [data-testid="switch-toggle"]')
+	await page.getByTestId('modal-dialog-ok').click();
+	await page.getByTestId('signup-rules-continue').click();
 
+	await chrome.mkInput('signup-username').fill('alice');
+	await chrome.mkInput('signup-password').fill('password');
+	await chrome.mkInput('signup-password-retype').fill('password');
+	await chrome.mkInput('signup-invitation-code').fill('test-invitation-code');
+
+	const signupResponse = chrome.waitApiResponse('/api/signup');
+	await page.getByTestId('signup-submit').click();
+	await signupResponse;
+
+	await page.locator('[data-testid="user-setup-dialog"] [data-testid="modal-window-close"]').click({ timeout: 30000 });
+	await page.getByTestId('modal-dialog-ok').click();
+
+	await page.getByTestId('open-post-form').waitFor({ state: 'visible' });
 	await page.getByTestId('open-post-form').click();
 	await page.getByTestId('post-form-text').fill(noteText);
 	await page.getByTestId('post-form-submit').click();
