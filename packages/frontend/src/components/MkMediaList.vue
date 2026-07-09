@@ -96,7 +96,8 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 async function openGallery(id: string) {
 	const images = props.mediaList.filter(media => previewable(media)).map(media => ({
 		id: media.id,
-		src: media.url,
+		url: media.url,
+		thumbnailUrl: media.thumbnailUrl,
 		width: media.properties.width ?? 0,
 		height: media.properties.height ?? 0,
 		sourceElement: gallery.value?.querySelector(`.image[data-id="${media.id}"]`) as HTMLElement | undefined,

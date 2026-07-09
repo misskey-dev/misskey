@@ -12,17 +12,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@pointerup="onPointerup"
 	@touchstart="onTouchstart"
 	@touchmove="onTouchmove"
+	@wheel="onWheel"
 >
 	<div :style="{ transform: `translate3d(${translation.x}px, ${translation.y}px, 0)` }">
 		<img
-			ref="imageEl"
-			:class="$style.image"
-			:src="image.src"
+			v-if="!originalImageLoaded"
+			:class="[$style.image, $style.thumbnail]"
+			:src="image.thumbnailUrl"
 			:width="size.width"
 			:height="size.height"
 			draggable="false"
-			@wheel="onWheel"
 		>
+		<img
+			v-if="activated"
+			ref="imageEl"
+			:class="[$style.image, $style.original]"
+			:src="image.url"
+			:width="size.width"
+			:height="size.height"
+			draggable="false"
+			@load="originalImageLoaded = true"
+		>
+	</div>
+	<div v-if="activated && !originalImageLoaded" :class="$style.loading">
+		<MkLoading/>
 	</div>
 </div>
 </template>
@@ -34,9 +47,10 @@ import { i18n } from '@/i18n.js';
 import { makeDoubleTapDetector } from '@/utility/double-tap.js';
 import { beginAnimation, easing_easeInOutQuad } from '@/utility/animation.js';
 
-type Image = {
+export type Image = {
 	id: string;
-	src: string;
+	url: string;
+	thumbnailUrl: string;
 	width: number;
 	height: number;
 	sourceElement?: HTMLElement;
@@ -44,6 +58,7 @@ type Image = {
 
 const props = withDefaults(defineProps<{
 	image: Image;
+	activated: boolean;
 }>(), {
 });
 
@@ -57,6 +72,8 @@ const emit = defineEmits<{
 
 const rootEl = useTemplateRef('rootEl');
 const imageEl = useTemplateRef('imageEl');
+
+const originalImageLoaded = ref(false);
 
 const padding = 30;
 const ANIMATION_DURATION = 200;
@@ -217,7 +234,7 @@ let pointerVec = { x: 0, y: 0 };
 
 function onPointerdown(ev: PointerEvent) {
 	pointerEventCache.set(ev.pointerId, ev);
-	imageEl.value.setPointerCapture(ev.pointerId);
+	rootEl.value.setPointerCapture(ev.pointerId);
 
 	isDragging = true;
 	lastX = ev.clientX;
@@ -298,7 +315,7 @@ function onPointermove(ev: PointerEvent) {
 
 function onPointerup(ev: PointerEvent) {
 	pointerEventCache.delete(ev.pointerId);
-	imageEl.value.releasePointerCapture(ev.pointerId);
+	rootEl.value.releasePointerCapture(ev.pointerId);
 	prevTwoTouchPointsDistance = 0;
 	isDragging = false;
 	if (currentPointerId === ev.pointerId) {
@@ -396,5 +413,20 @@ onBeforeUnmount(() => {
 	display: block;
 	-webkit-touch-callout: none;
 	user-select: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.loading {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 2;
+	display: grid;
+	place-items: center;
+	pointer-events: none;
 }
 </style>

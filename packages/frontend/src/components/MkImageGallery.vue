@@ -8,9 +8,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="[$style.bg]"></div>
 	<div ref="mainEl" :class="$style.main">
 		<div ref="itemsEl" :class="$style.items" :style="{ left: `${imagesOffset}px` }">
-			<div v-for="image in images" :key="image.src" ref="itemEl" :class="$style.item">
+			<div v-for="(image, i) in images" :key="image.url" ref="itemEl" :class="$style.item">
 				<XItem
 					:image="image"
+					:activated="activatedIndexes.has(i)"
 					@close="onItemClose"
 					@horizontalSwipe="onHorizontalSwipe"
 					@prev="onPrev"
@@ -24,19 +25,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
+import { nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import XItem from './MkImageGallery.item.vue';
+import type { Image } from './MkImageGallery.item.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { beginAnimation, easing_easeInOutQuad } from '@/utility/animation.js';
-
-type Image = {
-	id: string;
-	src: string;
-	width: number;
-	height: number;
-	sourceElement?: HTMLElement;
-};
 
 const props = withDefaults(defineProps<{
 	defaultIndex?: number;
@@ -48,15 +42,15 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-let currentIndex = props.defaultIndex ?? 0;
+const activatedIndexes = ref(new Set<number>());
+const currentIndex = ref(props.defaultIndex ?? 0);
+watch(currentIndex, (newIndex) => {
+	activatedIndexes.value.add(newIndex);
+}, { immediate: true });
 
-const rootEl = useTemplateRef('rootEl');
-const mainEl = useTemplateRef('mainEl');
-const itemsEl = useTemplateRef('itemsEl');
-const itemEl = useTemplateRef('itemEl');
 const zIndex = os.claimZIndex('high');
 const screenWidth = ref(window.innerWidth);
-const imagesOffset = ref(currentIndex * -window.innerWidth);
+const imagesOffset = ref(currentIndex.value * -window.innerWidth);
 let currentScrollLeft = imagesOffset.value;
 
 function onHorizontalSwipe(offset: number) {
@@ -64,10 +58,10 @@ function onHorizontalSwipe(offset: number) {
 }
 
 function scrollToCurrentIndex() {
-	currentScrollLeft = currentIndex * -screenWidth.value;
+	currentScrollLeft = currentIndex.value * -screenWidth.value;
 	beginAnimation({
 		from: { value: imagesOffset.value },
-		to: { value: currentIndex * -screenWidth.value },
+		to: { value: currentIndex.value * -screenWidth.value },
 		duration: 300,
 		easing: easing_easeInOutQuad,
 		apply: ({ value }) => {
@@ -81,15 +75,15 @@ function onCancelHorizontalSwipe() {
 }
 
 function onNext() {
-	if (currentIndex < props.images.length - 1) {
-		currentIndex++;
+	if (currentIndex.value < props.images.length - 1) {
+		currentIndex.value++;
 	}
 	scrollToCurrentIndex();
 }
 
 function onPrev() {
-	if (currentIndex > 0) {
-		currentIndex--;
+	if (currentIndex.value > 0) {
+		currentIndex.value--;
 	}
 	scrollToCurrentIndex();
 }
