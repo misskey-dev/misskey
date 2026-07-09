@@ -41,10 +41,15 @@ const props = withDefaults(defineProps<{
 }>(), {
 });
 
+const emit = defineEmits<{
+	(ev: 'close'): void;
+}>();
+
 const rootEl = useTemplateRef('rootEl');
 const imageEl = useTemplateRef('imageEl');
 
 const padding = 30;
+const ANIMATION_DURATION = 200;
 
 function calcDefaultSize(image: Image) {
 	const maxWidth = window.innerWidth - padding * 2;
@@ -131,7 +136,7 @@ function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
 			height: newHeight,
 			x: translation.value.x - offsetX * (factor - 1),
 			y: translation.value.y - offsetY * (factor - 1),
-		}, 300);
+		}, ANIMATION_DURATION);
 	} else {
 		size.value.width = newWidth;
 		size.value.height = newHeight;
@@ -175,7 +180,7 @@ function onZoomGestureEnd() {
 			height: defaultSize.height,
 			x: defaultTranslation.x,
 			y: defaultTranslation.y,
-		}, 300);
+		}, ANIMATION_DURATION);
 	}
 }
 
@@ -184,6 +189,10 @@ let isDragging = false;
 let lastX = 0;
 let lastY = 0;
 let currentPointerId: number | null = null;
+let currentPointerStartOffset = { x: 0, y: 0 };
+let isVerticalSwiping = false;
+let isHorizontalSwiping = false;
+let verticalSwipeDelta = 0;
 
 const pointerEventCache = new Map<number, PointerEvent>();
 let pointerVec = { x: 0, y: 0 };
@@ -198,6 +207,10 @@ function onPointerdown(ev: PointerEvent) {
 	pointerVec = { x: 0, y: 0 };
 	if (currentPointerId == null) {
 		currentPointerId = ev.pointerId;
+		currentPointerStartOffset = {
+			x: ev.clientX,
+			y: ev.clientY,
+		};
 	}
 }
 
@@ -216,6 +229,8 @@ function onPointermove(ev: PointerEvent) {
 	if (pointerEventCache.size > 1) { // 2本指での操作
 		pointerVec = { x: 0, y: 0 };
 		currentPointerId = null;
+		isVerticalSwiping = false;
+		isHorizontalSwiping = false;
 		const a = Array.from(pointerEventCache.values())[0];
 		const b = Array.from(pointerEventCache.values())[1];
 		const distance = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
@@ -236,9 +251,23 @@ function onPointermove(ev: PointerEvent) {
 		if (isZooming.value) {
 			translation.value.x += deltaX;
 			translation.value.y += deltaY;
+		} else {
+			if (isVerticalSwiping) {
+				translation.value.y += deltaY;
+				verticalSwipeDelta += deltaY;
+			} else if (isHorizontalSwiping) {
+				translation.value.x += deltaX;
+			} else {
+				const isVerticalVector = Math.abs(deltaY) > Math.abs(deltaX);
+				if (isVerticalVector) {
+					isVerticalSwiping = true;
+				} else {
+					isHorizontalSwiping = true;
+				}
+			}
 		}
 
-		pointerVec = { x: deltaX, y: deltaY };
+		pointerVec = { x: deltaX, y: deltaY }; // TODO: おそらくこの計算方法だと高リフレッシュレートで実行される環境ほど同じ動かし方でもベクトルは小さくなってしまうと思われるので良い感じにする
 
 		lastX = ev.clientX;
 		lastY = ev.clientY;
@@ -254,7 +283,26 @@ function onPointerup(ev: PointerEvent) {
 	isDragging = false;
 	if (currentPointerId === ev.pointerId) {
 		currentPointerId = null;
+
+		if (isVerticalSwiping) {
+			const shouldCloseByUpwardSwipe = verticalSwipeDelta < -200 || pointerVec.y < -3; // 上の方で離された、または上に向かって強めに弾かれた
+			const shouldCloseByDownwardSwipe = verticalSwipeDelta > 200 || pointerVec.y > 3; // 下の方で離された、または下に向かって強めに弾かれた
+			if (shouldCloseByUpwardSwipe || shouldCloseByDownwardSwipe) {
+				emit('close');
+				return;
+			}
+
+			beginAnimation({
+				width: defaultSize.width,
+				height: defaultSize.height,
+				x: defaultTranslation.x,
+				y: defaultTranslation.y,
+			}, ANIMATION_DURATION);
+		}
 	}
+	isVerticalSwiping = false;
+	isHorizontalSwiping = false;
+
 	onZoomGestureEnd();
 }
 
@@ -270,7 +318,7 @@ const doubleTapDetector = makeDoubleTapDetector((ev) => {
 			height: defaultSize.height,
 			x: defaultTranslation.x,
 			y: defaultTranslation.y,
-		}, 300);
+		}, ANIMATION_DURATION);
 	} else {
 		isZooming.value = true;
 		zoomInTo(ev.touches[0].clientX, ev.touches[0].clientY, 2, true);

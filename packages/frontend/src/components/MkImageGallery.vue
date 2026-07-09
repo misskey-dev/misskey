@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div ref="mainEl" :class="$style.main">
 		<div :class="$style.items">
 			<div v-for="image in images" :key="image.src" :class="$style.item">
-				<XItem :image="image"/>
+				<XItem :image="image" @close="onItemClose"/>
 			</div>
 		</div>
 	</div>
@@ -36,10 +36,17 @@ const props = withDefaults(defineProps<{
 }>(), {
 });
 
+const emit = defineEmits<{
+	(ev: 'closed'): void;
+}>();
+
 const rootEl = useTemplateRef('rootEl');
 const mainEl = useTemplateRef('mainEl');
 const zIndex = os.claimZIndex('high');
 
+function onItemClose() {
+	emit('closed');
+}
 </script>
 
 <style lang="scss" module>
