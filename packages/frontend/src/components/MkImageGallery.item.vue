@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:src="image.src"
 		:width="size.width"
 		:height="size.height"
+		draggable="false"
 		@wheel="onWheel"
 		@pointerdown="onPointerdown"
 		@pointermove="onPointermove"
@@ -147,6 +148,16 @@ let lastY = 0;
 const pointerEventCache = new Map<number, PointerEvent>();
 let pointerVec = { x: 0, y: 0 };
 
+function onPointerdown(ev: PointerEvent) {
+	pointerEventCache.set(ev.pointerId, ev);
+	imageEl.value.setPointerCapture(ev.pointerId);
+
+	isDragging = true;
+	lastX = ev.clientX;
+	lastY = ev.clientY;
+	pointerVec = { x: 0, y: 0 };
+}
+
 let prevTwoTouchPointsDistance = 0;
 
 function onPointermove(ev: PointerEvent) {
@@ -173,33 +184,21 @@ function onPointermove(ev: PointerEvent) {
 
 	prevTwoTouchPointsDistance = 0;
 
-	if (isDragging) {
-		const deltaX = ev.clientX - lastX;
-		const deltaY = ev.clientY - lastY;
+	const deltaX = ev.clientX - lastX;
+	const deltaY = ev.clientY - lastY;
 
+	if (isZooming.value) {
 		translation.value.x += deltaX;
 		translation.value.y += deltaY;
-
-		pointerVec = { x: deltaX, y: deltaY };
-		console.log('pointerVec', pointerVec);
-
-		lastX = ev.clientX;
-		lastY = ev.clientY;
 	}
 
-	return false;
-}
+	pointerVec = { x: deltaX, y: deltaY };
+	console.log('pointerVec', pointerVec);
 
-function onPointerdown(ev: PointerEvent) {
-	pointerEventCache.set(ev.pointerId, ev);
-	imageEl.value.setPointerCapture(ev.pointerId);
-
-	if (!isZooming.value) return;
-
-	isDragging = true;
 	lastX = ev.clientX;
 	lastY = ev.clientY;
-	pointerVec = { x: 0, y: 0 };
+
+	return false;
 }
 
 function onPointerup(ev: PointerEvent) {
@@ -247,6 +246,7 @@ function updateInertia(timeStamp: number) {
 	latestInertiaTimeStamp = timeStamp;
 
 	if (isDragging) return;
+	if (!isZooming.value) return;
 	if (Math.abs(pointerVec.x) < 0.5 && Math.abs(pointerVec.y) < 0.5) return;
 	translation.value.x += pointerVec.x;
 	translation.value.y += pointerVec.y;
@@ -272,6 +272,8 @@ onBeforeUnmount(() => {
 
 .image {
 	display: block;
+	-webkit-touch-callout: none;
+	user-select: none;
 	//transition: width 0.2s ease, height 0.2s ease;
 }
 </style>
