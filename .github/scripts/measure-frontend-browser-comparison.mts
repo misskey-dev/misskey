@@ -9,6 +9,7 @@ import * as util from './utility.mts';
 import * as heapSnapshotUtil from './heap-snapshot-util.mts';
 import { HeadlessChromeController, summarizeNetwork } from './chrome.mts';
 import type { BrowserMeasurement, NetworkRequest, NetworkSummary } from './chrome.mts';
+import { closeUserSetupDialog, postNote, signupThroughUi, visitHome } from '../../packages/frontend/test/e2e/shared.ts';
 
 const [baseDirArg, headDirArg, baseOutputArg, headOutputArg, headHeapSnapshotOutputArg] = process.argv.slice(2);
 
@@ -37,31 +38,10 @@ async function runSignupAndPostScenario(chrome: HeadlessChromeController) {
 	const page = chrome.page;
 	const noteText = `Frontend browser metrics ${Date.now()}`;
 
-	await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
-
-	await page.getByTestId('signup').click();
-	await page.getByTestId('signup-rules-continue').waitFor({ state: 'visible' });
-	await chrome.page.locator('[data-testid="signup-rules-notes-agree"] [data-testid="switch-toggle"]').click();
-	await page.getByTestId('modal-dialog-ok').click();
-	await page.getByTestId('signup-rules-continue').click();
-
-	await chrome.mkInput('signup-username').fill('alice');
-	await chrome.mkInput('signup-password').fill('password');
-	await chrome.mkInput('signup-password-retype').fill('password');
-	await chrome.mkInput('signup-invitation-code').fill('test-invitation-code');
-
-	const signupResponse = chrome.waitApiResponse('/api/signup');
-	await page.getByTestId('signup-submit').click();
-	await signupResponse;
-
-	await page.locator('[data-testid="user-setup-dialog"] [data-testid="modal-window-close"]').click({ timeout: 30000 });
-	await page.getByTestId('modal-dialog-ok').click();
-
-	await page.getByTestId('open-post-form').waitFor({ state: 'visible' });
-	await page.getByTestId('open-post-form').click();
-	await page.getByTestId('post-form-text').fill(noteText);
-	await page.getByTestId('post-form-submit').click();
-	await page.getByText(noteText).waitFor({ timeout: 10000 });
+	await visitHome(page, baseUrl);
+	await signupThroughUi(page, { username: 'alice', password: 'password' });
+	await closeUserSetupDialog(page);
+	await postNote(page, noteText, 10_000);
 
 	await util.sleep(1000);
 }

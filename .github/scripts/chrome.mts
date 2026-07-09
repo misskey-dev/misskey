@@ -5,14 +5,8 @@
 
 import { createRequire } from 'node:module';
 import { writeFile } from 'node:fs/promises';
-import * as util from './utility.mts';
-import type { Locator, Browser, BrowserContext, CDPSession, Page } from 'playwright';
+import type { Browser, BrowserContext, CDPSession, Page } from 'playwright';
 import type { HeapSnapshotData } from './heap-snapshot-util.mts';
-
-type LocatorEntry = {
-	name: string;
-	locator: Locator;
-};
 
 export type NetworkRequest = {
 	requestId: string;
@@ -449,16 +443,6 @@ export class HeadlessChromeController {
 		return JSON.parse(content);
 	}
 
-	public mkInput(testId: string) {
-		return this.page.locator(`[data-testid="${testId}"] input`);
-	}
-
-	public waitApiResponse(path: string) {
-		return this.page.waitForResponse((response) => {
-			return response.url().endsWith(path) && response.request().method() === 'POST';
-		});
-	}
-
 	public async close() {
 		await this.cdp.detach().catch(() => undefined);
 		await this.context.close().catch(() => undefined);
@@ -536,42 +520,4 @@ export function summarizeNetwork(requestRows: NetworkRequest[], baseUrl: string,
 				status: row.status,
 			})),
 	};
-}
-
-export async function isReady(locator: Locator, options: { visible?: boolean; enabled?: boolean }) {
-	const first = locator.first();
-	try {
-		if (await locator.count() === 0) return false;
-		if (options.visible === true && !await first.isVisible()) return false;
-		if (options.enabled === true && !await first.isEnabled()) return false;
-		return true;
-	} catch {
-		return false;
-	}
-}
-
-export async function waitForReady(locator: Locator, options: { timeoutMs: number; visible?: boolean; enabled?: boolean }) {
-	const startedAt = Date.now();
-	while (Date.now() - startedAt < options.timeoutMs) {
-		if (await isReady(locator, options)) return true;
-		await util.sleep(250);
-	}
-	return false;
-}
-
-export async function waitForAnyLocator(entries: LocatorEntry[], options: { timeoutMs: number; visible?: boolean; enabled?: boolean }) {
-	const startedAt = Date.now();
-	while (Date.now() - startedAt < options.timeoutMs) {
-		for (const entry of entries) {
-			if (await isReady(entry.locator, options)) return entry.name;
-		}
-		await util.sleep(250);
-	}
-	return null;
-}
-
-export async function maybeClick(locator: Locator, timeoutMs = 3_000) {
-	if (!await waitForReady(locator, { visible: true, enabled: true, timeoutMs })) return false;
-	await locator.click({ timeout: timeoutMs });
-	return true;
 }

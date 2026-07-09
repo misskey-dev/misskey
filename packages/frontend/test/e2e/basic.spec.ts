@@ -10,7 +10,7 @@ import {
 	// locator helper
 	locateMkInput, locateMkSwitch, locateMkTextarea,
 	// utils
-	registerUser, resetState, visitHome,
+	registerUser, resetState, visitHome, closeUserSetupDialog, postNote,
 	// page utils
 	waitApiResponse, signIn,
 } from './utils.js';
@@ -194,17 +194,11 @@ test.describe('After user setup', () => {
 		await signIn(page, 'alice', 'alice1234');
 
 		// 表示に時間がかかるのでデフォルト秒数だとタイムアウトする
-		await page.locator('[data-testid="user-setup-dialog"] [data-testid="modal-window-close"]').click({ timeout: 30000 });
-		await page.getByTestId('modal-dialog-ok').click();
+		await closeUserSetupDialog(page);
 	});
 
 	test('note', async ({ page }) => {
-		await page.getByTestId('open-post-form').waitFor({ state: 'visible' });
-		await page.getByTestId('open-post-form').click();
-		await page.getByTestId('post-form-text').fill('Hello, Misskey!');
-		await page.getByTestId('post-form-submit').click();
-
-		await page.getByText('Hello, Misskey!').waitFor({ timeout: 15000 });
+		await postNote(page, 'Hello, Misskey!');
 	});
 
 	test('open note form with hotkey', async ({ page }) => {
