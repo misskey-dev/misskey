@@ -4,21 +4,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="rootEl" :class="$style.root" :style="{ transform: `translate3d(${translation.x}px, ${translation.y}px, 0)` }">
-	<img
-		ref="imageEl"
-		:class="$style.image"
-		:src="image.src"
-		:width="size.width"
-		:height="size.height"
-		draggable="false"
-		@wheel="onWheel"
-		@pointerdown="onPointerdown"
-		@pointermove="onPointermove"
-		@pointerup="onPointerup"
-		@touchstart="onTouchstart"
-		@touchmove="onTouchmove"
-	>
+<div
+	ref="rootEl"
+	:class="$style.root"
+	@pointerdown="onPointerdown"
+	@pointermove="onPointermove"
+	@pointerup="onPointerup"
+	@touchstart="onTouchstart"
+	@touchmove="onTouchmove"
+>
+	<div :style="{ transform: `translate3d(${translation.x}px, ${translation.y}px, 0)` }">
+		<img
+			ref="imageEl"
+			:class="$style.image"
+			:src="image.src"
+			:width="size.width"
+			:height="size.height"
+			draggable="false"
+			@wheel="onWheel"
+		>
+	</div>
 </div>
 </template>
 
@@ -43,6 +48,10 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'close'): void;
+	(ev: 'horizontalSwipe', offset: number): void;
+	(ev: 'next'): void;
+	(ev: 'prev'): void;
+	(ev: 'cancelHorizontalSwipe'): void;
 }>();
 
 const rootEl = useTemplateRef('rootEl');
@@ -193,6 +202,7 @@ let currentPointerStartOffset = { x: 0, y: 0 };
 let isVerticalSwiping = false;
 let isHorizontalSwiping = false;
 let verticalSwipeDelta = 0;
+let horizontalSwipeDelta = 0;
 
 const pointerEventCache = new Map<number, PointerEvent>();
 let pointerVec = { x: 0, y: 0 };
@@ -256,7 +266,9 @@ function onPointermove(ev: PointerEvent) {
 				translation.value.y += deltaY;
 				verticalSwipeDelta += deltaY;
 			} else if (isHorizontalSwiping) {
-				translation.value.x += deltaX;
+				//translation.value.x += deltaX;
+				horizontalSwipeDelta += deltaX;
+				emit('horizontalSwipe', currentPointerStartOffset.x - ev.clientX);
 			} else {
 				const isVerticalVector = Math.abs(deltaY) > Math.abs(deltaX);
 				if (isVerticalVector) {
@@ -285,8 +297,8 @@ function onPointerup(ev: PointerEvent) {
 		currentPointerId = null;
 
 		if (isVerticalSwiping) {
-			const shouldCloseByUpwardSwipe = verticalSwipeDelta < -200 || pointerVec.y < -3; // 上の方で離された、または上に向かって強めに弾かれた
-			const shouldCloseByDownwardSwipe = verticalSwipeDelta > 200 || pointerVec.y > 3; // 下の方で離された、または下に向かって強めに弾かれた
+			const shouldCloseByUpwardSwipe = verticalSwipeDelta < -200 || (verticalSwipeDelta < 0 && pointerVec.y < -3); // 上の方で離された、または上に向かって強めに弾かれた
+			const shouldCloseByDownwardSwipe = verticalSwipeDelta > 200 || (verticalSwipeDelta > 0 && pointerVec.y > 3); // 下の方で離された、または下に向かって強めに弾かれた
 			if (shouldCloseByUpwardSwipe || shouldCloseByDownwardSwipe) {
 				emit('close');
 				return;
@@ -298,6 +310,16 @@ function onPointerup(ev: PointerEvent) {
 				x: defaultTranslation.x,
 				y: defaultTranslation.y,
 			}, ANIMATION_DURATION);
+		} else if (isHorizontalSwiping) {
+			const shouldNext = horizontalSwipeDelta < -200 || (horizontalSwipeDelta < 0 && pointerVec.x < -3); // 左の方で離された、または左に向かって強めに弾かれた
+			const shouldPrev = horizontalSwipeDelta > 200 || (horizontalSwipeDelta > 0 && pointerVec.x > 3); // 右の方で離された、または右に向かって強めに弾かれた
+			if (shouldNext) {
+				emit('next');
+			} else if (shouldPrev) {
+				emit('prev');
+			} else {
+				emit('cancelHorizontalSwipe');
+			}
 		}
 	}
 	isVerticalSwiping = false;
@@ -366,14 +388,15 @@ onBeforeUnmount(() => {
 
 <style lang="scss" module>
 .root {
-	//transition: transform 0.2s ease;
+	position: absolute;
 	touch-action: none;
+	width: 100%;
+	height: 100%;
 }
 
 .image {
 	display: block;
 	-webkit-touch-callout: none;
 	user-select: none;
-	//transition: width 0.2s ease, height 0.2s ease;
 }
 </style>

@@ -7,9 +7,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div ref="rootEl" :class="$style.root" :style="{ zIndex }">
 	<div :class="[$style.bg]"></div>
 	<div ref="mainEl" :class="$style.main">
-		<div :class="$style.items">
-			<div v-for="image in images" :key="image.src" :class="$style.item">
-				<XItem :image="image" @close="onItemClose"/>
+		<div ref="itemsEl" :class="$style.items">
+			<div v-for="image in images" :key="image.src" ref="itemEl" :class="$style.item">
+				<XItem
+					:image="image"
+					@close="onItemClose"
+					@horizontalSwipe="onHorizontalSwipe"
+					@prev="onPrev"
+					@next="onNext"
+					@cancelHorizontalSwipe="onCancelHorizontalSwipe"
+				/>
 			</div>
 		</div>
 	</div>
@@ -31,7 +38,7 @@ type Image = {
 };
 
 const props = withDefaults(defineProps<{
-	defaultId?: string;
+	defaultIndex?: number;
 	images: Image[];
 }>(), {
 });
@@ -42,7 +49,47 @@ const emit = defineEmits<{
 
 const rootEl = useTemplateRef('rootEl');
 const mainEl = useTemplateRef('mainEl');
+const itemsEl = useTemplateRef('itemsEl');
+const itemEl = useTemplateRef('itemEl');
 const zIndex = os.claimZIndex('high');
+
+let currentScrollLeft = 0;
+let currentIndex = props.defaultIndex ?? 0;
+
+function onHorizontalSwipe(offset: number) {
+	itemsEl.value.scrollLeft = currentScrollLeft + offset;
+}
+
+function onCancelHorizontalSwipe() {
+	itemsEl.value.scrollTo({
+		left: currentScrollLeft,
+		behavior: 'smooth',
+	});
+}
+
+function onNext() {
+	if (currentIndex < props.images.length - 1) {
+		currentIndex++;
+		const el = itemEl.value[currentIndex];
+		currentScrollLeft = el.offsetLeft;
+		itemsEl.value.scrollTo({
+			left: currentScrollLeft,
+			behavior: 'smooth',
+		});
+	}
+}
+
+function onPrev() {
+	if (currentIndex > 0) {
+		currentIndex--;
+		const el = itemEl.value[currentIndex];
+		currentScrollLeft = el.offsetLeft;
+		itemsEl.value.scrollTo({
+			left: currentScrollLeft,
+			behavior: 'smooth',
+		});
+	}
+}
 
 function onItemClose() {
 	emit('closed');
@@ -76,8 +123,7 @@ function onItemClose() {
 	display: flex;
 	width: 100dvw;
 	height: 100dvh;
-	overflow-x: auto;
-	overflow-y: clip;
+	overflow: hidden;
 	scrollbar-width: none;
 }
 

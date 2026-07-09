@@ -94,15 +94,16 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 };
 
 async function openGallery(id: string) {
+	const images = props.mediaList.filter(media => previewable(media)).map(media => ({
+		id: media.id,
+		src: media.url,
+		width: media.properties.width ?? 0,
+		height: media.properties.height ?? 0,
+		sourceElement: gallery.value?.querySelector(`.image[data-id="${media.id}"]`) as HTMLElement | undefined,
+	}));
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageGallery.vue').then(x => x.default), {
-		defaultId: id,
-		images: props.mediaList.filter(media => previewable(media)).map(media => ({
-			id: media.id,
-			src: media.url,
-			width: media.properties.width ?? 0,
-			height: media.properties.height ?? 0,
-			sourceElement: gallery.value?.querySelector(`.image[data-id="${media.id}"]`) as HTMLElement | undefined,
-		})),
+		defaultIndex: images.findIndex(image => image.id === id),
+		images: images,
 	}, {
 		closed: () => dispose(),
 	});
