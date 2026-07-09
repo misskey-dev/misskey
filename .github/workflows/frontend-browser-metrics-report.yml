@@ -27,6 +27,7 @@ on:
       - .github/scripts/frontend-browser-report.mts
       - .github/scripts/heap-snapshot-util.mts
       - .github/scripts/measure-frontend-browser-comparison.mts
+      - .github/scripts/chrome.mts
       - .github/workflows/frontend-browser-metrics-report.yml
       - .github/workflows/frontend-browser-metrics-report-comment.yml
 
@@ -111,6 +112,10 @@ jobs:
       - name: Build pull request
         working-directory: after
         run: pnpm build
+
+      - name: Install Playwright browsers
+        working-directory: after/packages/frontend
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Measure frontend browser metrics
         shell: bash

@@ -8,7 +8,7 @@ import { copyFile, mkdir, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import * as util from './utility.mts';
 import * as heapSnapshotUtil from './heap-snapshot-util.mts';
-import { Chrome, summarizeNetwork } from './chrome.mts';
+import { maybeClick, PlaywrightBrowser, summarizeNetwork, waitForAnyLocator, waitForReady } from './chrome.mts';
 import type { BrowserMeasurement, NetworkRequest, NetworkSummary } from './chrome.mts';
 
 const [baseDirArg, headDirArg, baseOutputArg, headOutputArg, headHeapSnapshotOutputArg] = process.argv.slice(2);
@@ -36,49 +36,53 @@ type BrowserMetricsReport = {
 	samples: BrowserMeasurementSample[];
 };
 
-async function runSignupAndPostScenario(chrome: Chrome) {
+async function runSignupAndPostScenario(browser: PlaywrightBrowser) {
+	const page = browser.page;
 	const noteText = `Frontend browser metrics ${Date.now()}`;
 
-	await chrome.cdp.send('Page.navigate', { url: `${baseUrl}/` });
-	const initialSelector = await chrome.waitForAnySelector(['[data-cy-signup]', '[data-cy-open-post-form]'], { visible: true, timeoutMs: scenarioTimeoutMs });
+	await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded', timeout: scenarioTimeoutMs });
+	const initialSelector = await waitForAnyLocator([
+		{ name: 'signup', locator: page.getByTestId('signup') },
+		{ name: 'open-post-form', locator: page.getByTestId('open-post-form') },
+	], { visible: true, timeoutMs: scenarioTimeoutMs });
 	if (initialSelector == null) throw new Error('Timed out waiting for the signup or timeline entry point');
 
-	if (await chrome.waitForSelector('[data-cy-signup]', { visible: true, enabled: true, timeoutMs: 5_000 })) {
-		await chrome.click('[data-cy-signup]');
+	if (await waitForReady(page.getByTestId('signup'), { visible: true, enabled: true, timeoutMs: 5_000 })) {
+		await page.getByTestId('signup').click();
 
-		if (await chrome.waitForSelector('[data-cy-signup-rules-continue]', { visible: true, timeoutMs: 5_000 })) {
-			await chrome.click('[data-cy-signup-rules-notes-agree] [data-cy-switch-toggle]');
-			await chrome.maybeClick('[data-cy-modal-dialog-ok]', 5_000);
-			await chrome.click('[data-cy-signup-rules-continue]');
+		if (await waitForReady(page.getByTestId('signup-rules-continue'), { visible: true, timeoutMs: 5_000 })) {
+			await page.getByTestId('signup-rules-notes-agree').getByTestId('switch-toggle').click();
+			await maybeClick(page.getByTestId('modal-dialog-ok'), 5_000);
+			await page.getByTestId('signup-rules-continue').click();
 		}
 
-		await chrome.setValue('[data-cy-signup-username] input', 'alice');
-		await chrome.setValue('[data-cy-signup-password] input', 'alice1234');
-		await chrome.setValue('[data-cy-signup-password-retype] input', 'alice1234');
-		if (await chrome.waitForSelector('[data-cy-signup-invitation-code] input', { visible: true, enabled: true, timeoutMs: 2_000 })) {
-			await chrome.setValue('[data-cy-signup-invitation-code] input', 'test-invitation-code');
+		await browser.mkInput('signup-username').fill('alice');
+		await browser.mkInput('signup-password').fill('alice1234');
+		await browser.mkInput('signup-password-retype').fill('alice1234');
+		if (await waitForReady(browser.mkInput('signup-invitation-code'), { visible: true, enabled: true, timeoutMs: 2_000 })) {
+			await browser.mkInput('signup-invitation-code').fill('test-invitation-code');
 		}
-		await chrome.click('[data-cy-signup-submit]');
+		const signupResponse = browser.waitApiResponse('/api/signup');
+		await page.getByTestId('signup-submit').click();
+		await signupResponse;
 	}
 
-	const firstReadySelector = await chrome.waitForAnySelector([
-		'[data-cy-user-setup] [data-cy-modal-window-close]',
-		'[data-cy-open-post-form]',
+	const setupDialogClose = page.locator('[data-testid="user-setup-dialog"] [data-testid="modal-window-close"]');
+	const firstReadySelector = await waitForAnyLocator([
+		{ name: 'setup-dialog-close', locator: setupDialogClose },
+		{ name: 'open-post-form', locator: page.getByTestId('open-post-form') },
 	], { visible: true, enabled: true, timeoutMs: scenarioTimeoutMs });
 	if (firstReadySelector == null) throw new Error('Timed out waiting for signed-in home timeline');
 
-	if (firstReadySelector === '[data-cy-user-setup] [data-cy-modal-window-close]') {
-		await chrome.click('[data-cy-user-setup] [data-cy-modal-window-close]');
-		await chrome.maybeClick('[data-cy-modal-dialog-ok]', 5_000);
+	if (firstReadySelector === 'setup-dialog-close') {
+		await setupDialogClose.click();
+		await maybeClick(page.getByTestId('modal-dialog-ok'), 5_000);
 	}
 
-	await chrome.click('[data-cy-open-post-form]');
-	await chrome.setValue('[data-cy-post-form-text]', noteText);
-	await chrome.click('[data-cy-open-post-form-submit]');
-
-	if (!await chrome.waitForText(noteText, scenarioTimeoutMs)) {
-		throw new Error('The first timeline note did not appear');
-	}
+	await page.getByTestId('open-post-form').click();
+	await page.getByTestId('post-form-text').fill(noteText);
+	await page.getByTestId('post-form-submit').click();
+	await page.getByText(noteText).waitFor({ timeout: scenarioTimeoutMs });
 
 	await util.sleep(settleMs);
 }
@@ -231,7 +235,7 @@ function summarizeSamples(label: 'base' | 'head', samples: BrowserMeasurementSam
 async function measureSample(label: 'base' | 'head', round: number, heapSnapshotSavePath?: string) {
 	await util.prepareInstance(baseUrl);
 
-	return await Chrome.with(label, { scenarioTimeoutMs }, async chrome => {
+	return await PlaywrightBrowser.with(label, { scenarioTimeoutMs, baseUrl }, async chrome => {
 		await chrome.enableNetworkTracking();
 
 		const startedAt = Date.now();

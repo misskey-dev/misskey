@@ -3,17 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { spawn, spawnSync, type ChildProcessWithoutNullStreams } from 'node:child_process';
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { createRequire } from 'node:module';
+import { writeFile } from 'node:fs/promises';
 import * as util from './utility.mts';
+import type { Locator, Browser, BrowserContext, CDPSession, Page } from 'playwright';
 import type { HeapSnapshotData } from './heap-snapshot-util.mts';
 
-type ChromeHandle = {
-	process: ChildProcessWithoutNullStreams;
-	port: number;
-	userDataDir: string;
+type LocatorEntry = {
+	name: string;
+	locator: Locator;
 };
 
 export type NetworkRequest = {
@@ -126,145 +124,12 @@ export type BrowserMeasurement = {
 	heapSnapshot: HeapSnapshotData;
 };
 
-async function waitForProcessExit(child: ChildProcessWithoutNullStreams) {
-	await new Promise<void>(resolvePromise => {
-		if (child.exitCode != null) {
-			resolvePromise();
-			return;
-		}
-		const killTimer = setTimeout(() => {
-			child.kill('SIGKILL');
-			resolvePromise();
-		}, 5_000).unref();
-		child.once('exit', () => {
-			clearTimeout(killTimer);
-			resolvePromise();
-		});
-	});
-}
+type PlaywrightModule = typeof import('playwright');
 
-async function fetchJson<T>(url: string, options?: RequestInit) {
-	const response = await fetch(url, options);
-	if (!response.ok) {
-		throw new Error(`${url} returned ${response.status}: ${await response.text()}`);
-	}
-	return await response.json() as T;
-}
+const requireFromFrontend = createRequire(new URL('../../packages/frontend/package.json', import.meta.url));
 
-function findChrome() {
-	const envChrome = process.env.CHROME_BIN ?? process.env.GOOGLE_CHROME_BIN;
-	if (envChrome != null && envChrome !== '') return envChrome;
-
-	const candidates = process.platform === 'win32'
-		? [
-			'chrome.exe',
-			'msedge.exe',
-		]
-		: [
-			'google-chrome',
-			'google-chrome-stable',
-			'chromium',
-			'chromium-browser',
-		];
-
-	for (const candidate of candidates) {
-		const result = spawnSync(candidate, ['--version'], {
-			stdio: 'ignore',
-			shell: process.platform === 'win32',
-		});
-		if (result.status === 0) return candidate;
-	}
-
-	throw new Error('Could not find Chrome or Chromium. Set CHROME_BIN to the browser executable.');
-}
-
-async function launchChrome(label: string): Promise<ChromeHandle> {
-	const chrome = findChrome();
-	const port = label === 'base' ? 9222 : 9223;
-	const userDataDir = await mkdtemp(join(tmpdir(), `misskey-browser-metrics-${label}-`));
-	const child = spawn(chrome, [
-		'--headless=new',
-		'--disable-gpu',
-		'--disable-dev-shm-usage',
-		'--disable-background-networking',
-		'--disable-default-apps',
-		'--disable-extensions',
-		'--disable-sync',
-		'--metrics-recording-only',
-		'--no-first-run',
-		'--no-default-browser-check',
-		'--no-sandbox',
-		`--remote-debugging-port=${port}`,
-		`--user-data-dir=${userDataDir}`,
-		'about:blank',
-	], {
-		stdio: ['ignore', 'pipe', 'pipe'],
-	});
-
-	child.stdout.on('data', data => process.stderr.write(`[chrome:${label}] ${data}`));
-	child.stderr.on('data', data => process.stderr.write(`[chrome:${label}] ${data}`));
-
-	try {
-		const startedAt = Date.now();
-		while (Date.now() - startedAt < 30_000) {
-			if (child.exitCode != null) throw new Error(`Chrome exited early with code ${child.exitCode}`);
-			try {
-				await fetchJson(`http://127.0.0.1:${port}/json/version`);
-				return {
-					process: child,
-					port,
-					userDataDir,
-				};
-			} catch {
-				await util.sleep(250);
-			}
-		}
-
-		throw new Error('Timed out waiting for Chrome DevTools Protocol');
-	} catch (err) {
-		await closeChrome({
-			process: child,
-			port,
-			userDataDir,
-		});
-		throw err;
-	}
-}
-
-async function closeChrome(handle: ChromeHandle) {
-	if (handle.process.exitCode == null) {
-		handle.process.kill();
-	}
-	await waitForProcessExit(handle.process);
-	await rm(handle.userDataDir, {
-		recursive: true,
-		force: true,
-		maxRetries: 10,
-		retryDelay: 200,
-	});
-}
-
-type CdpResponse<T = any> = {
-	id?: number;
-	method?: string;
-	params?: any;
-	result?: T;
-	error?: {
-		code: number;
-		message: string;
-	};
-};
-
-function selectorReadyExpression(selector: string, options: { visible?: boolean; enabled?: boolean } = {}) {
-	return `(() => {
-		const el = document.querySelector(${JSON.stringify(selector)});
-		if (el == null) return false;
-		const style = window.getComputedStyle(el);
-		const rect = el.getBoundingClientRect();
-		if (${options.visible === true ? 'true' : 'false'} && (style.visibility === 'hidden' || style.display === 'none' || rect.width === 0 || rect.height === 0)) return false;
-		if (${options.enabled === true ? 'true' : 'false'} && (el.disabled || el.getAttribute('aria-disabled') === 'true')) return false;
-		return true;
-	})()`;
+function loadPlaywright(): PlaywrightModule {
+	return requireFromFrontend('playwright') as PlaywrightModule;
 }
 
 function normalizeHeaders(headers: Record<string, unknown> | undefined) {
@@ -282,119 +147,79 @@ function webSocketFramePayloadBytes(frame: { opcode?: number; payloadData?: stri
 	return Buffer.byteLength(frame.payloadData, 'base64');
 }
 
-class CdpClient {
-	private nextId = 1;
-	private callbacks = new Map<number, {
-		resolve: (value: any) => void;
-		reject: (error: Error) => void;
-	}>();
-	private eventHandlers = new Map<string, Set<(params: any) => void>>();
-	private ws: WebSocket;
-
-	private constructor(ws: WebSocket) {
-		this.ws = ws;
-		ws.addEventListener('message', event => {
-			const message = JSON.parse(String(event.data)) as CdpResponse;
-			if (message.id != null) {
-				const callback = this.callbacks.get(message.id);
-				if (callback == null) return;
-				this.callbacks.delete(message.id);
-				if (message.error != null) {
-					callback.reject(new Error(`${message.error.message} (${message.error.code})`));
-				} else {
-					callback.resolve(message.result);
-				}
-				return;
-			}
-
-			if (message.method != null) {
-				for (const handler of this.eventHandlers.get(message.method) ?? []) {
-					handler(message.params);
-				}
-			}
-		});
-
-		ws.addEventListener('close', () => {
-			for (const callback of this.callbacks.values()) {
-				callback.reject(new Error('CDP websocket closed'));
-			}
-			this.callbacks.clear();
-		});
-	}
-
-	static async connect(wsUrl: string) {
-		const ws = new WebSocket(wsUrl);
-		await new Promise<void>((resolvePromise, reject) => {
-			ws.addEventListener('open', () => resolvePromise(), { once: true });
-			ws.addEventListener('error', () => reject(new Error(`Failed to connect to ${wsUrl}`)), { once: true });
-		});
-		return new CdpClient(ws);
-	}
-
-	on(method: string, handler: (params: any) => void) {
-		const handlers = this.eventHandlers.get(method) ?? new Set();
-		handlers.add(handler);
-		this.eventHandlers.set(method, handlers);
-	}
-
-	send<T = any>(method: string, params: Record<string, unknown> = {}): Promise<T> {
-		const id = this.nextId++;
-		this.ws.send(JSON.stringify({ id, method, params }));
-
-		return new Promise<T>((resolvePromise, reject) => {
-			this.callbacks.set(id, {
-				resolve: resolvePromise,
-				reject,
-			});
-		});
-	}
-
-	close() {
-		this.ws.close();
-	}
-}
-
-type ChromeOptions = {
+type PlaywrightBrowserOptions = {
 	scenarioTimeoutMs: number;
+	baseUrl: string;
 };
 
-export class Chrome {
-	private handle: ChromeHandle;
-	public cdp: CdpClient;
+export class PlaywrightBrowser {
 	public networkRequests: NetworkRequest[] = [];
 	public webSocketConnections: WebSocketConnection[] = [];
-	private scenarioTimeoutMs: number;
+	private readonly browser: Browser;
+	private readonly context: BrowserContext;
+	public readonly page: Page;
+	private readonly cdp: CDPSession;
 	private pendingNetworkDetailReads: Promise<void>[] = [];
 
-	constructor(handle: ChromeHandle, cdpClient: CdpClient, options: ChromeOptions) {
-		this.handle = handle;
-		this.cdp = cdpClient;
-		this.scenarioTimeoutMs = options.scenarioTimeoutMs;
+	private constructor(
+		browser: Browser,
+		context: BrowserContext,
+		page: Page,
+		cdp: CDPSession,
+		options: PlaywrightBrowserOptions,
+	) {
+		this.browser = browser;
+		this.context = context;
+		this.page = page;
+		this.cdp = cdp;
+		this.page.setDefaultTimeout(options.scenarioTimeoutMs);
+		this.page.setDefaultNavigationTimeout(options.scenarioTimeoutMs);
 	}
 
-	static async create(label: string, options: ChromeOptions): Promise<Chrome> {
-		const chromeHandle = await launchChrome(label);
+	static async create(label: string, options: PlaywrightBrowserOptions): Promise<PlaywrightBrowser> {
+		process.stderr.write(`[${label}] Launching Playwright Chromium\n`);
+		const { chromium } = loadPlaywright();
+		const browser = await chromium.launch({
+			headless: true,
+			args: [
+				'--disable-gpu',
+				'--disable-dev-shm-usage',
+				'--disable-background-networking',
+				'--disable-default-apps',
+				'--disable-extensions',
+				'--disable-sync',
+				'--metrics-recording-only',
+				'--no-first-run',
+				'--no-default-browser-check',
+				'--no-sandbox',
+			],
+		});
+
 		try {
-			const url = await fetchJson<{ webSocketDebuggerUrl: string }>(
-				`http://127.0.0.1:${chromeHandle.port}/json/new?${encodeURIComponent('about:blank')}`,
-				{ method: 'PUT' },
-			).catch(async () => await fetchJson<{ webSocketDebuggerUrl: string }>(
-				`http://127.0.0.1:${chromeHandle.port}/json/new?${encodeURIComponent('about:blank')}`,
-			));
-			const cdpClient = await CdpClient.connect(url.webSocketDebuggerUrl);
-			return new Chrome(chromeHandle, cdpClient, options);
-		} catch (err) {
-			await closeChrome(chromeHandle);
-			throw err;
+			const context = await browser.newContext({
+				baseURL: options.baseUrl,
+				locale: 'en-US',
+			});
+			await context.addInitScript(() => {
+				// @ts-expect-error Test-only runtime hint consumed by Misskey frontend code.
+				window.isPlaywright = true;
+			});
+
+			const page = await context.newPage();
+			const cdp = await context.newCDPSession(page);
+			return new PlaywrightBrowser(browser, context, page, cdp, options);
+		} catch (error) {
+			await browser.close().catch(() => undefined);
+			throw error;
 		}
 	}
 
-	static async with<T>(label: string, options: ChromeOptions, callback: (chrome: Chrome) => T | Promise<T>): Promise<T> {
-		const chrome = await Chrome.create(label, options);
+	static async with<T>(label: string, options: PlaywrightBrowserOptions, callback: (browser: PlaywrightBrowser) => T | Promise<T>): Promise<T> {
+		const browser = await PlaywrightBrowser.create(label, options);
 		try {
-			return await callback(chrome);
+			return await callback(browser);
 		} finally {
-			await chrome.close();
+			await browser.close();
 		}
 	}
 
@@ -550,94 +375,10 @@ export class Chrome {
 	}
 
 	public async evaluate<T>(expression: string, timeoutMs = 30_000): Promise<T> {
-		const result = await this.cdp.send<{
-			result: { value: T };
-			exceptionDetails?: unknown;
-		}>('Runtime.evaluate', {
-			expression,
-			awaitPromise: true,
-			returnByValue: true,
-			timeout: timeoutMs,
-		});
-
-		if (result.exceptionDetails != null) {
-			throw new Error(`Runtime.evaluate failed: ${JSON.stringify(result.exceptionDetails)}`);
-		}
-
-		return result.result.value;
-	}
-
-	public async waitForSelector(selector: string, options: { timeoutMs?: number; visible?: boolean; enabled?: boolean } = {}) {
-		const startedAt = Date.now();
-		const timeoutMs = options.timeoutMs ?? this.scenarioTimeoutMs;
-		while (Date.now() - startedAt < timeoutMs) {
-			const ready = await this.evaluate<boolean>(selectorReadyExpression(selector, options), 5_000);
-			if (ready) return true;
-			await util.sleep(250);
-		}
-		return false;
-	}
-
-	public async waitForAnySelector(selectors: string[], options: { timeoutMs?: number; visible?: boolean; enabled?: boolean } = {}) {
-		const startedAt = Date.now();
-		const timeoutMs = options.timeoutMs ?? this.scenarioTimeoutMs;
-		while (Date.now() - startedAt < timeoutMs) {
-			for (const selector of selectors) {
-				const ready = await this.evaluate<boolean>(selectorReadyExpression(selector, options), 5_000);
-				if (ready) return selector;
-			}
-			await util.sleep(250);
-		}
-		return null;
-	}
-
-	public async click(selector: string) {
-		const found = await this.waitForSelector(selector, { visible: true, enabled: true });
-		if (!found) throw new Error(`Selector was not clickable: ${selector}`);
-		await this.evaluate<void>(`(() => {
-			const el = document.querySelector(${JSON.stringify(selector)});
-			if (el == null) throw new Error('Element not found');
-			el.scrollIntoView({ block: 'center', inline: 'center' });
-			el.click();
-		})()`);
-	}
-
-	public async maybeClick(selector: string, timeoutMs = 3_000) {
-		if (await this.waitForSelector(selector, { visible: true, enabled: true, timeoutMs })) {
-			await this.click(selector);
-			return true;
-		}
-		return false;
-	}
-
-	public async setValue(selector: string, value: string) {
-		const found = await this.waitForSelector(selector, { visible: true, enabled: true });
-		if (!found) throw new Error(`Selector was not editable: ${selector}`);
-		await this.evaluate<void>(`(() => {
-			const el = document.querySelector(${JSON.stringify(selector)});
-			if (el == null) throw new Error('Element not found');
-			el.scrollIntoView({ block: 'center', inline: 'center' });
-			el.focus();
-			const proto = Object.getPrototypeOf(el);
-			const descriptor = Object.getOwnPropertyDescriptor(proto, 'value');
-			if (descriptor?.set != null) {
-				descriptor.set.call(el, ${JSON.stringify(value)});
-			} else {
-				el.value = ${JSON.stringify(value)};
-			}
-			el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: ${JSON.stringify(value)} }));
-			el.dispatchEvent(new Event('change', { bubbles: true }));
-		})()`);
-	}
-
-	public async waitForText(text: string, timeoutMs = this.scenarioTimeoutMs) {
-		const startedAt = Date.now();
-		while (Date.now() - startedAt < timeoutMs) {
-			const found = await this.evaluate<boolean>(`document.body?.innerText?.includes(${JSON.stringify(text)}) === true`, 5_000);
-			if (found) return true;
-			await util.sleep(250);
-		}
-		return false;
+		return await Promise.race([
+			this.page.evaluate(expression),
+			new Promise<never>((_, reject) => setTimeout(() => reject(new Error(`Playwright evaluate timed out after ${timeoutMs}ms`)), timeoutMs).unref()),
+		]) as T;
 	}
 
 	public async collectPerformance(): Promise<BrowserMeasurement['performance']> {
@@ -673,7 +414,9 @@ export class Chrome {
 
 	public async collectTabMemory(): Promise<TabMemory> {
 		const userAgentSpecificMemory = await this.evaluate<{ bytes?: number }>(`(async () => {
-			const result = await performance.measureUserAgentSpecificMemory();
+			const measureMemory = performance.measureUserAgentSpecificMemory;
+			if (typeof measureMemory !== 'function') return {};
+			const result = await measureMemory.call(performance);
 			return { bytes: result.bytes };
 		})()`, 10_000);
 
@@ -705,9 +448,20 @@ export class Chrome {
 		return JSON.parse(content);
 	}
 
+	public mkInput(testId: string) {
+		return this.page.locator(`[data-testid="${testId}"] input`);
+	}
+
+	public waitApiResponse(path: string) {
+		return this.page.waitForResponse((response) => {
+			return response.url().endsWith(path) && response.request().method() === 'POST';
+		}, { timeout: this.page.defaultTimeout() });
+	}
+
 	public async close() {
-		this.cdp.close();
-		await closeChrome(this.handle);
+		await this.cdp.detach().catch(() => undefined);
+		await this.context.close().catch(() => undefined);
+		await this.browser.close().catch(() => undefined);
 	}
 }
 
@@ -781,4 +535,42 @@ export function summarizeNetwork(requestRows: NetworkRequest[], baseUrl: string,
 				status: row.status,
 			})),
 	};
+}
+
+export async function isReady(locator: Locator, options: { visible?: boolean; enabled?: boolean }) {
+	const first = locator.first();
+	try {
+		if (await locator.count() === 0) return false;
+		if (options.visible === true && !await first.isVisible()) return false;
+		if (options.enabled === true && !await first.isEnabled()) return false;
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+export async function waitForReady(locator: Locator, options: { timeoutMs: number; visible?: boolean; enabled?: boolean }) {
+	const startedAt = Date.now();
+	while (Date.now() - startedAt < options.timeoutMs) {
+		if (await isReady(locator, options)) return true;
+		await util.sleep(250);
+	}
+	return false;
+}
+
+export async function waitForAnyLocator(entries: LocatorEntry[], options: { timeoutMs: number; visible?: boolean; enabled?: boolean }) {
+	const startedAt = Date.now();
+	while (Date.now() - startedAt < options.timeoutMs) {
+		for (const entry of entries) {
+			if (await isReady(entry.locator, options)) return entry.name;
+		}
+		await util.sleep(250);
+	}
+	return null;
+}
+
+export async function maybeClick(locator: Locator, timeoutMs = 3_000) {
+	if (!await waitForReady(locator, { visible: true, enabled: true, timeoutMs })) return false;
+	await locator.click({ timeout: timeoutMs });
+	return true;
 }
