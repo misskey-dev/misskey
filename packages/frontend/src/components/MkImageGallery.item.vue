@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { makeDoubleTapDetector } from '@/utility/double-tap.js';
@@ -165,12 +165,39 @@ function onPointermove(ev: PointerEvent) {
 		translation.value.x += deltaX;
 		translation.value.y += deltaY;
 
+		pointerVec = { x: deltaX, y: deltaY };
+		console.log('pointerVec', pointerVec);
+
 		lastX = ev.clientX;
 		lastY = ev.clientY;
 	}
 
 	return false;
 }
+
+let handle: ReturnType<typeof window['requestAnimationFrame']> | null = null;
+let latestInertiaTimeStamp = 0;
+
+function updateInertia(timeStamp: number) {
+	handle = window.requestAnimationFrame(updateInertia);
+	const timeDelta = timeStamp - latestInertiaTimeStamp;
+	latestInertiaTimeStamp = timeStamp;
+
+	if (isDragging) return;
+	if (Math.abs(pointerVec.x) < 0.5 && Math.abs(pointerVec.y) < 0.5) return;
+	translation.value.x += pointerVec.x;
+	translation.value.y += pointerVec.y;
+	pointerVec.x *= 0.9 ** (timeDelta / 16.67);
+	pointerVec.y *= 0.9 ** (timeDelta / 16.67);
+}
+
+onMounted(() => {
+	handle = window.requestAnimationFrame(updateInertia);
+});
+
+onBeforeUnmount(() => {
+	if (handle != null) window.cancelAnimationFrame(handle);
+});
 
 function onPointerdown(ev: PointerEvent) {
 	pointerEventCache.set(ev.pointerId, ev);
@@ -181,6 +208,7 @@ function onPointerdown(ev: PointerEvent) {
 	isDragging = true;
 	lastX = ev.clientX;
 	lastY = ev.clientY;
+	pointerVec = { x: 0, y: 0 };
 }
 
 function onPointerup(ev: PointerEvent) {
@@ -193,6 +221,7 @@ function onPointerup(ev: PointerEvent) {
 const doubleTapDetector = makeDoubleTapDetector((ev) => {
 	ev.preventDefault();
 	ev.stopPropagation();
+	pointerVec = { x: 0, y: 0 };
 
 	if (isZooming.value) {
 		size.value.width = defaultSize.width;
