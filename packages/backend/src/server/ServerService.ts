@@ -21,6 +21,7 @@ import { genIdenticon } from '@/misc/gen-identicon.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
+import { envOption } from '@/env.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
@@ -85,6 +86,15 @@ export class ServerService implements OnApplicationShutdown {
 		if (this.config.url.startsWith('https') && !this.config.disableHsts) {
 			fastify.addHook('onRequest', (request, reply, done) => {
 				reply.header('strict-transport-security', 'max-age=15552000; preload');
+				done();
+			});
+		}
+
+		// for test
+		if (envOption.enableCrossOriginIsolation) {
+			fastify.addHook('onRequest', (request, reply, done) => {
+				reply.header('Cross-Origin-Opener-Policy', 'same-origin');
+				reply.header('Cross-Origin-Embedder-Policy', 'credentialless');
 				done();
 			});
 		}

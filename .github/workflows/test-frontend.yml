@@ -57,11 +57,6 @@ jobs:
     name: E2E tests (frontend)
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [chrome]
-
     services:
       postgres:
         image: postgres:18
@@ -79,12 +74,6 @@ jobs:
     - uses: actions/checkout@v6.0.3
       with:
         submodules: true
-    # https://github.com/cypress-io/cypress-docker-images/issues/150
-    #- name: Install mplayer for FireFox
-    #  run: sudo apt install mplayer -y
-    #  if: ${{ matrix.browser == 'firefox' }}
-    #- uses: browser-actions/setup-firefox@latest
-    #  if: ${{ matrix.browser == 'firefox' }}
     - name: Setup pnpm
       uses: pnpm/action-setup@v6.0.9
     - name: Use Node.js
@@ -97,29 +86,14 @@ jobs:
       run: cp .github/misskey/test.yml .config
     - name: Build
       run: pnpm build
-    # https://github.com/cypress-io/cypress/issues/4351#issuecomment-559489091
-    - name: ALSA Env
-      run: echo -e 'pcm.!default {\n type hw\n card 0\n}\n\nctl.!default {\n type hw\n card 0\n}' > ~/.asoundrc
-    # XXX: This tries reinstalling Cypress if the binary is not cached
-    # Remove this when the cache issue is fixed
-    - name: Cypress install
-      run: pnpm exec cypress install
-    - name: Cypress run
-      uses: cypress-io/github-action@v7.4.0
+    - name: Playwright install
+      working-directory: packages/frontend
+      run: pnpm exec playwright install --with-deps chromium
+    - name: Test
+      run: pnpm start-server-and-test start:test http://localhost:61812 "pnpm --filter frontend test:e2e"
       timeout-minutes: 15
-      with:
-        install: false
-        start: pnpm start:test
-        wait-on: 'http://localhost:61812'
-        headed: true
-        browser: ${{ matrix.browser }}
     - uses: actions/upload-artifact@v7
       if: failure()
       with:
-        name: ${{ matrix.browser }}-cypress-screenshots
-        path: cypress/screenshots
-    - uses: actions/upload-artifact@v7
-      if: always()
-      with:
-        name: ${{ matrix.browser }}-cypress-videos
-        path: cypress/videos
+        name: playwright-e2e-artifacts
+        path: packages/frontend/test/e2e/artifacts

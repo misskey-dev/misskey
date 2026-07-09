@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/emoji-palette" :label="i18n.ts.emojiPalette" :keywords="['emoji', 'palette']" icon="ti ti-mood-happy">
 	<div class="_gaps_m">
-		<MkFeatureBanner icon="/client-assets/artist_palette_3d.png" color="#ff9100">
+		<MkFeatureBanner icon="/fluent-emoji/1f3a8.png" color="#ff9100">
 			<SearchText>{{ i18n.ts._settings.emojiPaletteBanner }}</SearchText>
 		</MkFeatureBanner>
 

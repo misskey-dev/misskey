@@ -55,7 +55,7 @@ import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurha
 // テスト環境で Web Worker インスタンスは作成できない
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
-const isTest = (import.meta.env.MODE === 'test' || window.Cypress != null);
+const isTest = (import.meta.env.MODE === 'test' || window.isPlaywright);
 
 const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resolve => {
 	if (isTest) {
