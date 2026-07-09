@@ -69,9 +69,8 @@ export async function masterMain() {
 	initExtraThreadPool(config);
 
 	try {
-		await initTelemetry(config);
 	} catch (e) {
-		bootLogger.error('Fatal error occurred during telemetry initialization: ' + e, null, true);
+		bootLogger.error(e instanceof Error ? e : new Error(String(e)), null, true);
 		process.exit(1);
 	}
 	installTelemetrySignalHandlers();
