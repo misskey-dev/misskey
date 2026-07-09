@@ -121,8 +121,6 @@ jobs:
         shell: bash
         env:
           FRONTEND_BROWSER_METRICS_SAMPLE_COUNT: 5
-          FRONTEND_BROWSER_METRICS_SCENARIO_TIMEOUT_MS: 120000
-          FRONTEND_BROWSER_METRICS_SETTLE_MS: 1000
           MK_ENABLE_CROSS_ORIGIN_ISOLATION: "true"
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-browser-metrics-report"

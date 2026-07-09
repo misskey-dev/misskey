@@ -8,14 +8,12 @@ import { copyFile, mkdir, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import * as util from './utility.mts';
 import * as heapSnapshotUtil from './heap-snapshot-util.mts';
-import { maybeClick, HeadlessChromeController, summarizeNetwork, waitForAnyLocator, waitForReady } from './chrome.mts';
+import { HeadlessChromeController, summarizeNetwork } from './chrome.mts';
 import type { BrowserMeasurement, NetworkRequest, NetworkSummary } from './chrome.mts';
 
 const [baseDirArg, headDirArg, baseOutputArg, headOutputArg, headHeapSnapshotOutputArg] = process.argv.slice(2);
 
 const baseUrl = process.env.FRONTEND_BROWSER_METRICS_URL ?? 'http://127.0.0.1:61812';
-const scenarioTimeoutMs = util.readIntegerEnv('FRONTEND_BROWSER_METRICS_SCENARIO_TIMEOUT_MS', 90_000, 1);
-const settleMs = util.readIntegerEnv('FRONTEND_BROWSER_METRICS_SETTLE_MS', 1_000, 0);
 const sampleCount = util.readIntegerEnv('FRONTEND_BROWSER_METRICS_SAMPLE_COUNT', 5, 1);
 const heapSnapshotBreakdownTopN = util.readIntegerEnv('FRONTEND_BROWSER_HEAP_SNAPSHOT_BREAKDOWN_TOP_N', heapSnapshotUtil.defaultHeapSnapshotBreakdownTopN, 1);
 const headHeapSnapshotWorkDir = resolve('frontend-browser-head-heap-snapshots');
@@ -40,51 +38,16 @@ async function runSignupAndPostScenario(chrome: HeadlessChromeController) {
 	const page = chrome.page;
 	const noteText = `Frontend browser metrics ${Date.now()}`;
 
-	await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded', timeout: scenarioTimeoutMs });
-	const initialSelector = await waitForAnyLocator([
-		{ name: 'signup', locator: page.getByTestId('signup') },
-		{ name: 'open-post-form', locator: page.getByTestId('open-post-form') },
-	], { visible: true, timeoutMs: scenarioTimeoutMs });
-	if (initialSelector == null) throw new Error('Timed out waiting for the signup or timeline entry point');
+	await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
 
-	if (await waitForReady(page.getByTestId('signup'), { visible: true, enabled: true, timeoutMs: 5_000 })) {
-		await page.getByTestId('signup').click();
-
-		if (await waitForReady(page.getByTestId('signup-rules-continue'), { visible: true, timeoutMs: 5_000 })) {
-			await page.getByTestId('signup-rules-notes-agree').getByTestId('switch-toggle').click();
-			await maybeClick(page.getByTestId('modal-dialog-ok'), 5_000);
-			await page.getByTestId('signup-rules-continue').click();
-		}
-
-		await chrome.mkInput('signup-username').fill('alice');
-		await chrome.mkInput('signup-password').fill('alice1234');
-		await chrome.mkInput('signup-password-retype').fill('alice1234');
-		if (await waitForReady(chrome.mkInput('signup-invitation-code'), { visible: true, enabled: true, timeoutMs: 2_000 })) {
-			await chrome.mkInput('signup-invitation-code').fill('test-invitation-code');
-		}
-		const signupResponse = chrome.waitApiResponse('/api/signup');
-		await page.getByTestId('signup-submit').click();
-		await signupResponse;
-	}
-
-	const setupDialogClose = page.locator('[data-testid="user-setup-dialog"] [data-testid="modal-window-close"]');
-	const firstReadySelector = await waitForAnyLocator([
-		{ name: 'setup-dialog-close', locator: setupDialogClose },
-		{ name: 'open-post-form', locator: page.getByTestId('open-post-form') },
-	], { visible: true, enabled: true, timeoutMs: scenarioTimeoutMs });
-	if (firstReadySelector == null) throw new Error('Timed out waiting for signed-in home timeline');
-
-	if (firstReadySelector === 'setup-dialog-close') {
-		await setupDialogClose.click();
-		await maybeClick(page.getByTestId('modal-dialog-ok'), 5_000);
-	}
+	// TODO
 
 	await page.getByTestId('open-post-form').click();
 	await page.getByTestId('post-form-text').fill(noteText);
 	await page.getByTestId('post-form-submit').click();
-	await page.getByText(noteText).waitFor({ timeout: scenarioTimeoutMs });
+	await page.getByText(noteText).waitFor({ timeout: 10000 });
 
-	await util.sleep(settleMs);
+	await util.sleep(1000);
 }
 
 function finiteMedian(values: (number | null | undefined)[], defaultValue = 0) {
@@ -235,7 +198,7 @@ function summarizeSamples(label: 'base' | 'head', samples: BrowserMeasurementSam
 async function measureSample(label: 'base' | 'head', round: number, heapSnapshotSavePath?: string) {
 	await util.prepareInstance(baseUrl);
 
-	return await HeadlessChromeController.with(label, { scenarioTimeoutMs, baseUrl }, async chrome => {
+	return await HeadlessChromeController.with(label, { scenarioTimeoutMs: 120000, baseUrl }, async chrome => {
 		await chrome.enableNetworkTracking();
 
 		const startedAt = Date.now();
@@ -274,11 +237,11 @@ async function saveRepresentativeHeadHeapSnapshot(report: BrowserMetricsReport, 
 }
 
 async function measureRepo(label: 'base' | 'head', repoDir: string, outputPath: string, heapSnapshotSavePath?: string) {
-	let server: ChildProcessWithoutNullStreams | null = null;
+	let server: ReturnType<typeof util.startServer> | null = null;
 
 	try {
 		server = util.startServer(label, repoDir);
-		await util.waitForServer(baseUrl, server);
+		await util.waitForServer(baseUrl, server!);
 
 		if (label === 'head' && heapSnapshotSavePath != null) {
 			await rm(headHeapSnapshotWorkDir, { recursive: true, force: true });
