@@ -455,7 +455,7 @@ export class PlaywrightBrowser {
 	public waitApiResponse(path: string) {
 		return this.page.waitForResponse((response) => {
 			return response.url().endsWith(path) && response.request().method() === 'POST';
-		}, { timeout: this.page.defaultTimeout() });
+		});
 	}
 
 	public async close() {
