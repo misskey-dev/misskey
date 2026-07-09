@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="rootEl" :class="$style.root" :style="{ zIndex }">
-	<div :class="[$style.bg]"></div>
+	<div :class="[$style.bg]" class="_modalBg"></div>
 	<div ref="mainEl" :class="$style.main">
 		<div ref="itemsEl" :class="$style.items" :style="{ left: `${imagesOffset}px` }">
 			<div v-for="(image, i) in images" :key="image.url" ref="itemEl" :class="$style.item">
@@ -109,12 +109,6 @@ function onItemClose() {
 }
 
 .bg {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: #0008;
 }
 
 .main {
