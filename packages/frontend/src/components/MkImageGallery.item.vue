@@ -275,8 +275,8 @@ function onPointermove(ev: PointerEvent) {
 				verticalSwipeDelta += deltaY;
 			} else if (isHorizontalSwiping) {
 				//translation.value.x += deltaX;
-				horizontalSwipeDelta += deltaX;
-				emit('horizontalSwipe', currentPointerStartOffset.x - ev.clientX);
+				horizontalSwipeDelta = ev.clientX - currentPointerStartOffset.x;
+				emit('horizontalSwipe', horizontalSwipeDelta);
 			} else {
 				const isVerticalVector = Math.abs(deltaY) > Math.abs(deltaX);
 				if (isVerticalVector) {
@@ -305,8 +305,8 @@ function onPointerup(ev: PointerEvent) {
 		currentPointerId = null;
 
 		if (isVerticalSwiping) {
-			const shouldCloseByUpwardSwipe = verticalSwipeDelta < -200 || (verticalSwipeDelta < 0 && pointerVec.y < -3); // 上の方で離された、または上に向かって強めに弾かれた
-			const shouldCloseByDownwardSwipe = verticalSwipeDelta > 200 || (verticalSwipeDelta > 0 && pointerVec.y > 3); // 下の方で離された、または下に向かって強めに弾かれた
+			const shouldCloseByUpwardSwipe = verticalSwipeDelta < -200 || (verticalSwipeDelta < 0 && pointerVec.y < -5); // 上の方で離された、または上に向かって強めに弾かれた
+			const shouldCloseByDownwardSwipe = verticalSwipeDelta > 200 || (verticalSwipeDelta > 0 && pointerVec.y > 5); // 下の方で離された、または下に向かって強めに弾かれた
 			if (shouldCloseByUpwardSwipe || shouldCloseByDownwardSwipe) {
 				emit('close');
 				return;
@@ -314,8 +314,8 @@ function onPointerup(ev: PointerEvent) {
 
 			resetSizeAndTranslation();
 		} else if (isHorizontalSwiping) {
-			const shouldNext = horizontalSwipeDelta < -200 || (horizontalSwipeDelta < 0 && pointerVec.x < -3); // 左の方で離された、または左に向かって強めに弾かれた
-			const shouldPrev = horizontalSwipeDelta > 200 || (horizontalSwipeDelta > 0 && pointerVec.x > 3); // 右の方で離された、または右に向かって強めに弾かれた
+			const shouldNext = horizontalSwipeDelta < -150 || (horizontalSwipeDelta < 0 && pointerVec.x < -3); // 左の方で離された、または左に向かって強めに弾かれた
+			const shouldPrev = horizontalSwipeDelta > 150 || (horizontalSwipeDelta > 0 && pointerVec.x > 3); // 右の方で離された、または右に向かって強めに弾かれた
 			if (shouldNext) {
 				emit('next');
 			} else if (shouldPrev) {

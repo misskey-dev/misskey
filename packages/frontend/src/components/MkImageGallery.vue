@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div ref="rootEl" :class="$style.root" :style="{ zIndex }">
 	<div :class="[$style.bg]"></div>
 	<div ref="mainEl" :class="$style.main">
-		<div ref="itemsEl" :class="$style.items" :style="{ left: `-${imagesOffset}px` }">
+		<div ref="itemsEl" :class="$style.items" :style="{ left: `${imagesOffset}px` }">
 			<div v-for="image in images" :key="image.src" ref="itemEl" :class="$style.item">
 				<XItem
 					:image="image"
@@ -56,7 +56,7 @@ const itemsEl = useTemplateRef('itemsEl');
 const itemEl = useTemplateRef('itemEl');
 const zIndex = os.claimZIndex('high');
 const screenWidth = ref(window.innerWidth);
-const imagesOffset = ref(currentIndex * window.innerWidth);
+const imagesOffset = ref(currentIndex * -window.innerWidth);
 let currentScrollLeft = imagesOffset.value;
 
 function onHorizontalSwipe(offset: number) {
@@ -64,10 +64,10 @@ function onHorizontalSwipe(offset: number) {
 }
 
 function scrollToCurrentIndex() {
-	currentScrollLeft = currentIndex * screenWidth.value;
+	currentScrollLeft = currentIndex * -screenWidth.value;
 	beginAnimation({
 		from: { value: imagesOffset.value },
-		to: { value: currentIndex * screenWidth.value },
+		to: { value: currentIndex * -screenWidth.value },
 		duration: 300,
 		easing: easing_easeInOutQuad,
 		apply: ({ value }) => {
@@ -83,15 +83,15 @@ function onCancelHorizontalSwipe() {
 function onNext() {
 	if (currentIndex < props.images.length - 1) {
 		currentIndex++;
-		scrollToCurrentIndex();
 	}
+	scrollToCurrentIndex();
 }
 
 function onPrev() {
 	if (currentIndex > 0) {
 		currentIndex--;
-		scrollToCurrentIndex();
 	}
+	scrollToCurrentIndex();
 }
 
 function onItemClose() {
