@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div ref="rootEl" :class="$style.root" :style="{ zIndex }">
 	<div :class="[$style.bg]"></div>
 	<div ref="mainEl" :class="$style.main">
-		<div ref="itemsEl" :class="$style.items">
+		<div ref="itemsEl" :class="$style.items" :style="{ left: `-${imagesOffset}px` }">
 			<div v-for="image in images" :key="image.src" ref="itemEl" :class="$style.item">
 				<XItem
 					:image="image"
@@ -28,6 +28,7 @@ import { nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import XItem from './MkImageGallery.item.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { beginAnimation, easing_easeInOutQuad } from '@/utility/animation.js';
 
 type Image = {
 	id: string;
@@ -47,47 +48,49 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
+let currentIndex = props.defaultIndex ?? 0;
+
 const rootEl = useTemplateRef('rootEl');
 const mainEl = useTemplateRef('mainEl');
 const itemsEl = useTemplateRef('itemsEl');
 const itemEl = useTemplateRef('itemEl');
 const zIndex = os.claimZIndex('high');
-
-let currentScrollLeft = 0;
-let currentIndex = props.defaultIndex ?? 0;
+const screenWidth = ref(window.innerWidth);
+const imagesOffset = ref(currentIndex * window.innerWidth);
+let currentScrollLeft = imagesOffset.value;
 
 function onHorizontalSwipe(offset: number) {
-	itemsEl.value.scrollLeft = currentScrollLeft + offset;
+	imagesOffset.value = currentScrollLeft + offset;
+}
+
+function scrollToCurrentIndex() {
+	currentScrollLeft = currentIndex * screenWidth.value;
+	beginAnimation({
+		from: { value: imagesOffset.value },
+		to: { value: currentIndex * screenWidth.value },
+		duration: 300,
+		easing: easing_easeInOutQuad,
+		apply: ({ value }) => {
+			imagesOffset.value = value;
+		},
+	});
 }
 
 function onCancelHorizontalSwipe() {
-	itemsEl.value.scrollTo({
-		left: currentScrollLeft,
-		behavior: 'smooth',
-	});
+	scrollToCurrentIndex();
 }
 
 function onNext() {
 	if (currentIndex < props.images.length - 1) {
 		currentIndex++;
-		const el = itemEl.value[currentIndex];
-		currentScrollLeft = el.offsetLeft;
-		itemsEl.value.scrollTo({
-			left: currentScrollLeft,
-			behavior: 'smooth',
-		});
+		scrollToCurrentIndex();
 	}
 }
 
 function onPrev() {
 	if (currentIndex > 0) {
 		currentIndex--;
-		const el = itemEl.value[currentIndex];
-		currentScrollLeft = el.offsetLeft;
-		itemsEl.value.scrollTo({
-			left: currentScrollLeft,
-			behavior: 'smooth',
-		});
+		scrollToCurrentIndex();
 	}
 }
 
@@ -120,11 +123,12 @@ function onItemClose() {
 }
 
 .items {
+	position: absolute;
 	display: flex;
-	width: 100dvw;
+	width: calc(v-bind("screenWidth + 'px'") * v-bind("images.length"));
 	height: 100dvh;
-	overflow: hidden;
-	scrollbar-width: none;
+	overflow: clip;
+	contain: strict;
 }
 
 .item {

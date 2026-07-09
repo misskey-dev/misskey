@@ -32,6 +32,7 @@ import { nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef 
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { makeDoubleTapDetector } from '@/utility/double-tap.js';
+import { beginAnimation, easing_easeInOutQuad } from '@/utility/animation.js';
 
 type Image = {
 	id: string;
@@ -95,36 +96,6 @@ const defaultTranslation = calcDefaultTranslation(props.image);
 const size = ref({ width: defaultSize.width, height: defaultSize.height });
 const translation = ref({ x: defaultTranslation.x, y: defaultTranslation.y });
 
-let isAnimating = false;
-
-function beginAnimation(to: { width: number; height: number; x: number; y: number }, duration: number) {
-	const easing = (t: number) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // easeInOutQuad
-
-	const startTime = performance.now();
-	const startSize = { ...size.value };
-	const startTranslation = { ...translation.value };
-	isAnimating = true;
-
-	function animate() {
-		const now = performance.now();
-		const elapsed = now - startTime;
-		const t = easing(Math.min(elapsed / duration, 1));
-
-		size.value.width = startSize.width + (to.width - startSize.width) * t;
-		size.value.height = startSize.height + (to.height - startSize.height) * t;
-		translation.value.x = startTranslation.x + (to.x - startTranslation.x) * t;
-		translation.value.y = startTranslation.y + (to.y - startTranslation.y) * t;
-
-		if (t < 1) {
-			window.requestAnimationFrame(animate);
-		} else {
-			isAnimating = false;
-		}
-	}
-
-	window.requestAnimationFrame(animate);
-}
-
 const isZooming = ref(false);
 
 function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
@@ -141,17 +112,59 @@ function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
 
 	if (withAnimation) {
 		beginAnimation({
-			width: newWidth,
-			height: newHeight,
-			x: translation.value.x - offsetX * (factor - 1),
-			y: translation.value.y - offsetY * (factor - 1),
-		}, ANIMATION_DURATION);
+			from: {
+				width: size.value.width,
+				height: size.value.height,
+				x: translation.value.x,
+				y: translation.value.y,
+			},
+			to: {
+				width: newWidth,
+				height: newHeight,
+				x: translation.value.x - offsetX * (factor - 1),
+				y: translation.value.y - offsetY * (factor - 1),
+			},
+			duration: ANIMATION_DURATION,
+			easing: easing_easeInOutQuad,
+			apply: (state) => {
+				size.value.width = state.width;
+				size.value.height = state.height;
+				translation.value.x = state.x;
+				translation.value.y = state.y;
+			},
+		});
 	} else {
 		size.value.width = newWidth;
 		size.value.height = newHeight;
 		translation.value.x -= offsetX * (factor - 1);
 		translation.value.y -= offsetY * (factor - 1);
 	}
+}
+
+function resetSizeAndTranslation() {
+	isZooming.value = false;
+	beginAnimation({
+		from: {
+			width: size.value.width,
+			height: size.value.height,
+			x: translation.value.x,
+			y: translation.value.y,
+		},
+		to: {
+			width: defaultSize.width,
+			height: defaultSize.height,
+			x: defaultTranslation.x,
+			y: defaultTranslation.y,
+		},
+		duration: ANIMATION_DURATION,
+		easing: easing_easeInOutQuad,
+		apply: (state) => {
+			size.value.width = state.width;
+			size.value.height = state.height;
+			translation.value.x = state.x;
+			translation.value.y = state.y;
+		},
+	});
 }
 
 function onWheel(event: WheelEvent) {
@@ -184,12 +197,7 @@ function onZoomGesture(ev: { delta: number; centerX: number; centerY: number }) 
 function onZoomGestureEnd() {
 	if (size.value.width < defaultSize.width || size.value.height < defaultSize.height) {
 		isZooming.value = false;
-		beginAnimation({
-			width: defaultSize.width,
-			height: defaultSize.height,
-			x: defaultTranslation.x,
-			y: defaultTranslation.y,
-		}, ANIMATION_DURATION);
+		resetSizeAndTranslation();
 	}
 }
 
@@ -304,12 +312,7 @@ function onPointerup(ev: PointerEvent) {
 				return;
 			}
 
-			beginAnimation({
-				width: defaultSize.width,
-				height: defaultSize.height,
-				x: defaultTranslation.x,
-				y: defaultTranslation.y,
-			}, ANIMATION_DURATION);
+			resetSizeAndTranslation();
 		} else if (isHorizontalSwiping) {
 			const shouldNext = horizontalSwipeDelta < -200 || (horizontalSwipeDelta < 0 && pointerVec.x < -3); // 左の方で離された、または左に向かって強めに弾かれた
 			const shouldPrev = horizontalSwipeDelta > 200 || (horizontalSwipeDelta > 0 && pointerVec.x > 3); // 右の方で離された、または右に向かって強めに弾かれた
@@ -335,12 +338,7 @@ const doubleTapDetector = makeDoubleTapDetector((ev) => {
 
 	if (isZooming.value) {
 		isZooming.value = false;
-		beginAnimation({
-			width: defaultSize.width,
-			height: defaultSize.height,
-			x: defaultTranslation.x,
-			y: defaultTranslation.y,
-		}, ANIMATION_DURATION);
+		resetSizeAndTranslation();
 	} else {
 		isZooming.value = true;
 		zoomInTo(ev.touches[0].clientX, ev.touches[0].clientY, 2, true);
