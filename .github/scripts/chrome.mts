@@ -180,6 +180,7 @@ export class HeadlessChromeController {
 		process.stderr.write(`[${label}] Launching Playwright Chromium\n`);
 		const { chromium } = loadPlaywright();
 		const browser = await chromium.launch({
+			channel: 'chromium',
 			headless: true,
 			args: [
 				'--disable-gpu',

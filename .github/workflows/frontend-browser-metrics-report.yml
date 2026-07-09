@@ -115,7 +115,7 @@ jobs:
 
       - name: Install Playwright browsers
         working-directory: after/packages/frontend
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps --no-shell chromium
 
       - name: Measure frontend browser metrics
         shell: bash
