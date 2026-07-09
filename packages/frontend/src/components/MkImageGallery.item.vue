@@ -12,8 +12,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:width="size.width"
 		:height="size.height"
 		@wheel="onWheel"
-		@touchstart="onTouchstart"
 		@pointerdown="onPointerdown"
+		@pointermove="onPointermove"
+		@pointerup="onPointerup"
+		@touchstart="onTouchstart"
+		@touchmove="onTouchmove"
 	>
 </div>
 </template>
@@ -22,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { makeDoubleTapDetector } from '@/utility/double-tap.js';
 
 type Image = {
 	id: string;
@@ -120,80 +124,98 @@ function onWheel(event: WheelEvent) {
 	zoomInTo(event.clientX, event.clientY, scale);
 }
 
-let lastTapTime = 0;
-
-function onTouchstart(event: TouchEvent) {
-	if (isZooming.value) {
-		event.preventDefault();
-	}
-
-	if (event.touches.length !== 1) return;
-
-	const touch = event.touches[0];
-
-	let tapTimeout: number | null = null;
-
-	const currentTime = new Date().getTime();
-	const tapLength = currentTime - lastTapTime;
-
-	if (tapLength < 300 && tapLength > 0) { // ダブルタップ
-		event.preventDefault();
-
-		if (isZooming.value) {
-			size.value.width = defaultSize.width;
-			size.value.height = defaultSize.height;
-			translation.value.x = defaultTranslation.x;
-			translation.value.y = defaultTranslation.y;
-			isZooming.value = false;
-		} else {
-			zoomInTo(touch.clientX, touch.clientY, 2);
-		}
-	}
-
-	lastTapTime = currentTime;
-
-	if (tapTimeout) clearTimeout(tapTimeout);
-
-	tapTimeout = window.setTimeout(() => {
-		tapTimeout = null;
-	}, 300);
-}
-
 // ズーム中、ドラッグされたら画像を移動する
 let isDragging = false;
 let lastX = 0;
 let lastY = 0;
 
-function onPointerdown(event: PointerEvent) {
-	if (!isZooming.value) return;
+const pointerEventCache = new Map<number, PointerEvent>();
+let pointerVec = { x: 0, y: 0 };
 
-	isDragging = true;
-	lastX = event.clientX;
-	lastY = event.clientY;
+let prevTwoTouchPointsDistance = 0;
 
-	const onPointerMove = (moveEvent: PointerEvent) => {
-		if (!isDragging) return;
+function onPointermove(ev: PointerEvent) {
+	ev.preventDefault();
+	ev.stopPropagation();
 
-		const deltaX = moveEvent.clientX - lastX;
-		const deltaY = moveEvent.clientY - lastY;
+	if (pointerEventCache.size === 0) {
+		return;
+	}
+
+	pointerEventCache.set(ev.pointerId, ev);
+
+	if (pointerEventCache.size > 1) { // 2本指での操作
+		const a = Array.from(pointerEventCache.values())[0];
+		const b = Array.from(pointerEventCache.values())[1];
+		const distance = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+		if (prevTwoTouchPointsDistance > 0) {
+			const delta = distance - prevTwoTouchPointsDistance;
+			zoomInTo((a.clientX + b.clientX) / 2, (a.clientY + b.clientY) / 2, 1 + delta / 200);
+		}
+		prevTwoTouchPointsDistance = distance;
+		return;
+	}
+
+	prevTwoTouchPointsDistance = 0;
+
+	if (isDragging) {
+		const deltaX = ev.clientX - lastX;
+		const deltaY = ev.clientY - lastY;
 
 		translation.value.x += deltaX;
 		translation.value.y += deltaY;
 
-		lastX = moveEvent.clientX;
-		lastY = moveEvent.clientY;
-	};
+		lastX = ev.clientX;
+		lastY = ev.clientY;
+	}
 
-	const onPointerUp = () => {
-		isDragging = false;
-		window.removeEventListener('pointermove', onPointerMove);
-		window.removeEventListener('pointerup', onPointerUp);
-	};
-
-	window.addEventListener('pointermove', onPointerMove);
-	window.addEventListener('pointerup', onPointerUp);
+	return false;
 }
 
+function onPointerdown(ev: PointerEvent) {
+	pointerEventCache.set(ev.pointerId, ev);
+	imageEl.value.setPointerCapture(ev.pointerId);
+
+	if (!isZooming.value) return;
+
+	isDragging = true;
+	lastX = ev.clientX;
+	lastY = ev.clientY;
+}
+
+function onPointerup(ev: PointerEvent) {
+	pointerEventCache.delete(ev.pointerId);
+	imageEl.value.releasePointerCapture(ev.pointerId);
+	prevTwoTouchPointsDistance = 0;
+	isDragging = false;
+}
+
+const doubleTapDetector = makeDoubleTapDetector((ev) => {
+	ev.preventDefault();
+	ev.stopPropagation();
+
+	if (isZooming.value) {
+		size.value.width = defaultSize.width;
+		size.value.height = defaultSize.height;
+		translation.value.x = defaultTranslation.x;
+		translation.value.y = defaultTranslation.y;
+		isZooming.value = false;
+	} else {
+		zoomInTo(ev.touches[0].clientX, ev.touches[0].clientY, 2);
+	}
+});
+
+function onTouchstart(ev: TouchEvent) {
+	ev.preventDefault();
+	ev.stopPropagation();
+	doubleTapDetector.onTouchstart(ev);
+}
+
+function onTouchmove(ev: TouchEvent) {
+	ev.preventDefault();
+	ev.stopPropagation();
+	doubleTapDetector.onTouchmove(ev);
+}
 </script>
 
 <style lang="scss" module>
