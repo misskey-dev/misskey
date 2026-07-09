@@ -57,7 +57,7 @@ const zIndex = os.claimZIndex('high');
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: #0f08;
+	background: #0008;
 }
 
 .main {

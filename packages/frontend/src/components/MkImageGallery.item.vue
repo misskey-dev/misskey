@@ -124,6 +124,21 @@ function onWheel(event: WheelEvent) {
 	zoomInTo(event.clientX, event.clientY, scale);
 }
 
+function onZoomGesture(ev: { delta: number; centerX: number; centerY: number }) {
+	zoomInTo(ev.centerX, ev.centerY, 1 + ev.delta / 200);
+}
+
+function onZoomGestureEnd() {
+	// TODO: animation
+	if (size.value.width < defaultSize.width || size.value.height < defaultSize.height) {
+		size.value.width = defaultSize.width;
+		size.value.height = defaultSize.height;
+		translation.value.x = defaultTranslation.x;
+		translation.value.y = defaultTranslation.y;
+		isZooming.value = false;
+	}
+}
+
 // ズーム中、ドラッグされたら画像を移動する
 let isDragging = false;
 let lastX = 0;
@@ -150,7 +165,7 @@ function onPointermove(ev: PointerEvent) {
 		const distance = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
 		if (prevTwoTouchPointsDistance > 0) {
 			const delta = distance - prevTwoTouchPointsDistance;
-			zoomInTo((a.clientX + b.clientX) / 2, (a.clientY + b.clientY) / 2, 1 + delta / 200);
+			onZoomGesture({ delta, centerX: (a.clientX + b.clientX) / 2, centerY: (a.clientY + b.clientY) / 2 });
 		}
 		prevTwoTouchPointsDistance = distance;
 		return;
@@ -175,30 +190,6 @@ function onPointermove(ev: PointerEvent) {
 	return false;
 }
 
-let handle: ReturnType<typeof window['requestAnimationFrame']> | null = null;
-let latestInertiaTimeStamp = 0;
-
-function updateInertia(timeStamp: number) {
-	handle = window.requestAnimationFrame(updateInertia);
-	const timeDelta = timeStamp - latestInertiaTimeStamp;
-	latestInertiaTimeStamp = timeStamp;
-
-	if (isDragging) return;
-	if (Math.abs(pointerVec.x) < 0.5 && Math.abs(pointerVec.y) < 0.5) return;
-	translation.value.x += pointerVec.x;
-	translation.value.y += pointerVec.y;
-	pointerVec.x *= 0.9 ** (timeDelta / 16.67);
-	pointerVec.y *= 0.9 ** (timeDelta / 16.67);
-}
-
-onMounted(() => {
-	handle = window.requestAnimationFrame(updateInertia);
-});
-
-onBeforeUnmount(() => {
-	if (handle != null) window.cancelAnimationFrame(handle);
-});
-
 function onPointerdown(ev: PointerEvent) {
 	pointerEventCache.set(ev.pointerId, ev);
 	imageEl.value.setPointerCapture(ev.pointerId);
@@ -216,6 +207,7 @@ function onPointerup(ev: PointerEvent) {
 	imageEl.value.releasePointerCapture(ev.pointerId);
 	prevTwoTouchPointsDistance = 0;
 	isDragging = false;
+	onZoomGestureEnd();
 }
 
 const doubleTapDetector = makeDoubleTapDetector((ev) => {
@@ -245,6 +237,31 @@ function onTouchmove(ev: TouchEvent) {
 	ev.stopPropagation();
 	doubleTapDetector.onTouchmove(ev);
 }
+
+let rafHandle: ReturnType<typeof window['requestAnimationFrame']> | null = null;
+let latestInertiaTimeStamp = 0;
+
+function updateInertia(timeStamp: number) {
+	rafHandle = window.requestAnimationFrame(updateInertia);
+	const timeDelta = timeStamp - latestInertiaTimeStamp;
+	latestInertiaTimeStamp = timeStamp;
+
+	if (isDragging) return;
+	if (Math.abs(pointerVec.x) < 0.5 && Math.abs(pointerVec.y) < 0.5) return;
+	translation.value.x += pointerVec.x;
+	translation.value.y += pointerVec.y;
+	pointerVec.x *= 0.9 ** (timeDelta / 16.67);
+	pointerVec.y *= 0.9 ** (timeDelta / 16.67);
+}
+
+onMounted(() => {
+	rafHandle = window.requestAnimationFrame(updateInertia);
+});
+
+onBeforeUnmount(() => {
+	if (rafHandle != null) window.cancelAnimationFrame(rafHandle);
+});
+
 </script>
 
 <style lang="scss" module>
