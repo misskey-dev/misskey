@@ -81,14 +81,42 @@ const defaultTranslation = calcDefaultTranslation(props.image);
 const size = ref({ width: defaultSize.width, height: defaultSize.height });
 const translation = ref({ x: defaultTranslation.x, y: defaultTranslation.y });
 
+let isAnimating = false;
+
+function beginAnimation(to: { width: number; height: number; x: number; y: number }, duration: number) {
+	const easing = (t: number) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // easeInOutQuad
+
+	const startTime = performance.now();
+	const startSize = { ...size.value };
+	const startTranslation = { ...translation.value };
+	isAnimating = true;
+
+	function animate() {
+		const now = performance.now();
+		const elapsed = now - startTime;
+		const t = easing(Math.min(elapsed / duration, 1));
+
+		size.value.width = startSize.width + (to.width - startSize.width) * t;
+		size.value.height = startSize.height + (to.height - startSize.height) * t;
+		translation.value.x = startTranslation.x + (to.x - startTranslation.x) * t;
+		translation.value.y = startTranslation.y + (to.y - startTranslation.y) * t;
+
+		if (t < 1) {
+			window.requestAnimationFrame(animate);
+		} else {
+			isAnimating = false;
+		}
+	}
+
+	window.requestAnimationFrame(animate);
+}
+
 const isZooming = ref(false);
 
-function zoomInTo(x: number, y: number, factor = 1.1) {
+function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
 	const newWidth = size.value.width * factor;
 	const newHeight = size.value.height * factor;
-
-	size.value.width = newWidth;
-	size.value.height = newHeight;
+	isZooming.value = true;
 
 	// Center the image on the cursor
 	const rect = imageEl.value?.getBoundingClientRect();
@@ -97,9 +125,19 @@ function zoomInTo(x: number, y: number, factor = 1.1) {
 	const offsetX = x - rect.left;
 	const offsetY = y - rect.top;
 
-	translation.value.x -= offsetX * (factor - 1);
-	translation.value.y -= offsetY * (factor - 1);
-	isZooming.value = true;
+	if (withAnimation) {
+		beginAnimation({
+			width: newWidth,
+			height: newHeight,
+			x: translation.value.x - offsetX * (factor - 1),
+			y: translation.value.y - offsetY * (factor - 1),
+		}, 300);
+	} else {
+		size.value.width = newWidth;
+		size.value.height = newHeight;
+		translation.value.x -= offsetX * (factor - 1);
+		translation.value.y -= offsetY * (factor - 1);
+	}
 }
 
 function onWheel(event: WheelEvent) {
@@ -130,13 +168,14 @@ function onZoomGesture(ev: { delta: number; centerX: number; centerY: number }) 
 }
 
 function onZoomGestureEnd() {
-	// TODO: animation
 	if (size.value.width < defaultSize.width || size.value.height < defaultSize.height) {
-		size.value.width = defaultSize.width;
-		size.value.height = defaultSize.height;
-		translation.value.x = defaultTranslation.x;
-		translation.value.y = defaultTranslation.y;
 		isZooming.value = false;
+		beginAnimation({
+			width: defaultSize.width,
+			height: defaultSize.height,
+			x: defaultTranslation.x,
+			y: defaultTranslation.y,
+		}, 300);
 	}
 }
 
@@ -144,6 +183,7 @@ function onZoomGestureEnd() {
 let isDragging = false;
 let lastX = 0;
 let lastY = 0;
+let currentPointerId: number | null = null;
 
 const pointerEventCache = new Map<number, PointerEvent>();
 let pointerVec = { x: 0, y: 0 };
@@ -156,6 +196,9 @@ function onPointerdown(ev: PointerEvent) {
 	lastX = ev.clientX;
 	lastY = ev.clientY;
 	pointerVec = { x: 0, y: 0 };
+	if (currentPointerId == null) {
+		currentPointerId = ev.pointerId;
+	}
 }
 
 let prevTwoTouchPointsDistance = 0;
@@ -171,6 +214,8 @@ function onPointermove(ev: PointerEvent) {
 	pointerEventCache.set(ev.pointerId, ev);
 
 	if (pointerEventCache.size > 1) { // 2本指での操作
+		pointerVec = { x: 0, y: 0 };
+		currentPointerId = null;
 		const a = Array.from(pointerEventCache.values())[0];
 		const b = Array.from(pointerEventCache.values())[1];
 		const distance = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
@@ -184,19 +229,20 @@ function onPointermove(ev: PointerEvent) {
 
 	prevTwoTouchPointsDistance = 0;
 
-	const deltaX = ev.clientX - lastX;
-	const deltaY = ev.clientY - lastY;
+	if (currentPointerId === ev.pointerId) {
+		const deltaX = ev.clientX - lastX;
+		const deltaY = ev.clientY - lastY;
 
-	if (isZooming.value) {
-		translation.value.x += deltaX;
-		translation.value.y += deltaY;
+		if (isZooming.value) {
+			translation.value.x += deltaX;
+			translation.value.y += deltaY;
+		}
+
+		pointerVec = { x: deltaX, y: deltaY };
+
+		lastX = ev.clientX;
+		lastY = ev.clientY;
 	}
-
-	pointerVec = { x: deltaX, y: deltaY };
-	console.log('pointerVec', pointerVec);
-
-	lastX = ev.clientX;
-	lastY = ev.clientY;
 
 	return false;
 }
@@ -206,6 +252,9 @@ function onPointerup(ev: PointerEvent) {
 	imageEl.value.releasePointerCapture(ev.pointerId);
 	prevTwoTouchPointsDistance = 0;
 	isDragging = false;
+	if (currentPointerId === ev.pointerId) {
+		currentPointerId = null;
+	}
 	onZoomGestureEnd();
 }
 
@@ -215,13 +264,16 @@ const doubleTapDetector = makeDoubleTapDetector((ev) => {
 	pointerVec = { x: 0, y: 0 };
 
 	if (isZooming.value) {
-		size.value.width = defaultSize.width;
-		size.value.height = defaultSize.height;
-		translation.value.x = defaultTranslation.x;
-		translation.value.y = defaultTranslation.y;
 		isZooming.value = false;
+		beginAnimation({
+			width: defaultSize.width,
+			height: defaultSize.height,
+			x: defaultTranslation.x,
+			y: defaultTranslation.y,
+		}, 300);
 	} else {
-		zoomInTo(ev.touches[0].clientX, ev.touches[0].clientY, 2);
+		isZooming.value = true;
+		zoomInTo(ev.touches[0].clientX, ev.touches[0].clientY, 2, true);
 	}
 });
 
