@@ -5,7 +5,7 @@
 
 import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
-import { preferState } from './init.js';
+import { preferState } from '../setup.unit.js';
 import { getEmojiName } from '@@/js/emojilist.js';
 import { components } from '@/components/index.js';
 import { directives } from '@/directives/index.js';

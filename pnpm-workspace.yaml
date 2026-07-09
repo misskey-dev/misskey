@@ -20,7 +20,6 @@ allowBuilds:
   bufferutil: true
   canvas: true
   core-js: true
-  cypress: true
   esbuild: true
   msgpackr-extract: true
   msw: true

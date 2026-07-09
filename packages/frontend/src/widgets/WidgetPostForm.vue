@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPostForm data-cy-mkw-postForm class="_panel mkw-post-form" :fixed="true" :autofocus="false"/>
+<MkPostForm data-testid="mkw-postForm" class="_panel mkw-post-form" :fixed="true" :autofocus="false"/>
 </template>
 
 <script lang="ts" setup>

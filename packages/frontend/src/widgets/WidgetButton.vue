@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div data-cy-mkw-button class="mkw-button">
+<div data-testid="mkw-button" class="mkw-button">
 	<MkButton :primary="widgetProps.colored" full @click="run">
 		{{ widgetProps.label }}
 	</MkButton>
