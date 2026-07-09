@@ -152,7 +152,7 @@ type PlaywrightBrowserOptions = {
 	baseUrl: string;
 };
 
-export class PlaywrightBrowser {
+export class HeadlessChromeController {
 	public networkRequests: NetworkRequest[] = [];
 	public webSocketConnections: WebSocketConnection[] = [];
 	private readonly browser: Browser;
@@ -176,7 +176,7 @@ export class PlaywrightBrowser {
 		this.page.setDefaultNavigationTimeout(options.scenarioTimeoutMs);
 	}
 
-	static async create(label: string, options: PlaywrightBrowserOptions): Promise<PlaywrightBrowser> {
+	static async create(label: string, options: PlaywrightBrowserOptions): Promise<HeadlessChromeController> {
 		process.stderr.write(`[${label}] Launching Playwright Chromium\n`);
 		const { chromium } = loadPlaywright();
 		const browser = await chromium.launch({
@@ -207,15 +207,15 @@ export class PlaywrightBrowser {
 
 			const page = await context.newPage();
 			const cdp = await context.newCDPSession(page);
-			return new PlaywrightBrowser(browser, context, page, cdp, options);
+			return new HeadlessChromeController(browser, context, page, cdp, options);
 		} catch (error) {
 			await browser.close().catch(() => undefined);
 			throw error;
 		}
 	}
 
-	static async with<T>(label: string, options: PlaywrightBrowserOptions, callback: (browser: PlaywrightBrowser) => T | Promise<T>): Promise<T> {
-		const browser = await PlaywrightBrowser.create(label, options);
+	static async with<T>(label: string, options: PlaywrightBrowserOptions, callback: (browser: HeadlessChromeController) => T | Promise<T>): Promise<T> {
+		const browser = await HeadlessChromeController.create(label, options);
 		try {
 			return await callback(browser);
 		} finally {

@@ -8,7 +8,7 @@ import { copyFile, mkdir, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import * as util from './utility.mts';
 import * as heapSnapshotUtil from './heap-snapshot-util.mts';
-import { maybeClick, PlaywrightBrowser, summarizeNetwork, waitForAnyLocator, waitForReady } from './chrome.mts';
+import { maybeClick, HeadlessChromeController, summarizeNetwork, waitForAnyLocator, waitForReady } from './chrome.mts';
 import type { BrowserMeasurement, NetworkRequest, NetworkSummary } from './chrome.mts';
 
 const [baseDirArg, headDirArg, baseOutputArg, headOutputArg, headHeapSnapshotOutputArg] = process.argv.slice(2);
@@ -36,8 +36,8 @@ type BrowserMetricsReport = {
 	samples: BrowserMeasurementSample[];
 };
 
-async function runSignupAndPostScenario(browser: PlaywrightBrowser) {
-	const page = browser.page;
+async function runSignupAndPostScenario(chrome: HeadlessChromeController) {
+	const page = chrome.page;
 	const noteText = `Frontend browser metrics ${Date.now()}`;
 
 	await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded', timeout: scenarioTimeoutMs });
@@ -56,13 +56,13 @@ async function runSignupAndPostScenario(browser: PlaywrightBrowser) {
 			await page.getByTestId('signup-rules-continue').click();
 		}
 
-		await browser.mkInput('signup-username').fill('alice');
-		await browser.mkInput('signup-password').fill('alice1234');
-		await browser.mkInput('signup-password-retype').fill('alice1234');
-		if (await waitForReady(browser.mkInput('signup-invitation-code'), { visible: true, enabled: true, timeoutMs: 2_000 })) {
-			await browser.mkInput('signup-invitation-code').fill('test-invitation-code');
+		await chrome.mkInput('signup-username').fill('alice');
+		await chrome.mkInput('signup-password').fill('alice1234');
+		await chrome.mkInput('signup-password-retype').fill('alice1234');
+		if (await waitForReady(chrome.mkInput('signup-invitation-code'), { visible: true, enabled: true, timeoutMs: 2_000 })) {
+			await chrome.mkInput('signup-invitation-code').fill('test-invitation-code');
 		}
-		const signupResponse = browser.waitApiResponse('/api/signup');
+		const signupResponse = chrome.waitApiResponse('/api/signup');
 		await page.getByTestId('signup-submit').click();
 		await signupResponse;
 	}
@@ -235,7 +235,7 @@ function summarizeSamples(label: 'base' | 'head', samples: BrowserMeasurementSam
 async function measureSample(label: 'base' | 'head', round: number, heapSnapshotSavePath?: string) {
 	await util.prepareInstance(baseUrl);
 
-	return await PlaywrightBrowser.with(label, { scenarioTimeoutMs, baseUrl }, async chrome => {
+	return await HeadlessChromeController.with(label, { scenarioTimeoutMs, baseUrl }, async chrome => {
 		await chrome.enableNetworkTracking();
 
 		const startedAt = Date.now();
