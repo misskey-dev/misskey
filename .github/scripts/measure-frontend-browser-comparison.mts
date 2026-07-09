@@ -41,7 +41,7 @@ async function runSignupAndPostScenario(chrome: HeadlessChromeController) {
 
 	await page.getByTestId('signup').click();
 	await page.getByTestId('signup-rules-continue').waitFor({ state: 'visible' });
-	await chrome.page.locator('[data-testid="signup-rules-notes-agree"] [data-testid="switch-toggle"]')
+	await chrome.page.locator('[data-testid="signup-rules-notes-agree"] [data-testid="switch-toggle"]').click();
 	await page.getByTestId('modal-dialog-ok').click();
 	await page.getByTestId('signup-rules-continue').click();
 
