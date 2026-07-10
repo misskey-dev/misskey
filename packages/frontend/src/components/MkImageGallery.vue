@@ -4,11 +4,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
+<!-- durationは子Itemコンポーネントがフェードイン/アウトするdurationと合わせる -->
 <Transition
 	:enterActiveClass="prefer.s.animation ? $style.transition_root_enterActive : ''"
 	:leaveActiveClass="prefer.s.animation ? $style.transition_root_leaveActive : ''"
 	:enterFromClass="prefer.s.animation ? $style.transition_root_enterFrom : ''"
 	:leaveToClass="prefer.s.animation ? $style.transition_root_leaveTo : ''"
+	:duration="300"
+	appear
 	@afterLeave="emit('closed')"
 >
 	<!-- v-ifを使うとfalseになったとき(transitionが行われている間)子コンポーネントの更新が停止するのか子コンポーネントがアニメーションされなくなる -->
@@ -111,11 +114,19 @@ function onItemClose() {
 </script>
 
 <style lang="scss" module>
-.transition_root_enterActive,
-.transition_root_leaveActive {
-	transition: opacity 300ms; // 子Itemコンポーネントがフェードアウトするdurationと合わせる
+.transition_root_enterActive {
+	> .bg {
+		transition: opacity 300ms; // 子Itemコンポーネントがフェードイン/アウトするdurationと合わせる
+	}
 }
-.transition_root_enterFrom,
+.transition_root_leaveActive {
+	transition: opacity 300ms; // 子Itemコンポーネントがフェードイン/アウトするdurationと合わせる
+}
+.transition_root_enterFrom  {
+	> .bg {
+		opacity: 0;
+	}
+}
 .transition_root_leaveTo {
 	opacity: 0;
 }
