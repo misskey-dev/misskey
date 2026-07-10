@@ -392,6 +392,7 @@ const doubleTapDetector = makeDoubleTapDetector((ev) => {
 	}
 });
 
+// これがないと例えばiOSで画像長押しでのコンテキストメニューを表示させた後にそれを閉じるとタッチ判定が残ったままになり不具合の原因になる
 function cancelPointerGesture() {
 	const wasVerticalSwiping = isVerticalSwiping;
 	const wasHorizontalSwiping = isHorizontalSwiping;
