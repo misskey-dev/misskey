@@ -29,8 +29,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<XItem
 						:image="image"
 						:activated="activatedIndexes.has(i)"
-						:openAnimDuration="openAnimDuration"
-						:closeAnimDuration="closeAnimDuration"
 						@close="onItemClose"
 						@horizontalSwipe="onHorizontalSwipe"
 						@prev="onPrev"

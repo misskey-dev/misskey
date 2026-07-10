@@ -102,6 +102,7 @@ async function openGallery(id: string) {
 		thumbnailUrl: media.thumbnailUrl,
 		width: media.properties.width ?? 0,
 		height: media.properties.height ?? 0,
+		filename: media.name,
 		sourceElement: markRaw(gallery.value?.querySelector(`[data-marker="${markerId}:${media.id}"]`)),
 	}));
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageGallery.vue').then(x => x.default), {

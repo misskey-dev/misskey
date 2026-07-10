@@ -17,7 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div
 		:class="[$style.transformer, { [$style.transition]: enableTransition }]"
 		:style="{ translate: `${transform.x}px ${transform.y}px`, scale: transform.scale }"
-		@transitionend="enableTransition = false"
+		@transitionend.self="enableTransition = false"
+		@transitioncancel.self="enableTransition = false"
 	>
 		<img
 			v-if="!originalImageLoaded || !thumbnailImageLoaded"
@@ -41,8 +42,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@load="originalImageLoaded = true"
 		>
 	</div>
+
 	<div v-if="activated && !originalImageLoaded" :class="$style.loading">
 		<MkLoading/>
+	</div>
+
+	<div :class="[$style.footer, { [$style.infoShowing]: infoShowing }]">
+		<div :class="$style.footerText">
+			{{ image.filename }}
+		</div>
 	</div>
 </div>
 </template>
@@ -60,14 +68,13 @@ export type Image = {
 	thumbnailUrl: string;
 	width: number;
 	height: number;
+	filename?: string;
 	sourceElement?: HTMLElement;
 };
 
 const props = withDefaults(defineProps<{
 	image: Image;
 	activated: boolean;
-	openAnimDuration: number;
-	closeAnimDuration: number;
 }>(), {
 });
 
@@ -85,6 +92,12 @@ const imageEl = useTemplateRef('imageEl');
 const originalImageLoaded = ref(false);
 const thumbnailImageLoaded = ref(false);
 const enableTransition = ref(false);
+const infoShowing = ref(false);
+
+onMounted(() => {
+	rootEl.value.offsetHeight; // reflow
+	infoShowing.value = true;
+});
 
 const padding = 30;
 const ANIMATION_DURATION = 200;
@@ -306,6 +319,8 @@ function onPointerup(ev: PointerEvent) {
 			if (shouldCloseByUpwardSwipe || shouldCloseByDownwardSwipe) {
 				emit('close');
 
+				infoShowing.value = false;
+
 				const sourceTransform = getScaleAndTranslationForSourceElement();
 
 				enableTransition.value = true;
@@ -440,5 +455,28 @@ watch(thumbnailImageLoaded, () => {
 
 .transition {
 	transition: translate 200ms ease, scale 200ms ease;
+}
+
+.footer {
+	position: absolute;
+	bottom: -30px;
+	left: 0;
+	width: 100%;
+	height: 30px;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	pointer-events: none;
+	font-size: 85%;
+	color: #fff;
+	opacity: 0;
+	transition: opacity 200ms ease, bottom 200ms ease;
+}
+.footer.infoShowing {
+	bottom: 0;
+	opacity: 1;
+}
+.footerText {
 }
 </style>
