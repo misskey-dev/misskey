@@ -419,7 +419,7 @@ onBeforeUnmount(() => {
 
 onMounted(() => {
 	// 画像の初期位置・サイズをsourceElementの位置に合わせてdefaultの位置にアニメーションする
-	if (props.image.sourceElement != null) {
+	if (props.image.sourceElement != null && props.activated) {
 		const elementStyles = window.getComputedStyle(props.image.sourceElement);
 		const fit = elementStyles.objectFit;
 
