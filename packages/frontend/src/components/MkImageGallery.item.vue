@@ -102,11 +102,13 @@ onMounted(() => {
 
 const padding = deviceKind === 'smartphone' ? 0 : 30;
 const ANIMATION_DURATION = 200;
+const headerAreaSize = 0;
+const footerAreaSize = 30;
 
 // maxからはみ出す場合は縮小、maxに満たない場合は拡大する(contain)
 function calcImageRenderingSize(image: Image) {
 	const maxWidth = window.innerWidth - padding * 2;
-	const maxHeight = window.innerHeight - padding * 2;
+	const maxHeight = window.innerHeight - headerAreaSize - footerAreaSize - padding * 2;
 
 	const widthRatio = maxWidth / image.width;
 	const heightRatio = maxHeight / image.height;
@@ -119,6 +121,12 @@ function calcImageRenderingSize(image: Image) {
 }
 
 const imageRenderingSize = calcImageRenderingSize(props.image);
+const imageRenderingRect = {
+	left: (window.innerWidth - imageRenderingSize.width) / 2,
+	top: headerAreaSize + (window.innerHeight - headerAreaSize - footerAreaSize - imageRenderingSize.height) / 2,
+	width: imageRenderingSize.width,
+	height: imageRenderingSize.height,
+};
 const transform = ref({ x: 0, y: 0, scale: 1 });
 
 // 元のimg要素の位置・サイズ(とobject-fitの設定値)を取得して、そこからneutralの位置にアニメーションするためのscaleとtranslationを計算する
@@ -128,12 +136,8 @@ function getScaleAndTranslationForSourceElement(): { x: number; y: number; scale
 
 	return calculateSourceTransform({
 		fit: window.getComputedStyle(sourceElement).objectFit,
-		imageRenderingSize,
+		imageRenderingRect,
 		sourceRect: sourceElement.getBoundingClientRect(),
-		viewportSize: {
-			width: window.innerWidth,
-			height: window.innerHeight,
-		},
 	});
 }
 
@@ -429,10 +433,10 @@ watch(thumbnailImageLoaded, () => {
 	-webkit-touch-callout: none;
 	user-select: none;
 	position: absolute;
-	top: 0;
+	top: v-bind("headerAreaSize + 'px'");
 	left: 0;
 	right: 0;
-	bottom: 0;
+	bottom: v-bind("footerAreaSize + 'px'");
 	margin: auto;
 }
 

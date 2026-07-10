@@ -15,29 +15,25 @@ type Rect = Size & {
 
 export function calculateSourceTransform({
 	fit,
-	imageRenderingSize,
+	imageRenderingRect,
 	sourceRect,
-	viewportSize,
 }: {
 	fit: string;
-	imageRenderingSize: Size;
+	imageRenderingRect: Rect;
 	sourceRect: Rect;
-	viewportSize: Size;
 }): { x: number; y: number; scale: number } {
 	const scale = fit === 'cover'
-		? Math.max(sourceRect.width / imageRenderingSize.width, sourceRect.height / imageRenderingSize.height)
-		: Math.min(sourceRect.width / imageRenderingSize.width, sourceRect.height / imageRenderingSize.height);
+		? Math.max(sourceRect.width / imageRenderingRect.width, sourceRect.height / imageRenderingRect.height)
+		: Math.min(sourceRect.width / imageRenderingRect.width, sourceRect.height / imageRenderingRect.height);
 
-	const neutralLeft = (viewportSize.width - imageRenderingSize.width) / 2;
-	const neutralTop = (viewportSize.height - imageRenderingSize.height) / 2;
-	const sourceImageWidth = imageRenderingSize.width * scale;
-	const sourceImageHeight = imageRenderingSize.height * scale;
+	const sourceImageWidth = imageRenderingRect.width * scale;
+	const sourceImageHeight = imageRenderingRect.height * scale;
 	const sourceImageLeft = sourceRect.left + (sourceRect.width - sourceImageWidth) / 2;
 	const sourceImageTop = sourceRect.top + (sourceRect.height - sourceImageHeight) / 2;
 
 	return {
-		x: sourceImageLeft - neutralLeft * scale,
-		y: sourceImageTop - neutralTop * scale,
+		x: sourceImageLeft - imageRenderingRect.left * scale,
+		y: sourceImageTop - imageRenderingRect.top * scale,
 		scale,
 	};
 }
