@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkLoading/>
 	</div>
 
-	<div :class="[$style.footer, { [$style.infoShowing]: infoShowing }]">
+	<div :class="[$style.footer, { [$style.infoShowing]: infoShowing && !isZooming }]">
 		<div :class="$style.footerText">
 			{{ image.filename }}
 		</div>
