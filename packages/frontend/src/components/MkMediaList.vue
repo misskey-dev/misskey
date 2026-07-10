@@ -203,6 +203,7 @@ defineExpose({
 .media {
 	overflow: hidden; // clipにするとバグる
 	border-radius: 8px;
+	cursor: zoom-in;
 }
 
 @container (min-width: 500px) {
@@ -217,43 +218,5 @@ defineExpose({
 			aspect-ratio: 1 / 1;
 		}
 	}
-}
-
-:global(.pswp) {
-	--pswp-root-z-index: var(--mk-pswp-root-z-index, 2000700) !important;
-	--pswp-bg: var(--MI_THEME-modalBg) !important;
-}
-</style>
-
-<style lang="scss">
-.pswp__bg {
-	background: var(--MI_THEME-modalBg);
-	backdrop-filter: var(--MI-modalBgFilter);
-}
-
-.pswp__alt-text-container {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-
-	position: absolute;
-	bottom: 20px;
-	left: 50%;
-	transform: translateX(-50%);
-
-	width: 75%;
-	max-width: 800px;
-}
-
-.pswp__alt-text {
-	color: var(--MI_THEME-fg);
-	margin: 0 auto;
-	text-align: center;
-	padding: var(--MI-margin);
-	border-radius: var(--MI-radius);
-	max-height: 8em;
-	overflow-y: auto;
-	text-shadow: var(--MI_THEME-bg) 0 0 10px, var(--MI_THEME-bg) 0 0 3px, var(--MI_THEME-bg) 0 0 3px;
-	white-space: pre-line;
 }
 </style>
