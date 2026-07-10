@@ -64,13 +64,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
-import { nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
-import { i18n } from '@/i18n.js';
-import { makeDoubleTapDetector } from '@/utility/double-tap.js';
-import { calculateSourceTransform } from '@/components/MkImageGallery.utils.js';
-import { deviceKind } from '@/utility/device-kind.js';
-import { isTouchUsing } from '@/utility/touch.js';
+<script lang="ts">
+type Size = {
+	width: number;
+	height: number;
+};
+
+type Rect = Size & {
+	left: number;
+	top: number;
+};
 
 export type Image = {
 	id: string;
@@ -82,6 +85,39 @@ export type Image = {
 	comment?: string | null;
 	sourceElement?: HTMLElement | null;
 };
+
+export function calculateSourceTransform({
+	fit,
+	imageRenderingRect,
+	sourceRect,
+}: {
+	fit: string;
+	imageRenderingRect: Rect;
+	sourceRect: Rect;
+}): { x: number; y: number; scale: number } {
+	const scale = fit === 'cover'
+		? Math.max(sourceRect.width / imageRenderingRect.width, sourceRect.height / imageRenderingRect.height)
+		: Math.min(sourceRect.width / imageRenderingRect.width, sourceRect.height / imageRenderingRect.height);
+
+	const sourceImageWidth = imageRenderingRect.width * scale;
+	const sourceImageHeight = imageRenderingRect.height * scale;
+	const sourceImageLeft = sourceRect.left + (sourceRect.width - sourceImageWidth) / 2;
+	const sourceImageTop = sourceRect.top + (sourceRect.height - sourceImageHeight) / 2;
+
+	return {
+		x: sourceImageLeft - imageRenderingRect.left * scale,
+		y: sourceImageTop - imageRenderingRect.top * scale,
+		scale,
+	};
+}
+</script>
+
+<script lang="ts" setup>
+import { nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+import { i18n } from '@/i18n.js';
+import { makeDoubleTapDetector } from '@/utility/double-tap.js';
+import { deviceKind } from '@/utility/device-kind.js';
+import { isTouchUsing } from '@/utility/touch.js';
 
 const props = withDefaults(defineProps<{
 	image: Image;
