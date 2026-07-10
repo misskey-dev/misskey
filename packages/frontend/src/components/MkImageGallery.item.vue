@@ -280,7 +280,6 @@ function onZoomGestureEnd() {
 	}
 }
 
-// ズーム中、ドラッグされたら画像を移動する
 let isDragging = false;
 let isClick = false;
 let lastX = 0;
@@ -467,16 +466,16 @@ function onTouchmove(ev: TouchEvent) {
 	doubleTapDetector.onTouchmove(ev);
 }
 
+//#region inertia
 let rafHandle: ReturnType<typeof window['requestAnimationFrame']> | null = null;
 let latestInertiaTimeStamp = 0;
-
-//#region inertia
 const inertiaFactor = 0.9;
 
 function updateInertia(timeStamp: number) {
 	rafHandle = window.requestAnimationFrame(updateInertia);
 	const timeDelta = timeStamp - latestInertiaTimeStamp;
 	latestInertiaTimeStamp = timeStamp;
+	if (timeDelta > 100) return;
 
 	if (isDragging) return;
 	if (!isZooming.value) return;
@@ -487,12 +486,13 @@ function updateInertia(timeStamp: number) {
 	pointerVec.y *= inertiaFactor ** (timeDelta / 16.67);
 }
 
-onMounted(() => {
-	rafHandle = window.requestAnimationFrame(updateInertia);
-});
-
-onBeforeUnmount(() => {
-	if (rafHandle != null) window.cancelAnimationFrame(rafHandle);
+watch(isZooming, () => {
+	pointerVec = { x: 0, y: 0 };
+	if (isZooming.value) {
+		rafHandle = window.requestAnimationFrame(updateInertia);
+	} else {
+		if (rafHandle != null) window.cancelAnimationFrame(rafHandle);
+	}
 });
 //#endregion
 
