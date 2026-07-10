@@ -14,22 +14,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@touchmove.passive="onTouchmove"
 	@wheel="onWheel"
 >
-	<div :style="{ transform: `translate3d(${translation.x}px, ${translation.y}px, 0)` }">
+	<div style="height: 100%; transform-origin: left top;" :class="{ [$style.transition]: enableTransition }" :style="{ translate: `${translation.x}px ${translation.y}px`, scale: transformScale }" @transitionend="enableTransition = false">
 		<img
 			v-if="!originalImageLoaded"
-			:class="[$style.image, $style.thumbnail]"
+			:class="[$style.image, $style.thumbnail, { [$style.transition]: enableTransition }]"
 			:src="image.thumbnailUrl"
-			:width="size.width"
-			:height="size.height"
+			:width="image.width"
+			:height="image.height"
+			:style="{ width: `${size.width}px`, height: `${size.height}px` }"
 			draggable="false"
 		>
 		<img
 			v-if="activated"
 			ref="imageEl"
-			:class="[$style.image, $style.original]"
+			:class="[$style.image, $style.original, { [$style.transition]: enableTransition }]"
 			:src="image.url"
-			:width="size.width"
-			:height="size.height"
+			:width="image.width"
+			:height="image.height"
+			:style="{ width: `${size.width}px`, height: `${size.height}px` }"
 			draggable="false"
 			@load="originalImageLoaded = true"
 		>
@@ -76,6 +78,7 @@ const rootEl = useTemplateRef('rootEl');
 const imageEl = useTemplateRef('imageEl');
 
 const originalImageLoaded = ref(false);
+const enableTransition = ref(false);
 
 const padding = 30;
 const ANIMATION_DURATION = 200;
@@ -96,89 +99,73 @@ function calcNeutralSize(image: Image) {
 }
 
 function calcNeutralTranslation(image: Image) {
-	const defaultSize = calcNeutralSize(image);
-
-	const x = (window.innerWidth - defaultSize.width) / 2;
-	const y = (window.innerHeight - defaultSize.height) / 2;
-
-	return { x, y };
+	return { x: 0, y: 0 };
 }
 
 const neutralSize = calcNeutralSize(props.image);
 const neutralTranslation = calcNeutralTranslation(props.image);
 
-const size = ref({ width: neutralSize.width, height: neutralSize.height });
+const size = { width: neutralSize.width, height: neutralSize.height };
 const translation = ref({ x: neutralTranslation.x, y: neutralTranslation.y });
+const transformScale = ref(1);
+
+if (props.image.sourceElement != null && props.activated) {
+	const sourceTransform = getScaleAndTranslationForSourceElement();
+	translation.value.x = sourceTransform.x;
+	translation.value.y = sourceTransform.y;
+	transformScale.value = sourceTransform.scale;
+}
 
 const isZooming = ref(false);
 
 function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
-	const newWidth = size.value.width * factor;
-	const newHeight = size.value.height * factor;
+	const newScale = transformScale.value * factor;
 	isZooming.value = true;
 
-	// Center the image on the cursor
-	const rect = imageEl.value?.getBoundingClientRect();
-	if (!rect) return;
-
+	const rect = rootEl.value.getBoundingClientRect();
 	const offsetX = x - rect.left;
 	const offsetY = y - rect.top;
+
+	const newTranslationX = offsetX - (offsetX - translation.value.x) * factor;
+	const newTranslationY = offsetY - (offsetY - translation.value.y) * factor;
 
 	if (withAnimation) {
 		beginAnimation({
 			from: {
-				width: size.value.width,
-				height: size.value.height,
 				x: translation.value.x,
 				y: translation.value.y,
+				scale: transformScale.value,
 			},
 			to: {
-				width: newWidth,
-				height: newHeight,
-				x: translation.value.x - offsetX * (factor - 1),
-				y: translation.value.y - offsetY * (factor - 1),
+				x: newTranslationX,
+				y: newTranslationY,
+				scale: newScale,
 			},
 			duration: ANIMATION_DURATION,
 			easing: easing_easeInOutQuad,
 			apply: (state) => {
-				size.value.width = state.width;
-				size.value.height = state.height;
 				translation.value.x = state.x;
 				translation.value.y = state.y;
+				transformScale.value = state.scale;
 			},
 		});
 	} else {
-		size.value.width = newWidth;
-		size.value.height = newHeight;
-		translation.value.x -= offsetX * (factor - 1);
-		translation.value.y -= offsetY * (factor - 1);
+		translation.value.x = newTranslationX;
+		translation.value.y = newTranslationY;
+		transformScale.value = newScale;
 	}
 }
 
 function resetToNeutral() {
 	isZooming.value = false;
-	beginAnimation({
-		from: {
-			width: size.value.width,
-			height: size.value.height,
-			x: translation.value.x,
-			y: translation.value.y,
-		},
-		to: {
-			width: neutralSize.width,
-			height: neutralSize.height,
-			x: neutralTranslation.x,
-			y: neutralTranslation.y,
-		},
-		duration: ANIMATION_DURATION,
-		easing: easing_easeInOutQuad,
-		apply: (state) => {
-			size.value.width = state.width;
-			size.value.height = state.height;
-			translation.value.x = state.x;
-			translation.value.y = state.y;
-		},
-	});
+
+	enableTransition.value = true;
+
+	rootEl.value.offsetHeight; // reflow
+
+	translation.value.x = neutralTranslation.x;
+	translation.value.y = neutralTranslation.y;
+	transformScale.value = 1;
 }
 
 function onWheel(event: WheelEvent) {
@@ -189,14 +176,12 @@ function onWheel(event: WheelEvent) {
 	const scaleFactor = 1.1;
 	const scale = delta > 0 ? 1 / scaleFactor : scaleFactor;
 
-	const newWidth = size.value.width * scale;
-	const newHeight = size.value.height * scale;
+	const newScale = transformScale.value * scale;
 
-	if (newWidth < neutralSize.width || newHeight < neutralSize.height) {
-		size.value.width = neutralSize.width;
-		size.value.height = neutralSize.height;
+	if (newScale < 1) {
 		translation.value.x = neutralTranslation.x;
 		translation.value.y = neutralTranslation.y;
+		transformScale.value = 1;
 		isZooming.value = false;
 		return;
 	}
@@ -209,7 +194,7 @@ function onZoomGesture(ev: { delta: number; centerX: number; centerY: number }) 
 }
 
 function onZoomGestureEnd() {
-	if (size.value.width < neutralSize.width || size.value.height < neutralSize.height) {
+	if (transformScale.value < 1) {
 		isZooming.value = false;
 		resetToNeutral();
 	}
@@ -327,45 +312,16 @@ function onPointerup(ev: PointerEvent) {
 			const shouldCloseByDownwardSwipe = verticalSwipeDelta > 200 || (verticalSwipeDelta > 0 && pointerVec.y > 3); // 下の方で離された、または下に向かって強めに弾かれた
 			if (shouldCloseByUpwardSwipe || shouldCloseByDownwardSwipe) {
 				emit('close');
-				//beginAnimation({
-				//	from: {
-				//		x: translation.value.x,
-				//		y: translation.value.y,
-				//	},
-				//	to: {
-				//		x: translation.value.x,
-				//		y: translation.value.y + (shouldCloseByUpwardSwipe ? -window.innerHeight : window.innerHeight),
-				//	},
-				//	duration: 200,
-				//	easing: easing_easeInOutQuad,
-				//	apply: (state) => {
-				//		translation.value.x = state.x;
-				//		translation.value.y = state.y;
-				//	},
-				//});
-				const sourceRect = getSizeAndTranslationForSourceElement();
-				beginAnimation({
-					from: {
-						width: size.value.width,
-						height: size.value.height,
-						x: translation.value.x,
-						y: translation.value.y,
-					},
-					to: {
-						width: sourceRect.width,
-						height: sourceRect.height,
-						x: sourceRect.x,
-						y: sourceRect.y,
-					},
-					duration: props.closeAnimDuration,
-					easing: easing_easeInOutQuad,
-					apply: (state) => {
-						size.value.width = state.width;
-						size.value.height = state.height;
-						translation.value.x = state.x;
-						translation.value.y = state.y;
-					},
-				});
+
+				const sourceTransform = getScaleAndTranslationForSourceElement();
+
+				enableTransition.value = true;
+
+				rootEl.value.offsetHeight; // reflow
+
+				translation.value.x = sourceTransform.x;
+				translation.value.y = sourceTransform.y;
+				transformScale.value = sourceTransform.scale;
 				return;
 			}
 
@@ -441,75 +397,30 @@ onBeforeUnmount(() => {
 });
 //#endregion
 
-function getSizeAndTranslationForSourceElement() {
+// 元のimg要素の位置・サイズ(とobject-fitの設定値)を取得して、そこからneutralの位置にアニメーションするためのscaleとtranslationを計算する
+function getScaleAndTranslationForSourceElement(): { x: number; y: number; scale: number } {
 	const elementStyles = window.getComputedStyle(props.image.sourceElement);
 	const fit = elementStyles.objectFit;
 
 	const sourceRect = props.image.sourceElement.getBoundingClientRect();
 	if (fit === 'contain') {
-		const sourceAspectRatio = sourceRect.width / sourceRect.height;
-		const imageAspectRatio = props.image.width / props.image.height;
-
-		if (sourceAspectRatio > imageAspectRatio) { // 横長
-			const newWidth = sourceRect.height * imageAspectRatio;
-			const newHeight = sourceRect.height;
-			return {
-				width: newWidth,
-				height: newHeight,
-				x: sourceRect.left + (sourceRect.width - newWidth) / 2,
-				y: sourceRect.top,
-			};
-		} else { // 縦長
-			const newWidth = sourceRect.width;
-			const newHeight = sourceRect.width / imageAspectRatio;
-			return {
-				width: newWidth,
-				height: newHeight,
-				x: sourceRect.left,
-				y: sourceRect.top + (sourceRect.height - newHeight) / 2,
-			};
-		}
+		// TODO
+	} else if (fit === 'cover') {
+		// TODO
 	} else {
-		return {
-			width: sourceRect.width,
-			height: sourceRect.height,
-			x: sourceRect.left,
-			y: sourceRect.top,
-		};
+		// TODO
 	}
 }
 
-onMounted(() => {
-	// 画像の初期位置・サイズをsourceElementの位置に合わせてneutralの位置にアニメーションする
+onMounted(async () => {
 	if (props.image.sourceElement != null && props.activated) {
-		const sourceRect = getSizeAndTranslationForSourceElement();
-		size.value.width = sourceRect.width;
-		size.value.height = sourceRect.height;
-		translation.value.x = sourceRect.x;
-		translation.value.y = sourceRect.y;
+		enableTransition.value = true;
 
-		beginAnimation({
-			from: {
-				width: size.value.width,
-				height: size.value.height,
-				x: translation.value.x,
-				y: translation.value.y,
-			},
-			to: {
-				width: neutralSize.width,
-				height: neutralSize.height,
-				x: neutralTranslation.x,
-				y: neutralTranslation.y,
-			},
-			duration: props.openAnimDuration,
-			easing: easing_easeInOutQuad,
-			apply: (state) => {
-				size.value.width = state.width;
-				size.value.height = state.height;
-				translation.value.x = state.x;
-				translation.value.y = state.y;
-			},
-		});
+		rootEl.value.offsetHeight; // reflow
+
+		translation.value.x = neutralTranslation.x;
+		translation.value.y = neutralTranslation.y;
+		transformScale.value = 1;
 	}
 });
 </script>
@@ -529,6 +440,9 @@ onMounted(() => {
 	position: absolute;
 	top: 0;
 	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
 }
 
 .loading {
@@ -541,5 +455,9 @@ onMounted(() => {
 	display: grid;
 	place-items: center;
 	pointer-events: none;
+}
+
+.transition {
+	transition: translate 200ms ease, width 200ms ease, height 200ms ease;
 }
 </style>
