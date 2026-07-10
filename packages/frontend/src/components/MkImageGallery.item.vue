@@ -61,6 +61,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { makeDoubleTapDetector } from '@/utility/double-tap.js';
 import { calculateSourceTransform } from '@/components/MkImageGallery.utils.js';
+import { deviceKind } from '@/utility/device-kind.js';
 
 export type Image = {
 	id: string;
@@ -99,7 +100,7 @@ onMounted(() => {
 	infoShowing.value = true;
 });
 
-const padding = 30;
+const padding = deviceKind === 'smartphone' ? 0 : 30;
 const ANIMATION_DURATION = 200;
 
 // maxからはみ出す場合は縮小、maxに満たない場合は拡大する(contain)
@@ -463,13 +464,13 @@ watch(thumbnailImageLoaded, () => {
 	left: 0;
 	width: 100%;
 	height: 30px;
-	background-color: rgba(0, 0, 0, 0.5);
+	background: var(--MI_THEME-panel);
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	pointer-events: none;
 	font-size: 85%;
-	color: #fff;
+	color: var(--MI_THEME-fg);
 	opacity: 0;
 	transition: opacity 200ms ease, bottom 200ms ease;
 }
