@@ -43,8 +43,14 @@ export function makeDoubleTapDetector(onDoubletap: (event: TouchEvent) => void) 
 		}
 	}
 
+	function reset() {
+		lastTapTime = 0;
+		lastTapPosition = { x: 0, y: 0 };
+	}
+
 	return {
 		onTouchstart,
 		onTouchmove,
+		reset,
 	};
 }

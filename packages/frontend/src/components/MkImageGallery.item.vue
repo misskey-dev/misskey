@@ -10,8 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@pointerdown.passive="onPointerdown"
 	@pointermove.passive="onPointermove"
 	@pointerup.passive="onPointerup"
+	@pointercancel.passive="cancelPointerGesture"
 	@touchstart.passive="onTouchstart"
 	@touchmove.passive="onTouchmove"
+	@touchcancel.passive="cancelPointerGesture"
+	@contextmenu="cancelPointerGesture"
 	@wheel="onWheel"
 	@click="onCLick"
 >
@@ -382,6 +385,26 @@ const doubleTapDetector = makeDoubleTapDetector((ev) => {
 		zoomInTo(ev.touches[0].clientX, ev.touches[0].clientY, 2, true);
 	}
 });
+
+function cancelPointerGesture() {
+	const wasVerticalSwiping = isVerticalSwiping;
+	const wasHorizontalSwiping = isHorizontalSwiping;
+
+	pointerEventCache.clear();
+	prevTwoTouchPointsDistance = 0;
+	currentPointerId = null;
+	isDragging = false;
+	isClick = false;
+	pointerVec = { x: 0, y: 0 };
+	verticalSwipeDelta = 0;
+	horizontalSwipeDelta = 0;
+	isVerticalSwiping = false;
+	isHorizontalSwiping = false;
+	doubleTapDetector.reset();
+
+	if (wasVerticalSwiping) resetToNeutral();
+	if (wasHorizontalSwiping) emit('cancelHorizontalSwipe');
+}
 
 function onTouchstart(ev: TouchEvent) {
 	ev.preventDefault();
