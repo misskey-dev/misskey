@@ -21,13 +21,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div
 				ref="itemsEl"
 				:class="[$style.items, { [$style.itemsTransition]: enableSlideTransition }]"
-				:style="{ translate: `${imagesOffset}px 0` }"
+				:style="{ translate: `${contentsOffset}px 0` }"
 				@transitionend.self="onSlideTransitionFinished"
 				@transitioncancel.self="onSlideTransitionFinished"
 			>
-				<div v-for="(image, i) in images" :key="image.url" ref="itemEl" :class="$style.item">
+				<div v-for="(content, i) in contents" :key="content.url" ref="itemEl" :class="$style.item">
 					<XItem
-						:image="image"
+						:content="content"
 						:activated="activatedIndexes.has(i)"
 						@close="onItemClose"
 						@horizontalSwipe="onHorizontalSwipe"
@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<button v-if="!isTouchUsing && currentIndex > 0" class="_button" :class="[$style.prevButton]" @click="onPrev"><div :class="$style.buttonIcon"><i class="ti ti-arrow-left"></i></div></button>
-			<button v-if="!isTouchUsing && currentIndex < images.length - 1" class="_button" :class="[$style.nextButton]" @click="onNext"><div :class="$style.buttonIcon"><i class="ti ti-arrow-right"></i></div></button>
+			<button v-if="!isTouchUsing && currentIndex < contents.length - 1" class="_button" :class="[$style.nextButton]" @click="onNext"><div :class="$style.buttonIcon"><i class="ti ti-arrow-right"></i></div></button>
 		</div>
 	</div>
 </Transition>
@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import XItem from './MkImageGallery.item.vue';
-import type { Image } from './MkImageGallery.item.vue';
+import type { Content } from './MkImageGallery.item.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -56,7 +56,7 @@ import { isTouchUsing } from '@/utility/touch.js';
 
 const props = withDefaults(defineProps<{
 	defaultIndex?: number;
-	images: Image[];
+	contents: Content[];
 }>(), {
 });
 
@@ -70,10 +70,10 @@ watch(currentIndex, (newIndex) => {
 	activatedIndexes.value.add(newIndex);
 }, { immediate: true });
 watch(currentIndex, (newIndex) => {
-	for (let i = 0; i < props.images.length; i++) {
-		const image = props.images[i];
-		if (image.sourceElement != null) {
-			image.sourceElement.style.visibility = i === newIndex ? 'hidden' : '';
+	for (let i = 0; i < props.contents.length; i++) {
+		const content = props.contents[i];
+		if (content.sourceElement != null) {
+			content.sourceElement.style.visibility = i === newIndex ? 'hidden' : '';
 		}
 	}
 }, { immediate: false });
@@ -84,17 +84,17 @@ const slideAnimDuration = 300;
 const zIndex = os.claimZIndex('high');
 const showing = ref(true);
 const screenWidth = ref(window.innerWidth);
-const imagesOffset = ref(currentIndex.value * -window.innerWidth);
+const contentsOffset = ref(currentIndex.value * -window.innerWidth);
 const enableSlideTransition = ref(false);
-let currentScrollLeft = imagesOffset.value;
+let currentScrollLeft = contentsOffset.value;
 
 function onHorizontalSwipe(offset: number) {
 	if (currentIndex.value === 0 && offset > 0) { // これ以上戻れない
-		imagesOffset.value = currentScrollLeft + (offset / 3);
-	} else if (currentIndex.value === props.images.length - 1 && offset < 0) { // これ以上進めない
-		imagesOffset.value = currentScrollLeft + (offset / 3);
+		contentsOffset.value = currentScrollLeft + (offset / 3);
+	} else if (currentIndex.value === props.contents.length - 1 && offset < 0) { // これ以上進めない
+		contentsOffset.value = currentScrollLeft + (offset / 3);
 	} else {
-		imagesOffset.value = currentScrollLeft + offset;
+		contentsOffset.value = currentScrollLeft + offset;
 	}
 }
 
@@ -102,14 +102,14 @@ function scrollToCurrentIndex() {
 	const targetOffset = currentIndex.value * -screenWidth.value;
 	currentScrollLeft = targetOffset;
 
-	if (!prefer.s.animation || imagesOffset.value === targetOffset) {
+	if (!prefer.s.animation || contentsOffset.value === targetOffset) {
 		enableSlideTransition.value = false;
-		imagesOffset.value = targetOffset;
+		contentsOffset.value = targetOffset;
 		return;
 	}
 
 	enableSlideTransition.value = true;
-	imagesOffset.value = targetOffset;
+	contentsOffset.value = targetOffset;
 }
 
 function onSlideTransitionFinished(ev: TransitionEvent) {
@@ -122,7 +122,7 @@ function onCancelHorizontalSwipe() {
 }
 
 function onNext() {
-	if (currentIndex.value < props.images.length - 1) {
+	if (currentIndex.value < props.contents.length - 1) {
 		currentIndex.value++;
 	}
 	scrollToCurrentIndex();
@@ -140,9 +140,9 @@ function onItemClose() {
 }
 
 function onAfterLeave() {
-	for (const image of props.images) {
-		if (image.sourceElement != null) {
-			image.sourceElement.style.visibility = '';
+	for (const content of props.contents) {
+		if (content.sourceElement != null) {
+			content.sourceElement.style.visibility = '';
 		}
 	}
 	emit('closed');
@@ -184,7 +184,7 @@ function onAfterLeave() {
 .items {
 	position: absolute;
 	display: flex;
-	width: calc(v-bind("screenWidth + 'px'") * v-bind("images.length"));
+	width: calc(v-bind("screenWidth + 'px'") * v-bind("contents.length"));
 	height: 100dvh;
 	overflow: clip;
 	contain: strict;

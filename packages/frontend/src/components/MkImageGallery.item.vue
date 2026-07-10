@@ -29,36 +29,50 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@transitioncancel.self="enableTransition = false"
 		>
 			<img
-				v-if="!originalImageLoaded || !thumbnailImageLoaded"
-				:class="[$style.image, $style.thumbnail]"
-				:src="image.thumbnailUrl ?? image.url"
-				:width="image.width"
-				:height="image.height"
-				:style="{ width: `${imageRenderingSize.width}px`, height: `${imageRenderingSize.height}px` }"
+				v-if="!originalContentLoaded || !thumbnailContentLoaded"
+				:class="[$style.content, $style.thumbnail]"
+				:src="content.thumbnailUrl ?? content.url"
+				:width="content.width === 0 || content.width == null ? undefined : content.width"
+				:height="content.height === 0 || content.height == null ? undefined : content.height"
+				:style="{ width: contentRenderingSize == null ? '100%' : `${contentRenderingSize.width}px`, height: contentRenderingSize == null ? 'auto' : `${contentRenderingSize.height}px` }"
 				draggable="false"
-				@load="thumbnailImageLoaded = true"
+				@load="thumbnailContentLoaded = true"
 			>
-			<img
-				v-if="activated"
-				ref="imageEl"
-				:class="[$style.image, $style.original]"
-				:src="image.url"
-				:width="image.width"
-				:height="image.height"
-				:style="{ width: `${imageRenderingSize.width}px`, height: `${imageRenderingSize.height}px` }"
-				draggable="false"
-				@load="originalImageLoaded = true"
-			>
+
+			<template v-if="activated">
+				<img
+					v-if="content.type === 'image'"
+					:class="[$style.content, $style.original]"
+					:src="content.url"
+					:width="content.width === 0 || content.width == null ? undefined : content.width"
+					:height="content.height === 0 || content.height == null ? undefined : content.height"
+					:style="{ width: contentRenderingSize == null ? '100%' : `${contentRenderingSize.width}px`, height: contentRenderingSize == null ? 'auto' : `${contentRenderingSize.height}px` }"
+					draggable="false"
+					@load="originalContentLoaded = true"
+				>
+				<video
+					v-else-if="content.type === 'video'"
+					:class="[$style.content, $style.original]"
+					:src="content.url"
+					:width="content.width === 0 || content.width == null ? undefined : content.width"
+					:height="content.height === 0 || content.height == null ? undefined : content.height"
+					:style="{ width: contentRenderingSize == null ? '100%' : `${contentRenderingSize.width}px`, height: contentRenderingSize == null ? 'auto' : `${contentRenderingSize.height}px` }"
+					draggable="false"
+					controls
+					autoplay
+					@loadedmetadata="originalContentLoaded = true"
+				></video>
+			</template>
 		</div>
 	</div>
 
-	<div v-if="activated && !originalImageLoaded" :class="$style.loading">
+	<div v-if="activated && !originalContentLoaded" :class="$style.loading">
 		<MkLoading/>
 	</div>
 
 	<div :class="[$style.footer, { [$style.infoShowing]: infoShowing && !isZooming }]">
 		<div :class="$style.footerText">
-			{{ image.comment ?? image.filename }}
+			{{ content.comment ?? content.filename }}
 		</div>
 	</div>
 </div>
@@ -75,12 +89,13 @@ type Rect = Size & {
 	top: number;
 };
 
-export type Image = {
+export type Content = {
 	id: string;
+	type: 'image' | 'video';
 	url: string;
 	thumbnailUrl: string | null;
-	width: number;
-	height: number;
+	width?: number | null;
+	height?: number | null;
 	filename?: string | null;
 	comment?: string | null;
 	sourceElement?: HTMLElement | null;
@@ -88,25 +103,25 @@ export type Image = {
 
 export function calculateSourceTransform({
 	fit,
-	imageRenderingRect,
+	contentRenderingRect,
 	sourceRect,
 }: {
 	fit: string;
-	imageRenderingRect: Rect;
+	contentRenderingRect: Rect;
 	sourceRect: Rect;
 }): { x: number; y: number; scale: number } {
 	const scale = fit === 'cover'
-		? Math.max(sourceRect.width / imageRenderingRect.width, sourceRect.height / imageRenderingRect.height)
-		: Math.min(sourceRect.width / imageRenderingRect.width, sourceRect.height / imageRenderingRect.height);
+		? Math.max(sourceRect.width / contentRenderingRect.width, sourceRect.height / contentRenderingRect.height)
+		: Math.min(sourceRect.width / contentRenderingRect.width, sourceRect.height / contentRenderingRect.height);
 
-	const sourceImageWidth = imageRenderingRect.width * scale;
-	const sourceImageHeight = imageRenderingRect.height * scale;
-	const sourceImageLeft = sourceRect.left + (sourceRect.width - sourceImageWidth) / 2;
-	const sourceImageTop = sourceRect.top + (sourceRect.height - sourceImageHeight) / 2;
+	const sourceContentWidth = contentRenderingRect.width * scale;
+	const sourceContentHeight = contentRenderingRect.height * scale;
+	const sourceContentLeft = sourceRect.left + (sourceRect.width - sourceContentWidth) / 2;
+	const sourceContentTop = sourceRect.top + (sourceRect.height - sourceContentHeight) / 2;
 
 	return {
-		x: sourceImageLeft - imageRenderingRect.left * scale,
-		y: sourceImageTop - imageRenderingRect.top * scale,
+		x: sourceContentLeft - contentRenderingRect.left * scale,
+		y: sourceContentTop - contentRenderingRect.top * scale,
 		scale,
 	};
 }
@@ -120,7 +135,7 @@ import { deviceKind } from '@/utility/device-kind.js';
 import { isTouchUsing } from '@/utility/touch.js';
 
 const props = withDefaults(defineProps<{
-	image: Image;
+	content: Content;
 	activated: boolean;
 }>(), {
 });
@@ -135,10 +150,9 @@ const emit = defineEmits<{
 
 const rootEl = useTemplateRef('rootEl');
 const mainEl = useTemplateRef('mainEl');
-const imageEl = useTemplateRef('imageEl');
 
-const originalImageLoaded = ref(false);
-const thumbnailImageLoaded = ref(false);
+const originalContentLoaded = ref(false);
+const thumbnailContentLoaded = ref(false);
 const enableTransition = ref(false);
 const infoShowing = ref(false);
 
@@ -154,42 +168,44 @@ const headerAreaSize = 0;
 const footerAreaSize = 30;
 
 // maxからはみ出す場合は縮小、maxに満たない場合は拡大する(contain)
-function calcImageRenderingSize(image: Image) {
+function calcContentRenderingSize(content: Content) {
+	if (content.width == null || content.height == null || content.width === 0 || content.height === 0) return null;
+
 	const maxWidth = window.innerWidth - padding * 2;
 	const maxHeight = window.innerHeight - headerAreaSize - footerAreaSize - padding * 2;
 
-	const widthRatio = maxWidth / image.width;
-	const heightRatio = maxHeight / image.height;
+	const widthRatio = maxWidth / content.width;
+	const heightRatio = maxHeight / content.height;
 	const ratio = widthRatio < heightRatio ? widthRatio : heightRatio;
 
-	const width = image.width * ratio;
-	const height = image.height * ratio;
+	const width = content.width * ratio;
+	const height = content.height * ratio;
 
 	return { width, height };
 }
 
-const imageRenderingSize = calcImageRenderingSize(props.image);
-const imageRenderingRect = {
-	left: (window.innerWidth - imageRenderingSize.width) / 2,
-	top: headerAreaSize + (window.innerHeight - headerAreaSize - footerAreaSize - imageRenderingSize.height) / 2,
-	width: imageRenderingSize.width,
-	height: imageRenderingSize.height,
-};
+const contentRenderingSize = calcContentRenderingSize(props.content);
+const contentRenderingRect = contentRenderingSize != null ? {
+	left: (window.innerWidth - contentRenderingSize.width) / 2,
+	top: headerAreaSize + (window.innerHeight - headerAreaSize - footerAreaSize - contentRenderingSize.height) / 2,
+	width: contentRenderingSize.width,
+	height: contentRenderingSize.height,
+} : null;
 const transform = ref({ x: 0, y: 0, scale: 1 });
 
 // 元のimg要素の位置・サイズ(とobject-fitの設定値)を取得して、そこからneutralの位置にアニメーションするためのscaleとtranslationを計算する
 function getScaleAndTranslationForSourceElement(): { x: number; y: number; scale: number } {
-	const sourceElement = props.image.sourceElement;
-	if (sourceElement == null) return { x: 0, y: 0, scale: 1 };
+	const sourceElement = props.content.sourceElement;
+	if (sourceElement == null || contentRenderingRect == null) return { x: 0, y: 0, scale: 1 };
 
 	return calculateSourceTransform({
 		fit: window.getComputedStyle(sourceElement).objectFit,
-		imageRenderingRect,
+		contentRenderingRect,
 		sourceRect: sourceElement.getBoundingClientRect(),
 	});
 }
 
-if (props.image.sourceElement != null && props.activated) {
+if (props.content.sourceElement != null && props.activated) {
 	const sourceTransform = getScaleAndTranslationForSourceElement();
 	transform.value.scale = sourceTransform.scale;
 	transform.value.x = sourceTransform.x;
@@ -496,10 +512,10 @@ watch(isZooming, () => {
 });
 //#endregion
 
-watch(thumbnailImageLoaded, () => {
+watch(thumbnailContentLoaded, () => {
 	if (rootEl.value == null) return;
 
-	const sourceElement = props.image.sourceElement;
+	const sourceElement = props.content.sourceElement;
 	if (sourceElement != null && props.activated) {
 		enableTransition.value = true;
 		rootEl.value.offsetHeight; // reflow
@@ -541,7 +557,7 @@ function onCLick() {
 	height: 100%;
 }
 
-.image {
+.content {
 	display: block;
 	user-select: none;
 	position: absolute;

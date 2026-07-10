@@ -107,8 +107,9 @@ async function openGallery(id?: string) {
 		if (found == null) return null;
 		return markRaw(found);
 	};
-	const images = props.mediaList.filter(media => previewable(media)).map(media => ({
+	const contents = props.mediaList.filter(media => previewable(media)).map(media => ({
 		id: media.id,
+		type: media.type.startsWith('video') ? 'video' : 'image',
 		url: media.url,
 		thumbnailUrl: media.thumbnailUrl,
 		width: media.properties.width ?? 0,
@@ -118,8 +119,8 @@ async function openGallery(id?: string) {
 		sourceElement: getElementByMarker(`${markerId}:${media.id}`),
 	}));
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageGallery.vue').then(x => x.default), {
-		defaultIndex: images.findIndex(image => image.id === id),
-		images: images,
+		defaultIndex: contents.findIndex(conten => conten.id === id),
+		contents: contents,
 	}, {
 		closed: () => dispose(),
 	});
