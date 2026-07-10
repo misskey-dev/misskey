@@ -103,6 +103,7 @@ async function openGallery(id: string) {
 		width: media.properties.width ?? 0,
 		height: media.properties.height ?? 0,
 		filename: media.name,
+		comment: media.comment,
 		sourceElement: markRaw(gallery.value?.querySelector(`[data-marker="${markerId}:${media.id}"]`)),
 	}));
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageGallery.vue').then(x => x.default), {

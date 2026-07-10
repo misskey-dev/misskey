@@ -7,12 +7,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div
 	ref="rootEl"
 	:class="$style.root"
-	@pointerdown="onPointerdown"
+	@pointerdown.passive="onPointerdown"
 	@pointermove.passive="onPointermove"
-	@pointerup="onPointerup"
-	@touchstart="onTouchstart"
+	@pointerup.passive="onPointerup"
+	@touchstart.passive="onTouchstart"
 	@touchmove.passive="onTouchmove"
 	@wheel="onWheel"
+	@click="onCLick"
 >
 	<div
 		:class="[$style.transformer, { [$style.transition]: enableTransition }]"
@@ -49,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="[$style.footer, { [$style.infoShowing]: infoShowing && !isZooming }]">
 		<div :class="$style.footerText">
-			{{ image.filename }}
+			{{ image.comment ?? image.filename }}
 		</div>
 	</div>
 </div>
@@ -62,6 +63,7 @@ import { i18n } from '@/i18n.js';
 import { makeDoubleTapDetector } from '@/utility/double-tap.js';
 import { calculateSourceTransform } from '@/components/MkImageGallery.utils.js';
 import { deviceKind } from '@/utility/device-kind.js';
+import { isTouchUsing } from '@/utility/touch.js';
 
 export type Image = {
 	id: string;
@@ -70,6 +72,7 @@ export type Image = {
 	width: number;
 	height: number;
 	filename?: string;
+	comment?: string;
 	sourceElement?: HTMLElement;
 };
 
@@ -180,6 +183,20 @@ function resetToNeutral() {
 	transform.value.y = 0;
 }
 
+function closeThis() {
+	emit('close');
+
+	infoShowing.value = false;
+
+	const sourceTransform = getScaleAndTranslationForSourceElement();
+
+	enableTransition.value = true;
+	rootEl.value.offsetHeight; // reflow
+	transform.value.x = sourceTransform.x;
+	transform.value.y = sourceTransform.y;
+	transform.value.scale = sourceTransform.scale;
+}
+
 function onWheel(event: WheelEvent) {
 	event.preventDefault();
 
@@ -214,6 +231,7 @@ function onZoomGestureEnd() {
 
 // ズーム中、ドラッグされたら画像を移動する
 let isDragging = false;
+let isClick = false;
 let lastX = 0;
 let lastY = 0;
 let currentPointerId: number | null = null;
@@ -231,6 +249,7 @@ function onPointerdown(ev: PointerEvent) {
 	rootEl.value.setPointerCapture(ev.pointerId);
 
 	isDragging = true;
+	isClick = true;
 	lastX = ev.clientX;
 	lastY = ev.clientY;
 	pointerVec = { x: 0, y: 0 };
@@ -262,6 +281,7 @@ function onPointermove(ev: PointerEvent) {
 		currentPointerId = null;
 		isVerticalSwiping = false;
 		isHorizontalSwiping = false;
+		isClick = false;
 		const a = Array.from(pointerEventCache.values())[0];
 		const b = Array.from(pointerEventCache.values())[1];
 		const distance = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
@@ -278,6 +298,10 @@ function onPointermove(ev: PointerEvent) {
 	if (currentPointerId === ev.pointerId) {
 		const deltaX = ev.clientX - lastX;
 		const deltaY = ev.clientY - lastY;
+
+		if (Math.abs(ev.clientX - currentPointerStartOffset.x) > 5 || Math.abs(ev.clientY - currentPointerStartOffset.y) > 5) {
+			isClick = false;
+		}
 
 		if (isZooming.value) {
 			transform.value.x += deltaX;
@@ -322,17 +346,7 @@ function onPointerup(ev: PointerEvent) {
 			const shouldCloseByUpwardSwipe = verticalSwipeDelta < -200 || (verticalSwipeDelta < 0 && pointerVec.y < -3); // 上の方で離された、または上に向かって強めに弾かれた
 			const shouldCloseByDownwardSwipe = verticalSwipeDelta > 200 || (verticalSwipeDelta > 0 && pointerVec.y > 3); // 下の方で離された、または下に向かって強めに弾かれた
 			if (shouldCloseByUpwardSwipe || shouldCloseByDownwardSwipe) {
-				emit('close');
-
-				infoShowing.value = false;
-
-				const sourceTransform = getScaleAndTranslationForSourceElement();
-
-				enableTransition.value = true;
-				rootEl.value.offsetHeight; // reflow
-				transform.value.x = sourceTransform.x;
-				transform.value.y = sourceTransform.y;
-				transform.value.scale = sourceTransform.scale;
+				closeThis();
 				return;
 			}
 
@@ -418,6 +432,19 @@ watch(thumbnailImageLoaded, () => {
 		transform.value.scale = 1;
 	}
 }, { once: true });
+
+function onCLick() {
+	if (!isClick) return;
+
+	if (!isTouchUsing) {
+		if (isZooming.value) {
+			isZooming.value = false;
+			resetToNeutral();
+		} else {
+			closeThis();
+		}
+	}
+}
 </script>
 
 <style lang="scss" module>
@@ -466,8 +493,13 @@ watch(thumbnailImageLoaded, () => {
 	position: absolute;
 	bottom: -30px;
 	left: 0;
-	width: 100%;
-	height: 30px;
+	right: 0;
+	margin: auto;
+	width: max-content;
+	height: 35px;
+	padding: 0 12px;
+	box-sizing: border-box;
+	border-radius: 10px;
 	background: var(--MI_THEME-panel);
 	display: flex;
 	justify-content: center;
@@ -479,7 +511,7 @@ watch(thumbnailImageLoaded, () => {
 	transition: opacity 200ms ease, bottom 200ms ease;
 }
 .footer.infoShowing {
-	bottom: 0;
+	bottom: 10px;
 	opacity: 1;
 }
 .footerText {
