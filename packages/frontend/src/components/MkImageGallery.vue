@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:leaveToClass="prefer.s.animation ? $style.transition_root_leaveTo : ''"
 	:duration="{ enter: prefer.s.animation ? openAnimDuration : 0, leave: prefer.s.animation ? closeAnimDuration : 0 }"
 	appear
-	@afterLeave="emit('closed')"
+	@afterLeave="onAfterLeave"
 >
 	<!-- v-ifを使うとfalseになったとき(transitionが行われている間)子コンポーネントの更新が停止するのか子コンポーネントがアニメーションされなくなる -->
 	<div v-show="showing" ref="rootEl" :class="$style.root" :style="{ zIndex }">
@@ -67,6 +67,11 @@ const currentIndex = ref(props.defaultIndex ?? 0);
 watch(currentIndex, (newIndex) => {
 	activatedIndexes.value.add(newIndex);
 }, { immediate: true });
+watch(currentIndex, (newIndex) => {
+	for (let i = 0; i < props.images.length; i++) {
+		props.images[i].sourceElement.style.visibility = i === newIndex ? 'hidden' : '';
+	}
+}, { immediate: false });
 
 const openAnimDuration = 200;
 const closeAnimDuration = 200;
@@ -127,6 +132,15 @@ function onPrev() {
 
 function onItemClose() {
 	showing.value = false;
+}
+
+function onAfterLeave() {
+	for (const image of props.images) {
+		if (image.sourceElement != null) {
+			image.sourceElement.style.visibility = '';
+		}
+	}
+	emit('closed');
 }
 </script>
 

@@ -390,6 +390,7 @@ onBeforeUnmount(() => {
 
 watch(thumbnailImageLoaded, () => {
 	if (props.image.sourceElement != null && props.activated) {
+		props.image.sourceElement.style.visibility = 'hidden';
 		enableTransition.value = true;
 		rootEl.value.offsetHeight; // reflow
 		transform.value.x = 0;
