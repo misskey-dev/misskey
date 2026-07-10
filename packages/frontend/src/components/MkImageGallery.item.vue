@@ -7,44 +7,49 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div
 	ref="rootEl"
 	:class="$style.root"
-	@pointerdown.passive="onPointerdown"
-	@pointermove.passive="onPointermove"
-	@pointerup.passive="onPointerup"
-	@pointercancel.passive="cancelPointerGesture"
-	@touchstart.passive="onTouchstart"
-	@touchmove.passive="onTouchmove"
-	@touchcancel.passive="cancelPointerGesture"
-	@contextmenu="cancelPointerGesture"
-	@wheel="onWheel"
-	@click="onCLick"
 >
 	<div
-		:class="[$style.transformer, { [$style.transition]: enableTransition }]"
-		:style="{ translate: `${transform.x}px ${transform.y}px`, scale: transform.scale }"
-		@transitionend.self="enableTransition = false"
-		@transitioncancel.self="enableTransition = false"
+		ref="mainEl"
+		:class="$style.main"
+		@pointerdown.passive="onPointerdown"
+		@pointermove.passive="onPointermove"
+		@pointerup.passive="onPointerup"
+		@pointercancel.passive="cancelPointerGesture"
+		@touchstart.passive="onTouchstart"
+		@touchmove.passive="onTouchmove"
+		@touchcancel.passive="cancelPointerGesture"
+		@contextmenu="cancelPointerGesture"
+		@wheel="onWheel"
+		@click="onCLick"
 	>
-		<img
-			v-if="!originalImageLoaded || !thumbnailImageLoaded"
-			:class="[$style.image, $style.thumbnail]"
-			:src="image.thumbnailUrl"
-			:width="image.width"
-			:height="image.height"
-			:style="{ width: `${imageRenderingSize.width}px`, height: `${imageRenderingSize.height}px` }"
-			draggable="false"
-			@load="thumbnailImageLoaded = true"
+		<div
+			:class="[$style.transformer, { [$style.transition]: enableTransition }]"
+			:style="{ translate: `${transform.x}px ${transform.y}px`, scale: transform.scale }"
+			@transitionend.self="enableTransition = false"
+			@transitioncancel.self="enableTransition = false"
 		>
-		<img
-			v-if="activated"
-			ref="imageEl"
-			:class="[$style.image, $style.original]"
-			:src="image.url"
-			:width="image.width"
-			:height="image.height"
-			:style="{ width: `${imageRenderingSize.width}px`, height: `${imageRenderingSize.height}px` }"
-			draggable="false"
-			@load="originalImageLoaded = true"
-		>
+			<img
+				v-if="!originalImageLoaded || !thumbnailImageLoaded"
+				:class="[$style.image, $style.thumbnail]"
+				:src="image.thumbnailUrl"
+				:width="image.width"
+				:height="image.height"
+				:style="{ width: `${imageRenderingSize.width}px`, height: `${imageRenderingSize.height}px` }"
+				draggable="false"
+				@load="thumbnailImageLoaded = true"
+			>
+			<img
+				v-if="activated"
+				ref="imageEl"
+				:class="[$style.image, $style.original]"
+				:src="image.url"
+				:width="image.width"
+				:height="image.height"
+				:style="{ width: `${imageRenderingSize.width}px`, height: `${imageRenderingSize.height}px` }"
+				draggable="false"
+				@load="originalImageLoaded = true"
+			>
+		</div>
 	</div>
 
 	<div v-if="activated && !originalImageLoaded" :class="$style.loading">
@@ -94,6 +99,7 @@ const emit = defineEmits<{
 }>();
 
 const rootEl = useTemplateRef('rootEl');
+const mainEl = useTemplateRef('mainEl');
 const imageEl = useTemplateRef('imageEl');
 
 const originalImageLoaded = ref(false);
@@ -160,7 +166,7 @@ function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
 	const newScale = transform.value.scale * factor;
 	isZooming.value = true;
 
-	const rect = rootEl.value.getBoundingClientRect();
+	const rect = mainEl.value.getBoundingClientRect();
 	const offsetX = x - rect.left;
 	const offsetY = y - rect.top;
 
@@ -249,7 +255,7 @@ let pointerVec = { x: 0, y: 0 };
 
 function onPointerdown(ev: PointerEvent) {
 	pointerEventCache.set(ev.pointerId, ev);
-	rootEl.value.setPointerCapture(ev.pointerId);
+	mainEl.value.setPointerCapture(ev.pointerId);
 
 	isDragging = true;
 	isClick = true;
@@ -339,7 +345,7 @@ function onPointermove(ev: PointerEvent) {
 
 function onPointerup(ev: PointerEvent) {
 	pointerEventCache.delete(ev.pointerId);
-	rootEl.value.releasePointerCapture(ev.pointerId);
+	mainEl.value.releasePointerCapture(ev.pointerId);
 	prevTwoTouchPointsDistance = 0;
 	isDragging = false;
 	if (currentPointerId === ev.pointerId) {
@@ -476,6 +482,12 @@ function onCLick() {
 <style lang="scss" module>
 .root {
 	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.main {
+	position: absolute;
 	touch-action: none;
 	width: 100%;
 	height: 100%;
@@ -529,7 +541,6 @@ function onCLick() {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	pointer-events: none;
 	font-size: 85%;
 	color: var(--MI_THEME-fg);
 	opacity: 0;
