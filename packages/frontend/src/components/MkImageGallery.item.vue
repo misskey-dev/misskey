@@ -424,12 +424,15 @@ onBeforeUnmount(() => {
 
 watch(thumbnailImageLoaded, () => {
 	if (props.image.sourceElement != null && props.activated) {
-		props.image.sourceElement.style.visibility = 'hidden';
 		enableTransition.value = true;
 		rootEl.value.offsetHeight; // reflow
 		transform.value.x = 0;
 		transform.value.y = 0;
 		transform.value.scale = 1;
+
+		nextTick(() => {
+			props.image.sourceElement.style.visibility = 'hidden';
+		});
 	}
 }, { once: true });
 
@@ -457,7 +460,6 @@ function onCLick() {
 
 .image {
 	display: block;
-	-webkit-touch-callout: none;
 	user-select: none;
 	position: absolute;
 	top: v-bind("headerAreaSize + 'px'");
