@@ -383,8 +383,8 @@ function updateInertia(timeStamp: number) {
 	if (isDragging) return;
 	if (!isZooming.value) return;
 	if (Math.abs(pointerVec.x) < 0.01 && Math.abs(pointerVec.y) < 0.01) return;
-	translation.value.x += pointerVec.x;
-	translation.value.y += pointerVec.y;
+	translation.value.x += pointerVec.x * timeDelta;
+	translation.value.y += pointerVec.y * timeDelta;
 	pointerVec.x *= inertiaFactor ** (timeDelta / 16.67);
 	pointerVec.y *= inertiaFactor ** (timeDelta / 16.67);
 }
