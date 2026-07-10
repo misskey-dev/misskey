@@ -48,6 +48,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { makeDoubleTapDetector } from '@/utility/double-tap.js';
 import { beginAnimation, easing_easeInOutQuad } from '@/utility/animation.js';
+import { calculateSourceTransform } from '@/components/MkImageGallery.utils.js';
 
 export type Image = {
 	id: string;
@@ -399,17 +400,18 @@ onBeforeUnmount(() => {
 
 // 元のimg要素の位置・サイズ(とobject-fitの設定値)を取得して、そこからneutralの位置にアニメーションするためのscaleとtranslationを計算する
 function getScaleAndTranslationForSourceElement(): { x: number; y: number; scale: number } {
-	const elementStyles = window.getComputedStyle(props.image.sourceElement);
-	const fit = elementStyles.objectFit;
+	const sourceElement = props.image.sourceElement;
+	if (sourceElement == null) return { x: 0, y: 0, scale: 1 };
 
-	const sourceRect = props.image.sourceElement.getBoundingClientRect();
-	if (fit === 'contain') {
-		// TODO
-	} else if (fit === 'cover') {
-		// TODO
-	} else {
-		// TODO
-	}
+	return calculateSourceTransform({
+		fit: window.getComputedStyle(sourceElement).objectFit,
+		neutralSize,
+		sourceRect: sourceElement.getBoundingClientRect(),
+		viewportSize: {
+			width: window.innerWidth,
+			height: window.innerHeight,
+		},
+	});
 }
 
 onMounted(async () => {
@@ -458,6 +460,6 @@ onMounted(async () => {
 }
 
 .transition {
-	transition: translate 200ms ease, width 200ms ease, height 200ms ease;
+	transition: translate 200ms ease, scale 200ms ease;
 }
 </style>
