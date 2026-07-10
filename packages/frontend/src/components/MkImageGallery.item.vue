@@ -78,7 +78,7 @@ const originalImageLoaded = ref(false);
 const padding = 30;
 const ANIMATION_DURATION = 200;
 
-function calcDefaultSize(image: Image) {
+function calcNeutralSize(image: Image) {
 	const maxWidth = window.innerWidth - padding * 2;
 	const maxHeight = window.innerHeight - padding * 2;
 
@@ -98,8 +98,8 @@ function calcDefaultSize(image: Image) {
 	return { width, height };
 }
 
-function calcDefaultTranslation(image: Image) {
-	const defaultSize = calcDefaultSize(image);
+function calcNeutralTranslation(image: Image) {
+	const defaultSize = calcNeutralSize(image);
 
 	const x = (window.innerWidth - defaultSize.width) / 2;
 	const y = (window.innerHeight - defaultSize.height) / 2;
@@ -107,11 +107,11 @@ function calcDefaultTranslation(image: Image) {
 	return { x, y };
 }
 
-const defaultSize = calcDefaultSize(props.image);
-const defaultTranslation = calcDefaultTranslation(props.image);
+const neutralSize = calcNeutralSize(props.image);
+const neutralTranslation = calcNeutralTranslation(props.image);
 
-const size = ref({ width: defaultSize.width, height: defaultSize.height });
-const translation = ref({ x: defaultTranslation.x, y: defaultTranslation.y });
+const size = ref({ width: neutralSize.width, height: neutralSize.height });
+const translation = ref({ x: neutralTranslation.x, y: neutralTranslation.y });
 
 const isZooming = ref(false);
 
@@ -158,7 +158,7 @@ function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
 	}
 }
 
-function resetSizeAndTranslation() {
+function resetToNeutral() {
 	isZooming.value = false;
 	beginAnimation({
 		from: {
@@ -168,10 +168,10 @@ function resetSizeAndTranslation() {
 			y: translation.value.y,
 		},
 		to: {
-			width: defaultSize.width,
-			height: defaultSize.height,
-			x: defaultTranslation.x,
-			y: defaultTranslation.y,
+			width: neutralSize.width,
+			height: neutralSize.height,
+			x: neutralTranslation.x,
+			y: neutralTranslation.y,
 		},
 		duration: ANIMATION_DURATION,
 		easing: easing_easeInOutQuad,
@@ -195,11 +195,11 @@ function onWheel(event: WheelEvent) {
 	const newWidth = size.value.width * scale;
 	const newHeight = size.value.height * scale;
 
-	if (newWidth < defaultSize.width || newHeight < defaultSize.height) {
-		size.value.width = defaultSize.width;
-		size.value.height = defaultSize.height;
-		translation.value.x = defaultTranslation.x;
-		translation.value.y = defaultTranslation.y;
+	if (newWidth < neutralSize.width || newHeight < neutralSize.height) {
+		size.value.width = neutralSize.width;
+		size.value.height = neutralSize.height;
+		translation.value.x = neutralTranslation.x;
+		translation.value.y = neutralTranslation.y;
 		isZooming.value = false;
 		return;
 	}
@@ -212,9 +212,9 @@ function onZoomGesture(ev: { delta: number; centerX: number; centerY: number }) 
 }
 
 function onZoomGestureEnd() {
-	if (size.value.width < defaultSize.width || size.value.height < defaultSize.height) {
+	if (size.value.width < neutralSize.width || size.value.height < neutralSize.height) {
 		isZooming.value = false;
-		resetSizeAndTranslation();
+		resetToNeutral();
 	}
 }
 
@@ -345,7 +345,7 @@ function onPointerup(ev: PointerEvent) {
 				return;
 			}
 
-			resetSizeAndTranslation();
+			resetToNeutral();
 		} else if (isHorizontalSwiping) {
 			const shouldNext = horizontalSwipeDelta < -150 || (horizontalSwipeDelta < 0 && pointerVec.x < -3); // 左の方で離された、または左に向かって強めに弾かれた
 			const shouldPrev = horizontalSwipeDelta > 150 || (horizontalSwipeDelta > 0 && pointerVec.x > 3); // 右の方で離された、または右に向かって強めに弾かれた
@@ -371,7 +371,7 @@ const doubleTapDetector = makeDoubleTapDetector((ev) => {
 
 	if (isZooming.value) {
 		isZooming.value = false;
-		resetSizeAndTranslation();
+		resetToNeutral();
 	} else {
 		isZooming.value = true;
 		zoomInTo(ev.touches[0].clientX, ev.touches[0].clientY, 2, true);
@@ -393,6 +393,7 @@ function onTouchmove(ev: TouchEvent) {
 let rafHandle: ReturnType<typeof window['requestAnimationFrame']> | null = null;
 let latestInertiaTimeStamp = 0;
 
+//#region inertia
 function updateInertia(timeStamp: number) {
 	rafHandle = window.requestAnimationFrame(updateInertia);
 	const timeDelta = timeStamp - latestInertiaTimeStamp;
@@ -414,7 +415,67 @@ onMounted(() => {
 onBeforeUnmount(() => {
 	if (rafHandle != null) window.cancelAnimationFrame(rafHandle);
 });
+//#endregion
 
+onMounted(() => {
+	// 画像の初期位置・サイズをsourceElementの位置に合わせてdefaultの位置にアニメーションする
+	if (props.image.sourceElement != null) {
+		const elementStyles = window.getComputedStyle(props.image.sourceElement);
+		const fit = elementStyles.objectFit;
+
+		const sourceRect = props.image.sourceElement.getBoundingClientRect();
+		if (fit === 'contain') {
+			const sourceAspectRatio = sourceRect.width / sourceRect.height;
+			const imageAspectRatio = props.image.width / props.image.height;
+
+			if (sourceAspectRatio > imageAspectRatio) {
+				// 横長の画像
+				const newWidth = sourceRect.height * imageAspectRatio;
+				const newHeight = sourceRect.height;
+				size.value.width = newWidth;
+				size.value.height = newHeight;
+				translation.value.x = sourceRect.left + (sourceRect.width - newWidth) / 2;
+				translation.value.y = sourceRect.top;
+			} else {
+				// 縦長の画像
+				const newWidth = sourceRect.width;
+				const newHeight = sourceRect.width / imageAspectRatio;
+				size.value.width = newWidth;
+				size.value.height = newHeight;
+				translation.value.x = sourceRect.left;
+				translation.value.y = sourceRect.top + (sourceRect.height - newHeight) / 2;
+			}
+		} else {
+			size.value.width = sourceRect.width;
+			size.value.height = sourceRect.height;
+			translation.value.x = sourceRect.left;
+			translation.value.y = sourceRect.top;
+		}
+
+		beginAnimation({
+			from: {
+				width: size.value.width,
+				height: size.value.height,
+				x: translation.value.x,
+				y: translation.value.y,
+			},
+			to: {
+				width: neutralSize.width,
+				height: neutralSize.height,
+				x: neutralTranslation.x,
+				y: neutralTranslation.y,
+			},
+			duration: 300,
+			easing: easing_easeInOutQuad,
+			apply: (state) => {
+				size.value.width = state.width;
+				size.value.height = state.height;
+				translation.value.x = state.x;
+				translation.value.y = state.y;
+			},
+		});
+	}
+});
 </script>
 
 <style lang="scss" module>

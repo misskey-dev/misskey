@@ -29,6 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:height="image.properties.height"
 			:style="hide ? 'filter: brightness(0.7);' : null"
 			:class="$style.image"
+			:marker="marker"
 		/>
 		<div
 			v-else-if="prefer.s.dataSaver.media || hide"
@@ -42,6 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:alt="image.comment || image.name"
 			:title="image.comment || image.name"
 			:class="$style.image"
+			:data-marker="marker"
 		/>
 	</component>
 	<template v-if="hide">
@@ -85,6 +87,7 @@ const props = withDefaults(defineProps<{
 	cover?: boolean;
 	disableImageLink?: boolean;
 	controls?: boolean;
+	marker?: string;
 }>(), {
 	cover: false,
 	disableImageLink: false,

@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<template v-for="media in mediaList.filter(media => previewable(media))">
 				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media"/>
-				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :disableImageLink="true" :class="$style.media" :data-id="media.id" :image="media" :raw="raw" @click="openGallery(media.id)"/>
+				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :marker="`${markerId}:${media.id}`" :disableImageLink="true" :class="$style.media" :image="media" :raw="raw" @click="openGallery(media.id)"/>
 			</template>
 		</div>
 	</div>
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, useTemplateRef } from 'vue';
+import { computed, markRaw, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
 import XBanner from '@/components/MkMediaBanner.vue';
@@ -38,6 +38,7 @@ import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os.js';
 import { focusParent } from '@/utility/focus.js';
 import { prefer } from '@/preferences.js';
+import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
@@ -46,6 +47,7 @@ const props = defineProps<{
 
 const gallery = useTemplateRef('gallery');
 const count = computed(() => props.mediaList.filter(media => previewable(media)).length);
+const markerId = genId();
 
 async function calcAspectRatio() {
 	if (!gallery.value) return;
@@ -100,7 +102,7 @@ async function openGallery(id: string) {
 		thumbnailUrl: media.thumbnailUrl,
 		width: media.properties.width ?? 0,
 		height: media.properties.height ?? 0,
-		sourceElement: gallery.value?.querySelector(`.image[data-id="${media.id}"]`) as HTMLElement | undefined,
+		sourceElement: markRaw(gallery.value?.querySelector(`[data-marker="${markerId}:${media.id}"]`)),
 	}));
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageGallery.vue').then(x => x.default), {
 		defaultIndex: images.findIndex(image => image.id === id),

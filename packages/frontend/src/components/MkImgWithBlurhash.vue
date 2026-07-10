@@ -36,6 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:src="src ?? undefined"
 			:title="title ?? undefined"
 			:alt="alt ?? undefined"
+			:data-marker="marker ?? undefined"
 			loading="eager"
 			decoding="async"
 			draggable="false"
@@ -87,8 +88,8 @@ const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resol
 
 <script lang="ts" setup>
 import { computed, nextTick, onMounted, onUnmounted, useTemplateRef, watch, ref } from 'vue';
-import { genId } from '@/utility/id.js';
 import { render } from 'buraha';
+import { genId } from '@/utility/id.js';
 import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
@@ -110,6 +111,7 @@ const props = withDefaults(defineProps<{
 	cover?: boolean;
 	forceBlurhash?: boolean;
 	onlyAvgColor?: boolean; // 軽量化のためにBlurhashを使わずに平均色だけを描画
+	marker?: string;
 }>(), {
 	transition: null,
 	src: null,
