@@ -20,13 +20,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@transitionend="enableTransition = false"
 	>
 		<img
-			v-if="!originalImageLoaded"
+			v-if="!originalImageLoaded || !thumbnailImageLoaded"
 			:class="[$style.image, $style.thumbnail]"
 			:src="image.thumbnailUrl"
 			:width="image.width"
 			:height="image.height"
 			:style="{ width: `${imageRenderingSize.width}px`, height: `${imageRenderingSize.height}px` }"
 			draggable="false"
+			@load="thumbnailImageLoaded = true"
 		>
 		<img
 			v-if="activated"
@@ -47,11 +48,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { makeDoubleTapDetector } from '@/utility/double-tap.js';
-import { beginAnimation, easing_easeInOutQuad } from '@/utility/animation.js';
 import { calculateSourceTransform } from '@/components/MkImageGallery.utils.js';
 
 export type Image = {
@@ -83,6 +83,7 @@ const rootEl = useTemplateRef('rootEl');
 const imageEl = useTemplateRef('imageEl');
 
 const originalImageLoaded = ref(false);
+const thumbnailImageLoaded = ref(false);
 const enableTransition = ref(false);
 
 const padding = 30;
@@ -387,7 +388,7 @@ onBeforeUnmount(() => {
 });
 //#endregion
 
-onMounted(async () => {
+watch(thumbnailImageLoaded, () => {
 	if (props.image.sourceElement != null && props.activated) {
 		enableTransition.value = true;
 		rootEl.value.offsetHeight; // reflow
@@ -395,7 +396,7 @@ onMounted(async () => {
 		transform.value.y = 0;
 		transform.value.scale = 1;
 	}
-});
+}, { once: true });
 </script>
 
 <style lang="scss" module>
