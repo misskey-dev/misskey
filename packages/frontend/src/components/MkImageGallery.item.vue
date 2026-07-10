@@ -326,6 +326,22 @@ function onPointerup(ev: PointerEvent) {
 			const shouldCloseByDownwardSwipe = verticalSwipeDelta > 200 || (verticalSwipeDelta > 0 && pointerVec.y > 5); // 下の方で離された、または下に向かって強めに弾かれた
 			if (shouldCloseByUpwardSwipe || shouldCloseByDownwardSwipe) {
 				emit('close');
+				beginAnimation({
+					from: {
+						x: translation.value.x,
+						y: translation.value.y,
+					},
+					to: {
+						x: translation.value.x,
+						y: translation.value.y + (shouldCloseByUpwardSwipe ? -window.innerHeight : window.innerHeight),
+					},
+					duration: 200,
+					easing: easing_easeInOutQuad,
+					apply: (state) => {
+						translation.value.x = state.x;
+						translation.value.y = state.y;
+					},
+				});
 				return;
 			}
 

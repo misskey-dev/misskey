@@ -4,24 +4,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="rootEl" :class="$style.root" :style="{ zIndex }">
-	<div :class="[$style.bg]" class="_modalBg"></div>
-	<div ref="mainEl" :class="$style.main">
-		<div ref="itemsEl" :class="$style.items" :style="{ left: `${imagesOffset}px` }">
-			<div v-for="(image, i) in images" :key="image.url" ref="itemEl" :class="$style.item">
-				<XItem
-					:image="image"
-					:activated="activatedIndexes.has(i)"
-					@close="onItemClose"
-					@horizontalSwipe="onHorizontalSwipe"
-					@prev="onPrev"
-					@next="onNext"
-					@cancelHorizontalSwipe="onCancelHorizontalSwipe"
-				/>
+<Transition
+	:enterActiveClass="prefer.s.animation ? $style.transition_root_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_root_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_root_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_root_leaveTo : ''"
+	@afterLeave="emit('closed')"
+>
+	<!-- v-ifを使うとfalseになったとき(transitionが行われている間)子コンポーネントの更新が停止するのか子コンポーネントがアニメーションされなくなる -->
+	<div v-show="showing" ref="rootEl" :class="$style.root" :style="{ zIndex }">
+		<div :class="[$style.bg]" class="_modalBg"></div>
+		<div ref="mainEl" :class="$style.main">
+			<div ref="itemsEl" :class="$style.items" :style="{ left: `${imagesOffset}px` }">
+				<div v-for="(image, i) in images" :key="image.url" ref="itemEl" :class="$style.item">
+					<XItem
+						:image="image"
+						:activated="activatedIndexes.has(i)"
+						@close="onItemClose"
+						@horizontalSwipe="onHorizontalSwipe"
+						@prev="onPrev"
+						@next="onNext"
+						@cancelHorizontalSwipe="onCancelHorizontalSwipe"
+					/>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+</Transition>
 </template>
 
 <script lang="ts" setup>
@@ -31,6 +40,7 @@ import type { Image } from './MkImageGallery.item.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { beginAnimation, easing_easeInOutQuad } from '@/utility/animation.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	defaultIndex?: number;
@@ -49,6 +59,7 @@ watch(currentIndex, (newIndex) => {
 }, { immediate: true });
 
 const zIndex = os.claimZIndex('high');
+const showing = ref(true);
 const screenWidth = ref(window.innerWidth);
 const imagesOffset = ref(currentIndex.value * -window.innerWidth);
 let currentScrollLeft = imagesOffset.value;
@@ -95,11 +106,20 @@ function onPrev() {
 }
 
 function onItemClose() {
-	emit('closed');
+	showing.value = false;
 }
 </script>
 
 <style lang="scss" module>
+.transition_root_enterActive,
+.transition_root_leaveActive {
+	transition: opacity 300ms; // 子Itemコンポーネントがフェードアウトするdurationと合わせる
+}
+.transition_root_enterFrom,
+.transition_root_leaveTo {
+	opacity: 0;
+}
+
 .root {
 	position: fixed;
 	top: 0;
