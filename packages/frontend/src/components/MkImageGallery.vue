@@ -18,7 +18,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-show="showing" ref="rootEl" :class="$style.root" :style="{ zIndex }">
 		<div :class="[$style.bg]" class="_modalBg"></div>
 		<div ref="mainEl" :class="$style.main">
-			<div ref="itemsEl" :class="$style.items" :style="{ left: `${imagesOffset}px` }">
+			<div
+				ref="itemsEl"
+				:class="[$style.items, { [$style.itemsTransition]: enableSlideTransition }]"
+				:style="{ translate: `${imagesOffset}px 0` }"
+				@transitionend.self="onSlideTransitionFinished"
+				@transitioncancel.self="onSlideTransitionFinished"
+			>
 				<div v-for="(image, i) in images" :key="image.url" ref="itemEl" :class="$style.item">
 					<XItem
 						:image="image"
@@ -44,7 +50,6 @@ import XItem from './MkImageGallery.item.vue';
 import type { Image } from './MkImageGallery.item.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { beginAnimation, easing_easeInOutQuad } from '@/utility/animation.js';
 import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
@@ -65,10 +70,12 @@ watch(currentIndex, (newIndex) => {
 
 const openAnimDuration = 200;
 const closeAnimDuration = 200;
+const slideAnimDuration = 300;
 const zIndex = os.claimZIndex('high');
 const showing = ref(true);
 const screenWidth = ref(window.innerWidth);
 const imagesOffset = ref(currentIndex.value * -window.innerWidth);
+const enableSlideTransition = ref(false);
 let currentScrollLeft = imagesOffset.value;
 
 function onHorizontalSwipe(offset: number) {
@@ -82,16 +89,22 @@ function onHorizontalSwipe(offset: number) {
 }
 
 function scrollToCurrentIndex() {
-	currentScrollLeft = currentIndex.value * -screenWidth.value;
-	beginAnimation({
-		from: { value: imagesOffset.value },
-		to: { value: currentIndex.value * -screenWidth.value },
-		duration: 300,
-		easing: easing_easeInOutQuad,
-		apply: ({ value }) => {
-			imagesOffset.value = value;
-		},
-	});
+	const targetOffset = currentIndex.value * -screenWidth.value;
+	currentScrollLeft = targetOffset;
+
+	if (!prefer.s.animation || imagesOffset.value === targetOffset) {
+		enableSlideTransition.value = false;
+		imagesOffset.value = targetOffset;
+		return;
+	}
+
+	enableSlideTransition.value = true;
+	imagesOffset.value = targetOffset;
+}
+
+function onSlideTransitionFinished(ev: TransitionEvent) {
+	if (ev.propertyName !== 'translate') return;
+	enableSlideTransition.value = false;
 }
 
 function onCancelHorizontalSwipe() {
@@ -162,6 +175,11 @@ function onItemClose() {
 	height: 100dvh;
 	overflow: clip;
 	contain: strict;
+}
+
+.itemsTransition {
+	pointer-events: none;
+	transition: translate v-bind("slideAnimDuration + 'ms'") cubic-bezier(0.45, 0, 0.55, 1);
 }
 
 .item {
