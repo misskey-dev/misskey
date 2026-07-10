@@ -7,6 +7,7 @@ import * as os from 'node:os';
 import cluster from 'node:cluster';
 import { envOption } from '@/env.js';
 import { registerDiagLogger } from '@/core/telemetry/telemetry-diag.js';
+import { installHttpClientInstrumentation } from '@/core/telemetry/http-client-instrumentation.js';
 import type { Span, SpanStatusCode, Tracer } from '@opentelemetry/api';
 import type { Resource, ResourceDetector } from '@opentelemetry/resources';
 import type { ParentBasedSampler, Sampler } from '@opentelemetry/sdk-trace-base';
@@ -22,6 +23,7 @@ type OpenTelemetryAdapterDeps = {
 	getActiveSpan: () => Span | undefined;
 	spanStatusCodeError: SpanStatusCode;
 	shutdownTimeout: number;
+	shutdownHttpClientInstrumentation?: () => void;
 };
 
 type CreateSamplerDeps = {
@@ -48,7 +50,7 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 
 	public static async create(config: OtelBackendRuntimeConfig): Promise<OpenTelemetryAdapter> {
 		const [
-			{ diag, DiagLogLevel, SpanStatusCode, trace },
+			{ diag, DiagLogLevel, SpanKind, SpanStatusCode, trace },
 			{ W3CTraceContextPropagator },
 			{ OTLPTraceExporter },
 			{ defaultResource, detectResources, envDetector, resourceFromAttributes },
@@ -100,12 +102,19 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 		});
 
 		// provider操作をdepsに閉じ込め、span wrapper本体をユニットテストしやすくする。
+		const tracer = provider.getTracer('misskey-backend');
+
 		return new OpenTelemetryAdapter({
-			tracer: provider.getTracer('misskey-backend'),
+			tracer,
 			provider,
 			getActiveSpan: () => trace.getActiveSpan(),
 			spanStatusCodeError: SpanStatusCode.ERROR,
 			shutdownTimeout: DEFAULT_SHUTDOWN_TIMEOUT,
+			shutdownHttpClientInstrumentation: installHttpClientInstrumentation({
+				tracer,
+				spanKindClient: SpanKind.CLIENT,
+				spanStatusCodeError: SpanStatusCode.ERROR,
+			}),
 		});
 	}
 
@@ -157,6 +166,7 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 	}
 
 	public async shutdown(): Promise<void> {
+		this.deps.shutdownHttpClientInstrumentation?.();
 		// BatchSpanProcessorのflushが詰まってもプロセス終了を妨げないよう、上限時間を設ける。
 		// タイムアウト側のtimerは、flushが先に終わった場合にイベントループを無駄に引き留めないようclearする。
 		let timer: NodeJS.Timeout | undefined;
