@@ -37,6 +37,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					/>
 				</div>
 			</div>
+
+			<button v-if="!isTouchUsing && currentIndex > 0" class="_button" :class="[$style.prevButton]" @click="onPrev"><div :class="$style.buttonIcon"><i class="ti ti-arrow-left"></i></div></button>
+			<button v-if="!isTouchUsing && currentIndex < images.length - 1" class="_button" :class="[$style.nextButton]" @click="onNext"><div :class="$style.buttonIcon"><i class="ti ti-arrow-right"></i></div></button>
 		</div>
 	</div>
 </Transition>
@@ -49,6 +52,7 @@ import type { Image } from './MkImageGallery.item.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
+import { isTouchUsing } from '@/utility/touch.js';
 
 const props = withDefaults(defineProps<{
 	defaultIndex?: number;
@@ -170,6 +174,8 @@ function onAfterLeave() {
 
 .main {
 	position: absolute;
+	width: 100%;
+	height: 100%;
 }
 
 .items {
@@ -192,5 +198,31 @@ function onAfterLeave() {
 	overflow: clip;
 	contain: strict;
 	flex-shrink: 0;
+}
+
+.prevButton,
+.nextButton {
+	position: absolute;
+	top: 0;
+	width: 70px;
+	height: 100%;
+	display: grid;
+	place-items: center;
+}
+.prevButton {
+	left: 0;
+}
+.nextButton {
+	right: 0;
+}
+
+.buttonIcon {
+	width: 45px;
+	height: 45px;
+	display: grid;
+	place-items: center;
+	background-color: rgba(0, 0, 0, 0.3);
+	border-radius: 100%;
+	color: #fff;
 }
 </style>
