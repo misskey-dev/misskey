@@ -32,6 +32,7 @@ type OtelBackendConfig = {
 	sampleRate?: number;
 	resourceAttributes?: Record<string, string>;
 	propagateTraceToRemote?: boolean;
+	jobTraceContextMode?: 'link' | 'parent';
 };
 
 /**

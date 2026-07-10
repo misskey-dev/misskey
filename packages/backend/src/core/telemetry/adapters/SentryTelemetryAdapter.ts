@@ -5,9 +5,11 @@
 
 import Logger from '@/logger.js';
 import { registerDiagLogger } from '@/core/telemetry/telemetry-diag.js';
+import { getQueueTraceContextMode, injectActiveTraceContext, startSpanWithQueueTraceContext } from '@/core/telemetry/queue-trace-context.js';
 import type * as SentryNode from '@sentry/node';
 import type { NodeOptions } from '@sentry/node';
 import type { OtelBackendRuntimeConfig, SentryBackendConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
+import type { QueueTraceContextCarrier, QueueTraceContextDeps } from '../queue-trace-context.js';
 
 // OpenTelemetryAdapterのDEFAULT_SHUTDOWN_TIMEOUTと揃え、Sentryのtransportが詰まってもプロセス終了を妨げないようにする。
 const DEFAULT_SHUTDOWN_TIMEOUT = 5000;
@@ -113,6 +115,7 @@ export function buildSentryOtlpInitOptions(options: BuildSentryOtlpInitOptions):
 export class SentryTelemetryAdapter implements TelemetryAdapter {
 	private constructor(
 		private readonly Sentry: typeof SentryNode,
+		private readonly queueTraceContext?: QueueTraceContextDeps,
 	) {
 	}
 
@@ -131,7 +134,7 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 	): Promise<SentryTelemetryAdapter> {
 		const Sentry = await import('@sentry/node');
 		const { nodeProfilingIntegration } = await import('@sentry/profiling-node');
-		const { diag, DiagLogLevel } = await import('@opentelemetry/api');
+		const { context, diag, DiagLogLevel, propagation, ROOT_CONTEXT, SpanStatusCode, trace } = await import('@opentelemetry/api');
 		const { BatchSpanProcessor } = await import('@opentelemetry/sdk-trace-base');
 		const { OTLPTraceExporter } = await import('@opentelemetry/exporter-trace-otlp-proto');
 
@@ -151,7 +154,15 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 			nodeProfilingIntegration,
 		}));
 
-		return new SentryTelemetryAdapter(Sentry);
+		return new SentryTelemetryAdapter(Sentry, {
+			tracer: trace.getTracer('misskey-backend'),
+			propagation,
+			trace,
+			getActiveContext: () => context.active(),
+			rootContext: ROOT_CONTEXT,
+			mode: getQueueTraceContextMode(otelConfig.jobTraceContextMode),
+			spanStatusCodeError: SpanStatusCode.ERROR,
+		});
 	}
 
 	public captureMessage(message: string, opts: TelemetryCaptureMessageOptions): void {
@@ -164,6 +175,17 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 
 	public startSpan<T>(name: string, fn: () => T): T {
 		return this.Sentry.startSpan({ name }, fn);
+	}
+
+	public injectTraceContext(carrier: QueueTraceContextCarrier): void {
+		if (this.queueTraceContext == null) return;
+		injectActiveTraceContext(this.queueTraceContext, carrier);
+	}
+
+	public startSpanWithTraceContext<T>(name: string, jobData: object, fn: () => T): T {
+		if (this.queueTraceContext == null) return this.startSpan(name, fn);
+
+		return startSpanWithQueueTraceContext(this.queueTraceContext, name, jobData, fn, () => this.startSpan(name, fn));
 	}
 
 	public async shutdown(): Promise<void> {

@@ -7,6 +7,7 @@ import type { Config } from '@/config.js';
 import { OpenTelemetryAdapter } from './adapters/OpenTelemetryAdapter.js';
 import { SentryTelemetryAdapter } from './adapters/SentryTelemetryAdapter.js';
 import type { OtelBackendRuntimeConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './adapters/TelemetryAdapter.js';
+import type { QueueTraceContextCarrier } from './queue-trace-context.js';
 
 /**
  * NestのDIコンテナが構築される前(boot処理内)で初期化する必要があるため、
@@ -52,6 +53,16 @@ export function startSpan<T>(name: string, fn: () => T): T {
 		fn,
 	);
 	return wrapped();
+}
+
+export function injectTraceContext(carrier: QueueTraceContextCarrier): void {
+	// OTel の provider は現在1つだけなので、carrier へ同一の header を重ね書きしないよう最初の対応 adapter だけを使う。
+	adapters.find(adapter => adapter.injectTraceContext != null)?.injectTraceContext?.(carrier);
+}
+
+export function startSpanWithTraceContext<T>(name: string, jobData: object, fn: () => T): T {
+	const adapter = adapters.find(adapter => adapter.startSpanWithTraceContext != null);
+	return adapter?.startSpanWithTraceContext?.(name, jobData, fn) ?? startSpan(name, fn);
 }
 
 export async function shutdownTelemetry(): Promise<void> {
