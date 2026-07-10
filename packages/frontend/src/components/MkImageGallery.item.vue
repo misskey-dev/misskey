@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<img
 				v-if="!originalImageLoaded || !thumbnailImageLoaded"
 				:class="[$style.image, $style.thumbnail]"
-				:src="image.thumbnailUrl"
+				:src="image.thumbnailUrl ?? image.url"
 				:width="image.width"
 				:height="image.height"
 				:style="{ width: `${imageRenderingSize.width}px`, height: `${imageRenderingSize.height}px` }"
@@ -66,7 +66,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
-import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { makeDoubleTapDetector } from '@/utility/double-tap.js';
 import { calculateSourceTransform } from '@/components/MkImageGallery.utils.js';
@@ -76,12 +75,12 @@ import { isTouchUsing } from '@/utility/touch.js';
 export type Image = {
 	id: string;
 	url: string;
-	thumbnailUrl: string;
+	thumbnailUrl: string | null;
 	width: number;
 	height: number;
-	filename?: string;
-	comment?: string;
-	sourceElement?: HTMLElement;
+	filename?: string | null;
+	comment?: string | null;
+	sourceElement?: HTMLElement | null;
 };
 
 const props = withDefaults(defineProps<{
@@ -108,6 +107,7 @@ const enableTransition = ref(false);
 const infoShowing = ref(false);
 
 onMounted(() => {
+	if (rootEl.value == null) return;
 	rootEl.value.offsetHeight; // reflow
 	infoShowing.value = true;
 });
@@ -163,6 +163,8 @@ if (props.image.sourceElement != null && props.activated) {
 const isZooming = ref(false);
 
 function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
+	if (mainEl.value == null) return;
+
 	const newScale = transform.value.scale * factor;
 	isZooming.value = true;
 
@@ -183,6 +185,8 @@ function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
 }
 
 function resetToNeutral() {
+	if (rootEl.value == null) return;
+
 	isZooming.value = false;
 
 	enableTransition.value = true;
@@ -194,6 +198,8 @@ function resetToNeutral() {
 
 function closeThis() {
 	emit('close');
+
+	if (rootEl.value == null) return;
 
 	infoShowing.value = false;
 
@@ -254,6 +260,7 @@ const pointerEventCache = new Map<number, PointerEvent>();
 let pointerVec = { x: 0, y: 0 };
 
 function onPointerdown(ev: PointerEvent) {
+	if (mainEl.value == null) return;
 	pointerEventCache.set(ev.pointerId, ev);
 	mainEl.value.setPointerCapture(ev.pointerId);
 
@@ -344,6 +351,7 @@ function onPointermove(ev: PointerEvent) {
 }
 
 function onPointerup(ev: PointerEvent) {
+	if (mainEl.value == null) return;
 	pointerEventCache.delete(ev.pointerId);
 	mainEl.value.releasePointerCapture(ev.pointerId);
 	prevTwoTouchPointsDistance = 0;
@@ -453,7 +461,10 @@ onBeforeUnmount(() => {
 //#endregion
 
 watch(thumbnailImageLoaded, () => {
-	if (props.image.sourceElement != null && props.activated) {
+	if (rootEl.value == null) return;
+
+	const sourceElement = props.image.sourceElement;
+	if (sourceElement != null && props.activated) {
 		enableTransition.value = true;
 		rootEl.value.offsetHeight; // reflow
 		transform.value.x = 0;
@@ -461,7 +472,7 @@ watch(thumbnailImageLoaded, () => {
 		transform.value.scale = 1;
 
 		nextTick(() => {
-			props.image.sourceElement.style.visibility = 'hidden';
+			sourceElement.style.visibility = 'hidden';
 		});
 	}
 }, { once: true });

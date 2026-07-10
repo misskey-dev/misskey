@@ -96,6 +96,12 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 };
 
 async function openGallery(id: string) {
+	const getElementByMarker = (marker: string) => {
+		if (gallery.value == null) return null;
+		const found = gallery.value.querySelector(`[data-marker="${marker}"]`) as HTMLElement | null;
+		if (found == null) return null;
+		return markRaw(found);
+	};
 	const images = props.mediaList.filter(media => previewable(media)).map(media => ({
 		id: media.id,
 		url: media.url,
@@ -104,7 +110,7 @@ async function openGallery(id: string) {
 		height: media.properties.height ?? 0,
 		filename: media.name,
 		comment: media.comment,
-		sourceElement: markRaw(gallery.value?.querySelector(`[data-marker="${markerId}:${media.id}"]`)),
+		sourceElement: getElementByMarker(`${markerId}:${media.id}`),
 	}));
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageGallery.vue').then(x => x.default), {
 		defaultIndex: images.findIndex(image => image.id === id),

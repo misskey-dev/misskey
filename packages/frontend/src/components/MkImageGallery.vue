@@ -71,7 +71,10 @@ watch(currentIndex, (newIndex) => {
 }, { immediate: true });
 watch(currentIndex, (newIndex) => {
 	for (let i = 0; i < props.images.length; i++) {
-		props.images[i].sourceElement.style.visibility = i === newIndex ? 'hidden' : '';
+		const image = props.images[i];
+		if (image.sourceElement != null) {
+			image.sourceElement.style.visibility = i === newIndex ? 'hidden' : '';
+		}
 	}
 }, { immediate: false });
 
