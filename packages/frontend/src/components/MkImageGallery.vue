@@ -143,22 +143,15 @@ function onAfterLeave() {
 </script>
 
 <style lang="scss" module>
-.transition_root_enterActive {
-	> .bg {
-		transition: opacity v-bind("openAnimDuration + 'ms'"); // 子Itemコンポーネントがフェードイン/アウトするdurationと合わせる
-	}
-}
+.transition_root_enterActive,
 .transition_root_leaveActive {
 	> .bg {
 		transition: opacity v-bind("closeAnimDuration + 'ms'"); // 子Itemコンポーネントがフェードイン/アウトするdurationと合わせる
 	}
 }
-.transition_root_enterFrom  {
-	> .bg {
-		opacity: 0;
-	}
-}
+.transition_root_enterFrom,
 .transition_root_leaveTo {
+	pointer-events: none;
 	> .bg {
 		opacity: 0;
 	}
@@ -177,7 +170,6 @@ function onAfterLeave() {
 
 .main {
 	position: absolute;
-
 }
 
 .items {
