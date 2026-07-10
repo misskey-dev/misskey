@@ -3,6 +3,7 @@ import { version as summalyVersion } from '@misskey-dev/summaly';
 import type { Plugin, ExternalOption } from 'rolldown';
 import { execa, execaNode } from 'execa';
 import type { ResultPromise } from 'execa';
+import fkill from 'fkill';
 import esmShim from '@rollup/plugin-esm-shim';
 
 /**
@@ -10,6 +11,7 @@ import esmShim from '@rollup/plugin-esm-shim';
  */
 function backendDevServerPlugin(): Plugin {
 	let backendProcess: ResultPromise | null = null;
+	let backendShutdownPromise: Promise<void> | null = null;
 
 	async function runBuildAssets() {
 		await execa('pnpm', ['run', 'build-assets'], {
@@ -20,12 +22,31 @@ function backendDevServerPlugin(): Plugin {
 	}
 
 	async function killBackendProcess() {
-		if (backendProcess) {
-			backendProcess.catch(() => {}); // backendProcess.kill()によって発生する例外を無視するためにcatch()を呼び出す
-			backendProcess.kill();
-			await new Promise(resolve => backendProcess!.on('exit', resolve));
-			backendProcess = null;
-		}
+		if (backendShutdownPromise) return backendShutdownPromise;
+		if (!backendProcess) return;
+
+		const processToKill = backendProcess;
+		backendProcess = null;
+		processToKill.catch(() => {}); // プロセスの終了によって発生する例外を無視するためにcatch()を呼び出す
+
+		backendShutdownPromise = (async () => {
+			if (process.platform === 'win32' && processToKill.pid != null) {
+				await fkill(processToKill.pid, {
+					force: true,
+					tree: true,
+					silent: true,
+					waitForExit: 5000,
+				});
+			} else {
+				processToKill.kill();
+			}
+
+			await processToKill.catch(() => {});
+		})().finally(() => {
+			backendShutdownPromise = null;
+		});
+
+		return backendShutdownPromise;
 	}
 
 	return {
@@ -48,6 +69,9 @@ function backendDevServerPlugin(): Plugin {
 				await killBackendProcess();
 				await runBuildAssets();
 			}
+		},
+		async closeWatcher() {
+			await killBackendProcess();
 		},
 	};
 }
