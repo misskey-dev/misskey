@@ -8,10 +8,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="rootEl"
 	:class="$style.root"
 	@pointerdown="onPointerdown"
-	@pointermove="onPointermove"
+	@pointermove.passive="onPointermove"
 	@pointerup="onPointerup"
 	@touchstart="onTouchstart"
-	@touchmove="onTouchmove"
+	@touchmove.passive="onTouchmove"
 	@wheel="onWheel"
 >
 	<div :style="{ transform: `translate3d(${translation.x}px, ${translation.y}px, 0)` }">
@@ -247,10 +247,12 @@ function onPointerdown(ev: PointerEvent) {
 }
 
 let prevTwoTouchPointsDistance = 0;
+let lastMoveTimeStamp = 0;
 
 function onPointermove(ev: PointerEvent) {
-	ev.preventDefault();
-	ev.stopPropagation();
+	const currentTime = performance.now();
+	const dt = currentTime - lastMoveTimeStamp;
+	lastMoveTimeStamp = currentTime;
 
 	if (pointerEventCache.size === 0) {
 		return;
@@ -301,7 +303,9 @@ function onPointermove(ev: PointerEvent) {
 			}
 		}
 
-		pointerVec = { x: deltaX, y: deltaY }; // TODO: おそらくこの計算方法だと高リフレッシュレートで実行される環境ほど同じ動かし方でもベクトルは小さくなってしまうと思われるので良い感じにする
+		if (dt > 0) {
+			pointerVec = { x: deltaX / dt, y: deltaY / dt };
+		}
 
 		lastX = ev.clientX;
 		lastY = ev.clientY;
@@ -319,8 +323,8 @@ function onPointerup(ev: PointerEvent) {
 		currentPointerId = null;
 
 		if (isVerticalSwiping) {
-			const shouldCloseByUpwardSwipe = verticalSwipeDelta < -200 || (verticalSwipeDelta < 0 && pointerVec.y < -5); // 上の方で離された、または上に向かって強めに弾かれた
-			const shouldCloseByDownwardSwipe = verticalSwipeDelta > 200 || (verticalSwipeDelta > 0 && pointerVec.y > 5); // 下の方で離された、または下に向かって強めに弾かれた
+			const shouldCloseByUpwardSwipe = verticalSwipeDelta < -200 || (verticalSwipeDelta < 0 && pointerVec.y < -3); // 上の方で離された、または上に向かって強めに弾かれた
+			const shouldCloseByDownwardSwipe = verticalSwipeDelta > 200 || (verticalSwipeDelta > 0 && pointerVec.y > 3); // 下の方で離された、または下に向かって強めに弾かれた
 			if (shouldCloseByUpwardSwipe || shouldCloseByDownwardSwipe) {
 				emit('close');
 				//beginAnimation({
@@ -367,8 +371,8 @@ function onPointerup(ev: PointerEvent) {
 
 			resetToNeutral();
 		} else if (isHorizontalSwiping) {
-			const shouldNext = horizontalSwipeDelta < -150 || (horizontalSwipeDelta < 0 && pointerVec.x < -3); // 左の方で離された、または左に向かって強めに弾かれた
-			const shouldPrev = horizontalSwipeDelta > 150 || (horizontalSwipeDelta > 0 && pointerVec.x > 3); // 右の方で離された、または右に向かって強めに弾かれた
+			const shouldNext = horizontalSwipeDelta < -150 || (horizontalSwipeDelta < 0 && pointerVec.x < -1); // 左の方で離された、または左に向かって強めに弾かれた
+			const shouldPrev = horizontalSwipeDelta > 150 || (horizontalSwipeDelta > 0 && pointerVec.x > 1); // 右の方で離された、または右に向かって強めに弾かれた
 			if (shouldNext) {
 				emit('next');
 			} else if (shouldPrev) {
@@ -405,8 +409,6 @@ function onTouchstart(ev: TouchEvent) {
 }
 
 function onTouchmove(ev: TouchEvent) {
-	ev.preventDefault();
-	ev.stopPropagation();
 	doubleTapDetector.onTouchmove(ev);
 }
 
@@ -414,6 +416,8 @@ let rafHandle: ReturnType<typeof window['requestAnimationFrame']> | null = null;
 let latestInertiaTimeStamp = 0;
 
 //#region inertia
+const inertiaFactor = 0.9;
+
 function updateInertia(timeStamp: number) {
 	rafHandle = window.requestAnimationFrame(updateInertia);
 	const timeDelta = timeStamp - latestInertiaTimeStamp;
@@ -421,11 +425,11 @@ function updateInertia(timeStamp: number) {
 
 	if (isDragging) return;
 	if (!isZooming.value) return;
-	if (Math.abs(pointerVec.x) < 0.5 && Math.abs(pointerVec.y) < 0.5) return;
+	if (Math.abs(pointerVec.x) < 0.01 && Math.abs(pointerVec.y) < 0.01) return;
 	translation.value.x += pointerVec.x;
 	translation.value.y += pointerVec.y;
-	pointerVec.x *= 0.9 ** (timeDelta / 16.67);
-	pointerVec.y *= 0.9 ** (timeDelta / 16.67);
+	pointerVec.x *= inertiaFactor ** (timeDelta / 16.67);
+	pointerVec.y *= inertiaFactor ** (timeDelta / 16.67);
 }
 
 onMounted(() => {
