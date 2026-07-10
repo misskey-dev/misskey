@@ -95,7 +95,12 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
 };
 
-async function openGallery(id: string) {
+async function openGallery(id?: string) {
+	if (id == null) {
+		const firstImage = props.mediaList.find(media => previewable(media));
+		if (firstImage == null) return;
+		id = firstImage.id;
+	}
 	const getElementByMarker = (marker: string) => {
 		if (gallery.value == null) return null;
 		const found = gallery.value.querySelector(`[data-marker="${marker}"]`) as HTMLElement | null;
