@@ -59,6 +59,8 @@ export type Image = {
 const props = withDefaults(defineProps<{
 	image: Image;
 	activated: boolean;
+	openAnimDuration: number;
+	closeAnimDuration: number;
 }>(), {
 });
 
@@ -78,22 +80,17 @@ const originalImageLoaded = ref(false);
 const padding = 30;
 const ANIMATION_DURATION = 200;
 
+// maxからはみ出す場合は縮小、maxに満たない場合は拡大する(contain)
 function calcNeutralSize(image: Image) {
 	const maxWidth = window.innerWidth - padding * 2;
 	const maxHeight = window.innerHeight - padding * 2;
 
-	let width = image.width;
-	let height = image.height;
+	const widthRatio = maxWidth / image.width;
+	const heightRatio = maxHeight / image.height;
+	const ratio = widthRatio < heightRatio ? widthRatio : heightRatio;
 
-	if (width > maxWidth) {
-		height = height * (maxWidth / width);
-		width = maxWidth;
-	}
-
-	if (height > maxHeight) {
-		width = width * (maxHeight / height);
-		height = maxHeight;
-	}
+	const width = image.width * ratio;
+	const height = image.height * ratio;
 
 	return { width, height };
 }
@@ -326,18 +323,41 @@ function onPointerup(ev: PointerEvent) {
 			const shouldCloseByDownwardSwipe = verticalSwipeDelta > 200 || (verticalSwipeDelta > 0 && pointerVec.y > 5); // 下の方で離された、または下に向かって強めに弾かれた
 			if (shouldCloseByUpwardSwipe || shouldCloseByDownwardSwipe) {
 				emit('close');
+				//beginAnimation({
+				//	from: {
+				//		x: translation.value.x,
+				//		y: translation.value.y,
+				//	},
+				//	to: {
+				//		x: translation.value.x,
+				//		y: translation.value.y + (shouldCloseByUpwardSwipe ? -window.innerHeight : window.innerHeight),
+				//	},
+				//	duration: 200,
+				//	easing: easing_easeInOutQuad,
+				//	apply: (state) => {
+				//		translation.value.x = state.x;
+				//		translation.value.y = state.y;
+				//	},
+				//});
+				const sourceRect = getSizeAndTranslationForSourceElement();
 				beginAnimation({
 					from: {
+						width: size.value.width,
+						height: size.value.height,
 						x: translation.value.x,
 						y: translation.value.y,
 					},
 					to: {
-						x: translation.value.x,
-						y: translation.value.y + (shouldCloseByUpwardSwipe ? -window.innerHeight : window.innerHeight),
+						width: sourceRect.width,
+						height: sourceRect.height,
+						x: sourceRect.x,
+						y: sourceRect.y,
 					},
-					duration: 200,
+					duration: props.closeAnimDuration,
 					easing: easing_easeInOutQuad,
 					apply: (state) => {
+						size.value.width = state.width;
+						size.value.height = state.height;
 						translation.value.x = state.x;
 						translation.value.y = state.y;
 					},
@@ -417,40 +437,52 @@ onBeforeUnmount(() => {
 });
 //#endregion
 
-onMounted(() => {
-	// 画像の初期位置・サイズをsourceElementの位置に合わせてdefaultの位置にアニメーションする
-	if (props.image.sourceElement != null && props.activated) {
-		const elementStyles = window.getComputedStyle(props.image.sourceElement);
-		const fit = elementStyles.objectFit;
+function getSizeAndTranslationForSourceElement() {
+	const elementStyles = window.getComputedStyle(props.image.sourceElement);
+	const fit = elementStyles.objectFit;
 
-		const sourceRect = props.image.sourceElement.getBoundingClientRect();
-		if (fit === 'contain') {
-			const sourceAspectRatio = sourceRect.width / sourceRect.height;
-			const imageAspectRatio = props.image.width / props.image.height;
+	const sourceRect = props.image.sourceElement.getBoundingClientRect();
+	if (fit === 'contain') {
+		const sourceAspectRatio = sourceRect.width / sourceRect.height;
+		const imageAspectRatio = props.image.width / props.image.height;
 
-			if (sourceAspectRatio > imageAspectRatio) {
-				// 横長の画像
-				const newWidth = sourceRect.height * imageAspectRatio;
-				const newHeight = sourceRect.height;
-				size.value.width = newWidth;
-				size.value.height = newHeight;
-				translation.value.x = sourceRect.left + (sourceRect.width - newWidth) / 2;
-				translation.value.y = sourceRect.top;
-			} else {
-				// 縦長の画像
-				const newWidth = sourceRect.width;
-				const newHeight = sourceRect.width / imageAspectRatio;
-				size.value.width = newWidth;
-				size.value.height = newHeight;
-				translation.value.x = sourceRect.left;
-				translation.value.y = sourceRect.top + (sourceRect.height - newHeight) / 2;
-			}
-		} else {
-			size.value.width = sourceRect.width;
-			size.value.height = sourceRect.height;
-			translation.value.x = sourceRect.left;
-			translation.value.y = sourceRect.top;
+		if (sourceAspectRatio > imageAspectRatio) { // 横長
+			const newWidth = sourceRect.height * imageAspectRatio;
+			const newHeight = sourceRect.height;
+			return {
+				width: newWidth,
+				height: newHeight,
+				x: sourceRect.left + (sourceRect.width - newWidth) / 2,
+				y: sourceRect.top,
+			};
+		} else { // 縦長
+			const newWidth = sourceRect.width;
+			const newHeight = sourceRect.width / imageAspectRatio;
+			return {
+				width: newWidth,
+				height: newHeight,
+				x: sourceRect.left,
+				y: sourceRect.top + (sourceRect.height - newHeight) / 2,
+			};
 		}
+	} else {
+		return {
+			width: sourceRect.width,
+			height: sourceRect.height,
+			x: sourceRect.left,
+			y: sourceRect.top,
+		};
+	}
+}
+
+onMounted(() => {
+	// 画像の初期位置・サイズをsourceElementの位置に合わせてneutralの位置にアニメーションする
+	if (props.image.sourceElement != null && props.activated) {
+		const sourceRect = getSizeAndTranslationForSourceElement();
+		size.value.width = sourceRect.width;
+		size.value.height = sourceRect.height;
+		translation.value.x = sourceRect.x;
+		translation.value.y = sourceRect.y;
 
 		beginAnimation({
 			from: {
@@ -465,7 +497,7 @@ onMounted(() => {
 				x: neutralTranslation.x,
 				y: neutralTranslation.y,
 			},
-			duration: 300,
+			duration: props.openAnimDuration,
 			easing: easing_easeInOutQuad,
 			apply: (state) => {
 				size.value.width = state.width;

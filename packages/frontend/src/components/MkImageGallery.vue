@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:leaveActiveClass="prefer.s.animation ? $style.transition_root_leaveActive : ''"
 	:enterFromClass="prefer.s.animation ? $style.transition_root_enterFrom : ''"
 	:leaveToClass="prefer.s.animation ? $style.transition_root_leaveTo : ''"
-	:duration="300"
+	:duration="{ enter: prefer.s.animation ? openAnimDuration : 0, leave: prefer.s.animation ? closeAnimDuration : 0 }"
 	appear
 	@afterLeave="emit('closed')"
 >
@@ -23,6 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<XItem
 						:image="image"
 						:activated="activatedIndexes.has(i)"
+						:openAnimDuration="openAnimDuration"
+						:closeAnimDuration="closeAnimDuration"
 						@close="onItemClose"
 						@horizontalSwipe="onHorizontalSwipe"
 						@prev="onPrev"
@@ -61,6 +63,8 @@ watch(currentIndex, (newIndex) => {
 	activatedIndexes.value.add(newIndex);
 }, { immediate: true });
 
+const openAnimDuration = 200;
+const closeAnimDuration = 200;
 const zIndex = os.claimZIndex('high');
 const showing = ref(true);
 const screenWidth = ref(window.innerWidth);
@@ -116,11 +120,13 @@ function onItemClose() {
 <style lang="scss" module>
 .transition_root_enterActive {
 	> .bg {
-		transition: opacity 300ms; // 子Itemコンポーネントがフェードイン/アウトするdurationと合わせる
+		transition: opacity v-bind("openAnimDuration + 'ms'"); // 子Itemコンポーネントがフェードイン/アウトするdurationと合わせる
 	}
 }
 .transition_root_leaveActive {
-	transition: opacity 300ms; // 子Itemコンポーネントがフェードイン/アウトするdurationと合わせる
+	> .bg {
+		transition: opacity v-bind("closeAnimDuration + 'ms'"); // 子Itemコンポーネントがフェードイン/アウトするdurationと合わせる
+	}
 }
 .transition_root_enterFrom  {
 	> .bg {
@@ -128,7 +134,9 @@ function onItemClose() {
 	}
 }
 .transition_root_leaveTo {
-	opacity: 0;
+	> .bg {
+		opacity: 0;
+	}
 }
 
 .root {
