@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:key="`video:${media.id}`"
 					:class="$style.media"
 					:video="media"
-					@mediaClick="openGallery(media.id)"
+					@mediaClick="onMediaClick(media)"
 				/>
 				<XImage
 					v-else-if="media.type.startsWith('image')"
@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:class="$style.media"
 					:image="media"
 					:raw="raw"
-					@mediaClick="openGallery(media.id)"
+					@mediaClick="onMediaClick(media)"
 				/>
 			</template>
 		</div>
@@ -109,6 +109,14 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
 	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
 };
+
+function onMediaClick(file: Misskey.entities.DriveFile) {
+	if (prefer.s.imageNewTab) {
+		window.open(file.url, '_blank');
+		return;
+	}
+	openGallery(file.id);
+}
 
 async function openGallery(id?: string) {
 	if (id == null) {
