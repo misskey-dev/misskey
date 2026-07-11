@@ -122,7 +122,7 @@ function onContextmenu(ev: PointerEvent) {
 	font: inherit;
 	color: inherit;
 	cursor: pointer;
-	padding: 60px 0;
+	padding: 12px 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
