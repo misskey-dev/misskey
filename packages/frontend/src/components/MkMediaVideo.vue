@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="playerEl"
 	tabindex="0"
 	:class="[
-		$style.videoContainer,
+		$style.root,
 		(video.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive,
 	]"
 	@contextmenu.stop
@@ -70,13 +70,19 @@ async function reveal() {
 </script>
 
 <style lang="scss" module>
-.videoContainer {
+.root {
 	container-type: inline-size;
 	position: relative;
 	overflow: clip;
 
 	&:focus-visible {
 		outline: none;
+	}
+
+	&:hover {
+		.playIcon {
+			scale: 1.2;
+		}
 	}
 }
 
@@ -186,5 +192,7 @@ async function reveal() {
 	font-size: 120%;
 	background: var(--MI_THEME-accent);
 	color: var(--MI_THEME-fgOnAccent);
+	scale: 1;
+	transition: scale 100ms ease;
 }
 </style>
