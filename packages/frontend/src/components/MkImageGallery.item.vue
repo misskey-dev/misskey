@@ -109,11 +109,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="[$style.header, { [$style.infoShowing]: infoShowing && !isZooming }]">
 		<div :class="$style.title" class="_acrylic">
-			<button class="_button" :class="$style.titleButton"><i class="ti ti-dots" @click="openMenu"></i></button>
+			<button class="_button" :class="$style.titleButton" @click="openMenu"><i class="ti ti-dots"></i></button>
 			<div :class="$style.titleText">
 				<MkCondensedLine :minScale="0.5">{{ content.filename }}</MkCondensedLine>
 			</div>
-			<button class="_button" :class="$style.titleButton"><i class="ti ti-x" @click="closeThis"></i></button>
+			<button class="_button" :class="$style.titleButton" @click="closeThis"><i class="ti ti-x"></i></button>
 		</div>
 	</div>
 
