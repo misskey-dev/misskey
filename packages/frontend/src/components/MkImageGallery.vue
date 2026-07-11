@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@afterLeave="onAfterLeave"
 >
 	<!-- v-ifを使うとfalseになったとき(transitionが行われている間)子コンポーネントの更新が停止するのか子コンポーネントがアニメーションされなくなる -->
-	<div v-show="showing" ref="rootEl" :class="$style.root" :style="{ zIndex }">
+	<div v-show="showing" ref="rootEl" v-hotkey.global="keymap" :class="$style.root" :style="{ zIndex }">
 		<div :class="[$style.bg]" class="_modalBg"></div>
 		<div ref="mainEl" :class="$style.main">
 			<div
@@ -49,6 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import XItem from './MkImageGallery.item.vue';
 import type { Content } from './MkImageGallery.item.vue';
+import type { Keymap } from '@/utility/hotkey.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -153,6 +154,21 @@ function onAfterLeave() {
 	}
 	emit('closed');
 }
+
+const keymap = {
+	'esc': {
+		allowRepeat: true,
+		callback: () => onItemClose(),
+	},
+	'arrowleft': {
+		allowRepeat: true,
+		callback: () => onPrev(),
+	},
+	'arrowright': {
+		allowRepeat: true,
+		callback: () => onNext(),
+	},
+} as const satisfies Keymap;
 </script>
 
 <style lang="scss" module>
