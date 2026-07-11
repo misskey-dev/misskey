@@ -354,6 +354,30 @@ id: 'aidx'
 #  #headers:
 #  #  authorization: 'Bearer xxxxx'
 #  #sampleRate: 1.0
+#  # Record PostgreSQL query spans. Disabled by default to avoid instrumentation
+#  # overhead when database-level diagnostics are not needed.
+#  #capturePgSpans: false
+#  # Include raw SQL text in PostgreSQL spans. Requires capturePgSpans and is
+#  # disabled by default because non-parameterized queries can expose values to
+#  # the OTLP Collector.
+#  #capturePgStatement: false
+#  # Include PostgreSQL connection-pool spans with an existing parent span.
+#  # Requires capturePgSpans and is disabled by default to avoid noisy spans
+#  # from connection churn.
+#  #capturePgConnectionSpans: false
+#  # Record Redis command spans. Disabled by default because subscribing to the
+#  # ioredis diagnostics channel adds work to every Redis command, including
+#  # commands without a parent span. Enable for development diagnostics or when
+#  # the added overhead is acceptable in production.
+#  #captureRedisCommandSpans: false
+#  # Include Redis startup/reconnect spans. Disabled by default to avoid noisy
+#  # connection churn; these spans are recorded even without an HTTP or job
+#  # parent span.
+#  #captureRedisConnectionSpans: false
+#  # Record Redis commands without an HTTP or job parent span. Disabled by
+#  # default because queue polling and background work can produce many root
+#  # traces; only applies when captureRedisCommandSpans is enabled.
+#  #captureRedisRootSpans: false
 #  #resourceAttributes:
 #  #  deployment.environment: 'production'
 #  #propagateTraceToRemote: false

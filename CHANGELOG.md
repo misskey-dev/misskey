@@ -38,6 +38,7 @@
 
 ### Server
 - Enhance: OpenTelemetryで全受信HTTPリクエストを自動計装
+- Enhance: OpenTelemetry を単独で利用する際、PostgreSQL query と Redis command の計装を opt-in で利用できるように
 - Enhance: センシティブメディアの判定を外部サービス ([sensitive-detector](https://github.com/misskey-dev/sensitive-detector)) に分離し、`nsfwjs` / `@tensorflow/tfjs(-node)` の同梱と NSFW 判定モデルを廃止 (#16804)
 - Enhance: バックエンドの `otelForBackend` 設定で OpenTelemetry Traces を OTLP Collector に送信できるように
 - Enhance: OpenTelemetry を単独で利用する際、外向き HTTP リクエストを自動計装するように

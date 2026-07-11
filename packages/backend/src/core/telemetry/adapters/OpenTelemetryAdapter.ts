@@ -8,6 +8,8 @@ import cluster from 'node:cluster';
 import { envOption } from '@/env.js';
 import { registerDiagLogger } from '@/core/telemetry/telemetry-diag.js';
 import { installHttpClientInstrumentation } from '@/core/telemetry/http-client-instrumentation.js';
+import { installDatabaseInstrumentation } from '@/core/telemetry/database-instrumentation.js';
+import { installRedisInstrumentation } from '@/core/telemetry/redis-instrumentation.js';
 import { executeSpan, getQueueTraceContextMode, injectActiveTraceContext, recordSpanError, startSpanWithQueueTraceContext } from '@/core/telemetry/queue-trace-context.js';
 import type { Span, SpanStatusCode, Tracer } from '@opentelemetry/api';
 import type { Resource, ResourceDetector } from '@opentelemetry/resources';
@@ -26,6 +28,8 @@ type OpenTelemetryAdapterDeps = {
 	spanStatusCodeError: SpanStatusCode;
 	shutdownTimeout: number;
 	shutdownHttpClientInstrumentation?: () => void;
+	shutdownDatabaseInstrumentation?: () => void;
+	shutdownRedisInstrumentation?: () => void;
 	queueTraceContext?: QueueTraceContextDeps;
 };
 
@@ -118,6 +122,17 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 				spanKindClient: SpanKind.CLIENT,
 				spanStatusCodeError: SpanStatusCode.ERROR,
 			}),
+			// pg のrequire hookとioredis diagnostics channelは、Nest moduleの動的importより前に有効化する。
+			shutdownDatabaseInstrumentation: await installDatabaseInstrumentation(provider, {
+				capturePgSpans: config.capturePgSpans === true,
+				capturePgStatement: config.capturePgStatement === true,
+				capturePgConnectionSpans: config.capturePgConnectionSpans === true,
+			}),
+			shutdownRedisInstrumentation: installRedisInstrumentation(tracer, SpanKind.CLIENT, SpanStatusCode.ERROR, {
+				captureConnectionSpans: config.captureRedisConnectionSpans === true,
+				captureCommandSpans: config.captureRedisCommandSpans === true,
+				requireParentSpan: config.captureRedisRootSpans !== true,
+			}),
 			queueTraceContext: {
 				tracer,
 				propagation,
@@ -168,6 +183,8 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 
 	public async shutdown(): Promise<void> {
 		this.deps.shutdownHttpClientInstrumentation?.();
+		this.deps.shutdownDatabaseInstrumentation?.();
+		this.deps.shutdownRedisInstrumentation?.();
 		// BatchSpanProcessorのflushが詰まってもプロセス終了を妨げないよう、上限時間を設ける。
 		// タイムアウト側のtimerは、flushが先に終わった場合にイベントループを無駄に引き留めないようclearする。
 		let timer: NodeJS.Timeout | undefined;
