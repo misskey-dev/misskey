@@ -30,16 +30,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<div :class="[$style.contentWrapper, { [$style.hideForFallback]: hideForFallback }]">
 				<div
-					v-if="content.file != null && hide"
+					v-if="hide"
 					:class="[$style.hidden, {
-						[$style.sensitive]: content.file.isSensitive && prefer.s.highlightSensitiveMedia,
+						[$style.sensitive]: content.file?.isSensitive && prefer.s.highlightSensitiveMedia,
 					}]"
 					:style="hiddenStyle"
 					@click.stop="onHiddenClick"
 				>
 					<div :class="$style.hiddenWrapper">
 						<MkBlurhash
-							v-if="content.type === 'image'"
+							v-if="content.type === 'image' && content.file?.blurhash != null"
 							:class="$style.hiddenBlurhash"
 							:blurhash="content.file.blurhash ?? null"
 							:height="content?.height ?? undefined"
@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div v-else :class="$style.hiddenPlaceholder"></div>
 						<div :class="[$style.hiddenText, { [$style.withBlur]: content.type === 'video' && content.thumbnailUrl != null }]">
 							<div :class="$style.hiddenTextWrapper">
-								<b v-if="content.file.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</b>
+								<b v-if="content.file?.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</b>
 								<b v-else style="display: block;"><i class="ti" :class="content.type === 'image' ? 'ti-photo' : 'ti-movie'"></i> {{ content.type === 'image' ? i18n.ts.image : i18n.ts.video }}</b>
 								<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 							</div>
@@ -74,6 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							v-if="content.type === 'image'"
 							:class="$style.content"
 							:src="content.url"
+							:alt="content.file?.comment ?? undefined"
 							draggable="false"
 							@load="originalContentLoaded = true"
 						>
@@ -82,6 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							ref="videoEl"
 							:class="$style.content"
 							:src="content.url"
+							:alt="content.file?.comment ?? undefined"
 							draggable="false"
 							:controls="prefer.s.useNativeUiForVideoAudioPlayer"
 							loop
@@ -104,7 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="[$style.header, { [$style.infoShowing]: infoShowing && !isZooming }]">
 		<div :class="$style.title" class="_acrylic">
-			<button v-if="content.file != null" class="_button" :class="$style.titleButton"><i class="ti ti-dots" @click="openMenu"></i></button>
+			<button class="_button" :class="$style.titleButton"><i class="ti ti-dots" @click="openMenu"></i></button>
 			<div style="flex: 1; min-width: 0;">
 				<MkCondensedLine :minScale="0.5">{{ content.filename }}</MkCondensedLine>
 			</div>
@@ -173,9 +175,10 @@ export function calculateSourceTransform({
 </script>
 
 <script lang="ts" setup>
-import { computed, nextTick, ref, useTemplateRef, watch, provide } from 'vue';
+import { computed, nextTick, ref, useTemplateRef, markRaw, watch, provide } from 'vue';
 import { DI } from '@/di.js';
 import MkVideoContol from './MkVideoContol.vue';
+import XFileInfo from './MkImageGallery.item.fileinfo.vue';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
@@ -184,6 +187,7 @@ import { makeDoubleTapDetector } from '@/utility/double-tap.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { isTouchUsing } from '@/utility/touch.js';
 import { getFileMenu } from '@/utility/get-file-menu.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const props = withDefaults(defineProps<{
 	content: Content;
@@ -217,7 +221,7 @@ const isVideoPlaying = computed(() => videoControl.value?.isActuallyPlaying ?? f
 let canOpenAnimation = false;
 
 const headerSize = 30;
-const footerSize = props.content.type === 'video' ? 80 : 0;
+const footerSize = props.content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer ? 80 : 0;
 
 const padding = deviceKind === 'smartphone' ? {
 	top: Math.max(0, headerSize + 10),
@@ -663,9 +667,8 @@ function onClick() {
 }
 
 async function onHiddenClick() {
-	if (props.content.file == null) return;
 	if (hide.value) {
-		if (await canRevealFile(props.content.file)) {
+		if (props.content.file == null || await canRevealFile(props.content.file)) {
 			hide.value = false;
 			if (props.content.type === 'video' && videoEl.value != null) {
 				videoEl.value.play();
@@ -687,8 +690,33 @@ function onVideoClick() {
 }
 
 function openMenu(ev: PointerEvent) {
-	if (props.content.file == null) return;
-	os.popupMenu(getFileMenu(props.content.file), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+	const menu: MenuItem[] = [];
+
+	// isTouchUsingにする？
+	menu.push({
+		type: 'component',
+		component: markRaw(XFileInfo),
+		props: {
+			content: props.content,
+		},
+	}, {
+		type: 'divider',
+	});
+
+	menu.push({
+		text: i18n.ts.hide,
+		icon: 'ti ti-eye-off',
+		action: () => {
+			hide.value = true;
+		},
+	});
+
+	if (props.content.file != null) {
+		menu.push({ type: 'divider' });
+		menu.push(...getFileMenu(props.content.file));
+	}
+
+	os.popupMenu(menu, (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 
 function onActive() {
@@ -803,6 +831,9 @@ defineExpose({
 	margin: auto;
 	display: grid;
 	place-items: center;
+	width: 100%;
+	height: 100%;
+	overflow: clip;
 
 	&.sensitive::after {
 		content: "";
@@ -811,7 +842,6 @@ defineExpose({
 		left: 0;
 		width: 100%;
 		height: 100%;
-		pointer-events: none;
 		border-radius: inherit;
 		box-shadow: inset 0 0 0 4px var(--MI_THEME-warn);
 	}
@@ -820,6 +850,8 @@ defineExpose({
 .hiddenWrapper {
 	position: relative;
 	width: 100%;
+	max-height: 100%;
+	min-height: 0;
 }
 
 .hiddenBlurhash {
@@ -832,8 +864,8 @@ defineExpose({
 .hiddenThumbnail {
 	display: block;
 	width: 100%;
-	height: auto;
-	max-height: 100%;
+	height: 100%;
+	object-fit: contain;
 	filter: brightness(0.7);
 }
 
@@ -854,6 +886,7 @@ defineExpose({
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	text-align: center;
 	cursor: pointer;
 	color: #fff;
 
