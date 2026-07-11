@@ -31,6 +31,9 @@ let shutdownPromise = null;
  */
 function spawnChildProcess(command, args, options) {
 	const isWindows = process.platform === 'win32';
+	const shouldForceColor = (process.stdout.isTTY || process.stderr.isTTY)
+		&& process.env.FORCE_COLOR == null
+		&& process.env.NO_COLOR == null;
 	const pnpmPath = _dirname + '/../node_modules/pnpm/bin/pnpm.mjs';
 	const windowsCommand = [process.execPath, pnpmPath, ...args]
 		.map(argument => `"${argument}"`)
@@ -45,6 +48,7 @@ function spawnChildProcess(command, args, options) {
 		// Ctrl+C, allowing only this supervisor to coordinate the shutdown.
 		windowsVerbatimArguments: true,
 		windowsHide: false,
+		env: shouldForceColor ? { FORCE_COLOR: '1' } : undefined,
 		stdout: 'pipe',
 		stderr: 'pipe',
 		buffer: false,
