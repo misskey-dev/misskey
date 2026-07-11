@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.hiddenText">
 						<div :class="$style.hiddenTextWrapper">
 							<b v-if="content.file.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</b>
-							<b v-else style="display: block;"><i class="ti" :class="content.type === 'image' ? 'ti-photo' : 'ti-movie'"></i> {{ i18n.ts[content.type] }}</b>
+							<b v-else style="display: block;"><i class="ti" :class="content.type === 'image' ? 'ti-photo' : 'ti-movie'"></i> {{ content.type === 'image' ? i18n.ts.image : i18n.ts.video }}</b>
 							<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 						</div>
 					</div>
