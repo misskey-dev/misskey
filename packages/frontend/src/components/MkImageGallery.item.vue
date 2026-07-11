@@ -206,7 +206,7 @@ function calcContentRenderingSize(content: Content) {
 }
 
 const contentRenderingSize = calcContentRenderingSize(props.content);
-const contentRenderingRect = contentRenderingSize != null ? {
+const getContentRenderingRect = () => contentRenderingSize != null ? {
 	left: (window.innerWidth - contentRenderingSize.width + padding.left - padding.right) / 2,
 	top: (window.innerHeight - contentRenderingSize.height + padding.top - padding.bottom) / 2,
 	width: contentRenderingSize.width,
@@ -217,6 +217,7 @@ const transform = ref({ x: 0, y: 0, scale: 1 });
 // 元のimg要素の位置・サイズ(とobject-fitの設定値)を取得して、そこからneutralの位置にアニメーションするためのscaleとtranslationを計算する
 function getScaleAndTranslationForSourceElement() {
 	const sourceElement = props.content.sourceElement;
+	const contentRenderingRect = getContentRenderingRect();
 	if (sourceElement == null || contentRenderingRect == null) return null;
 
 	return calculateSourceTransform({

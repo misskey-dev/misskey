@@ -88,6 +88,12 @@ const contentsOffset = ref(currentIndex.value * -window.innerWidth);
 const enableSlideTransition = ref(false);
 let currentScrollLeft = contentsOffset.value;
 
+// TODO: unmountで解除
+window.addEventListener('resize', () => {
+	screenWidth.value = window.innerWidth;
+	scrollToCurrentIndex();
+});
+
 function onHorizontalSwipe(offset: number) {
 	if (currentIndex.value === 0 && offset > 0) { // これ以上戻れない
 		contentsOffset.value = currentScrollLeft + (offset / 3);
