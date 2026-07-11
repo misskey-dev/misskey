@@ -110,7 +110,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="[$style.header, { [$style.infoShowing]: infoShowing && !isZooming }]">
 		<div :class="$style.title" class="_acrylic">
 			<button class="_button" :class="$style.titleButton"><i class="ti ti-dots" @click="openMenu"></i></button>
-			<div style="flex: 1; min-width: 0;">
+			<div :class="$style.titleText">
 				<MkCondensedLine :minScale="0.5">{{ content.filename }}</MkCondensedLine>
 			</div>
 			<button class="_button" :class="$style.titleButton"><i class="ti ti-x" @click="closeThis"></i></button>
@@ -1016,16 +1016,28 @@ defineExpose({
 
 .title {
 	display: flex;
+	align-items: center;
 	width: max-content;
 	max-width: calc(100% - 20px);
 	margin: auto;
-	padding: 6px 0px;
 	box-sizing: border-box;
 	border-radius: 0 0 10px 10px;
 	font-size: 85%;
 }
+
 .titleButton {
-	width: 30px;
+	flex-shrink: 0;
+	width: 32px;
+	height: 32px;
+}
+
+.titleText {
+	flex-grow: 1;
+	height: 100%;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding: 6px 0px;
 }
 
 .mediaControl {
