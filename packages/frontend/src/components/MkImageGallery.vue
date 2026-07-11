@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@transitionend.self="onSlideTransitionFinished"
 				@transitioncancel.self="onSlideTransitionFinished"
 			>
-				<div v-for="(content, i) in contents" :key="content.file.url" ref="itemEl" :class="$style.item">
+				<div v-for="(content, i) in contents" :key="content.url" ref="itemEl" :class="$style.item">
 					<XItem
 						:ref="(comp) => { items.set(i, comp as InstanceType<typeof XItem>); }"
 						:content="content"

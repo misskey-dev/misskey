@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<div :class="[$style.contentWrapper, { [$style.hideForFallback]: hideForFallback }]">
 				<div
-					v-if="hide"
+					v-if="content.file != null && hide"
 					:class="[$style.hidden, {
 						[$style.sensitive]: content.file.isSensitive && prefer.s.highlightSensitiveMedia,
 					}]"
@@ -42,16 +42,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 							v-if="content.type === 'image'"
 							:class="$style.hiddenBlurhash"
 							:blurhash="content.file.blurhash ?? null"
-							:height="content?.height"
-							:width="content?.width"
+							:height="content?.height ?? undefined"
+							:width="content?.width ?? undefined"
 						/>
 						<img
-							v-else-if="content.type === 'video' && content.file.thumbnailUrl != null"
-							:src="content.file.thumbnailUrl"
+							v-else-if="content.type === 'video' && content.thumbnailUrl != null"
+							:src="content.thumbnailUrl"
 							:class="$style.hiddenThumbnail"
 						/>
 						<div v-else :class="$style.hiddenPlaceholder"></div>
-						<div :class="[$style.hiddenText, { [$style.withBlur]: content.type === 'video' && content.file.thumbnailUrl != null }]">
+						<div :class="[$style.hiddenText, { [$style.withBlur]: content.type === 'video' && content.thumbnailUrl != null }]">
 							<div :class="$style.hiddenTextWrapper">
 								<b v-if="content.file.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</b>
 								<b v-else style="display: block;"><i class="ti" :class="content.type === 'image' ? 'ti-photo' : 'ti-movie'"></i> {{ content.type === 'image' ? i18n.ts.image : i18n.ts.video }}</b>
@@ -62,9 +62,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<template v-else>
 					<img
-						v-if="(!originalContentLoaded || !thumbnailContentLoaded) && (content.file.thumbnailUrl != null)"
+						v-if="(!originalContentLoaded || !thumbnailContentLoaded) && (content.thumbnailUrl != null)"
 						:class="[$style.content, $style.thumbnail]"
-						:src="content.file.thumbnailUrl"
+						:src="content.thumbnailUrl"
 						draggable="false"
 						@load="thumbnailContentLoaded = true"
 					>
@@ -73,7 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<img
 							v-if="content.type === 'image'"
 							:class="$style.content"
-							:src="content.file.url"
+							:src="content.url"
 							draggable="false"
 							@load="originalContentLoaded = true"
 						>
@@ -81,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							v-else-if="content.type === 'video'"
 							ref="videoEl"
 							:class="$style.content"
-							:src="content.file.url"
+							:src="content.url"
 							draggable="false"
 							:controls="prefer.s.useNativeUiForVideoAudioPlayer"
 							loop
@@ -104,9 +104,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="[$style.header, { [$style.infoShowing]: infoShowing && !isZooming }]">
 		<div :class="$style.title" class="_acrylic">
-			<button class="_button" :class="$style.titleButton"><i class="ti ti-dots" @click="openMenu"></i></button>
+			<button v-if="content.file != null" class="_button" :class="$style.titleButton"><i class="ti ti-dots" @click="openMenu"></i></button>
 			<div style="flex: 1; min-width: 0;">
-				<MkCondensedLine :minScale="0.5">{{ content.file.name }}</MkCondensedLine>
+				<MkCondensedLine :minScale="0.5">{{ content.filename }}</MkCondensedLine>
 			</div>
 			<button class="_button" :class="$style.titleButton"><i class="ti ti-x" @click="closeThis"></i></button>
 		</div>
@@ -137,9 +137,12 @@ type Rect = Size & {
 export type Content = {
 	id: string;
 	type: 'image' | 'video';
-	width?: number;
-	height?: number;
-	file: Misskey.entities.DriveFile;
+	url: string;
+	thumbnailUrl?: string | null;
+	width?: number | null;
+	height?: number | null;
+	filename?: string | null;
+	file?: Misskey.entities.DriveFile;
 	sourceElement?: HTMLElement | null;
 };
 
@@ -265,6 +268,7 @@ const hiddenStyle = computed(() => {
 });
 
 function shouldHideInGallery(content: Content): boolean {
+	if (content.file == null) return false;
 	const hiddenByDefault = shouldHideFileByDefault(content.file, true);
 	if (!hiddenByDefault) return false;
 
@@ -656,6 +660,7 @@ function onClick() {
 }
 
 async function onHiddenClick() {
+	if (props.content.file == null) return;
 	if (hide.value) {
 		if (await canRevealFile(props.content.file)) {
 			hide.value = false;
@@ -679,6 +684,7 @@ function onVideoClick() {
 }
 
 function openMenu(ev: PointerEvent) {
+	if (props.content.file == null) return;
 	os.popupMenu(getFileMenu(props.content.file), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 

@@ -128,8 +128,11 @@ async function openGallery(id?: string) {
 	const contents = props.mediaList.filter(media => previewable(media)).map<Content>(media => ({
 		id: media.id,
 		type: media.type.startsWith('video') ? 'video' : 'image',
+		url: media.url,
+		thumbnailUrl: media.thumbnailUrl,
 		width: media.properties.width ?? 0,
 		height: media.properties.height ?? 0,
+		filename: media.name,
 		file: media,
 		sourceElement: getElementByMarker(`${markerId}:${media.id}`),
 	}));
