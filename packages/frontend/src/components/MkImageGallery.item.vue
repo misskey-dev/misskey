@@ -119,7 +119,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="[$style.footer, { [$style.infoShowing]: infoShowing && !isZooming }]">
 		<div v-if="content.type === 'video' && !hide && !prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.mediaControl">
-			<MkVideoContol v-if="videoEl != null" ref="videoControl" :videoEl="videoEl"/>
+			<MkVideoControl v-if="videoEl != null" ref="videoControl" :videoEl="videoEl"/>
 		</div>
 	</div>
 </div>
@@ -180,7 +180,7 @@ export function calculateSourceTransform({
 <script lang="ts" setup>
 import { computed, nextTick, ref, useTemplateRef, markRaw, watch, provide } from 'vue';
 import { DI } from '@/di.js';
-import MkVideoContol from './MkVideoContol.vue';
+import MkVideoControl from './MkVideoControl.vue';
 import XFileInfo from './MkImageGallery.item.fileinfo.vue';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
