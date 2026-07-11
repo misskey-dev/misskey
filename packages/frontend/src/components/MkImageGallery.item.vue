@@ -68,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="[$style.header, { [$style.infoShowing]: infoShowing && !isZooming }]">
 		<div :class="$style.title" class="_acrylic">
-			<button class="_button" :class="$style.titleButton"><i class="ti ti-x" @click="closeThis"></i></button>
+			<button class="_button" :class="$style.titleButton"><i class="ti ti-dots" @click="openMenu"></i></button>
 			<div style="flex: 1; min-width: 0;">
 				<MkCondensedLine :minScale="0.5">{{ content.comment ?? content.filename }}</MkCondensedLine>
 			</div>
@@ -574,6 +574,10 @@ function onCLick() {
 			closeThis();
 		}
 	}
+}
+
+function openMenu() {
+	// TODO
 }
 </script>
 
