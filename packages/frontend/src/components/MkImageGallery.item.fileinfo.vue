@@ -9,10 +9,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #key>{{ i18n.ts.fileName }}</template>
 			<template #value>{{ content.filename }}</template>
 		</MkKeyValue>
-		<MkKeyValue v-if="content.file != null && content.file.comment != null">
+		<MkKeyValue v-if="content.file != null">
 			<template #key>{{ i18n.ts.description }}</template>
 			<template #value>
-				<div :class="$style.pre">{{ content.file.comment }}</div>
+				<div :class="$style.pre">{{ content.file.comment ? content.file.comment : `(${i18n.ts.none})` }}</div>
 			</template>
 		</MkKeyValue>
 	</div>
