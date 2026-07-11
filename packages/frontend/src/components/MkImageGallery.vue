@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@afterLeave="onAfterLeave"
 >
 	<!-- v-ifを使うとfalseになったとき(transitionが行われている間)子コンポーネントの更新が停止するのか子コンポーネントがアニメーションされなくなる -->
-	<div v-show="showing" ref="rootEl" :class="$style.root" :style="{ zIndex }">
+	<div v-show="showing" ref="rootEl" v-hotkey.global="keymap" :class="$style.root" :style="{ zIndex }">
 		<div :class="[$style.bg]" class="_modalBg"></div>
 		<div ref="mainEl" :class="$style.main">
 			<div
@@ -51,6 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, watch, nextTick } from 'vue';
 import XItem from './MkImageGallery.item.vue';
 import type { Content } from './MkImageGallery.item.vue';
+import type { Keymap } from '@/utility/hotkey.js';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 import { isTouchUsing } from '@/utility/touch.js';
@@ -100,6 +101,12 @@ const screenWidth = ref(window.innerWidth);
 const contentsOffset = ref(currentIndex.value * -window.innerWidth);
 const enableSlideTransition = ref(false);
 let currentScrollLeft = contentsOffset.value;
+
+// TODO: unmountで解除
+window.addEventListener('resize', () => {
+	screenWidth.value = window.innerWidth;
+	scrollToCurrentIndex();
+});
 
 function onHorizontalSwipe(offset: number) {
 	if (currentIndex.value === 0 && offset > 0) { // これ以上戻れない
@@ -160,6 +167,21 @@ function onAfterLeave() {
 	}
 	emit('closed');
 }
+
+const keymap = {
+	'esc': {
+		allowRepeat: true,
+		callback: () => onItemClose(),
+	},
+	'arrowleft': {
+		allowRepeat: true,
+		callback: () => onPrev(),
+	},
+	'arrowright': {
+		allowRepeat: true,
+		callback: () => onNext(),
+	},
+} as const satisfies Keymap;
 </script>
 
 <style lang="scss" module>

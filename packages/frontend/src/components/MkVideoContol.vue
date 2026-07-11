@@ -34,10 +34,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button class="_button" :class="$style.controlButton" @click="showMenu">
 			<i class="ti ti-settings"></i>
 		</button>
-		<button class="_button" :class="$style.controlButton" @click="toggleFullscreen">
-			<i v-if="isFullscreen" class="ti ti-arrows-minimize"></i>
-			<i v-else class="ti ti-arrows-maximize"></i>
-		</button>
 	</div>
 </div>
 </template>
@@ -111,11 +107,6 @@ function showMenu(ev: PointerEvent) {
 	});
 }
 
-// MediaControl: Video State
-const isHoverring = ref(false);
-const isFullscreen = ref(false);
-let controlStateTimer: number | null = null;
-
 // MediaControl: Common State
 const oncePlayed = ref(false);
 const isReady = ref(false);
@@ -150,9 +141,6 @@ function togglePlayPause() {
 		isPlaying.value = true;
 		oncePlayed.value = true;
 	}
-}
-
-function toggleFullscreen() {
 }
 
 function togglePictureInPicture() {
