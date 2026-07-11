@@ -173,7 +173,8 @@ export function calculateSourceTransform({
 </script>
 
 <script lang="ts" setup>
-import { computed, nextTick, ref, useTemplateRef, watch } from 'vue';
+import { computed, nextTick, ref, useTemplateRef, watch, provide } from 'vue';
+import { DI } from '@/di.js';
 import MkVideoContol from './MkVideoContol.vue';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
@@ -204,6 +205,8 @@ const rootEl = useTemplateRef('rootEl');
 const mainEl = useTemplateRef('mainEl');
 const videoEl = useTemplateRef('videoEl');
 const videoControl = useTemplateRef('videoControl');
+
+provide(DI.mkImageGalleryItemVideoEl, videoEl);
 
 const originalContentLoaded = ref(false);
 const thumbnailContentLoaded = ref(false);

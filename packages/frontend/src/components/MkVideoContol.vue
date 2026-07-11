@@ -39,17 +39,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onActivated, onMounted, onBeforeUnmount } from 'vue';
+import { ref, shallowRef, inject, computed, watch, onBeforeUnmount } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
+import { DI } from '@/di.js';
 import { hms } from '@/filters/hms.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import hasAudio from '@/utility/media-has-audio.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 
-const props = defineProps<{
-	videoEl: HTMLVideoElement;
-}>();
+const videoEl = inject(DI.mkImageGalleryItemVideoEl, shallowRef(null));
 
 // Menu
 const menuShowing = ref(false);
@@ -119,7 +118,8 @@ const rangePercent = computed({
 		return (elapsedTimeMs.value / durationMs.value) || 0;
 	},
 	set: (to) => {
-		props.videoEl.currentTime = to * durationMs.value / 1000;
+		if (videoEl.value == null) return;
+		videoEl.value.currentTime = to * durationMs.value / 1000;
 	},
 });
 const volume = ref(.25);
@@ -127,17 +127,18 @@ const speed = ref(1);
 const loop = ref(false); // TODO: ドライブファイルのフラグに置き換える
 const bufferedEnd = ref(0);
 const bufferedDataRatio = computed(() => {
-	return bufferedEnd.value / props.videoEl.duration;
+	if (videoEl.value == null || videoEl.value.duration === 0) return 0;
+	return bufferedEnd.value / videoEl.value.duration;
 });
 
 function togglePlayPause() {
 	if (!isReady.value) return;
 
 	if (isPlaying.value) {
-		props.videoEl.pause();
+		videoEl.value?.pause();
 		isPlaying.value = false;
 	} else {
-		props.videoEl.play();
+		videoEl.value?.play();
 		isPlaying.value = true;
 		oncePlayed.value = true;
 	}
@@ -147,7 +148,7 @@ function togglePictureInPicture() {
 	if (window.document.pictureInPictureElement) {
 		window.document.exitPictureInPicture();
 	} else {
-		props.videoEl.requestPictureInPicture();
+		videoEl.value?.requestPictureInPicture();
 	}
 }
 
@@ -159,30 +160,32 @@ function toggleMute() {
 	}
 }
 
-let onceInit = false;
+let abortController: AbortController | null = null;
 let mediaTickFrameId: number | null = null;
 
 function init() {
-	if (onceInit) return;
-	onceInit = true;
+	if (videoEl.value == null) return;
 
 	isReady.value = true;
+	abortController = new AbortController();
 
 	function updateMediaTick() {
+		if (videoEl.value == null) return;
+
 		try {
-			bufferedEnd.value = props.videoEl.buffered.end(0);
+			bufferedEnd.value = videoEl.value.buffered.end(0);
 		} catch (err) {
 			bufferedEnd.value = 0;
 		}
 
-		elapsedTimeMs.value = props.videoEl.currentTime * 1000;
+		elapsedTimeMs.value = videoEl.value.currentTime * 1000;
 
-		if (props.videoEl.loop !== loop.value) {
-			loop.value = props.videoEl.loop;
+		if (videoEl.value.loop !== loop.value) {
+			loop.value = videoEl.value.loop;
 		}
 
-		if (props.videoEl.paused !== !isPlaying.value) {
-			isPlaying.value = !props.videoEl.paused;
+		if (videoEl.value.paused !== !isPlaying.value) {
+			isPlaying.value = !videoEl.value.paused;
 		}
 
 		mediaTickFrameId = window.requestAnimationFrame(updateMediaTick);
@@ -190,54 +193,56 @@ function init() {
 
 	updateMediaTick();
 
-	props.videoEl.addEventListener('play', () => {
+	videoEl.value.addEventListener('play', () => {
 		isActuallyPlaying.value = true;
-	});
+	}, { signal: abortController.signal });
 
-	props.videoEl.addEventListener('pause', () => {
+	videoEl.value.addEventListener('pause', () => {
 		isActuallyPlaying.value = false;
 		isPlaying.value = false;
-	});
+	}, { signal: abortController.signal });
 
-	props.videoEl.addEventListener('ended', () => {
+	videoEl.value.addEventListener('ended', () => {
 		oncePlayed.value = false;
 		isActuallyPlaying.value = false;
 		isPlaying.value = false;
-	});
+	}, { signal: abortController.signal });
 
-	durationMs.value = props.videoEl.duration * 1000;
-	props.videoEl.addEventListener('durationchange', () => {
-		durationMs.value = props.videoEl.duration * 1000;
-	});
+	durationMs.value = videoEl.value.duration * 1000;
+	videoEl.value.addEventListener('durationchange', () => {
+		durationMs.value = videoEl.value!.duration * 1000;
+	}, { signal: abortController.signal });
 
-	props.videoEl.volume = volume.value;
-	hasAudio(props.videoEl).then(had => {
+	videoEl.value.volume = volume.value;
+	hasAudio(videoEl.value).then(had => {
 		if (!had) {
-			props.videoEl.loop = props.videoEl.muted = true;
-			props.videoEl.play();
+			videoEl.value!.loop = videoEl.value!.muted = true;
+			videoEl.value!.play();
 		}
 	});
 }
 
 watch(volume, (to) => {
-	props.videoEl.volume = to;
+	if (videoEl.value == null) return;
+	videoEl.value.volume = to;
 });
 
 watch(speed, (to) => {
-	props.videoEl.playbackRate = to;
+	if (videoEl.value == null) return;
+	videoEl.value.playbackRate = to;
 });
 
 watch(loop, (to) => {
-	props.videoEl.loop = to;
+	if (videoEl.value == null) return;
+	videoEl.value.loop = to;
 });
 
-onMounted(() => {
+watch(videoEl, () => {
+	if (abortController != null) {
+		abortController.abort();
+	}
 	init();
-});
-
-onActivated(() => {
-	init();
-});
+}, { immediate: true });
 
 onBeforeUnmount(() => {
 	if (mediaTickFrameId != null) {
