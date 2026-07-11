@@ -33,7 +33,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<source :src="video.url">
 		</video>
-		<i class="ti ti-player-play-filled"></i>
+
+		<div :class="$style.playIconWrapper">
+			<div :class="$style.playIcon">
+				<i class="ti ti-player-play"></i>
+			</div>
+		</div>
 	</div>
 </div>
 </template>
@@ -162,35 +167,24 @@ async function reveal() {
 	width: 100%;
 }
 
-.videoOverlayPlayButton {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%,-50%);
-
-	opacity: 0;
-	transition: opacity .4s ease-in-out;
-
-	background: var(--MI_THEME-accent);
-	color: #fff;
-	padding: 1rem;
-	border-radius: 99rem;
-
-	font-size: 1.1rem;
-
-	&:focus-visible {
-		outline: none;
-	}
-}
-
-.videoLoading {
+.playIconWrapper {
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	display: grid;
+	place-items: center;
+}
+
+.playIcon {
+	display: grid;
+	place-items: center;
+	width: 50px;
+	height: 50px;
+	border-radius: 100%;
+	font-size: 120%;
+	background: var(--MI_THEME-accent);
+	color: var(--MI_THEME-fgOnAccent);
 }
 </style>
