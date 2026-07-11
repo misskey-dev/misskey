@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="playerEl"
 	tabindex="0"
 	:class="[
-		$style.videoContainer,
+		$style.root,
 		(video.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive,
 	]"
 	@contextmenu.stop="onContextmenu"
@@ -37,9 +37,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<source :src="video.url">
 		</video>
-		<button class="_button" :class="$style.videoOverlayPlayButton">
-			<i class="ti ti-player-play-filled"></i>
-		</button>
+		<div :class="$style.playIconWrapper">
+			<div :class="$style.playIcon">
+				<i class="ti ti-player-play"></i>
+			</div>
+		</div>
 		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
 		<i class="ti ti-eye-off" :class="$style.hide" @click.stop="hide = true"></i>
 	</div>
@@ -85,13 +87,19 @@ function onContextmenu(ev: PointerEvent) {
 </script>
 
 <style lang="scss" module>
-.videoContainer {
+.root {
 	container-type: inline-size;
 	position: relative;
 	overflow: clip;
 
 	&:focus-visible {
 		outline: none;
+	}
+
+	&:hover {
+		.playIcon {
+			scale: 1.2;
+		}
 	}
 }
 
@@ -147,23 +155,27 @@ function onContextmenu(ev: PointerEvent) {
 	object-fit: contain;
 }
 
-.videoOverlayPlayButton {
+.playIconWrapper {
 	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%,-50%);
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: grid;
+	place-items: center;
+}
 
+.playIcon {
+	display: grid;
+	place-items: center;
+	width: 50px;
+	height: 50px;
+	border-radius: 100%;
+	font-size: 120%;
 	background: var(--MI_THEME-accent);
 	color: var(--MI_THEME-fgOnAccent);
-	padding: 1rem;
-	border-radius: 99rem;
-
-	font-size: 1.1rem;
-	pointer-events: none;
-
-	&:focus-visible {
-		outline: none;
-	}
+	scale: 1;
+	transition: scale 100ms ease;
 }
 
 .menu {

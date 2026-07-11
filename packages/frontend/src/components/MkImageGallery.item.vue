@@ -92,9 +92,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 							@loadedmetadata="originalContentLoaded = true"
 							@click.stop="onVideoClick"
 						></video>
-						<button v-if="content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer && !isVideoPlaying" class="_button" :class="$style.videoOverlayPlayButton">
-							<i class="ti ti-player-play-filled"></i>
-						</button>
+						<div v-if="content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer && !isVideoPlaying" :class="$style.playIconWrapper">
+							<div :class="$style.playIcon">
+								<i class="ti ti-player-play"></i>
+							</div>
+						</div>
 					</template>
 
 					<div v-if="activated && !originalContentLoaded" :class="$style.loading">
@@ -862,23 +864,33 @@ defineExpose({
 	opacity: 0 !important;
 }
 
-.videoOverlayPlayButton {
+.playIconWrapper {
 	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%,-50%);
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: grid;
+	place-items: center;
+	pointer-events: none;
+}
 
+.playIcon {
+	display: grid;
+	place-items: center;
+	width: 50px;
+	height: 50px;
+	border-radius: 100%;
+	font-size: 120%;
 	background: var(--MI_THEME-accent);
 	color: var(--MI_THEME-fgOnAccent);
-	padding: 1rem;
-	border-radius: 99rem;
+	scale: 1;
+	transition: scale 100ms ease;
+}
 
-	font-size: 1.1rem;
-	pointer-events: none;
-
-	&:focus-visible {
-		outline: none;
-	}
+.content:hover + .playIcon,
+.playIcon:hover {
+	scale: 1.2;
 }
 
 .hidden {

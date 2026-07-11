@@ -49,8 +49,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				tabindex="-1"
 				@click.stop="togglePlayPause"
 			>
-				<i v-if="isPlaying" class="ti ti-player-pause-filled"></i>
-				<i v-else class="ti ti-player-play-filled"></i>
+				<i v-if="isPlaying" class="ti ti-player-pause"></i>
+				<i v-else class="ti ti-player-play"></i>
 			</button>
 		</div>
 		<div :class="[$style.controlsChild, $style.controlsRight]">
