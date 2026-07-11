@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							@loadedmetadata="originalContentLoaded = true"
 							@click.stop="onVideoClick"
 						></video>
-						<button v-if="content.type === 'video' && !isVideoPlaying" class="_button" :class="$style.videoOverlayPlayButton">
+						<button v-if="content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer && !isVideoPlaying" class="_button" :class="$style.videoOverlayPlayButton">
 							<i class="ti ti-player-play-filled"></i>
 						</button>
 					</template>

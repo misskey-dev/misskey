@@ -32,10 +32,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<video
 			v-else
 			:class="$style.video"
-			:poster="video.thumbnailUrl ?? undefined"
 			:alt="video.comment"
 			preload="metadata"
-			playsinline
 		>
 			<source :src="video.url">
 		</video>
