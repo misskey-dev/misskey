@@ -57,16 +57,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 						@loadedmetadata="originalContentLoaded = true"
 					></video>
 				</template>
+
+				<div v-if="activated && !originalContentLoaded" :class="$style.loading">
+					<MkLoading/>
+				</div>
 			</div>
 		</div>
 	</div>
 
-	<div v-if="activated && !originalContentLoaded" :class="$style.loading">
-		<MkLoading/>
-	</div>
-
 	<div :class="[$style.header, { [$style.infoShowing]: infoShowing && !isZooming }]">
-		<div :class="$style.title">
+		<div :class="$style.title" class="_acrylic">
 			{{ content.comment ?? content.filename }}
 		</div>
 	</div>
@@ -168,18 +168,18 @@ onMounted(() => {
 	infoShowing.value = true;
 });
 
-const headerSize = 50;
+const headerSize = 30;
 const footerSize = props.content.type === 'video' ? 80 : 0;
 
 const padding = deviceKind === 'smartphone' ? {
-	top: Math.max(0, headerSize + 5),
+	top: Math.max(0, headerSize + 10),
 	right: 0,
-	bottom: Math.max(0, footerSize + 5),
+	bottom: Math.max(0, footerSize + 10),
 	left: 0,
 } : {
-	top: Math.max(30, headerSize + 5),
+	top: Math.max(30, headerSize + 10),
 	right: 30,
-	bottom: Math.max(30, footerSize + 5),
+	bottom: Math.max(30, footerSize + 10),
 	left: 30,
 };
 
@@ -642,8 +642,6 @@ function onCLick() {
 	left: 0;
 	right: 0;
 	height: v-bind("footerSize + 'px'");
-	display: grid;
-	place-items: center;
 	opacity: 0;
 	transition: opacity 200ms ease, bottom 200ms ease;
 }
@@ -657,8 +655,6 @@ function onCLick() {
 	left: 0;
 	right: 0;
 	height: v-bind("headerSize + 'px'");
-	display: grid;
-	place-items: center;
 	opacity: 0;
 	transition: opacity 200ms ease, top 200ms ease;
 }
@@ -670,21 +666,20 @@ function onCLick() {
 .title {
 	width: max-content;
 	margin: auto;
-	padding: 6px 12px;
+	padding: 6px 14px;
 	box-sizing: border-box;
-	border-radius: 10px;
-	background: var(--MI_THEME-panel);
+	border-radius: 0 0 10px 10px;
 	font-size: 85%;
-	color: var(--MI_THEME-fg);
 }
 
 .mediaControl {
 	width: 100%;
+	height: 100%;
 	max-width: min(1000px, calc(100% - 16px));
 	box-sizing: border-box;
-	padding: 8px;
+	padding: 8px 12px;
 	margin: auto;
 	background: var(--MI_THEME-panel);
-	border-radius: 10px;
+	border-radius: 12px 12px 0 0;
 }
 </style>

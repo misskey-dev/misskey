@@ -5,13 +5,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
+	<div :class="[$style.seekbar]">
+		<MkMediaRange
+			v-model="rangePercent"
+			:buffer="bufferedDataRatio"
+		/>
+	</div>
+
 	<div :class="[$style.controlsChild, $style.controlsLeft]">
 		<button class="_button" :class="$style.controlButton" @click="togglePlayPause">
-			<i v-if="isPlaying" class="ti ti-player-pause-filled"></i>
-			<i v-else class="ti ti-player-play-filled"></i>
+			<i v-if="isPlaying" class="ti ti-player-pause"></i>
+			<i v-else class="ti ti-player-play"></i>
 		</button>
+
+		<div :class="[$style.controlsChild, $style.controlsTime]">{{ hms(elapsedTimeMs) }} / {{ hms(durationMs) }}</div>
+	</div>
+	<div :class="[$style.controlsChild, $style.controlsCenter]">
 	</div>
 	<div :class="[$style.controlsChild, $style.controlsRight]">
+		<button class="_button" :class="$style.controlButton" @click="toggleMute">
+			<i v-if="volume === 0" class="ti ti-volume-3"></i>
+			<i v-else class="ti ti-volume"></i>
+		</button>
+		<MkMediaRange
+			v-model="volume"
+			:class="$style.volumeSeekbar"
+		/>
 		<button class="_button" :class="$style.controlButton" @click="showMenu">
 			<i class="ti ti-settings"></i>
 		</button>
@@ -20,24 +39,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-else class="ti ti-arrows-maximize"></i>
 		</button>
 	</div>
-	<div :class="[$style.controlsChild, $style.controlsTime]">{{ hms(elapsedTimeMs) }}</div>
-	<div :class="[$style.controlsChild, $style.controlsVolume]">
-		<button class="_button" :class="$style.controlButton" @click="toggleMute">
-			<i v-if="volume === 0" class="ti ti-volume-3"></i>
-			<i v-else class="ti ti-volume"></i>
-		</button>
-		<MkMediaRange
-			v-model="volume"
-			:sliderBgWhite="true"
-			:class="$style.volumeSeekbar"
-		/>
-	</div>
-	<MkMediaRange
-		v-model="rangePercent"
-		:sliderBgWhite="true"
-		:class="$style.seekbarRoot"
-		:buffer="bufferedDataRatio"
-	/>
 </div>
 </template>
 
@@ -272,31 +273,18 @@ onActivated(() => {
 .root {
 	display: grid;
 	grid-template-areas:
-		"left time . volume right"
-		"seekbar seekbar seekbar seekbar seekbar";
-	grid-template-columns: auto auto 1fr auto auto;
+		"seekbar seekbar seekbar"
+		"left center right";
+	grid-template-columns: auto 1fr auto;
 	align-items: center;
 	gap: 4px 8px;
 	width: 100%;
-}
-
-.active {
-	.videoControls {
-		transform: translateY(0);
-		opacity: 1;
-		pointer-events: auto;
-	}
-
-	.videoOverlayPlayButton {
-		opacity: 1;
-	}
 }
 
 .controlsChild {
 	display: flex;
 	align-items: center;
 	gap: 4px;
-	color: #fff;
 
 	.controlButton {
 		padding: 6px;
@@ -322,9 +310,13 @@ onActivated(() => {
 	grid-area: right;
 }
 
+.controlsCenter {
+	grid-area: center;
+	justify-content: center;
+}
+
 .controlsTime {
-	grid-area: time;
-	font-size: .9rem;
+	font-size: 90%;
 }
 
 .controlsVolume {
@@ -335,42 +327,7 @@ onActivated(() => {
 	}
 }
 
-.seekbarRoot {
+.seekbar {
 	grid-area: seekbar;
-	/* ▼シークバー操作をやりやすくするためにクリックイベントが伝播されないエリアを拡張する */
-	margin: -10px;
-	padding: 10px;
-}
-
-@container (min-width: 500px) {
-	.root {
-		grid-template-areas: "left seekbar time volume right";
-		grid-template-columns: auto 1fr auto auto auto;
-	}
-
-	.controlsVolume {
-		.volumeSeekbar {
-			max-width: 90px;
-			display: block;
-			flex-grow: 1;
-		}
-	}
-}
-
-@container (max-width: 300px) {
-	.root {
-		grid-template-areas:
-			"left . right"
-			"seekbar seekbar seekbar";
-		grid-template-columns: auto 1fr auto;
-	}
-
-	.controlsTime {
-		display: none;
-	}
-
-	.controlsVolume {
-		display: none;
-	}
 }
 </style>
