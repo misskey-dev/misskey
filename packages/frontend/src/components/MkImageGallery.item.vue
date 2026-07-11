@@ -796,6 +796,7 @@ function onDeactive() {
 defineExpose({
 	onActive,
 	onDeactive,
+	closeThis,
 });
 </script>
 

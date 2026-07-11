@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, nextTick, onBeforeUnmount } from 'vue';
+import { ref, watch, nextTick, onBeforeUnmount, onMounted } from 'vue';
 import XItem from './MkImageGallery.item.vue';
 import type { Content } from './MkImageGallery.item.vue';
 import type { Keymap } from '@/utility/hotkey.js';
@@ -133,6 +133,14 @@ function scrollToCurrentIndex() {
 	contentsOffset.value = targetOffset;
 }
 
+function close() {
+	if (items.has(currentIndex.value)) {
+		items.get(currentIndex.value)!.closeThis();
+	} else {
+		showing.value = false;
+	}
+}
+
 function onSlideTransitionFinished(ev: TransitionEvent) {
 	if (ev.propertyName !== 'translate') return;
 	enableSlideTransition.value = false;
@@ -169,6 +177,17 @@ function onAfterLeave() {
 	emit('closed');
 }
 
+function onPopState() {
+	if (showing.value) {
+		close();
+	}
+}
+
+onMounted(() => {
+	window.history.pushState(null, '', '#pswp');
+	window.addEventListener('popstate', onPopState);
+});
+
 const keymap = {
 	'esc': {
 		allowRepeat: true,
@@ -186,6 +205,11 @@ const keymap = {
 
 onBeforeUnmount(() => {
 	window.removeEventListener('resize', onResize);
+	window.removeEventListener('popstate', onPopState);
+});
+
+defineExpose({
+	close,
 });
 </script>
 
