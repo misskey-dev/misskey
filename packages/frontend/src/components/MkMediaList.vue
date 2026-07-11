@@ -20,8 +20,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 			]"
 		>
 			<template v-for="media in mediaList.filter(media => previewable(media))">
-				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media" @click="openGallery(media.id)"/>
-				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :marker="`${markerId}:${media.id}`" :disableImageLink="true" :class="$style.media" :image="media" :raw="raw" @click="openGallery(media.id)"/>
+				<XVideo
+					v-if="media.type.startsWith('video')"
+					:key="`video:${media.id}`"
+					:class="$style.media"
+					:video="media"
+					@mediaClick="onMediaClick(media)"
+				/>
+				<XImage
+					v-else-if="media.type.startsWith('image')"
+					:key="`image:${media.id}`"
+					:marker="`${markerId}:${media.id}`"
+					:disableImageLink="true"
+					:class="$style.media"
+					:image="media"
+					:raw="raw"
+					@mediaClick="onMediaClick(media)"
+				/>
 			</template>
 		</div>
 	</div>
@@ -36,9 +51,9 @@ import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os.js';
-import { focusParent } from '@/utility/focus.js';
 import { prefer } from '@/preferences.js';
 import { genId } from '@/utility/id.js';
+import type { Content } from '@/components/MkImageGallery.item.vue';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
@@ -95,19 +110,29 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
 };
 
+function onMediaClick(file: Misskey.entities.DriveFile) {
+	if (prefer.s.imageNewTab) {
+		window.open(file.url, '_blank');
+		return;
+	}
+	openGallery(file.id);
+}
+
 async function openGallery(id?: string) {
 	if (id == null) {
 		const firstImage = props.mediaList.find(media => previewable(media));
 		if (firstImage == null) return;
 		id = firstImage.id;
 	}
+
 	const getElementByMarker = (marker: string) => {
 		if (gallery.value == null) return null;
 		const found = gallery.value.querySelector(`[data-marker="${marker}"]`) as HTMLElement | null;
 		if (found == null) return null;
 		return markRaw(found);
 	};
-	const contents = props.mediaList.filter(media => previewable(media)).map(media => ({
+
+	const contents = props.mediaList.filter(media => previewable(media)).map<Content>(media => ({
 		id: media.id,
 		type: media.type.startsWith('video') ? 'video' : 'image',
 		url: media.url,
@@ -115,9 +140,10 @@ async function openGallery(id?: string) {
 		width: media.properties.width ?? 0,
 		height: media.properties.height ?? 0,
 		filename: media.name,
-		comment: media.comment,
+		file: media,
 		sourceElement: getElementByMarker(`${markerId}:${media.id}`),
 	}));
+
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageGallery.vue').then(x => x.default), {
 		defaultIndex: contents.findIndex(conten => conten.id === id),
 		contents: contents,

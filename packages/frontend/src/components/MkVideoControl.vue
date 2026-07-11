@@ -39,20 +39,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, watch, onDeactivated, onActivated, onMounted, onBeforeUnmount } from 'vue';
+import { ref, shallowRef, inject, computed, watch, onBeforeUnmount } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
+import { DI } from '@/di.js';
 import { hms } from '@/filters/hms.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import hasAudio from '@/utility/media-has-audio.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
-import { prefer } from '@/preferences.js';
 
-const props = defineProps<{
-	videoElId: string;
-}>();
-
-const videoEl = window.document.getElementById(props.videoElId) as HTMLVideoElement;
+const videoEl = inject(DI.mkImageGalleryItemVideoEl, shallowRef<HTMLVideoElement | null>(null));
 
 // Menu
 const menuShowing = ref(false);
@@ -122,7 +118,8 @@ const rangePercent = computed({
 		return (elapsedTimeMs.value / durationMs.value) || 0;
 	},
 	set: (to) => {
-		videoEl.currentTime = to * durationMs.value / 1000;
+		if (videoEl.value == null) return;
+		videoEl.value.currentTime = to * durationMs.value / 1000;
 	},
 });
 const volume = ref(.25);
@@ -130,17 +127,18 @@ const speed = ref(1);
 const loop = ref(false); // TODO: ドライブファイルのフラグに置き換える
 const bufferedEnd = ref(0);
 const bufferedDataRatio = computed(() => {
-	return bufferedEnd.value / videoEl.duration;
+	if (videoEl.value == null || videoEl.value.duration === 0) return 0;
+	return bufferedEnd.value / videoEl.value.duration;
 });
 
 function togglePlayPause() {
 	if (!isReady.value) return;
 
 	if (isPlaying.value) {
-		videoEl.pause();
+		videoEl.value?.pause();
 		isPlaying.value = false;
 	} else {
-		videoEl.play();
+		videoEl.value?.play();
 		isPlaying.value = true;
 		oncePlayed.value = true;
 	}
@@ -150,7 +148,7 @@ function togglePictureInPicture() {
 	if (window.document.pictureInPictureElement) {
 		window.document.exitPictureInPicture();
 	} else {
-		videoEl.requestPictureInPicture();
+		videoEl.value?.requestPictureInPicture();
 	}
 }
 
@@ -162,30 +160,32 @@ function toggleMute() {
 	}
 }
 
-let onceInit = false;
+let abortController: AbortController | null = null;
 let mediaTickFrameId: number | null = null;
 
 function init() {
-	if (onceInit) return;
-	onceInit = true;
+	if (videoEl.value == null) return;
 
 	isReady.value = true;
+	abortController = new AbortController();
 
 	function updateMediaTick() {
+		if (videoEl.value == null) return;
+
 		try {
-			bufferedEnd.value = videoEl.buffered.end(0);
+			bufferedEnd.value = videoEl.value.buffered.end(0);
 		} catch (err) {
 			bufferedEnd.value = 0;
 		}
 
-		elapsedTimeMs.value = videoEl.currentTime * 1000;
+		elapsedTimeMs.value = videoEl.value.currentTime * 1000;
 
-		if (videoEl.loop !== loop.value) {
-			loop.value = videoEl.loop;
+		if (videoEl.value.loop !== loop.value) {
+			loop.value = videoEl.value.loop;
 		}
 
-		if (videoEl.paused !== !isPlaying.value) {
-			isPlaying.value = !videoEl.paused;
+		if (videoEl.value.paused !== !isPlaying.value) {
+			isPlaying.value = !videoEl.value.paused;
 		}
 
 		mediaTickFrameId = window.requestAnimationFrame(updateMediaTick);
@@ -193,54 +193,56 @@ function init() {
 
 	updateMediaTick();
 
-	videoEl.addEventListener('play', () => {
+	videoEl.value.addEventListener('play', () => {
 		isActuallyPlaying.value = true;
-	});
+	}, { signal: abortController.signal });
 
-	videoEl.addEventListener('pause', () => {
+	videoEl.value.addEventListener('pause', () => {
 		isActuallyPlaying.value = false;
 		isPlaying.value = false;
-	});
+	}, { signal: abortController.signal });
 
-	videoEl.addEventListener('ended', () => {
+	videoEl.value.addEventListener('ended', () => {
 		oncePlayed.value = false;
 		isActuallyPlaying.value = false;
 		isPlaying.value = false;
-	});
+	}, { signal: abortController.signal });
 
-	durationMs.value = videoEl.duration * 1000;
-	videoEl.addEventListener('durationchange', () => {
-		durationMs.value = videoEl.duration * 1000;
-	});
+	durationMs.value = videoEl.value.duration * 1000;
+	videoEl.value.addEventListener('durationchange', () => {
+		durationMs.value = videoEl.value!.duration * 1000;
+	}, { signal: abortController.signal });
 
-	videoEl.volume = volume.value;
-	hasAudio(videoEl).then(had => {
+	videoEl.value.volume = volume.value;
+	hasAudio(videoEl.value).then(had => {
 		if (!had) {
-			videoEl.loop = videoEl.muted = true;
-			videoEl.play();
+			videoEl.value!.loop = videoEl.value!.muted = true;
+			videoEl.value!.play();
 		}
 	});
 }
 
 watch(volume, (to) => {
-	videoEl.volume = to;
+	if (videoEl.value == null) return;
+	videoEl.value.volume = to;
 });
 
 watch(speed, (to) => {
-	videoEl.playbackRate = to;
+	if (videoEl.value == null) return;
+	videoEl.value.playbackRate = to;
 });
 
 watch(loop, (to) => {
-	videoEl.loop = to;
+	if (videoEl.value == null) return;
+	videoEl.value.loop = to;
 });
 
-onMounted(() => {
+watch(videoEl, () => {
+	if (abortController != null) {
+		abortController.abort();
+	}
 	init();
-});
-
-onActivated(() => {
-	init();
-});
+}, { immediate: true });
 
 onBeforeUnmount(() => {
 	if (mediaTickFrameId != null) {
@@ -248,6 +250,9 @@ onBeforeUnmount(() => {
 	}
 });
 
+defineExpose({
+	isActuallyPlaying,
+});
 </script>
 
 <style lang="scss" module>

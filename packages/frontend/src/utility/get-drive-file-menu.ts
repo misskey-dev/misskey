@@ -97,6 +97,7 @@ async function deleteFile(file: Misskey.entities.DriveFile) {
 	globalEvents.emit('driveFilesDeleted', [file]);
 }
 
+/** 自分のドライブファイルを操作する際のメニュー */
 export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Misskey.entities.DriveFolder | null): MenuItem[] {
 	const _isImage = file.type.startsWith('image/');
 

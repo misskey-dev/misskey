@@ -20,48 +20,89 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@touchcancel.passive="cancelPointerGesture"
 		@contextmenu="cancelPointerGesture"
 		@wheel="onWheel"
-		@click="onCLick"
+		@click="onClick"
 	>
 		<div
 			:class="[$style.transformer, { [$style.transition]: enableTransition }]"
-			:style="{ translate: `${transform.x}px ${transform.y}px`, scale: transform.scale }"
+			:style="{ transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})` }"
 			@transitionend.self="enableTransition = false"
 			@transitioncancel.self="enableTransition = false"
 		>
 			<div :class="[$style.contentWrapper, { [$style.hideForFallback]: hideForFallback }]">
-				<img
-					v-if="(!originalContentLoaded || !thumbnailContentLoaded) && (content.thumbnailUrl != null)"
-					:class="[$style.content, $style.thumbnail]"
-					:src="content.thumbnailUrl"
-					draggable="false"
-					@load="thumbnailContentLoaded = true"
+				<div
+					v-if="hide"
+					data-gallery-click-action="hidden"
+					:class="[$style.hidden, {
+						[$style.sensitive]: content.file?.isSensitive && prefer.s.highlightSensitiveMedia,
+					}]"
+					:style="hiddenStyle"
+					@click.stop="onHiddenClick"
 				>
-
-				<template v-if="activated">
-					<img
-						v-if="content.type === 'image'"
-						:class="[$style.content, $style.original]"
-						:src="content.url"
-						draggable="false"
-						@load="originalContentLoaded = true"
-					>
-					<video
-						v-else-if="content.type === 'video'"
-						:id="videoElId"
-						ref="videoEl"
-						:class="[$style.content, $style.original]"
-						:src="content.url"
-						draggable="false"
-						loop
-						autoplay
-						playsinline
-						@loadedmetadata="originalContentLoaded = true"
-					></video>
-				</template>
-
-				<div v-if="activated && !originalContentLoaded" :class="$style.loading">
-					<MkLoading/>
+					<div :class="$style.hiddenWrapper">
+						<MkBlurhash
+							v-if="content.type === 'image' && content.file?.blurhash != null"
+							:class="$style.hiddenBlurhash"
+							:blurhash="content.file.blurhash ?? null"
+							:height="content?.height ?? undefined"
+							:width="content?.width ?? undefined"
+						/>
+						<img
+							v-else-if="content.type === 'video' && content.thumbnailUrl != null"
+							:src="content.thumbnailUrl"
+							:class="$style.hiddenThumbnail"
+						/>
+						<div v-else :class="$style.hiddenPlaceholder"></div>
+						<div :class="[$style.hiddenText, { [$style.withBlur]: content.type === 'video' && content.thumbnailUrl != null }]">
+							<div :class="$style.hiddenTextWrapper">
+								<b v-if="content.file?.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</b>
+								<b v-else style="display: block;"><i class="ti" :class="content.type === 'image' ? 'ti-photo' : 'ti-movie'"></i> {{ content.type === 'image' ? i18n.ts.image : i18n.ts.video }}</b>
+								<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+							</div>
+						</div>
+					</div>
 				</div>
+				<template v-else>
+					<img
+						v-if="(!originalContentLoaded || !thumbnailContentLoaded) && (content.thumbnailUrl != null)"
+						:class="[$style.content, $style.thumbnail]"
+						:src="content.thumbnailUrl"
+						draggable="false"
+						@load="thumbnailContentLoaded = true"
+					>
+
+					<template v-if="activated">
+						<img
+							v-if="content.type === 'image'"
+							:class="$style.content"
+							:src="content.url"
+							:alt="content.file?.comment ?? undefined"
+							draggable="false"
+							@load="originalContentLoaded = true"
+						>
+						<video
+							v-else-if="content.type === 'video'"
+							ref="videoEl"
+							data-gallery-click-action="video"
+							:class="$style.content"
+							:src="content.url"
+							:alt="content.file?.comment ?? undefined"
+							draggable="false"
+							:controls="prefer.s.useNativeUiForVideoAudioPlayer"
+							playsinline
+							@loadedmetadata="originalContentLoaded = true"
+							@click.stop="onVideoClick"
+						></video>
+						<div v-if="content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer && !isVideoPlaying" data-gallery-click-action="video" :class="$style.playIconWrapper">
+							<div :class="$style.playIcon">
+								<i class="ti ti-player-play"></i>
+							</div>
+						</div>
+					</template>
+
+					<div v-if="activated && !originalContentLoaded" :class="$style.loading">
+						<MkLoading/>
+					</div>
+				</template>
 			</div>
 		</div>
 	</div>
@@ -69,22 +110,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="[$style.header, { [$style.infoShowing]: infoShowing && !isZooming }]">
 		<div :class="$style.title" class="_acrylic">
 			<button class="_button" :class="$style.titleButton"><i class="ti ti-dots" @click="openMenu"></i></button>
-			<div style="flex: 1; min-width: 0;">
-				<MkCondensedLine :minScale="0.5">{{ content.comment ?? content.filename }}</MkCondensedLine>
+			<div :class="$style.titleText">
+				<MkCondensedLine :minScale="0.5">{{ content.filename }}</MkCondensedLine>
 			</div>
 			<button class="_button" :class="$style.titleButton"><i class="ti ti-x" @click="closeThis"></i></button>
 		</div>
 	</div>
 
 	<div :class="[$style.footer, { [$style.infoShowing]: infoShowing && !isZooming }]">
-		<div v-if="content.type === 'video'" :class="$style.mediaControl">
-			<MkVideoContol v-if="videoEl != null" :videoElId="videoElId"/>
+		<div v-if="content.type === 'video' && !hide && !prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.mediaControl">
+			<MkVideoControl v-if="videoEl != null" ref="videoControl" :videoEl="videoEl"/>
 		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
+import * as Misskey from 'misskey-js';
+import MkBlurhash from './MkBlurhash.vue';
+
 type Size = {
 	width: number;
 	height: number;
@@ -103,7 +147,7 @@ export type Content = {
 	width?: number | null;
 	height?: number | null;
 	filename?: string | null;
-	comment?: string | null;
+	file?: Misskey.entities.DriveFile;
 	sourceElement?: HTMLElement | null;
 };
 
@@ -134,18 +178,26 @@ export function calculateSourceTransform({
 </script>
 
 <script lang="ts" setup>
-import { markRaw, nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
-import MkVideoContol from './MkVideoContol.vue';
+import { computed, nextTick, ref, useTemplateRef, markRaw, watch, provide } from 'vue';
+import { DI } from '@/di.js';
+import MkVideoControl from './MkVideoControl.vue';
+import XFileInfo from './MkImageGallery.item.fileinfo.vue';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
+import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
 import { makeDoubleTapDetector } from '@/utility/double-tap.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { isTouchUsing } from '@/utility/touch.js';
-import { genId } from '@/utility/id.js';
+import { getFileMenu } from '@/utility/get-file-menu.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const props = withDefaults(defineProps<{
 	content: Content;
 	activated: boolean;
+	initiallyOpened?: boolean;
 }>(), {
+	initiallyOpened: false,
 });
 
 const emit = defineEmits<{
@@ -159,22 +211,20 @@ const emit = defineEmits<{
 const rootEl = useTemplateRef('rootEl');
 const mainEl = useTemplateRef('mainEl');
 const videoEl = useTemplateRef('videoEl');
-const videoElId = genId();
+const videoControl = useTemplateRef('videoControl');
+
+provide(DI.mkImageGalleryItemVideoEl, videoEl);
 
 const originalContentLoaded = ref(false);
 const thumbnailContentLoaded = ref(false);
 const enableTransition = ref(false);
 const infoShowing = ref(false);
+const hide = ref(true);
+const isVideoPlaying = computed(() => videoControl.value?.isActuallyPlaying ?? false);
 let canOpenAnimation = false;
 
-onMounted(() => {
-	if (rootEl.value == null) return;
-	rootEl.value.offsetHeight; // reflow
-	infoShowing.value = true;
-});
-
 const headerSize = 30;
-const footerSize = props.content.type === 'video' ? 80 : 0;
+const footerSize = props.content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer ? 80 : 0;
 
 const padding = deviceKind === 'smartphone' ? {
 	top: Math.max(0, headerSize + 10),
@@ -212,18 +262,52 @@ const getContentRenderingRect = () => contentRenderingSize != null ? {
 	width: contentRenderingSize.width,
 	height: contentRenderingSize.height,
 } : null;
+
+const hiddenStyle = computed(() => {
+	if (contentRenderingSize == null) {
+		return {
+			width: '100%',
+			height: '100%',
+		};
+	}
+
+	return {
+		width: `${contentRenderingSize.width}px`,
+		height: `${contentRenderingSize.height}px`,
+	};
+});
+
+function shouldHideInGallery(content: Content): boolean {
+	if (content.file == null) return false;
+	const hiddenByDefault = shouldHideFileByDefault(content.file, true);
+	if (!hiddenByDefault) return false;
+
+	// ギャラリー起動時に最初に開いたセンシティブ画像だけは初期表示で隠さない
+	if (content.file.isSensitive && prefer.s.nsfw !== 'force' && props.initiallyOpened) {
+		return false;
+	}
+
+	return true;
+}
+
+function isValidRect(rect: Rect | null): rect is Rect {
+	return rect != null && rect.width > 0 && rect.height > 0;
+}
+
 const transform = ref({ x: 0, y: 0, scale: 1 });
 
 // 元のimg要素の位置・サイズ(とobject-fitの設定値)を取得して、そこからneutralの位置にアニメーションするためのscaleとtranslationを計算する
 function getScaleAndTranslationForSourceElement() {
 	const sourceElement = props.content.sourceElement;
 	const contentRenderingRect = getContentRenderingRect();
-	if (sourceElement == null || contentRenderingRect == null) return null;
+	if (sourceElement == null || !isValidRect(contentRenderingRect)) return null;
+	const sourceElementRect = sourceElement.getBoundingClientRect();
+	if (!isValidRect(sourceElementRect)) return null;
 
 	return calculateSourceTransform({
 		fit: window.getComputedStyle(sourceElement).objectFit,
 		contentRenderingRect,
-		sourceRect: sourceElement.getBoundingClientRect(),
+		sourceRect: sourceElementRect,
 	});
 }
 
@@ -241,7 +325,30 @@ const hideForFallback = ref(!canOpenAnimation);
 
 const isZooming = ref(false);
 
-function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
+function clampZoomTransform(nextTransform: { x: number; y: number; scale: number }) {
+	if (mainEl.value == null || nextTransform.scale <= 1) {
+		return {
+			x: 0,
+			y: 0,
+			scale: nextTransform.scale,
+		};
+	}
+
+	const panMargin = 24;
+	const rect = mainEl.value.getBoundingClientRect();
+	const minX = rect.width - rect.width * nextTransform.scale - panMargin;
+	const minY = rect.height - rect.height * nextTransform.scale - panMargin;
+	const maxX = panMargin;
+	const maxY = panMargin;
+
+	return {
+		x: Math.min(maxX, Math.max(minX, nextTransform.x)),
+		y: Math.min(maxY, Math.max(minY, nextTransform.y)),
+		scale: nextTransform.scale,
+	};
+}
+
+function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false, clamp = true) {
 	if (mainEl.value == null) return;
 
 	const newScale = transform.value.scale * factor;
@@ -258,9 +365,17 @@ function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
 		enableTransition.value = true;
 	}
 
-	transform.value.x = newTranslationX;
-	transform.value.y = newTranslationY;
-	transform.value.scale = newScale;
+	transform.value = clamp
+		? clampZoomTransform({
+			x: newTranslationX,
+			y: newTranslationY,
+			scale: newScale,
+		})
+		: {
+			x: newTranslationX,
+			y: newTranslationY,
+			scale: newScale,
+		};
 }
 
 function resetToNeutral() {
@@ -294,11 +409,6 @@ function closeThis() {
 	}
 }
 
-onMounted(() => {
-	rootEl.value.offsetHeight; // reflow
-	hideForFallback.value = false;
-});
-
 function onWheel(event: WheelEvent) {
 	event.preventDefault();
 
@@ -321,18 +431,28 @@ function onWheel(event: WheelEvent) {
 }
 
 function onZoomGesture(ev: { delta: number; centerX: number; centerY: number }) {
-	zoomInTo(ev.centerX, ev.centerY, 1 + ev.delta / 200);
+	zoomInTo(ev.centerX, ev.centerY, 1 + ev.delta / 200, false, false);
 }
 
 function onZoomGestureEnd() {
 	if (transform.value.scale < 1) {
 		isZooming.value = false;
 		resetToNeutral();
+		return;
 	}
+
+	const clampedTransform = clampZoomTransform(transform.value);
+	if (clampedTransform.x === transform.value.x && clampedTransform.y === transform.value.y && clampedTransform.scale === transform.value.scale) {
+		return;
+	}
+
+	enableTransition.value = true;
+	transform.value = clampedTransform;
 }
 
 let isDragging = false;
 let isClick = false;
+let clickAction: 'hidden' | 'video' | null = null;
 let lastX = 0;
 let lastY = 0;
 let currentPointerId: number | null = null;
@@ -345,6 +465,17 @@ let horizontalSwipeDelta = 0;
 const pointerEventCache = new Map<number, PointerEvent>();
 let pointerVec = { x: 0, y: 0 };
 
+function resolveClickAction(target: EventTarget | null): 'hidden' | 'video' | null {
+	if (!(target instanceof Element)) return null;
+
+	const action = target.closest('[data-gallery-click-action]')?.getAttribute('data-gallery-click-action');
+	if (action === 'hidden' || action === 'video') {
+		return action;
+	}
+
+	return null;
+}
+
 function onPointerdown(ev: PointerEvent) {
 	if (mainEl.value == null) return;
 	pointerEventCache.set(ev.pointerId, ev);
@@ -352,6 +483,7 @@ function onPointerdown(ev: PointerEvent) {
 
 	isDragging = true;
 	isClick = true;
+	clickAction = resolveClickAction(ev.target);
 	lastX = ev.clientX;
 	lastY = ev.clientY;
 	pointerVec = { x: 0, y: 0 };
@@ -406,8 +538,11 @@ function onPointermove(ev: PointerEvent) {
 		}
 
 		if (isZooming.value) {
-			transform.value.x += deltaX;
-			transform.value.y += deltaY;
+			transform.value = clampZoomTransform({
+				x: transform.value.x + deltaX,
+				y: transform.value.y + deltaY,
+				scale: transform.value.scale,
+			});
 		} else {
 			if (isVerticalSwiping) {
 				transform.value.y += deltaY;
@@ -496,6 +631,7 @@ function cancelPointerGesture() {
 	currentPointerId = null;
 	isDragging = false;
 	isClick = false;
+	clickAction = null;
 	pointerVec = { x: 0, y: 0 };
 	verticalSwipeDelta = 0;
 	horizontalSwipeDelta = 0;
@@ -508,8 +644,6 @@ function cancelPointerGesture() {
 }
 
 function onTouchstart(ev: TouchEvent) {
-	ev.preventDefault();
-	ev.stopPropagation();
 	doubleTapDetector.onTouchstart(ev);
 }
 
@@ -531,8 +665,11 @@ function updateInertia(timeStamp: number) {
 	if (isDragging) return;
 	if (!isZooming.value) return;
 	if (Math.abs(pointerVec.x) < 0.01 && Math.abs(pointerVec.y) < 0.01) return;
-	transform.value.x += pointerVec.x * timeDelta;
-	transform.value.y += pointerVec.y * timeDelta;
+	transform.value = clampZoomTransform({
+		x: transform.value.x + pointerVec.x * timeDelta,
+		y: transform.value.y + pointerVec.y * timeDelta,
+		scale: transform.value.scale,
+	});
 	pointerVec.x *= inertiaFactor ** (timeDelta / 16.67);
 	pointerVec.y *= inertiaFactor ** (timeDelta / 16.67);
 }
@@ -547,25 +684,59 @@ watch(isZooming, () => {
 });
 //#endregion
 
-watch(thumbnailContentLoaded, () => {
+function animateFromSourceToNeutral() {
 	if (rootEl.value == null) return;
 
 	const sourceElement = props.content.sourceElement;
-	if (sourceElement != null && props.activated) {
-		enableTransition.value = true;
-		rootEl.value.offsetHeight; // reflow
-		transform.value.x = 0;
-		transform.value.y = 0;
-		transform.value.scale = 1;
+	if (sourceElement == null || !props.activated) return;
 
-		nextTick(() => {
-			sourceElement.style.visibility = 'hidden';
-		});
-	}
+	enableTransition.value = true;
+	rootEl.value.offsetHeight; // reflow
+	transform.value.x = 0;
+	transform.value.y = 0;
+	transform.value.scale = 1;
+
+	nextTick(() => {
+		sourceElement.style.visibility = 'hidden';
+	});
+}
+
+watch(thumbnailContentLoaded, () => {
+	animateFromSourceToNeutral();
 }, { once: true });
 
-function onCLick() {
+watch([rootEl, hide], ([newRootEl, isHidden]) => {
+	if (newRootEl == null || !isHidden) return;
+	animateFromSourceToNeutral();
+}, { immediate: true });
+
+watch(props.content, (newContent) => {
+	hide.value = shouldHideInGallery(newContent);
+}, { deep: true, immediate: true });
+
+watch(rootEl, (newRootEl) => {
+	if (newRootEl == null) return;
+
+	infoShowing.value = true;
+	newRootEl.offsetHeight; // reflow
+	hideForFallback.value = false;
+}, { immediate: true });
+
+function onClick(ev: MouseEvent) {
 	if (!isClick) return;
+
+	const action = clickAction ?? resolveClickAction(ev.target);
+	clickAction = null;
+
+	if (action === 'hidden') {
+		void onHiddenClick();
+		return;
+	}
+
+	if (action === 'video') {
+		onVideoClick();
+		return;
+	}
 
 	if (!isTouchUsing) {
 		if (isZooming.value) {
@@ -577,9 +748,80 @@ function onCLick() {
 	}
 }
 
-function openMenu() {
-	// TODO
+async function onHiddenClick() {
+	if (hide.value) {
+		if (props.content.file == null || await canRevealFile(props.content.file)) {
+			hide.value = false;
+			if (props.content.type === 'video' && videoEl.value != null) {
+				videoEl.value.play();
+			}
+		}
+	}
 }
+
+function onVideoClick() {
+	if (!prefer.s.useNativeUiForVideoAudioPlayer) {
+		if (videoEl.value == null) return;
+
+		if (videoEl.value.paused) {
+			videoEl.value.play();
+		} else {
+			videoEl.value.pause();
+		}
+	}
+}
+
+function openMenu(ev: PointerEvent) {
+	const menu: MenuItem[] = [];
+
+	// isTouchUsingにする？
+	menu.push({
+		type: 'component',
+		component: markRaw(XFileInfo),
+		props: {
+			content: props.content,
+		},
+	}, {
+		type: 'divider',
+	});
+
+	menu.push({
+		text: i18n.ts.hide,
+		icon: 'ti ti-eye-off',
+		action: () => {
+			hide.value = true;
+		},
+	});
+
+	if (props.content.file != null) {
+		menu.push({ type: 'divider' });
+		menu.push(...getFileMenu(props.content.file));
+	}
+
+	os.popupMenu(menu, (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+}
+
+function onActive() {
+	if (videoEl.value != null) {
+		videoEl.value.play();
+	}
+}
+
+function onDeactive() {
+	if (isZooming.value) {
+		isZooming.value = false;
+		resetToNeutral();
+	}
+	if (videoEl.value != null && props.activated) {
+		videoEl.value.pause();
+	}
+}
+
+defineExpose({
+	onActive,
+	onDeactive,
+	closeThis,
+});
 </script>
 
 <style lang="scss" module>
@@ -632,7 +874,7 @@ function openMenu() {
 }
 
 .transition {
-	transition: translate 200ms ease, scale 200ms ease;
+	transition: transform 200ms ease;
 }
 
 .contentWrapper {
@@ -645,6 +887,104 @@ function openMenu() {
 .hideForFallback {
 	scale: 0.7 !important;
 	opacity: 0 !important;
+}
+
+.playIconWrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: grid;
+	place-items: center;
+}
+
+.playIcon {
+	display: grid;
+	place-items: center;
+	width: 50px;
+	height: 50px;
+	border-radius: 100%;
+	font-size: 120%;
+	background: var(--MI_THEME-accent);
+	color: var(--MI_THEME-fgOnAccent);
+	scale: 1;
+	transition: scale 100ms ease;
+}
+
+.playIconWrapper:hover .playIcon,
+.playIcon:hover {
+	scale: 1.2;
+}
+
+.hidden {
+	position: absolute;
+	inset: 0;
+	margin: auto;
+	display: grid;
+	place-items: center;
+	width: 100%;
+	height: 100%;
+	overflow: clip;
+
+	&.sensitive::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		border-radius: inherit;
+		box-shadow: inset 0 0 0 4px var(--MI_THEME-warn);
+	}
+}
+
+.hiddenWrapper {
+	position: relative;
+	width: 100%;
+	max-height: 100%;
+	min-height: 0;
+}
+
+.hiddenBlurhash {
+	display: block;
+	width: 100%;
+	height: 100%;
+	filter: brightness(0.7);
+}
+
+.hiddenThumbnail {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	filter: brightness(0.7);
+}
+
+.hiddenPlaceholder {
+	width: 100%;
+	height: auto;
+	aspect-ratio: 16 / 9;
+	background: #000;
+}
+
+.hiddenText {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	cursor: pointer;
+	color: #fff;
+
+	&.withBlur {
+		backdrop-filter: blur(12px);
+	}
 }
 
 .footer {
@@ -676,16 +1016,28 @@ function openMenu() {
 
 .title {
 	display: flex;
+	align-items: center;
 	width: max-content;
 	max-width: calc(100% - 20px);
 	margin: auto;
-	padding: 6px 0px;
 	box-sizing: border-box;
 	border-radius: 0 0 10px 10px;
 	font-size: 85%;
 }
+
 .titleButton {
-	width: 30px;
+	flex-shrink: 0;
+	width: 32px;
+	height: 32px;
+}
+
+.titleText {
+	flex-grow: 1;
+	height: 100%;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding: 6px 0px;
 }
 
 .mediaControl {

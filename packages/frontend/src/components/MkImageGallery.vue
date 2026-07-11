@@ -27,7 +27,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<div v-for="(content, i) in contents" :key="content.url" ref="itemEl" :class="$style.item">
 					<XItem
+						:ref="(comp) => { items.set(i, comp as InstanceType<typeof XItem>); }"
 						:content="content"
+						:initiallyOpened="i === (props.defaultIndex ?? 0)"
 						:activated="activatedIndexes.has(i)"
 						@close="onItemClose"
 						@horizontalSwipe="onHorizontalSwipe"
@@ -46,12 +48,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+import { ref, watch, nextTick, onBeforeUnmount, onMounted } from 'vue';
 import XItem from './MkImageGallery.item.vue';
 import type { Content } from './MkImageGallery.item.vue';
 import type { Keymap } from '@/utility/hotkey.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { isTouchUsing } from '@/utility/touch.js';
 
@@ -66,10 +67,22 @@ const emit = defineEmits<{
 }>();
 
 const activatedIndexes = ref(new Set<number>());
+const items = new Map<number, InstanceType<typeof XItem>>();
 const currentIndex = ref(props.defaultIndex ?? 0);
-watch(currentIndex, (newIndex) => {
+
+watch(currentIndex, (newIndex, oldIndex) => {
 	activatedIndexes.value.add(newIndex);
+
+	nextTick(() => {
+		if (oldIndex != null && items.has(oldIndex)) {
+			items.get(oldIndex)!.onDeactive();
+		}
+		if (items.has(newIndex)) {
+			items.get(newIndex)!.onActive();
+		}
+	});
 }, { immediate: true });
+
 watch(currentIndex, (newIndex) => {
 	for (let i = 0; i < props.contents.length; i++) {
 		const content = props.contents[i];
@@ -89,11 +102,12 @@ const contentsOffset = ref(currentIndex.value * -window.innerWidth);
 const enableSlideTransition = ref(false);
 let currentScrollLeft = contentsOffset.value;
 
-// TODO: unmountで解除
-window.addEventListener('resize', () => {
+function onResize() {
 	screenWidth.value = window.innerWidth;
 	scrollToCurrentIndex();
-});
+}
+
+window.addEventListener('resize', onResize, { passive: true });
 
 function onHorizontalSwipe(offset: number) {
 	if (currentIndex.value === 0 && offset > 0) { // これ以上戻れない
@@ -117,6 +131,14 @@ function scrollToCurrentIndex() {
 
 	enableSlideTransition.value = true;
 	contentsOffset.value = targetOffset;
+}
+
+function close() {
+	if (items.has(currentIndex.value)) {
+		items.get(currentIndex.value)!.closeThis();
+	} else {
+		showing.value = false;
+	}
 }
 
 function onSlideTransitionFinished(ev: TransitionEvent) {
@@ -155,6 +177,17 @@ function onAfterLeave() {
 	emit('closed');
 }
 
+function onPopState() {
+	if (showing.value) {
+		close();
+	}
+}
+
+onMounted(() => {
+	window.history.pushState(null, '', '#pswp');
+	window.addEventListener('popstate', onPopState);
+});
+
 const keymap = {
 	'esc': {
 		allowRepeat: true,
@@ -169,6 +202,15 @@ const keymap = {
 		callback: () => onNext(),
 	},
 } as const satisfies Keymap;
+
+onBeforeUnmount(() => {
+	window.removeEventListener('resize', onResize);
+	window.removeEventListener('popstate', onPopState);
+});
+
+defineExpose({
+	close,
+});
 </script>
 
 <style lang="scss" module>

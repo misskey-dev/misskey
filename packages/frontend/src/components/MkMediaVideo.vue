@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		$style.root,
 		(video.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive,
 	]"
-	@contextmenu.stop
+	@contextmenu.stop="onContextmenu"
 	@keydown.stop
 >
 	<button v-if="hide" :class="$style.hidden" @click="reveal">
@@ -22,39 +22,48 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</button>
 
-	<div v-else :class="$style.videoRoot">
-		<video
-			ref="videoEl"
+	<div v-else :class="$style.videoRoot" @click="emit('mediaClick', $event)">
+		<img
+			v-if="video.thumbnailUrl"
 			:class="$style.video"
-			:poster="video.thumbnailUrl ?? undefined"
+			:src="video.thumbnailUrl"
+			:alt="video.comment ?? undefined"
+		/>
+		<video
+			v-else
+			:class="$style.video"
 			:alt="video.comment"
 			preload="metadata"
-			playsinline
 		>
 			<source :src="video.url">
 		</video>
-
 		<div :class="$style.playIconWrapper">
 			<div :class="$style.playIcon">
 				<i class="ti ti-player-play"></i>
 			</div>
 		</div>
+		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
+		<i class="ti ti-eye-off" :class="$style.hide" @click.stop="hide = true"></i>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import bytes from '@/filters/bytes.js';
-import { hms } from '@/filters/hms.js';
 import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
+import * as os from '@/os.js';
+import { getFileMenu } from '@/utility/get-file-menu.js';
 import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
 
 const props = defineProps<{
 	video: Misskey.entities.DriveFile;
+}>();
+
+const emit = defineEmits<{
+	(event: 'mediaClick', ev: PointerEvent): void;
 }>();
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
@@ -66,6 +75,14 @@ async function reveal() {
 	}
 
 	hide.value = false;
+}
+
+function showMenu(ev: PointerEvent) {
+	os.popupMenu(getFileMenu(props.video, (newHide) => { hide.value = newHide; }), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+}
+
+function onContextmenu(ev: PointerEvent) {
+	os.contextMenu(getFileMenu(props.video, (newHide) => { hide.value = newHide; }), ev);
 }
 </script>
 
@@ -102,42 +119,6 @@ async function reveal() {
 	}
 }
 
-.indicators {
-	display: inline-flex;
-	position: absolute;
-	top: 10px;
-	left: 10px;
-	pointer-events: none;
-	opacity: .5;
-	gap: 6px;
-}
-
-.indicator {
-	/* Hardcode to black because either --MI_THEME-bg or --MI_THEME-fg makes it hard to read in dark/light mode */
-	background-color: black;
-	border-radius: 6px;
-	color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
-	display: inline-block;
-	font-weight: bold;
-	font-size: 0.8em;
-	padding: 2px 5px;
-}
-
-.hide {
-	display: block;
-	position: absolute;
-	border-radius: 6px;
-	background-color: var(--MI_THEME-fg);
-	color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
-	font-size: 12px;
-	opacity: .5;
-	padding: 5px 8px;
-	text-align: center;
-	cursor: pointer;
-	top: 12px;
-	right: 12px;
-}
-
 .hidden {
 	width: 100%;
 	height: 100%;
@@ -147,7 +128,7 @@ async function reveal() {
 	font: inherit;
 	color: inherit;
 	cursor: pointer;
-	padding: 60px 0;
+	padding: 12px 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -171,6 +152,7 @@ async function reveal() {
 	display: block;
 	height: 100%;
 	width: 100%;
+	object-fit: contain;
 }
 
 .playIconWrapper {
@@ -194,5 +176,38 @@ async function reveal() {
 	color: var(--MI_THEME-fgOnAccent);
 	scale: 1;
 	transition: scale 100ms ease;
+}
+
+.menu {
+	display: block;
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.3);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	border-radius: 9px 0 0 0;
+	color: #fff;
+	font-size: 0.8em;
+	width: 28px;
+	height: 28px;
+	text-align: center;
+	bottom: 0;
+	right: 0;
+}
+
+.hide {
+	display: block;
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.3);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	border-radius: 0 0 0 9px;
+	color: #fff;
+	font-size: 12px;
+	opacity: .5;
+	padding: 5px 8px;
+	text-align: center;
+	cursor: pointer;
+	top: 0;
+	right: 0;
 }
 </style>
