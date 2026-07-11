@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<div :class="$style.contentWrapper">
 				<img
-					v-if="!originalContentLoaded || !thumbnailContentLoaded && (content.thumbnailUrl != null)"
+					v-if="(!originalContentLoaded || !thumbnailContentLoaded) && (content.thumbnailUrl != null)"
 					:class="[$style.content, $style.thumbnail]"
 					:src="content.thumbnailUrl"
 					draggable="false"
@@ -194,9 +194,9 @@ const contentRenderingRect = contentRenderingSize != null ? {
 const transform = ref({ x: 0, y: 0, scale: 1 });
 
 // 元のimg要素の位置・サイズ(とobject-fitの設定値)を取得して、そこからneutralの位置にアニメーションするためのscaleとtranslationを計算する
-function getScaleAndTranslationForSourceElement(): { x: number; y: number; scale: number } {
+function getScaleAndTranslationForSourceElement() {
 	const sourceElement = props.content.sourceElement;
-	if (sourceElement == null || contentRenderingRect == null) return { x: 0, y: 0, scale: 1 };
+	if (sourceElement == null || contentRenderingRect == null) return null;
 
 	return calculateSourceTransform({
 		fit: window.getComputedStyle(sourceElement).objectFit,
@@ -207,9 +207,11 @@ function getScaleAndTranslationForSourceElement(): { x: number; y: number; scale
 
 if (props.content.sourceElement != null && props.activated) {
 	const sourceTransform = getScaleAndTranslationForSourceElement();
-	transform.value.scale = sourceTransform.scale;
-	transform.value.x = sourceTransform.x;
-	transform.value.y = sourceTransform.y;
+	if (sourceTransform != null) {
+		transform.value.scale = sourceTransform.scale;
+		transform.value.x = sourceTransform.x;
+		transform.value.y = sourceTransform.y;
+	}
 }
 
 const isZooming = ref(false);
@@ -251,17 +253,21 @@ function resetToNeutral() {
 function closeThis() {
 	emit('close');
 
-	if (rootEl.value == null) return;
-
 	infoShowing.value = false;
 
-	const sourceTransform = getScaleAndTranslationForSourceElement();
+	if (rootEl.value == null) return;
 
 	enableTransition.value = true;
 	rootEl.value.offsetHeight; // reflow
-	transform.value.x = sourceTransform.x;
-	transform.value.y = sourceTransform.y;
-	transform.value.scale = sourceTransform.scale;
+
+	const sourceTransform = getScaleAndTranslationForSourceElement();
+	if (sourceTransform != null) {
+		transform.value.x = sourceTransform.x;
+		transform.value.y = sourceTransform.y;
+		transform.value.scale = sourceTransform.scale;
+	} else {
+		transform.value.y = transform.value.y > 0 ? window.innerHeight : -window.innerHeight;
+	}
 }
 
 function onWheel(event: WheelEvent) {

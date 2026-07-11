@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			]"
 		>
 			<template v-for="media in mediaList.filter(media => previewable(media))">
-				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media"/>
+				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media" @click="openGallery(media.id)"/>
 				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :marker="`${markerId}:${media.id}`" :disableImageLink="true" :class="$style.media" :image="media" :raw="raw" @click="openGallery(media.id)"/>
 			</template>
 		</div>
@@ -34,7 +34,7 @@ import * as Misskey from 'misskey-js';
 import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
-import XVideo from '@/components/MkMediaVideo.vue';
+import XVideo from '@/components/MkMediaVideoPreview.vue';
 import * as os from '@/os.js';
 import { focusParent } from '@/utility/focus.js';
 import { prefer } from '@/preferences.js';
