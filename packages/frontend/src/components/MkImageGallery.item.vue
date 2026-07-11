@@ -300,7 +300,7 @@ const transform = ref({ x: 0, y: 0, scale: 1 });
 function getScaleAndTranslationForSourceElement() {
 	const sourceElement = props.content.sourceElement;
 	const contentRenderingRect = getContentRenderingRect();
-	if (sourceElement == null || contentRenderingRect == null || !isValidRect(contentRenderingRect)) return null;
+	if (sourceElement == null || !isValidRect(contentRenderingRect)) return null;
 	const sourceElementRect = sourceElement.getBoundingClientRect();
 	if (!isValidRect(sourceElementRect)) return null;
 
