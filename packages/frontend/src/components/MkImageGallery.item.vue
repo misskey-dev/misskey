@@ -195,8 +195,8 @@ function calcContentRenderingSize(content: Content) {
 
 const contentRenderingSize = calcContentRenderingSize(props.content);
 const contentRenderingRect = contentRenderingSize != null ? {
-	left: (window.innerWidth - contentRenderingSize.width) / 2,
-	top: (window.innerHeight - contentRenderingSize.height) / 2,
+	left: (window.innerWidth - contentRenderingSize.width + padding.left - padding.right) / 2,
+	top: (window.innerHeight - contentRenderingSize.height + padding.top - padding.bottom) / 2,
 	width: contentRenderingSize.width,
 	height: contentRenderingSize.height,
 } : null;
