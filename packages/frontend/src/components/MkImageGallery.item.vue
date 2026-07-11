@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<div
 			:class="[$style.transformer, { [$style.transition]: enableTransition }]"
-			:style="{ translate: `${transform.x}px ${transform.y}px`, scale: transform.scale }"
+			:style="{ transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})` }"
 			@transitionend.self="enableTransition = false"
 			@transitioncancel.self="enableTransition = false"
 		>
@@ -849,7 +849,7 @@ defineExpose({
 }
 
 .transition {
-	transition: translate 200ms ease, scale 200ms ease;
+	transition: transform 200ms ease;
 }
 
 .contentWrapper {
