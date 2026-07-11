@@ -68,7 +68,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="[$style.header, { [$style.infoShowing]: infoShowing && !isZooming }]">
 		<div :class="$style.title" class="_acrylic">
-			<MkCondensedLine :minScale="0.5">{{ content.comment ?? content.filename }}</MkCondensedLine>
+			<button class="_button" :class="$style.titleButton"><i class="ti ti-x" @click="closeThis"></i></button>
+			<div style="flex: 1; min-width: 0;">
+				<MkCondensedLine :minScale="0.5">{{ content.comment ?? content.filename }}</MkCondensedLine>
+			</div>
+			<button class="_button" :class="$style.titleButton"><i class="ti ti-x" @click="closeThis"></i></button>
 		</div>
 	</div>
 
@@ -665,13 +669,17 @@ function onCLick() {
 }
 
 .title {
+	display: flex;
 	width: max-content;
 	max-width: calc(100% - 20px);
 	margin: auto;
-	padding: 6px 14px;
+	padding: 6px 0px;
 	box-sizing: border-box;
 	border-radius: 0 0 10px 10px;
 	font-size: 85%;
+}
+.titleButton {
+	width: 30px;
 }
 
 .mediaControl {
