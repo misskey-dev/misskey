@@ -28,41 +28,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@transitionend.self="enableTransition = false"
 			@transitioncancel.self="enableTransition = false"
 		>
-			<img
-				v-if="!originalContentLoaded || !thumbnailContentLoaded"
-				:class="[$style.content, $style.thumbnail]"
-				:src="content.thumbnailUrl ?? content.url"
-				:width="content.width === 0 || content.width == null ? undefined : content.width"
-				:height="content.height === 0 || content.height == null ? undefined : content.height"
-				:style="{ width: contentRenderingSize == null ? '100%' : `${contentRenderingSize.width}px`, height: contentRenderingSize == null ? 'auto' : `${contentRenderingSize.height}px` }"
-				draggable="false"
-				@load="thumbnailContentLoaded = true"
-			>
-
-			<template v-if="activated">
+			<div :class="$style.contentWrapper">
 				<img
-					v-if="content.type === 'image'"
-					:class="[$style.content, $style.original]"
-					:src="content.url"
+					v-if="!originalContentLoaded || !thumbnailContentLoaded && (content.thumbnailUrl != null)"
+					:class="[$style.content, $style.thumbnail]"
+					:src="content.thumbnailUrl"
 					:width="content.width === 0 || content.width == null ? undefined : content.width"
 					:height="content.height === 0 || content.height == null ? undefined : content.height"
-					:style="{ width: contentRenderingSize == null ? '100%' : `${contentRenderingSize.width}px`, height: contentRenderingSize == null ? 'auto' : `${contentRenderingSize.height}px` }"
+					:style="{ width: contentRenderingSize == null ? '100%' : `${contentRenderingSize.width}px`, height: contentRenderingSize == null ? '100%' : `${contentRenderingSize.height}px` }"
 					draggable="false"
-					@load="originalContentLoaded = true"
+					@load="thumbnailContentLoaded = true"
 				>
-				<video
-					v-else-if="content.type === 'video'"
-					:class="[$style.content, $style.original]"
-					:src="content.url"
-					:width="content.width === 0 || content.width == null ? undefined : content.width"
-					:height="content.height === 0 || content.height == null ? undefined : content.height"
-					:style="{ width: contentRenderingSize == null ? '100%' : `${contentRenderingSize.width}px`, height: contentRenderingSize == null ? 'auto' : `${contentRenderingSize.height}px` }"
-					draggable="false"
-					controls
-					autoplay
-					@loadedmetadata="originalContentLoaded = true"
-				></video>
-			</template>
+
+				<template v-if="activated">
+					<img
+						v-if="content.type === 'image'"
+						:class="[$style.content, $style.original]"
+						:src="content.url"
+						:width="content.width === 0 || content.width == null ? undefined : content.width"
+						:height="content.height === 0 || content.height == null ? undefined : content.height"
+						:style="{ width: contentRenderingSize == null ? '100%' : `${contentRenderingSize.width}px`, height: contentRenderingSize == null ? '100%' : `${contentRenderingSize.height}px` }"
+						draggable="false"
+						@load="originalContentLoaded = true"
+					>
+					<video
+						v-else-if="content.type === 'video'"
+						:class="[$style.content, $style.original]"
+						:src="content.url"
+						:width="content.width === 0 || content.width == null ? undefined : content.width"
+						:height="content.height === 0 || content.height == null ? undefined : content.height"
+						:style="{ width: contentRenderingSize == null ? '100%' : `${contentRenderingSize.width}px`, height: contentRenderingSize == null ? '100%' : `${contentRenderingSize.height}px` }"
+						draggable="false"
+						loop
+						autoplay
+						@loadedmetadata="originalContentLoaded = true"
+					></video>
+				</template>
+			</div>
 		</div>
 	</div>
 
@@ -93,7 +95,7 @@ export type Content = {
 	id: string;
 	type: 'image' | 'video';
 	url: string;
-	thumbnailUrl: string | null;
+	thumbnailUrl?: string | null;
 	width?: number | null;
 	height?: number | null;
 	filename?: string | null;
@@ -162,17 +164,24 @@ onMounted(() => {
 	infoShowing.value = true;
 });
 
-const padding = deviceKind === 'smartphone' ? 0 : 30;
-const ANIMATION_DURATION = 200;
-const headerAreaSize = 0;
-const footerAreaSize = 30;
+const padding = deviceKind === 'smartphone' ? {
+	top: 0,
+	right: 0,
+	bottom: 30,
+	left: 0,
+} : {
+	top: 30,
+	right: 30,
+	bottom: 60,
+	left: 30,
+};
 
 // maxからはみ出す場合は縮小、maxに満たない場合は拡大する(contain)
 function calcContentRenderingSize(content: Content) {
 	if (content.width == null || content.height == null || content.width === 0 || content.height === 0) return null;
 
-	const maxWidth = window.innerWidth - padding * 2;
-	const maxHeight = window.innerHeight - headerAreaSize - footerAreaSize - padding * 2;
+	const maxWidth = window.innerWidth - padding.left - padding.right;
+	const maxHeight = window.innerHeight - padding.top - padding.bottom;
 
 	const widthRatio = maxWidth / content.width;
 	const heightRatio = maxHeight / content.height;
@@ -187,7 +196,7 @@ function calcContentRenderingSize(content: Content) {
 const contentRenderingSize = calcContentRenderingSize(props.content);
 const contentRenderingRect = contentRenderingSize != null ? {
 	left: (window.innerWidth - contentRenderingSize.width) / 2,
-	top: headerAreaSize + (window.innerHeight - headerAreaSize - footerAreaSize - contentRenderingSize.height) / 2,
+	top: (window.innerHeight - contentRenderingSize.height) / 2,
 	width: contentRenderingSize.width,
 	height: contentRenderingSize.height,
 } : null;
@@ -561,11 +570,12 @@ function onCLick() {
 	display: block;
 	user-select: none;
 	position: absolute;
-	top: v-bind("headerAreaSize + 'px'");
+	top: 0;
 	left: 0;
 	right: 0;
-	bottom: v-bind("footerAreaSize + 'px'");
+	bottom: 0;
 	margin: auto;
+	object-fit: contain; // width/heightが不明なとき用のフォールバック
 }
 
 .loading {
@@ -583,11 +593,19 @@ function onCLick() {
 .transformer {
 	width: 100%;
 	height: 100%;
+	box-sizing: border-box;
+	padding: v-bind("padding.top + 'px'") v-bind("padding.right + 'px'") v-bind("padding.bottom + 'px'") v-bind("padding.left + 'px'");
 	transform-origin: left top;
 }
 
 .transition {
 	transition: translate 200ms ease, scale 200ms ease;
+}
+
+.contentWrapper {
+	position: relative;
+	width: 100%;
+	height: 100%;
 }
 
 .footer {
