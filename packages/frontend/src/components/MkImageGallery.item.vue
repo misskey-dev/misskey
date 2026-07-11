@@ -33,9 +33,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-if="!originalContentLoaded || !thumbnailContentLoaded && (content.thumbnailUrl != null)"
 					:class="[$style.content, $style.thumbnail]"
 					:src="content.thumbnailUrl"
-					:width="content.width === 0 || content.width == null ? undefined : content.width"
-					:height="content.height === 0 || content.height == null ? undefined : content.height"
-					:style="{ width: contentRenderingSize == null ? '100%' : `${contentRenderingSize.width}px`, height: contentRenderingSize == null ? '100%' : `${contentRenderingSize.height}px` }"
 					draggable="false"
 					@load="thumbnailContentLoaded = true"
 				>
@@ -45,9 +42,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						v-if="content.type === 'image'"
 						:class="[$style.content, $style.original]"
 						:src="content.url"
-						:width="content.width === 0 || content.width == null ? undefined : content.width"
-						:height="content.height === 0 || content.height == null ? undefined : content.height"
-						:style="{ width: contentRenderingSize == null ? '100%' : `${contentRenderingSize.width}px`, height: contentRenderingSize == null ? '100%' : `${contentRenderingSize.height}px` }"
 						draggable="false"
 						@load="originalContentLoaded = true"
 					>
@@ -55,9 +49,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						v-else-if="content.type === 'video'"
 						:class="[$style.content, $style.original]"
 						:src="content.url"
-						:width="content.width === 0 || content.width == null ? undefined : content.width"
-						:height="content.height === 0 || content.height == null ? undefined : content.height"
-						:style="{ width: contentRenderingSize == null ? '100%' : `${contentRenderingSize.width}px`, height: contentRenderingSize == null ? '100%' : `${contentRenderingSize.height}px` }"
 						draggable="false"
 						loop
 						autoplay
@@ -575,7 +566,9 @@ function onCLick() {
 	right: 0;
 	bottom: 0;
 	margin: auto;
-	object-fit: contain; // width/heightが不明なとき用のフォールバック
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
 }
 
 .loading {
