@@ -11,6 +11,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import type { MenuItem } from '@/types/menu.js';
 
+/** 添付ファイルなど、公開ファイル用のメニュー */
 export function getFileMenu(file: Misskey.entities.DriveFile, onHideStateUpdated?: (newState: boolean) => void): MenuItem[] {
 	const menuItems: MenuItem[] = [];
 
