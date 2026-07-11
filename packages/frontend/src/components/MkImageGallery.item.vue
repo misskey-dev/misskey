@@ -319,26 +319,6 @@ const hideForFallback = ref(!canOpenAnimation);
 
 const isZooming = ref(false);
 
-function clampZoomTransform(nextTransform: { x: number; y: number; scale: number }) {
-	if (mainEl.value == null || nextTransform.scale <= 1) {
-		return {
-			x: 0,
-			y: 0,
-			scale: nextTransform.scale,
-		};
-	}
-
-	const rect = mainEl.value.getBoundingClientRect();
-	const minX = rect.width - rect.width * nextTransform.scale;
-	const minY = rect.height - rect.height * nextTransform.scale;
-
-	return {
-		x: Math.min(0, Math.max(minX, nextTransform.x)),
-		y: Math.min(0, Math.max(minY, nextTransform.y)),
-		scale: nextTransform.scale,
-	};
-}
-
 function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
 	if (mainEl.value == null) return;
 
@@ -356,11 +336,9 @@ function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
 		enableTransition.value = true;
 	}
 
-	transform.value = clampZoomTransform({
-		x: newTranslationX,
-		y: newTranslationY,
-		scale: newScale,
-	});
+	transform.value.x = newTranslationX;
+	transform.value.y = newTranslationY;
+	transform.value.scale = newScale;
 }
 
 function resetToNeutral() {
@@ -514,11 +492,8 @@ function onPointermove(ev: PointerEvent) {
 		}
 
 		if (isZooming.value) {
-			transform.value = clampZoomTransform({
-				x: transform.value.x + deltaX,
-				y: transform.value.y + deltaY,
-				scale: transform.value.scale,
-			});
+			transform.value.x += deltaX;
+			transform.value.y += deltaY;
 		} else {
 			if (isVerticalSwiping) {
 				transform.value.y += deltaY;
@@ -641,11 +616,8 @@ function updateInertia(timeStamp: number) {
 	if (isDragging) return;
 	if (!isZooming.value) return;
 	if (Math.abs(pointerVec.x) < 0.01 && Math.abs(pointerVec.y) < 0.01) return;
-	transform.value = clampZoomTransform({
-		x: transform.value.x + pointerVec.x * timeDelta,
-		y: transform.value.y + pointerVec.y * timeDelta,
-		scale: transform.value.scale,
-	});
+	transform.value.x += pointerVec.x * timeDelta;
+	transform.value.y += pointerVec.y * timeDelta;
 	pointerVec.x *= inertiaFactor ** (timeDelta / 16.67);
 	pointerVec.y *= inertiaFactor ** (timeDelta / 16.67);
 }
