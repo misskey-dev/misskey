@@ -290,18 +290,24 @@ function shouldHideInGallery(content: Content): boolean {
 	return true;
 }
 
+function isValidRect(rect: Rect | null): rect is Rect {
+	return rect != null && rect.width > 0 && rect.height > 0;
+}
+
 const transform = ref({ x: 0, y: 0, scale: 1 });
 
 // 元のimg要素の位置・サイズ(とobject-fitの設定値)を取得して、そこからneutralの位置にアニメーションするためのscaleとtranslationを計算する
 function getScaleAndTranslationForSourceElement() {
 	const sourceElement = props.content.sourceElement;
 	const contentRenderingRect = getContentRenderingRect();
-	if (sourceElement == null || contentRenderingRect == null) return null;
+	if (sourceElement == null || contentRenderingRect == null || !isValidRect(contentRenderingRect)) return null;
+	const sourceElementRect = sourceElement.getBoundingClientRect();
+	if (!isValidRect(sourceElementRect)) return null;
 
 	return calculateSourceTransform({
 		fit: window.getComputedStyle(sourceElement).objectFit,
 		contentRenderingRect,
-		sourceRect: sourceElement.getBoundingClientRect(),
+		sourceRect: sourceElementRect,
 	});
 }
 
