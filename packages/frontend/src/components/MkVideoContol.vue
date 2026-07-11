@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
+import { ref, useTemplateRef, computed, watch, onDeactivated, onActivated, onMounted, onBeforeUnmount } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import { hms } from '@/filters/hms.js';
 import { i18n } from '@/i18n.js';
@@ -113,7 +113,7 @@ function showMenu(ev: PointerEvent) {
 // MediaControl: Common State
 const oncePlayed = ref(false);
 const isReady = ref(false);
-const isPlaying = ref(true);
+const isPlaying = ref(false);
 const isActuallyPlaying = ref(false);
 const elapsedTimeMs = ref(0);
 const durationMs = ref(0);
@@ -164,7 +164,6 @@ function toggleMute() {
 
 let onceInit = false;
 let mediaTickFrameId: number | null = null;
-let stopVideoElWatch: () => void;
 
 function init() {
 	if (onceInit) return;
@@ -184,6 +183,11 @@ function init() {
 		if (videoEl.loop !== loop.value) {
 			loop.value = videoEl.loop;
 		}
+
+		if (videoEl.paused !== !isPlaying.value) {
+			isPlaying.value = !videoEl.paused;
+		}
+
 		mediaTickFrameId = window.requestAnimationFrame(updateMediaTick);
 	}
 
@@ -236,6 +240,12 @@ onMounted(() => {
 
 onActivated(() => {
 	init();
+});
+
+onBeforeUnmount(() => {
+	if (mediaTickFrameId != null) {
+		window.cancelAnimationFrame(mediaTickFrameId);
+	}
 });
 
 </script>
