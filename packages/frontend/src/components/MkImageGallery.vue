@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, nextTick } from 'vue';
+import { ref, watch, nextTick, onBeforeUnmount } from 'vue';
 import XItem from './MkImageGallery.item.vue';
 import type { Content } from './MkImageGallery.item.vue';
 import type { Keymap } from '@/utility/hotkey.js';
@@ -102,11 +102,12 @@ const contentsOffset = ref(currentIndex.value * -window.innerWidth);
 const enableSlideTransition = ref(false);
 let currentScrollLeft = contentsOffset.value;
 
-// TODO: unmountで解除
-window.addEventListener('resize', () => {
+function onResize() {
 	screenWidth.value = window.innerWidth;
 	scrollToCurrentIndex();
-});
+}
+
+window.addEventListener('resize', onResize, { passive: true });
 
 function onHorizontalSwipe(offset: number) {
 	if (currentIndex.value === 0 && offset > 0) { // これ以上戻れない
@@ -182,6 +183,10 @@ const keymap = {
 		callback: () => onNext(),
 	},
 } as const satisfies Keymap;
+
+onBeforeUnmount(() => {
+	window.removeEventListener('resize', onResize);
+});
 </script>
 
 <style lang="scss" module>
