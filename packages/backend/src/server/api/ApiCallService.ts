@@ -151,7 +151,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		endpoint: IEndpoint & { exec: any },
 		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
-	): void {
+	): Promise<void> {
 		const body = request.method === 'GET'
 			? request.query
 			: request.body;
@@ -162,10 +162,11 @@ export class ApiCallService implements OnApplicationShutdown {
 			: body?.['i'];
 		if (token != null && typeof token !== 'string') {
 			reply.code(400);
-			return;
+			return Promise.resolve();
 		}
-		this.authenticateService.authenticate(token).then(([user, app]) => {
-			this.call(endpoint, user, app, body, null, request).then((res) => {
+
+		return this.telemetryService.startSpan('API: ' + endpoint.name, () => this.authenticateService.authenticate(token).then(([user, app]) => {
+			const call = this.call(endpoint, user, app, body, null, request).then((res) => {
 				if (request.method === 'GET' && endpoint.meta.cacheSec && !token && !user) {
 					reply.header('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
 				}
@@ -177,9 +178,11 @@ export class ApiCallService implements OnApplicationShutdown {
 			if (user) {
 				this.logIp(request, user);
 			}
+
+			return call;
 		}).catch(err => {
 			this.#sendAuthenticationError(reply, err);
-		});
+		}));
 	}
 
 	@bindThis
@@ -222,8 +225,9 @@ export class ApiCallService implements OnApplicationShutdown {
 			reply.code(400);
 			return;
 		}
-		this.authenticateService.authenticate(token).then(([user, app]) => {
-			this.call(endpoint, user, app, fields, {
+
+		return await this.telemetryService.startSpan('API: ' + endpoint.name, () => this.authenticateService.authenticate(token).then(([user, app]) => {
+			const call = this.call(endpoint, user, app, fields, {
 				name: multipartData.filename,
 				path: path,
 			}, request).then((res) => {
@@ -235,9 +239,11 @@ export class ApiCallService implements OnApplicationShutdown {
 			if (user) {
 				this.logIp(request, user);
 			}
+
+			return call;
 		}).catch(err => {
 			this.#sendAuthenticationError(reply, err);
-		});
+		}));
 	}
 
 	@bindThis
@@ -431,9 +437,10 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		// API invoking
-		return await this.telemetryService.startSpan('API: ' + ep.name, () => ep.exec(data, user, token, file, request.ip, request.headers)
-			.catch((err: Error) => this.#onExecError(ep, data, err, user?.id)));
+		// The API span starts in handleRequest/handleMultipartRequest so it also covers
+		// authentication, rate limiting, and parameter validation.
+		return await ep.exec(data, user, token, file, request.ip, request.headers)
+			.catch((err: Error) => this.#onExecError(ep, data, err, user?.id));
 	}
 
 	@bindThis
