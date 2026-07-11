@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@pointermove.passive="onPointermove"
 		@pointerup.passive="onPointerup"
 		@pointercancel.passive="cancelPointerGesture"
-		@touchstart="onTouchstart"
+		@touchstart.passive="onTouchstart"
 		@touchmove.passive="onTouchmove"
 		@touchcancel.passive="cancelPointerGesture"
 		@contextmenu="cancelPointerGesture"
