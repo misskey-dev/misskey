@@ -31,6 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="[$style.contentWrapper, { [$style.hideForFallback]: hideForFallback }]">
 				<div
 					v-if="hide"
+					data-gallery-click-action="hidden"
 					:class="[$style.hidden, {
 						[$style.sensitive]: content.file?.isSensitive && prefer.s.highlightSensitiveMedia,
 					}]"
@@ -81,12 +82,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<video
 							v-else-if="content.type === 'video'"
 							ref="videoEl"
+							data-gallery-click-action="video"
 							:class="$style.content"
 							:src="content.url"
 							:alt="content.file?.comment ?? undefined"
 							draggable="false"
 							:controls="prefer.s.useNativeUiForVideoAudioPlayer"
-							loop
 							playsinline
 							@loadedmetadata="originalContentLoaded = true"
 							@click.stop="onVideoClick"
@@ -403,6 +404,7 @@ function onZoomGestureEnd() {
 
 let isDragging = false;
 let isClick = false;
+let clickAction: 'hidden' | 'video' | null = null;
 let lastX = 0;
 let lastY = 0;
 let currentPointerId: number | null = null;
@@ -415,6 +417,17 @@ let horizontalSwipeDelta = 0;
 const pointerEventCache = new Map<number, PointerEvent>();
 let pointerVec = { x: 0, y: 0 };
 
+function resolveClickAction(target: EventTarget | null): 'hidden' | 'video' | null {
+	if (!(target instanceof Element)) return null;
+
+	const action = target.closest('[data-gallery-click-action]')?.getAttribute('data-gallery-click-action');
+	if (action === 'hidden' || action === 'video') {
+		return action;
+	}
+
+	return null;
+}
+
 function onPointerdown(ev: PointerEvent) {
 	if (mainEl.value == null) return;
 	pointerEventCache.set(ev.pointerId, ev);
@@ -422,6 +435,7 @@ function onPointerdown(ev: PointerEvent) {
 
 	isDragging = true;
 	isClick = true;
+	clickAction = resolveClickAction(ev.target);
 	lastX = ev.clientX;
 	lastY = ev.clientY;
 	pointerVec = { x: 0, y: 0 };
@@ -566,6 +580,7 @@ function cancelPointerGesture() {
 	currentPointerId = null;
 	isDragging = false;
 	isClick = false;
+	clickAction = null;
 	pointerVec = { x: 0, y: 0 };
 	verticalSwipeDelta = 0;
 	horizontalSwipeDelta = 0;
@@ -653,8 +668,21 @@ watch(rootEl, (newRootEl) => {
 	hideForFallback.value = false;
 }, { immediate: true });
 
-function onClick() {
+function onClick(ev: MouseEvent) {
 	if (!isClick) return;
+
+	const action = clickAction ?? resolveClickAction(ev.target);
+	clickAction = null;
+
+	if (action === 'hidden') {
+		void onHiddenClick();
+		return;
+	}
+
+	if (action === 'video') {
+		onVideoClick();
+		return;
+	}
 
 	if (!isTouchUsing) {
 		if (isZooming.value) {
