@@ -54,6 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						draggable="false"
 						loop
 						autoplay
+						playsinline
 						@loadedmetadata="originalContentLoaded = true"
 					></video>
 				</template>
@@ -67,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="[$style.header, { [$style.infoShowing]: infoShowing && !isZooming }]">
 		<div :class="$style.title" class="_acrylic">
-			{{ content.comment ?? content.filename }}
+			<MkCondensedLine :minScale="0.5">{{ content.comment ?? content.filename }}</MkCondensedLine>
 		</div>
 	</div>
 
@@ -665,6 +666,7 @@ function onCLick() {
 
 .title {
 	width: max-content;
+	max-width: calc(100% - 20px);
 	margin: auto;
 	padding: 6px 14px;
 	box-sizing: border-box;
