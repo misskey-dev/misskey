@@ -133,11 +133,19 @@ function scrollToCurrentIndex() {
 	contentsOffset.value = targetOffset;
 }
 
+/** ギャラリーそのものを閉じるための内部処理（閉じる処理を書く場合は `close` か、item内では `closeThis` を使う） */
+function closeGallery() {
+	showing.value = false;
+	if (window.location.hash === '#pswp') {
+		window.history.back();
+	}
+}
+
 function close() {
 	if (items.has(currentIndex.value)) {
 		items.get(currentIndex.value)!.closeThis();
 	} else {
-		showing.value = false;
+		closeGallery();
 	}
 }
 
@@ -165,7 +173,7 @@ function onPrev() {
 }
 
 function onItemClose() {
-	showing.value = false;
+	closeGallery();
 }
 
 function onAfterLeave() {
