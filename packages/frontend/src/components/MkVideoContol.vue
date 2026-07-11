@@ -34,10 +34,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button class="_button" :class="$style.controlButton" @click="showMenu">
 			<i class="ti ti-settings"></i>
 		</button>
-		<button class="_button" :class="$style.controlButton" @click="toggleFullscreen">
-			<i v-if="isFullscreen" class="ti ti-arrows-minimize"></i>
-			<i v-else class="ti ti-arrows-maximize"></i>
-		</button>
 	</div>
 </div>
 </template>
@@ -48,7 +44,6 @@ import type { MenuItem } from '@/types/menu.js';
 import { hms } from '@/filters/hms.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { exitFullscreen, requestFullscreen } from '@/utility/fullscreen.js';
 import hasAudio from '@/utility/media-has-audio.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 import { prefer } from '@/preferences.js';
@@ -115,11 +110,6 @@ function showMenu(ev: PointerEvent) {
 	});
 }
 
-// MediaControl: Video State
-const isHoverring = ref(false);
-const isFullscreen = ref(false);
-let controlStateTimer: number | null = null;
-
 // MediaControl: Common State
 const oncePlayed = ref(false);
 const isReady = ref(false);
@@ -153,25 +143,6 @@ function togglePlayPause() {
 		videoEl.play();
 		isPlaying.value = true;
 		oncePlayed.value = true;
-	}
-}
-
-function toggleFullscreen() {
-	if (playerEl.value == null) return;
-	if (isFullscreen.value) {
-		exitFullscreen({
-			videoEl: videoEl,
-		});
-		isFullscreen.value = false;
-	} else {
-		requestFullscreen({
-			videoEl: videoEl,
-			playerEl: playerEl.value,
-			options: {
-				navigationUI: 'hide',
-			},
-		});
-		isFullscreen.value = true;
 	}
 }
 
