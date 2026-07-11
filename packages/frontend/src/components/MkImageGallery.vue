@@ -25,9 +25,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@transitionend.self="onSlideTransitionFinished"
 				@transitioncancel.self="onSlideTransitionFinished"
 			>
-				<div v-for="(content, i) in contents" :key="content.url" ref="itemEl" :class="$style.item">
+				<div v-for="(content, i) in contents" :key="content.file.url" ref="itemEl" :class="$style.item">
 					<XItem
+						:ref="(comp) => { items.set(i, comp as InstanceType<typeof XItem>); }"
 						:content="content"
+						:initiallyOpened="i === (props.defaultIndex ?? 0)"
 						:activated="activatedIndexes.has(i)"
 						@close="onItemClose"
 						@horizontalSwipe="onHorizontalSwipe"
@@ -46,11 +48,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+import { ref, watch, nextTick } from 'vue';
 import XItem from './MkImageGallery.item.vue';
 import type { Content } from './MkImageGallery.item.vue';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { isTouchUsing } from '@/utility/touch.js';
 
@@ -65,10 +66,22 @@ const emit = defineEmits<{
 }>();
 
 const activatedIndexes = ref(new Set<number>());
+const items = new Map<number, InstanceType<typeof XItem>>();
 const currentIndex = ref(props.defaultIndex ?? 0);
-watch(currentIndex, (newIndex) => {
+
+watch(currentIndex, (newIndex, oldIndex) => {
 	activatedIndexes.value.add(newIndex);
+
+	nextTick(() => {
+		if (oldIndex != null && items.has(oldIndex)) {
+			items.get(oldIndex)!.onDeactive();
+		}
+		if (items.has(newIndex)) {
+			items.get(newIndex)!.onActive();
+		}
+	});
 }, { immediate: true });
+
 watch(currentIndex, (newIndex) => {
 	for (let i = 0; i < props.contents.length; i++) {
 		const content = props.contents[i];

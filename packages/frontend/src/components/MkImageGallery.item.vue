@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@touchcancel.passive="cancelPointerGesture"
 		@contextmenu="cancelPointerGesture"
 		@wheel="onWheel"
-		@click="onCLick"
+		@click="onClick"
 	>
 		<div
 			:class="[$style.transformer, { [$style.transition]: enableTransition }]"
@@ -29,39 +29,59 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@transitioncancel.self="enableTransition = false"
 		>
 			<div :class="[$style.contentWrapper, { [$style.hideForFallback]: hideForFallback }]">
-				<img
-					v-if="(!originalContentLoaded || !thumbnailContentLoaded) && (content.thumbnailUrl != null)"
-					:class="[$style.content, $style.thumbnail]"
-					:src="content.thumbnailUrl"
-					draggable="false"
-					@load="thumbnailContentLoaded = true"
-				>
-
-				<template v-if="activated">
-					<img
+				<div v-if="hide" :class="[
+					$style.hidden,
+					{ [$style.sensitive]: content.file.isSensitive && prefer.s.highlightSensitiveMedia },
+				]" :style="hiddenStyle">
+					<MkBlurhash
 						v-if="content.type === 'image'"
-						:class="[$style.content, $style.original]"
-						:src="content.url"
-						draggable="false"
-						@load="originalContentLoaded = true"
-					>
-					<video
-						v-else-if="content.type === 'video'"
-						:id="videoElId"
-						ref="videoEl"
-						:class="[$style.content, $style.original]"
-						:src="content.url"
-						draggable="false"
-						loop
-						autoplay
-						playsinline
-						@loadedmetadata="originalContentLoaded = true"
-					></video>
-				</template>
-
-				<div v-if="activated && !originalContentLoaded" :class="$style.loading">
-					<MkLoading/>
+						:class="$style.hiddenBlurhash"
+						:blurhash="content.file.blurhash ?? null"
+						:height="content?.height"
+						:width="content?.width"
+					/>
+					<div :class="$style.hiddenText">
+						<div :class="$style.hiddenTextWrapper">
+							<b v-if="content.file.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</b>
+							<b v-else style="display: block;"><i class="ti" :class="content.type === 'image' ? 'ti-photo' : 'ti-movie'"></i> {{ i18n.ts[content.type] }}</b>
+							<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+						</div>
+					</div>
 				</div>
+				<template v-else>
+					<img
+						v-if="(!originalContentLoaded || !thumbnailContentLoaded) && (content.file.thumbnailUrl != null)"
+						:class="[$style.content, $style.thumbnail]"
+						:src="content.file.thumbnailUrl"
+						draggable="false"
+						@load="thumbnailContentLoaded = true"
+					>
+
+					<template v-if="activated">
+						<img
+							v-if="content.type === 'image'"
+							:class="$style.content"
+							:src="content.file.url"
+							draggable="false"
+							@load="originalContentLoaded = true"
+						>
+						<video
+							v-else-if="content.type === 'video'"
+							ref="videoEl"
+							:class="$style.content"
+							:src="content.file.url"
+							draggable="false"
+							:controls="prefer.s.useNativeUiForVideoAudioPlayer"
+							loop
+							playsinline
+							@loadedmetadata="originalContentLoaded = true"
+						></video>
+					</template>
+
+					<div v-if="activated && !originalContentLoaded" :class="$style.loading">
+						<MkLoading/>
+					</div>
+				</template>
 			</div>
 		</div>
 	</div>
@@ -70,21 +90,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.title" class="_acrylic">
 			<button class="_button" :class="$style.titleButton"><i class="ti ti-dots" @click="openMenu"></i></button>
 			<div style="flex: 1; min-width: 0;">
-				<MkCondensedLine :minScale="0.5">{{ content.comment ?? content.filename }}</MkCondensedLine>
+				<MkCondensedLine :minScale="0.5">{{ content.file.name }}</MkCondensedLine>
 			</div>
 			<button class="_button" :class="$style.titleButton"><i class="ti ti-x" @click="closeThis"></i></button>
 		</div>
 	</div>
 
 	<div :class="[$style.footer, { [$style.infoShowing]: infoShowing && !isZooming }]">
-		<div v-if="content.type === 'video'" :class="$style.mediaControl">
-			<MkVideoContol v-if="videoEl != null" :videoElId="videoElId"/>
+		<div v-if="content.type === 'video' && !hide && !prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.mediaControl">
+			<MkVideoContol v-if="videoEl != null" :videoEl="videoEl"/>
 		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
+import * as Misskey from 'misskey-js';
+import MkBlurhash from './MkBlurhash.vue';
+
 type Size = {
 	width: number;
 	height: number;
@@ -98,12 +121,9 @@ type Rect = Size & {
 export type Content = {
 	id: string;
 	type: 'image' | 'video';
-	url: string;
-	thumbnailUrl?: string | null;
-	width?: number | null;
-	height?: number | null;
-	filename?: string | null;
-	comment?: string | null;
+	width?: number;
+	height?: number;
+	file: Misskey.entities.DriveFile;
 	sourceElement?: HTMLElement | null;
 };
 
@@ -134,18 +154,23 @@ export function calculateSourceTransform({
 </script>
 
 <script lang="ts" setup>
-import { markRaw, nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, useTemplateRef, watch } from 'vue';
 import MkVideoContol from './MkVideoContol.vue';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
+import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
 import { makeDoubleTapDetector } from '@/utility/double-tap.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { isTouchUsing } from '@/utility/touch.js';
-import { genId } from '@/utility/id.js';
+import { getFileMenu } from '@/utility/get-file-menu.js';
 
 const props = withDefaults(defineProps<{
 	content: Content;
 	activated: boolean;
+	initiallyOpened?: boolean;
 }>(), {
+	initiallyOpened: false,
 });
 
 const emit = defineEmits<{
@@ -159,19 +184,13 @@ const emit = defineEmits<{
 const rootEl = useTemplateRef('rootEl');
 const mainEl = useTemplateRef('mainEl');
 const videoEl = useTemplateRef('videoEl');
-const videoElId = genId();
 
 const originalContentLoaded = ref(false);
 const thumbnailContentLoaded = ref(false);
 const enableTransition = ref(false);
 const infoShowing = ref(false);
+const hide = ref(true);
 let canOpenAnimation = false;
-
-onMounted(() => {
-	if (rootEl.value == null) return;
-	rootEl.value.offsetHeight; // reflow
-	infoShowing.value = true;
-});
 
 const headerSize = 30;
 const footerSize = props.content.type === 'video' ? 80 : 0;
@@ -212,6 +231,33 @@ const contentRenderingRect = contentRenderingSize != null ? {
 	width: contentRenderingSize.width,
 	height: contentRenderingSize.height,
 } : null;
+
+const hiddenStyle = computed(() => {
+	if (contentRenderingSize == null) {
+		return {
+			width: '100%',
+			height: '100%',
+		};
+	}
+
+	return {
+		width: `${contentRenderingSize.width}px`,
+		height: `${contentRenderingSize.height}px`,
+	};
+});
+
+function shouldHideInGallery(content: Content): boolean {
+	const hiddenByDefault = shouldHideFileByDefault(content.file, true);
+	if (!hiddenByDefault) return false;
+
+	// ギャラリー起動時に最初に開いたセンシティブ画像だけは初期表示で隠さない
+	if (content.file.isSensitive && prefer.s.nsfw !== 'force' && props.initiallyOpened) {
+		return false;
+	}
+
+	return true;
+}
+
 const transform = ref({ x: 0, y: 0, scale: 1 });
 
 // 元のimg要素の位置・サイズ(とobject-fitの設定値)を取得して、そこからneutralの位置にアニメーションするためのscaleとtranslationを計算する
@@ -292,11 +338,6 @@ function closeThis() {
 		hideForFallback.value = true;
 	}
 }
-
-onMounted(() => {
-	rootEl.value.offsetHeight; // reflow
-	hideForFallback.value = false;
-});
 
 function onWheel(event: WheelEvent) {
 	event.preventDefault();
@@ -546,25 +587,52 @@ watch(isZooming, () => {
 });
 //#endregion
 
-watch(thumbnailContentLoaded, () => {
+function animateFromSourceToNeutral() {
 	if (rootEl.value == null) return;
 
 	const sourceElement = props.content.sourceElement;
-	if (sourceElement != null && props.activated) {
-		enableTransition.value = true;
-		rootEl.value.offsetHeight; // reflow
-		transform.value.x = 0;
-		transform.value.y = 0;
-		transform.value.scale = 1;
+	if (sourceElement == null || !props.activated) return;
 
-		nextTick(() => {
-			sourceElement.style.visibility = 'hidden';
-		});
-	}
+	enableTransition.value = true;
+	rootEl.value.offsetHeight; // reflow
+	transform.value.x = 0;
+	transform.value.y = 0;
+	transform.value.scale = 1;
+
+	nextTick(() => {
+		sourceElement.style.visibility = 'hidden';
+	});
+}
+
+watch(thumbnailContentLoaded, () => {
+	animateFromSourceToNeutral();
 }, { once: true });
 
-function onCLick() {
+watch([rootEl, hide], ([newRootEl, isHidden]) => {
+	if (newRootEl == null || !isHidden) return;
+	animateFromSourceToNeutral();
+}, { immediate: true });
+
+watch(props.content, (newContent) => {
+	hide.value = shouldHideInGallery(newContent);
+}, { deep: true, immediate: true });
+
+watch(rootEl, (newRootEl) => {
+	if (newRootEl == null) return;
+
+	infoShowing.value = true;
+	newRootEl.offsetHeight; // reflow
+	hideForFallback.value = false;
+}, { immediate: true });
+
+async function onClick() {
 	if (!isClick) return;
+
+	if (!isZooming.value && hide.value) {
+		if (await canRevealFile(props.content.file)) {
+			hide.value = false;
+		}
+	}
 
 	if (!isTouchUsing) {
 		if (isZooming.value) {
@@ -576,9 +644,31 @@ function onCLick() {
 	}
 }
 
-function openMenu() {
-	// TODO
+function openMenu(ev: PointerEvent) {
+	os.popupMenu(getFileMenu(props.content.file), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
+
+function onActive() {
+	console.log('onActive');
+	if (videoEl.value != null) {
+		videoEl.value.play();
+	}
+}
+
+function onDeactive() {
+	if (isZooming.value) {
+		isZooming.value = false;
+		resetToNeutral();
+	}
+	if (videoEl.value != null && props.activated) {
+		videoEl.value.pause();
+	}
+}
+
+defineExpose({
+	onActive,
+	onDeactive,
+});
 </script>
 
 <style lang="scss" module>
@@ -644,6 +734,45 @@ function openMenu() {
 .hideForFallback {
 	scale: 0.7 !important;
 	opacity: 0 !important;
+}
+
+.hidden {
+	position: absolute;
+	inset: 0;
+	margin: auto;
+
+	&.sensitive::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		border-radius: inherit;
+		box-shadow: inset 0 0 0 4px var(--MI_THEME-warn);
+	}
+}
+
+.hiddenBlurhash {
+	display: block;
+	width: 100%;
+	height: 100%;
+	filter: brightness(0.7);
+}
+
+.hiddenText {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	color: #fff;
 }
 
 .footer {

@@ -43,21 +43,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
+import { ref, computed, watch, onActivated, onMounted } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import { hms } from '@/filters/hms.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { exitFullscreen, requestFullscreen } from '@/utility/fullscreen.js';
 import hasAudio from '@/utility/media-has-audio.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
-import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
-	videoElId: string;
+	videoEl: HTMLVideoElement;
 }>();
-
-const videoEl = window.document.getElementById(props.videoElId) as HTMLVideoElement;
 
 // Menu
 const menuShowing = ref(false);
@@ -132,7 +128,7 @@ const rangePercent = computed({
 		return (elapsedTimeMs.value / durationMs.value) || 0;
 	},
 	set: (to) => {
-		videoEl.currentTime = to * durationMs.value / 1000;
+		props.videoEl.currentTime = to * durationMs.value / 1000;
 	},
 });
 const volume = ref(.25);
@@ -140,46 +136,30 @@ const speed = ref(1);
 const loop = ref(false); // TODO: ドライブファイルのフラグに置き換える
 const bufferedEnd = ref(0);
 const bufferedDataRatio = computed(() => {
-	return bufferedEnd.value / videoEl.duration;
+	return bufferedEnd.value / props.videoEl.duration;
 });
 
 function togglePlayPause() {
 	if (!isReady.value) return;
 
 	if (isPlaying.value) {
-		videoEl.pause();
+		props.videoEl.pause();
 		isPlaying.value = false;
 	} else {
-		videoEl.play();
+		props.videoEl.play();
 		isPlaying.value = true;
 		oncePlayed.value = true;
 	}
 }
 
 function toggleFullscreen() {
-	if (playerEl.value == null) return;
-	if (isFullscreen.value) {
-		exitFullscreen({
-			videoEl: videoEl,
-		});
-		isFullscreen.value = false;
-	} else {
-		requestFullscreen({
-			videoEl: videoEl,
-			playerEl: playerEl.value,
-			options: {
-				navigationUI: 'hide',
-			},
-		});
-		isFullscreen.value = true;
-	}
 }
 
 function togglePictureInPicture() {
 	if (window.document.pictureInPictureElement) {
 		window.document.exitPictureInPicture();
 	} else {
-		videoEl.requestPictureInPicture();
+		props.videoEl.requestPictureInPicture();
 	}
 }
 
@@ -203,60 +183,60 @@ function init() {
 
 	function updateMediaTick() {
 		try {
-			bufferedEnd.value = videoEl.buffered.end(0);
+			bufferedEnd.value = props.videoEl.buffered.end(0);
 		} catch (err) {
 			bufferedEnd.value = 0;
 		}
 
-		elapsedTimeMs.value = videoEl.currentTime * 1000;
+		elapsedTimeMs.value = props.videoEl.currentTime * 1000;
 
-		if (videoEl.loop !== loop.value) {
-			loop.value = videoEl.loop;
+		if (props.videoEl.loop !== loop.value) {
+			loop.value = props.videoEl.loop;
 		}
 		mediaTickFrameId = window.requestAnimationFrame(updateMediaTick);
 	}
 
 	updateMediaTick();
 
-	videoEl.addEventListener('play', () => {
+	props.videoEl.addEventListener('play', () => {
 		isActuallyPlaying.value = true;
 	});
 
-	videoEl.addEventListener('pause', () => {
+	props.videoEl.addEventListener('pause', () => {
 		isActuallyPlaying.value = false;
 		isPlaying.value = false;
 	});
 
-	videoEl.addEventListener('ended', () => {
+	props.videoEl.addEventListener('ended', () => {
 		oncePlayed.value = false;
 		isActuallyPlaying.value = false;
 		isPlaying.value = false;
 	});
 
-	durationMs.value = videoEl.duration * 1000;
-	videoEl.addEventListener('durationchange', () => {
-		durationMs.value = videoEl.duration * 1000;
+	durationMs.value = props.videoEl.duration * 1000;
+	props.videoEl.addEventListener('durationchange', () => {
+		durationMs.value = props.videoEl.duration * 1000;
 	});
 
-	videoEl.volume = volume.value;
-	hasAudio(videoEl).then(had => {
+	props.videoEl.volume = volume.value;
+	hasAudio(props.videoEl).then(had => {
 		if (!had) {
-			videoEl.loop = videoEl.muted = true;
-			videoEl.play();
+			props.videoEl.loop = props.videoEl.muted = true;
+			props.videoEl.play();
 		}
 	});
 }
 
 watch(volume, (to) => {
-	videoEl.volume = to;
+	props.videoEl.volume = to;
 });
 
 watch(speed, (to) => {
-	videoEl.playbackRate = to;
+	props.videoEl.playbackRate = to;
 });
 
 watch(loop, (to) => {
-	videoEl.loop = to;
+	props.videoEl.loop = to;
 });
 
 onMounted(() => {
