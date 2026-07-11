@@ -47,6 +47,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 					<video
 						v-else-if="content.type === 'video'"
+						:id="videoElId"
+						ref="videoEl"
 						:class="[$style.content, $style.original]"
 						:src="content.url"
 						draggable="false"
@@ -63,9 +65,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkLoading/>
 	</div>
 
-	<div :class="[$style.footer, { [$style.infoShowing]: infoShowing && !isZooming }]">
-		<div :class="$style.footerText">
+	<div :class="[$style.header, { [$style.infoShowing]: infoShowing && !isZooming }]">
+		<div :class="$style.title">
 			{{ content.comment ?? content.filename }}
+		</div>
+	</div>
+
+	<div :class="[$style.footer, { [$style.infoShowing]: infoShowing && !isZooming }]">
+		<div v-if="content.type === 'video'" :class="$style.mediaControl">
+			<MkVideoContol v-if="videoEl != null" :videoElId="videoElId"/>
 		</div>
 	</div>
 </div>
@@ -121,11 +129,13 @@ export function calculateSourceTransform({
 </script>
 
 <script lang="ts" setup>
-import { nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+import { markRaw, nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+import MkVideoContol from './MkVideoContol.vue';
 import { i18n } from '@/i18n.js';
 import { makeDoubleTapDetector } from '@/utility/double-tap.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { isTouchUsing } from '@/utility/touch.js';
+import { genId } from '@/utility/id.js';
 
 const props = withDefaults(defineProps<{
 	content: Content;
@@ -143,6 +153,8 @@ const emit = defineEmits<{
 
 const rootEl = useTemplateRef('rootEl');
 const mainEl = useTemplateRef('mainEl');
+const videoEl = useTemplateRef('videoEl');
+const videoElId = genId();
 
 const originalContentLoaded = ref(false);
 const thumbnailContentLoaded = ref(false);
@@ -156,15 +168,18 @@ onMounted(() => {
 	infoShowing.value = true;
 });
 
+const headerSize = 50;
+const footerSize = props.content.type === 'video' ? 80 : 0;
+
 const padding = deviceKind === 'smartphone' ? {
-	top: 0,
+	top: Math.max(0, headerSize + 5),
 	right: 0,
-	bottom: 30,
+	bottom: Math.max(0, footerSize + 5),
 	left: 0,
 } : {
-	top: 30,
+	top: Math.max(30, headerSize + 5),
 	right: 30,
-	bottom: 60,
+	bottom: Math.max(30, footerSize + 5),
 	left: 30,
 };
 
@@ -623,28 +638,53 @@ function onCLick() {
 
 .footer {
 	position: absolute;
-	bottom: -30px;
+	bottom: v-bind("-footerSize + 'px'");
 	left: 0;
 	right: 0;
-	margin: auto;
-	width: max-content;
-	height: 35px;
-	padding: 0 12px;
-	box-sizing: border-box;
-	border-radius: 10px;
-	background: var(--MI_THEME-panel);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 85%;
-	color: var(--MI_THEME-fg);
+	height: v-bind("footerSize + 'px'");
+	display: grid;
+	place-items: center;
 	opacity: 0;
 	transition: opacity 200ms ease, bottom 200ms ease;
 }
 .footer.infoShowing {
-	bottom: 10px;
+	bottom: 0px;
 	opacity: 1;
 }
-.footerText {
+.header {
+	position: absolute;
+	top: v-bind("-headerSize + 'px'");
+	left: 0;
+	right: 0;
+	height: v-bind("headerSize + 'px'");
+	display: grid;
+	place-items: center;
+	opacity: 0;
+	transition: opacity 200ms ease, top 200ms ease;
+}
+.header.infoShowing {
+	top: 0px;
+	opacity: 1;
+}
+
+.title {
+	width: max-content;
+	margin: auto;
+	padding: 6px 12px;
+	box-sizing: border-box;
+	border-radius: 10px;
+	background: var(--MI_THEME-panel);
+	font-size: 85%;
+	color: var(--MI_THEME-fg);
+}
+
+.mediaControl {
+	width: 100%;
+	max-width: min(1000px, calc(100% - 16px));
+	box-sizing: border-box;
+	padding: 8px;
+	margin: auto;
+	background: var(--MI_THEME-panel);
+	border-radius: 10px;
 }
 </style>
