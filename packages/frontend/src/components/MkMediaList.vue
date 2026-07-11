@@ -34,7 +34,7 @@ import * as Misskey from 'misskey-js';
 import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
-import XVideo from '@/components/MkMediaVideoPreview.vue';
+import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os.js';
 import { focusParent } from '@/utility/focus.js';
 import { prefer } from '@/preferences.js';
