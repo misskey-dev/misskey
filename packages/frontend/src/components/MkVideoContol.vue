@@ -110,7 +110,7 @@ function showMenu(ev: PointerEvent) {
 // MediaControl: Common State
 const oncePlayed = ref(false);
 const isReady = ref(false);
-const isPlaying = ref(false);
+const isPlaying = ref(true);
 const isActuallyPlaying = ref(false);
 const elapsedTimeMs = ref(0);
 const durationMs = ref(0);
@@ -253,21 +253,6 @@ onActivated(() => {
 	display: flex;
 	align-items: center;
 	gap: 4px;
-
-	.controlButton {
-		padding: 6px;
-		border-radius: calc(var(--MI-radius) / 2);
-		transition: background-color .15s ease;
-		font-size: 1.05rem;
-
-		&:hover {
-			background-color: var(--MI_THEME-accent);
-		}
-
-		&:focus-visible {
-			outline: none;
-		}
-	}
 }
 
 .controlsLeft {
@@ -283,16 +268,22 @@ onActivated(() => {
 	justify-content: center;
 }
 
-.controlsTime {
-	font-size: 90%;
+.controlButton {
+	padding: 6px;
+	border-radius: 4px;
+
+	&:hover {
+		background-color: var(--MI_THEME-accentedBg);
+		color: var(--MI_THEME-accent);
+	}
+
+	&:focus-visible {
+		outline: none;
+	}
 }
 
-.controlsVolume {
-	grid-area: volume;
-
-	.volumeSeekbar {
-		display: none;
-	}
+.controlsTime {
+	font-size: 85%;
 }
 
 .seekbar {
