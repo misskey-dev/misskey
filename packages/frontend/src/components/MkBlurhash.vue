@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <canvas
-	ref="canvas"
 	v-show="show"
+	ref="canvas"
 	:width="canvasWidth"
 	:height="canvasHeight"
 	draggable="false"
