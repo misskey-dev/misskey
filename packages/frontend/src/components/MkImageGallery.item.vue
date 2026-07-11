@@ -339,7 +339,7 @@ function clampZoomTransform(nextTransform: { x: number; y: number; scale: number
 	};
 }
 
-function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
+function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false, clamp = true) {
 	if (mainEl.value == null) return;
 
 	const newScale = transform.value.scale * factor;
@@ -356,11 +356,17 @@ function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false) {
 		enableTransition.value = true;
 	}
 
-	transform.value = clampZoomTransform({
-		x: newTranslationX,
-		y: newTranslationY,
-		scale: newScale,
-	});
+	transform.value = clamp
+		? clampZoomTransform({
+			x: newTranslationX,
+			y: newTranslationY,
+			scale: newScale,
+		})
+		: {
+			x: newTranslationX,
+			y: newTranslationY,
+			scale: newScale,
+		};
 }
 
 function resetToNeutral() {
@@ -416,14 +422,23 @@ function onWheel(event: WheelEvent) {
 }
 
 function onZoomGesture(ev: { delta: number; centerX: number; centerY: number }) {
-	zoomInTo(ev.centerX, ev.centerY, 1 + ev.delta / 200);
+	zoomInTo(ev.centerX, ev.centerY, 1 + ev.delta / 200, false, false);
 }
 
 function onZoomGestureEnd() {
 	if (transform.value.scale < 1) {
 		isZooming.value = false;
 		resetToNeutral();
+		return;
 	}
+
+	const clampedTransform = clampZoomTransform(transform.value);
+	if (clampedTransform.x === transform.value.x && clampedTransform.y === transform.value.y && clampedTransform.scale === transform.value.scale) {
+		return;
+	}
+
+	enableTransition.value = true;
+	transform.value = clampedTransform;
 }
 
 let isDragging = false;
