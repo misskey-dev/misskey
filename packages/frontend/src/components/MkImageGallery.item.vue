@@ -586,6 +586,7 @@ function openMenu() {
 	position: absolute;
 	width: 100%;
 	height: 100%;
+	container-type: size;
 }
 
 .main {
@@ -691,9 +692,15 @@ function openMenu() {
 	height: 100%;
 	max-width: min(1000px, calc(100% - 16px));
 	box-sizing: border-box;
-	padding: 8px 12px;
+	padding: 12px 20px;
 	margin: auto;
 	background: var(--MI_THEME-panel);
 	border-radius: 12px 12px 0 0;
+}
+
+@container (max-width: 500px) {
+	.mediaControl {
+		padding: 8px 12px;
+	}
 }
 </style>
