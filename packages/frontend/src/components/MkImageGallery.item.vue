@@ -334,13 +334,16 @@ function clampZoomTransform(nextTransform: { x: number; y: number; scale: number
 		};
 	}
 
+	const panMargin = 24;
 	const rect = mainEl.value.getBoundingClientRect();
-	const minX = rect.width - rect.width * nextTransform.scale;
-	const minY = rect.height - rect.height * nextTransform.scale;
+	const minX = rect.width - rect.width * nextTransform.scale - panMargin;
+	const minY = rect.height - rect.height * nextTransform.scale - panMargin;
+	const maxX = panMargin;
+	const maxY = panMargin;
 
 	return {
-		x: Math.min(0, Math.max(minX, nextTransform.x)),
-		y: Math.min(0, Math.max(minY, nextTransform.y)),
+		x: Math.min(maxX, Math.max(minX, nextTransform.x)),
+		y: Math.min(maxY, Math.max(minY, nextTransform.y)),
 		scale: nextTransform.scale,
 	};
 }
