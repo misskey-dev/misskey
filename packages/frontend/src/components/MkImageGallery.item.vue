@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@pointermove.passive="onPointermove"
 		@pointerup.passive="onPointerup"
 		@pointercancel.passive="cancelPointerGesture"
-		@touchstart.passive="onTouchstart"
+		@touchstart="onTouchstart"
 		@touchmove.passive="onTouchmove"
 		@touchcancel.passive="cancelPointerGesture"
 		@contextmenu="cancelPointerGesture"
@@ -29,22 +29,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@transitioncancel.self="enableTransition = false"
 		>
 			<div :class="[$style.contentWrapper, { [$style.hideForFallback]: hideForFallback }]">
-				<div v-if="hide" :class="[
-					$style.hidden,
-					{ [$style.sensitive]: content.file.isSensitive && prefer.s.highlightSensitiveMedia },
-				]" :style="hiddenStyle">
-					<MkBlurhash
-						v-if="content.type === 'image'"
-						:class="$style.hiddenBlurhash"
-						:blurhash="content.file.blurhash ?? null"
-						:height="content?.height"
-						:width="content?.width"
-					/>
-					<div :class="$style.hiddenText">
-						<div :class="$style.hiddenTextWrapper">
-							<b v-if="content.file.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</b>
-							<b v-else style="display: block;"><i class="ti" :class="content.type === 'image' ? 'ti-photo' : 'ti-movie'"></i> {{ content.type === 'image' ? i18n.ts.image : i18n.ts.video }}</b>
-							<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+				<div
+					v-if="hide"
+					:class="[$style.hidden, {
+						[$style.sensitive]: content.file.isSensitive && prefer.s.highlightSensitiveMedia,
+					}]"
+					:style="hiddenStyle"
+					@click.stop="onHiddenClick"
+				>
+					<div :class="$style.hiddenWrapper">
+						<MkBlurhash
+							v-if="content.type === 'image'"
+							:class="$style.hiddenBlurhash"
+							:blurhash="content.file.blurhash ?? null"
+							:height="content?.height"
+							:width="content?.width"
+						/>
+						<img
+							v-else-if="content.type === 'video' && content.file.thumbnailUrl != null"
+							:src="content.file.thumbnailUrl"
+							:class="$style.hiddenThumbnail"
+						/>
+						<div v-else :class="$style.hiddenPlaceholder"></div>
+						<div :class="[$style.hiddenText, { [$style.withBlur]: content.type === 'video' && content.file.thumbnailUrl != null }]">
+							<div :class="$style.hiddenTextWrapper">
+								<b v-if="content.file.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</b>
+								<b v-else style="display: block;"><i class="ti" :class="content.type === 'image' ? 'ti-photo' : 'ti-movie'"></i> {{ content.type === 'image' ? i18n.ts.image : i18n.ts.video }}</b>
+								<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -75,7 +87,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 							loop
 							playsinline
 							@loadedmetadata="originalContentLoaded = true"
+							@click.stop="onVideoClick"
 						></video>
+						<button v-if="content.type === 'video' && !isVideoPlaying" class="_button" :class="$style.videoOverlayPlayButton">
+							<i class="ti ti-player-play-filled"></i>
+						</button>
 					</template>
 
 					<div v-if="activated && !originalContentLoaded" :class="$style.loading">
@@ -98,7 +114,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="[$style.footer, { [$style.infoShowing]: infoShowing && !isZooming }]">
 		<div v-if="content.type === 'video' && !hide && !prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.mediaControl">
-			<MkVideoContol v-if="videoEl != null" :videoEl="videoEl"/>
+			<MkVideoContol v-if="videoEl != null" ref="videoControl" :videoEl="videoEl"/>
 		</div>
 	</div>
 </div>
@@ -154,7 +170,7 @@ export function calculateSourceTransform({
 </script>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, ref, useTemplateRef, watch } from 'vue';
+import { computed, nextTick, ref, useTemplateRef, watch } from 'vue';
 import MkVideoContol from './MkVideoContol.vue';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
@@ -184,12 +200,14 @@ const emit = defineEmits<{
 const rootEl = useTemplateRef('rootEl');
 const mainEl = useTemplateRef('mainEl');
 const videoEl = useTemplateRef('videoEl');
+const videoControl = useTemplateRef('videoControl');
 
 const originalContentLoaded = ref(false);
 const thumbnailContentLoaded = ref(false);
 const enableTransition = ref(false);
 const infoShowing = ref(false);
 const hide = ref(true);
+const isVideoPlaying = computed(() => videoControl.value?.isActuallyPlaying ?? false);
 let canOpenAnimation = false;
 
 const headerSize = 30;
@@ -549,8 +567,6 @@ function cancelPointerGesture() {
 }
 
 function onTouchstart(ev: TouchEvent) {
-	ev.preventDefault();
-	ev.stopPropagation();
 	doubleTapDetector.onTouchstart(ev);
 }
 
@@ -626,14 +642,8 @@ watch(rootEl, (newRootEl) => {
 	hideForFallback.value = false;
 }, { immediate: true });
 
-async function onClick() {
+function onClick() {
 	if (!isClick) return;
-
-	if (!isZooming.value && hide.value) {
-		if (await canRevealFile(props.content.file)) {
-			hide.value = false;
-		}
-	}
 
 	if (!isTouchUsing) {
 		if (isZooming.value) {
@@ -645,12 +655,34 @@ async function onClick() {
 	}
 }
 
+async function onHiddenClick() {
+	if (hide.value) {
+		if (await canRevealFile(props.content.file)) {
+			hide.value = false;
+			if (props.content.type === 'video' && videoEl.value != null) {
+				videoEl.value.play();
+			}
+		}
+	}
+}
+
+function onVideoClick() {
+	if (!prefer.s.useNativeUiForVideoAudioPlayer) {
+		if (videoEl.value == null) return;
+
+		if (videoEl.value.paused) {
+			videoEl.value.play();
+		} else {
+			videoEl.value.pause();
+		}
+	}
+}
+
 function openMenu(ev: PointerEvent) {
 	os.popupMenu(getFileMenu(props.content.file), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 
 function onActive() {
-	console.log('onActive');
 	if (videoEl.value != null) {
 		videoEl.value.play();
 	}
@@ -737,10 +769,31 @@ defineExpose({
 	opacity: 0 !important;
 }
 
+.videoOverlayPlayButton {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+
+	background: var(--MI_THEME-accent);
+	color: var(--MI_THEME-fgOnAccent);
+	padding: 1rem;
+	border-radius: 99rem;
+
+	font-size: 1.1rem;
+	pointer-events: none;
+
+	&:focus-visible {
+		outline: none;
+	}
+}
+
 .hidden {
 	position: absolute;
 	inset: 0;
 	margin: auto;
+	display: grid;
+	place-items: center;
 
 	&.sensitive::after {
 		content: "";
@@ -755,11 +808,31 @@ defineExpose({
 	}
 }
 
+.hiddenWrapper {
+	position: relative;
+	width: 100%;
+}
+
 .hiddenBlurhash {
 	display: block;
 	width: 100%;
 	height: 100%;
 	filter: brightness(0.7);
+}
+
+.hiddenThumbnail {
+	display: block;
+	width: 100%;
+	height: auto;
+	max-height: 100%;
+	filter: brightness(0.7);
+}
+
+.hiddenPlaceholder {
+	width: 100%;
+	height: auto;
+	aspect-ratio: 16 / 9;
+	background: #000;
 }
 
 .hiddenText {
@@ -774,6 +847,10 @@ defineExpose({
 	align-items: center;
 	cursor: pointer;
 	color: #fff;
+
+	&.withBlur {
+		backdrop-filter: blur(12px);
+	}
 }
 
 .footer {

@@ -245,6 +245,9 @@ onBeforeUnmount(() => {
 	}
 });
 
+defineExpose({
+	isActuallyPlaying,
+});
 </script>
 
 <style lang="scss" module>
