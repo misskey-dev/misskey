@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@transitionend.self="enableTransition = false"
 			@transitioncancel.self="enableTransition = false"
 		>
-			<div :class="$style.contentWrapper">
+			<div :class="[$style.contentWrapper, { [$style.hideForFallback]: hideForFallback }]">
 				<img
 					v-if="(!originalContentLoaded || !thumbnailContentLoaded) && (content.thumbnailUrl != null)"
 					:class="[$style.content, $style.thumbnail]"
@@ -148,6 +148,7 @@ const originalContentLoaded = ref(false);
 const thumbnailContentLoaded = ref(false);
 const enableTransition = ref(false);
 const infoShowing = ref(false);
+let canOpenAnimation = false;
 
 onMounted(() => {
 	if (rootEl.value == null) return;
@@ -211,8 +212,11 @@ if (props.content.sourceElement != null && props.activated) {
 		transform.value.scale = sourceTransform.scale;
 		transform.value.x = sourceTransform.x;
 		transform.value.y = sourceTransform.y;
+		canOpenAnimation = true;
 	}
 }
+
+const hideForFallback = ref(!canOpenAnimation);
 
 const isZooming = ref(false);
 
@@ -257,18 +261,22 @@ function closeThis() {
 
 	if (rootEl.value == null) return;
 
-	enableTransition.value = true;
-	rootEl.value.offsetHeight; // reflow
-
 	const sourceTransform = getScaleAndTranslationForSourceElement();
 	if (sourceTransform != null) {
+		enableTransition.value = true;
+		rootEl.value.offsetHeight; // reflow
 		transform.value.x = sourceTransform.x;
 		transform.value.y = sourceTransform.y;
 		transform.value.scale = sourceTransform.scale;
 	} else {
-		transform.value.y = transform.value.y > 0 ? window.innerHeight : -window.innerHeight;
+		hideForFallback.value = true;
 	}
 }
+
+onMounted(() => {
+	rootEl.value.offsetHeight; // reflow
+	hideForFallback.value = false;
+});
 
 function onWheel(event: WheelEvent) {
 	event.preventDefault();
@@ -605,6 +613,12 @@ function onCLick() {
 	position: relative;
 	width: 100%;
 	height: 100%;
+	transition: scale 200ms ease, opacity 200ms ease !important;
+}
+
+.hideForFallback {
+	scale: 0.7 !important;
+	opacity: 0 !important;
 }
 
 .footer {
