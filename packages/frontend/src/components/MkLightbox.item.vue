@@ -99,7 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</template>
 
-					<div v-if="activated && !originalContentLoaded" :class="$style.loading">
+					<div v-if="activated && (!originalContentLoaded || (content.type === 'video' && isVideoPlaying && !isVideoActuallyPlaying))" :class="$style.loading">
 						<MkLoading/>
 					</div>
 				</template>
@@ -220,7 +220,8 @@ const thumbnailContentLoaded = ref(false);
 const enableTransition = ref(false);
 const infoShowing = ref(false);
 const hide = ref(true);
-const isVideoPlaying = computed(() => videoControl.value?.isActuallyPlaying ?? false);
+const isVideoPlaying = computed(() => videoControl.value?.isPlaying ?? false);
+const isVideoActuallyPlaying = computed(() => videoControl.value?.isActuallyPlaying ?? false);
 let canOpenAnimation = false;
 
 const headerSize = 30;

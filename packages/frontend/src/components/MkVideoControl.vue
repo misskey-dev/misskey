@@ -193,7 +193,11 @@ function init() {
 
 	updateMediaTick();
 
-	videoEl.value.addEventListener('play', () => {
+	videoEl.value.addEventListener('waiting', () => {
+		isActuallyPlaying.value = false;
+	}, { signal: abortController.signal });
+
+	videoEl.value.addEventListener('playing', () => {
 		isActuallyPlaying.value = true;
 	}, { signal: abortController.signal });
 
@@ -241,6 +245,9 @@ watch(videoEl, () => {
 	if (abortController != null) {
 		abortController.abort();
 	}
+	if (mediaTickFrameId != null) {
+		window.cancelAnimationFrame(mediaTickFrameId);
+	}
 	init();
 }, { immediate: true });
 
@@ -251,6 +258,7 @@ onBeforeUnmount(() => {
 });
 
 defineExpose({
+	isPlaying,
 	isActuallyPlaying,
 });
 </script>
