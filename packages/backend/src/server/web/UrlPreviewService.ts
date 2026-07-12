@@ -9,6 +9,7 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type Logger from '@/logger.js';
+import { deepClone } from '@/misc/clone.js';
 import { query } from '@/misc/prelude/url.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -101,7 +102,7 @@ export class UrlPreviewService implements OnApplicationShutdown {
 				return result;
 			};
 
-			const summary = await this.summaryCache.fetchMaybe(`${url}@${lang ?? '_DEFAULT_'}`, fetcher);
+			const summary = deepClone(await this.summaryCache.fetchMaybe(`${url}@${lang ?? '_DEFAULT_'}`, fetcher));
 
 			if (summary == null) {
 				throw new Error('Invalid summary');
