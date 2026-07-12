@@ -199,7 +199,7 @@ onMounted(() => {
 const keymap = {
 	'esc': {
 		allowRepeat: true,
-		callback: () => onItemClose(),
+		callback: () => close(),
 	},
 	'arrowleft': {
 		allowRepeat: true,
