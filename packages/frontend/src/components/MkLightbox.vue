@@ -197,10 +197,7 @@ onMounted(() => {
 });
 
 const keymap = {
-	'esc': {
-		allowRepeat: true,
-		callback: () => close(),
-	},
+	'esc': () => close(),
 	'arrowleft': {
 		allowRepeat: true,
 		callback: () => onPrev(),
