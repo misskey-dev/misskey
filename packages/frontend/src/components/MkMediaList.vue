@@ -47,13 +47,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, markRaw, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
+import type { Content } from '@/components/MkLightbox.item.vue';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 import { genId } from '@/utility/id.js';
-import type { Content } from '@/components/MkImageGallery.item.vue';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
@@ -144,7 +144,7 @@ async function openGallery(id?: string) {
 		sourceElement: getElementByMarker(`${markerId}:${media.id}`),
 	}));
 
-	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImageGallery.vue').then(x => x.default), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
 		defaultIndex: contents.findIndex(conten => conten.id === id),
 		contents: contents,
 	}, {

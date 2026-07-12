@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import { i18n } from '@/i18n.js';
-import type { Content } from '@/components/MkImageGallery.item.vue';
+import type { Content } from '@/components/MkLightbox.item.vue';
 
 const props = defineProps<{
 	content: Content;
