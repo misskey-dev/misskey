@@ -48,7 +48,7 @@ import * as os from '@/os.js';
 import hasAudio from '@/utility/media-has-audio.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 
-const videoEl = inject(DI.mkImageGalleryItemVideoEl, shallowRef<HTMLVideoElement | null>(null));
+const videoEl = inject(DI.mkLightboxItemVideoEl, shallowRef<HTMLVideoElement | null>(null));
 
 // Menu
 const menuShowing = ref(false);

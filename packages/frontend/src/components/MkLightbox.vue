@@ -49,8 +49,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch, nextTick, onBeforeUnmount, onMounted } from 'vue';
-import XItem from './MkImageGallery.item.vue';
-import type { Content } from './MkImageGallery.item.vue';
+import XItem from './MkLightbox.item.vue';
+import type { Content } from './MkLightbox.item.vue';
 import type { Keymap } from '@/utility/hotkey.js';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';

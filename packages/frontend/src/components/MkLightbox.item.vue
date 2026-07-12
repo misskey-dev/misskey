@@ -179,9 +179,10 @@ export function calculateSourceTransform({
 
 <script lang="ts" setup>
 import { computed, nextTick, ref, useTemplateRef, markRaw, watch, provide } from 'vue';
-import { DI } from '@/di.js';
 import MkVideoControl from './MkVideoControl.vue';
-import XFileInfo from './MkImageGallery.item.fileinfo.vue';
+import XFileInfo from './MkLightbox.item.fileinfo.vue';
+import type { MenuItem } from '@/types/menu.js';
+import { DI } from '@/di.js';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
@@ -190,7 +191,6 @@ import { makeDoubleTapDetector } from '@/utility/double-tap.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { isTouchUsing } from '@/utility/touch.js';
 import { getFileMenu } from '@/utility/get-file-menu.js';
-import type { MenuItem } from '@/types/menu.js';
 
 const props = withDefaults(defineProps<{
 	content: Content;
@@ -213,7 +213,7 @@ const mainEl = useTemplateRef('mainEl');
 const videoEl = useTemplateRef('videoEl');
 const videoControl = useTemplateRef('videoControl');
 
-provide(DI.mkImageGalleryItemVideoEl, videoEl);
+provide(DI.mkLightboxItemVideoEl, videoEl);
 
 const originalContentLoaded = ref(false);
 const thumbnailContentLoaded = ref(false);
