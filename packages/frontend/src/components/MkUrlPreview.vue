@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 </div>
 <div v-else>
-	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact, [$style.large]: isLargeImage }]" :[attr]="maybeRelativeUrl" rel="nofollow noopener" :target="target" :title="url">
+	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.small]: small, [$style.large]: isLargeImage }]" :[attr]="maybeRelativeUrl" rel="nofollow noopener" :target="target" :title="url">
 		<div v-if="thumbnail && !sensitive" :class="$style.thumbnail" :style="displayThumbnail ? { backgroundImage: `url('${displayThumbnail}')` } : ''">
 		</div>
 		<article :class="$style.body">
@@ -99,12 +99,12 @@ import { maybeMakeRelative } from '@@/js/url.js';
 const props = withDefaults(defineProps<{
 	url: string;
 	detail?: boolean;
-	compact?: boolean;
+	small?: boolean;
 	showActions?: boolean;
 	forceCompactCard?: boolean;
 }>(), {
 	detail: false,
-	compact: false,
+	small: false,
 	showActions: true,
 	forceCompactCard: false,
 });
@@ -276,7 +276,7 @@ onUnmounted(() => {
 		}
 	}
 
-	&.compact {
+	&.small {
 		> .body {
 			> .header .title, .text, .footer {
 				overflow: hidden;
@@ -292,14 +292,11 @@ onUnmounted(() => {
 			width: 100%;
 			height: auto;
 			aspect-ratio: 1.91;
-
-			& + .body {
-				left: 0;
-				width: 100%;
-			}
 		}
 
 		> .body {
+			left: 0;
+			width: 100%;
 			padding: 16px;
 		}
 	}
@@ -388,7 +385,7 @@ onUnmounted(() => {
 	.link {
 		font-size: 10px;
 
-		&.compact {
+		&.small {
 			> .thumbnail {
 				position: absolute;
 				width: 56px;
@@ -407,6 +404,21 @@ onUnmounted(() => {
 				> .footer {
 					margin-top: 2px;
 				}
+			}
+		}
+
+		&.large {
+			> .thumbnail {
+				position: relative;
+				width: 100%;
+				height: auto;
+				aspect-ratio: 1.91;
+			}
+
+			> .body {
+				left: 0;
+				width: 100%;
+				padding: 4px 8px;
 			}
 		}
 	}
