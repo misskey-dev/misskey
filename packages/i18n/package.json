@@ -28,10 +28,9 @@
 		"built"
 	],
 	"devDependencies": {
-		"@types/js-yaml": "4.0.9",
-		"@types/node": "26.0.0",
-		"@typescript-eslint/eslint-plugin": "8.61.1",
-		"@typescript-eslint/parser": "8.61.1",
+		"@types/node": "26.0.1",
+		"@typescript-eslint/eslint-plugin": "8.62.0",
+		"@typescript-eslint/parser": "8.62.0",
 		"chokidar": "5.0.0",
 		"esbuild": "0.28.1",
 		"execa": "9.6.1",
@@ -39,6 +38,6 @@
 		"tsx": "4.22.4"
 	},
 	"dependencies": {
-		"js-yaml": "4.2.0"
+		"js-yaml": "5.2.0"
 	}
 }

@@ -6,6 +6,63 @@
 import type { Config } from '@/config.js';
 import type { TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
 
+type SentryIntegrationsOption = NonNullable<import('@sentry/node').NodeOptions['integrations']>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SentryIntegrationFactory = Extract<SentryIntegrationsOption, (integrations: any[]) => any[]>;
+type SentryIntegration = Parameters<SentryIntegrationFactory>[0][number];
+type SentryNodeOptions = import('@sentry/node').NodeOptions;
+
+type BuildSentryIntegrationsOptions = {
+	disabledIntegrations?: string[];
+	enableNodeProfiling: boolean;
+	nodeProfilingIntegration?: () => SentryIntegration;
+	warn?: (message: string) => void;
+};
+
+export function buildSentryIntegrations(options: BuildSentryIntegrationsOptions): SentryIntegrationFactory {
+	return (defaults) => {
+		const disabledIntegrations = new Set(options.disabledIntegrations ?? []);
+		const defaultIntegrationNames = new Set(defaults.map((integration) => integration.name));
+		const unknownIntegrations = [...disabledIntegrations].filter((name) => !defaultIntegrationNames.has(name));
+
+		if (unknownIntegrations.length > 0) {
+			(options.warn ?? console.warn)(`Unknown Sentry integration configured in sentryForBackend.disabledIntegrations: ${unknownIntegrations.join(', ')}`);
+		}
+
+		return [
+			...defaults.filter((integration) => !disabledIntegrations.has(integration.name)),
+			...(options.enableNodeProfiling && options.nodeProfilingIntegration != null ? [options.nodeProfilingIntegration()] : []),
+		];
+	};
+}
+
+export function buildSentryNodeOptions(
+	config: NonNullable<Config['sentryForBackend']>,
+	nodeProfilingIntegration?: () => SentryIntegration,
+): SentryNodeOptions {
+	return {
+		// Do not send Sentry trace headers to remote ActivityPub/Webhook/etc. hosts by default.
+		// Admins can opt in for trusted internal services via sentryForBackend.options.
+		tracePropagationTargets: [],
+
+		// Performance Monitoring
+		tracesSampleRate: 1.0, //  Capture 100% of the transactions
+
+		// Set sampling rate for profiling - this is relative to tracesSampleRate
+		profilesSampleRate: 1.0,
+
+		maxBreadcrumbs: 0,
+
+		...config.options,
+
+		integrations: buildSentryIntegrations({
+			disabledIntegrations: config.disabledIntegrations,
+			enableNodeProfiling: config.enableNodeProfiling,
+			nodeProfilingIntegration,
+		}),
+	};
+}
+
 export class SentryTelemetryAdapter implements TelemetryAdapter {
 	private constructor(
 		private readonly Sentry: typeof import('@sentry/node'),
@@ -16,21 +73,7 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 		const Sentry = await import('@sentry/node');
 		const { nodeProfilingIntegration } = await import('@sentry/profiling-node');
 
-		Sentry.init({
-			integrations: [
-				...(config.enableNodeProfiling ? [nodeProfilingIntegration()] : []),
-			],
-
-			// Performance Monitoring
-			tracesSampleRate: 1.0, //  Capture 100% of the transactions
-
-			// Set sampling rate for profiling - this is relative to tracesSampleRate
-			profilesSampleRate: 1.0,
-
-			maxBreadcrumbs: 0,
-
-			...config.options,
-		});
+		Sentry.init(buildSentryNodeOptions(config, nodeProfilingIntegration));
 
 		return new SentryTelemetryAdapter(Sentry);
 	}
