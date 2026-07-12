@@ -233,9 +233,8 @@ proxyBypassHosts:
 # For security reasons, uploading attachments from the intranet is prohibited,
 # but exceptions can be made from the following settings. Default value is "undefined".
 # Read changelog to learn more (Improvements of 12.90.0 (2021/09/04)).
-#allowedPrivateNetworks: [
-#  '127.0.0.1/32'
-#]
+#allowedPrivateNetworks:
+#  - '127.0.0.1/32'
 
 # Upload or download file size limits (bytes)
 #maxFileSize: 262144000
