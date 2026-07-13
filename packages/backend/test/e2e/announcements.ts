@@ -82,6 +82,16 @@ describe('Announcements', () => {
 		assert.strictEqual(create.status, 400);
 		assert.strictEqual(castAsError(create.body as any).error.code, 'INVALID_AUTO_ARCHIVE_AT');
 
+		const expiredCreate = await api('admin/announcements/create', {
+			title: 'Expired scheduled announcement',
+			text: 'Text',
+			imageUrl: null,
+			autoArchiveAt: Date.now() - 60_000,
+		}, admin);
+
+		assert.strictEqual(expiredCreate.status, 400);
+		assert.strictEqual(castAsError(expiredCreate.body as any).error.code, 'INVALID_AUTO_ARCHIVE_AT');
+
 		const scheduled = await api('admin/announcements/create', {
 			title: 'Valid scheduled announcement',
 			text: 'Text',

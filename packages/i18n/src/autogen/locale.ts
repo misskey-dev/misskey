@@ -6533,6 +6533,10 @@ export interface Locale extends ILocale {
          */
         "autoArchiveAtDescription": string;
         /**
+         * 自動アーカイブ日時には現在より後の日時を指定してください。
+         */
+        "autoArchiveAtMustBeInFuture": string;
+        /**
          * お知らせを終了
          */
         "end": string;

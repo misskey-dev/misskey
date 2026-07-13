@@ -103,6 +103,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { ApiWithDialogCustomErrors } from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -132,6 +133,13 @@ const {
 
 const loading = ref(true);
 const loadingMore = ref(false);
+
+const createAnnouncementErrors: ApiWithDialogCustomErrors = {
+	'2a892bd5-487d-46a2-a5fe-3d85ad51defe': {
+		title: i18n.ts._announcement.autoArchiveAt,
+		text: i18n.ts._announcement.autoArchiveAtMustBeInFuture,
+	},
+};
 
 type EditableAnnouncement = Omit<Misskey.entities.AdminAnnouncementsListResponse[number], 'id' | 'createdAt' | 'updatedAt' | 'reads' | 'isActive' | 'autoArchiveAt'> & {
 	id: string | null;
@@ -221,18 +229,28 @@ async function unarchive(announcement: (typeof announcements)['value'][number]) 
 
 async function save(announcement: (typeof announcements)['value'][number]) {
 	const { _id, id, isActive, reads, autoArchiveAt, ...data } = announcement; // _idを消す
+	const autoArchiveAtMs = toAutoArchiveAt(autoArchiveAt);
 	if (id == null) {
+		if (autoArchiveAtMs != null && (Number.isNaN(autoArchiveAtMs) || autoArchiveAtMs <= Date.now())) {
+			await os.alert({
+				type: 'error',
+				title: i18n.ts._announcement.autoArchiveAt,
+				text: i18n.ts._announcement.autoArchiveAtMustBeInFuture,
+			});
+			return;
+		}
+
 		await os.apiWithDialog('admin/announcements/create', {
 			...data,
-			autoArchiveAt: toAutoArchiveAt(autoArchiveAt),
-		});
+			autoArchiveAt: autoArchiveAtMs,
+		}, undefined, createAnnouncementErrors);
 		refresh();
 	} else {
-		os.apiWithDialog('admin/announcements/update', {
+		await os.apiWithDialog('admin/announcements/update', {
 			...data,
 			id,
 			isActive,
-			autoArchiveAt: toAutoArchiveAt(autoArchiveAt),
+			autoArchiveAt: autoArchiveAtMs,
 		});
 	}
 }

@@ -90,6 +90,7 @@ export class AnnouncementService {
 
 		const packed = await this.announcementEntityService.pack(announcement);
 
+		// 作成処理中にautoArchiveAtを過ぎる可能性があるため、insert完了時点で非アクティブなお知らせはイベント配信しない
 		if (values.userId) {
 			if (announcement.isActive) {
 				this.globalEventService.publishMainStream(values.userId, 'announcementCreated', {

@@ -64,6 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { ApiWithDialogCustomErrors } from '@/os.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -96,7 +97,24 @@ const display = ref(props.announcement ? props.announcement.display : 'dialog');
 const needConfirmationToRead = ref(props.announcement ? props.announcement.needConfirmationToRead : false);
 const autoArchiveAt = ref(props.announcement?.autoArchiveAt ? formatDateTimeString(new Date(props.announcement.autoArchiveAt), 'yyyy-MM-ddTHH:mm') : '');
 
+const createAnnouncementErrors: ApiWithDialogCustomErrors = {
+	'2a892bd5-487d-46a2-a5fe-3d85ad51defe': {
+		title: i18n.ts._announcement.autoArchiveAt,
+		text: i18n.ts._announcement.autoArchiveAtMustBeInFuture,
+	},
+};
+
 async function done() {
+	const autoArchiveAtMs = autoArchiveAt.value === '' ? null : new Date(autoArchiveAt.value).getTime();
+	if (!props.announcement && autoArchiveAtMs != null && (Number.isNaN(autoArchiveAtMs) || autoArchiveAtMs <= Date.now())) {
+		await os.alert({
+			type: 'error',
+			title: i18n.ts._announcement.autoArchiveAt,
+			text: i18n.ts._announcement.autoArchiveAtMustBeInFuture,
+		});
+		return;
+	}
+
 	const params = {
 		title: title.value,
 		text: text.value,
@@ -105,7 +123,7 @@ async function done() {
 		display: display.value,
 		needConfirmationToRead: needConfirmationToRead.value,
 		userId: props.user.id,
-		autoArchiveAt: autoArchiveAt.value === '' ? null : new Date(autoArchiveAt.value).getTime(),
+		autoArchiveAt: autoArchiveAtMs,
 	} satisfies Misskey.entities.AdminAnnouncementsCreateRequest;
 
 	if (props.announcement) {
@@ -123,7 +141,7 @@ async function done() {
 
 		dialog.value?.close();
 	} else {
-		const created = await os.apiWithDialog('admin/announcements/create', params);
+		const created = await os.apiWithDialog('admin/announcements/create', params, undefined, createAnnouncementErrors);
 
 		emit('done', {
 			created,

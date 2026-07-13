@@ -83,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const autoArchiveAt = ps.autoArchiveAt != null ? new Date(ps.autoArchiveAt) : null;
-			if (ps.autoArchiveAt != null && (ps.autoArchiveAt < 0 || Number.isNaN(autoArchiveAt?.getTime()))) {
+			if (ps.autoArchiveAt != null && (ps.autoArchiveAt <= Date.now() || Number.isNaN(autoArchiveAt?.getTime()))) {
 				throw new ApiError(meta.errors.invalidAutoArchiveAt);
 			}
 
