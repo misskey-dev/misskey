@@ -25,7 +25,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i>
 						<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--MI_THEME-success);"></i>
 					</template>
-					<template #caption>{{ announcement.text }}</template>
+					<template #caption>
+						<span :class="$style.announcementText">{{ announcement.text }}</span>
+					</template>
+					<template #suffix>
+						<span v-if="announcement.autoArchiveAt" :class="$style.autoArchiveAt">
+							<i class="ti ti-calendar-time"></i> {{ i18n.ts._announcement.autoArchiveAt }}: <MkTime :key="announcement.autoArchiveAt" :time="announcement.autoArchiveAt" mode="absolute"/>
+						</span>
+					</template>
 					<template #footer>
 						<div class="_buttons">
 							<MkButton rounded primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
@@ -266,3 +273,16 @@ definePage(() => ({
 	icon: 'ti ti-speakerphone',
 }));
 </script>
+
+<style lang="scss" module>
+.announcementText {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.autoArchiveAt {
+	white-space: nowrap;
+}
+</style>
