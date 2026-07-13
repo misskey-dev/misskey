@@ -95,7 +95,8 @@ const text = ref(props.announcement ? props.announcement.text : '');
 const icon = ref(props.announcement ? props.announcement.icon : 'info');
 const display = ref(props.announcement ? props.announcement.display : 'dialog');
 const needConfirmationToRead = ref(props.announcement ? props.announcement.needConfirmationToRead : false);
-const autoArchiveAt = ref(props.announcement?.autoArchiveAt ? formatDateTimeString(new Date(props.announcement.autoArchiveAt), 'yyyy-MM-ddTHH:mm') : '');
+const initialAutoArchiveAt = props.announcement?.autoArchiveAt ? formatDateTimeString(new Date(props.announcement.autoArchiveAt), 'yyyy-MM-ddTHH:mm') : '';
+const autoArchiveAt = ref(initialAutoArchiveAt);
 
 const createAnnouncementErrors: ApiWithDialogCustomErrors = {
 	'2a892bd5-487d-46a2-a5fe-3d85ad51defe': {
@@ -105,7 +106,9 @@ const createAnnouncementErrors: ApiWithDialogCustomErrors = {
 };
 
 async function done() {
-	const autoArchiveAtMs = autoArchiveAt.value === '' ? null : new Date(autoArchiveAt.value).getTime();
+	const autoArchiveAtMs = props.announcement?.autoArchiveAt != null && autoArchiveAt.value === initialAutoArchiveAt
+		? new Date(props.announcement.autoArchiveAt).getTime()
+		: autoArchiveAt.value === '' ? null : new Date(autoArchiveAt.value).getTime();
 	if (!props.announcement && autoArchiveAtMs != null && (Number.isNaN(autoArchiveAtMs) || autoArchiveAtMs <= Date.now())) {
 		await os.alert({
 			type: 'error',

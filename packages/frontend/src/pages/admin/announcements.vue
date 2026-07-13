@@ -147,6 +147,7 @@ type EditableAnnouncement = Omit<Misskey.entities.AdminAnnouncementsListResponse
 	isActive?: Misskey.entities.AdminAnnouncementsListResponse[number]['isActive'];
 	reads?: Misskey.entities.AdminAnnouncementsListResponse[number]['reads'];
 	autoArchiveAt: string;
+	originalAutoArchiveAt: Misskey.entities.AdminAnnouncementsListResponse[number]['autoArchiveAt'];
 };
 
 const announcements = ref<EditableAnnouncement[]>([]);
@@ -155,10 +156,15 @@ function toEditableAnnouncement(announcement: Misskey.entities.AdminAnnouncement
 	return {
 		...announcement,
 		autoArchiveAt: announcement.autoArchiveAt ? formatDateTimeString(new Date(announcement.autoArchiveAt), 'yyyy-MM-ddTHH:mm') : '',
+		originalAutoArchiveAt: announcement.autoArchiveAt,
 	};
 }
 
-function toAutoArchiveAt(value: string): number | null {
+function toAutoArchiveAt(value: string, originalValue: Misskey.entities.AdminAnnouncementsListResponse[number]['autoArchiveAt']): number | null {
+	if (originalValue != null && value === formatDateTimeString(new Date(originalValue), 'yyyy-MM-ddTHH:mm')) {
+		return new Date(originalValue).getTime();
+	}
+
 	return value === '' ? null : new Date(value).getTime();
 }
 
@@ -185,6 +191,7 @@ function add() {
 		silence: false,
 		needConfirmationToRead: false,
 		autoArchiveAt: '',
+		originalAutoArchiveAt: null,
 		userId: null,
 	});
 }
@@ -204,20 +211,20 @@ async function del(announcement: (typeof announcements)['value'][number]) {
 
 async function archive(announcement: (typeof announcements)['value'][number]) {
 	if (announcement.id == null) return;
-	const { _id, id, autoArchiveAt, ...data } = announcement; // _idを消す
+	const { _id, id, autoArchiveAt, originalAutoArchiveAt, ...data } = announcement; // APIに不要な項目を消す
 	await os.apiWithDialog('admin/announcements/update', {
 		...data,
 		id,
 		isActive: false,
-		autoArchiveAt: toAutoArchiveAt(autoArchiveAt),
+		autoArchiveAt: toAutoArchiveAt(autoArchiveAt, originalAutoArchiveAt),
 	});
 	refresh();
 }
 
 async function unarchive(announcement: (typeof announcements)['value'][number]) {
 	if (announcement.id == null) return;
-	const { _id, id, autoArchiveAt, ...data } = announcement; // _idを消す
-	const autoArchiveAtMs = toAutoArchiveAt(autoArchiveAt);
+	const { _id, id, autoArchiveAt, originalAutoArchiveAt, ...data } = announcement; // APIに不要な項目を消す
+	const autoArchiveAtMs = toAutoArchiveAt(autoArchiveAt, originalAutoArchiveAt);
 	await os.apiWithDialog('admin/announcements/update', {
 		...data,
 		id,
@@ -228,8 +235,8 @@ async function unarchive(announcement: (typeof announcements)['value'][number]) 
 }
 
 async function save(announcement: (typeof announcements)['value'][number]) {
-	const { _id, id, isActive, reads, autoArchiveAt, ...data } = announcement; // _idを消す
-	const autoArchiveAtMs = toAutoArchiveAt(autoArchiveAt);
+	const { _id, id, isActive, reads, autoArchiveAt, originalAutoArchiveAt, ...data } = announcement; // APIに不要な項目を消す
+	const autoArchiveAtMs = toAutoArchiveAt(autoArchiveAt, originalAutoArchiveAt);
 	if (id == null) {
 		if (autoArchiveAtMs != null && (Number.isNaN(autoArchiveAtMs) || autoArchiveAtMs <= Date.now())) {
 			await os.alert({
