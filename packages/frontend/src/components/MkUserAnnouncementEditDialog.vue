@@ -43,6 +43,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				>
 					<template #label>{{ i18n.ts.display }}</template>
 				</MkRadios>
+				<MkInput v-model="autoArchiveAt" type="datetime-local">
+					<template #label>{{ i18n.ts._announcement.autoArchiveAt }}</template>
+					<template #caption>{{ i18n.ts._announcement.autoArchiveAtDescription }}</template>
+				</MkInput>
 				<MkSwitch v-model="needConfirmationToRead">
 					{{ i18n.ts._announcement.needConfirmationToRead }}
 					<template #caption>{{ i18n.ts._announcement.needConfirmationToReadDescription }}</template>
@@ -69,16 +73,18 @@ import { i18n } from '@/i18n.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
+import { formatDateTimeString } from '@/utility/format-time-string.js';
 
-type AdminAnnouncementType = Misskey.entities.AdminAnnouncementsCreateRequest & { id: string; };
+type AdminAnnouncementType = Misskey.entities.AdminAnnouncementsListResponse[number];
+type AdminAnnouncementUpdate = Misskey.entities.AdminAnnouncementsCreateRequest & { id: string; };
 
 const props = defineProps<{
 	user: Misskey.entities.User,
-	announcement?: Required<AdminAnnouncementType>,
+	announcement?: AdminAnnouncementType,
 }>();
 
 const emit = defineEmits<{
-	(ev: 'done', v: { deleted?: boolean; updated?: AdminAnnouncementType; created?: AdminAnnouncementType; }): void,
+	(ev: 'done', v: { deleted?: boolean; updated?: AdminAnnouncementUpdate; created?: Misskey.entities.AdminAnnouncementsCreateResponse; }): void,
 	(ev: 'closed'): void
 }>();
 
@@ -88,6 +94,7 @@ const text = ref(props.announcement ? props.announcement.text : '');
 const icon = ref(props.announcement ? props.announcement.icon : 'info');
 const display = ref(props.announcement ? props.announcement.display : 'dialog');
 const needConfirmationToRead = ref(props.announcement ? props.announcement.needConfirmationToRead : false);
+const autoArchiveAt = ref(props.announcement?.autoArchiveAt ? formatDateTimeString(new Date(props.announcement.autoArchiveAt), 'yyyy-MM-ddTHH:mm') : '');
 
 async function done() {
 	const params = {
@@ -98,6 +105,7 @@ async function done() {
 		display: display.value,
 		needConfirmationToRead: needConfirmationToRead.value,
 		userId: props.user.id,
+		autoArchiveAt: autoArchiveAt.value === '' ? null : new Date(autoArchiveAt.value).getTime(),
 	} satisfies Misskey.entities.AdminAnnouncementsCreateRequest;
 
 	if (props.announcement) {
@@ -118,7 +126,7 @@ async function done() {
 		const created = await os.apiWithDialog('admin/announcements/create', params);
 
 		emit('done', {
-			created: created,
+			created,
 		});
 
 		dialog.value?.close();

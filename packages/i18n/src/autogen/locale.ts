@@ -6525,6 +6525,14 @@ export interface Locale extends ILocale {
          */
         "needConfirmationToReadDescription": string;
         /**
+         * 自動アーカイブ日時
+         */
+        "autoArchiveAt": string;
+        /**
+         * 指定した日時を過ぎると、このお知らせは自動的にアーカイブされます。空欄の場合は自動的にアーカイブされません。
+         */
+        "autoArchiveAtDescription": string;
+        /**
          * お知らせを終了
          */
         "end": string;

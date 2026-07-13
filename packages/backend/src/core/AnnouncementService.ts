@@ -43,12 +43,17 @@ export class AnnouncementService {
 
 	@bindThis
 	public async getUnreadAnnouncements(user: MiUser): Promise<MiAnnouncement[]> {
+		const now = new Date();
 		const readsQuery = this.announcementReadsRepository.createQueryBuilder('read')
 			.select('read.announcementId')
 			.where('read.userId = :userId', { userId: user.id });
 
 		const q = this.announcementsRepository.createQueryBuilder('announcement')
 			.where('announcement.isActive = true')
+			.andWhere(new Brackets(qb => {
+				qb.where('announcement.autoArchiveAt IS NULL');
+				qb.orWhere('announcement.autoArchiveAt > :now', { now });
+			}))
 			.andWhere('announcement.silence = false')
 			.andWhere(new Brackets(qb => {
 				qb.orWhere('announcement.userId = :userId', { userId: user.id });
@@ -79,14 +84,18 @@ export class AnnouncementService {
 			silence: values.silence,
 			needConfirmationToRead: values.needConfirmationToRead,
 			userId: values.userId,
+			autoArchiveAt: values.autoArchiveAt ?? null,
+			isActive: values.isActive ?? (values.autoArchiveAt == null || values.autoArchiveAt > new Date()),
 		});
 
 		const packed = await this.announcementEntityService.pack(announcement);
 
 		if (values.userId) {
-			this.globalEventService.publishMainStream(values.userId, 'announcementCreated', {
-				announcement: packed,
-			});
+			if (announcement.isActive) {
+				this.globalEventService.publishMainStream(values.userId, 'announcementCreated', {
+					announcement: packed,
+				});
+			}
 
 			if (moderator) {
 				const user = await this.usersRepository.findOneByOrFail({ id: values.userId });
@@ -99,9 +108,11 @@ export class AnnouncementService {
 				});
 			}
 		} else {
-			this.globalEventService.publishBroadcastStream('announcementCreated', {
-				announcement: packed,
-			});
+			if (announcement.isActive) {
+				this.globalEventService.publishBroadcastStream('announcementCreated', {
+					announcement: packed,
+				});
+			}
 
 			if (moderator) {
 				this.moderationLogService.log(moderator, 'createGlobalAnnouncement', {
@@ -131,6 +142,7 @@ export class AnnouncementService {
 			silence: values.silence,
 			needConfirmationToRead: values.needConfirmationToRead,
 			isActive: values.isActive,
+			autoArchiveAt: values.autoArchiveAt,
 		});
 
 		const after = await this.announcementsRepository.findOneByOrFail({ id: announcement.id });
@@ -154,6 +166,24 @@ export class AnnouncementService {
 				});
 			}
 		}
+	}
+
+	@bindThis
+	public async archiveExpiredAnnouncements(): Promise<number> {
+		const now = new Date();
+
+		const result = await this.announcementsRepository.createQueryBuilder()
+			.update()
+			.set({
+				isActive: false,
+				updatedAt: now,
+			})
+			.where('isActive = true')
+			.andWhere('autoArchiveAt IS NOT NULL')
+			.andWhere('autoArchiveAt <= :now', { now })
+			.execute();
+
+		return result.affected ?? 0;
 	}
 
 	@bindThis

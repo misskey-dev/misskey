@@ -45,6 +45,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInput v-model="announcement.imageUrl" type="url">
 							<template #label>{{ i18n.ts.imageUrl }}</template>
 						</MkInput>
+						<MkInput v-model="announcement.autoArchiveAt" type="datetime-local">
+							<template #label>{{ i18n.ts._announcement.autoArchiveAt }}</template>
+							<template #caption>{{ i18n.ts._announcement.autoArchiveAtDescription }}</template>
+						</MkInput>
 						<MkRadios
 							v-model="announcement.icon"
 							:options="[
@@ -106,6 +110,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import { genId } from '@/utility/id.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
+import { formatDateTimeString } from '@/utility/format-time-string.js';
 
 const {
 	model: announcementsStatus,
@@ -121,19 +126,33 @@ const {
 const loading = ref(true);
 const loadingMore = ref(false);
 
-const announcements = ref<(Omit<Misskey.entities.AdminAnnouncementsListResponse[number], 'id' | 'createdAt' | 'updatedAt' | 'reads' | 'isActive'> & {
+type EditableAnnouncement = Omit<Misskey.entities.AdminAnnouncementsListResponse[number], 'id' | 'createdAt' | 'updatedAt' | 'reads' | 'isActive' | 'autoArchiveAt'> & {
 	id: string | null;
 	_id?: string;
 	isActive?: Misskey.entities.AdminAnnouncementsListResponse[number]['isActive'];
 	reads?: Misskey.entities.AdminAnnouncementsListResponse[number]['reads'];
-})[]>([]);
+	autoArchiveAt: string;
+};
+
+const announcements = ref<EditableAnnouncement[]>([]);
+
+function toEditableAnnouncement(announcement: Misskey.entities.AdminAnnouncementsListResponse[number]): EditableAnnouncement {
+	return {
+		...announcement,
+		autoArchiveAt: announcement.autoArchiveAt ? formatDateTimeString(new Date(announcement.autoArchiveAt), 'yyyy-MM-ddTHH:mm') : '',
+	};
+}
+
+function toAutoArchiveAt(value: string): number | null {
+	return value === '' ? null : new Date(value).getTime();
+}
 
 watch(announcementsStatus, (to) => {
 	loading.value = true;
 	misskeyApi('admin/announcements/list', {
 		status: to,
 	}).then(announcementResponse => {
-		announcements.value = announcementResponse;
+		announcements.value = announcementResponse.map(toEditableAnnouncement);
 		loading.value = false;
 	});
 }, { immediate: true });
@@ -150,6 +169,7 @@ function add() {
 		forExistingUsers: false,
 		silence: false,
 		needConfirmationToRead: false,
+		autoArchiveAt: '',
 		userId: null,
 	});
 }
@@ -169,35 +189,43 @@ async function del(announcement: (typeof announcements)['value'][number]) {
 
 async function archive(announcement: (typeof announcements)['value'][number]) {
 	if (announcement.id == null) return;
-	const { _id, ...data } = announcement; // _idを消す
+	const { _id, id, autoArchiveAt, ...data } = announcement; // _idを消す
 	await os.apiWithDialog('admin/announcements/update', {
 		...data,
-		id: announcement.id, // TSを黙らすため
+		id,
 		isActive: false,
+		autoArchiveAt: toAutoArchiveAt(autoArchiveAt),
 	});
 	refresh();
 }
 
 async function unarchive(announcement: (typeof announcements)['value'][number]) {
 	if (announcement.id == null) return;
-	const { _id, ...data } = announcement; // _idを消す
+	const { _id, id, autoArchiveAt, ...data } = announcement; // _idを消す
+	const autoArchiveAtMs = toAutoArchiveAt(autoArchiveAt);
 	await os.apiWithDialog('admin/announcements/update', {
 		...data,
-		id: announcement.id, // TSを黙らすため
+		id,
 		isActive: true,
+		autoArchiveAt: autoArchiveAtMs != null && autoArchiveAtMs <= Date.now() ? null : autoArchiveAtMs,
 	});
 	refresh();
 }
 
 async function save(announcement: (typeof announcements)['value'][number]) {
-	const { _id, ...data } = announcement; // _idを消す
-	if (announcement.id == null) {
-		await os.apiWithDialog('admin/announcements/create', data);
+	const { _id, id, isActive, reads, autoArchiveAt, ...data } = announcement; // _idを消す
+	if (id == null) {
+		await os.apiWithDialog('admin/announcements/create', {
+			...data,
+			autoArchiveAt: toAutoArchiveAt(autoArchiveAt),
+		});
 		refresh();
 	} else {
 		os.apiWithDialog('admin/announcements/update', {
 			...data,
-			id: announcement.id, // TSを黙らすため
+			id,
+			isActive,
+			autoArchiveAt: toAutoArchiveAt(autoArchiveAt),
 		});
 	}
 }
@@ -208,7 +236,7 @@ function more() {
 		status: announcementsStatus.value,
 		untilId: announcements.value.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id!,
 	}).then(announcementResponse => {
-		announcements.value = announcements.value.concat(announcementResponse);
+		announcements.value = announcements.value.concat(announcementResponse.map(toEditableAnnouncement));
 		loadingMore.value = false;
 	});
 }
@@ -218,7 +246,7 @@ function refresh() {
 	misskeyApi('admin/announcements/list', {
 		status: announcementsStatus.value,
 	}).then(announcementResponse => {
-		announcements.value = announcementResponse;
+		announcements.value = announcementResponse.map(toEditableAnnouncement);
 		loading.value = false;
 	});
 }

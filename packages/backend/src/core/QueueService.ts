@@ -73,6 +73,9 @@ const REPEATABLE_SYSTEM_JOB_DEF = [{
 	name: 'checkExpiredMutings',
 	pattern: '*/5 * * * *',
 }, {
+	name: 'checkExpiredAnnouncements',
+	pattern: '* * * * *',
+}, {
 	name: 'bakeBufferedReactions',
 	pattern: '0 0 * * *',
 }, {

@@ -132,6 +132,24 @@ describe('AnnouncementService', () => {
 			expect(result.length).toBe(0);
 		});
 
+		test('自動アーカイブ日時を過ぎたお知らせは除外', async () => {
+			const user = await createUser();
+			await Promise.all([
+				createAnnouncement({
+					title: 'expired',
+					autoArchiveAt: new Date(Date.now() - 1000),
+				}),
+				createAnnouncement({
+					title: 'scheduled',
+					autoArchiveAt: new Date(Date.now() + 1000),
+				}),
+			]);
+
+			const result = await announcementService.getUnreadAnnouncements(user);
+
+			expect(result.map(announcement => announcement.title)).toEqual(['scheduled']);
+		});
+
 		test('forExistingUsers', async () => {
 			const user = await createUser();
 			const [announcementAfter, announcementBefore, announcementBefore2] = await Promise.all([
@@ -197,10 +215,46 @@ describe('AnnouncementService', () => {
 			expect((globalEventService.publishMainStream.mock.lastCall![2] as any).announcement).toBe(result.packed);
 			expect(moderationLogService.log).toHaveBeenCalled();
 		});
+
+		test('過去の自動アーカイブ日時を指定するとアーカイブ済みで作成される', async () => {
+			const me = await createUser();
+			const result = await announcementService.create({
+				title: 'Title',
+				text: 'Text',
+				autoArchiveAt: new Date(Date.now() - 1000),
+			}, me);
+
+			expect(result.raw.isActive).toBe(false);
+			expect(globalEventService.publishBroadcastStream).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('archiveExpiredAnnouncements', () => {
+		test('期限切れのアクティブなお知らせだけをアーカイブ', async () => {
+			const [expired, scheduled, inactive] = await Promise.all([
+				createAnnouncement({
+					autoArchiveAt: new Date(Date.now() - 1000),
+				}),
+				createAnnouncement({
+					autoArchiveAt: new Date(Date.now() + 1000),
+				}),
+				createAnnouncement({
+					isActive: false,
+					autoArchiveAt: new Date(Date.now() - 1000),
+				}),
+			]);
+
+			const archivedCount = await announcementService.archiveExpiredAnnouncements();
+
+			expect(archivedCount).toBe(1);
+			expect((await announcementsRepository.findOneByOrFail({ id: expired.id })).isActive).toBe(false);
+			expect((await announcementsRepository.findOneByOrFail({ id: scheduled.id })).isActive).toBe(true);
+			expect((await announcementsRepository.findOneByOrFail({ id: inactive.id })).isActive).toBe(false);
+			expect(await announcementService.archiveExpiredAnnouncements()).toBe(0);
+		});
 	});
 
 	describe.todo('read', () => {
 		// TODO
 	});
 });
-
