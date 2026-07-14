@@ -37,9 +37,12 @@
 - Fix: チャットでIMEの変換を確定するEnterでメッセージが送信されてしまうことがある問題を修正
 - Fix: 自分へのメンションに対する色分けで、判定が大文字/小文字を区別していた問題を修正
 - Fix: いくつかのイベントリスナーが正しく解除されない問題を修正（メモリ使用量の改善）
+- Fix: 非ログイン時トップページをスクロール操作できないことがある問題を修正
 
 ### Server
 - Enhance: センシティブメディアの判定を外部サービス ([sensitive-detector](https://github.com/misskey-dev/sensitive-detector)) に分離し、`nsfwjs` / `@tensorflow/tfjs(-node)` の同梱と NSFW 判定モデルを廃止 (#16804)
+- Enhance: バックエンドの `otelForBackend` 設定で OpenTelemetry Traces を OTLP Collector に送信できるように
+- Enhance: OpenTelemetry を単独で利用する際、外向き HTTP リクエストを自動計装するように
 - Enhance: Sentry バックエンドの自動計装を `sentryForBackend.disabledIntegrations` で個別に無効化できるように
 - Enhance: Node.js 22.23.0以降、24.17.0以降、26.4.0以降をサポートするように
 - Enhance: Docker Image の Node.js を 26.4.0 に、Debian を trixie (v13) に更新
