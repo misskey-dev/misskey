@@ -35,7 +35,7 @@ if (!supportsInterpolateSize) {
 </script>
 
 <script setup lang="ts">
-import { useTemplateRef, onMounted, onUnmounted, ref } from 'vue';
+import { useTemplateRef, onMounted, onBeforeUnmount, ref } from 'vue';
 
 const props = defineProps<{
 	animatingIn?: boolean;
@@ -54,7 +54,7 @@ onMounted(() => {
 	}
 });
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
 	if (resizeObserver != null && innerEl.value != null) {
 		resizeObserver.unobserve(innerEl.value);
 	}
