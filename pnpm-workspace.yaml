@@ -53,6 +53,8 @@ minimumReleaseAgeExclude:
   - slacc-win32-x64-msvc
   - '@typescript/native-preview*'
   - vite # そのうち消す
+  # Renovate security update: @opentelemetry/core@2.8.0
+  - "@opentelemetry/core@2.8.0"
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
