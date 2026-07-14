@@ -14,16 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div v-else ref="rootEl">
-		<component
-			:is="prefer.s.animation ? TransitionGroup : 'div'" :class="[$style.notifications]"
-			:enterActiveClass="$style.transition_x_enterActive"
-			:leaveActiveClass="$style.transition_x_leaveActive"
-			:enterFromClass="$style.transition_x_enterFrom"
-			:leaveToClass="$style.transition_x_leaveTo"
-			:moveClass="$style.transition_x_move"
-			tag="div"
-		>
-			<div v-for="(notification, i) in paginator.items.value" :key="notification.id" :data-scroll-anchor="notification.id" :class="$style.item">
+		<div :class="$style.notifications">
+			<div v-for="(notification, i) in paginator.items.value" :key="notification.id" :data-scroll-anchor="notification.id" :class="[$style.item, notification._shouldAnimateIn_ ? $style.itemEnter : null, notification._shouldAnimateOut_ ? $style.itemLeave : null]">
 				<div v-if="i > 0 && isSeparatorNeeded(paginator.items.value[i -1].createdAt, notification.createdAt)" :class="$style.date">
 					<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(paginator.items.value[i -1].createdAt, notification.createdAt)?.prevText }}</span>
 					<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
@@ -32,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type) && 'note' in notification" :class="$style.content" :note="notification.note" :withHardMute="true"/>
 				<XNotification v-else :class="$style.content" :notification="notification" :withTime="true" :full="true"/>
 			</div>
-		</component>
+		</div>
 		<button v-show="paginator.canFetchOlder.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchOlder : null" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
 			<div v-if="!paginator.fetchingOlder.value">{{ i18n.ts.loadMore }}</div>
 			<MkLoading v-else/>
@@ -42,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, onMounted, computed, useTemplateRef, TransitionGroup, markRaw, watch } from 'vue';
+import { onUnmounted, onMounted, computed, useTemplateRef, markRaw, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { notificationTypes } from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
@@ -69,11 +61,13 @@ const paginator = prefer.s.useGroupedNotifications ? markRaw(new Paginator('i/no
 	computedParams: computed(() => ({
 		excludeTypes: props.excludeTypes ?? undefined,
 	})),
+	delayItemRemoval: true,
 })) : markRaw(new Paginator('i/notifications', {
 	limit: 20,
 	computedParams: computed(() => ({
 		excludeTypes: props.excludeTypes ?? undefined,
 	})),
+	delayItemRemoval: true,
 }));
 
 const MIN_POLLING_INTERVAL = 1000 * 10;
@@ -186,47 +180,39 @@ defineExpose({
 </script>
 
 <style lang="scss" module>
-.transition_x_move {
-	transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.transition_x_enterActive {
-	transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-
-	&.content,
-	.content {
-		/* Skip Note Rendering有効時、TransitionGroupで通知を追加するときに一瞬がくっとなる問題を抑制する */
-		content-visibility: visible !important;
-	}
-}
-
-.transition_x_leaveActive {
+.item {
+	overflow: clip;
+	interpolate-size: allow-keywords;
 	transition: height 0.2s cubic-bezier(0,.5,.5,1), opacity 0.2s cubic-bezier(0,.5,.5,1);
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
 }
 
-.transition_x_enterFrom {
+.itemEnter {
+	animation: notification_item_enter 0.7s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.itemLeave {
+	height: 0;
 	opacity: 0;
-	transform: translateY(max(-64px, -100%));
 }
 
-@supports (interpolate-size: allow-keywords) {
-	.transition_x_enterFrom {
-		interpolate-size: allow-keywords; // heightのtransitionを動作させるために必要
+@keyframes notification_item_enter {
+	from {
 		height: 0;
+		opacity: 0;
+		transform: translateY(max(-64px, -100%));
 	}
-}
 
-.transition_x_leaveTo {
-	opacity: 0;
+	to {
+		height: auto;
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 .notifications {
 	container-type: inline-size;
 	background: var(--MI_THEME-panel);
-}
-
-.item {
-	border-bottom: solid 0.5px var(--MI_THEME-divider);
 }
 
 .date {
