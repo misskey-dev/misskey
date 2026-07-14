@@ -20,12 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button class="_button" :class="$style.newButton" @click="releaseQueue()"><i class="ti ti-circle-arrow-up"></i> {{ i18n.ts.newNote }}</button>
 		</div>
 		<div :class="$style.notes">
-			<MkStreamingTimelineItem
+			<component
+				:is="prefer.s.animation ? MkStreamingTimelineItem : 'div'"
 				v-for="(note, i) in paginator.items.value"
+				v-bind="prefer.s.animation ? { animatingIn: note._shouldAnimateIn_, animatingOut: note._shouldAnimateOut_ } : {}"
 				:key="note.id"
 				:data-scroll-anchor="note.id"
-				:animatingIn="note._shouldAnimateIn_"
-				:animatingOut="note._shouldAnimateOut_"
 			>
 				<div v-if="i > 0 && isSeparatorNeeded(paginator.items.value[i -1].createdAt, note.createdAt) && paginator.items.value[i -1]._shouldAnimateOut_ !== true">
 					<div :class="$style.date">
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 				<MkNote v-else :class="$style.note" :note="note" :withHardMute="true"/>
-			</MkStreamingTimelineItem>
+			</component>
 		</div>
 		<button v-show="paginator.canFetchOlder.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchOlder : null" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
 			<div v-if="!paginator.fetchingOlder.value">{{ i18n.ts.loadMore }}</div>
@@ -101,6 +101,8 @@ provide('inTimeline', true);
 provide('tl_withSensitive', computed(() => props.withSensitive));
 provide(DI.inChannel, computed(() => props.src === 'channel' ? props.channel ?? null : null));
 
+const itemRemovalDelay = prefer.s.animation ? ITEM_REMOVAL_MS : false;
+
 let paginator: IPaginator<Misskey.entities.Note>;
 
 if (props.src === 'antenna') {
@@ -109,7 +111,7 @@ if (props.src === 'antenna') {
 			antennaId: props.antenna!,
 		})),
 		useShallowRef: true,
-		itemRemovalDelay: ITEM_REMOVAL_MS,
+		itemRemovalDelay,
 	}));
 } else if (props.src === 'home') {
 	paginator = markRaw(new Paginator('notes/timeline', {
@@ -118,7 +120,7 @@ if (props.src === 'antenna') {
 			withFiles: props.onlyFiles ? true : undefined,
 		})),
 		useShallowRef: true,
-		itemRemovalDelay: ITEM_REMOVAL_MS,
+		itemRemovalDelay,
 	}));
 } else if (props.src === 'local') {
 	paginator = markRaw(new Paginator('notes/local-timeline', {
@@ -128,7 +130,7 @@ if (props.src === 'antenna') {
 			withFiles: props.onlyFiles ? true : undefined,
 		})),
 		useShallowRef: true,
-		itemRemovalDelay: ITEM_REMOVAL_MS,
+		itemRemovalDelay,
 	}));
 } else if (props.src === 'social') {
 	paginator = markRaw(new Paginator('notes/hybrid-timeline', {
@@ -138,7 +140,7 @@ if (props.src === 'antenna') {
 			withFiles: props.onlyFiles ? true : undefined,
 		})),
 		useShallowRef: true,
-		itemRemovalDelay: ITEM_REMOVAL_MS,
+		itemRemovalDelay,
 	}));
 } else if (props.src === 'global') {
 	paginator = markRaw(new Paginator('notes/global-timeline', {
@@ -147,12 +149,12 @@ if (props.src === 'antenna') {
 			withFiles: props.onlyFiles ? true : undefined,
 		})),
 		useShallowRef: true,
-		itemRemovalDelay: ITEM_REMOVAL_MS,
+		itemRemovalDelay,
 	}));
 } else if (props.src === 'mentions') {
 	paginator = markRaw(new Paginator('notes/mentions', {
 		useShallowRef: true,
-		itemRemovalDelay: ITEM_REMOVAL_MS,
+		itemRemovalDelay,
 	}));
 } else if (props.src === 'directs') {
 	paginator = markRaw(new Paginator('notes/mentions', {
@@ -160,7 +162,7 @@ if (props.src === 'antenna') {
 			visibility: 'specified',
 		},
 		useShallowRef: true,
-		itemRemovalDelay: ITEM_REMOVAL_MS,
+		itemRemovalDelay,
 	}));
 } else if (props.src === 'list') {
 	paginator = markRaw(new Paginator('notes/user-list-timeline', {
@@ -170,7 +172,7 @@ if (props.src === 'antenna') {
 			listId: props.list!,
 		})),
 		useShallowRef: true,
-		itemRemovalDelay: ITEM_REMOVAL_MS,
+		itemRemovalDelay,
 	}));
 } else if (props.src === 'channel') {
 	paginator = markRaw(new Paginator('channels/timeline', {
@@ -178,7 +180,7 @@ if (props.src === 'antenna') {
 			channelId: props.channel!,
 		})),
 		useShallowRef: true,
-		itemRemovalDelay: ITEM_REMOVAL_MS,
+		itemRemovalDelay,
 	}));
 } else if (props.src === 'role') {
 	paginator = markRaw(new Paginator('roles/notes', {
@@ -186,7 +188,7 @@ if (props.src === 'antenna') {
 			roleId: props.role!,
 		})),
 		useShallowRef: true,
-		itemRemovalDelay: ITEM_REMOVAL_MS,
+		itemRemovalDelay,
 	}));
 } else {
 	throw new Error('Unrecognized timeline type: ' + props.src);
@@ -438,6 +440,11 @@ defineExpose({
 .notes {
 	container-type: inline-size;
 	background: var(--MI_THEME-panel);
+}
+
+.date,
+.note {
+	box-sizing: border-box;
 }
 
 .note:not(:empty) {

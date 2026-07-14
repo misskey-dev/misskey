@@ -4,9 +4,14 @@
 		:class="[$style.root, {
 			[$style.enter]: animatingIn,
 			[$style.leave]: animatingOut,
+			[$style.animating]: animating,
 		}]"
+		@animationstart="animating = true"
+		@animationend="animating = false"
 	>
-		<slot></slot>
+		<div ref="innerEl">
+			<slot></slot>
+		</div>
 	</div>
 </template>
 
@@ -20,14 +25,17 @@ if (!supportsInterpolateSize) {
 	resizeObserver = new ResizeObserver((entries) => {
 		for (const entry of entries) {
 			const target = entry.target as HTMLElement;
-			target.style.setProperty('--child-height', `${entry.contentRect.height}px`);
+			const root = target.parentElement;
+			if (root != null) {
+				root.style.setProperty('--child-height', `${entry.contentRect.height}px`);
+			}
 		}
 	});
 }
 </script>
 
 <script setup lang="ts">
-import { useTemplateRef, onMounted, onUnmounted } from 'vue';
+import { useTemplateRef, onMounted, onUnmounted, ref } from 'vue';
 
 const props = defineProps<{
 	animatingIn?: boolean;
@@ -35,25 +43,35 @@ const props = defineProps<{
 }>();
 
 const rootEl = useTemplateRef('rootEl');
+const innerEl = useTemplateRef('innerEl');
+
+const animating = ref(false);
 
 onMounted(() => {
-	if (resizeObserver != null && rootEl.value != null) {
-		resizeObserver.observe(rootEl.value);
-		rootEl.value.style.setProperty('--child-height', `${rootEl.value.getBoundingClientRect().height}px`);
+	if (resizeObserver != null && rootEl.value != null && innerEl.value != null) {
+		resizeObserver.observe(innerEl.value);
+		rootEl.value.style.setProperty('--child-height', `${innerEl.value.getBoundingClientRect().height}px`);
 	}
 });
 
 onUnmounted(() => {
-	if (resizeObserver != null && rootEl.value != null) {
-		resizeObserver.unobserve(rootEl.value);
+	if (resizeObserver != null && innerEl.value != null) {
+		resizeObserver.unobserve(innerEl.value);
 	}
 });
 </script>
 
 <style module lang="scss">
 .root {
-	overflow: clip;
 	transition: height 0.2s cubic-bezier(0,.5,.5,1), opacity 0.2s cubic-bezier(0,.5,.5,1);
+}
+
+.animating {
+	overflow: clip;
+}
+
+.inner {
+	display: flow-root;
 }
 
 .enter {

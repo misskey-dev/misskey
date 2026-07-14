@@ -15,13 +15,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div v-else ref="rootEl">
 		<div :class="$style.notifications">
-			<MkStreamingTimelineItem
+			<component
+				:is="prefer.s.animation ? MkStreamingTimelineItem : 'div'"
 				v-for="(notification, i) in paginator.items.value"
+				v-bind="prefer.s.animation ? { animatingIn: notification._shouldAnimateIn_, animatingOut: notification._shouldAnimateOut_ } : {}"
 				:key="notification.id"
 				:data-scroll-anchor="notification.id"
 				:class="$style.item"
-				:animatingIn="notification._shouldAnimateIn_"
-				:animatingOut="notification._shouldAnimateOut_"
 			>
 				<div v-if="i > 0 && isSeparatorNeeded(paginator.items.value[i -1].createdAt, notification.createdAt)" :class="$style.date">
 					<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(paginator.items.value[i -1].createdAt, notification.createdAt)?.prevText }}</span>
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type) && 'note' in notification" :class="$style.content" :note="notification.note" :withHardMute="true"/>
 				<XNotification v-else :class="$style.content" :notification="notification" :withTime="true" :full="true"/>
-			</MkStreamingTimelineItem>
+			</component>
 		</div>
 		<button v-show="paginator.canFetchOlder.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchOlder : null" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
 			<div v-if="!paginator.fetchingOlder.value">{{ i18n.ts.loadMore }}</div>
@@ -64,18 +64,20 @@ const props = defineProps<{
 
 const rootEl = useTemplateRef('rootEl');
 
+const itemRemovalDelay = prefer.s.animation ? ITEM_REMOVAL_MS : false;
+
 const paginator = prefer.s.useGroupedNotifications ? markRaw(new Paginator('i/notifications-grouped', {
 	limit: 20,
 	computedParams: computed(() => ({
 		excludeTypes: props.excludeTypes ?? undefined,
 	})),
-	itemRemovalDelay: ITEM_REMOVAL_MS,
+	itemRemovalDelay,
 })) : markRaw(new Paginator('i/notifications', {
 	limit: 20,
 	computedParams: computed(() => ({
 		excludeTypes: props.excludeTypes ?? undefined,
 	})),
-	itemRemovalDelay: ITEM_REMOVAL_MS,
+	itemRemovalDelay,
 }));
 
 const MIN_POLLING_INTERVAL = 1000 * 10;
