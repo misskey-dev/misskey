@@ -13,6 +13,7 @@ import { writeHeapSnapshot } from 'node:v8';
 import chalk from 'chalk';
 import Xev from 'xev';
 import Logger from '@/logger.js';
+import { isTelemetryShutdownInProgress } from '@/core/telemetry/telemetry-shutdown.js';
 import { envOption } from '../env.js';
 import { readyRef } from './ready.js';
 
@@ -41,6 +42,11 @@ cluster.on('online', worker => {
 
 // Listen for dying workers
 cluster.on('exit', worker => {
+	if (isTelemetryShutdownInProgress()) {
+		clusterLogger.info(`Process exited during shutdown: [${worker.id}]`);
+		return;
+	}
+
 	// Replace the dead worker,
 	// we're not sentimental
 	clusterLogger.error(chalk.red(`[${worker.id}] died :(`));

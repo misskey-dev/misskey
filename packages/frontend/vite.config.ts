@@ -221,9 +221,6 @@ export function getConfig(): UserConfig {
 							name: 'vue',
 							test: /node_modules[\\/]vue/,
 						}, {
-							name: 'photoswipe',
-							test: /node_modules[\\/]photoswipe/,
-						}, {
 							// split i18n related module to distinct module
 							name: 'i18n',
 							includeDependenciesRecursively: false,
