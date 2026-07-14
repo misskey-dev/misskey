@@ -1,7 +1,9 @@
 import { defineConfig } from 'rolldown';
+import { version as summalyVersion } from '@misskey-dev/summaly';
 import type { Plugin, ExternalOption } from 'rolldown';
 import { execa, execaNode } from 'execa';
 import type { ResultPromise } from 'execa';
+import fkill from 'fkill';
 import esmShim from '@rollup/plugin-esm-shim';
 
 /**
@@ -9,6 +11,7 @@ import esmShim from '@rollup/plugin-esm-shim';
  */
 function backendDevServerPlugin(): Plugin {
 	let backendProcess: ResultPromise | null = null;
+	let backendShutdownPromise: Promise<void> | null = null;
 
 	async function runBuildAssets() {
 		await execa('pnpm', ['run', 'build-assets'], {
@@ -19,12 +22,31 @@ function backendDevServerPlugin(): Plugin {
 	}
 
 	async function killBackendProcess() {
-		if (backendProcess) {
-			backendProcess.catch(() => {}); // backendProcess.kill()によって発生する例外を無視するためにcatch()を呼び出す
-			backendProcess.kill();
-			await new Promise(resolve => backendProcess!.on('exit', resolve));
-			backendProcess = null;
-		}
+		if (backendShutdownPromise) return backendShutdownPromise;
+		if (!backendProcess) return;
+
+		const processToKill = backendProcess;
+		backendProcess = null;
+		processToKill.catch(() => {}); // プロセスの終了によって発生する例外を無視するためにcatch()を呼び出す
+
+		backendShutdownPromise = (async () => {
+			if (process.platform === 'win32' && processToKill.pid != null) {
+				await fkill(processToKill.pid, {
+					force: true,
+					tree: true,
+					silent: true,
+					waitForExit: 5000,
+				});
+			} else {
+				processToKill.kill();
+			}
+
+			await processToKill.catch(() => {});
+		})().finally(() => {
+			backendShutdownPromise = null;
+		});
+
+		return backendShutdownPromise;
 	}
 
 	return {
@@ -48,6 +70,9 @@ function backendDevServerPlugin(): Plugin {
 				await runBuildAssets();
 			}
 		},
+		async closeWatcher() {
+			await killBackendProcess();
+		},
 	};
 }
 
@@ -62,6 +87,7 @@ export default defineConfig((args) => {
 		'class-validator',
 		/^@sentry\/.*/,
 		/^@sentry-internal\/.*/,
+		/^@opentelemetry\/.*/,
 		'@nestjs/websockets/socket-module',
 		'@nestjs/microservices/microservices-module',
 		'@nestjs/microservices',
@@ -73,9 +99,15 @@ export default defineConfig((args) => {
 		'jsdom',
 		're2',
 		'ipaddr.js',
-		'oauth2orize',
 		'file-type',
+		// バンドルするとSentryの自動計装が正しく行われなくなるため外しておく
+		'pg',
 	];
+
+	const define: Record<string, string> = {
+		// Summalyのバージョンを埋め込む
+		'_SUMMALY_VERSION_': JSON.stringify(summalyVersion),
+	};
 
 	if (isE2E) {
 		return {
@@ -85,6 +117,9 @@ export default defineConfig((args) => {
 			plugins: [
 				esmShim(),
 			],
+			transform: {
+				define,
+			},
 			output: {
 				keepNames: true,
 				sourcemap: true,
@@ -109,6 +144,9 @@ export default defineConfig((args) => {
 				esmShim(),
 				(isWatchMode ? backendDevServerPlugin() : undefined),
 			],
+			transform: {
+				define,
+			},
 			output: {
 				keepNames: true,
 				minify: !isWatchMode,

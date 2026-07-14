@@ -2,9 +2,10 @@ import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
 import pluginGlsl from 'vite-plugin-glsl';
 import { replacePlugin } from 'rolldown/plugins';
-import type { UserConfig } from 'vite';
+import { visualizer } from 'rollup-plugin-visualizer';
+import type { PluginOption, UserConfig } from 'vite';
 import { defineConfig } from 'vite';
-import * as yaml from 'js-yaml';
+import { load as loadYaml } from 'js-yaml';
 import { promises as fsp } from 'fs';
 
 import locales from 'i18n';
@@ -16,11 +17,40 @@ import type { Options as SearchIndexOptions } from './lib/vite-plugin-create-sea
 import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
 import pluginWatchLocales from './lib/vite-plugin-watch-locales.js';
 import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n.js';
+import { Features } from 'lightningcss';
 
-const url = process.env.NODE_ENV === 'development' ? (yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')) as any).url : null;
+const url = process.env.NODE_ENV === 'development' ? (loadYaml(await fsp.readFile('../../.config/default.yml', 'utf-8')) as any).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
+
+function getBundleVisualizerPlugin(): PluginOption[] {
+	if (process.env.FRONTEND_BUNDLE_VISUALIZER !== 'true') return [];
+
+	const visualizerOptions = {
+		title: 'Misskey frontend bundle visualizer',
+		gzipSize: true,
+		brotliSize: true,
+		projectRoot: path.resolve(__dirname, '../..'),
+	};
+	const plugins = [
+		visualizer({
+			...visualizerOptions,
+			filename: process.env.FRONTEND_BUNDLE_VISUALIZER_FILE,
+			template: 'raw-data',
+		}) as PluginOption,
+	];
+
+	if (process.env.FRONTEND_BUNDLE_VISUALIZER_HTML_FILE != null) {
+		plugins.push(visualizer({
+			...visualizerOptions,
+			filename: process.env.FRONTEND_BUNDLE_VISUALIZER_HTML_FILE,
+			template: 'treemap',
+		}) as PluginOption);
+	}
+
+	return plugins;
+}
 
 /**
  * 検索インデックスの生成設定
@@ -128,6 +158,7 @@ export function getConfig(): UserConfig {
 					}),
 				]
 				: [],
+			...getBundleVisualizerPlugin(),
 		],
 
 		resolve: {
@@ -142,6 +173,9 @@ export function getConfig(): UserConfig {
 		},
 
 		css: {
+			lightningcss: {
+				exclude: Features.LightDark,
+			},
 			modules: {
 				generateScopedName(name, filename, _css): string {
 					const id = (path.relative(__dirname, filename.split('?')[0]) + '-' + name).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
@@ -166,9 +200,9 @@ export function getConfig(): UserConfig {
 
 		build: {
 			target: [
-				'chrome116',
-				'firefox116',
-				'safari16',
+				'chrome130',
+				'firefox132',
+				'safari18.2',
 			],
 			manifest: 'manifest.json',
 			rolldownOptions: {
@@ -187,12 +221,10 @@ export function getConfig(): UserConfig {
 							name: 'vue',
 							test: /node_modules[\\/]vue/,
 						}, {
-							name: 'photoswipe',
-							test: /node_modules[\\/]photoswipe/,
-						}, {
-							// dependencies of i18n.ts
-							name: 'config',
-							test: /@@[\\/]js[\\/]config\.js/,
+							// split i18n related module to distinct module
+							name: 'i18n',
+							includeDependenciesRecursively: false,
+							test: /i18n\.ts|locale\.ts/,
 						}],
 					},
 					entryFileNames: `scripts/${localesHash}-[hash:8].js`,
@@ -224,21 +256,6 @@ export function getConfig(): UserConfig {
 
 		worker: {
 			format: 'es',
-		},
-
-		test: {
-			environment: 'happy-dom',
-			deps: {
-				optimizer: {
-					web: {
-						include: [
-							// XXX: misskey-dev/browser-image-resizer has no "type": "module"
-							'browser-image-resizer',
-						],
-					},
-				},
-			},
-			includeSource: ['src/**/*.ts'],
 		},
 	};
 }

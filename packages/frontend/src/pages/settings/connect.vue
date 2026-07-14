@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/connect" :label="i18n.ts._settings.serviceConnection" :keywords="['app', 'service', 'connect', 'webhook', 'api', 'token']" icon="ti ti-link">
 	<div class="_gaps_m">
-		<MkFeatureBanner icon="/client-assets/link_3d.png" color="#ff0088">
+		<MkFeatureBanner icon="/fluent-emoji/1f517.png" color="#ff0088">
 			<SearchText>{{ i18n.ts._settings.serviceConnectionBanner }}</SearchText>
 		</MkFeatureBanner>
 
@@ -93,7 +93,7 @@ async function generateToken() {
 
 			os.alert({
 				type: 'success',
-				title: i18n.ts.token,
+				title: i18n.ts.accessToken,
 				text: token,
 			});
 		},

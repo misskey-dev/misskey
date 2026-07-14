@@ -179,6 +179,7 @@ export class ApNoteService {
 			throw apNoteErr(AP_NOTE_ERRORS.ACTOR_SUSPENDED, 'actor has been suspended');
 		}
 
+		const apMentionRawCount = new Set(this.apMentionService.extractApMentionObjects(note.tag).map(x => x.href)).size;
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
 		const apHashtags = extractApHashtags(note.tag);
 
@@ -328,6 +329,7 @@ export class ApNoteService {
 				visibility,
 				visibleUsers,
 				apMentions,
+				apMentionRawCount,
 				apHashtags,
 				apEmojis,
 				poll,

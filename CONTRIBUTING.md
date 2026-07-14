@@ -189,6 +189,14 @@ pnpm migrate
 
 After finishing the migration, you can proceed.
 
+#### Cloudflare tunnel
+Cloudflare tunnelを使うとローカルのMisskeyサーバーをインターネットに公開できます。
+HTTPSでしか動作しない機能を検証したい時や、スマホなど別のデバイスからローカルのMisskeyサーバーを検証したい時に便利です。
+
+##### Cloudflare warpと併用する際のtips
+
+> cloudflared (Cloudflare Tunnel) は region1.v2.argotunnel.com / region2.v2.argotunnel.com に QUIC/HTTP2 でアウトバウンド接続するのですが、WARP を有効化するとこのトラフィックが WARP 経由になってループ/切断します。これら 2 ホストを WARP のトンネル除外（split tunnel）に追加することで、cloudflared だけは WARP をバイパスして直接 Cloudflare エッジへ接続できるようになります。
+
 ### Start developing
 During development, it is useful to use the
 ```
@@ -575,11 +583,12 @@ enumの列挙の内容の削除は、その値をもつレコードを全て削�
 ### Migration作成方法
 packages/backendで:
 ```sh
-pnpm dlx typeorm migration:generate -d ormconfig.js -o <migration name>
+pnpm dlx typeorm migration:generate -d ormconfig.js -o --esm <migration name>
 ```
 
 - 生成後、ファイルをmigration下に移してください
 - 作成されたスクリプトは不必要な変更を含むため除去してください
+- `-o` (`--outputJs`) で JS 形式、`--esm` で ESM 形式に生成する。Misskey の既存 migration はすべて ESM JS なので両方のオプションが必要
 
 ### コネクションには`markRaw`せよ
 **Vueのコンポーネントのdataオプションとして**misskey.jsのコネクションを設定するとき、必ず`markRaw`でラップしてください。インスタンスが不必要にリアクティブ化されることで、misskey.js内の処理で不具合が発生するとともに、パフォーマンス上の問題にも繋がる。なお、Composition APIを使う場合はこの限りではない(リアクティブ化はマニュアルなため)。
@@ -590,6 +599,90 @@ TypeScriptでjsonをimportすると、tscでコンパイルするときにその
 ### コンポーネントのスタイル定義でmarginを持たせない
 コンポーネント自身がmarginを設定するのは問題の元となることはよく知られている
 marginはそのコンポーネントを使う側が設定する
+
+### 命名規則
+
+本来それが略称であっても、通常それでひとつのワードとして用いられるものは、略称として扱わない。
+
+#### 例: IP address
+
+Good: `ipAddress` / `IpAddress`
+
+Bad: `IPAddress`
+
+#### 例: User ID
+
+Good: `userId` / `UserId`
+
+Bad: `userID` / `UserID`
+
+#### 例: XMLなHTTPのRequest
+
+Good: `xmlHttpRequest` / `XmlHttpRequest`
+
+Bad: `XMLHttpRequest` / `XMLHTTPRequest`
+
+### 関数化の基準
+
+汎用性が低く(例えばそれを関数化したとしてもその呼び出しが元の場所一か所しか存在しない)、内容も短い処理(例えば10行以下)は、かえって読みにくくなるため、関数化しない。
+
+また、関数化する場合でも、呼び出しがある特定のスコープに限られる場合は、そのスコープ内に閉じ込めた方が分かりやすく簡潔になる場合がある(ただし本来その処理に不要であっても、構造上親のスコープにある関係のない変数や引数にもアクセスできるようになるため、必ずしもそうすれば設計上綺麗になるというわけでもない。状況に応じて判断すべし)。
+
+Bad:
+
+``` ts
+function withBrankets(x) {
+	return `(${x})`;
+}
+
+function formatPercent(x) {
+	return `${x}%`;
+}
+
+function formatValue(x) {
+	return withBrankets(formatPercent(x));
+}
+
+function showData(a, b) {
+	console.log(formatValue(a));
+	console.log(formatValue(b));
+}
+```
+
+Good:
+
+``` ts
+function formatValue(x) {
+	return `(${x}%)`;
+}
+
+function showData(a, b) {
+	console.log(formatValue(a));
+	console.log(formatValue(b));
+}
+```
+
+or
+
+``` ts
+function showData(a, b) {
+	function formatValue(x) {
+		return `(${x}%)`;
+	}
+
+	console.log(formatValue(a));
+	console.log(formatValue(b));
+}
+```
+
+or
+
+``` ts
+function showData(a, b) {
+	console.log(`(${a}%)`);
+	console.log(`(${b}%)`);
+}
+```
 
 ## その他
 ### HTMLのクラス名で follow という単語は使わない

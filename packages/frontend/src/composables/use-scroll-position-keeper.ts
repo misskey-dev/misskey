@@ -4,7 +4,7 @@
  */
 
 import { throttle } from 'throttle-debounce';
-import { nextTick, onActivated, onDeactivated, onUnmounted, watch } from 'vue';
+import { nextTick, onActivated, onDeactivated, watch } from 'vue';
 import type { Ref } from 'vue';
 
 // note render skippingがオンだとズレるため、遷移直前にスクロール範囲に表示されているdata-scroll-anchor要素を特定して、復元時に当該要素までスクロールするようにする
@@ -13,12 +13,15 @@ import type { Ref } from 'vue';
 
 export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | null | undefined>): void {
 	let anchorId: string | null = null;
+	// キャプチャ時のアンカー要素上端のコンテナ上端からの距離
+	let anchorContainerLocalY = 0;
+	let savedScrollTop = 0;
 	let ready = true;
 
 	watch(scrollContainerRef, (el) => {
 		if (!el) return;
 
-		const onScroll = () => {
+		const captureAnchor = () => {
 			if (!el) return;
 			if (!ready) return;
 
@@ -29,16 +32,17 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 			}
 
 			const scrollContainerRect = el.getBoundingClientRect();
-			const viewPosition = scrollContainerRect.height / 2;
+			const viewPosition = scrollContainerRect.top + scrollContainerRect.height / 2;
 
-			const anchorEls = el.querySelectorAll('[data-scroll-anchor]');
+			const anchorEls = el.querySelectorAll<HTMLElement>('[data-scroll-anchor]');
 			for (let i = anchorEls.length - 1; i > -1; i--) { // 下から見た方が速い
-				const anchorEl = anchorEls[i] as HTMLElement;
-				const anchorRect = anchorEl.getBoundingClientRect();
-				const anchorTop = anchorRect.top;
-				const anchorBottom = anchorRect.bottom;
-				if (anchorTop <= viewPosition && anchorBottom >= viewPosition) {
+				const anchorEl = anchorEls[i];
+				const anchorTop = anchorEl.getBoundingClientRect().top;
+				// 上端が viewPosition 以下の最初の要素（＝中央を跨ぐか、中央より上にある中で最も近いもの）を選択する
+				// 最下部スクロール時に min-height による空白に viewPosition が入った場合も最後のアイテムをキャプチャできる
+				if (anchorTop <= viewPosition) {
 					anchorId = anchorEl.getAttribute('data-scroll-anchor');
+					anchorContainerLocalY = anchorTop - scrollContainerRect.top;
 					break;
 				}
 			}
@@ -47,7 +51,10 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 		// ほんとはscrollイベントじゃなくてonBeforeDeactivatedでやりたい
 		// https://github.com/vuejs/vue/issues/9454
 		// https://github.com/vuejs/rfcs/pull/284
-		el.addEventListener('scroll', throttle(1000, onScroll), { passive: true });
+		el.addEventListener('scroll', throttle(1000, captureAnchor), { passive: true });
+		// スクロール後すぐにクリックするとthrottleによりanchorIdが古いまま残るため、
+		// pointerdownで遷移直前のアンカーを同期的に取得する
+		el.addEventListener('pointerdown', captureAnchor, { passive: true });
 	}, {
 		immediate: true,
 	});
@@ -56,16 +63,18 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 		if (!anchorId) return;
 		const scrollContainer = scrollContainerRef.value;
 		if (!scrollContainer) return;
-		const scrollAnchorEl = scrollContainer.querySelector(`[data-scroll-anchor="${anchorId}"]`);
+		const scrollAnchorEl = scrollContainer.querySelector<HTMLElement>(`[data-scroll-anchor="${CSS.escape(anchorId)}"]`);
 		if (!scrollAnchorEl) return;
-		scrollAnchorEl.scrollIntoView({
-			behavior: 'instant',
-			block: 'center',
-			inline: 'center',
-		});
+		const anchorRect = scrollAnchorEl.getBoundingClientRect();
+		// anchorContentY: コンテンツ先頭からのアンカー要素上端の距離（scrollTopに依存しない）
+		const anchorContentY = scrollContainer.scrollTop + anchorRect.top - scrollContainer.getBoundingClientRect().top;
+		// キャプチャ時と同じ scrollTop になるよう直接セット（コンテナ高さ変化に依存しない）
+		scrollContainer.scrollTop = anchorContentY - anchorContainerLocalY;
 	};
 
 	onDeactivated(() => {
+		const el = scrollContainerRef.value;
+		if (el) savedScrollTop = el.scrollTop;
 		ready = false;
 	});
 
@@ -75,6 +84,13 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 			restore();
 			window.setTimeout(() => {
 				restore();
+
+				// anchor方式が失敗した場合（anchorIdがnullまたは要素が見つからない場合）の
+				// フォールバック
+				const el = scrollContainerRef.value;
+				if (el && el.scrollTop === 0 && savedScrollTop > 0) {
+					el.scrollTop = savedScrollTop;
+				}
 
 				ready = true;
 			}, 100);

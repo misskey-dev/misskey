@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive]" @click="reveal" @contextmenu.stop="onContextmenu">
+<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive]" @click="onClick" @contextmenu.stop="onContextmenu">
 	<component
 		:is="disableImageLink ? 'div' : 'a'"
 		v-bind="disableImageLink ? {
@@ -29,6 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:height="image.properties.height"
 			:style="hide ? 'filter: brightness(0.7);' : null"
 			:class="$style.image"
+			:marker="marker"
 		/>
 		<div
 			v-else-if="prefer.s.dataSaver.media || hide"
@@ -42,6 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:alt="image.comment || image.name"
 			:title="image.comment || image.name"
 			:class="$style.image"
+			:data-marker="marker"
 		/>
 	</component>
 	<template v-if="hide">
@@ -68,16 +70,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { MenuItem } from '@/types/menu.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import bytes from '@/filters/bytes.js';
 import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
 import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
+import { getFileMenu } from '@/utility/get-file-menu.js';
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;
@@ -85,11 +85,16 @@ const props = withDefaults(defineProps<{
 	cover?: boolean;
 	disableImageLink?: boolean;
 	controls?: boolean;
+	marker?: string;
 }>(), {
 	cover: false,
 	disableImageLink: false,
 	controls: true,
 });
+
+const emit = defineEmits<{
+	(event: 'mediaClick', ev: PointerEvent): void;
+}>();
 
 const hide = ref(true);
 
@@ -100,8 +105,9 @@ const url = computed(() => (props.raw || prefer.s.loadRawImages)
 		: props.image.thumbnailUrl!,
 );
 
-async function reveal(ev: PointerEvent) {
+async function onClick(ev: PointerEvent) {
 	if (!props.controls) {
+		emit('mediaClick', ev);
 		return;
 	}
 
@@ -112,6 +118,8 @@ async function reveal(ev: PointerEvent) {
 		}
 
 		hide.value = false;
+	} else {
+		emit('mediaClick', ev);
 	}
 }
 
@@ -123,80 +131,12 @@ watch(() => props.image, (newImage) => {
 	immediate: true,
 });
 
-function getMenu() {
-	const menuItems: MenuItem[] = [];
-
-	menuItems.push({
-		text: i18n.ts.hide,
-		icon: 'ti ti-eye-off',
-		action: () => {
-			hide.value = true;
-		},
-	});
-
-	if (iAmModerator) {
-		menuItems.push({
-			text: props.image.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-			icon: 'ti ti-eye-exclamation',
-			danger: true,
-			action: async () => {
-				const { canceled } = await os.confirm({
-					type: 'warning',
-					text: props.image.isSensitive ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
-				});
-
-				if (canceled) return;
-
-				os.apiWithDialog('drive/files/update', {
-					fileId: props.image.id,
-					isSensitive: !props.image.isSensitive,
-				});
-			},
-		});
-	}
-
-	const details: MenuItem[] = [];
-	if ($i?.id === props.image.userId) {
-		details.push({
-			type: 'link',
-			text: i18n.ts._fileViewer.title,
-			icon: 'ti ti-info-circle',
-			to: `/my/drive/file/${props.image.id}`,
-		});
-	}
-
-	if (iAmModerator) {
-		details.push({
-			type: 'link',
-			text: i18n.ts.moderation,
-			icon: 'ti ti-photo-exclamation',
-			to: `/admin/file/${props.image.id}`,
-		});
-	}
-
-	if (details.length > 0) {
-		menuItems.push({ type: 'divider' }, ...details);
-	}
-
-	if (prefer.s.devMode) {
-		menuItems.push({ type: 'divider' }, {
-			icon: 'ti ti-hash',
-			text: i18n.ts.copyFileId,
-			action: () => {
-				copyToClipboard(props.image.id);
-			},
-		});
-	}
-
-	return menuItems;
-}
-
 function showMenu(ev: PointerEvent) {
-	os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+	os.popupMenu(getFileMenu(props.image, (newHide) => { hide.value = newHide; }), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 
 function onContextmenu(ev: PointerEvent) {
-	os.contextMenu(getMenu(), ev);
+	os.contextMenu(getFileMenu(props.image, (newHide) => { hide.value = newHide; }), ev);
 }
 </script>
 

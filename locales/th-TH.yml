@@ -1409,6 +1409,7 @@ presets: "พรีเซ็ต"
 zeroPadding: "ห่างเป็น 0"
 nothingToConfigure: "ไม่มีอะไรให้ต้ังค่า"
 viewRenotedChannel: "แสดงช่องที่ถูกรีโน้ต"
+previewingThemeRestore: "เลิกทำ"
 _imageEditing:
   _vars:
     caption: "แคปชั่นของไฟล์"

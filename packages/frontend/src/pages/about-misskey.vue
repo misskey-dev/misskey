@@ -138,6 +138,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount, ref, useTemplateRef, computed } from 'vue';
 import { host, version } from '@@/js/config.js';
+import { DEFAULT_EMOJIS } from '@@/js/const.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -150,7 +151,6 @@ import { definePage } from '@/page.js';
 import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
-import { DEFAULT_EMOJIS } from '@@/js/const.js';
 
 const patronsWithIcon = [{
 	name: 'カイヤン',
@@ -299,6 +299,9 @@ const patronsWithIcon = [{
 }, {
 	name: '大賀愛一郎',
 	icon: 'https://assets.misskey-hub.net/patrons/c701a797d1df4125970f25d3052250ac.jpg',
+}, {
+	name: '西野マチ',
+	icon: 'https://assets.misskey-hub.net/patrons/962ff1d2f3d040ed8973b62bbff84391.jpg',
 }];
 
 const patrons = [
@@ -414,6 +417,7 @@ const patrons = [
 	'ほとラズ',
 	'スズカケン',
 	'蒼井よみこ',
+	'忍猫',
 ];
 
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));

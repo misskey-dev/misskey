@@ -4,7 +4,22 @@
  */
 
 import { NestFactory } from '@nestjs/core';
+import { init } from 'slacc';
 import { NestLogger } from '@/NestLogger.js';
+import { envOption } from '@/env.js';
+import type { Config } from '@/config.js';
+
+let slaccInitialized = false;
+
+export function initExtraThreadPool(config: Config) {
+	if (slaccInitialized) return;
+
+	const threadPoolSize = Math.max(config.threadPoolSize ?? 1, 1);
+
+	init(threadPoolSize);
+
+	slaccInitialized = true;
+}
 
 export async function server() {
 	const { MainModule } = await import('../MainModule.js');
@@ -17,7 +32,7 @@ export async function server() {
 	const serverService = app.get(ServerService);
 	await serverService.launch();
 
-	if (process.env.NODE_ENV !== 'test') {
+	if (process.env.NODE_ENV !== 'test' && !envOption.noDaemons) {
 		const { ChartManagementService } = await import('../core/chart/ChartManagementService.js');
 		const { QueueStatsService } = await import('../daemons/QueueStatsService.js');
 		const { ServerStatsService } = await import('../daemons/ServerStatsService.js');
@@ -40,7 +55,9 @@ export async function jobQueue() {
 	});
 
 	jobQueue.get(QueueProcessorService).start();
-	jobQueue.get(ChartManagementService).start();
+	if (!envOption.noDaemons) {
+		jobQueue.get(ChartManagementService).start();
+	}
 
 	return jobQueue;
 }
