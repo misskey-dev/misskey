@@ -4,6 +4,7 @@
  */
 
 import type { Config } from '@/config.js';
+import type { QueueTraceContextCarrier } from '../queue-trace-context.js';
 
 export type SentryBackendConfig = NonNullable<Config['sentryForBackend']>;
 export type OtelBackendConfig = NonNullable<Config['otelForBackend']>;
@@ -39,6 +40,18 @@ export interface TelemetryAdapter {
 	 * fnの戻り値・例外はそのまま呼び出し側へ返し、Promiseの場合はsettleまでspanを閉じない。
 	 */
 	startSpan<T>(name: string, fn: () => T): T;
+
+	/**
+	 * BullMQ のジョブデータへ保存する carrier に、active trace context を注入する。
+	 * OTel を使わない adapter は実装しない。
+	 */
+	injectTraceContext?(carrier: QueueTraceContextCarrier): void;
+
+	/**
+	 * ジョブに保存された enqueue 元の context を、worker span の Link または parent として復元する。
+	 * context を持たないジョブの互換性は adapter 側で保つ。
+	 */
+	startSpanWithTraceContext?<T>(name: string, jobData: object, fn: () => T): T;
 
 	/**
 	 * プロセス終了時にtelemetry backendへ残りのデータをflushする。

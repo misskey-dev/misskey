@@ -208,8 +208,13 @@ describe('SentryTelemetryAdapter.createWithOtlpExport', () => {
 			nodeProfilingIntegration,
 		}));
 		vi.doMock('@opentelemetry/api', () => ({
+			context: { active: vi.fn() },
 			diag: { setLogger },
 			DiagLogLevel: { WARN: 50 },
+			propagation: { inject: vi.fn(), extract: vi.fn() },
+			ROOT_CONTEXT: {},
+			SpanStatusCode: { ERROR: 2 },
+			trace: { getTracer: vi.fn(), getSpanContext: vi.fn() },
 		}));
 		vi.doMock('@opentelemetry/sdk-trace-base', () => ({
 			BatchSpanProcessor,

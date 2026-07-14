@@ -357,6 +357,10 @@ id: 'aidx'
 #  #resourceAttributes:
 #  #  deployment.environment: 'production'
 #  #propagateTraceToRemote: false
+#  # Queue worker spans are independent traces linked to their enqueuer by default.
+#  # Set to 'parent' to make them child spans instead. This can create very large
+#  # traces for high-fan-out queues such as federation delivery.
+#  #jobTraceContextMode: 'link'
 
 #sentryForFrontend:
 #  vueIntegration:

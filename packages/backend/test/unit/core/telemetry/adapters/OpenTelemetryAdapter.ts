@@ -8,6 +8,7 @@ import { SpanStatusCode } from '@opentelemetry/api';
 import { defaultResource, detectResources, envDetector, resourceFromAttributes } from '@opentelemetry/resources';
 import { ParentBasedSampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-base';
 import { ATTR_SERVICE_INSTANCE_ID, ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
+import type { Context, SpanContext } from '@opentelemetry/api';
 import { OpenTelemetryAdapter, createResource, createSampler, getMisskeyProcessRole } from '@/core/telemetry/adapters/OpenTelemetryAdapter.js';
 
 const mocks = vi.hoisted(() => {
@@ -94,6 +95,61 @@ describe('OpenTelemetryAdapter', () => {
 			code: SpanStatusCode.ERROR,
 			message: error.message,
 		});
+		expect(span.end).toHaveBeenCalledTimes(1);
+	});
+
+	test('creates a root worker span linked to the enqueue span by default', () => {
+		const span = {
+			end: vi.fn(),
+			recordException: vi.fn(),
+			setStatus: vi.fn(),
+		};
+		const rootContext = {} as Context;
+		const extractedContext = {} as Context;
+		const sourceSpanContext = {
+			traceId: '0123456789abcdef0123456789abcdef',
+			spanId: '0123456789abcdef',
+			traceFlags: 1,
+			isRemote: true,
+		} as SpanContext;
+		const propagation = {
+			isPropagationApi: true,
+			inject: vi.fn(),
+			extract(this: { isPropagationApi: boolean }) {
+				if (!this.isPropagationApi) throw new Error('lost propagation API receiver');
+				return extractedContext;
+			},
+		};
+		const tracer = {
+			startActiveSpan: vi.fn((_name: string, _options: unknown, _context: unknown, fn: (spanArg: typeof span) => string) => fn(span)),
+		} as any;
+		const adapter = new OpenTelemetryAdapter({
+			tracer,
+			provider: { shutdown: vi.fn() },
+			getActiveSpan: () => undefined,
+			spanStatusCodeError: SpanStatusCode.ERROR,
+			shutdownTimeout: 10,
+			queueTraceContext: {
+				tracer,
+				propagation: propagation as any,
+				trace: { getSpanContext: () => sourceSpanContext },
+				getActiveContext: () => rootContext,
+				rootContext,
+				mode: 'link',
+				spanStatusCodeError: SpanStatusCode.ERROR,
+			},
+		});
+
+		expect(adapter.startSpanWithTraceContext('Queue: Deliver', {
+			__misskeyTraceContext: {
+				traceparent: '00-0123456789abcdef0123456789abcdef-0123456789abcdef-01',
+			},
+		}, () => 'ok')).toBe('ok');
+
+		expect(tracer.startActiveSpan).toHaveBeenCalledWith('Queue: Deliver', {
+			root: true,
+			links: [{ context: sourceSpanContext }],
+		}, rootContext, expect.any(Function));
 		expect(span.end).toHaveBeenCalledTimes(1);
 	});
 
