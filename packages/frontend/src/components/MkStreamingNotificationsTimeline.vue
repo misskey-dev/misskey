@@ -15,7 +15,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div v-else ref="rootEl">
 		<div :class="$style.notifications">
-			<div v-for="(notification, i) in paginator.items.value" :key="notification.id" :data-scroll-anchor="notification.id" :class="[$style.item, notification._shouldAnimateIn_ ? $style.itemEnter : null, notification._shouldAnimateOut_ ? $style.itemLeave : null]">
+			<MkStreamingTimelineItem
+				v-for="(notification, i) in paginator.items.value"
+				:key="notification.id"
+				:data-scroll-anchor="notification.id"
+				:class="$style.item"
+				:animatingIn="notification._shouldAnimateIn_"
+				:animatingOut="notification._shouldAnimateOut_"
+			>
 				<div v-if="i > 0 && isSeparatorNeeded(paginator.items.value[i -1].createdAt, notification.createdAt)" :class="$style.date">
 					<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(paginator.items.value[i -1].createdAt, notification.createdAt)?.prevText }}</span>
 					<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
@@ -23,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type) && 'note' in notification" :class="$style.content" :note="notification.note" :withHardMute="true"/>
 				<XNotification v-else :class="$style.content" :notification="notification" :withTime="true" :full="true"/>
-			</div>
+			</MkStreamingTimelineItem>
 		</div>
 		<button v-show="paginator.canFetchOlder.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchOlder : null" :disabled="paginator.fetchingOlder.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
 			<div v-if="!paginator.fetchingOlder.value">{{ i18n.ts.loadMore }}</div>
@@ -45,12 +52,11 @@ import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
+import MkStreamingTimelineItem, { ITEM_REMOVAL_MS } from '@/components/MkStreamingTimelineItem.vue';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 import { Paginator } from '@/utility/paginator.js';
-
-const ITEM_REMOVAL_DELAY_MS = 200;
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][] | null;
@@ -63,13 +69,13 @@ const paginator = prefer.s.useGroupedNotifications ? markRaw(new Paginator('i/no
 	computedParams: computed(() => ({
 		excludeTypes: props.excludeTypes ?? undefined,
 	})),
-	itemRemovalDelay: ITEM_REMOVAL_DELAY_MS,
+	itemRemovalDelay: ITEM_REMOVAL_MS,
 })) : markRaw(new Paginator('i/notifications', {
 	limit: 20,
 	computedParams: computed(() => ({
 		excludeTypes: props.excludeTypes ?? undefined,
 	})),
-	itemRemovalDelay: ITEM_REMOVAL_DELAY_MS,
+	itemRemovalDelay: ITEM_REMOVAL_MS,
 }));
 
 const MIN_POLLING_INTERVAL = 1000 * 10;
@@ -183,34 +189,7 @@ defineExpose({
 
 <style lang="scss" module>
 .item {
-	overflow: clip;
-	interpolate-size: allow-keywords;
-	/* ITEM_REMOVAL_MSと同じ秒数にする */
-	transition: height 0.2s cubic-bezier(0,.5,.5,1), opacity 0.2s cubic-bezier(0,.5,.5,1);
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
-}
-
-.itemEnter {
-	animation: notification_item_enter 0.7s cubic-bezier(0.23, 1, 0.32, 1) both;
-}
-
-.itemLeave {
-	height: 0;
-	opacity: 0;
-}
-
-@keyframes notification_item_enter {
-	from {
-		height: 0;
-		opacity: 0;
-		transform: translateY(max(-64px, -100%));
-	}
-
-	to {
-		height: auto;
-		opacity: 1;
-		transform: translateY(0);
-	}
 }
 
 .notifications {
