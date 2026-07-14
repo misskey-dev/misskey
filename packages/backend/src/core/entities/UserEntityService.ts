@@ -387,7 +387,8 @@ export class UserEntityService implements OnModuleInit {
 		if ((user.host == null || user.host === this.config.host) && user.username.includes('.') && this.meta.iconUrl) { // ローカルのシステムアカウントの場合
 			return this.meta.iconUrl;
 		} else {
-			return `${this.config.url}/identicon/${user.username.toLowerCase()}@${user.host ?? this.config.host}`;
+			const acct = user.acct?.toLowerCase() ?? `${user.username.toLowerCase()}@${user.host ?? this.config.host}`;
+			return `${this.config.url}/identicon/${acct}`;
 		}
 	}
 
@@ -488,6 +489,7 @@ export class UserEntityService implements OnModuleInit {
 			name: user.name,
 			username: user.username,
 			host: user.host,
+			acct: user.acct,
 			avatarUrl: (user.avatarId == null ? null : user.avatarUrl) ?? this.getIdenticonUrl(user),
 			avatarBlurhash: (user.avatarId == null ? null : user.avatarBlurhash),
 			avatarDecorations: user.avatarDecorations.length > 0 ? this.avatarDecorationService.getAll().then(decorations => user.avatarDecorations.filter(ud => decorations.some(d => d.id === ud.id)).map(ud => ({

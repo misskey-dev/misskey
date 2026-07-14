@@ -8,6 +8,7 @@ import { expect, userEvent, waitFor, within } from '@storybook/test';
 import type { StoryObj } from '@storybook/vue3';
 import { galleryPost } from '../../.storybook/fakes.js';
 import MkGalleryPostPreview from './MkGalleryPostPreview.vue';
+import * as Misskey from 'misskey-js';
 export const Default = {
 	render(args) {
 		return {
@@ -30,11 +31,12 @@ export const Default = {
 		};
 	},
 	async play({ canvasElement }) {
+		const acct = Misskey.acct.fromUser(galleryPost().user);
 		const canvas = within(canvasElement);
 		const links = canvas.getAllByRole('link');
 		expect(links).toHaveLength(2);
 		expect(links[0]).toHaveAttribute('href', `/gallery/${galleryPost().id}`);
-		expect(links[1]).toHaveAttribute('href', `/@${galleryPost().user.username}@${galleryPost().user.host}`);
+		expect(links[1]).toHaveAttribute('href', `/@${Misskey.acct.toString(acct)}`);
 		const images = canvas.getAllByRole<HTMLImageElement>('img');
 		await waitFor(() => expect(Promise.all(images.map((image) => image.decode()))).resolves.toBeDefined());
 	},

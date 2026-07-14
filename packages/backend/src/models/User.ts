@@ -247,6 +247,13 @@ export class MiUser {
 	})
 	public host: string | null;
 
+	@Index()
+	@Column('varchar', {
+		length: 512, nullable: true,
+		comment: 'The last retrieved webfinger subject of the User. It will be null if the origin of the user is local.',
+	})
+	public acct: string | null;
+
 	@Column('varchar', {
 		length: 512, nullable: true,
 		comment: 'The inbox URL of the User. It will be null if the origin of the user is local.',
@@ -297,23 +304,27 @@ export class MiUser {
 export type MiLocalUser = MiUser & {
 	host: null;
 	uri: null;
+	acct: null;
 };
 
 export type MiPartialLocalUser = Partial<MiUser> & {
 	id: MiUser['id'];
 	host: null;
 	uri: null;
+	acct: null;
 };
 
 export type MiRemoteUser = MiUser & {
 	host: string;
 	uri: string;
+	acct: string | null;
 };
 
 export type MiPartialRemoteUser = Partial<MiUser> & {
 	id: MiUser['id'];
 	host: string;
 	uri: string;
+	acct: string | null;
 };
 
 export const localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString().slice(1, -1) } as const;

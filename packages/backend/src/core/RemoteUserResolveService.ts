@@ -18,6 +18,7 @@ import { RemoteLoggerService } from '@/core/RemoteLoggerService.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { bindThis } from '@/decorators.js';
+import * as Acct from '@/misc/acct.js';
 
 @Injectable()
 export class RemoteUserResolveService {
@@ -67,12 +68,15 @@ export class RemoteUserResolveService {
 			}) as MiLocalUser;
 		}
 
-		const user = await this.usersRepository.findOneBy({ usernameLower, host }) as MiRemoteUser | null;
-
 		const acctLower = `${usernameLower}@${host}`;
 
+		const user = await this.usersRepository.findOneBy([
+			{ usernameLower, host },
+			{ acct: acctLower },
+		]) as MiRemoteUser | null;
+
 		if (user == null) {
-			const self = await this.resolveSelf(acctLower);
+			const { self, subject } = await this.resolveWebfinger(acctLower);
 
 			if (this.utilityService.isUriLocal(self.href)) {
 				const local = this.apDbResolverService.parseUri(self.href);
@@ -90,8 +94,20 @@ export class RemoteUserResolveService {
 				}
 			}
 
-			this.logger.succ(`return new remote user: ${chalk.magenta(acctLower)}`);
-			return await this.apPersonService.createPerson(self.href);
+			this.logger.succ(`return new remote user: ${chalk.magenta(subject)}`);
+			const newUser = await this.apPersonService.createPerson({ uri: self.href, acct: subject });
+
+			if (newUser.acct !== subject) {
+				await this.usersRepository.update({
+					id: newUser.id,
+				}, {
+					acct: subject
+				});
+
+				newUser.acct = subject;
+			}
+
+			return newUser;
 		}
 
 		// ユーザー情報が古い場合は、WebFingerからやりなおして返す
@@ -102,7 +118,7 @@ export class RemoteUserResolveService {
 			});
 
 			this.logger.info(`try resync: ${acctLower}`);
-			const self = await this.resolveSelf(acctLower);
+			const { self, subject } = await this.resolveWebfinger(acctLower);
 
 			if (user.uri !== self.href) {
 				// if uri mismatch, Fix (user@host <=> AP's Person id(RemoteUser.uri)) mapping.
@@ -120,12 +136,13 @@ export class RemoteUserResolveService {
 					host: host,
 				}, {
 					uri: self.href,
+					acct: subject,
 				});
 			} else {
 				this.logger.info(`uri is fine: ${acctLower}`);
 			}
 
-			await this.apPersonService.updatePerson(self.href);
+			await this.apPersonService.updatePerson({ uri: self.href, acct: subject });
 
 			this.logger.info(`return resynced remote user: ${acctLower}`);
 			return await this.usersRepository.findOneBy({ uri: self.href }).then(u => {
@@ -142,7 +159,7 @@ export class RemoteUserResolveService {
 	}
 
 	@bindThis
-	private async resolveSelf(acctLower: string): Promise<ILink> {
+	private async resolveWebfinger(acctLower: string): Promise<{ self: ILink, subject: string | null }> {
 		this.logger.info(`WebFinger for ${chalk.yellow(acctLower)}`);
 		const finger = await this.webfingerService.webfinger(acctLower).catch(err => {
 			this.logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: ${ err.statusCode ?? err.message }`);
@@ -153,6 +170,11 @@ export class RemoteUserResolveService {
 			this.logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: self link not found`);
 			throw new Error('self link not found');
 		}
-		return self;
+		let subject = Acct.validate(finger.subject) ? finger.subject :
+			Acct.validate(acctLower) ? acctLower : null;
+		if (subject) {
+			subject = Acct.parse(subject).toString();
+		}
+		return { self, subject };
 	}
 }

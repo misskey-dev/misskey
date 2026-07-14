@@ -301,10 +301,11 @@ export class ApPersonService implements OnModuleInit {
 	 * Personを作成します。
 	 */
 	@bindThis
-	public async createPerson(uri: string, resolver?: Resolver): Promise<MiRemoteUser> {
-		if (typeof uri !== 'string') throw new Error('uri is not string');
+	public async createPerson(args: string | { uri: string, acct?: string | null }, resolver?: Resolver): Promise<MiRemoteUser> {
+		if (typeof args === 'string') args = { uri: args };
+		if (typeof args.uri !== 'string') throw new Error('uri is not string');
 
-		const host = this.utilityService.punyHost(uri);
+		const host = this.utilityService.punyHost(args.uri);
 		if (host === this.utilityService.toPuny(this.config.host)) {
 			throw new StatusError('cannot resolve local user', 400, 'cannot resolve local user');
 		}
@@ -312,10 +313,10 @@ export class ApPersonService implements OnModuleInit {
 		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = await this.apResolverService.createResolver();
 
-		const object = await resolver.resolve(uri);
+		const object = await resolver.resolve(args.uri);
 		if (object.id == null) throw new Error('invalid object.id: ' + object.id);
 
-		const person = this.validateActor(object, uri);
+		const person = this.validateActor(object, args.uri);
 
 		this.logger.info(`Creating the Person: ${person.id}`);
 
@@ -381,6 +382,7 @@ export class ApPersonService implements OnModuleInit {
 					username: person.preferredUsername,
 					usernameLower: person.preferredUsername?.toLowerCase(),
 					host,
+					acct: args.acct ?? null,
 					inbox: person.inbox,
 					sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox ?? null,
 					followersUri: person.followers ? getApId(person.followers) : undefined,
@@ -488,23 +490,24 @@ export class ApPersonService implements OnModuleInit {
 	 * @param movePreventUris ここに指定されたURIがPersonのmovedToに指定されていたり10回より多く回っている場合これ以上アカウント移行を行わない（無限ループ防止）
 	 */
 	@bindThis
-	public async updatePerson(uri: string, resolver?: Resolver | null, hint?: IObject, movePreventUris: string[] = []): Promise<string | void> {
-		if (typeof uri !== 'string') throw new Error('uri is not string');
+	public async updatePerson(args: string | { uri: string, acct?: string | null }, resolver?: Resolver | null, hint?: IObject, movePreventUris: string[] = []): Promise<string | void> {
+		if (typeof args === 'string') args = { uri: args };
+		if (typeof args.uri !== 'string') throw new Error('uri is not string');
 
 		// URIがこのサーバーを指しているならスキップ
-		if (this.utilityService.isUriLocal(uri)) return;
+		if (this.utilityService.isUriLocal(args.uri)) return;
 
 		//#region このサーバーに既に登録されているか
-		const exist = await this.fetchPerson(uri) as MiRemoteUser | null;
+		const exist = await this.fetchPerson(args.uri) as MiRemoteUser | null;
 		if (exist === null) return;
 		//#endregion
 
 		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = await this.apResolverService.createResolver();
 
-		const object = hint ?? await resolver.resolve(uri);
+		const object = hint ?? await resolver.resolve(args.uri);
 
-		const person = this.validateActor(object, uri);
+		const person = this.validateActor(object, args.uri);
 
 		this.logger.info(`Updating the Person: ${person.id}`);
 
@@ -557,6 +560,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const updates = {
 			lastFetchedAt: new Date(),
+			acct: args.acct,
 			inbox: person.inbox,
 			sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox ?? null,
 			followersUri: person.followers ? getApId(person.followers) : undefined,
@@ -639,7 +643,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const updated = { ...exist, ...updates };
 
-		this.cacheService.uriPersonCache.set(uri, updated);
+		this.cacheService.uriPersonCache.set(args.uri, updated);
 
 		// 移行処理を行う
 		if (updated.movedAt && (
@@ -649,14 +653,14 @@ export class ApPersonService implements OnModuleInit {
 			// （Mastodonのクールダウン期間は30日だが若干緩めに設定しておく）
 			exist.movedAt.getTime() + 1000 * 60 * 60 * 24 * 14 < updated.movedAt.getTime()
 		)) {
-			this.logger.info(`Start to process Move of @${updated.username}@${updated.host} (${uri})`);
+			this.logger.info(`Start to process Move of @${updated.username}@${updated.host} (${args.uri})`);
 			return this.processRemoteMove(updated, movePreventUris)
 				.then(result => {
-					this.logger.info(`Processing Move Finished [${result}] @${updated.username}@${updated.host} (${uri})`);
+					this.logger.info(`Processing Move Finished [${result}] @${updated.username}@${updated.host} (${args.uri})`);
 					return result;
 				})
 				.catch(e => {
-					this.logger.info(`Processing Move Failed @${updated.username}@${updated.host} (${uri})`, { stack: e });
+					this.logger.info(`Processing Move Failed @${updated.username}@${updated.host} (${args.uri})`, { stack: e });
 				});
 		}
 
