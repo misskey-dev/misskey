@@ -153,12 +153,14 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 
 	public injectTraceContext(carrier: QueueTraceContextCarrier): void {
 		const queueTraceContext = this.deps.queueTraceContext;
+		// Queue context 用の依存は任意なので、無い場合はジョブデータを変更しない。
 		if (queueTraceContext == null) return;
 		injectActiveTraceContext(queueTraceContext, carrier);
 	}
 
 	public startSpanWithTraceContext<T>(name: string, jobData: object, fn: () => T): T {
 		const queueTraceContext = this.deps.queueTraceContext;
+		// Queue context 用の依存が無い場合は、従来の span 作成経路と同じ動作を保つ。
 		if (queueTraceContext == null) return this.startSpan(name, fn);
 
 		return startSpanWithQueueTraceContext(queueTraceContext, name, jobData, fn, () => this.startSpan(name, fn));

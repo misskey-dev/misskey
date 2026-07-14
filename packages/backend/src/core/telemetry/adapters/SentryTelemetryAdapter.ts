@@ -154,6 +154,8 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 			nodeProfilingIntegration,
 		}));
 
+		// Sentry が初期化した同じ OTel provider から tracer/context API を受け取り、
+		// Queue を跨ぐ context 伝播も Sentry と OTLP の両方へ同一 span として出力する。
 		return new SentryTelemetryAdapter(Sentry, {
 			tracer: trace.getTracer('misskey-backend'),
 			propagation,
@@ -178,11 +180,13 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 	}
 
 	public injectTraceContext(carrier: QueueTraceContextCarrier): void {
+		// Sentry 単体構成では queueTraceContext を持たず、従来どおりジョブデータを変更しない。
 		if (this.queueTraceContext == null) return;
 		injectActiveTraceContext(this.queueTraceContext, carrier);
 	}
 
 	public startSpanWithTraceContext<T>(name: string, jobData: object, fn: () => T): T {
+		// Sentry 単体構成では Sentry 既存の span 作成経路を使う。
 		if (this.queueTraceContext == null) return this.startSpan(name, fn);
 
 		return startSpanWithQueueTraceContext(this.queueTraceContext, name, jobData, fn, () => this.startSpan(name, fn));

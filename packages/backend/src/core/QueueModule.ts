@@ -34,7 +34,8 @@ export type SystemWebhookDeliverQueue = Bull.Queue<SystemWebhookDeliverJobData>;
 
 function createQueue<T extends object>(queueName: string, config: Config): Bull.Queue<T> {
 	const queue = new Bull.Queue<T>(queueName, baseQueueOptions(config, queueName));
-	// Sentry単独ではジョブ間の OTel context 連結を使わないため、OTel 未設定時は既存の Queue をそのまま返す。
+	// Queue のラップは、enqueue 時に OTel context をジョブデータへ埋め込むためのもの。
+	// Sentry 単独ではジョブ間の context 伝播を使わないので、OTel 未設定時は元の Queue を返す。
 	if (config.otelForBackend == null) return queue;
 
 	return instrumentQueue(queue);

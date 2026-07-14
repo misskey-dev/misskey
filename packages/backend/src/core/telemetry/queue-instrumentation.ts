@@ -8,16 +8,19 @@ import { injectQueueTraceContext } from './queue-trace-context.js';
 import type * as Bull from 'bullmq';
 
 /**
- * 全ての BullMQ enqueue 経路を一箇所で捕捉する。
- * QueueService 以外の直接 add/addBulk 呼び出しもあるため、各呼び出し元で注入すると漏れやすい。
+ * Queue の add/addBulk をラップし、全ての BullMQ enqueue 経路を一箇所で捕捉する。
+ * QueueService を通さず直接 add/addBulk する呼び出し元もあるため、それぞれで注入すると漏れやすい。
  */
 export function instrumentQueue<T extends object>(queue: Bull.Queue<T>): Bull.Queue<T> {
+	// BullMQ のメソッドは Queue インスタンスを this として使うため、差し替え前に bind して保持する。
 	const add = queue.add.bind(queue);
 	queue.add = ((name, data, opts) => {
+		// BullMQ が data を Redis 用にシリアライズする前に、enqueue 元の context を内部フィールドへ追加する。
 		injectQueueTraceContext(data, injectTraceContext);
 		return add(name, data, opts);
 	}) as typeof queue.add;
 
+	// addBulk は複数ジョブを一度にシリアライズするので、各 data へ同じ context を注入する。
 	const addBulk = queue.addBulk.bind(queue);
 	queue.addBulk = ((jobs) => {
 		for (const job of jobs) {

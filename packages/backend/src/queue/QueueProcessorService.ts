@@ -158,6 +158,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			};
 		}
 
+		// 以下の各 Worker は job.data に保存された enqueue 元の trace context を復元し、
+		// ジョブの実処理全体を Link または parent の worker span で囲む。
 		//#region system
 		{
 			const processer = (job: Bull.Job) => {

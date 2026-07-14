@@ -42,12 +42,14 @@ export interface TelemetryAdapter {
 	startSpan<T>(name: string, fn: () => T): T;
 
 	/**
-	 * BullMQ のジョブデータへ active trace context を注入する。OTel を使わない adapter は実装しない。
+	 * BullMQ のジョブデータへ保存する carrier に、active trace context を注入する。
+	 * OTel を使わない adapter は実装しない。
 	 */
 	injectTraceContext?(carrier: QueueTraceContextCarrier): void;
 
 	/**
-	 * enqueue 元の context を worker span に Link または parent として復元する。
+	 * ジョブに保存された enqueue 元の context を、worker span の Link または parent として復元する。
+	 * context を持たないジョブの互換性は adapter 側で保つ。
 	 */
 	startSpanWithTraceContext?<T>(name: string, jobData: object, fn: () => T): T;
 

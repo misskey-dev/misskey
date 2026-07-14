@@ -56,11 +56,14 @@ export function startSpan<T>(name: string, fn: () => T): T {
 }
 
 export function injectTraceContext(carrier: QueueTraceContextCarrier): void {
-	// OTel の provider は現在1つだけなので、carrier へ同一の header を重ね書きしないよう最初の対応 adapter だけを使う。
+	// Queue の carrier は共有データなので、通知と異なり全 adapter にブロードキャストしない。
+	// OTel provider は現在 1 つだけなので、同じ header を上書きしないよう最初の対応 adapter だけを使う。
 	adapters.find(adapter => adapter.injectTraceContext != null)?.injectTraceContext?.(carrier);
 }
 
 export function startSpanWithTraceContext<T>(name: string, jobData: object, fn: () => T): T {
+	// Queue context を解釈できる adapter に span 作成を任せる。
+	// 対応 adapter が無い構成では通常の startSpan へフォールバックする。
 	const adapter = adapters.find(adapter => adapter.startSpanWithTraceContext != null);
 	return adapter?.startSpanWithTraceContext?.(name, jobData, fn) ?? startSpan(name, fn);
 }

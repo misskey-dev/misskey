@@ -23,6 +23,8 @@ export class TelemetryService implements OnApplicationShutdown {
 
 	@bindThis
 	public startSpanWithTraceContext<T>(name: string, jobData: object, fn: () => T): T {
+		// jobData に enqueue 元の context があれば worker span へ復元する。
+		// context の無い既存ジョブは、通常の startSpan と同じ扱いになる。
 		return startSpanWithTraceContext(name, jobData, fn);
 	}
 
