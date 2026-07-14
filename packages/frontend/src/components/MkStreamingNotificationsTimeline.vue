@@ -50,6 +50,8 @@ import { store } from '@/store.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 import { Paginator } from '@/utility/paginator.js';
 
+const ITEM_REMOVAL_DELAY_MS = 200;
+
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][] | null;
 }>();
@@ -61,13 +63,13 @@ const paginator = prefer.s.useGroupedNotifications ? markRaw(new Paginator('i/no
 	computedParams: computed(() => ({
 		excludeTypes: props.excludeTypes ?? undefined,
 	})),
-	delayItemRemoval: true,
+	itemRemovalDelay: ITEM_REMOVAL_DELAY_MS,
 })) : markRaw(new Paginator('i/notifications', {
 	limit: 20,
 	computedParams: computed(() => ({
 		excludeTypes: props.excludeTypes ?? undefined,
 	})),
-	delayItemRemoval: true,
+	itemRemovalDelay: ITEM_REMOVAL_DELAY_MS,
 }));
 
 const MIN_POLLING_INTERVAL = 1000 * 10;
@@ -183,6 +185,7 @@ defineExpose({
 .item {
 	overflow: clip;
 	interpolate-size: allow-keywords;
+	/* ITEM_REMOVAL_MSと同じ秒数にする */
 	transition: height 0.2s cubic-bezier(0,.5,.5,1), opacity 0.2s cubic-bezier(0,.5,.5,1);
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
 }

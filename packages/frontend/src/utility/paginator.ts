@@ -109,7 +109,7 @@ export class Paginator<
 	private canFetchDetection: 'safe' | 'limit' | null = null;
 	private aheadQueue: T[] = [];
 	private useShallowRef: SRef;
-	private delayItemRemoval: boolean;
+	private itemRemovalDelay: number | false;
 	private removalTimers = new Map<string, number>();
 
 	// 配列内の要素をどのような順序で並べるか
@@ -142,7 +142,8 @@ export class Paginator<
 
 		useShallowRef?: SRef;
 
-		delayItemRemoval?: boolean;
+		// アイテム削除時にアニメーションを待つ時間 (ms)
+		itemRemovalDelay?: number | false;
 
 		canSearch?: boolean;
 		searchParamName?: keyof E['req'];
@@ -166,7 +167,7 @@ export class Paginator<
 		this.noPaging = props.noPaging ?? false;
 		this.offsetMode = props.offsetMode ?? false;
 		this.canSearch = props.canSearch ?? false;
-		this.delayItemRemoval = props.delayItemRemoval ?? false;
+		this.itemRemovalDelay = props.itemRemovalDelay ?? false;
 		this.searchParamName = props.searchParamName ?? 'search';
 
 		this.getNewestId = this.getNewestId.bind(this);
@@ -420,7 +421,7 @@ export class Paginator<
 	public removeItem(id: string): void {
 		// TODO: queueからも消す
 
-		if (!this.delayItemRemoval) {
+		if (this.itemRemovalDelay === false) {
 			const index = this.items.value.findIndex(x => x.id === id);
 			if (index !== -1) {
 				this.items.value.splice(index, 1);
@@ -446,7 +447,7 @@ export class Paginator<
 					this.items.value.splice(currentIndex, 1);
 					if (this.useShallowRef) triggerRef(this.items);
 				}
-			}, 220));
+			}, this.itemRemovalDelay + 20)); // アニメーション終了からやや余裕をもたせる
 		}
 	}
 

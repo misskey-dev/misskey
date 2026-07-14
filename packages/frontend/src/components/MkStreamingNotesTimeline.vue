@@ -93,6 +93,8 @@ const props = withDefaults(defineProps<{
 	customSound: null,
 });
 
+const ITEM_REMOVAL_DELAY_MS = 200;
+
 provide('inTimeline', true);
 provide('tl_withSensitive', computed(() => props.withSensitive));
 provide(DI.inChannel, computed(() => props.src === 'channel' ? props.channel ?? null : null));
@@ -105,7 +107,7 @@ if (props.src === 'antenna') {
 			antennaId: props.antenna!,
 		})),
 		useShallowRef: true,
-		delayItemRemoval: true,
+		itemRemovalDelay: ITEM_REMOVAL_DELAY_MS,
 	}));
 } else if (props.src === 'home') {
 	paginator = markRaw(new Paginator('notes/timeline', {
@@ -114,7 +116,7 @@ if (props.src === 'antenna') {
 			withFiles: props.onlyFiles ? true : undefined,
 		})),
 		useShallowRef: true,
-		delayItemRemoval: true,
+		itemRemovalDelay: ITEM_REMOVAL_DELAY_MS,
 	}));
 } else if (props.src === 'local') {
 	paginator = markRaw(new Paginator('notes/local-timeline', {
@@ -124,7 +126,7 @@ if (props.src === 'antenna') {
 			withFiles: props.onlyFiles ? true : undefined,
 		})),
 		useShallowRef: true,
-		delayItemRemoval: true,
+		itemRemovalDelay: ITEM_REMOVAL_DELAY_MS,
 	}));
 } else if (props.src === 'social') {
 	paginator = markRaw(new Paginator('notes/hybrid-timeline', {
@@ -134,7 +136,7 @@ if (props.src === 'antenna') {
 			withFiles: props.onlyFiles ? true : undefined,
 		})),
 		useShallowRef: true,
-		delayItemRemoval: true,
+		itemRemovalDelay: ITEM_REMOVAL_DELAY_MS,
 	}));
 } else if (props.src === 'global') {
 	paginator = markRaw(new Paginator('notes/global-timeline', {
@@ -143,12 +145,12 @@ if (props.src === 'antenna') {
 			withFiles: props.onlyFiles ? true : undefined,
 		})),
 		useShallowRef: true,
-		delayItemRemoval: true,
+		itemRemovalDelay: ITEM_REMOVAL_DELAY_MS,
 	}));
 } else if (props.src === 'mentions') {
 	paginator = markRaw(new Paginator('notes/mentions', {
 		useShallowRef: true,
-		delayItemRemoval: true,
+		itemRemovalDelay: ITEM_REMOVAL_DELAY_MS,
 	}));
 } else if (props.src === 'directs') {
 	paginator = markRaw(new Paginator('notes/mentions', {
@@ -156,7 +158,7 @@ if (props.src === 'antenna') {
 			visibility: 'specified',
 		},
 		useShallowRef: true,
-		delayItemRemoval: true,
+		itemRemovalDelay: ITEM_REMOVAL_DELAY_MS,
 	}));
 } else if (props.src === 'list') {
 	paginator = markRaw(new Paginator('notes/user-list-timeline', {
@@ -166,7 +168,7 @@ if (props.src === 'antenna') {
 			listId: props.list!,
 		})),
 		useShallowRef: true,
-		delayItemRemoval: true,
+		itemRemovalDelay: ITEM_REMOVAL_DELAY_MS,
 	}));
 } else if (props.src === 'channel') {
 	paginator = markRaw(new Paginator('channels/timeline', {
@@ -174,7 +176,7 @@ if (props.src === 'antenna') {
 			channelId: props.channel!,
 		})),
 		useShallowRef: true,
-		delayItemRemoval: true,
+		itemRemovalDelay: ITEM_REMOVAL_DELAY_MS,
 	}));
 } else if (props.src === 'role') {
 	paginator = markRaw(new Paginator('roles/notes', {
@@ -182,7 +184,7 @@ if (props.src === 'antenna') {
 			roleId: props.role!,
 		})),
 		useShallowRef: true,
-		delayItemRemoval: true,
+		itemRemovalDelay: ITEM_REMOVAL_DELAY_MS,
 	}));
 } else {
 	throw new Error('Unrecognized timeline type: ' + props.src);
@@ -434,6 +436,7 @@ defineExpose({
 .noteItem {
 	overflow: clip;
 	interpolate-size: allow-keywords;
+	/* ITEM_REMOVAL_MSと同じ秒数にする */
 	transition: height 0.2s cubic-bezier(0,.5,.5,1), opacity 0.2s cubic-bezier(0,.5,.5,1);
 }
 
