@@ -110,15 +110,16 @@ export class ApiCallService implements OnApplicationShutdown {
 			throw err;
 		} else {
 			const errId = randomUUID();
-			this.logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
-				ep: ep.name,
-				ps: data,
-				e: {
-					message: err.message,
-					code: err.name,
-					stack: err.stack,
-					id: errId,
+			this.logger.write({
+				level: 'error',
+				eventName: 'api.endpoint.failed',
+				message: `Internal error occurred in ${ep.name}: ${err.message}`,
+				attributes: {
+					'api.endpoint': ep.name,
+					'error.id': errId,
+					'api.params': data,
 				},
+				error: err,
 			});
 
 			this.telemetryService.captureMessage(`Internal error occurred in ${ep.name}: ${err.message}`, {

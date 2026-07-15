@@ -10,7 +10,7 @@ import { envOption } from '@/env.js';
 import type { LogBackend } from './LogBackend.js';
 import type { LogRecord } from './types.js';
 
-/** Pretty形式の出力処理が外部から受け取る依存関係です。 */
+/** 見やすい形式の出力処理が外部から受け取る依存関係です。 */
 export type PrettyConsoleBackendDependencies = {
 	readonly output: (...args: unknown[]) => void;
 	readonly withLogTime: () => boolean;
@@ -75,7 +75,15 @@ export class PrettyConsoleBackend implements LogBackend {
 		// `data`は文字列へ埋め込まず、第2引数として渡す従来の挙動を維持します。
 		const args: unknown[] = [important ? chalk.bold(log) : log];
 		if (record.compatibility?.data != null) {
+			// 旧形式の値はそのまま第2引数へ渡し、既存の表示と調査方法を保ちます。
 			args.push(record.compatibility.data);
+		} else if (record.eventName != null || record.attributes != null || record.error != null) {
+			// 構造化ログは、専用の出力先がなくても調査情報を確認できるようにします。
+			args.push({
+				...(record.eventName != null ? { eventName: record.eventName } : {}),
+				...(record.attributes != null ? { attributes: record.attributes } : {}),
+				...(record.error != null ? { error: record.error } : {}),
+			});
 		}
 		this.dependencies.output(...args);
 	}

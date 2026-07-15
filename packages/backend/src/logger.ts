@@ -5,7 +5,7 @@
 
 import { bindThis } from '@/decorators.js';
 import { logManager } from './logging/logging-runtime.js';
-import type { LogLevel, LoggerContext } from './logging/types.js';
+import type { LogLevel, LoggerContext, LogWriteInput } from './logging/types.js';
 import type { Keyword } from 'color-convert';
 
 /**
@@ -38,11 +38,12 @@ export default class Logger {
 	 * 従来APIの引数を共通形式へ変換し、LogManagerへ渡します。
 	 */
 	@bindThis
-	private log(level: LogLevel, message: string, data?: Record<string, any> | null, important = false, legacyLevel?: 'success'): void {
+	private log(level: LogLevel, message: string, data?: unknown, important = false, legacyLevel?: 'success', error?: unknown): void {
 		logManager.write({
 			level,
 			message,
 			context: this.context,
+			...(typeof error !== 'undefined' ? { error } : {}),
 			compatibility: {
 				legacyLevel,
 				important,
@@ -51,14 +52,23 @@ export default class Logger {
 		});
 	}
 
+	/** 構造化ログをLoggerのcontext付きでLogManagerへ渡します。 */
+	@bindThis
+	public write(input: LogWriteInput): void {
+		logManager.write({
+			...input,
+			context: this.context,
+		});
+	}
+
 	/** 処理を継続できない状況を記録します。 */
 	@bindThis
 	public error(x: string | Error, data?: Record<string, any> | null, important = false): void {
 		if (x instanceof Error) {
-			// Error本体も第2引数へ残し、従来どおりスタックなどを確認できるようにします。
+			// エラー本体も第2引数へ残し、従来どおりスタックなどを確認できるようにします。
 			data = data ?? {};
 			data.e = x;
-			this.log('error', x.toString(), data, important);
+			this.log('error', x.toString(), data, important, undefined, x);
 		} else if (typeof x === 'object') {
 			this.log('error', `${(x as any).message ?? (x as any).name ?? x}`, data, important);
 		} else {

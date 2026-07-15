@@ -60,6 +60,22 @@ describe('Logger', () => {
 		});
 	});
 
+	test('supports structured log input while preserving the context hierarchy', () => {
+		new Logger('root').createSubLogger('child').write({
+			level: 'error',
+			eventName: 'example.failed',
+			message: 'failed',
+			attributes: { id: 'id' },
+			error: new Error('broken'),
+		});
+
+		expect(mocks.write).toHaveBeenCalledWith(expect.objectContaining({
+			level: 'error',
+			eventName: 'example.failed',
+			context: [{ name: 'root', color: undefined }, { name: 'child', color: undefined }],
+		}));
+	});
+
 	test('uses Error.toString and adds the Error to existing data', () => {
 		const logger = new Logger('root');
 		const error = new TypeError('broken');
@@ -72,6 +88,7 @@ describe('Logger', () => {
 			level: 'error',
 			message: 'TypeError: broken',
 			context: [{ name: 'root', color: undefined }],
+			error,
 			compatibility: {
 				legacyLevel: undefined,
 				important: true,

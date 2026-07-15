@@ -27,6 +27,7 @@ function createManager(options: {
 	nodeEnv?: string;
 	isPrimary?: boolean;
 	workerId?: number | null;
+	normalizationProfile?: 'standard' | 'detailed';
 } = {}) {
 	const write = vi.fn<LogBackend['write']>();
 	const manager = new LogManager({ write }, {
@@ -39,6 +40,8 @@ function createManager(options: {
 		isQuiet: () => options.quiet ?? false,
 		isVerbose: () => options.verbose ?? false,
 		getNodeEnv: () => options.nodeEnv ?? 'development',
+	}, {
+		normalizationProfile: options.normalizationProfile,
 	});
 
 	return { manager, write };
@@ -121,5 +124,67 @@ describe('LogManager', () => {
 
 		expect(write).not.toHaveBeenCalled();
 		expect(replacementWrite).toHaveBeenCalledOnce();
+	});
+
+	test('normalizes structured attributes and errors before writing', () => {
+		const { manager, write } = createManager();
+		const error = new TypeError('broken');
+
+		manager.write({
+			...createInput('error'),
+			eventName: 'api.endpoint.failed',
+			attributes: { i: 'secret', safe: 'value' },
+			error,
+		});
+
+		expect(write.mock.calls[0][0]).toMatchObject({
+			eventName: 'api.endpoint.failed',
+			attributes: { i: '[REDACTED]', safe: 'value' },
+			error: { type: 'TypeError', message: 'broken' },
+		});
+	});
+
+	test('keeps legacy data for the pretty output while serializing its Error separately', () => {
+		const { manager, write } = createManager();
+		const error = new Error('legacy failure');
+		const data = { detail: 'legacy', e: error };
+
+		manager.write({
+			...createInput('error'),
+			compatibility: { data },
+		});
+
+		expect(write.mock.calls[0][0].compatibility?.data).toBe(data);
+		expect(write.mock.calls[0][0]).toMatchObject({
+			error: { type: 'Error', message: 'legacy failure' },
+		});
+		expect(write.mock.calls[0][0].attributes).toBeUndefined();
+	});
+
+	test('supports the detailed normalization profile', () => {
+		const { manager, write } = createManager({ normalizationProfile: 'detailed' });
+
+		manager.write({
+			...createInput(),
+			attributes: { nested: { level1: { level2: { level3: { value: 'kept' } } } } },
+		});
+
+		expect(write.mock.calls[0][0].attributes).toEqual({
+			nested: { level1: { level2: { level3: { value: 'kept' } } } },
+		});
+	});
+
+	test('switches the normalization profile for existing loggers', () => {
+		const { manager, write } = createManager();
+		const nested = { level1: { level2: { level3: { level4: { level5: { level6: { value: 'kept' } } } } } } };
+
+		manager.write({ ...createInput(), attributes: nested });
+		manager.setNormalizationProfile('detailed');
+		manager.write({ ...createInput(), attributes: nested });
+
+		expect(write.mock.calls[0][0].attributes).toMatchObject({
+			level1: { level2: { level3: { level4: { level5: { level6: '[Truncated]' } } } } },
+		});
+		expect(write.mock.calls[1][0].attributes).toEqual(nested);
 	});
 });

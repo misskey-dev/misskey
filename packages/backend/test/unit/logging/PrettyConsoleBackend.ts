@@ -35,7 +35,7 @@ vi.mock('chalk', () => ({
 
 import { PrettyConsoleBackend } from '@/logging/PrettyConsoleBackend.js';
 
-/** Pretty形式のテストで使う共通のログを作成します。 */
+/** 見やすい形式のテストで使う共通のログを作成します。 */
 function createRecord(overrides: Partial<LogRecord> = {}): LogRecord {
 	return {
 		level: 'info',
@@ -143,5 +143,25 @@ describe('PrettyConsoleBackend', () => {
 
 		expect(output).toHaveBeenCalledTimes(1);
 		expect(output.mock.calls[0]).toHaveLength(1);
+	});
+
+	test('passes structured event details as normalized output data', () => {
+		const output = vi.fn();
+		const backend = new PrettyConsoleBackend({ output, withLogTime: () => false });
+
+		backend.write(createRecord({
+			eventName: 'api.endpoint.failed',
+			attributes: { 'api.endpoint': 'notes/show' },
+			error: { type: 'TypeError', message: 'broken' },
+		}));
+
+		expect(output).toHaveBeenCalledWith(
+			'<blue>INFO</blue> *\t[<white>root</white>]\tmessage',
+			{
+				eventName: 'api.endpoint.failed',
+				attributes: { 'api.endpoint': 'notes/show' },
+				error: { type: 'TypeError', message: 'broken' },
+			},
+		);
 	});
 });

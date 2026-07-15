@@ -6,8 +6,14 @@
 import cluster from 'node:cluster';
 import process from 'node:process';
 import { envOption } from '@/env.js';
+import {
+	findLegacyLogError,
+	normalizeLogAttributes,
+	serializeLogError,
+	type LogNormalizationProfile,
+} from './LogNormalizer.js';
 import type { LogBackend } from './LogBackend.js';
-import type { LogRecordInput } from './types.js';
+import type { LogRecord, LogRecordInput } from './types.js';
 
 /** ログを出力したプロセスを識別するための情報です。 */
 export type LogProcessInfo = {
@@ -26,6 +32,11 @@ export type LogManagerDependencies = {
 	readonly isQuiet: () => boolean;
 	readonly isVerbose: () => boolean;
 	readonly getNodeEnv: () => string | undefined;
+};
+
+/** ログ管理の初期化時に指定できる正規化設定です。 */
+export type LogManagerOptions = {
+	readonly normalizationProfile?: LogNormalizationProfile;
 };
 
 const defaultDependencies: LogManagerDependencies = {
@@ -47,17 +58,23 @@ const defaultDependencies: LogManagerDependencies = {
 export class LogManager {
 	private backend: LogBackend;
 	private readonly dependencies: LogManagerDependencies;
+	private normalizationProfile: LogNormalizationProfile;
 
 	/**
 	 * 出力先と実行環境から値を取得する処理を受け取ります。
 	 * 実行環境の取得処理は、必要な項目だけテスト用に差し替えられます。
 	 */
-	constructor(backend: LogBackend, dependencies: Partial<LogManagerDependencies> = {}) {
+	constructor(
+		backend: LogBackend,
+		dependencies: Partial<LogManagerDependencies> = {},
+		options: LogManagerOptions = {},
+	) {
 		this.backend = backend;
 		this.dependencies = {
 			...defaultDependencies,
 			...dependencies,
 		};
+		this.normalizationProfile = options.normalizationProfile ?? 'standard';
 	}
 
 	/**
@@ -66,6 +83,11 @@ export class LogManager {
 	 */
 	public setBackend(backend: LogBackend): void {
 		this.backend = backend;
+	}
+
+	/** 正規化方式を切り替え、既に作成済みのLoggerにも反映します。 */
+	public setNormalizationProfile(profile: LogNormalizationProfile): void {
+		this.normalizationProfile = profile;
 	}
 
 	/**
@@ -81,7 +103,16 @@ export class LogManager {
 		const processInfo = this.dependencies.getProcessInfo();
 		// 呼び出し側の配列を共有せず、親から末端までの順序を固定します。
 		const context = [...input.context];
-		this.backend.write({
+		// 出力を実際に行う直前にだけ正規化し、捨てられるdebugログのコストを抑えます。
+		const attributes = input.attributes;
+		const normalizedAttributes = typeof attributes !== 'undefined'
+			? normalizeLogAttributes(attributes, { profile: this.normalizationProfile })
+			: undefined;
+		const error = input.error ?? findLegacyLogError(input.compatibility?.data);
+		const normalizedError = typeof error !== 'undefined'
+			? serializeLogError(error, { profile: this.normalizationProfile })
+			: undefined;
+		const record = {
 			...input,
 			context,
 			timestamp: this.dependencies.now().toISOString(),
@@ -89,6 +120,10 @@ export class LogManager {
 			processId: processInfo.processId,
 			isPrimary: processInfo.isPrimary,
 			workerId: processInfo.workerId,
-		});
+			...(normalizedAttributes ? { attributes: normalizedAttributes } : {}),
+			...(normalizedError ? { error: normalizedError } : {}),
+		} as LogRecord;
+
+		this.backend.write(record);
 	}
 }
