@@ -30,6 +30,12 @@ type OtelBackendConfig = {
 	endpoint?: string;
 	headers?: Record<string, string>;
 	sampleRate?: number;
+	capturePgSpans?: boolean;
+	capturePgStatement?: boolean;
+	capturePgConnectionSpans?: boolean;
+	captureRedisCommandSpans?: boolean;
+	captureRedisConnectionSpans?: boolean;
+	captureRedisRootSpans?: boolean;
 	resourceAttributes?: Record<string, string>;
 	propagateTraceToRemote?: boolean;
 	jobTraceContextMode?: 'link' | 'parent';
