@@ -144,6 +144,19 @@ describe('LogManager', () => {
 		});
 	});
 
+	test('does not pass raw structured values when normalization omits an error', () => {
+		const { manager, write } = createManager();
+
+		manager.write({
+			...createInput('error'),
+			attributes: { detail: 'value' },
+			error: null,
+		});
+
+		expect(write.mock.calls[0][0].attributes).toEqual({ detail: 'value' });
+		expect(write.mock.calls[0][0]).not.toHaveProperty('error');
+	});
+
 	test('keeps legacy data for the pretty output while serializing its Error separately', () => {
 		const { manager, write } = createManager();
 		const error = new Error('legacy failure');

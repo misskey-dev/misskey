@@ -51,7 +51,7 @@ describe('ApiCallService structured error logging', () => {
 		logManager.setBackend({ write });
 		const previousQuiet = envOption.quiet;
 		envOption.quiet = false;
-		const { service } = createService();
+		const { service, telemetryService } = createService();
 		try {
 			const reply = createReply();
 			const endpoint = {
@@ -88,6 +88,7 @@ describe('ApiCallService structured error logging', () => {
 				error: { type: 'TypeError', message: 'broken endpoint' },
 			});
 			expect(record.attributes?.['error.id']).toEqual(expect.any(String));
+			expect(telemetryService.captureMessage.mock.calls[0][1].extra).not.toHaveProperty('ps');
 		} finally {
 			service.dispose();
 			envOption.quiet = previousQuiet;

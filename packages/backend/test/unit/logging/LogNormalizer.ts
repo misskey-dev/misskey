@@ -89,6 +89,13 @@ describe('LogNormalizer', () => {
 		expect(Buffer.byteLength(JSON.stringify(normalized), 'utf8')).toBeLessThanOrEqual(32);
 	});
 
+	test('truncates long multibyte strings without splitting characters', () => {
+		const normalized = normalizeLogAttributes({ value: '😀'.repeat(100) }, { limits: { maxStringBytes: 16, maxBytes: 100 } });
+
+		expect(Buffer.byteLength(JSON.stringify(normalized.value), 'utf8')).toBeLessThanOrEqual(16);
+		expect(JSON.stringify(normalized.value)).not.toContain('�');
+	});
+
 	test('serializes Error and its cause consistently', () => {
 		const cause = new Error('root cause');
 		const error = new TypeError('outer error', { cause });

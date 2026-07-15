@@ -127,7 +127,6 @@ export class ApiCallService implements OnApplicationShutdown {
 				userId,
 				extra: {
 					ep: ep.name,
-					ps: data,
 					e: {
 						message: err.message,
 						code: err.name,

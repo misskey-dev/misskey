@@ -117,14 +117,33 @@ function byteLength(value: string): number {
 /** 文字列をUTF-8の上限内へ切り詰めます。 */
 function normalizeString(value: string, maxBytes: number): string {
 	if (byteLength(value) <= maxBytes) return value;
-	let end = value.length;
 	const suffix = `…${TRUNCATED}`;
 	if (byteLength(suffix) > maxBytes) {
-		while (end > 0 && byteLength(value.slice(0, end)) > maxBytes) end--;
+		const end = findMaxPrefixLength(value, '', maxBytes);
 		return value.slice(0, end);
 	}
-	while (end > 0 && byteLength(value.slice(0, end) + suffix) > maxBytes) end--;
+	const end = findMaxPrefixLength(value, suffix, maxBytes);
 	return value.slice(0, end) + suffix;
+}
+
+/** 指定した後置文字列を含めて上限に収まる接頭辞の長さを二分探索します。 */
+function findMaxPrefixLength(value: string, suffix: string, maxBytes: number): number {
+	let lower = 0;
+	let upper = value.length;
+	while (lower < upper) {
+		const middle = Math.ceil((lower + upper) / 2);
+		if (byteLength(value.slice(0, middle) + suffix) <= maxBytes) {
+			lower = middle;
+		} else {
+			upper = middle - 1;
+		}
+	}
+	// UTF-16のサロゲート対を途中で切らないよう、必要なら1文字戻します。
+	if (lower > 0 && lower < value.length) {
+		const code = value.charCodeAt(lower - 1);
+		if (code >= 0xd800 && code <= 0xdbff) lower--;
+	}
+	return lower;
 }
 
 /** 特殊な値に対しても、エラー判定で例外を発生させないようにします。 */

@@ -104,16 +104,16 @@ export class LogManager {
 		// 呼び出し側の配列を共有せず、親から末端までの順序を固定します。
 		const context = [...input.context];
 		// 出力を実際に行う直前にだけ正規化し、捨てられるdebugログのコストを抑えます。
-		const attributes = input.attributes;
+		const { attributes, error: inputError, ...inputWithoutStructuredValues } = input;
 		const normalizedAttributes = typeof attributes !== 'undefined'
 			? normalizeLogAttributes(attributes, { profile: this.normalizationProfile })
 			: undefined;
-		const error = input.error ?? findLegacyLogError(input.compatibility?.data);
+		const error = inputError ?? findLegacyLogError(input.compatibility?.data);
 		const normalizedError = typeof error !== 'undefined'
 			? serializeLogError(error, { profile: this.normalizationProfile })
 			: undefined;
 		const record = {
-			...input,
+			...inputWithoutStructuredValues,
 			context,
 			timestamp: this.dependencies.now().toISOString(),
 			loggerName: context.map(segment => segment.name).join('.'),
