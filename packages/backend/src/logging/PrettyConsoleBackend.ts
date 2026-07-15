@@ -48,9 +48,9 @@ export class PrettyConsoleBackend implements LogBackend {
 		const important = record.level === 'fatal' || (record.compatibility?.important ?? false);
 		const presentationLevel = record.level === 'fatal' ? 'error' : (legacyLevel ?? record.level);
 		const label =
-			presentationLevel === 'success' ? important ? chalk.bgGreen.white('DONE') : chalk.green('DONE') :
 			presentationLevel === 'error' ? important ? chalk.bgRed.white('ERR ') : chalk.red('ERR ') :
 			presentationLevel === 'warn' ? chalk.yellow('WARN') :
+			presentationLevel === 'success' ? important ? chalk.bgGreen.white('DONE') : chalk.green('DONE') :
 			presentationLevel === 'debug' ? chalk.gray('VERB') :
 			presentationLevel === 'info' ? chalk.blue('INFO') :
 			null;
@@ -58,9 +58,9 @@ export class PrettyConsoleBackend implements LogBackend {
 			? chalk.rgb(...convertColor.keyword.rgb(context.color))(context.name)
 			: chalk.white(context.name));
 		const message =
-			presentationLevel === 'success' ? chalk.green(record.message) :
 			presentationLevel === 'error' ? chalk.red(record.message) :
 			presentationLevel === 'warn' ? chalk.yellow(record.message) :
+			presentationLevel === 'success' ? chalk.green(record.message) :
 			presentationLevel === 'debug' ? chalk.gray(record.message) :
 			presentationLevel === 'info' ? record.message :
 			null;
