@@ -67,10 +67,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style module lang="scss">
-.root {
-	transition: height 0.2s cubic-bezier(0,.5,.5,1), opacity 0.2s cubic-bezier(0,.5,.5,1);
-}
-
 .animating {
 	overflow: clip;
 }
