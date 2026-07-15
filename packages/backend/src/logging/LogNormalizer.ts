@@ -100,6 +100,11 @@ function isObject(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null;
 }
 
+/** 外部入力のキーを安全に格納するため、prototypeを持たない属性領域を作成します。 */
+function createAttributeMap(): Record<string, LogAttributeValue> {
+	return Object.create(null) as Record<string, LogAttributeValue>;
+}
+
 /** 値を文字列化し、文字列化処理自体の例外もログ処理へ漏らさないようにします。 */
 function stringifySafely(value: unknown): string {
 	try {
@@ -209,7 +214,8 @@ function normalizeValue(
 			return result;
 		}
 
-		const result: Record<string, LogAttributeValue> = {};
+		// 攻撃者が指定した`__proto__`を通常の属性として保持するため、null prototypeを使います。
+		const result = createAttributeMap();
 		const keys = Object.keys(value).sort();
 		const entries = Math.min(keys.length, limits.maxEntries);
 		for (let i = 0; i < entries; i++) {
@@ -249,14 +255,15 @@ function trimToByteLimit(value: LogAttributeValue, maxBytes: number): LogAttribu
 		return result;
 	}
 	if (isObject(value)) {
-		const result: Record<string, LogAttributeValue> = {};
+		// 上限調整中も`__proto__`を安全に属性として扱えるようにします。
+		const result = createAttributeMap();
 		for (const key of Object.keys(value).sort()) {
-			const candidate = { ...result, [key]: trimToByteLimit(value[key], maxBytes) };
+			const candidate = Object.assign(createAttributeMap(), result, { [key]: trimToByteLimit(value[key], maxBytes) });
 			if (serializedByteLength(candidate) > maxBytes) break;
 			result[key] = candidate[key];
 		}
 		if (Object.keys(result).length < Object.keys(value).length) {
-			const candidate = { ...result, [TRUNCATED_KEY]: TRUNCATED };
+			const candidate = Object.assign(createAttributeMap(), result, { [TRUNCATED_KEY]: TRUNCATED });
 			if (serializedByteLength(candidate) <= maxBytes) return candidate;
 		}
 		return result;

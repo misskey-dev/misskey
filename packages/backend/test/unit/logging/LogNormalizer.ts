@@ -35,6 +35,15 @@ describe('LogNormalizer', () => {
 		});
 	});
 
+	test('preserves __proto__ as a normal attribute key', () => {
+		const value = JSON.parse('{"__proto__":{"nested":"value"},"large":"' + 'x'.repeat(100) + '"}') as Record<string, unknown>;
+		const normalized = normalizeLogAttributes(value, { limits: { maxBytes: 64 } });
+
+		expect(Object.keys(normalized)).toContain('__proto__');
+		expect(normalized['__proto__']).toEqual({ nested: 'value' });
+		expect(Object.getPrototypeOf(normalized)).toBeNull();
+	});
+
 	test('redacts sensitive fields recursively, including the Misskey i token', () => {
 		expect(normalizeLogAttributes({
 			i: 'top-level-token',
