@@ -702,7 +702,7 @@ function animateFromSourceToNeutral() {
 	});
 }
 
-watch(thumbnailContentLoaded, () => {
+watch([thumbnailContentLoaded, originalContentLoaded], () => {
 	animateFromSourceToNeutral();
 }, { once: true });
 

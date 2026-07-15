@@ -14,6 +14,7 @@ import type { Config } from '@/config.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
 import { envOption } from '@/env.js';
 import { initTelemetry } from '@/core/telemetry/telemetry-registry.js';
+import { installTelemetrySignalHandlers } from '@/core/telemetry/telemetry-shutdown.js';
 import { initExtraThreadPool, jobQueue, server } from './common.js';
 
 const logger = new Logger('core', 'cyan');
@@ -67,7 +68,13 @@ export async function masterMain() {
 
 	initExtraThreadPool(config);
 
-	await initTelemetry(config);
+	try {
+		await initTelemetry(config);
+	} catch (e) {
+		bootLogger.error(e instanceof Error ? e : new Error(String(e)), null, true);
+		process.exit(1);
+	}
+	installTelemetrySignalHandlers();
 
 	bootLogger.info(
 		`mode: [disableClustering: ${envOption.disableClustering}, onlyServer: ${envOption.onlyServer}, onlyQueue: ${envOption.onlyQueue}]`,

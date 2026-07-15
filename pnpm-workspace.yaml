@@ -30,6 +30,7 @@ allowBuilds:
   v-code-diff: true
   vue-demi: true
   exifreader: false
+  protobufjs: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@misskey-dev/*'
@@ -52,8 +53,11 @@ minimumReleaseAgeExclude:
   - slacc-win32-x64-msvc
   - '@typescript/native-preview*'
   - vite # そのうち消す
+  # Renovate security update: @opentelemetry/core@2.8.0
+  - "@opentelemetry/core@2.8.0"
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
+  'bullmq>ioredis': 5.11.1
   chokidar: 5.0.0
   lodash: 4.18.1
 engineStrict: true

@@ -26,6 +26,21 @@ type SentryBackendConfig = {
 	disabledIntegrations?: string[];
 };
 
+type OtelBackendConfig = {
+	endpoint?: string;
+	headers?: Record<string, string>;
+	sampleRate?: number;
+	capturePgSpans?: boolean;
+	capturePgStatement?: boolean;
+	capturePgConnectionSpans?: boolean;
+	captureRedisCommandSpans?: boolean;
+	captureRedisConnectionSpans?: boolean;
+	captureRedisRootSpans?: boolean;
+	resourceAttributes?: Record<string, string>;
+	propagateTraceToRemote?: boolean;
+	jobTraceContextMode?: 'link' | 'parent';
+};
+
 /**
  * 設定ファイルの型
  */
@@ -71,6 +86,7 @@ type Source = {
 		scope?: 'local' | 'global' | string[];
 	};
 	sentryForBackend?: SentryBackendConfig;
+	otelForBackend?: OtelBackendConfig;
 	sentryForFrontend?: {
 		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
 		vueIntegration?: SentryVue.VueIntegrationOptions | null;
@@ -208,6 +224,7 @@ export type Config = {
 	redisForTimelines: RedisOptions & RedisOptionsSource;
 	redisForReactions: RedisOptions & RedisOptionsSource;
 	sentryForBackend: SentryBackendConfig | undefined;
+	otelForBackend: OtelBackendConfig | undefined;
 	sentryForFrontend: {
 		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
 		vueIntegration?: SentryVue.VueIntegrationOptions | null;
@@ -313,6 +330,7 @@ export function loadConfig(): Config {
 		redisForTimelines: config.redisForTimelines ? convertRedisOptions(config.redisForTimelines, host) : redis,
 		redisForReactions: config.redisForReactions ? convertRedisOptions(config.redisForReactions, host) : redis,
 		sentryForBackend: config.sentryForBackend,
+		otelForBackend: config.otelForBackend,
 		sentryForFrontend: config.sentryForFrontend,
 		id: config.id,
 		proxy: config.proxy,

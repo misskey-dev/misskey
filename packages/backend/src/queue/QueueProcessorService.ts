@@ -161,6 +161,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			};
 		}
 
+		// 以下の各 Worker は job.data に保存された enqueue 元の trace context を復元し、
+		// ジョブの実処理全体を Link または parent の worker span で囲む。
 		//#region system
 		{
 			const processer = (job: Bull.Job) => {
@@ -180,7 +182,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			};
 
 			this.systemQueueWorker = new Bull.Worker(QUEUE.SYSTEM, (job) => {
-				return this.telemetryService.startSpan('Queue: System: ' + job.name, () => processer(job));
+				return this.telemetryService.startSpanWithTraceContext('Queue: System: ' + job.name, job.data, () => processer(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.SYSTEM),
 				autorun: false,
@@ -231,7 +233,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			};
 
 			this.dbQueueWorker = new Bull.Worker(QUEUE.DB, (job) => {
-				return this.telemetryService.startSpan('Queue: DB: ' + job.name, () => processer(job));
+				return this.telemetryService.startSpanWithTraceContext('Queue: DB: ' + job.name, job.data, () => processer(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.DB),
 				autorun: false,
@@ -257,7 +259,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region deliver
 		{
 			this.deliverQueueWorker = new Bull.Worker(QUEUE.DELIVER, (job) => {
-				return this.telemetryService.startSpan('Queue: Deliver', () => this.deliverProcessorService.process(job));
+				return this.telemetryService.startSpanWithTraceContext('Queue: Deliver', job.data, () => this.deliverProcessorService.process(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.DELIVER),
 				autorun: false,
@@ -291,7 +293,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region inbox
 		{
 			this.inboxQueueWorker = new Bull.Worker(QUEUE.INBOX, (job) => {
-				return this.telemetryService.startSpan('Queue: Inbox', () => this.inboxProcessorService.process(job));
+				return this.telemetryService.startSpanWithTraceContext('Queue: Inbox', job.data, () => this.inboxProcessorService.process(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.INBOX),
 				autorun: false,
@@ -325,7 +327,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region user-webhook deliver
 		{
 			this.userWebhookDeliverQueueWorker = new Bull.Worker(QUEUE.USER_WEBHOOK_DELIVER, (job) => {
-				return this.telemetryService.startSpan('Queue: UserWebhookDeliver', () => this.userWebhookDeliverProcessorService.process(job));
+				return this.telemetryService.startSpanWithTraceContext('Queue: UserWebhookDeliver', job.data, () => this.userWebhookDeliverProcessorService.process(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.USER_WEBHOOK_DELIVER),
 				autorun: false,
@@ -359,7 +361,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region system-webhook deliver
 		{
 			this.systemWebhookDeliverQueueWorker = new Bull.Worker(QUEUE.SYSTEM_WEBHOOK_DELIVER, (job) => {
-				return this.telemetryService.startSpan('Queue: SystemWebhookDeliver', () => this.systemWebhookDeliverProcessorService.process(job));
+				return this.telemetryService.startSpanWithTraceContext('Queue: SystemWebhookDeliver', job.data, () => this.systemWebhookDeliverProcessorService.process(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.SYSTEM_WEBHOOK_DELIVER),
 				autorun: false,
@@ -403,7 +405,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			};
 
 			this.relationshipQueueWorker = new Bull.Worker(QUEUE.RELATIONSHIP, (job) => {
-				return this.telemetryService.startSpan('Queue: Relationship: ' + job.name, () => processer(job));
+				return this.telemetryService.startSpanWithTraceContext('Queue: Relationship: ' + job.name, job.data, () => processer(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.RELATIONSHIP),
 				autorun: false,
@@ -442,7 +444,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			};
 
 			this.objectStorageQueueWorker = new Bull.Worker(QUEUE.OBJECT_STORAGE, (job) => {
-				return this.telemetryService.startSpan('Queue: ObjectStorage: ' + job.name, () => processer(job));
+				return this.telemetryService.startSpanWithTraceContext('Queue: ObjectStorage: ' + job.name, job.data, () => processer(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.OBJECT_STORAGE),
 				autorun: false,
@@ -469,7 +471,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region ended poll notification
 		{
 			this.endedPollNotificationQueueWorker = new Bull.Worker(QUEUE.ENDED_POLL_NOTIFICATION, (job) => {
-				return this.telemetryService.startSpan('Queue: EndedPollNotification', () => this.endedPollNotificationProcessorService.process(job));
+				return this.telemetryService.startSpanWithTraceContext('Queue: EndedPollNotification', job.data, () => this.endedPollNotificationProcessorService.process(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.ENDED_POLL_NOTIFICATION),
 				autorun: false,
@@ -480,7 +482,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region post scheduled note
 		{
 			this.postScheduledNoteQueueWorker = new Bull.Worker(QUEUE.POST_SCHEDULED_NOTE, async (job) => {
-				return this.telemetryService.startSpan('Queue: PostScheduledNote', () => this.postScheduledNoteProcessorService.process(job));
+				return this.telemetryService.startSpanWithTraceContext('Queue: PostScheduledNote', job.data, () => this.postScheduledNoteProcessorService.process(job));
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.POST_SCHEDULED_NOTE),
 				autorun: false,

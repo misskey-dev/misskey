@@ -40,11 +40,22 @@ function escapeCell(value: string) {
 
 type Manifest = Record<string, { file?: string; src?: string; name?: string; isEntry?: boolean; imports?: string[] }>;
 
+const stableNamedChunks = new Set(['vue', 'i18n']);
+
 type FileEntry = {
-	key: string;
+	comparisonKey: string | null;
 	displayName: string;
 	file: string;
+	manifestKeys: string[];
 	size: number;
+};
+
+type CollectedReport = {
+	manifest: Manifest;
+	chunks: FileEntry[];
+	comparableChunks: Record<string, FileEntry>;
+	chunksByManifestKey: Record<string, FileEntry>;
+	startupFiles: string[];
 };
 
 function entryDisplayName(entry: FileEntry) {
@@ -60,23 +71,26 @@ function findEntryKey(manifest: Manifest) {
 		?? null;
 }
 
-function stableChunkKey(manifestKey: string, chunk: Manifest[string]) {
-	return chunk.src ?? (chunk.name ? `chunk:${chunk.name}` : manifestKey);
+function stableChunkKey(chunk: Manifest[string]) {
+	if (chunk.src != null) return `src:${util.normalizePath(chunk.src)}`;
+	if (chunk.name != null && stableNamedChunks.has(chunk.name)) return `named:${chunk.name}`;
+	return null;
 }
 
-function collectStartupKeys(manifest: Manifest) {
+function collectStartupManifestKeys(manifest: Manifest) {
 	const entryKey = findEntryKey(manifest);
 	const keys = new Set<string>();
-	if (entryKey == null) return keys;
+	if (entryKey == null) throw new Error('Unable to find frontend startup entry in Vite manifest.');
 
-	function visit(key: string) {
+	function visit(key: string, importedBy?: string) {
 		if (keys.has(key)) return;
 		const chunk = manifest[key];
-		if (!chunk || !chunk.file?.endsWith('.js')) return;
-		keys.add(stableChunkKey(key, chunk));
-		for (const importKey of chunk.imports ?? []) {
-			visit(importKey);
-		}
+		const importContext = importedBy == null ? '' : ` imported by "${importedBy}"`;
+		if (chunk == null) throw new Error(`Startup manifest key "${key}"${importContext} is missing.`);
+		if (chunk.file == null || chunk.file.length === 0) throw new Error(`Startup manifest key "${key}"${importContext} has no output file.`);
+		if (!chunk.file.endsWith('.js')) throw new Error(`Startup manifest key "${key}"${importContext} resolves to non-JavaScript output "${chunk.file}".`);
+		keys.add(key);
+		for (const importKey of chunk.imports ?? []) visit(importKey, key);
 	}
 
 	visit(entryKey);
@@ -102,26 +116,41 @@ async function resolveBuiltFile(outDir: string, file: string) {
 	};
 }
 
-async function collectReport(repoDir: string) {
+async function collectReport(repoDir: string): Promise<CollectedReport> {
 	const outDir = path.join(repoDir, 'built/_frontend_vite_');
 	const manifestPath = path.join(outDir, 'manifest.json');
 	const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8')) as Manifest;
-	const byKey = new Map<string, FileEntry>();
-	const byFile = new Set<string>();
+	const chunksByFile = new Map<string, FileEntry>();
+	const comparableChunks = new Map<string, FileEntry>();
+	const chunksByManifestKey = new Map<string, FileEntry>();
 
-	for (const [key, chunk] of Object.entries(manifest)) {
+	for (const [manifestKey, chunk] of Object.entries(manifest)) {
 		if (!chunk.file?.endsWith('.js')) continue;
 		const builtFile = await resolveBuiltFile(outDir, chunk.file);
-		const size = await util.fileSize(builtFile.absolutePath);
-		const stableKey = stableChunkKey(key, chunk);
-		const displayName = chunk.src ?? chunk.name ?? key;
-		byKey.set(stableKey, {
-			key: stableKey,
-			displayName,
-			file: builtFile.relativePath,
-			size,
-		});
-		byFile.add(builtFile.relativePath);
+		const comparisonKey = stableChunkKey(chunk);
+		let entry = chunksByFile.get(builtFile.relativePath);
+		if (entry == null) {
+			entry = {
+				comparisonKey,
+				displayName: chunk.src ?? chunk.name ?? manifestKey,
+				file: builtFile.relativePath,
+				manifestKeys: [manifestKey],
+				size: await util.fileSize(builtFile.absolutePath),
+			};
+			chunksByFile.set(entry.file, entry);
+		} else if (entry.comparisonKey !== comparisonKey) {
+			throw new Error(`Conflicting identities for ${entry.file}`);
+		} else {
+			entry.manifestKeys.push(manifestKey);
+		}
+		chunksByManifestKey.set(manifestKey, entry);
+		if (comparisonKey != null) {
+			const existing = comparableChunks.get(comparisonKey);
+			if (existing != null && existing.file !== entry.file) {
+				throw new Error(`Duplicate stable chunk key "${comparisonKey}": ${existing.file}, ${entry.file}`);
+			}
+			comparableChunks.set(comparisonKey, entry);
+		}
 	}
 
 	const localeDir = path.join(outDir, locale);
@@ -129,21 +158,29 @@ async function collectReport(repoDir: string) {
 		for await (const fullPath of util.traverseDirectory(localeDir)) {
 			if (!fullPath.endsWith('.js')) continue;
 			const relativePath = util.normalizePath(path.relative(outDir, fullPath));
-			if (byFile.has(relativePath)) continue;
-			const size = await util.fileSize(fullPath);
-			byKey.set(relativePath, {
-				key: relativePath,
+			if (chunksByFile.has(relativePath)) continue;
+			chunksByFile.set(relativePath, {
+				comparisonKey: null,
 				displayName: relativePath,
 				file: relativePath,
-				size,
+				manifestKeys: [],
+				size: await util.fileSize(fullPath),
 			});
 		}
 	}
 
+	const startupFiles = new Set<string>();
+	for (const manifestKey of collectStartupManifestKeys(manifest)) {
+		const entry = chunksByManifestKey.get(manifestKey);
+		if (entry != null) startupFiles.add(entry.file);
+	}
+
 	return {
 		manifest,
-		chunks: Object.fromEntries(byKey),
-		startupKeys: [...collectStartupKeys(manifest)],
+		chunks: [...chunksByFile.values()],
+		comparableChunks: Object.fromEntries(comparableChunks),
+		chunksByManifestKey: Object.fromEntries(chunksByManifestKey),
+		startupFiles: [...startupFiles],
 	};
 }
 
@@ -312,22 +349,53 @@ function renderVisualizerSummaryTable(before: ReturnType<typeof collectVisualize
 	];
 }
 
-function getChunkComparisonRows(keys: string[], before: Awaited<ReturnType<typeof collectReport>>, after: Awaited<ReturnType<typeof collectReport>>) {
-	return keys.map((key) => {
-		const beforeEntry = before.chunks[key];
-		const afterEntry = after.chunks[key];
+function getChunkComparisonRows(keys: string[], before: Record<string, FileEntry>, after: Record<string, FileEntry>) {
+	return keys.map(key => {
+		const beforeEntry = before[key];
+		const afterEntry = after[key];
 		const beforeSize = beforeEntry?.size ?? 0;
 		const afterSize = afterEntry?.size ?? 0;
 		return {
 			key,
 			name: entryDisplayName(beforeEntry ?? afterEntry),
-			chunkFile: beforeEntry?.file ?? afterEntry?.file,
+			beforeFile: beforeEntry?.file,
+			afterFile: afterEntry?.file,
 			beforeSize,
 			afterSize,
 			changeType: beforeEntry == null ? 'added' : afterEntry == null ? 'removed' : beforeSize !== afterSize ? 'updated' : 'unchanged',
 			sortSize: Math.max(beforeSize, afterSize),
 		};
 	});
+}
+
+type ChunkAggregate = {
+	beforeSize: number;
+	afterSize: number;
+	beforeCount: number;
+	afterCount: number;
+};
+
+function sumChunkSizes(chunks: FileEntry[]) {
+	return chunks.reduce((sum, chunk) => sum + chunk.size, 0);
+}
+
+function generatedAggregate(before: FileEntry[], after: FileEntry[]): ChunkAggregate {
+	const beforeGenerated = before.filter(chunk => chunk.comparisonKey == null);
+	const afterGenerated = after.filter(chunk => chunk.comparisonKey == null);
+	return {
+		beforeSize: sumChunkSizes(beforeGenerated),
+		afterSize: sumChunkSizes(afterGenerated),
+		beforeCount: beforeGenerated.length,
+		afterCount: afterGenerated.length,
+	};
+}
+
+function comparableMap(chunks: FileEntry[]) {
+	const entries: [string, FileEntry][] = [];
+	for (const chunk of chunks) {
+		if (chunk.comparisonKey != null) entries.push([chunk.comparisonKey, chunk]);
+	}
+	return Object.fromEntries(entries);
 }
 
 function summarizeChunkChanges(rows: ReturnType<typeof getChunkComparisonRows>) {
@@ -349,60 +417,81 @@ function compareChunkComparisonRows(a: ReturnType<typeof getChunkComparisonRows>
 		|| a.name.localeCompare(b.name);
 }
 
-function chunkMarkdownTable(rows: ReturnType<typeof getChunkComparisonRows>, total?: { beforeSize: number; afterSize: number }) {
-	if (rows.length === 0) return '_No data_';
+function chunkFileDisplay(row: ReturnType<typeof getChunkComparisonRows>[number]) {
+	if (row.beforeFile == null) return row.afterFile ?? '';
+	if (row.afterFile == null || row.beforeFile === row.afterFile) return row.beforeFile;
+	return `${row.beforeFile} → ${row.afterFile}`;
+}
+
+function chunkMarkdownTable(
+	rows: ReturnType<typeof getChunkComparisonRows>,
+	total?: { beforeSize: number; afterSize: number },
+	generated?: ChunkAggregate,
+) {
+	if (rows.length === 0 && total == null && generated == null) return '_No data_';
 
 	const lines = [
 		'| Chunk | Before | After | Δ | Δ (%) |',
 		'| --- | ---: | ---: | ---: | ---: |',
 	];
+	let hasSummaryRow = false;
 	if (total != null) {
 		lines.push(`| (total) | ${util.formatBytes(total.beforeSize)} | ${util.formatBytes(total.afterSize)} | ${util.calcAndFormatDeltaBytes(total.beforeSize, total.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(total.beforeSize, total.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
-		lines.push('| | | | | |');
+		hasSummaryRow = true;
 	}
+	if (generated != null && (generated.beforeCount > 0 || generated.afterCount > 0)) {
+		lines.push(`| (other generated chunks) | ${util.formatBytes(generated.beforeSize)} | ${util.formatBytes(generated.afterSize)} | ${util.calcAndFormatDeltaBytes(generated.beforeSize, generated.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(generated.beforeSize, generated.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
+		hasSummaryRow = true;
+	}
+	if (hasSummaryRow && rows.length > 0) lines.push('| | | | | |');
+
 	for (const row of rows) {
+		const chunkFile = chunkFileDisplay(row);
 		if (row.changeType === 'added') {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | $\\color{orange}{\\text{( + )}}$ |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | $\\color{orange}{\\text{( + )}}$ |`);
 		} else if (row.changeType === 'removed') {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | $\\color{green}{\\text{( - )}}$ |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | $\\color{green}{\\text{( - )}}$ |`);
 		} else {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(row.beforeSize, row.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(row.beforeSize, row.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
 		}
+	}
+	if (generated != null && (generated.beforeCount > 0 || generated.afterCount > 0)) {
+		lines.push('');
+		lines.push(`_${generated.beforeCount} before / ${generated.afterCount} after generated chunks are grouped._`);
 	}
 	return lines.join('\n');
 }
 
 function renderFrontendChunkReport(before: Awaited<ReturnType<typeof collectReport>>, after: Awaited<ReturnType<typeof collectReport>>) {
-	const commonChunkKeys = Object.keys(before.chunks).filter((key) => after.chunks[key] != null);
-	const addedChunkKeys = Object.keys(after.chunks).filter((key) => before.chunks[key] == null);
-	const removedChunkKeys = Object.keys(before.chunks).filter((key) => after.chunks[key] == null);
-	const allChunkKeys = [
-		...commonChunkKeys,
-		...addedChunkKeys,
-		...removedChunkKeys,
-	];
-	//const comparisonRows = getChunkComparisonRows(commonChunkKeys, before, after);
-	const allComparisonRows = getChunkComparisonRows(allChunkKeys, before, after);
+	const beforeComparable = before.comparableChunks;
+	const afterComparable = after.comparableChunks;
+	const allChunkKeys = [...new Set([...Object.keys(beforeComparable), ...Object.keys(afterComparable)])];
+	const allComparisonRows = getChunkComparisonRows(allChunkKeys, beforeComparable, afterComparable);
 
 	const changedRows = allComparisonRows.filter((row) => row.changeType !== 'unchanged');
 	const diffSummary = summarizeChunkChanges(changedRows);
 	const diffTotal = {
-		beforeSize: allComparisonRows.reduce((sum, row) => sum + row.beforeSize, 0),
-		afterSize: allComparisonRows.reduce((sum, row) => sum + row.afterSize, 0),
+		beforeSize: sumChunkSizes(before.chunks),
+		afterSize: sumChunkSizes(after.chunks),
 	};
+	const diffGenerated = generatedAggregate(before.chunks, after.chunks);
 	const diffRows = changedRows.sort(compareChunkComparisonRows).slice(0, 30); // TODO: 実際に30を超えて切り捨てられたrowがあった場合はその旨をmarkdown内に表示するようにする
 
-	const startupKeys = new Set([
-		...before.startupKeys,
-		...after.startupKeys,
-	]);
-	const startupComparisonRows = getChunkComparisonRows([...startupKeys], before, after);
+	const beforeStartupFiles = new Set(before.startupFiles);
+	const afterStartupFiles = new Set(after.startupFiles);
+	const beforeStartupChunks = before.chunks.filter(chunk => beforeStartupFiles.has(chunk.file));
+	const afterStartupChunks = after.chunks.filter(chunk => afterStartupFiles.has(chunk.file));
+	const beforeStartupComparable = comparableMap(beforeStartupChunks);
+	const afterStartupComparable = comparableMap(afterStartupChunks);
+	const startupKeys = [...new Set([...Object.keys(beforeStartupComparable), ...Object.keys(afterStartupComparable)])];
+	const startupComparisonRows = getChunkComparisonRows(startupKeys, beforeStartupComparable, afterStartupComparable);
 	const startupRows = startupComparisonRows.sort(compareChunkComparisonRows);
 	const startupSummary = summarizeChunkChanges(startupComparisonRows);
 	const startupTotal = {
-		beforeSize: startupComparisonRows.reduce((sum, row) => sum + row.beforeSize, 0),
-		afterSize: startupComparisonRows.reduce((sum, row) => sum + row.afterSize, 0),
+		beforeSize: sumChunkSizes(beforeStartupChunks),
+		afterSize: sumChunkSizes(afterStartupChunks),
 	};
+	const startupGenerated = generatedAggregate(beforeStartupChunks, afterStartupChunks);
 
 	//const largeRows = comparisonRows
 	//	.sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name))
@@ -412,14 +501,14 @@ function renderFrontendChunkReport(before: Awaited<ReturnType<typeof collectRepo
 		'<details open>',
 		`<summary>${formatChunkChangeSummary('Chunk size diff', diffSummary)}</summary>`,
 		'',
-		chunkMarkdownTable(diffRows, diffTotal),
+		chunkMarkdownTable(diffRows, diffTotal, diffGenerated),
 		'',
 		'</details>',
 		'',
 		'<details>',
 		`<summary>${formatChunkChangeSummary('Startup chunk size', startupSummary)}</summary>`,
 		'',
-		chunkMarkdownTable(startupRows, startupTotal),
+		chunkMarkdownTable(startupRows, startupTotal, startupGenerated),
 		'',
 		`_Startup chunks are the Vite entry for \`src/_boot_.ts\` and its static imports._`,
 		'',

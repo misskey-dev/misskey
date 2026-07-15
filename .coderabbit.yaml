@@ -1,0 +1,9 @@
+reviews:
+  profile: "chill"
+  high_level_summary: false
+  poem: true
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "develop"

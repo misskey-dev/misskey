@@ -3,9 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { Config } from '@/config.js';
+import type { QueueTraceContextCarrier } from '../queue-trace-context.js';
+
+export type SentryBackendConfig = NonNullable<Config['sentryForBackend']>;
+export type OtelBackendConfig = NonNullable<Config['otelForBackend']>;
+export type OtelBackendRuntimeConfig = OtelBackendConfig & {
+	serviceVersion: string;
+};
+
 export interface TelemetryCaptureMessageOptions {
+	/** 現在はエラー通知用途だけに絞る。追加する場合は各adapterでの扱いを揃えること。 */
 	level: 'error';
+
+	/** Sentryではuser.idへ渡す。OTel adapterは現在span属性へ付与していないため、必要ならadapter側で拡張する。 */
 	userId?: string;
+
+	/** queue名やendpoint名など、通知先で調査に使う補助情報。 */
 	extra?: Record<string, unknown>;
 }
 
@@ -15,7 +29,33 @@ export interface TelemetryCaptureMessageOptions {
  * telemetry-registry.tsのinitTelemetry内で登録する。
  */
 export interface TelemetryAdapter {
+	/**
+	 * 実行中の処理で起きたエラー相当の事象を記録する。
+	 * Sentryはmessage通知、OTelはactive spanまたは短命spanへの例外記録として扱う。
+	 */
 	captureMessage(message: string, opts: TelemetryCaptureMessageOptions): void;
+
+	/**
+	 * API endpointやqueue jobなど、呼び出し側の処理単位をspanで包む。
+	 * fnの戻り値・例外はそのまま呼び出し側へ返し、Promiseの場合はsettleまでspanを閉じない。
+	 */
 	startSpan<T>(name: string, fn: () => T): T;
+
+	/**
+	 * BullMQ のジョブデータへ保存する carrier に、active trace context を注入する。
+	 * OTel を使わない adapter は実装しない。
+	 */
+	injectTraceContext?(carrier: QueueTraceContextCarrier): void;
+
+	/**
+	 * ジョブに保存された enqueue 元の context を、worker span の Link または parent として復元する。
+	 * context を持たないジョブの互換性は adapter 側で保つ。
+	 */
+	startSpanWithTraceContext?<T>(name: string, jobData: object, fn: () => T): T;
+
+	/**
+	 * プロセス終了時にtelemetry backendへ残りのデータをflushする。
+	 * 実装側ではtransport停止に引きずられないよう、待機時間に上限を設ける。
+	 */
 	shutdown(): Promise<void>;
 }

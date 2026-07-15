@@ -18,6 +18,8 @@ on:
       - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
       - scripts/check-dts*.mjs
+      - .github/scripts/frontend-js-size*.mts
+      - .github/scripts/utility.mts
       - .github/workflows/lint.yml
       - package.json
   pull_request:
@@ -34,6 +36,8 @@ on:
       - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
       - scripts/check-dts*.mjs
+      - .github/scripts/frontend-js-size*.mts
+      - .github/scripts/utility.mts
       - .github/workflows/lint.yml
       - package.json
 jobs:
@@ -136,3 +140,12 @@ jobs:
     - run: pnpm i --frozen-lockfile
     - run: node --test scripts/check-dts.test.mjs
     - run: pnpm check-dts
+
+  frontend-bundle-report-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6.0.3
+    - uses: actions/setup-node@v6.4.0
+      with:
+        node-version-file: '.node-version'
+    - run: node --test .github/scripts/frontend-js-size.test.mts
