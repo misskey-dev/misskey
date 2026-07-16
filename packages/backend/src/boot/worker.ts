@@ -24,6 +24,7 @@ export async function workerMain() {
 	try {
 		config = loadConfig();
 		configureLogging(config.logging);
+		logger.info(`Start worker process... pid: ${process.pid}`);
 	} catch (e) {
 		bootLogger.error(e instanceof Error ? e : new Error(String(e)), null, true);
 		process.exit(1);

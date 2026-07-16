@@ -65,6 +65,8 @@ export async function masterMain() {
 	// initialize app
 	try {
 		config = loadConfigBoot();
+		logger.info(`Start main process... pid: ${process.pid}`);
+		bootLogger.createSubLogger('config').succ('Loaded');
 		greet({ version: config.version, format: config.logging?.format ?? 'pretty' });
 		showEnvironment();
 		await showMachineInfo(bootLogger);
@@ -147,6 +149,7 @@ function showNodejsVersion(): void {
 	nodejsLogger.info(`Version ${process.version} detected.`);
 }
 
+/** 設定を読み込み、成功時に後続のログ出力形式を適用します。 */
 function loadConfigBoot(): Config {
 	const configLogger = bootLogger.createSubLogger('config');
 	let config;
@@ -164,8 +167,6 @@ function loadConfigBoot(): Config {
 		}
 		throw exception;
 	}
-
-	configLogger.succ('Loaded');
 
 	return config;
 }
