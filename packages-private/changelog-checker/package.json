@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "run": "vite-node src/index.ts",
+    "check": "vite-node src/index.ts",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"
   },
