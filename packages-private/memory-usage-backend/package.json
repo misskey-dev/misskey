@@ -3,7 +3,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"run": "tsx src/index.ts"
+		"check": "tsx src/index.ts"
 	},
 	"devDependencies": {
 		"tsx": "4.22.4"
