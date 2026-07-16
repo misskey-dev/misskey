@@ -41,7 +41,7 @@ jobs:
         working-directory: packages-private/changelog-checker
 
       - name: Install dependencies
-        run: pnpm i --frozen-lockfile
+        run: pnpm i --filter changelog-checker... install --frozen-lockfile
 
       - name: Run Checker
         run: pnpm --filter changelog-checker check
