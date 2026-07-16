@@ -75,4 +75,39 @@ describe('shutdown-handler', () => {
 			consoleError.mockRestore();
 		}
 	});
+
+	test('exits after the shutdown deadline when a task remains pending', async () => {
+		vi.resetModules();
+		vi.useFakeTimers();
+		const { installShutdownSignalHandlers } = await import('@/boot/shutdown-handler.js');
+		const handlers = new Map<string, () => Promise<void>>();
+		const processLike = {
+			once: vi.fn((event: string, handler: () => Promise<void>) => {
+				handlers.set(event, handler);
+				return processLike;
+			}),
+		};
+		const exit = vi.fn();
+		const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+		try {
+			installShutdownSignalHandlers({
+				process: processLike,
+				shutdownTasks: [() => new Promise<void>(() => {})],
+				exit,
+			});
+
+			const signalPromise = handlers.get('SIGTERM')!();
+			expect(exit).not.toHaveBeenCalled();
+
+			await vi.advanceTimersByTimeAsync(10_000);
+			await signalPromise;
+
+			expect(consoleError).toHaveBeenCalledWith('Shutdown tasks timed out after 10000ms.');
+			expect(exit).toHaveBeenCalledWith(0);
+		} finally {
+			consoleError.mockRestore();
+			vi.useRealTimers();
+		}
+	});
 });

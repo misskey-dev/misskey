@@ -42,7 +42,7 @@ export type LogManagerOptions = {
 /** 起動時に適用するログ出力設定です。 */
 export type LogManagerConfiguration = {
 	readonly level?: LogLevelSetting;
-	readonly domains?: Readonly<Record<string, LogLevelSetting>>;
+	readonly domains?: Readonly<Record<string, LogLevelSetting>> | null;
 };
 
 const logLevelOrder: Readonly<Record<LogLevel, number>> = {
@@ -76,7 +76,7 @@ function resolveConfiguration(configuration: LogManagerConfiguration | undefined
 	if (configuration == null) return { level: undefined, domains: [] };
 
 	const level = validateLogLevel(configuration.level, 'logging.level');
-	if (typeof configuration.domains === 'undefined') return { level, domains: [] };
+	if (configuration.domains == null) return { level, domains: [] };
 	if (typeof configuration.domains !== 'object' || configuration.domains === null || Array.isArray(configuration.domains)) {
 		throw new Error('logging.domains must be an object');
 	}

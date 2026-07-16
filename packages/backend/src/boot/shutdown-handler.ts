@@ -7,6 +7,8 @@ type ShutdownSignalProcess = {
 	once(event: 'SIGTERM' | 'SIGINT', listener: () => Promise<void>): unknown;
 };
 
+const SHUTDOWN_TIMEOUT_MS = 10_000;
+
 export type ShutdownTask = () => Promise<void>;
 
 export type ShutdownHandlerOptions = {
@@ -44,17 +46,40 @@ export function installShutdownSignalHandlers(options: ShutdownHandlerOptions): 
 		if (shuttingDown) return;
 		shuttingDown = true;
 
-		for (const shutdownTask of options.shutdownTasks) {
-			try {
-				await shutdownTask();
-			} catch (error) {
-				// 1つの終了処理の失敗で後続タスクを妨げないよう、stderrへフォールバックする。
-				try {
-					console.error('Shutdown task failed:', error);
-				} catch {
-					// stderrの出力自体が失敗しても、残りの終了処理とexitは継続する。
-				}
-			}
+		let timedOut = false;
+		let timeout: NodeJS.Timeout | undefined;
+		try {
+			// 処理時間上限つきのシャットダウンプロセス
+			await Promise.race([
+				(async () => {
+					for (const shutdownTask of options.shutdownTasks) {
+						if (timedOut) return;
+						try {
+							await shutdownTask();
+						} catch (error) {
+							// 1つの終了処理の失敗で後続タスクを妨げないよう、stderrへフォールバックする。
+							try {
+								console.error('Shutdown task failed:', error);
+							} catch {
+								// stderrの出力自体が失敗しても、残りの終了処理とexitは継続する。
+							}
+						}
+					}
+				})(),
+				new Promise<void>(resolve => {
+					timeout = setTimeout(() => {
+						timedOut = true;
+						try {
+							console.error(`Shutdown tasks timed out after ${SHUTDOWN_TIMEOUT_MS}ms.`);
+						} catch {
+							// stderrの出力自体が失敗してもexitは継続する。
+						}
+						resolve();
+					}, SHUTDOWN_TIMEOUT_MS);
+				}),
+			]);
+		} finally {
+			if (timeout != null) clearTimeout(timeout);
 		}
 
 		// 既存挙動と同じく、終了処理後はプロセスを終了する。

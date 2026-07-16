@@ -184,6 +184,7 @@ describe('LogManager', () => {
 	test('rejects invalid logging configuration', () => {
 		const { manager } = createManager();
 
+		expect(() => manager.configure({ domains: null })).not.toThrow();
 		expect(() => manager.configure({ level: 'notice' as never })).toThrow('logging.level');
 		expect(() => manager.configure({ domains: { queue: 'notice' as never } })).toThrow('logging.domains.queue');
 		expect(() => manager.configure({ domains: { 'queue.': 'info' } })).toThrow('invalid domain name');

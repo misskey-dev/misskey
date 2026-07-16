@@ -134,7 +134,7 @@ type Source = {
 
 	logging?: {
 		level?: LogLevelSetting;
-		domains?: Record<string, LogLevelSetting>;
+		domains?: Record<string, LogLevelSetting> | null;
 		sql?: {
 			disableQueryTruncation?: boolean,
 			enableQueryParamLogging?: boolean,
@@ -198,7 +198,7 @@ export type Config = {
 	inboxJobMaxAttempts: number | undefined;
 	logging?: {
 		level?: LogLevelSetting;
-		domains?: Record<string, LogLevelSetting>;
+		domains?: Record<string, LogLevelSetting> | null;
 		sql?: {
 			disableQueryTruncation?: boolean,
 			enableQueryParamLogging?: boolean,
