@@ -384,8 +384,9 @@ if (heapSnapshotSection != null) {
 	lines.push('');
 }
 
-const artifactUrl = process.env.MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_HEAD!.trim();
-lines.push(`[Download representative V8 heap snapshot (head)](${artifactUrl})`);
+const baseHeapSnapshotArtifactUrl = process.env.MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_BASE!.trim();
+const headHeapSnapshotArtifactUrl = process.env.MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_HEAD!.trim();
+lines.push(`Download representative V8 heap snapshot [base](${baseHeapSnapshotArtifactUrl}) / [head](${headHeapSnapshotArtifactUrl})`);
 lines.push('');
 
 const jsFootprintSection = renderJsFootprintSection(baseJsFootprint, headJsFootprint);

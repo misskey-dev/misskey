@@ -33,8 +33,8 @@ jobs:
       - name: Load PR Number
         id: load-pr-num
         run: echo "pr-number=$(cat artifacts/pr_number)" >> "$GITHUB_OUTPUT"
-      - name: Find head heap snapshot artifact
-        id: find-heap-snapshot-artifact
+      - name: Find heap snapshot artifacts
+        id: find-heap-snapshot-artifacts
         uses: actions/github-script@v8
         with:
           script: |
@@ -45,14 +45,21 @@ jobs:
               repo,
               run_id,
             });
-            const artifact = artifacts.find(artifact => artifact.name === 'backend-memory-head-heap-snapshot');
-            if (artifact == null) return;
-            core.setOutput('url', `https://github.com/${owner}/${repo}/actions/runs/${run_id}/artifacts/${artifact.id}`);
+            const artifactNames = {
+              base: 'base-heap-snapshot.heapsnapshot',
+              head: 'head-heap-snapshot.heapsnapshot',
+            };
+            for (const [label, artifactName] of Object.entries(artifactNames)) {
+              const artifact = artifacts.find(artifact => artifact.name === artifactName);
+              if (artifact == null) throw new Error(`Artifact not found: ${artifactName}`);
+              core.setOutput(`${label}-url`, `https://github.com/${owner}/${repo}/actions/runs/${run_id}/artifacts/${artifact.id}`);
+            }
 
       - id: build-comment
         name: Build memory comment
         env:
-          MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_HEAD: ${{ steps.find-heap-snapshot-artifact.outputs.url }}
+          MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_BASE: ${{ steps.find-heap-snapshot-artifacts.outputs.base-url }}
+          MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_HEAD: ${{ steps.find-heap-snapshot-artifacts.outputs.head-url }}
         run: node .github/scripts/backend-memory-report.mts ./artifacts/memory-base.json ./artifacts/memory-head.json ./output.md ./artifacts/js-footprint-base.json ./artifacts/js-footprint-head.json
       - uses: thollander/actions-comment-pull-request@v3
         with:
