@@ -1,7 +1,6 @@
 {
   "name": "changelog-checker",
-  "version": "1.0.0",
-  "description": "",
+  "private": true,
   "type": "module",
   "scripts": {
     "check": "vite-node src/index.ts",
