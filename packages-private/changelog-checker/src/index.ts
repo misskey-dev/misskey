@@ -5,8 +5,8 @@
 
 import * as process from 'process';
 import * as fs from 'fs';
-import { parseChangeLog } from './parser.js';
-import { checkNewRelease, checkNewTopic } from './checker.js';
+import { parseChangeLog } from '@/parser.js';
+import { checkNewRelease, checkNewTopic } from '@/checker.js';
 
 function abort(message?: string) {
 	if (message) {

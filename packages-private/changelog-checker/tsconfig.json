@@ -17,15 +17,18 @@
 		"typeRoots": [
 			"./node_modules/@types"
 		],
+		"paths": {
+			"@/*": ["./src/*"],
+		},
 		"lib": [
 			"esnext"
 		]
 	},
 	"include": [
-		"src/**/*"
+		"src/**/*",
+		"test/**/*"
 	],
 	"exclude": [
 		"node_modules",
-		"test/**/*"
 	]
 }

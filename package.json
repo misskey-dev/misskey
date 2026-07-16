@@ -8,17 +8,19 @@
 	},
 	"packageManager": "pnpm@11.9.0",
 	"workspaces": [
-		"packages/misskey-js",
+		"packages/backend",
+		"packages/frontend-shared",
+		"packages/frontend",
+		"packages/frontend-builder",
+		"packages/frontend-embed",
 		"packages/i18n",
+		"packages/icons-subsetter",
+		"packages/sw",
+		"packages/misskey-js",
+		"packages/misskey-js/generator",
 		"packages/misskey-reversi",
 		"packages/misskey-bubble-game",
-		"packages/icons-subsetter",
-		"packages/frontend-shared",
-		"packages/frontend-builder",
-		"packages/sw",
-		"packages/backend",
-		"packages/frontend",
-		"packages/frontend-embed"
+		"packages-private/*"
 	],
 	"private": true,
 	"scripts": {
