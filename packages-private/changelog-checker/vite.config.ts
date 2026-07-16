@@ -1,10 +1,10 @@
-import {defineConfig} from 'vite';
-
+import { defineConfig } from 'vite';
+import { resolve } from 'path';
 
 const config = defineConfig({
 	resolve: {
 		alias: {
-			'@': './src',
+			'@': resolve(import.meta.dirname, './src'),
 		},
 	},
 });
