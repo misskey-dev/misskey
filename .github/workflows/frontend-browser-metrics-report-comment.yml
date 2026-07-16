@@ -1,0 +1,44 @@
+name: frontend-browser-metrics-report-comment
+
+on:
+  workflow_run:
+    workflows:
+      - frontend-browser-metrics-report
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  comment:
+    name: Comment frontend browser metrics report
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: frontend-browser-metrics-report-comment-${{ github.event.workflow_run.id }}
+      cancel-in-progress: true
+    steps:
+      - name: Download browser metrics report
+        uses: actions/download-artifact@v8
+        with:
+          name: frontend-browser-metrics-report
+          path: ${{ runner.temp }}/frontend-browser-metrics-report
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Load PR number
+        id: load-pr-number
+        shell: bash
+        run: echo "pr-number=$(cat "$RUNNER_TEMP/frontend-browser-metrics-report/pr-number.txt")" >> "$GITHUB_OUTPUT"
+
+      - name: Comment on pull request
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          pr-number: ${{ steps.load-pr-number.outputs.pr-number }}
+          comment-tag: frontend_browser_metrics_report
+          file-path: ${{ runner.temp }}/frontend-browser-metrics-report/frontend-browser-metrics-report.md
