@@ -12,6 +12,7 @@ import Logger from '@/logger.js';
 import { loadConfig } from '@/config.js';
 import type { Config } from '@/config.js';
 import { configureLogging, shutdownLogging } from '@/logging/logging-runtime.js';
+import type { LogFormat } from '@/logging/types.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
 import { envOption } from '@/env.js';
 import { initTelemetry, shutdownTelemetry } from '@/core/telemetry/telemetry-registry.js';
@@ -23,7 +24,17 @@ const bootLogger = logger.createSubLogger('boot', 'magenta');
 
 const themeColor = chalk.hex('#86b300');
 
-function greet(props: { version: string }) {
+/** 起動時の案内を、選択されたログ形式に合わせて出力します。 */
+function greet(props: { version: string; format: LogFormat }) {
+	if (!envOption.quiet && props.format === 'json') {
+		// JSONモードでは生のコンソール出力を避け、各案内を1件ずつ構造化ログにします。
+		bootLogger.info('Welcome to Misskey!');
+		bootLogger.info(`Misskey v${props.version}`, null, true);
+		bootLogger.info('Misskey is an open-source decentralized microblogging platform.');
+		bootLogger.info('If you like Misskey, please consider donating to support dev. https://misskey-hub.net/docs/donate/');
+		return;
+	}
+
 	if (!envOption.quiet) {
 		//#region Misskey logo
 		const v = `v${props.version}`;
@@ -54,7 +65,7 @@ export async function masterMain() {
 	// initialize app
 	try {
 		config = loadConfigBoot();
-		greet({ version: config.version });
+		greet({ version: config.version, format: config.logging?.format ?? 'pretty' });
 		showEnvironment();
 		await showMachineInfo(bootLogger);
 		showNodejsVersion();

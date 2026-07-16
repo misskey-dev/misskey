@@ -474,6 +474,8 @@ proxyBypassHosts:
 
 # Log settings
 # logging:
+#   # ログの出力形式。「json」で1行JSON、未指定時は「pretty」です。
+#   format: pretty
 #   # Minimum level for all loggers. Defaults to info in production and debug otherwise.
 #   level: info
 #   # The longest matching logger domain takes precedence over the global level.
