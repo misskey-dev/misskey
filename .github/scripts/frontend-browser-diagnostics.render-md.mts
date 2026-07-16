@@ -8,13 +8,14 @@ import { pathToFileURL } from 'node:url';
 import * as util from './utility.mts';
 import * as heapSnapshotUtil from './heap-snapshot-util.mts';
 import type { HeapSnapshotData, HeapSnapshotReport } from './heap-snapshot-util.mts';
-import type { NetworkRequest } from './chrome.mts';
+import type { BrowserDiagnostics, NetworkRequest } from './chrome.mts';
 
 export type BrowserMeasurement = {
 	label: string;
 	timestamp: string;
 	url: string;
 	scenario: string;
+	diagnostics: BrowserDiagnostics;
 	durationMs: number;
 	network: {
 		requestCount: number;
@@ -203,7 +204,12 @@ function renderSummaryTable(base: BrowserMetricsReport, head: BrowserMetricsRepo
 		metricRow('WebSocket connections', base, head, summary => summary.network.webSocketConnectionCount, sample => sample.network.webSocketConnectionCount, util.formatNumber, 1, !all),
 		metricRow('WebSocket sent', base, head, summary => summary.network.webSocketSentBytes, sample => sample.network.webSocketSentBytes, util.formatBytes, 10000, !all),
 		metricRow('WebSocket received', base, head, summary => summary.network.webSocketReceivedBytes, sample => sample.network.webSocketReceivedBytes, util.formatBytes, 10000, !all),
-		metricRow('Tab memory', base, head, summary => summary.performance.tabMemory.totalBytes, sample => sample.performance.tabMemory.totalBytes, util.formatBytes, 10000, !all),
+		metricRow('Page errors', base, head, summary => summary.diagnostics.pageErrorCount, sample => sample.diagnostics.pageErrorCount, util.formatNumber, 1, !all),
+		metricRow('Console log', base, head, summary => summary.diagnostics.console.log, sample => sample.diagnostics.console.log, util.formatNumber, 1, !all),
+		metricRow('Console warnings', base, head, summary => summary.diagnostics.console.warning, sample => sample.diagnostics.console.warning, util.formatNumber, 1, !all),
+		metricRow('Console errors', base, head, summary => summary.diagnostics.console.error, sample => sample.diagnostics.console.error, util.formatNumber, 1, !all),
+		metricRow('Console info', base, head, summary => summary.diagnostics.console.info, sample => sample.diagnostics.console.info, util.formatNumber, 1, !all),
+		metricRow('Page-attributed memory', base, head, summary => summary.performance.tabMemory.totalBytes, sample => sample.performance.tabMemory.totalBytes, util.formatBytes, 10000, !all),
 	].filter(row => row != null);
 
 	return [
@@ -307,25 +313,20 @@ function toHeapSnapshotReport(report: BrowserMetricsReport): HeapSnapshotReport 
 	};
 }
 
-export function renderFrontendBrowserReport(base: BrowserMetricsReport, head: BrowserMetricsReport, options: {
-	headHeapSnapshotUrl?: string;
+function renderMd(base: BrowserMetricsReport, head: BrowserMetricsReport, options: {
+	baseHeapSnapshotUrl: string;
+	headHeapSnapshotUrl: string;
 	detailedHtmlUrl?: string;
-} = {}) {
-	const headHeapSnapshotUrl = options.headHeapSnapshotUrl;
+}) {
 	const detailedHtmlUrl = options.detailedHtmlUrl;
-	const sampleSummary = base.sampleCount === head.sampleCount
-		? `${base.sampleCount} samples per side`
-		: `${base.sampleCount} base sample(s), ${head.sampleCount} head sample(s)`;
 	const heapSnapshotTable = heapSnapshotUtil.renderHeapSnapshotTable(toHeapSnapshotReport(base), toHeapSnapshotReport(head));
 	const lines = [
-		'## 🖥 Frontend Browser Metrics',
-		'',
-		'Only metrics showing significant changes are displayed.',
+		'## 🖥 Frontend Browser Diagnostics Report',
 		'',
 		renderSummaryTable(base, head),
 		'',
-		//`> Measured ${sampleSummary} with fresh headless Chrome profiles, browser cache disabled, service workers bypassed, and forced V8 GC before each heap snapshot. Base/Head values are medians; Δ median is the median of paired Head - Base sample deltas; percent uses Δ median / Base median; ± and Δ MAD are median absolute deviations. Scenario: sign up, dismiss the initial account setup dialog, create the first timeline note, then wait until that note is visible.`,
-		//'',
+		'<i>Only metrics showing significant changes are displayed.</i>',
+		'',
 		detailedHtmlUrl == null || detailedHtmlUrl === '' ? null : `[View details](${detailedHtmlUrl})`,
 		detailedHtmlUrl == null || detailedHtmlUrl === '' ? null : '',
 		'<details>',
@@ -342,7 +343,7 @@ export function renderFrontendBrowserReport(base: BrowserMetricsReport, head: Br
 		'',
 		heapSnapshotUtil.renderHeapSnapshotSankey(toHeapSnapshotReport(head), 'Head'),
 		'',
-		`[Download representative head heap snapshot](${headHeapSnapshotUrl})`,
+		`Download representative heap snapshot: [base](${options.baseHeapSnapshotUrl}) / [head](${options.headHeapSnapshotUrl})`,
 		'</details>',
 		'',
 	];
@@ -361,18 +362,17 @@ export function renderFrontendBrowserReport(base: BrowserMetricsReport, head: Br
 
 async function main() {
 	const [baseFile, headFile, outputFile] = process.argv.slice(2);
-	if (baseFile == null || headFile == null || outputFile == null) {
-		throw new Error('Usage: node frontend-browser-report.mts <base-browser.json> <head-browser.json> <output.md>');
-	}
 
 	const base = JSON.parse(await readFile(baseFile, 'utf8')) as BrowserMetricsReport;
 	const head = JSON.parse(await readFile(headFile, 'utf8')) as BrowserMetricsReport;
-	await writeFile(outputFile, renderFrontendBrowserReport(base, head, {
-		headHeapSnapshotUrl: process.env.FRONTEND_BROWSER_HEAD_HEAP_SNAPSHOT_ARTIFACT_URL,
+	await writeFile(outputFile, renderMd(base, head, {
+		baseHeapSnapshotUrl: process.env.FRONTEND_BROWSER_BASE_HEAP_SNAPSHOT_ARTIFACT_URL!,
+		headHeapSnapshotUrl: process.env.FRONTEND_BROWSER_HEAD_HEAP_SNAPSHOT_ARTIFACT_URL!,
 		detailedHtmlUrl: process.env.FRONTEND_BROWSER_DETAILED_HTML_ARTIFACT_URL,
 	}));
 }
 
+// 直接実行されたときだけ呼ぶための判定(テストなどでこのファイル内の関数をimportするだけのとき用)
 if (process.argv[1] != null && import.meta.url === pathToFileURL(process.argv[1]).href) {
 	await main();
 }

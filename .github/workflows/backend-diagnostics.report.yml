@@ -1,10 +1,10 @@
-name: Report backend memory
+name: Backend diagnostics (report)
 
 on:
   workflow_run:
     types: [completed]
     workflows:
-      - Get backend memory usage # get-backend-memory.yml
+      - Backend diagnostics (inspect) # backend-diagnostics.inspect.yml
 
 jobs:
   compare-memory:
@@ -60,7 +60,7 @@ jobs:
         env:
           MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_BASE: ${{ steps.find-heap-snapshot-artifacts.outputs.base-url }}
           MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_HEAD: ${{ steps.find-heap-snapshot-artifacts.outputs.head-url }}
-        run: node .github/scripts/backend-memory-report.mts ./artifacts/memory-base.json ./artifacts/memory-head.json ./output.md ./artifacts/js-footprint-base.json ./artifacts/js-footprint-head.json
+        run: node .github/scripts/backend-diagnostics.render-md.mts ./artifacts/memory-base.json ./artifacts/memory-head.json ./output.md
       - uses: thollander/actions-comment-pull-request@v3
         with:
           pr-number: ${{ steps.load-pr-num.outputs.pr-number }}

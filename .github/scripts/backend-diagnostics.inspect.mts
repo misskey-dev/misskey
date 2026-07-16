@@ -99,7 +99,7 @@ function summarizeSamples(samples: MemoryReport['samples']) {
 	return summary;
 }
 
-async function measureRepo(label: string, repoDir: string, round: number, options: { heapSnapshotSavePath?: string } = {}) {
+async function genSample(label: string, repoDir: string, round: number, options: { heapSnapshotSavePath?: string } = {}) {
 	process.stderr.write(`[${label}] Resetting database and Redis\n`);
 	await resetState(repoDir);
 
@@ -188,7 +188,7 @@ async function main() {
 	for (let round = 1; round <= warmupRounds; round++) {
 		process.stderr.write(`Starting warmup round ${round}/${warmupRounds}\n`);
 		for (const label of heapSnapshotLabels) {
-			await measureRepo(label, reports[label].dir, -round);
+			await genSample(label, reports[label].dir, -round);
 		}
 	}
 
@@ -198,7 +198,7 @@ async function main() {
 
 		for (const label of order) {
 			const options = { heapSnapshotSavePath: heapSnapshotPath(label, round) };
-			const sample = await measureRepo(label, reports[label].dir, round, options);
+			const sample = await genSample(label, reports[label].dir, round, options);
 			reports[label].samples.push({
 				...sample,
 				round,

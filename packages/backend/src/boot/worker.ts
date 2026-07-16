@@ -7,9 +7,11 @@ import cluster from 'node:cluster';
 import Logger from '@/logger.js';
 import { envOption } from '@/env.js';
 import { loadConfig } from '@/config.js';
-import { initTelemetry } from '@/core/telemetry/telemetry-registry.js';
-import { installTelemetrySignalHandlers } from '@/core/telemetry/telemetry-shutdown.js';
+import type { Config } from '@/config.js';
+import { configureLogging, shutdownLogging } from '@/logging/logging-runtime.js';
+import { initTelemetry, shutdownTelemetry } from '@/core/telemetry/telemetry-registry.js';
 import { initExtraThreadPool, jobQueue, server } from './common.js';
+import { installShutdownSignalHandlers } from './shutdown-handler.js';
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta');
@@ -18,7 +20,15 @@ const bootLogger = logger.createSubLogger('boot', 'magenta');
  * Init worker process
  */
 export async function workerMain() {
-	const config = loadConfig();
+	let config: Config;
+	try {
+		config = loadConfig();
+		configureLogging(config.logging);
+	} catch (e) {
+		bootLogger.error(e instanceof Error ? e : new Error(String(e)), null, true);
+		process.exit(1);
+		return;
+	}
 
 	initExtraThreadPool(config);
 
@@ -28,7 +38,10 @@ export async function workerMain() {
 		bootLogger.error(e instanceof Error ? e : new Error(String(e)), null, true);
 		process.exit(1);
 	}
-	installTelemetrySignalHandlers();
+	installShutdownSignalHandlers({
+		shutdownTasks: [shutdownTelemetry, shutdownLogging],
+		onRegistered: message => bootLogger.info(message),
+	});
 
 	if (envOption.onlyServer) {
 		await server();

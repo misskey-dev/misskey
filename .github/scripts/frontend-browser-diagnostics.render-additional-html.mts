@@ -6,7 +6,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import * as util from './utility.mts';
-import type { BrowserMeasurementSample, BrowserMetricsReport } from './frontend-browser-report.mts';
+import type { BrowserMeasurementSample, BrowserMetricsReport } from './frontend-browser-diagnostics.render-md.mts';
 import type { NetworkRequest } from './chrome.mts';
 
 type DiffDirection = 'added' | 'removed';
@@ -434,15 +434,13 @@ function renderHtml(base: BrowserMetricsReport, head: BrowserMetricsReport) {
 
 async function main() {
 	const [baseFile, headFile, outputFile] = process.argv.slice(2);
-	if (baseFile == null || headFile == null || outputFile == null) {
-		throw new Error('Usage: node frontend-browser-detailed-html.mts <base-browser.json> <head-browser.json> <output.html>');
-	}
 
 	const base = JSON.parse(await readFile(baseFile, 'utf8')) as BrowserMetricsReport;
 	const head = JSON.parse(await readFile(headFile, 'utf8')) as BrowserMetricsReport;
 	await writeFile(outputFile, renderHtml(base, head));
 }
 
+// 直接実行されたときだけ呼ぶための判定(テストなどでこのファイル内の関数をimportするだけのとき用)
 if (process.argv[1] != null && import.meta.url === pathToFileURL(process.argv[1]).href) {
 	await main();
 }

@@ -4,9 +4,9 @@
  */
 
 import { describe, expect, test, vi } from 'vitest';
-import { LogManager } from '@/logging/LogManager.js';
 import type { LogBackend } from '@/logging/LogBackend.js';
 import type { LogRecordInput } from '@/logging/types.js';
+import { LogManager } from '@/logging/LogManager.js';
 
 /** テストで使う最小構成のログ入力を作成します。 */
 function createInput(level: LogRecordInput['level'] = 'info'): LogRecordInput {
@@ -28,6 +28,10 @@ function createManager(options: {
 	isPrimary?: boolean;
 	workerId?: number | null;
 	normalizationProfile?: 'standard' | 'detailed';
+	configuration?: {
+		level?: 'debug' | 'info' | 'warn' | 'error' | 'fatal' | 'off';
+		domains?: Record<string, 'debug' | 'info' | 'warn' | 'error' | 'fatal' | 'off'>;
+	};
 } = {}) {
 	const write = vi.fn<LogBackend['write']>();
 	const manager = new LogManager({ write }, {
@@ -43,6 +47,7 @@ function createManager(options: {
 	}, {
 		normalizationProfile: options.normalizationProfile,
 	});
+	if (options.configuration) manager.configure(options.configuration);
 
 	return { manager, write };
 }
@@ -115,6 +120,76 @@ describe('LogManager', () => {
 		expect(write).toHaveBeenCalledOnce();
 	});
 
+	test('applies the configured global level', () => {
+		const { manager, write } = createManager({ configuration: { level: 'warn' } });
+
+		manager.write(createInput('info'));
+		manager.write(createInput('warn'));
+
+		expect(write).toHaveBeenCalledOnce();
+		expect(write.mock.calls[0][0].level).toBe('warn');
+	});
+
+	test('uses the longest matching domain and supports child re-enablement', () => {
+		const { manager, write } = createManager({
+			configuration: {
+				level: 'info',
+				domains: {
+					queue: 'off',
+					'queue.deliver': 'debug',
+				},
+			},
+		});
+
+		manager.write({ ...createInput('info'), context: [{ name: 'queue' }, { name: 'inbox' }] });
+		manager.write({ ...createInput('debug'), context: [{ name: 'queue' }, { name: 'deliver' }] });
+		manager.write({ ...createInput('debug'), context: [{ name: 'queueing' }] });
+
+		expect(write).toHaveBeenCalledOnce();
+		expect(write.mock.calls[0][0].loggerName).toBe('queue.deliver');
+	});
+
+	test('lowers configured levels to debug in verbose mode', () => {
+		const { manager, write } = createManager({
+			nodeEnv: 'production',
+			verbose: true,
+			configuration: { level: 'info' },
+		});
+
+		manager.write(createInput('debug'));
+
+		expect(write).toHaveBeenCalledOnce();
+	});
+
+	test('keeps explicit off levels disabled in verbose mode', () => {
+		const { manager, write } = createManager({
+			verbose: true,
+			configuration: {
+				level: 'off',
+				domains: {
+					queue: 'off',
+					'queue.deliver': 'warn',
+				},
+			},
+		});
+
+		manager.write({ ...createInput('fatal'), context: [{ name: 'system' }] });
+		manager.write({ ...createInput('debug'), context: [{ name: 'queue' }] });
+		manager.write({ ...createInput('debug'), context: [{ name: 'queue' }, { name: 'deliver' }] });
+
+		expect(write).toHaveBeenCalledOnce();
+		expect(write.mock.calls[0][0].loggerName).toBe('queue.deliver');
+	});
+
+	test('rejects invalid logging configuration', () => {
+		const { manager } = createManager();
+
+		expect(() => manager.configure({ domains: null })).not.toThrow();
+		expect(() => manager.configure({ level: 'notice' as never })).toThrow('logging.level');
+		expect(() => manager.configure({ domains: { queue: 'notice' as never } })).toThrow('logging.domains.queue');
+		expect(() => manager.configure({ domains: { 'queue.': 'info' } })).toThrow('invalid domain name');
+	});
+
 	test('uses a replaced backend for subsequent records', () => {
 		const { manager, write } = createManager();
 		const replacementWrite = vi.fn<LogBackend['write']>();
@@ -124,6 +199,19 @@ describe('LogManager', () => {
 
 		expect(write).not.toHaveBeenCalled();
 		expect(replacementWrite).toHaveBeenCalledOnce();
+	});
+
+	test('flushes and closes the backend once during shutdown', async () => {
+		const write = vi.fn<LogBackend['write']>();
+		const flush = vi.fn<NonNullable<LogBackend['flush']>>().mockResolvedValue(undefined);
+		const close = vi.fn<NonNullable<LogBackend['close']>>().mockResolvedValue(undefined);
+		const manager = new LogManager({ write, flush, close });
+
+		await Promise.all([manager.shutdown(), manager.shutdown()]);
+
+		expect(flush).toHaveBeenCalledOnce();
+		expect(close).toHaveBeenCalledOnce();
+		expect(flush.mock.invocationCallOrder[0]).toBeLessThan(close.mock.invocationCallOrder[0]);
 	});
 
 	test('normalizes structured attributes and errors before writing', () => {

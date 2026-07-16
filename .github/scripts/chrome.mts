@@ -7,6 +7,7 @@ import { createRequire } from 'node:module';
 import { writeFile } from 'node:fs/promises';
 import type { Browser, BrowserContext, CDPSession, Page } from 'playwright';
 import type { HeapSnapshotData } from './heap-snapshot-util.mts';
+import * as util from './utility.mts';
 
 export type NetworkRequest = {
 	requestId: string;
@@ -89,11 +90,31 @@ export type TabMemory = {
 	totalBytes: number;
 };
 
+export type BrowserDiagnostics = {
+	pageErrorCount: number;
+	console: Record<'log' | 'warning' | 'error' | 'info', number>;
+};
+
+export function summarizeBrowserDiagnostics(samples: BrowserDiagnostics[]): BrowserDiagnostics {
+	const median = (select: (sample: BrowserDiagnostics) => number) => util.median(samples.map(select));
+
+	return {
+		pageErrorCount: median(sample => sample.pageErrorCount),
+		console: {
+			log: median(sample => sample.console.log),
+			warning: median(sample => sample.console.warning),
+			error: median(sample => sample.console.error),
+			info: median(sample => sample.console.info),
+		},
+	};
+}
+
 export type BrowserMeasurement = {
 	label: string;
 	timestamp: string;
 	url: string;
 	scenario: string;
+	diagnostics: BrowserDiagnostics;
 	durationMs: number;
 	network: NetworkSummary;
 	performance: {
@@ -149,6 +170,10 @@ type PlaywrightBrowserOptions = {
 export class HeadlessChromeController {
 	public networkRequests: NetworkRequest[] = [];
 	public webSocketConnections: WebSocketConnection[] = [];
+	private readonly diagnostics = {
+		pageErrorCount: 0,
+		console: {} as Record<string, number | undefined>,
+	};
 	private readonly browser: Browser;
 	private readonly context: BrowserContext;
 	public readonly page: Page;
@@ -168,6 +193,16 @@ export class HeadlessChromeController {
 		this.cdp = cdp;
 		this.page.setDefaultTimeout(options.scenarioTimeoutMs);
 		this.page.setDefaultNavigationTimeout(options.scenarioTimeoutMs);
+		this.page.on('pageerror', () => {
+			this.diagnostics.pageErrorCount++;
+		});
+		this.page.on('console', message => {
+			if (this.diagnostics.console[message.type()] == null) {
+				this.diagnostics.console[message.type()] = 1;
+			} else {
+				this.diagnostics.console[message.type()]++;
+			}
+		});
 	}
 
 	static async create(label: string, options: PlaywrightBrowserOptions): Promise<HeadlessChromeController> {
@@ -374,6 +409,18 @@ export class HeadlessChromeController {
 			this.page.evaluate(expression),
 			new Promise<never>((_, reject) => setTimeout(() => reject(new Error(`Playwright evaluate timed out after ${timeoutMs}ms`)), timeoutMs).unref()),
 		]) as T;
+	}
+
+	public collectDiagnostics(): BrowserDiagnostics {
+		return {
+			pageErrorCount: this.diagnostics.pageErrorCount,
+			console: {
+				log: this.diagnostics.console.log ?? 0,
+				warning: this.diagnostics.console.warning ?? 0,
+				error: this.diagnostics.console.error ?? 0,
+				info: this.diagnostics.console.info ?? 0,
+			},
+		};
 	}
 
 	public async collectPerformance(): Promise<BrowserMeasurement['performance']> {

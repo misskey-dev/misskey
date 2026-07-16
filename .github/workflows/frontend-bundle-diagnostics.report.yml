@@ -1,0 +1,179 @@
+name: frontend-bundle-report-comment
+
+on:
+  workflow_run:
+    workflows:
+      - frontend-bundle-report
+    types:
+      - completed
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+    paths:
+      - packages/frontend/**
+      - packages/frontend-shared/**
+      - packages/frontend-builder/**
+      - packages/i18n/**
+      - packages/icons-subsetter/**
+      - packages/misskey-js/**
+      - packages/misskey-reversi/**
+      - packages/misskey-bubble-game/**
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - .node-version
+      - .github/scripts/utility.mts
+      - .github/scripts/frontend-bundle-diagnostics.render-md.mts
+      - .github/workflows/frontend-bundle-diagnostics.inspect.yml
+      - .github/workflows/frontend-bundle-diagnostics.report.yml
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  comment:
+    name: Comment frontend bundle report
+    if: github.event_name == 'pull_request_target' || (github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    concurrency:
+      group: frontend-bundle-diagnostics-report-${{ github.event.pull_request.number || github.event.workflow_run.id }}
+      cancel-in-progress: true
+    steps:
+      - name: Find bundle report run
+        if: github.event_name == 'pull_request_target'
+        id: find-report-run
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const workflow_id = 'frontend-bundle-report.yml';
+            const artifactName = 'frontend-bundle-report';
+            const headSha = context.payload.pull_request.head.sha;
+            const prNumber = context.payload.pull_request.number;
+            const pollIntervalMs = 30_000;
+            const timeoutMs = 90 * 60_000;
+            const startedAt = Date.now();
+            const { owner, repo } = context.repo;
+
+            async function listReportWorkflowRuns() {
+              const runsForHead = await github.paginate(github.rest.actions.listWorkflowRuns, {
+                owner,
+                repo,
+                workflow_id,
+                event: 'pull_request',
+                head_sha: headSha,
+                per_page: 100,
+              });
+
+              if (runsForHead.length > 0) {
+                return runsForHead;
+              }
+
+              const recentRuns = await github.paginate(github.rest.actions.listWorkflowRuns, {
+                owner,
+                repo,
+                workflow_id,
+                event: 'pull_request',
+                per_page: 100,
+              });
+              return recentRuns.filter((run) =>
+                run.pull_requests?.some((pullRequest) => pullRequest.number === prNumber));
+            }
+
+            async function findReportRun() {
+              const runs = (await listReportWorkflowRuns())
+                .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+
+              for (const run of runs) {
+                if (run.status !== 'completed') continue;
+                if (run.conclusion !== 'success') {
+                  core.warning(`Frontend bundle report run ${run.id} completed with conclusion: ${run.conclusion}`);
+                  return { done: true, run: null };
+                }
+
+                const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+                  owner,
+                  repo,
+                  run_id: run.id,
+                  per_page: 100,
+                });
+                const report = artifacts.find((artifact) => artifact.name === artifactName && !artifact.expired);
+                if (report) return { done: true, run };
+
+                core.info(`Frontend bundle report run ${run.id} did not produce ${artifactName}.`);
+                return { done: true, run: null };
+              }
+
+              return { done: false, run: null };
+            }
+
+            while (Date.now() - startedAt < timeoutMs) {
+              const { done, run } = await findReportRun();
+              if (run) {
+                core.info(`Found frontend bundle report on workflow run ${run.id}.`);
+                core.setOutput('run-id', String(run.id));
+                return;
+              }
+              if (done) {
+                return;
+              }
+
+              core.info('Waiting for frontend bundle report artifact...');
+              await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+            }
+
+            core.warning(`Timed out waiting for ${artifactName} from ${workflow_id} for ${headSha}.`);
+
+      - name: Find bundle report artifact
+        if: github.event_name == 'workflow_run'
+        id: find-report-artifact
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const artifactName = 'frontend-bundle-report';
+            const { owner, repo } = context.repo;
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              owner,
+              repo,
+              run_id: context.payload.workflow_run.id,
+              per_page: 100,
+            });
+            const report = artifacts.find((artifact) => artifact.name === artifactName && !artifact.expired);
+            if (report) {
+              core.setOutput('exists', 'true');
+            } else {
+              core.info(`Workflow run ${context.payload.workflow_run.id} did not produce ${artifactName}.`);
+              core.setOutput('exists', 'false');
+            }
+
+      - name: Download bundle report from workflow_run
+        if: github.event_name == 'workflow_run' && steps.find-report-artifact.outputs.exists == 'true'
+        uses: actions/download-artifact@v8
+        with:
+          name: frontend-bundle-report
+          path: ${{ runner.temp }}/frontend-bundle-report
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Download bundle report from pull_request_target
+        if: github.event_name == 'pull_request_target' && steps.find-report-run.outputs.run-id != ''
+        uses: actions/download-artifact@v8
+        with:
+          name: frontend-bundle-report
+          path: ${{ runner.temp }}/frontend-bundle-report
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ steps.find-report-run.outputs.run-id }}
+
+      - name: Comment on pull request
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          pr-number: ${{ steps.load-pr-number.outputs.pr-number }}
+          comment-tag: frontend_bundle_diagnostics
+          file-path: ${{ runner.temp }}/frontend-bundle-report/frontend-bundle-diagnostics-report.md

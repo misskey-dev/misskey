@@ -7,16 +7,19 @@ import { copyFile, mkdir, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import * as util from './utility.mts';
 import * as heapSnapshotUtil from './heap-snapshot-util.mts';
-import { HeadlessChromeController, summarizeNetwork } from './chrome.mts';
+import { HeadlessChromeController, summarizeBrowserDiagnostics, summarizeNetwork } from './chrome.mts';
 import type { BrowserMeasurement, NetworkRequest, NetworkSummary } from './chrome.mts';
 import { closeUserSetupDialog, postNote, signupThroughUi, visitHome } from '../../packages/frontend/test/e2e/shared.ts';
 
-const [baseDirArg, headDirArg, baseOutputArg, headOutputArg, headHeapSnapshotOutputArg] = process.argv.slice(2);
+const [baseDirArg, headDirArg, baseOutputArg, headOutputArg, baseHeapSnapshotOutputArg, headHeapSnapshotOutputArg] = process.argv.slice(2);
 
 const baseUrl = process.env.FRONTEND_BROWSER_METRICS_URL ?? 'http://127.0.0.1:61812';
 const sampleCount = util.readIntegerEnv('FRONTEND_BROWSER_METRICS_SAMPLE_COUNT', 5, 1);
 const heapSnapshotBreakdownTopN = util.readIntegerEnv('FRONTEND_BROWSER_HEAP_SNAPSHOT_BREAKDOWN_TOP_N', heapSnapshotUtil.defaultHeapSnapshotBreakdownTopN, 1);
-const headHeapSnapshotWorkDir = resolve('frontend-browser-head-heap-snapshots');
+const heapSnapshotWorkDirs = {
+	base: resolve('frontend-browser-base-heap-snapshots'),
+	head: resolve('frontend-browser-head-heap-snapshots'),
+} as const;
 
 type BrowserMeasurementSample = BrowserMeasurement & {
 	round: number;
@@ -173,6 +176,7 @@ function summarizeSamples(label: 'base' | 'head', samples: BrowserMeasurementSam
 		timestamp: new Date().toISOString(),
 		url: baseUrl,
 		scenario: representative.scenario,
+		diagnostics: summarizeBrowserDiagnostics(samples.map(sample => sample.diagnostics)),
 		durationMs: finiteMedian(samples.map(sample => sample.durationMs)),
 		network: summarizeNetworkSamples(samples),
 		performance: summarizePerformanceSamples(samples),
@@ -210,6 +214,7 @@ async function measureSample(label: 'base' | 'head', round: number, heapSnapshot
 			timestamp: new Date().toISOString(),
 			url: baseUrl,
 			scenario: 'fresh browser signup, first timeline note, after the note becomes visible',
+			diagnostics: chrome.collectDiagnostics(),
 			durationMs,
 			network: summarizeNetwork(chrome.networkRequests, baseUrl, chrome.webSocketConnections),
 			networkRequests: chrome.networkRequests,
@@ -221,28 +226,26 @@ async function measureSample(label: 'base' | 'head', round: number, heapSnapshot
 	});
 }
 
-function headHeapSnapshotPath(round: number) {
-	return join(headHeapSnapshotWorkDir, `round-${round}.heapsnapshot`);
+function heapSnapshotPath(label: 'base' | 'head', round: number) {
+	return join(heapSnapshotWorkDirs[label], `round-${round}.heapsnapshot`);
 }
 
-async function saveRepresentativeHeadHeapSnapshot(report: BrowserMetricsReport, outputPath: string) {
+async function saveRepresentativeHeapSnapshot(label: 'base' | 'head', report: BrowserMetricsReport, outputPath: string) {
 	const representative = selectRepresentativeSample(report.samples, sample => sample.heapSnapshot.categories.total);
-	await copyFile(headHeapSnapshotPath(representative.round), outputPath);
-	process.stderr.write(`[head] Selected round ${representative.round} heap snapshot for artifact\n`);
-	await rm(headHeapSnapshotWorkDir, { recursive: true, force: true });
+	await copyFile(heapSnapshotPath(label, representative.round), outputPath);
+	process.stderr.write(`[${label}] Selected round ${representative.round} heap snapshot for artifact\n`);
+	await rm(heapSnapshotWorkDirs[label], { recursive: true, force: true });
 }
 
-async function measureRepo(label: 'base' | 'head', repoDir: string, outputPath: string, heapSnapshotSavePath?: string) {
+async function genReport(label: 'base' | 'head', repoDir: string, outputPath: string, heapSnapshotSavePath: string) {
 	let server: ReturnType<typeof util.startServer> | null = null;
 
 	try {
 		server = util.startServer(label, repoDir);
 		await util.waitForServer(baseUrl, server!);
 
-		if (label === 'head' && heapSnapshotSavePath != null) {
-			await rm(headHeapSnapshotWorkDir, { recursive: true, force: true });
-			await mkdir(headHeapSnapshotWorkDir, { recursive: true });
-		}
+		await rm(heapSnapshotWorkDirs[label], { recursive: true, force: true });
+		await mkdir(heapSnapshotWorkDirs[label], { recursive: true });
 
 		const samples: BrowserMeasurementSample[] = [];
 		for (let round = 1; round <= sampleCount; round++) {
@@ -250,7 +253,7 @@ async function measureRepo(label: 'base' | 'head', repoDir: string, outputPath: 
 			samples.push(await measureSample(
 				label,
 				round,
-				label === 'head' && heapSnapshotSavePath != null ? headHeapSnapshotPath(round) : undefined,
+				heapSnapshotPath(label, round),
 			));
 		}
 
@@ -258,8 +261,8 @@ async function measureRepo(label: 'base' | 'head', repoDir: string, outputPath: 
 		await writeFile(outputPath, JSON.stringify(report, null, '\t'));
 		process.stderr.write(`[${label}] Wrote browser metrics report to ${outputPath}\n`);
 
-		if (label === 'head' && heapSnapshotSavePath != null) {
-			await saveRepresentativeHeadHeapSnapshot(report, heapSnapshotSavePath);
+		if (heapSnapshotSavePath != null) {
+			await saveRepresentativeHeapSnapshot(label, report, heapSnapshotSavePath);
 		}
 	} finally {
 		if (server != null) await util.stopServer(server);
@@ -267,8 +270,8 @@ async function measureRepo(label: 'base' | 'head', repoDir: string, outputPath: 
 }
 
 async function main() {
-	await measureRepo('base', resolve(baseDirArg), resolve(baseOutputArg));
-	await measureRepo('head', resolve(headDirArg), resolve(headOutputArg), headHeapSnapshotOutputArg == null ? undefined : resolve(headHeapSnapshotOutputArg));
+	await genReport('base', resolve(baseDirArg), resolve(baseOutputArg), resolve(baseHeapSnapshotOutputArg));
+	await genReport('head', resolve(headDirArg), resolve(headOutputArg), resolve(headHeapSnapshotOutputArg));
 }
 
 await main();

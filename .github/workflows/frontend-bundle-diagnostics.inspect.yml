@@ -1,4 +1,4 @@
-name: frontend-bundle-report
+name: Frontend bundle diagnostics (inspect)
 
 on:
   pull_request:
@@ -21,16 +21,16 @@ on:
       - pnpm-workspace.yaml
       - .node-version
       - .github/scripts/utility.mts
-      - .github/scripts/frontend-js-size.mts
-      - .github/workflows/frontend-bundle-report.yml
-      - .github/workflows/frontend-bundle-report-comment.yml
+      - .github/scripts/frontend-bundle-diagnostics.render-md.mts
+      - .github/workflows/frontend-bundle-diagnostics.inspect.yml
+      - .github/workflows/frontend-bundle-diagnostics.report.yml
 
 permissions:
   contents: read
   pull-requests: read
 
 concurrency:
-  group: frontend-bundle-report-${{ github.event.pull_request.number }}
+  group: frontend-bundle-diagnostics-inspect-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
@@ -145,7 +145,7 @@ jobs:
           FRONTEND_BUNDLE_REPORT_ARTIFACT_URL: ${{ steps.upload-bundle-visualizer.outputs.artifact-url }}
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-bundle-report"
-          node after/.github/scripts/frontend-js-size.mts before after "$REPORT_DIR/before-stats.json" "$REPORT_DIR/after-stats.json" "$REPORT_DIR/frontend-js-size-report.md"
+          node after/.github/scripts/frontend-bundle-diagnostics.render-md.mts before after "$REPORT_DIR/before-stats.json" "$REPORT_DIR/after-stats.json" "$REPORT_DIR/frontend-bundle-diagnostics-report.md"
           printf '%s\n' "$PR_NUMBER" > "$REPORT_DIR/pr-number.txt"
           printf '%s\n' "$BASE_SHA" > "$REPORT_DIR/base-sha.txt"
           printf '%s\n' "$HEAD_SHA" > "$REPORT_DIR/head-sha.txt"
@@ -157,8 +157,8 @@ jobs:
           REPORT_DIR="$RUNNER_TEMP/frontend-bundle-report"
           test -s "$REPORT_DIR/before-stats.json"
           test -s "$REPORT_DIR/after-stats.json"
-          test -s "$REPORT_DIR/frontend-js-size-report.md"
-          cat "$REPORT_DIR/frontend-js-size-report.md" >> "$GITHUB_STEP_SUMMARY"
+          test -s "$REPORT_DIR/frontend-bundle-diagnostics-report.md"
+          cat "$REPORT_DIR/frontend-bundle-diagnostics-report.md" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload bundle report
         if: steps.check-base-visualizer.outputs.supported == 'true'
