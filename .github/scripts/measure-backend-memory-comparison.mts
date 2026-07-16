@@ -8,30 +8,19 @@ import { copyFile, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import * as util from './utility.mts';
 import * as heapSnapshotUtil from './heap-snapshot-util.mts';
-import type { MemoryReportRaw } from '../../packages/backend/scripts/measure-memory.mts';
+import type { MemorySample } from '../../packages/backend/scripts/measure-memory.mts';
 
 const phases = ['afterGc'] as const;
 
 export type MemoryReport = {
 	timestamp: string;
-	sampleCount: any;
+	sampleCount: number;
 	aggregation: string;
-	measurement: {
-		startupTimeoutMs: any;
-		memorySettleTimeMs: any;
-		ipcTimeoutMs: any;
-		requestCount: any;
-		heapSnapshot: {
-			enabled: any;
-			timeoutMs: any;
-			breakdownTopN: any;
-		};
-	};
 	summary: Record<typeof phases[number], {
 		memoryUsage: Record<string, number>;
 		heapSnapshot?: heapSnapshotUtil.HeapSnapshotData;
 	}>;
-	samples: (MemoryReportRaw['samples'][number] & {
+	samples: (MemorySample & {
 		round: number;
 	})[];
 };
@@ -41,6 +30,8 @@ const [baseDirArg, headDirArg, baseOutputArg, headOutputArg] = process.argv.slic
 const HEAP_SNAPSHOT_BREAKDOWN_TOP_N = util.readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_BREAKDOWN_TOP_N', heapSnapshotUtil.defaultHeapSnapshotBreakdownTopN, 1);
 const HEAD_HEAP_SNAPSHOT_WORK_DIR = resolve('head-heap-snapshots');
 const HEAD_HEAP_SNAPSHOT_OUTPUT_PATH = resolve('head-heap-snapshot.heapsnapshot');
+// Use the head checkout's measurement harness for both targets so only the built backend differs.
+const MEASURE_MEMORY_SCRIPT = resolve(import.meta.dirname, '../../packages/backend/scripts/measure-memory.mts');
 
 async function resetState(repoDir: string) {
 	const require = createRequire(join(repoDir, 'packages/backend/package.json'));
@@ -115,20 +106,17 @@ async function measureRepo(label: string, repoDir: string, round: number, option
 	process.stderr.write(`[${label}] Measuring memory\n`);
 	const measureEnv = {
 		...process.env,
-		MK_MEMORY_SAMPLE_COUNT: '1',
+		MK_MEMORY_BACKEND_DIR: resolve(repoDir, 'packages/backend'),
 	} as NodeJS.ProcessEnv;
 	if (round <= 0) measureEnv.MK_MEMORY_HEAP_SNAPSHOT = '0';
 	if (options.heapSnapshotSavePath != null) measureEnv.MK_MEMORY_HEAP_SNAPSHOT_SAVE_PATH = options.heapSnapshotSavePath;
 
-	const stdout = await util.run('node', ['packages/backend/scripts/measure-memory.mts'], {
+	const stdout = await util.run('node', [MEASURE_MEMORY_SCRIPT], {
 		cwd: repoDir,
 		env: measureEnv,
 	});
 
-	const report = JSON.parse(stdout) as MemoryReportRaw;
-	const sample = report.samples[0];
-
-	return sample;
+	return JSON.parse(stdout) as MemorySample;
 }
 
 function headHeapSnapshotPath(round: number) {

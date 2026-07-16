@@ -47,8 +47,7 @@ const memoryReportPhases = [
 const metrics = [
 	'HeapUsed',
 	'Pss',
-	'Private_Dirty',
-	'VmRSS',
+	'USS',
 	'External',
 ] as const;
 
@@ -57,16 +56,27 @@ function formatMemoryMb(valueKiB: number | null | undefined) {
 	return `${util.formatNumber(valueKiB / 1000)} MB`;
 }
 
-function getMemoryValue(report: MemoryReport, phase: typeof memoryReportPhases[number]['key'], metric: typeof metrics[number]) {
-	return report.summary[phase].memoryUsage[metric];
+function formatMetricName(metric: typeof metrics[number]) {
+	return metric === 'Pss' ? 'PSS' : metric;
 }
 
 function getMemoryValueFromSample(sample: MemoryReport['samples'][number], phase: typeof memoryReportPhases[number]['key'], metric: typeof metrics[number]) {
-	return sample.phases[phase].memoryUsage[metric];
+	const memoryUsage = sample.phases[phase].memoryUsage;
+	if (metric !== 'USS') return memoryUsage[metric];
+	return memoryUsage.Private_Clean + memoryUsage.Private_Dirty;
+}
+
+function getSampleValues(report: MemoryReport, phase: typeof memoryReportPhases[number]['key'], metric: typeof metrics[number]) {
+	return report.samples.map(sample => getMemoryValueFromSample(sample, phase, metric));
+}
+
+function getMemoryValue(report: MemoryReport, phase: typeof memoryReportPhases[number]['key'], metric: typeof metrics[number]) {
+	if (metric !== 'USS') return report.summary[phase].memoryUsage[metric];
+	return util.median(getSampleValues(report, phase, metric));
 }
 
 function getSampleSpread(report: MemoryReport, phase: typeof memoryReportPhases[number]['key'], metric: typeof metrics[number]) {
-	const values = report.samples.map(sample => getMemoryValueFromSample(sample, phase, metric));
+	const values = getSampleValues(report, phase, metric);
 	if (values.length < 2) return null;
 
 	const center = util.median(values);
@@ -91,9 +101,9 @@ function renderMainTableForPhase(base: MemoryReport, head: MemoryReport, phase: 
 		const headSpread = getSampleSpread(head, phase, metric);
 		const summary = util.pairedDeltaSummary(base.samples, head.samples, (sample) => getMemoryValueFromSample(sample, phase, metric));
 		const percent = summary.median * 100 / baseValue;
-		const deltaMedian = summary == null ? '-' : `${formatDeltaMemory(summary.median)}<br>${util.formatDeltaPercent(percent, 0.1).replaceAll('\\%', '\\\\%')}`;
+		const deltaMedian = `${formatDeltaMemory(summary.median)}<br>${util.formatDeltaPercent(percent, 0.1).replaceAll('\\%', '\\\\%')}`;
 
-		lines.push(`| **${metric}** | ${formatMemoryMb(baseValue)} <br> ± ${formatMemoryMb(baseSpread)} | ${formatMemoryMb(headValue)} <br> ± ${formatMemoryMb(headSpread)} | ${deltaMedian} | ${summary?.mad == null ? '-' : formatMemoryMb(summary.mad)} | ${summary == null ? '-' : formatDeltaMemory(summary.min)} | ${summary == null ? '-' : formatDeltaMemory(summary.max)} |`);
+		lines.push(`| **${formatMetricName(metric)}** | ${formatMemoryMb(baseValue)} <br> ± ${formatMemoryMb(baseSpread)} | ${formatMemoryMb(headValue)} <br> ± ${formatMemoryMb(headSpread)} | ${deltaMedian} | ${formatMemoryMb(summary.mad)} | ${formatDeltaMemory(summary.min)} | ${formatDeltaMemory(summary.max)} |`);
 	}
 
 	return lines.join('\n');
@@ -384,27 +394,15 @@ if (jsFootprintSection != null) {
 	lines.push('');
 }
 
-function getWarningMetric(base: MemoryReport, head: MemoryReport) {
-	for (const metric of ['Pss', 'Private_Dirty', 'VmRSS'] as const) {
-		if (getMemoryValue(base, 'afterGc', metric) != null && getMemoryValue(head, 'afterGc', metric) != null) {
-			return metric;
-		}
-	}
-	return null;
-}
-
 function getDiffPercent(base: MemoryReport, head: MemoryReport, phase: typeof memoryReportPhases[number]['key'], metric: typeof metrics[number]) {
 	const baseValue = getMemoryValue(base, phase, metric);
 	const headValue = getMemoryValue(head, phase, metric);
-	if (baseValue == null || headValue == null || baseValue <= 0) return null;
-
 	return ((headValue - baseValue) * 100) / baseValue;
 }
 
 function isBeyondSampleNoise(base: MemoryReport, head: MemoryReport, phase: typeof memoryReportPhases[number]['key'], metric: typeof metrics[number]) {
 	const baseValue = getMemoryValue(base, phase, metric);
 	const headValue = getMemoryValue(head, phase, metric);
-	if (baseValue == null || headValue == null) return false;
 
 	const delta = headValue - baseValue;
 	if (delta <= 0) return false;
@@ -417,10 +415,10 @@ function isBeyondSampleNoise(base: MemoryReport, head: MemoryReport, phase: type
 	return delta > combinedSpread * 3;
 }
 
-const warningMetric = getWarningMetric(base, head);
-const warningDiffPercent = warningMetric == null ? null : getDiffPercent(base, head, 'afterGc', warningMetric);
-if (warningMetric != null && warningDiffPercent != null && warningDiffPercent > 5 && isBeyondSampleNoise(base, head, 'afterGc', warningMetric)) {
-	lines.push(`⚠️ **Warning**: Memory usage (${warningMetric}) has increased by more than 5% and exceeds the observed sample noise. Please verify this is not an unintended change.`);
+const warningMetric = 'Pss';
+const warningDiffPercent = getDiffPercent(base, head, 'afterGc', warningMetric);
+if (warningDiffPercent > 5 && isBeyondSampleNoise(base, head, 'afterGc', warningMetric)) {
+	lines.push(`⚠️ **Warning**: Memory usage (${formatMetricName(warningMetric)}) has increased by more than 5% and exceeds the observed sample noise. Please verify this is not an unintended change.`);
 	lines.push('');
 }
 

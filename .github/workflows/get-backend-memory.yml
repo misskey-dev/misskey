@@ -12,6 +12,7 @@ on:
       - .github/scripts/utility.mts
       - .github/scripts/backend-memory-report.mts
       - .github/scripts/measure-backend-memory-comparison.mts
+      - .github/scripts/memory-stability-util*.mts
       - .github/scripts/backend-js-footprint.mjs
       - .github/scripts/backend-js-footprint-loader.mjs
       - .github/scripts/backend-js-footprint-require.cjs
