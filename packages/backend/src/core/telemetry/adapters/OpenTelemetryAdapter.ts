@@ -7,10 +7,15 @@ import * as os from 'node:os';
 import cluster from 'node:cluster';
 import { envOption } from '@/env.js';
 import { registerDiagLogger } from '@/core/telemetry/telemetry-diag.js';
+import { installHttpClientInstrumentation } from '@/core/telemetry/http-client-instrumentation.js';
+import { installDatabaseInstrumentation } from '@/core/telemetry/database-instrumentation.js';
+import { installRedisInstrumentation } from '@/core/telemetry/redis-instrumentation.js';
+import { executeSpan, getQueueTraceContextMode, injectActiveTraceContext, recordSpanError, startSpanWithQueueTraceContext } from '@/core/telemetry/queue-trace-context.js';
 import type { Span, SpanStatusCode, Tracer } from '@opentelemetry/api';
 import type { Resource, ResourceDetector } from '@opentelemetry/resources';
 import type { ParentBasedSampler, Sampler } from '@opentelemetry/sdk-trace-base';
 import type { OtelBackendRuntimeConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
+import type { QueueTraceContextCarrier, QueueTraceContextDeps } from '../queue-trace-context.js';
 
 const DEFAULT_SHUTDOWN_TIMEOUT = 5000;
 
@@ -22,6 +27,10 @@ type OpenTelemetryAdapterDeps = {
 	getActiveSpan: () => Span | undefined;
 	spanStatusCodeError: SpanStatusCode;
 	shutdownTimeout: number;
+	shutdownHttpClientInstrumentation?: () => void;
+	shutdownDatabaseInstrumentation?: () => void;
+	shutdownRedisInstrumentation?: () => void;
+	queueTraceContext?: QueueTraceContextDeps;
 };
 
 type CreateSamplerDeps = {
@@ -48,7 +57,7 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 
 	public static async create(config: OtelBackendRuntimeConfig): Promise<OpenTelemetryAdapter> {
 		const [
-			{ diag, DiagLogLevel, SpanStatusCode, trace },
+			{ context, diag, DiagLogLevel, propagation, ROOT_CONTEXT, SpanKind, SpanStatusCode, trace },
 			{ W3CTraceContextPropagator },
 			{ OTLPTraceExporter },
 			{ defaultResource, detectResources, envDetector, resourceFromAttributes },
@@ -100,12 +109,39 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 		});
 
 		// provider操作をdepsに閉じ込め、span wrapper本体をユニットテストしやすくする。
+		const tracer = provider.getTracer('misskey-backend');
+
 		return new OpenTelemetryAdapter({
-			tracer: provider.getTracer('misskey-backend'),
+			tracer,
 			provider,
 			getActiveSpan: () => trace.getActiveSpan(),
 			spanStatusCodeError: SpanStatusCode.ERROR,
 			shutdownTimeout: DEFAULT_SHUTDOWN_TIMEOUT,
+			shutdownHttpClientInstrumentation: installHttpClientInstrumentation({
+				tracer,
+				spanKindClient: SpanKind.CLIENT,
+				spanStatusCodeError: SpanStatusCode.ERROR,
+			}),
+			// pg のrequire hookとioredis diagnostics channelは、Nest moduleの動的importより前に有効化する。
+			shutdownDatabaseInstrumentation: await installDatabaseInstrumentation(provider, {
+				capturePgSpans: config.capturePgSpans === true,
+				capturePgStatement: config.capturePgStatement === true,
+				capturePgConnectionSpans: config.capturePgConnectionSpans === true,
+			}),
+			shutdownRedisInstrumentation: installRedisInstrumentation(tracer, SpanKind.CLIENT, SpanStatusCode.ERROR, {
+				captureConnectionSpans: config.captureRedisConnectionSpans === true,
+				captureCommandSpans: config.captureRedisCommandSpans === true,
+				requireParentSpan: config.captureRedisRootSpans !== true,
+			}),
+			queueTraceContext: {
+				tracer,
+				propagation,
+				trace,
+				getActiveContext: () => context.active(),
+				rootContext: ROOT_CONTEXT,
+				mode: getQueueTraceContextMode(config.jobTraceContextMode),
+				spanStatusCodeError: SpanStatusCode.ERROR,
+			},
 		});
 	}
 
@@ -115,48 +151,40 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 		// 通知を握り潰さないよう、報告専用の短命spanを作ってそこに記録する。
 		const span = this.deps.getActiveSpan();
 		if (span != null) {
-			recordError(span, new Error(message), this.deps.spanStatusCodeError);
+			recordSpanError(span, new Error(message), this.deps.spanStatusCodeError);
 			return;
 		}
 
 		this.deps.tracer.startActiveSpan('captureMessage', reportSpan => {
-			recordError(reportSpan, new Error(message), this.deps.spanStatusCodeError);
+			recordSpanError(reportSpan, new Error(message), this.deps.spanStatusCodeError);
 			reportSpan.end();
 		});
 	}
 
 	public startSpan<T>(name: string, fn: () => T): T {
 		// 既存のTelemetryAdapter契約に合わせ、同期/非同期どちらでも同じspan lifetimeを保証する。
-		return this.deps.tracer.startActiveSpan(name, span => {
-			try {
-				const result = fn();
-				if (isPromiseLike(result)) {
-					// Promiseの場合は完了/失敗までspanを開いたままにし、失敗時はerror statusへ変換する。
-					return result.then(
-						value => {
-							span.end();
-							return value;
-						},
-						error => {
-							recordError(span, error, this.deps.spanStatusCodeError);
-							span.end();
-							throw error;
-						},
-					) as T;
-				}
+		return this.deps.tracer.startActiveSpan(name, span => executeSpan(span, fn, this.deps.spanStatusCodeError));
+	}
 
-				// 同期成功はここでspanを閉じる。例外はcatch側で記録してから再throwする。
-				span.end();
-				return result;
-			} catch (error) {
-				recordError(span, error, this.deps.spanStatusCodeError);
-				span.end();
-				throw error;
-			}
-		});
+	public injectTraceContext(carrier: QueueTraceContextCarrier): void {
+		const queueTraceContext = this.deps.queueTraceContext;
+		// Queue context 用の依存は任意なので、無い場合はジョブデータを変更しない。
+		if (queueTraceContext == null) return;
+		injectActiveTraceContext(queueTraceContext, carrier);
+	}
+
+	public startSpanWithTraceContext<T>(name: string, jobData: object, fn: () => T): T {
+		const queueTraceContext = this.deps.queueTraceContext;
+		// Queue context 用の依存が無い場合は、従来の span 作成経路と同じ動作を保つ。
+		if (queueTraceContext == null) return this.startSpan(name, fn);
+
+		return startSpanWithQueueTraceContext(queueTraceContext, name, jobData, fn, () => this.startSpan(name, fn));
 	}
 
 	public async shutdown(): Promise<void> {
+		this.deps.shutdownHttpClientInstrumentation?.();
+		this.deps.shutdownDatabaseInstrumentation?.();
+		this.deps.shutdownRedisInstrumentation?.();
 		// BatchSpanProcessorのflushが詰まってもプロセス終了を妨げないよう、上限時間を設ける。
 		// タイムアウト側のtimerは、flushが先に終わった場合にイベントループを無駄に引き留めないようclearする。
 		let timer: NodeJS.Timeout | undefined;
@@ -199,20 +227,6 @@ export function createSampler(sampleRate: number, deps: CreateSamplerDeps): Pare
 	return new deps.ParentBasedSampler({
 		root: new deps.TraceIdRatioBasedSampler(sampleRate),
 	});
-}
-
-function recordError(span: Span, error: unknown, spanStatusCodeError: SpanStatusCode): void {
-	// throw値がError以外でもOTel exporterへ渡せる例外表現に正規化する。
-	const exception = error instanceof Error ? error : new Error(String(error));
-	span.recordException(exception);
-	span.setStatus({
-		code: spanStatusCodeError,
-		message: exception.message,
-	});
-}
-
-function isPromiseLike<T>(value: T): value is T & PromiseLike<Awaited<T>> {
-	return value != null && typeof (value as { then?: unknown }).then === 'function';
 }
 
 export function getMisskeyProcessRole(): string {

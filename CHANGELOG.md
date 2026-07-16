@@ -29,6 +29,7 @@
   - Fix: 幅が狭い画面で動画の再生が困難な問題を修正
   - Fix: 一部の画像のみセンシティブなとき、ビューワー内で画像を切り替えるとセンシティブな画像がそのまま表示される問題を修正
   - Fix: 一部の画像をビューワーで読み込んだ際に正しく表示されない問題を修正
+- Enhance: タイムラインの読み込みパフォーマンスを改善
 - Fix: 「画像を新しいタブで開く」が機能しなくなっていた問題を修正
 - Fix: デバイスタイプをスマートフォンに固定している状態で画面幅が広いとき、画面左上のアイコンが表示されない問題を修正
 - Fix: チャットでIMEの変換を確定するEnterでメッセージが送信されてしまうことがある問題を修正
@@ -37,12 +38,21 @@
 - Fix: 非ログイン時トップページをスクロール操作できないことがある問題を修正
 
 ### Server
-- Enhance: センシティブメディアの判定を外部サービス ([sensitive-detector](https://github.com/misskey-dev/sensitive-detector)) に分離し、`nsfwjs` / `@tensorflow/tfjs(-node)` の同梱と NSFW 判定モデルを廃止 (#16804)
-- Enhance: バックエンドの `otelForBackend` 設定で OpenTelemetry Traces を OTLP Collector に送信できるように
+- Feat: OpenTelemetryサポート
+  - 詳細な設定はconfigファイルを参照してください。
+  - Sentryとの併用も可能です。Sentry併用時は、PostgreSQL Query と Redis command は Sentry で計装されます。
+  - 以下の自動計装をサポートしています。（計装対象にする項目は設定可能）
+    - PostgreSQL query
+    - Redis command
+    - 全ての受信HTTPリクエスト
+    - 全ての送信HTTPリクエスト
+    - ジョブキュー（エンキュー元のトレースを含む）
 - Enhance: Sentry バックエンドの自動計装を `sentryForBackend.disabledIntegrations` で個別に無効化できるように
+- Enhance: センシティブメディアの判定を外部サービス ([sensitive-detector](https://github.com/misskey-dev/sensitive-detector)) に分離し、`nsfwjs` / `@tensorflow/tfjs(-node)` の同梱と NSFW 判定モデルを廃止 (#16804)
 - Enhance: Node.js 22.23.0以降、24.17.0以降、26.4.0以降をサポートするように
 - Enhance: Docker Image の Node.js を 26.4.0 に、Debian を trixie (v13) に更新
 - Enhance: URLプレビューの結果を内部でキャッシュするように
+- Enhance: API内部エラーのログに構造化属性と正規化したエラー情報を付与し、認証情報を自動的に秘匿するように（従来形式の表示は維持）
 - Fix: `/stats` API のレスポンス型が正しくない問題を修正
 - Fix: ハッシュタグに関連するデータを更新する際のエラーハンドリングを修正
 - Fix: Sentry 使用環境下にて、Misskey が発行した SQL クエリが span に含まれない問題を修正
