@@ -89,7 +89,7 @@ The report computes three independent values:
 2. **Generated chunk aggregate:** the sum of chunks without a comparison key.
 3. **Individual rows:** before/after comparisons for stable comparison keys only.
 
-The table starts with the existing `(total)` row. When either build contains generated chunks, it then includes one aggregate row such as:
+The table starts with the existing `(total)` row. Generated chunks are rendered at the bottom of the table as one aggregate row such as:
 
 ```text
 (other generated chunks)
@@ -98,6 +98,24 @@ The table starts with the existing `(total)` row. When either build contains gen
 This row compares aggregate sizes, not individual chunk identities. Generated chunks do not participate in the updated/added/removed row counts.
 
 The report includes a short note stating how many generated chunks were grouped on each side. This makes the scope of the aggregate explicit without listing noisy filenames.
+
+### Small-delta aggregation
+
+Stable comparison rows whose absolute byte delta is at most `5 B` are grouped into an `(other)` aggregate instead of being rendered individually. The threshold is inclusive: deltas from `-5 B` through `+5 B` are grouped, while a `6 B` absolute delta remains an individual row. Small additions and removals are handled by the same rule.
+
+The `(other)` row reports the sum of the grouped chunks' before sizes and the sum of their after sizes. It does not expose an arbitrary representative filename. In the full chunk report, only changed rows are candidates because unchanged rows are already omitted. In the startup report, all rows currently eligible for display are candidates, so unchanged rows are also grouped instead of being listed individually.
+
+The updated/added/removed counts are calculated before small-delta rows are grouped. Therefore the summary continues to include every stable changed chunk, including chunks represented only by `(other)`.
+
+Table rows are ordered as follows:
+
+1. `(total)`;
+2. individual stable comparison rows whose absolute delta is greater than `5 B`;
+3. one empty separator row, when at least one aggregate row follows;
+4. `(other generated chunks)`, when generated chunks exist; and
+5. `(other)`, when small-delta stable chunks exist.
+
+The existing 30-row limit applies after small-delta rows have been removed from the individual-row candidates.
 
 ### Startup chunk report
 
@@ -143,8 +161,12 @@ Add focused fixtures or pure-function tests covering:
 - duplicate stable keys produce a descriptive error instead of overwriting;
 - full totals equal the sum of all unique physical chunks;
 - startup totals include multiple same-name generated chunks exactly once each;
-- generated aggregate changes do not affect the updated/added/removed summary counts; and
-- differing before/after filenames are rendered without attributing both sizes to one file.
+- generated aggregate changes do not affect the updated/added/removed summary counts;
+- differing before/after filenames are rendered without attributing both sizes to one file;
+- deltas of exactly `5 B` are grouped into `(other)`, while `6 B` deltas remain individual;
+- small updated, added, and removed chunks remain included in the summary counts;
+- `(other generated chunks)` and `(other)` appear below individual rows after an empty separator row; and
+- the same small-delta and ordering rules apply to the full and startup tables.
 
 Validation should include the focused tests and repository lint. No CHANGELOG entry is required because this changes developer-facing CI reporting rather than Misskey user behavior.
 

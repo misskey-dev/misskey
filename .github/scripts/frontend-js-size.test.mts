@@ -86,15 +86,36 @@ test('groups generated chunks while preserving full and startup totals', async t
 	const report = await runReport(
 		t,
 		fixture('before', 'dist', { entry: 100, generatedA: 10, generatedB: 20, vue: 40, i18n: 50 }),
-		fixture('after', 'esm', { entry: 110, generatedA: 30, generatedB: 40, vue: 45, i18n: 50 }),
+		fixture('after', 'esm', { entry: 110, generatedA: 30, generatedB: 40, vue: 55, i18n: 50 }),
 	);
 
-	assert.match(report, /\| \(total\) \| 220 B \| 275 B \|/);
+	assert.match(report, /\| \(total\) \| 220 B \| 285 B \|/);
 	assert.equal(report.match(/\| \(other generated chunks\) \| 30 B \| 70 B \|/g)?.length, 2);
 	assert.equal(report.match(/_2 before \/ 2 after generated chunks are grouped\._/g)?.length, 2);
 	assert.doesNotMatch(report, /<summary>`(?:dist|esm)`<\/summary>/);
 	assert.match(report, /<summary>`src\/_boot_\.ts`<\/summary>/);
 	assert.match(report, /<summary>`vue`<\/summary>/);
+});
+
+test('groups small deltas at the bottom while preserving all change counts', async t => {
+	const before = fixture('before', 'dist', { entry: 100, generatedA: 10, generatedB: 20, vue: 40, i18n: 50 });
+	before.manifest._removedSmall = { file: 'scripts/removed-small-before.js', src: 'src/removed-small.ts' };
+	before.manifest['src/_boot_.ts'].imports?.push('_removedSmall');
+	before.sizes['scripts/removed-small-before.js'] = 5;
+
+	const after = fixture('after', 'esm', { entry: 106, generatedA: 30, generatedB: 40, vue: 45, i18n: 50 });
+	after.manifest._addedSmall = { file: 'scripts/added-small-after.js', src: 'src/added-small.ts' };
+	after.manifest['src/_boot_.ts'].imports?.push('_addedSmall');
+	after.sizes['scripts/added-small-after.js'] = 5;
+
+	const report = await runReport(t, before, after);
+
+	assert.match(report, /<summary>Chunk size diff \(2 updated, 1 added, 1 removed\)<\/summary>/);
+	assert.match(report, /<summary>Startup chunk size \(2 updated, 1 added, 1 removed\)<\/summary>/);
+	assert.equal(report.match(/<summary>`src\/_boot_\.ts`<\/summary>/g)?.length, 2);
+	assert.doesNotMatch(report, /<summary>`(?:vue|i18n|src\/added-small\.ts|src\/removed-small\.ts)`<\/summary>/);
+	assert.match(report, /\| \(total\) \| 225 B \| 276 B \|[^\n]*\n\| <details><summary>`src\/_boot_\.ts`<\/summary>[^\n]*\n\| \| \| \| \| \|\n\| \(other generated chunks\) \| 30 B \| 70 B \|[^\n]*\n\| \(other\) \| 45 B \| 50 B \|/);
+	assert.match(report, /\| \(total\) \| 225 B \| 276 B \|[^\n]*\n\| <details><summary>`src\/_boot_\.ts`<\/summary>[^\n]*\n\| \| \| \| \| \|\n\| \(other generated chunks\) \| 30 B \| 70 B \|[^\n]*\n\| \(other\) \| 95 B \| 100 B \|/);
 });
 
 test('fails instead of overwriting duplicate stable chunk keys', async t => {
@@ -115,7 +136,7 @@ test('shows both filenames for an updated stable chunk', async t => {
 	const report = await runReport(
 		t,
 		fixture('before', 'dist', { entry: 100, generatedA: 10, generatedB: 20, vue: 40, i18n: 50 }),
-		fixture('after', 'esm', { entry: 110, generatedA: 30, generatedB: 40, vue: 45, i18n: 50 }),
+		fixture('after', 'esm', { entry: 110, generatedA: 30, generatedB: 40, vue: 55, i18n: 50 }),
 	);
 
 	assert.match(report, /`ja-JP\/entry-before\.js → ja-JP\/entry-after\.js`/);

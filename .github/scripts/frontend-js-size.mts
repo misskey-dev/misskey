@@ -368,12 +368,16 @@ function getChunkComparisonRows(keys: string[], before: Record<string, FileEntry
 	});
 }
 
+type ChunkComparisonRow = ReturnType<typeof getChunkComparisonRows>[number];
+
 type ChunkAggregate = {
 	beforeSize: number;
 	afterSize: number;
 	beforeCount: number;
 	afterCount: number;
 };
+
+const smallDeltaThreshold = 5;
 
 function sumChunkSizes(chunks: FileEntry[]) {
 	return chunks.reduce((sum, chunk) => sum + chunk.size, 0);
@@ -387,6 +391,19 @@ function generatedAggregate(before: FileEntry[], after: FileEntry[]): ChunkAggre
 		afterSize: sumChunkSizes(afterGenerated),
 		beforeCount: beforeGenerated.length,
 		afterCount: afterGenerated.length,
+	};
+}
+
+function hasSmallDelta(row: ChunkComparisonRow) {
+	return Math.abs(row.afterSize - row.beforeSize) <= smallDeltaThreshold;
+}
+
+function comparisonRowsAggregate(rows: ChunkComparisonRow[]): ChunkAggregate {
+	return {
+		beforeSize: rows.reduce((sum, row) => sum + row.beforeSize, 0),
+		afterSize: rows.reduce((sum, row) => sum + row.afterSize, 0),
+		beforeCount: rows.filter(row => row.beforeFile != null).length,
+		afterCount: rows.filter(row => row.afterFile != null).length,
 	};
 }
 
@@ -410,14 +427,14 @@ function formatChunkChangeSummary(label: string, summary: ReturnType<typeof summ
 	return `${label} (${summary.updated} updated, ${summary.added} added, ${summary.removed} removed)`;
 }
 
-function compareChunkComparisonRows(a: ReturnType<typeof getChunkComparisonRows>[number], b: ReturnType<typeof getChunkComparisonRows>[number]) {
+function compareChunkComparisonRows(a: ChunkComparisonRow, b: ChunkComparisonRow) {
 	return Math.abs(b.afterSize - b.beforeSize) - Math.abs(a.afterSize - a.beforeSize)
 		|| (b.afterSize - b.beforeSize) - (a.afterSize - a.beforeSize)
 		|| b.sortSize - a.sortSize
 		|| a.name.localeCompare(b.name);
 }
 
-function chunkFileDisplay(row: ReturnType<typeof getChunkComparisonRows>[number]) {
+function chunkFileDisplay(row: ChunkComparisonRow) {
 	if (row.beforeFile == null) return row.afterFile ?? '';
 	if (row.afterFile == null || row.beforeFile === row.afterFile) return row.beforeFile;
 	return `${row.beforeFile} → ${row.afterFile}`;
@@ -427,23 +444,19 @@ function chunkMarkdownTable(
 	rows: ReturnType<typeof getChunkComparisonRows>,
 	total?: { beforeSize: number; afterSize: number },
 	generated?: ChunkAggregate,
+	other?: ChunkAggregate,
 ) {
-	if (rows.length === 0 && total == null && generated == null) return '_No data_';
+	const hasGenerated = generated != null && (generated.beforeCount > 0 || generated.afterCount > 0);
+	const hasOther = other != null && (other.beforeCount > 0 || other.afterCount > 0);
+	if (rows.length === 0 && total == null && !hasGenerated && !hasOther) return '_No data_';
 
 	const lines = [
 		'| Chunk | Before | After | Δ | Δ (%) |',
 		'| --- | ---: | ---: | ---: | ---: |',
 	];
-	let hasSummaryRow = false;
 	if (total != null) {
 		lines.push(`| (total) | ${util.formatBytes(total.beforeSize)} | ${util.formatBytes(total.afterSize)} | ${util.calcAndFormatDeltaBytes(total.beforeSize, total.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(total.beforeSize, total.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
-		hasSummaryRow = true;
 	}
-	if (generated != null && (generated.beforeCount > 0 || generated.afterCount > 0)) {
-		lines.push(`| (other generated chunks) | ${util.formatBytes(generated.beforeSize)} | ${util.formatBytes(generated.afterSize)} | ${util.calcAndFormatDeltaBytes(generated.beforeSize, generated.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(generated.beforeSize, generated.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
-		hasSummaryRow = true;
-	}
-	if (hasSummaryRow && rows.length > 0) lines.push('| | | | | |');
 
 	for (const row of rows) {
 		const chunkFile = chunkFileDisplay(row);
@@ -455,7 +468,14 @@ function chunkMarkdownTable(
 			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(row.beforeSize, row.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
 		}
 	}
-	if (generated != null && (generated.beforeCount > 0 || generated.afterCount > 0)) {
+	if (hasGenerated || hasOther) lines.push('| | | | | |');
+	if (hasGenerated) {
+		lines.push(`| (other generated chunks) | ${util.formatBytes(generated.beforeSize)} | ${util.formatBytes(generated.afterSize)} | ${util.calcAndFormatDeltaBytes(generated.beforeSize, generated.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(generated.beforeSize, generated.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
+	}
+	if (hasOther) {
+		lines.push(`| (other) | ${util.formatBytes(other.beforeSize)} | ${util.formatBytes(other.afterSize)} | ${util.calcAndFormatDeltaBytes(other.beforeSize, other.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(other.beforeSize, other.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
+	}
+	if (hasGenerated) {
 		lines.push('');
 		lines.push(`_${generated.beforeCount} before / ${generated.afterCount} after generated chunks are grouped._`);
 	}
@@ -475,7 +495,8 @@ function renderFrontendChunkReport(before: Awaited<ReturnType<typeof collectRepo
 		afterSize: sumChunkSizes(after.chunks),
 	};
 	const diffGenerated = generatedAggregate(before.chunks, after.chunks);
-	const diffRows = changedRows.sort(compareChunkComparisonRows).slice(0, 30); // TODO: 実際に30を超えて切り捨てられたrowがあった場合はその旨をmarkdown内に表示するようにする
+	const diffOther = comparisonRowsAggregate(changedRows.filter(hasSmallDelta));
+	const diffRows = changedRows.filter(row => !hasSmallDelta(row)).sort(compareChunkComparisonRows).slice(0, 30); // TODO: 実際に30を超えて切り捨てられたrowがあった場合はその旨をmarkdown内に表示するようにする
 
 	const beforeStartupFiles = new Set(before.startupFiles);
 	const afterStartupFiles = new Set(after.startupFiles);
@@ -485,8 +506,9 @@ function renderFrontendChunkReport(before: Awaited<ReturnType<typeof collectRepo
 	const afterStartupComparable = comparableMap(afterStartupChunks);
 	const startupKeys = [...new Set([...Object.keys(beforeStartupComparable), ...Object.keys(afterStartupComparable)])];
 	const startupComparisonRows = getChunkComparisonRows(startupKeys, beforeStartupComparable, afterStartupComparable);
-	const startupRows = startupComparisonRows.sort(compareChunkComparisonRows);
 	const startupSummary = summarizeChunkChanges(startupComparisonRows);
+	const startupOther = comparisonRowsAggregate(startupComparisonRows.filter(hasSmallDelta));
+	const startupRows = startupComparisonRows.filter(row => !hasSmallDelta(row)).sort(compareChunkComparisonRows);
 	const startupTotal = {
 		beforeSize: sumChunkSizes(beforeStartupChunks),
 		afterSize: sumChunkSizes(afterStartupChunks),
@@ -501,14 +523,14 @@ function renderFrontendChunkReport(before: Awaited<ReturnType<typeof collectRepo
 		'<details open>',
 		`<summary>${formatChunkChangeSummary('Chunk size diff', diffSummary)}</summary>`,
 		'',
-		chunkMarkdownTable(diffRows, diffTotal, diffGenerated),
+		chunkMarkdownTable(diffRows, diffTotal, diffGenerated, diffOther),
 		'',
 		'</details>',
 		'',
 		'<details>',
 		`<summary>${formatChunkChangeSummary('Startup chunk size', startupSummary)}</summary>`,
 		'',
-		chunkMarkdownTable(startupRows, startupTotal, startupGenerated),
+		chunkMarkdownTable(startupRows, startupTotal, startupGenerated, startupOther),
 		'',
 		`_Startup chunks are the Vite entry for \`src/_boot_.ts\` and its static imports._`,
 		'',
