@@ -95,9 +95,7 @@ The table starts with the existing `(total)` row. Generated chunks are rendered 
 (other generated chunks)
 ```
 
-This row compares aggregate sizes, not individual chunk identities. Generated chunks do not participate in the updated/added/removed row counts.
-
-The report includes a short note stating how many generated chunks were grouped on each side. This makes the scope of the aggregate explicit without listing noisy filenames.
+This row compares aggregate sizes, not individual chunk identities. Generated chunks do not participate in the updated/added/removed row counts. No additional generated-chunk count note is rendered below the table.
 
 ### Small-delta aggregation
 
@@ -110,10 +108,12 @@ The updated/added/removed counts are calculated before small-delta rows are grou
 Table rows are ordered as follows:
 
 1. `(total)`;
-2. individual stable comparison rows whose absolute delta is greater than `5 B`;
-3. one empty separator row, when at least one aggregate row follows;
+2. one empty separator row;
+3. individual stable comparison rows whose absolute delta is greater than `5 B`;
 4. `(other generated chunks)`, when generated chunks exist; and
 5. `(other)`, when small-delta stable chunks exist.
+
+There is no additional separator row before the aggregate rows. If no individual stable row exists, the empty row after `(total)` is therefore immediately followed by the aggregate rows.
 
 The existing 30-row limit applies after small-delta rows have been removed from the individual-row candidates.
 
@@ -165,7 +165,8 @@ Add focused fixtures or pure-function tests covering:
 - differing before/after filenames are rendered without attributing both sizes to one file;
 - deltas of exactly `5 B` are grouped into `(other)`, while `6 B` deltas remain individual;
 - small updated, added, and removed chunks remain included in the summary counts;
-- `(other generated chunks)` and `(other)` appear below individual rows after an empty separator row; and
+- an empty separator row appears immediately after `(total)`, with no additional separator before `(other generated chunks)` or `(other)`;
+- no generated-chunk grouping note is rendered below the table; and
 - the same small-delta and ordering rules apply to the full and startup tables.
 
 Validation should include the focused tests and repository lint. No CHANGELOG entry is required because this changes developer-facing CI reporting rather than Misskey user behavior.

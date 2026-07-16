@@ -456,6 +456,7 @@ function chunkMarkdownTable(
 	];
 	if (total != null) {
 		lines.push(`| (total) | ${util.formatBytes(total.beforeSize)} | ${util.formatBytes(total.afterSize)} | ${util.calcAndFormatDeltaBytes(total.beforeSize, total.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(total.beforeSize, total.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
+		lines.push('| | | | | |');
 	}
 
 	for (const row of rows) {
@@ -468,16 +469,11 @@ function chunkMarkdownTable(
 			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(row.beforeSize, row.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
 		}
 	}
-	if (hasGenerated || hasOther) lines.push('| | | | | |');
 	if (hasGenerated) {
 		lines.push(`| (other generated chunks) | ${util.formatBytes(generated.beforeSize)} | ${util.formatBytes(generated.afterSize)} | ${util.calcAndFormatDeltaBytes(generated.beforeSize, generated.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(generated.beforeSize, generated.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
 	}
 	if (hasOther) {
 		lines.push(`| (other) | ${util.formatBytes(other.beforeSize)} | ${util.formatBytes(other.afterSize)} | ${util.calcAndFormatDeltaBytes(other.beforeSize, other.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(other.beforeSize, other.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
-	}
-	if (hasGenerated) {
-		lines.push('');
-		lines.push(`_${generated.beforeCount} before / ${generated.afterCount} after generated chunks are grouped._`);
 	}
 	return lines.join('\n');
 }
