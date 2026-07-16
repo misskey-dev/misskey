@@ -57,14 +57,14 @@ type HeapSnapshotErrorMessage = {
 };
 type HeapSnapshotResponseMessage = HeapSnapshotMessage | HeapSnapshotErrorMessage;
 
-function parseMemoryFile<KS extends readonly string[]>(content: string, keys: KS, path: string, required: boolean): Record<KS[number], number> {
+function parseMemoryFile<KS extends readonly string[]>(content: string, keys: KS, path: string): Record<KS[number], number> {
 	const result = {} as Record<KS[number], number>;
 	for (const _key of keys) {
 		const key = _key as KS[number];
 		const match = content.match(new RegExp(`${key}:\\s+(\\d+)\\s+kB`));
 		if (match) {
 			result[key] = parseInt(match[1], 10);
-		} else if (required) {
+		} else {
 			throw new Error(`Failed to parse ${key} from ${path}`);
 		}
 	}
@@ -78,13 +78,13 @@ function bytesToKiB(value: number) {
 async function getMemoryUsage(pid: number) {
 	const path = `/proc/${pid}/status`;
 	const status = await fs.readFile(path, 'utf-8');
-	return parseMemoryFile(status, procStatusKeys, path, true);
+	return parseMemoryFile(status, procStatusKeys, path);
 }
 
 async function getSmapsRollupMemoryUsage(pid: number) {
 	const path = `/proc/${pid}/smaps_rollup`;
 	const smapsRollup = await fs.readFile(path, 'utf-8');
-	return parseMemoryFile(smapsRollup, smapsRollupKeys, path, false);
+	return parseMemoryFile(smapsRollup, smapsRollupKeys, path);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
