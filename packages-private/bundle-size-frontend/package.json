@@ -1,5 +1,5 @@
 {
-	"name": "bundle-size",
+	"name": "bundle-size-frontend",
 	"private": true,
 	"type": "module",
 	"scripts": {
