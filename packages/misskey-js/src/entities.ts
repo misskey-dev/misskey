@@ -56,10 +56,10 @@ export type ModerationLog = {
 	userId: User['id'];
 	user: UserDetailedNotMe;
 } & ({
-  [K in keyof ModerationLogPayloads]: {
-    type: K;
-    info: ModerationLogPayloads[K];
-  };
+	[K in keyof ModerationLogPayloads]: {
+		type: K;
+		info: ModerationLogPayloads[K];
+	};
 }[keyof ModerationLogPayloads]);
 
 export type ServerStats = {
