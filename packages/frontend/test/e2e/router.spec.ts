@@ -10,7 +10,7 @@ import {
 	// utils
 	resetState, registerUser,
 	// page utils
-	signIn,
+	signIn, closeUserSetupDialogIfVisible,
 } from './utils.js';
 
 test.describe('Router transition', () => {
@@ -26,10 +26,7 @@ test.describe('Router transition', () => {
 		// 表示に時間がかかるのでデフォルト秒数だとタイムアウトする。少し待つ
 		await page.waitForTimeout(1000);
 
-		if (await page.getByTestId('user-setup-dialog').isVisible()) {
-			await page.locator('[data-testid="user-setup-dialog"] [data-testid="modal-window-close"]').click();
-			await page.getByTestId('modal-dialog-ok').click();
-		}
+		await closeUserSetupDialogIfVisible(page);
 	});
 
 	test.describe('Redirect', () => {
