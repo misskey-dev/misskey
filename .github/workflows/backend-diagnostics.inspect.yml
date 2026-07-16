@@ -1,5 +1,5 @@
-# this name is used in report-backend-memory.yml so be careful when change name
-name: Get backend memory usage
+# this name is used in backend-diagnostics.comment.yml so be careful when change name
+name: Backend diagnostics (inspect)
 
 on:
   pull_request:
@@ -10,14 +10,11 @@ on:
       - packages/backend/**
       - packages/misskey-js/**
       - .github/scripts/utility.mts
-      - .github/scripts/backend-memory-report.mts
-      - .github/scripts/measure-backend-memory-comparison.mts
+      - .github/scripts/backend-diagnostics.render-md.mts
+      - .github/scripts/backend-diagnostics.inspect.mts
       - .github/scripts/memory-stability-util*.mts
-      - .github/scripts/backend-js-footprint.mjs
-      - .github/scripts/backend-js-footprint-loader.mjs
-      - .github/scripts/backend-js-footprint-require.cjs
-      - .github/workflows/get-backend-memory.yml
-      - .github/workflows/report-backend-memory.yml
+      - .github/workflows/backend-diagnostics.inspect.yml
+      - .github/workflows/backend-diagnostics.comment.yml
 
 jobs:
   get-memory-usage:
@@ -96,7 +93,7 @@ jobs:
         MK_MEMORY_COMPARE_ROUNDS: 10
         MK_MEMORY_COMPARE_WARMUP_ROUNDS: 1
         MK_MEMORY_HEAP_SNAPSHOT: 1
-      run: node head/.github/scripts/measure-backend-memory-comparison.mts base head memory-base.json memory-head.json
+      run: node head/.github/scripts/backend-diagnostics.inspect.mts base head memory-base.json memory-head.json
     - name: Upload base heap snapshot
       uses: actions/upload-artifact@v7
       with:
@@ -111,10 +108,6 @@ jobs:
         archive: false
         if-no-files-found: error
         retention-days: 7
-    - name: Measure backend loaded JS footprint
-      run: |
-        node head/.github/scripts/backend-js-footprint.mjs base js-footprint-base.json
-        node head/.github/scripts/backend-js-footprint.mjs head js-footprint-head.json
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
       with:
@@ -122,8 +115,6 @@ jobs:
         path: |
           memory-base.json
           memory-head.json
-          js-footprint-base.json
-          js-footprint-head.json
 
   save-pr-number:
     runs-on: ubuntu-latest

@@ -7,9 +7,9 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import * as util from './utility.mts';
 
-const marker = '<!-- misskey-frontend-js-size -->';
+const marker = '<!-- misskey-frontend-bundle-diagnostics -->';
 
-const locale = process.env.FRONTEND_JS_SIZE_LOCALE ?? 'ja-JP';
+const locale = 'ja-JP';
 
 //function sharePercent(value, total) {
 //	if (total === 0) return '0%';
