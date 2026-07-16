@@ -4,16 +4,15 @@
  */
 
 import { ChildProcess, fork } from 'node:child_process';
-import { setTimeout } from 'node:timers/promises';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
-//import * as http from 'node:http';
 import * as fs from 'node:fs/promises';
 import { analyzeHeapSnapshot, defaultHeapSnapshotBreakdownTopN, type HeapSnapshotData } from '../../../.github/scripts/heap-snapshot-util.mts';
+import { measureMemoryUntilStable } from '../../../.github/scripts/memory-stability-util.mts';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const backendDir = process.env.MK_MEMORY_BACKEND_DIR == null || process.env.MK_MEMORY_BACKEND_DIR === ''
+	? join(import.meta.dirname, '..')
+	: resolve(process.env.MK_MEMORY_BACKEND_DIR);
 
 function readIntegerEnv(name, defaultValue, min) {
 	const rawValue = process.env[name];
@@ -33,11 +32,8 @@ function readBooleanEnv(name, defaultValue) {
 	throw new Error(`${name} must be one of: 1, 0, true, false`);
 }
 
-const SAMPLE_COUNT = readIntegerEnv('MK_MEMORY_SAMPLE_COUNT', 3, 1); // Number of samples to measure
 const STARTUP_TIMEOUT = readIntegerEnv('MK_MEMORY_STARTUP_TIMEOUT_MS', 120000, 1); // Timeout for server startup
-const MEMORY_SETTLE_TIME = readIntegerEnv('MK_MEMORY_SETTLE_TIME_MS', 10000, 0); // Wait after startup for memory to settle
 const IPC_TIMEOUT = readIntegerEnv('MK_MEMORY_IPC_TIMEOUT_MS', 30000, 1); // Timeout for IPC responses
-const REQUEST_COUNT = readIntegerEnv('MK_MEMORY_REQUEST_COUNT', 10, 0);
 const HEAP_SNAPSHOT = readBooleanEnv('MK_MEMORY_HEAP_SNAPSHOT', false);
 const HEAP_SNAPSHOT_TIMEOUT = readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_TIMEOUT_MS', 120000, 1);
 const HEAP_SNAPSHOT_BREAKDOWN_TOP_N = readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_BREAKDOWN_TOP_N', defaultHeapSnapshotBreakdownTopN, 1);
@@ -187,17 +183,23 @@ async function getHeapSnapshotStatistics(serverProcess: ChildProcess): Promise<H
 
 async function getAllMemoryUsage(serverProcess: ChildProcess) {
 	const pid = serverProcess.pid!;
+	const stableSmapsRollup = await measureMemoryUntilStable(
+		() => getSmapsRollupMemoryUsage(pid),
+	);
+
 	return {
-		...await getMemoryUsage(pid),
-		...await getSmapsRollupMemoryUsage(pid),
-		...await getRuntimeMemoryUsage(serverProcess),
+		memoryUsage: {
+			...await getMemoryUsage(pid),
+			...stableSmapsRollup.memoryUsage,
+			...await getRuntimeMemoryUsage(serverProcess),
+		},
+		stability: stableSmapsRollup.stability,
 	};
 }
 
 async function measureMemory() {
-	// Start the Misskey backend server using fork to enable IPC
-	const serverProcess = fork(join(__dirname, '../built/entry.js'), [], {
-		cwd: join(__dirname, '..'),
+	const serverProcess = fork(join(backendDir, 'built/entry.js'), [], {
+		cwd: backendDir,
 		env: {
 			...process.env,
 			NODE_ENV: 'production',
@@ -209,16 +211,13 @@ async function measureMemory() {
 		execArgv: [...process.execArgv, '--expose-gc'],
 	});
 
-	let serverReady = false;
+	const serverReady = waitForMessage(
+		serverProcess,
+		(message): message is 'ok' => message === 'ok',
+		'server startup',
+		STARTUP_TIMEOUT,
+	);
 
-	// Listen for the 'ok' message from the server indicating it's ready
-	serverProcess.on('message', (message) => {
-		if (message === 'ok') {
-			serverReady = true;
-		}
-	});
-
-	// Handle server output
 	serverProcess.stdout?.on('data', (data) => {
 		process.stderr.write(`[server stdout] ${data}`);
 	});
@@ -227,7 +226,6 @@ async function measureMemory() {
 		process.stderr.write(`[server stderr] ${data}`);
 	});
 
-	// Handle server error
 	serverProcess.on('error', (err) => {
 		process.stderr.write(`[server error] ${err}\n`);
 	});
@@ -245,141 +243,55 @@ async function measureMemory() {
 		if (message === 'gc unavailable') {
 			throw new Error('GC is unavailable. Start the process with --expose-gc to enable this feature.');
 		}
-
-		await setTimeout(1000);
 	}
 
-	//function createRequest() {
-	//	return new Promise((resolve, reject) => {
-	//		const req = http.request({
-	//			host: 'localhost',
-	//			port: 61812,
-	//			path: '/api/meta',
-	//			method: 'POST',
-	//		}, (res) => {
-	//			res.on('data', () => { });
-	//			res.on('end', () => {
-	//				resolve();
-	//			});
-	//		});
-	//		req.on('error', (err) => {
-	//			reject(err);
-	//		});
-	//		req.end();
-	//	});
-	//}
-
-	// Wait for server to be ready or timeout
 	const startupStartTime = Date.now();
-	while (!serverReady) {
-		if (Date.now() - startupStartTime > STARTUP_TIMEOUT) {
-			serverProcess.kill('SIGTERM');
-			throw new Error('Server startup timeout');
-		}
-		await setTimeout(100);
+	try {
+		await serverReady;
+	} catch (err) {
+		serverProcess.kill('SIGTERM');
+		throw err;
 	}
 
 	const startupTime = Date.now() - startupStartTime;
 	process.stderr.write(`Server started in ${startupTime}ms\n`);
 
-	// Wait for memory to settle
-	await setTimeout(MEMORY_SETTLE_TIME);
-
-	//const beforeGc = await getAllMemoryUsage(serverProcess);
-
 	await triggerGc();
 
-	const memoryUsageAfterGC = await getAllMemoryUsage(serverProcess);
-
-	//// create some http requests to simulate load
-	//await Promise.all(
-	//	Array.from({ length: REQUEST_COUNT }).map(() => createRequest()),
-	//);
-
-	//await triggerGc();
-
-	//const afterRequest = await getAllMemoryUsage(serverProcess);
+	const afterGc = await getAllMemoryUsage(serverProcess);
+	process.stderr.write(`Memory ${afterGc.stability.converged ? 'stabilized' : 'did not stabilize'} after ${afterGc.stability.readingCount} readings over ${Math.round(afterGc.stability.elapsedMs)}ms\n`);
 
 	const heapSnapshotAfterGc = await getHeapSnapshotStatistics(serverProcess);
 
-	// Stop the server
-	serverProcess.kill('SIGTERM');
-
-	// Wait for process to exit
-	let exited = false;
-	await new Promise((resolve) => {
-		serverProcess.on('exit', () => {
-			exited = true;
-			resolve(undefined);
-		});
-		// Force kill after 10 seconds if not exited
-		setTimeout(10000).then(() => {
-			if (!exited) {
-				serverProcess.kill('SIGKILL');
-			}
-			resolve(undefined);
+	const serverExited = new Promise<void>(resolve => {
+		const timer = globalThis.setTimeout(() => {
+			serverProcess.kill('SIGKILL');
+			resolve();
+		}, 10000);
+		serverProcess.once('exit', () => {
+			globalThis.clearTimeout(timer);
+			resolve();
 		});
 	});
+	serverProcess.kill('SIGTERM');
+	await serverExited;
 
-	const result = {
+	return {
 		timestamp: new Date().toISOString(),
 		phases: {
-			//beforeGc,
 			afterGc: {
-				memoryUsage: memoryUsageAfterGC,
+				memoryUsage: afterGc.memoryUsage,
+				memoryStability: afterGc.stability,
 				heapSnapshot: heapSnapshotAfterGc,
 			},
-			//afterRequest,
 		},
 	};
-
-	return result;
 }
 
-export type MemoryReportRaw = {
-	timestamp: string;
-	sampleCount: number;
-	measurement: {
-		startupTimeoutMs: number;
-		memorySettleTimeMs: number;
-		ipcTimeoutMs: number;
-		requestCount: number;
-		heapSnapshot: {
-			enabled: boolean;
-			timeoutMs: number;
-			breakdownTopN: number;
-		};
-	};
-	samples: Awaited<ReturnType<typeof measureMemory>>[];
-};
+export type MemorySample = Awaited<ReturnType<typeof measureMemory>>;
 
 async function main() {
-	const results = [];
-	for (let i = 0; i < SAMPLE_COUNT; i++) {
-		process.stderr.write(`Starting sample ${i + 1}/${SAMPLE_COUNT}\n`);
-		const res = await measureMemory();
-		results.push(res);
-	}
-
-	const result: MemoryReportRaw = {
-		timestamp: new Date().toISOString(),
-		sampleCount: SAMPLE_COUNT,
-		measurement: {
-			startupTimeoutMs: STARTUP_TIMEOUT,
-			memorySettleTimeMs: MEMORY_SETTLE_TIME,
-			ipcTimeoutMs: IPC_TIMEOUT,
-			requestCount: REQUEST_COUNT,
-			heapSnapshot: {
-				enabled: HEAP_SNAPSHOT,
-				timeoutMs: HEAP_SNAPSHOT_TIMEOUT,
-				breakdownTopN: HEAP_SNAPSHOT_BREAKDOWN_TOP_N,
-			},
-		},
-		samples: results,
-	};
-
-	// Output as JSON to stdout
-	console.log(JSON.stringify(result, null, 2));
+	console.log(JSON.stringify(await measureMemory(), null, 2));
 }
 
 main().catch((err) => {

@@ -19,6 +19,7 @@ on:
       - packages/shared/eslint.config.js
       - scripts/check-dts*.mjs
       - .github/scripts/frontend-js-size*.mts
+      - .github/scripts/memory-stability-util*.mts
       - .github/scripts/utility.mts
       - .github/workflows/lint.yml
       - package.json
@@ -37,6 +38,7 @@ on:
       - packages/shared/eslint.config.js
       - scripts/check-dts*.mjs
       - .github/scripts/frontend-js-size*.mts
+      - .github/scripts/memory-stability-util*.mts
       - .github/scripts/utility.mts
       - .github/workflows/lint.yml
       - package.json
