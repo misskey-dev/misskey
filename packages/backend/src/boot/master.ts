@@ -11,11 +11,12 @@ import chalkTemplate from 'chalk-template';
 import Logger from '@/logger.js';
 import { loadConfig } from '@/config.js';
 import type { Config } from '@/config.js';
+import { configureLogging, shutdownLogging } from '@/logging/logging-runtime.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
 import { envOption } from '@/env.js';
-import { initTelemetry } from '@/core/telemetry/telemetry-registry.js';
-import { installTelemetrySignalHandlers } from '@/core/telemetry/telemetry-shutdown.js';
+import { initTelemetry, shutdownTelemetry } from '@/core/telemetry/telemetry-registry.js';
 import { initExtraThreadPool, jobQueue, server } from './common.js';
+import { installShutdownSignalHandlers } from './shutdown-handler.js';
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta');
@@ -74,7 +75,10 @@ export async function masterMain() {
 		bootLogger.error(e instanceof Error ? e : new Error(String(e)), null, true);
 		process.exit(1);
 	}
-	installTelemetrySignalHandlers();
+	installShutdownSignalHandlers({
+		shutdownTasks: [shutdownTelemetry, shutdownLogging],
+		onRegistered: message => bootLogger.info(message),
+	});
 
 	bootLogger.info(
 		`mode: [disableClustering: ${envOption.disableClustering}, onlyServer: ${envOption.onlyServer}, onlyQueue: ${envOption.onlyQueue}]`,
@@ -138,6 +142,7 @@ function loadConfigBoot(): Config {
 
 	try {
 		config = loadConfig();
+		configureLogging(config.logging);
 	} catch (exception) {
 		if (typeof exception === 'string') {
 			configLogger.error(exception);

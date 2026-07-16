@@ -8,6 +8,9 @@ import type { Keyword } from 'color-convert';
 /** ログの重要度を表します。 */
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'fatal';
 
+/** 設定で指定できるログの閾値です。`off`はログイベントのlevelには使用しません。 */
+export type LogLevelSetting = LogLevel | 'off';
+
 /** 正規化後にログ属性として扱えるJSONの値です。 */
 export type LogAttributeValue =
 	| string
