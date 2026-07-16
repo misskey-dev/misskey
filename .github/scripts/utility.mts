@@ -5,9 +5,13 @@
 
 // NOTE: このファイルはworkflow上でバックエンドからも参照されるため、side effectがあってはならない
 
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+
+export function sleep(ms: number) {
+	return new Promise(resolvePromise => setTimeout(resolvePromise, ms));
+}
 
 export function median(values: number[]) {
 	const sorted = values.toSorted((a, b) => a - b);
@@ -200,5 +204,93 @@ export function run(command: string, args: string[], options: { cwd?: string; en
 				reject(new Error(`${command} ${args.join(' ')} failed with exit code ${code}\n${stderr}`));
 			}
 		});
+	});
+}
+
+export function startServer(label: string, repoDir: string) {
+	process.stderr.write(`[${label}] Starting Misskey test server\n`);
+	const child = spawn(commandName('pnpm'), ['start:test'], {
+		cwd: repoDir,
+		env: process.env,
+		stdio: ['ignore', 'pipe', 'pipe'],
+		detached: process.platform !== 'win32',
+	});
+	child.stdout.on('data', data => process.stderr.write(`[server:${label}] ${data}`));
+	child.stderr.on('data', data => process.stderr.write(`[server:${label}] ${data}`));
+	return child;
+}
+
+export async function waitForServer(baseUrl: string, child: ChildProcessWithoutNullStreams) {
+	const startedAt = Date.now();
+	while (Date.now() - startedAt < 120_000) {
+		if (child.exitCode != null) throw new Error(`Misskey server exited early with code ${child.exitCode}`);
+		try {
+			const response = await fetch(`${baseUrl}/`, { redirect: 'manual' });
+			if (response.status < 500) return;
+		} catch {
+			// retry
+		}
+		await sleep(1_000);
+	}
+	throw new Error(`Timed out waiting for ${baseUrl}`);
+}
+
+export async function api(baseUrl: string, endpoint: string, body: Record<string, unknown>) {
+	const response = await fetch(`${baseUrl}/api/${endpoint}`, {
+		method: 'POST',
+		headers: {
+			'content-type': 'application/json',
+		},
+		body: JSON.stringify(body),
+	});
+	if (!response.ok) {
+		throw new Error(`/api/${endpoint} returned ${response.status}: ${await response.text()}`);
+	}
+	if (response.status === 204) return null;
+	return await response.json();
+}
+
+export async function prepareInstance(baseUrl: string) {
+	await api(baseUrl, 'reset-db', {});
+	await api(baseUrl, 'admin/accounts/create', {
+		username: 'admin',
+		password: 'admin1234',
+		setupPassword: 'example_password_please_change_this_or_you_will_get_hacked',
+	});
+}
+
+export async function stopServer(child: ChildProcessWithoutNullStreams) {
+	if (child.exitCode != null) return;
+
+	if (process.platform === 'win32') {
+		spawnSync('taskkill', ['/pid', String(child.pid), '/t', '/f'], { stdio: 'ignore' });
+	} else if (child.pid != null) {
+		try {
+			process.kill(-child.pid, 'SIGTERM');
+		} catch {
+			child.kill('SIGTERM');
+		}
+	}
+
+	await new Promise<void>(resolvePromise => {
+		if (child.exitCode != null) {
+			resolvePromise();
+			return;
+		}
+		child.once('exit', () => resolvePromise());
+		setTimeout(() => {
+			if (child.pid != null) {
+				try {
+					if (process.platform === 'win32') {
+						spawnSync('taskkill', ['/pid', String(child.pid), '/t', '/f'], { stdio: 'ignore' });
+					} else {
+						process.kill(-child.pid, 'SIGKILL');
+					}
+				} catch {
+					child.kill('SIGKILL');
+				}
+			}
+			resolvePromise();
+		}, 10_000).unref();
 	});
 }
