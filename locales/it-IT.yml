@@ -2161,6 +2161,7 @@ _sensitiveMediaDetection:
   timeout: "Timeout (ms)"
   timeoutDescription: "Tempo limite per ogni richiesta"
   maxImagesPerRequest: "Numero massimo di media per ogni richiesta"
+  maxImagesPerRequestDescription: "In caso ci siano più fotogrammi, come nei video, questo è il numero massimo di immagini da inviare in una richiesta. Oltre questo numero, il totale sarà diviso e inviato in sequenza.\nImpostare in modo che non superi il valore maxParts (default: 10) in Sensitive-Detector. Se viene superato, il media sarà considerato non esplicito."
 _emailUnavailable:
   used: "Email già in uso"
   format: "Formato email non valido"
@@ -2473,6 +2474,7 @@ _permissions:
   "read:admin:show-moderation-log": "Vedere lo storico di moderazione"
   "read:admin:show-user": "Vedere le informazioni private dei profili"
   "write:admin:suspend-user": "Sospendere i profili"
+  "write:admin:unset-mfa": "Può rimuovere l'autenticazione a due fattori (2FA/MFA)"
   "write:admin:unset-user-avatar": "Rimuovere la foto profilo dai profili"
   "write:admin:unset-user-banner": "Rimuovere l'immagine testata dai profili"
   "write:admin:unsuspend-user": "Rimuovere la sospensione ai profili"
@@ -2988,6 +2990,7 @@ _moderationLogTypes:
   createAvatarDecoration: "Crea una decorazione della foto profilo"
   updateAvatarDecoration: "Modifica una decorazione della foto profilo"
   deleteAvatarDecoration: "Elimina una decorazione della foto profilo"
+  unsetMfa: "Rimossa l'autenticazione a due fattori (2FA7MFA)"
   unsetUserAvatar: "Toglie una foto profilo"
   unsetUserBanner: "Toglie una immagine di intestazione profilo"
   createSystemWebhook: "Aggiunge un System Webhook"
