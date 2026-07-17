@@ -2161,7 +2161,7 @@ _sensitiveMediaDetection:
   timeout: "超时（毫秒）"
   timeoutDescription: "此为单次检测请求的超时时长。"
   maxImagesPerRequest: "单次检测请求最大图像数量"
-  maxImagesPerRequestDescription: "此为在检测动画等多帧图像时，单次请求中可发送的图像数量上限。超出此值时动画将被拆分并按序发送。请勿将此值设为超出 sensitive-detector 侧的 maxParts 的值（默认：10），否则对应的 trunk 将全被视为非敏感媒体。"
+  maxImagesPerRequestDescription: "此为在检测动画等多帧图像时，单次请求中可发送的图像数量上限。超出此值时动画将被拆分并按序发送。请勿将此值设为超出 sensitive-detector 侧的 maxParts 的值（默认：10），否则对应的分块将全被视为非敏感媒体。"
 _emailUnavailable:
   used: "已经被使用过"
   format: "无效的格式"
