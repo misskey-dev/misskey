@@ -1419,6 +1419,8 @@ addToEmojiPalette: "Aggiungi alla tavolozza emoji"
 emojiPaletteAlreadyAddedConfirm: "Questa emoji è già inclusa in nella tavolozza. Vuoi davvero aggiungerla?"
 append: "Accodare"
 prepend: "Anteporre"
+urlPreviewSensitiveList: "URL da impedire alla vista delle anteprime"
+urlPreviewSensitiveListDescription: "Separando con uno spazio si indica E, separando con una linea si indica O. Circondando con barre / si indica una Espressione Regolare.\nLe URL che coincidono con le indicazioni non verranno visualizzate."
 _imageEditing:
   _vars:
     caption: "Didascalia dell'immagine"
@@ -2151,6 +2153,14 @@ _sensitiveMediaDetection:
   setSensitiveFlagAutomaticallyDescription: "Anche se questa impostazione è disattivata, il risultato della decisione viene conservato internamente."
   analyzeVideos: "Abilitazione dell'analisi video."
   analyzeVideosDescription: "Assicuratevi che vengano analizzati anche i video oltre alle immagini fisse. Il carico del server aumenterà leggermente."
+  externalServiceInfo: "Abbiamo spostato esternamente il riconoscimento di media espliciti (sensitive-detector). Per usufruirne devi impostare un servizio separato e indicare di seguito la destinazione. Se non è impostata, non viene emesso alcun giudizio (contenuto NON esplicito)."
+  apiUrl: "URL di connessione a Sensitive-Detector"
+  apiUrlDescription: "L'URL di base del servizio (ad esempio http://localhost:3009). Collegandosi a una rete privata, autorizzare la rete nel parametro allowedPrivateNetworks nel file di configurazione.\nCollegandosi con un proxy, è anche necessario impostare proxyBypassHosts. Nel caso il campo sia vuoto, non vengono emessi giudizi di sensibilità."
+  apiKey: "Chiave API"
+  apiKeyDescription: "Indicare il token di autenticazione (Bearer token), soltanto se occorre, altrimenti lasciare vuoto."
+  timeout: "Timeout (ms)"
+  timeoutDescription: "Tempo limite per ogni richiesta"
+  maxImagesPerRequest: "Numero massimo di media per ogni richiesta"
 _emailUnavailable:
   used: "Email già in uso"
   format: "Formato email non valido"
