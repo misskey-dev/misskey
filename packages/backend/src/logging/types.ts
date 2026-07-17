@@ -11,6 +11,9 @@ export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'fatal';
 /** 設定で指定できるログの閾値です。`off`はログイベントのlevelには使用しません。 */
 export type LogLevelSetting = LogLevel | 'off';
 
+/** コンソールへ出すログ形式です。未指定時は見やすい形式を使用します。 */
+export type LogFormat = 'pretty' | 'json';
+
 /** 正規化後にログ属性として扱えるJSONの値です。 */
 export type LogAttributeValue =
 	| string
