@@ -1,4 +1,4 @@
-name: Backend diagnostics (report)
+name: Backend diagnostics (comment)
 
 on:
   workflow_run:
@@ -35,7 +35,7 @@ jobs:
         run: echo "pr-number=$(cat artifacts/pr_number)" >> "$GITHUB_OUTPUT"
       - name: Find heap snapshot artifacts
         id: find-heap-snapshot-artifacts
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const { owner, repo } = context.repo;

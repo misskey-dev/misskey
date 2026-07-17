@@ -1,4 +1,4 @@
-# this name is used in backend-diagnostics.report.yml so be careful when change name
+# this name is used in backend-diagnostics.comment.yml so be careful when change name
 name: Backend diagnostics (inspect)
 
 on:
@@ -14,7 +14,7 @@ on:
       - .github/scripts/backend-diagnostics.inspect.mts
       - .github/scripts/memory-stability-util*.mts
       - .github/workflows/backend-diagnostics.inspect.yml
-      - .github/workflows/backend-diagnostics.report.yml
+      - .github/workflows/backend-diagnostics.comment.yml
 
 jobs:
   get-memory-usage:

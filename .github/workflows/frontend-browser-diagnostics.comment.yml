@@ -1,4 +1,4 @@
-name: Frontend browser diagnostics (report)
+name: Frontend browser diagnostics (comment)
 
 on:
   workflow_run:
@@ -40,5 +40,5 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           pr-number: ${{ steps.load-pr-number.outputs.pr-number }}
-          comment-tag: frontend_browser_diagnostics
+          comment-tag: frontend-browser-diagnostics
           file-path: ${{ runner.temp }}/frontend-browser-diagnostics/frontend-browser-diagnostics.md

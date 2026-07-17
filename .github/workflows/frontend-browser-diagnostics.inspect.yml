@@ -29,7 +29,7 @@ on:
       - .github/scripts/frontend-browser-diagnostics.render-md.mts
       - .github/scripts/frontend-browser-diagnostics.inspect.mts
       - .github/workflows/frontend-browser-diagnostics.inspect.yml
-      - .github/workflows/frontend-browser-diagnostics.report.yml
+      - .github/workflows/frontend-browser-diagnostics.comment.yml
 
 permissions:
   contents: read
@@ -60,7 +60,7 @@ jobs:
 
     steps:
       - name: Checkout base
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6.0.3
         with:
           persist-credentials: false
           repository: ${{ github.event.pull_request.base.repo.full_name }}
@@ -69,7 +69,7 @@ jobs:
           submodules: true
 
       - name: Checkout pull request
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6.0.3
         with:
           persist-credentials: false
           repository: ${{ github.event.pull_request.head.repo.full_name }}
@@ -78,7 +78,7 @@ jobs:
           submodules: true
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6.0.3
+        uses: pnpm/action-setup@v6.0.9
         with:
           package_json_file: after/package.json
 
@@ -127,7 +127,7 @@ jobs:
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-browser-diagnostics"
           mkdir -p "$REPORT_DIR"
-          node after/.github/scripts/frontend-browser-diagnostics.inspect.mts before after "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" "$REPORT_DIR/base-heap-snapshot.heapsnapshot" "$REPORT_DIR/head-heap-snapshot.heapsnapshot"
+          node after/.github/scripts/frontend-browser-diagnostics.inspect.mts before after "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json"
 
       - name: Upload browser base heap snapshot
         id: upload-browser-base-heap-snapshot
