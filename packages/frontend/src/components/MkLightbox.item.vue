@@ -177,7 +177,7 @@ export function calculateSourceTransform({
 </script>
 
 <script lang="ts" setup>
-import { computed, nextTick, ref, useTemplateRef, markRaw, watch, provide } from 'vue';
+import { computed, nextTick, ref, useTemplateRef, markRaw, watch, provide, onBeforeUnmount } from 'vue';
 import MkVideoControl from '@/components/MkVideoControl.vue';
 import MkBlurhash from '@/components/MkBlurhash.vue';
 import XFileInfo from './MkLightbox.item.fileinfo.vue';
@@ -891,6 +891,12 @@ function onDeactive() {
 		videoEl.value.pause();
 	}
 }
+
+onBeforeUnmount(() => {
+	if (rafHandle) {
+		window.cancelAnimationFrame(rafHandle);
+	}
+});
 
 defineExpose({
 	onActive,
