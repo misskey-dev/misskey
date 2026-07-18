@@ -204,7 +204,7 @@ export function renderFrontendChunkReport(before: CollectedReport, after: Collec
 		'',
 		chunkMarkdownTable(startupRows, startupTotal, startupGenerated, startupOther),
 		'',
-		`_Startup chunks are the Vite entry for \`src/_boot_.ts\` and its static imports._`,
+		'_Startup chunks are the Vite entry for \`src/_boot_.ts\` and its static imports._',
 		'',
 		'</details>',
 		'',

@@ -8,7 +8,6 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { readBooleanEnv, readIntegerEnv } from 'diagnostics-shared';
 import { analyzeHeapSnapshot, defaultHeapSnapshotBreakdownTopN, type HeapSnapshotData } from 'diagnostics-shared/heap-snapshot';
-import type { MemorySample } from '../types';
 import { getMemoryUsage, getSmapsRollupMemoryUsage } from './proc';
 import {
 	forkBackendServer,
@@ -19,6 +18,7 @@ import {
 	waitForServerReady,
 } from './server';
 import { measureMemoryUntilStable } from './stability';
+import type { MemorySample } from '../types';
 
 export type MeasureBackendMemoryOptions = {
 	/** heap snapshotを取得するか (既定: MK_MEMORY_HEAP_SNAPSHOT) */

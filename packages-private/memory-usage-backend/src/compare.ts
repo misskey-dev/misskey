@@ -94,12 +94,12 @@ function heapSnapshotPath(label: HeapSnapshotLabel, round: number) {
  * 中央値に最も近いラウンドを代表として選ぶ。外れ値のスナップショットを成果物にしないため。
  */
 function selectRepresentativeHeapSnapshotRound(samples: MemoryReport['samples'], summary: MemoryReport['summary']) {
-	const medianTotal = summary.afterGc.heapSnapshot?.categories?.total;
+	const medianTotal = summary.afterGc.heapSnapshot?.categories.total;
 	if (medianTotal == null || !Number.isFinite(medianTotal)) return null;
 
 	let selected: { round: number; distance: number } | null = null;
 	for (const sample of samples) {
-		const total = sample.phases.afterGc.heapSnapshot?.categories?.total;
+		const total = sample.phases.afterGc.heapSnapshot?.categories.total;
 		if (total == null || !Number.isFinite(total)) continue;
 
 		const distance = Math.abs(total - medianTotal);

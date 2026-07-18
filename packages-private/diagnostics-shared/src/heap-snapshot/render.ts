@@ -95,12 +95,14 @@ function formatSankeyPercentValue(value: number) {
  */
 export function renderHeapSnapshotSankey(report: HeapSnapshotReport, title: string) {
 	const total = categoryValue(report, 'total');
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (total == null || total <= 0) return null;
 
 	const categories = heapSnapshotCategories
 		.filter(category => category !== 'total')
 		.map(category => {
 			const value = categoryValue(report, category);
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			if (value == null || value <= 0) return null;
 
 			const breakdownEntries = Object.entries(report.summary.breakdowns?.[category] ?? {})

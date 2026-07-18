@@ -8,6 +8,7 @@ import { compareBackendMemory } from './compare';
 
 const [baseDirArg, headDirArg, baseOutputArg, headOutputArg] = process.argv.slice(2);
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 if (baseDirArg == null || headDirArg == null || baseOutputArg == null || headOutputArg == null) {
 	console.error('Usage: inspect <baseDir> <headDir> <baseOutput> <headOutput>');
 	process.exit(1);

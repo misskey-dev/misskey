@@ -65,7 +65,9 @@ export function collectStartupManifestKeys(manifest: Manifest) {
 		if (keys.has(key)) return;
 		const chunk = manifest[key];
 		const importContext = importedBy == null ? '' : ` imported by "${importedBy}"`;
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (chunk == null) throw new Error(`Startup manifest key "${key}"${importContext} is missing.`);
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (chunk.file == null || chunk.file.length === 0) throw new Error(`Startup manifest key "${key}"${importContext} has no output file.`);
 		if (!chunk.file.endsWith('.js')) throw new Error(`Startup manifest key "${key}"${importContext} resolves to non-JavaScript output "${chunk.file}".`);
 		keys.add(key);
@@ -108,7 +110,7 @@ export async function collectReport(repoDir: string): Promise<CollectedReport> {
 	const chunksByManifestKey = new Map<string, FileEntry>();
 
 	for (const [manifestKey, chunk] of Object.entries(manifest)) {
-		if (!chunk.file?.endsWith('.js')) continue;
+		if (!chunk.file.endsWith('.js')) continue;
 		const builtFile = await resolveBuiltFile(outDir, chunk.file);
 		const comparisonKey = stableChunkKey(chunk);
 		let entry = chunksByFile.get(builtFile.relativePath);

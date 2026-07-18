@@ -12,6 +12,7 @@ import type { VisualizerReport } from './visualizer';
 
 async function main() {
 	const [beforeDir, afterDir, beforeStatsFile, afterStatsFile, outFile] = process.argv.slice(2).map(arg => path.resolve(arg));
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (outFile == null) throw new Error('Usage: render-md <beforeDir> <afterDir> <beforeStatsJson> <afterStatsJson> <outMd>');
 
 	// 未設定のまま `undefined` という文字列をコメントに埋め込まないよう、ここで落とす
