@@ -9,28 +9,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="[$style.label, $style.item]">
 			{{ i18n.ts.visibility }}
 		</div>
-		<button key="public" :disabled="isSilenced || isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'public' && !currentChannel }]" data-index="1" @click="choose('public')">
+		<button key="public" :disabled="isSilenced || disableChangingVisibility" class="_button" :class="[$style.item, { [$style.active]: v === 'public' && !currentChannel }]" data-index="1" @click="choose('public')">
 			<div :class="$style.icon"><i class="ti ti-world"></i></div>
 			<div :class="$style.body">
 				<div :class="$style.itemTitle">{{ i18n.ts._visibility.public }}</div>
 				<div :class="$style.itemDescription">{{ i18n.ts._visibility.publicDescription }}</div>
 			</div>
 		</button>
-		<button key="home" :disabled="isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'home' && !currentChannel }]" data-index="2" @click="choose('home')">
+		<button key="home" :disabled="disableChangingVisibility" class="_button" :class="[$style.item, { [$style.active]: v === 'home' && !currentChannel }]" data-index="2" @click="choose('home')">
 			<div :class="$style.icon"><i class="ti ti-home"></i></div>
 			<div :class="$style.body">
 				<div :class="$style.itemTitle">{{ i18n.ts._visibility.home }}</div>
 				<div :class="$style.itemDescription">{{ i18n.ts._visibility.homeDescription }}</div>
 			</div>
 		</button>
-		<button key="followers" :disabled="isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'followers' && !currentChannel }]" data-index="3" @click="choose('followers')">
+		<button key="followers" :disabled="disableChangingVisibility" class="_button" :class="[$style.item, { [$style.active]: v === 'followers' && !currentChannel }]" data-index="3" @click="choose('followers')">
 			<div :class="$style.icon"><i class="ti ti-lock"></i></div>
 			<div :class="$style.body">
 				<div :class="$style.itemTitle">{{ i18n.ts._visibility.followers }}</div>
 				<div :class="$style.itemDescription">{{ i18n.ts._visibility.followersDescription }}</div>
 			</div>
 		</button>
-		<button key="specified" class="_button" :class="[$style.item, { [$style.active]: v === 'specified' && !currentChannel }]" data-index="4" @click="choose('specified')">
+		<button key="specified" :disabled="disableChangingVisibility" class="_button" :class="[$style.item, { [$style.active]: v === 'specified' && !currentChannel }]" data-index="4" @click="choose('specified')">
 			<div :class="$style.icon"><i class="ti ti-mail"></i></div>
 			<div :class="$style.body">
 				<div :class="$style.itemTitle">{{ i18n.ts._visibility.specified }}</div>
@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</button>
 		<button
 			ref="channelsButton"
-			:disabled="isReplyVisibilitySpecified"
+			:disabled="disableChangingVisibility"
 			class="_button"
 			:class="[$style.item, $style.channelButton, { [$style.active]: currentChannel }]"
 			:style="currentChannel && currentChannel.color ? `--channel-color: ${currentChannel.color}` : undefined"
@@ -77,7 +77,7 @@ const props = withDefaults(defineProps<{
 	currentVisibility: typeof Misskey.noteVisibilities[number];
 	isSilenced: boolean;
 	anchorElement?: HTMLElement | null;
-	isReplyVisibilitySpecified?: boolean;
+	disableChangingVisibility?: boolean;
 	currentChannel?: MinimalChannel | null;
 }>(), {
 });
