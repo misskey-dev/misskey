@@ -180,6 +180,9 @@ importers:
       '@types/node':
         specifier: 26.0.1
         version: 26.0.1
+      frontend:
+        specifier: workspace:*
+        version: link:../../packages/frontend
       playwright:
         specifier: 1.61.1
         version: 1.61.1
