@@ -1358,6 +1358,7 @@ _chat:
   invitations: "Undang"
   history: "Riwayat obrolan"
   noHistory: "Tidak ada riwayat"
+  join: "Gabung"
   members: "Anggota"
   home: "Beranda"
   send: "Kirim"
@@ -2555,6 +2556,8 @@ _deck:
   useSimpleUiForNonRootPages: "Gunakan antarmuka sederhana ke halaman yang dituju"
   usedAsMinWidthWhenFlexible: "Lebar minimum akan digunakan untuk ini ketika opsi \"Atur-otomatis lebar\" dinyalakan"
   flexible: "Atur-otomatis lebar"
+  _howToUse:
+    settings_title: "Pengaturan UI"
   _columns:
     main: "Utama"
     widgets: "Widget"

@@ -795,8 +795,11 @@ function openMenu(ev: PointerEvent) {
 	});
 
 	if (props.content.file != null) {
-		menu.push({ type: 'divider' });
-		menu.push(...getFileMenu(props.content.file));
+		const fileMenu = getFileMenu(props.content.file);
+		if (fileMenu.length > 0) {
+			menu.push({ type: 'divider' });
+			menu.push(...fileMenu);
+		}
 	}
 
 	os.popupMenu(menu, (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);

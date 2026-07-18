@@ -7,36 +7,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import * as util from './utility.mts';
 
-const marker = '<!-- misskey-frontend-bundle-diagnostics -->';
-
 const locale = 'ja-JP';
-
-//function sharePercent(value, total) {
-//	if (total === 0) return '0%';
-//	return Math.round((value / total) * 100) + '%';
-//}
-
-function escapeCell(value: string) {
-	return String(value).replaceAll('|', '\\|').replaceAll('\n', '<br>');
-}
-
-//function tableCell(value) {
-//	return String(value).replaceAll('|', '\\|').replaceAll('\r', ' ').replaceAll('\n', ' ');
-//}
-
-//function code(value) {
-//	const sanitized = String(value).replaceAll('\r', ' ').replaceAll('\n', ' ');
-//	const backtickRuns = sanitized.match(/`+/g) ?? [];
-//	const fenceLength = Math.max(1, ...backtickRuns.map((run) => run.length + 1));
-//	const fence = '`'.repeat(fenceLength);
-//	const padding = sanitized.startsWith('`') || sanitized.endsWith('`') ? ' ' : '';
-//
-//	return `${fence}${padding}${sanitized}${padding}${fence}`;
-//}
-
-//function tableCode(value) {
-//	return tableCell(code(value));
-//}
 
 type Manifest = Record<string, { file?: string; src?: string; name?: string; isEntry?: boolean; imports?: string[] }>;
 
@@ -462,11 +433,11 @@ function chunkMarkdownTable(
 	for (const row of rows) {
 		const chunkFile = chunkFileDisplay(row);
 		if (row.changeType === 'added') {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | $\\color{orange}{\\text{( + )}}$ |`);
+			lines.push(`| <details><summary>\`${util.escapeMdTableCell(row.name)}\`</summary> \`${util.escapeMdTableCell(chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | $\\color{orange}{\\text{( + )}}$ |`);
 		} else if (row.changeType === 'removed') {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | $\\color{green}{\\text{( - )}}$ |`);
+			lines.push(`| <details><summary>\`${util.escapeMdTableCell(row.name)}\`</summary> \`${util.escapeMdTableCell(chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | $\\color{green}{\\text{( - )}}$ |`);
 		} else {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(row.beforeSize, row.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
+			lines.push(`| <details><summary>\`${util.escapeMdTableCell(row.name)}\`</summary> \`${util.escapeMdTableCell(chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(row.beforeSize, row.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
 		}
 	}
 	if (hasGenerated) {
@@ -511,12 +482,8 @@ function renderFrontendChunkReport(before: Awaited<ReturnType<typeof collectRepo
 	};
 	const startupGenerated = generatedAggregate(beforeStartupChunks, afterStartupChunks);
 
-	//const largeRows = comparisonRows
-	//	.sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name))
-	//	.slice(0, 30);
-
 	return [
-		'<details open>',
+		'<details>',
 		`<summary>${formatChunkChangeSummary('Chunk size diff', diffSummary)}</summary>`,
 		'',
 		chunkMarkdownTable(diffRows, diffTotal, diffGenerated, diffOther),
@@ -532,55 +499,7 @@ function renderFrontendChunkReport(before: Awaited<ReturnType<typeof collectRepo
 		'',
 		'</details>',
 		'',
-		//'<details>',
-		//`<summary>Largest</summary>`,
-		//'',
-		//markdownTable(largeRows),
-		//'',
-		//'</details>',
-		//'',
 	].join('\n');
-}
-
-function renderFrontendBundleReport(before: ReturnType<typeof collectVisualizerReport>, after: ReturnType<typeof collectVisualizerReport>) {
-	const lines = [
-		...renderVisualizerSummaryTable(before, after),
-		'',
-		//'<details>',
-		//'<summary>Top 10</summary>',
-		//'',
-	];
-
-	/*
-	for (const row of after.hotModules.slice(0, 10)) {
-		lines.push(`- ${code(row.id)}: ${sharePercent(row.renderedLength, after.metrics.renderedLength)} (${formatBytes(row.renderedLength)})`);
-	}
-
-	lines.push(
-		'',
-		'</details>',
-	);
-
-	lines.push(
-		'',
-		'<details>',
-		'<summary>Hot Modules (Self Size)</summary>',
-		'',
-		'| Module | Bundles | Rendered | Share | Gzip | Brotli | Imports | Imported By |',
-		'|---|---:|---:|---:|---:|---:|---:|---:|',
-	);
-
-	for (const row of after.hotModules.slice(0, 15)) {
-		lines.push(`| ${tableCode(row.id)} | ${row.bundles} | ${formatBytes(row.renderedLength)} | ${sharePercent(row.renderedLength, after.metrics.renderedLength)} | ${formatBytes(row.gzipLength)} | ${formatBytes(row.brotliLength)} | ${row.importedCount} | ${row.importedByCount} |`);
-	}
-
-	lines.push(
-		'',
-		'</details>',
-	);
-	*/
-
-	return lines.join('\n');
 }
 
 const args = process.argv.slice(2);
@@ -594,15 +513,13 @@ const afterVisualizerReport = collectVisualizerReport(afterStats);
 const visualizerArtifactLink = `[Open treemap HTML](${process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL})`;
 
 const body = [
-	marker,
-	'',
 	`## 📦 Frontend Bundle Report`,
 	'',
 	renderFrontendChunkReport(before, after),
 	'',
 	'## Bundle Stats',
 	'',
-	renderFrontendBundleReport(beforeVisualizerReport, afterVisualizerReport),
+	renderVisualizerSummaryTable(beforeVisualizerReport, afterVisualizerReport),
 	'',
 	visualizerArtifactLink,
 ].join('\n');

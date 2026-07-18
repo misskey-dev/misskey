@@ -111,7 +111,7 @@ function renderHeapSnapshotSection(base: MemoryReport, head: MemoryReport) {
 
 	for (const graph of [
 		//heapSnapshotUtil.renderHeapSnapshotSankey(baseHeapSnapshotReport, 'Base'),
-		heapSnapshotUtil.renderHeapSnapshotSankey(headHeapSnapshotReport, 'Head'),
+		//heapSnapshotUtil.renderHeapSnapshotSankey(headHeapSnapshotReport, 'Head'),
 	]) {
 		if (graph == null) continue;
 		lines.push(graph);
@@ -149,7 +149,7 @@ if (heapSnapshotSection != null) {
 
 const baseHeapSnapshotArtifactUrl = process.env.MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_BASE!.trim();
 const headHeapSnapshotArtifactUrl = process.env.MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_HEAD!.trim();
-lines.push(`You can download the representative heap snapshot: [base](${baseHeapSnapshotArtifactUrl}) / [head](${headHeapSnapshotArtifactUrl})`);
+lines.push(`Download representative heap snapshot: [base](${baseHeapSnapshotArtifactUrl}) / [head](${headHeapSnapshotArtifactUrl})`);
 lines.push('');
 
 function getDiffPercent(base: MemoryReport, head: MemoryReport, phase: typeof memoryReportPhases[number]['key'], metric: typeof memoryMetrics[number]) {
