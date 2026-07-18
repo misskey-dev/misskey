@@ -16,10 +16,14 @@ export async function postButtonHandler(currentRef: PathResolvedResult) {
 			// NOTE: チャンネルを開いているならば、チャンネルの情報がキャッシュされていることを期待できるはずである
 			const channelJSON = miLocalStorage.getItem(`channel:${channelId}`);
 			if (channelJSON) {
-				const channel = JSON.parse(channelJSON);
-				if (channel) {
-					await post({ channel });
-					return;
+				try {
+					const channel = JSON.parse(channelJSON);
+					if (channel) {
+						await post({ channel });
+						return;
+					}
+				} catch {
+					/* キャッシュが壊れている場合は以下で破棄する */
 				}
 				miLocalStorage.removeItem(`channel:${channelId}`);
 			}

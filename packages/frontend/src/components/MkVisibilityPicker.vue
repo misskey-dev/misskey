@@ -39,6 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</button>
 		<button
 			ref="channelsButton"
+			:disabled="isReplyVisibilitySpecified"
 			class="_button"
 			:class="[$style.item, $style.channelButton, { [$style.active]: currentChannel }]"
 			:style="currentChannel && currentChannel.color ? `--channel-color: ${currentChannel.color}` : undefined"
@@ -106,10 +107,11 @@ const currentChannelName = computed<string | null>(() => currentChannel.value?.n
 
 async function fetchChannels() {
 	const res = await favoritedChannelsCache.fetch();
-	channels.value.splice(0, 0, ...res);
+	channels.value = res;
 }
 
-function chooseChannel() {
+async function chooseChannel() {
+	await fetchChannels();
 	os.popupMenu([{
 		type: 'label',
 		text: i18n.ts.selectChannel,
@@ -135,8 +137,6 @@ function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
 		if (modal.value) modal.value.close();
 	});
 }
-
-fetchChannels();
 </script>
 
 <style lang="scss" module>
