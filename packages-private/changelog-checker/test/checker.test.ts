@@ -4,8 +4,8 @@
  */
 
 import { expect, suite, test } from 'vitest';
-import { Release, ReleaseCategory } from '@/parser.js';
-import { checkNewRelease, checkNewTopic } from '@/checker.js';
+import { Release, ReleaseCategory } from '../src/parser.js';
+import { checkNewRelease, checkNewTopic } from '../src/checker.js';
 
 suite('checkNewRelease', () => {
 	test('headに新しいリリースがある1', () => {

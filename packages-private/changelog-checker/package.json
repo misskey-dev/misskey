@@ -3,7 +3,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"check": "vite-node src/index.ts",
+		"check": "tsx src/index.ts",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
 		"lint": "pnpm typecheck && pnpm eslint",
 		"test": "vitest run",
@@ -17,10 +17,9 @@
 		"mdast-util-to-string": "4.0.0",
 		"remark": "15.0.1",
 		"remark-parse": "11.0.0",
+		"tsx": "4.22.4",
 		"typescript": "5.9.3",
 		"unified": "11.0.5",
-		"vite": "8.1.0",
-		"vite-node": "6.0.0",
 		"vitest": "4.1.9"
 	}
 }

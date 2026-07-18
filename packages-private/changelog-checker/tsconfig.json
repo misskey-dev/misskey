@@ -16,9 +16,6 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"types": ["node"],
-		"paths": {
-			"@/*": ["./src/*"],
-		},
 		"lib": [
 			"esnext"
 		]
