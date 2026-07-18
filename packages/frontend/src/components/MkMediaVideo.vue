@@ -41,8 +41,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-player-play"></i>
 			</div>
 		</div>
-		<button :class="[$style.menu, $style.menuBottom]" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
-		<button :class="[$style.menu, $style.menuTop]" class="_button" @click.stop="hide = true"><i class="ti ti-eye-off" style="vertical-align: middle;"></i></button>
+		<button :class="[$style.menu, $style.menuBottom]" class="_button" @click.stop="showMenu" @pointerup.stop><i class="ti ti-dots" style="vertical-align: middle;" aria-hidden="true"></i></button>
+		<button :class="[$style.menu, $style.menuTop]" class="_button" @click.stop="hide = true" @pointerup.stop><i class="ti ti-eye-off" style="vertical-align: middle;" aria-hidden="true"></i></button>
 	</div>
 </div>
 </template>

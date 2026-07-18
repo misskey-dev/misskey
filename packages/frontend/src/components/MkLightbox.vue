@@ -142,8 +142,9 @@ function closeGallery() {
 }
 
 function close() {
-	if (items.has(currentIndex.value)) {
-		items.get(currentIndex.value)!.closeThis();
+	const item = items.get(currentIndex.value);
+	if (item != null) {
+		item.closeThis();
 	} else {
 		closeGallery();
 	}
