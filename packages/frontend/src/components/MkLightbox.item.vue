@@ -451,6 +451,17 @@ function onZoomGestureEnd() {
 	transform.value = clampedTransform;
 }
 
+/** 縦・横どちらのスワイプかを確定させるのに必要な、開始点からの移動量 (px) */
+const AXIS_SWIPE_HYSTERISIS = 10;
+/** スワイプが成立する速度 (px/ms) */
+const MIN_VELOCITY_TO_SWIPE = 0.5;
+/**縦スワイプで閉じるのに必要な移動量の、ビューポート高の1/3に対する比 */
+const MIN_RATIO_TO_CLOSE = 0.4;
+/** 横スワイプで前後のコンテンツに移動するのに必要な移動量 (px) */
+const HORIZONTAL_SWIPE_DISTANCE_THRESHOLD = 150;
+/** 速度を平均する時間窓 (ms) */
+const VELOCITY_WINDOW = 100;
+
 let isDragging = false;
 let isClick = false;
 let clickAction: 'hidden' | 'video' | null = null;
@@ -462,9 +473,41 @@ let isVerticalSwiping = false;
 let isHorizontalSwiping = false;
 let verticalSwipeDelta = 0;
 let horizontalSwipeDelta = 0;
+/** 軸が確定した時点のポインタ位置。ここを基準にスワイプ量を測ることで、確定時に描画が飛ぶのを防ぐ */
+let swipeOrigin = { x: 0, y: 0 };
 
 const pointerEventCache = new Map<number, PointerEvent>();
 let pointerVec = { x: 0, y: 0 };
+
+// 単発のpointermoveの増分から速度を求めると、表示のリフレッシュレートを超える頻度で
+// pointermoveを発火する環境では値が暴れるため、直近VELOCITY_WINDOW msの平均を取る
+let velocitySamples: { time: number; x: number; y: number }[] = [];
+
+function pushVelocitySample(time: number, x: number, y: number) {
+	velocitySamples.push({ time, x, y });
+	while (velocitySamples.length > 2 && time - velocitySamples[0].time > VELOCITY_WINDOW) {
+		velocitySamples.shift();
+	}
+}
+
+function getVelocity(now: number): { x: number; y: number } {
+	if (velocitySamples.length < 2) return { x: 0, y: 0 };
+
+	const latest = velocitySamples[velocitySamples.length - 1];
+
+	// 指を止めたまま離した場合、pointermoveが発火しなくなる環境 (iOS・マウス) では直前のフリックの速度が
+	// 残り続けてしまい、静止状態で離したのにスワイプが成立してしまう。最後のサンプルが古ければ速度なしとして扱う
+	if (now - latest.time > VELOCITY_WINDOW) return { x: 0, y: 0 };
+
+	const oldest = velocitySamples[0];
+	const duration = latest.time - oldest.time;
+	if (duration <= 0) return { x: 0, y: 0 };
+
+	return {
+		x: (latest.x - oldest.x) / duration,
+		y: (latest.y - oldest.y) / duration,
+	};
+}
 
 function resolveClickAction(target: EventTarget | null): 'hidden' | 'video' | null {
 	if (!(target instanceof Element)) return null;
@@ -488,6 +531,14 @@ function onPointerdown(ev: PointerEvent) {
 	lastX = ev.clientX;
 	lastY = ev.clientY;
 	pointerVec = { x: 0, y: 0 };
+	velocitySamples = [];
+	verticalSwipeDelta = 0;
+	horizontalSwipeDelta = 0;
+	// スワイプで閉じた直後はitemがv-showで残ったままなので (MkLightbox.vue参照)、閉じるアニメーション中に
+	// 触るとロック済みの軸が引き継がれてヒステリシスを経ずにスワイプが始まってしまう。ここで必ず解除する
+	isVerticalSwiping = false;
+	isHorizontalSwiping = false;
+	swipeOrigin = { x: ev.clientX, y: ev.clientY };
 	if (currentPointerId == null) {
 		currentPointerId = ev.pointerId;
 		currentPointerStartOffset = {
@@ -498,12 +549,9 @@ function onPointerdown(ev: PointerEvent) {
 }
 
 let prevTwoTouchPointsDistance = 0;
-let lastMoveTimeStamp = 0;
 
 function onPointermove(ev: PointerEvent) {
-	const currentTime = performance.now();
-	const dt = currentTime - lastMoveTimeStamp;
-	lastMoveTimeStamp = currentTime;
+	const currentTime = ev.timeStamp;
 
 	if (pointerEventCache.size === 0) {
 		return;
@@ -549,21 +597,34 @@ function onPointermove(ev: PointerEvent) {
 				transform.value.y += deltaY;
 				verticalSwipeDelta += deltaY;
 			} else if (isHorizontalSwiping) {
-				horizontalSwipeDelta = ev.clientX - currentPointerStartOffset.x;
+				horizontalSwipeDelta = ev.clientX - swipeOrigin.x;
 				emit('horizontalSwipe', horizontalSwipeDelta);
 			} else {
-				const isVerticalVector = Math.abs(deltaY) > Math.abs(deltaX);
-				if (isVerticalVector) {
-					isVerticalSwiping = true;
-				} else {
-					isHorizontalSwiping = true;
+				// 軸を確定させるまでは、開始点からの累積移動量で毎回評価し直す。
+				const totalX = ev.clientX - currentPointerStartOffset.x;
+				const totalY = ev.clientY - currentPointerStartOffset.y;
+				const diff = Math.abs(totalX) - Math.abs(totalY);
+
+				if (diff !== 0) {
+					// 完全に同値の場合はどちらにもロックしない
+					const isVerticalVector = diff < 0;
+					const dominantDelta = isVerticalVector ? totalY : totalX;
+
+					// 意図が読み取れる程度に動いてからロックする
+					if (Math.abs(dominantDelta) >= AXIS_SWIPE_HYSTERISIS) {
+						swipeOrigin = { x: ev.clientX, y: ev.clientY };
+						if (isVerticalVector) {
+							isVerticalSwiping = true;
+						} else {
+							isHorizontalSwiping = true;
+						}
+					}
 				}
 			}
 		}
 
-		if (dt > 0) {
-			pointerVec = { x: deltaX / dt, y: deltaY / dt };
-		}
+		pushVelocitySample(currentTime, ev.clientX, ev.clientY);
+		pointerVec = getVelocity(currentTime);
 
 		lastX = ev.clientX;
 		lastY = ev.clientY;
@@ -581,9 +642,14 @@ function onPointerup(ev: PointerEvent) {
 	if (currentPointerId === ev.pointerId) {
 		currentPointerId = null;
 
+		// 離した時点で取り直す。指を止めたまま離した場合はここで速度が0になり、
+		// 直前のフリックの速度で誤ってスワイプが成立するのを防ぐことができる
+		pointerVec = getVelocity(ev.timeStamp);
+
 		if (isVerticalSwiping) {
-			const shouldCloseByUpwardSwipe = verticalSwipeDelta < -200 || (verticalSwipeDelta < 0 && pointerVec.y < -3); // 上の方で離された、または上に向かって強めに弾かれた
-			const shouldCloseByDownwardSwipe = verticalSwipeDelta > 200 || (verticalSwipeDelta > 0 && pointerVec.y > 3); // 下の方で離された、または下に向かって強めに弾かれた
+			const closeThreshold = (window.innerHeight / 3) * MIN_RATIO_TO_CLOSE;
+			const shouldCloseByUpwardSwipe = verticalSwipeDelta < -closeThreshold || (verticalSwipeDelta < 0 && pointerVec.y < -MIN_VELOCITY_TO_SWIPE); // 上の方で離された、または上に向かって強めに弾かれた
+			const shouldCloseByDownwardSwipe = verticalSwipeDelta > closeThreshold || (verticalSwipeDelta > 0 && pointerVec.y > MIN_VELOCITY_TO_SWIPE); // 下の方で離された、または下に向かって強めに弾かれた
 			if (shouldCloseByUpwardSwipe || shouldCloseByDownwardSwipe) {
 				closeThis();
 				return;
@@ -591,8 +657,8 @@ function onPointerup(ev: PointerEvent) {
 
 			resetToNeutral();
 		} else if (isHorizontalSwiping) {
-			const shouldNext = horizontalSwipeDelta < -150 || (horizontalSwipeDelta < 0 && pointerVec.x < -1); // 左の方で離された、または左に向かって強めに弾かれた
-			const shouldPrev = horizontalSwipeDelta > 150 || (horizontalSwipeDelta > 0 && pointerVec.x > 1); // 右の方で離された、または右に向かって強めに弾かれた
+			const shouldNext = horizontalSwipeDelta < -HORIZONTAL_SWIPE_DISTANCE_THRESHOLD || (horizontalSwipeDelta < 0 && pointerVec.x < -MIN_VELOCITY_TO_SWIPE); // 左の方で離された、または左に向かって強めに弾かれた
+			const shouldPrev = horizontalSwipeDelta > HORIZONTAL_SWIPE_DISTANCE_THRESHOLD || (horizontalSwipeDelta > 0 && pointerVec.x > MIN_VELOCITY_TO_SWIPE); // 右の方で離された、または右に向かって強めに弾かれた
 			if (shouldNext) {
 				emit('next');
 			} else if (shouldPrev) {
@@ -634,8 +700,10 @@ function cancelPointerGesture() {
 	isClick = false;
 	clickAction = null;
 	pointerVec = { x: 0, y: 0 };
+	velocitySamples = [];
 	verticalSwipeDelta = 0;
 	horizontalSwipeDelta = 0;
+	swipeOrigin = { x: 0, y: 0 };
 	isVerticalSwiping = false;
 	isHorizontalSwiping = false;
 	doubleTapDetector.reset();
