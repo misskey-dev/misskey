@@ -681,8 +681,6 @@ function onPointerup(ev: PointerEvent) {
 }
 
 const doubleTapDetector = makeDoubleTapDetector((ev) => {
-	ev.preventDefault();
-	ev.stopPropagation();
 	pointerVec = { x: 0, y: 0 };
 
 	if (isZooming.value) {
