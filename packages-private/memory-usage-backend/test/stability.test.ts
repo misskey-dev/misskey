@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import assert from 'node:assert/strict';
-import test from 'node:test';
-import { measureMemoryUntilStable } from './stability';
+import { expect, test } from 'vitest';
+import { measureMemoryUntilStable } from '../src/measure/stability';
 
 function createTimer() {
 	let elapsedMs = 0;
@@ -35,9 +34,9 @@ test('adopts the latest reading once Pss and Private_Dirty slopes converge', asy
 	];
 	const { result, readCount } = await measure(readings);
 
-	assert.equal(readCount, 3);
-	assert.deepEqual(result.memoryUsage, readings[2]);
-	assert.deepEqual(result.stability, {
+	expect(readCount).toBe(3);
+	expect(result.memoryUsage).toStrictEqual(readings[2]);
+	expect(result.stability).toStrictEqual({
 		converged: true,
 		readingCount: 3,
 		elapsedMs: 4000,
@@ -58,9 +57,9 @@ test('uses only the latest readings when determining convergence', async () => {
 	];
 	const { result, readCount } = await measure(readings);
 
-	assert.equal(readCount, 5);
-	assert.equal(result.stability.converged, true);
-	assert.deepEqual(result.stability.maxAbsoluteSlopesKiBPerSecond, {
+	expect(readCount).toBe(5);
+	expect(result.stability.converged).toBe(true);
+	expect(result.stability.maxAbsoluteSlopesKiBPerSecond).toStrictEqual({
 		Pss: 20,
 		Private_Dirty: 10,
 	});
@@ -77,9 +76,9 @@ test('bounds the wait and reports the latest slopes when memory does not converg
 	];
 	const { result, readCount } = await measure(readings);
 
-	assert.equal(readCount, 6);
-	assert.deepEqual(result.memoryUsage, readings[5]);
-	assert.deepEqual(result.stability, {
+	expect(readCount).toBe(6);
+	expect(result.memoryUsage).toStrictEqual(readings[5]);
+	expect(result.stability).toStrictEqual({
 		converged: false,
 		readingCount: 6,
 		elapsedMs: 10000,
@@ -101,9 +100,9 @@ test('does not treat opposing adjacent slopes as convergence', async () => {
 	];
 	const { result, readCount } = await measure(readings);
 
-	assert.equal(readCount, 6);
-	assert.equal(result.stability.converged, false);
-	assert.deepEqual(result.stability.maxAbsoluteSlopesKiBPerSecond, {
+	expect(readCount).toBe(6);
+	expect(result.stability.converged).toBe(false);
+	expect(result.stability.maxAbsoluteSlopesKiBPerSecond).toStrictEqual({
 		Pss: 300,
 		Private_Dirty: 0,
 	});

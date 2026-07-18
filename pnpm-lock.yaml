@@ -85,6 +85,12 @@ importers:
       typescript:
         specifier: 5.9.3
         version: 5.9.3
+      vite:
+        specifier: 8.1.0
+        version: 8.1.0(@types/node@26.0.1)(esbuild@0.28.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(tsx@4.22.4)
+      vitest:
+        specifier: 4.1.9
+        version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.1)(@vitest/browser-playwright@4.1.9)(@vitest/coverage-v8@4.1.9)(happy-dom@20.10.6(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@2.14.6(@types/node@26.0.1)(typescript@5.9.3))(vite@8.1.0(@types/node@26.0.1)(esbuild@0.28.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(tsx@4.22.4))
 
   packages-private/changelog-checker:
     devDependencies:
@@ -130,12 +136,18 @@ importers:
       typescript:
         specifier: 5.9.3
         version: 5.9.3
+      vitest:
+        specifier: 4.1.9
+        version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.1)(@vitest/browser-playwright@4.1.9)(@vitest/coverage-v8@4.1.9)(happy-dom@20.10.6(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@2.14.6(@types/node@26.0.1)(typescript@5.9.3))(vite@8.1.0(@types/node@26.0.1)(esbuild@0.28.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(tsx@4.22.4))
 
   packages-private/memory-usage-backend:
     dependencies:
       diagnostics-shared:
         specifier: workspace:*
         version: link:../diagnostics-shared
+      execa:
+        specifier: 9.6.1
+        version: 9.6.1
     devDependencies:
       '@types/node':
         specifier: 26.0.1
@@ -155,6 +167,9 @@ importers:
       typescript:
         specifier: 5.9.3
         version: 5.9.3
+      vitest:
+        specifier: 4.1.9
+        version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.1)(@vitest/browser-playwright@4.1.9)(@vitest/coverage-v8@4.1.9)(happy-dom@20.10.6(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@2.14.6(@types/node@26.0.1)(typescript@5.9.3))(vite@8.1.0(@types/node@26.0.1)(esbuild@0.28.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(tsx@4.22.4))
 
   packages-private/memory-usage-frontend:
     dependencies:
@@ -174,6 +189,9 @@ importers:
       typescript:
         specifier: 5.9.3
         version: 5.9.3
+      vitest:
+        specifier: 4.1.9
+        version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.1)(@vitest/browser-playwright@4.1.9)(@vitest/coverage-v8@4.1.9)(happy-dom@20.10.6(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@2.14.6(@types/node@26.0.1)(typescript@5.9.3))(vite@8.1.0(@types/node@26.0.1)(esbuild@0.28.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(tsx@4.22.4))
 
   packages/backend:
     dependencies:

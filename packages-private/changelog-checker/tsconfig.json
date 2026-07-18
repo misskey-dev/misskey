@@ -14,9 +14,8 @@
 		"experimentalDecorators": true,
 		"noImplicitReturns": true,
 		"esModuleInterop": true,
-		"typeRoots": [
-			"./node_modules/@types"
-		],
+		"skipLibCheck": true,
+		"types": ["node"],
 		"paths": {
 			"@/*": ["./src/*"],
 		},

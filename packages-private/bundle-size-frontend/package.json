@@ -3,7 +3,11 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"render-md": "tsx src/render-md.ts"
+		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"lint": "pnpm typecheck && pnpm eslint",
+		"render-md": "tsx src/render-md.ts",
+		"test": "vitest run",
+		"typecheck": "tsgo --noEmit"
 	},
 	"dependencies": {
 		"diagnostics-shared": "workspace:*"
@@ -11,6 +15,8 @@
 	"devDependencies": {
 		"@types/node": "26.0.1",
 		"tsx": "4.22.4",
-		"typescript": "5.9.3"
+		"typescript": "5.9.3",
+		"vite": "8.1.0",
+		"vitest": "4.1.9"
 	}
 }

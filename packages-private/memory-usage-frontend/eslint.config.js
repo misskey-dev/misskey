@@ -7,8 +7,8 @@ export default [
 	{
 		ignores: [
 			'**/node_modules',
-			// tsconfig の include 対象外なので、型情報を要求するルールを適用できない
-			'vite.config.ts',
+			'**/__snapshots__',
+			'test/fixtures',
 		],
 	},
 	{

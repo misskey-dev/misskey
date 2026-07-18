@@ -6,37 +6,23 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { readRequiredEnv } from 'diagnostics-shared';
-import { renderFrontendChunkReport } from './chunk-report';
 import { collectReport } from './manifest';
-import { collectVisualizerReport, renderVisualizerSummaryTable, type VisualizerReport } from './visualizer';
+import { renderBundleReportMarkdown } from './report';
+import type { VisualizerReport } from './visualizer';
 
 async function main() {
 	const [beforeDir, afterDir, beforeStatsFile, afterStatsFile, outFile] = process.argv.slice(2).map(arg => path.resolve(arg));
 	if (outFile == null) throw new Error('Usage: render-md <beforeDir> <afterDir> <beforeStatsJson> <afterStatsJson> <outMd>');
 
 	// 未設定のまま `undefined` という文字列をコメントに埋め込まないよう、ここで落とす
-	const artifactUrl = readRequiredEnv('FRONTEND_BUNDLE_REPORT_ARTIFACT_URL');
+	const visualizerArtifactUrl = readRequiredEnv('FRONTEND_BUNDLE_REPORT_ARTIFACT_URL');
 
 	const before = await collectReport(beforeDir);
 	const after = await collectReport(afterDir);
 	const beforeStats = JSON.parse(await fs.readFile(beforeStatsFile, 'utf8')) as VisualizerReport;
 	const afterStats = JSON.parse(await fs.readFile(afterStatsFile, 'utf8')) as VisualizerReport;
-	const beforeVisualizerReport = collectVisualizerReport(beforeStats);
-	const afterVisualizerReport = collectVisualizerReport(afterStats);
 
-	const body = [
-		`## 📦 Frontend Bundle Report`,
-		'',
-		renderFrontendChunkReport(before, after),
-		'',
-		'## Bundle Stats',
-		'',
-		renderVisualizerSummaryTable(beforeVisualizerReport, afterVisualizerReport),
-		'',
-		`[Open treemap HTML](${artifactUrl})`,
-	].join('\n');
-
-	await fs.writeFile(outFile, body);
+	await fs.writeFile(outFile, renderBundleReportMarkdown(before, after, beforeStats, afterStats, { visualizerArtifactUrl }));
 }
 
 await main().catch(err => {

@@ -3,13 +3,17 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
+		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
 		"inspect": "tsx src/inspect.ts",
+		"lint": "pnpm typecheck && pnpm eslint",
 		"measure": "tsx src/measure-once.ts",
 		"render-md": "tsx src/render-md.ts",
-		"test": "tsx --test src/measure/stability.test.ts"
+		"test": "vitest run",
+		"typecheck": "tsgo --noEmit"
 	},
 	"dependencies": {
-		"diagnostics-shared": "workspace:*"
+		"diagnostics-shared": "workspace:*",
+		"execa": "9.6.1"
 	},
 	"devDependencies": {
 		"@types/node": "26.0.1",
@@ -17,6 +21,7 @@
 		"ioredis": "5.11.1",
 		"pg": "8.22.0",
 		"tsx": "4.22.4",
-		"typescript": "5.9.3"
+		"typescript": "5.9.3",
+		"vitest": "4.1.9"
 	}
 }

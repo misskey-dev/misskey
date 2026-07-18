@@ -5,4 +5,5 @@
 
 export * from './env';
 export * from './format';
+export * from './html';
 export * from './stats';

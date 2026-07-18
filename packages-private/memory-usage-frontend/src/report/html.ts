@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { escapeHtml, formatBytes, formatNumber } from 'diagnostics-shared';
+import { formatBytes, formatNumber, html, joinHtml, raw, type Raw } from 'diagnostics-shared';
 import { networkDiffHtmlStyles } from './html-styles';
 import type { BrowserMeasurementSample, BrowserMetricsReport, NetworkRequest } from '../types';
 
@@ -17,10 +17,6 @@ type RequestDiff = {
 	request: NetworkRequest;
 };
 
-function escapeAttribute(value: unknown) {
-	return escapeHtml(value);
-}
-
 function isHttpRequest(request: NetworkRequest) {
 	try {
 		const { protocol } = new URL(request.url);
@@ -31,6 +27,7 @@ function isHttpRequest(request: NetworkRequest) {
 }
 
 function requestKey(request: NetworkRequest) {
+	// URLに現れない文字で区切らないと、区切り文字を含むURLが別のキーと衝突しうる
 	return [
 		request.method,
 		request.resourceType,
@@ -54,6 +51,10 @@ function byRound(samples: BrowserMeasurementSample[]) {
 	return new Map(samples.map(sample => [sample.round, sample]));
 }
 
+/**
+ * 同じラウンドどうしで、同一 (method, resourceType, URL) のリクエスト本数を突き合わせる。
+ * 本数が増えていればhead側の増分を added、減っていればbase側の余りを removed として扱う。
+ */
 function diffRound(round: number, baseSample: BrowserMeasurementSample | undefined, headSample: BrowserMeasurementSample | undefined) {
 	const baseRequests = groupRequests(baseSample?.networkRequests);
 	const headRequests = groupRequests(headSample?.networkRequests);
@@ -63,7 +64,6 @@ function diffRound(round: number, baseSample: BrowserMeasurementSample | undefin
 	])].toSorted();
 	const diffs: RequestDiff[] = [];
 
-	// 同じキーのリクエストが複数回飛ぶことがあるので、件数の増減分だけを差分として扱う
 	for (const key of keys) {
 		const baseRows = baseRequests.get(key) ?? [];
 		const headRows = headRequests.get(key) ?? [];
@@ -125,16 +125,17 @@ function countBy<T extends string>(diffs: RequestDiff[], getKey: (diff: RequestD
 	return [...counts].toSorted((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 }
 
-function renderSummary(base: BrowserMetricsReport, head: BrowserMetricsReport, diffs: RequestDiff[]) {
+function renderSummary(base: BrowserMetricsReport, head: BrowserMetricsReport, diffs: RequestDiff[]): Raw {
 	const added = diffs.filter(diff => diff.direction === 'added').length;
 	const removed = diffs.filter(diff => diff.direction === 'removed').length;
-	const typeRows = countBy(diffs, diff => diff.request.resourceType).map(([type, count]) => `
+	const typeCounts = countBy(diffs, diff => diff.request.resourceType);
+	const typeRows = joinHtml(typeCounts.map(([type, count]) => html`
 				<tr>
-					<td>${escapeHtml(type)}</td>
+					<td>${type}</td>
 					<td class="num">${formatNumber(count)}</td>
-				</tr>`).join('');
+				</tr>`), '');
 
-	return `
+	return html`
 		<section class="summary">
 			<div>
 				<span class="label">Base samples</span>
@@ -153,7 +154,7 @@ function renderSummary(base: BrowserMetricsReport, head: BrowserMetricsReport, d
 				<strong class="removed-text">${formatNumber(removed)}</strong>
 			</div>
 		</section>
-		${typeRows === '' ? '' : `
+		${typeCounts.length === 0 ? raw('') : html`
 		<section>
 			<h2>Diffs by Resource Type</h2>
 			<table>
@@ -164,43 +165,43 @@ function renderSummary(base: BrowserMetricsReport, head: BrowserMetricsReport, d
 		</section>`}`;
 }
 
-function renderDetails(title: string, content: string | null, open = false) {
-	if (content == null || content === '') return '';
-	return `
-			<details${open ? ' open' : ''}>
-				<summary>${escapeHtml(title)}</summary>
-				<pre>${escapeHtml(content)}</pre>
+function renderDetails(title: string, content: string | null, open = false): Raw {
+	if (content == null || content === '') return raw('');
+	return html`
+			<details${open ? raw(' open') : raw('')}>
+				<summary>${title}</summary>
+				<pre>${content}</pre>
 			</details>`;
 }
 
-function renderRequest(diff: RequestDiff) {
+function renderRequest(diff: RequestDiff): Raw {
 	const { request } = diff;
 	const requestBody = formatMaybeJson(request.requestBody);
 	const requestHeaders = formatHeaders(request.requestHeaders);
 	const responseHeaders = formatHeaders(request.responseHeaders);
 	const bodyNote = requestBody == null && request.hasRequestBody === true
-		? '<p class="empty">Request body was present but could not be retrieved from CDP.</p>'
-		: '';
+		? html`<p class="empty">Request body was present but could not be retrieved from CDP.</p>`
+		: raw('');
 
-	return `
+	return html`
 		<article class="request ${diff.direction}">
 			<header>
 				<span class="badge">${diff.direction === 'added' ? 'Added in Head' : 'Removed in Head'}</span>
-				<span class="method">${escapeHtml(request.method)}</span>
-				<span class="type">${escapeHtml(request.resourceType)}</span>
-				<span class="status">${escapeHtml(request.status ?? '-')}</span>
+				<span class="method">${request.method}</span>
+				<span class="type">${request.resourceType}</span>
+				<span class="status">${request.status ?? '-'}</span>
 			</header>
-			<a class="url" href="${escapeAttribute(request.url)}">${escapeHtml(request.url)}</a>
+			<a class="url" href="${request.url}">${request.url}</a>
 			<dl>
 				<div><dt>Round</dt><dd>${formatNumber(diff.round)}</dd></div>
 				<div><dt>Base count</dt><dd>${formatNumber(diff.baseCount)}</dd></div>
 				<div><dt>Head count</dt><dd>${formatNumber(diff.headCount)}</dd></div>
 				<div><dt>Encoded</dt><dd>${formatBytes(request.encodedDataLength ?? 0)}</dd></div>
 				<div><dt>Decoded body</dt><dd>${formatBytes(request.decodedBodyLength ?? 0)}</dd></div>
-				<div><dt>MIME</dt><dd>${escapeHtml(request.mimeType ?? '-')}</dd></div>
-				<div><dt>Protocol</dt><dd>${escapeHtml(request.protocol ?? '-')}</dd></div>
-				<div><dt>Remote</dt><dd>${escapeHtml(request.remoteIPAddress == null ? '-' : `${request.remoteIPAddress}:${request.remotePort ?? ''}`)}</dd></div>
-				<div><dt>Failed</dt><dd>${request.failed ? escapeHtml(request.errorText ?? 'yes') : 'no'}</dd></div>
+				<div><dt>MIME</dt><dd>${request.mimeType ?? '-'}</dd></div>
+				<div><dt>Protocol</dt><dd>${request.protocol ?? '-'}</dd></div>
+				<div><dt>Remote</dt><dd>${request.remoteIPAddress == null ? '-' : `${request.remoteIPAddress}:${request.remotePort ?? ''}`}</dd></div>
+				<div><dt>Failed</dt><dd>${request.failed ? (request.errorText ?? 'yes') : 'no'}</dd></div>
 			</dl>
 			${bodyNote}
 			${renderDetails('Request body', requestBody, requestBody != null)}
@@ -209,15 +210,15 @@ function renderRequest(diff: RequestDiff) {
 		</article>`;
 }
 
-function renderRound(round: number, diffs: RequestDiff[]) {
+function renderRound(round: number, diffs: RequestDiff[]): Raw {
 	const added = diffs.filter(diff => diff.direction === 'added').length;
 	const removed = diffs.filter(diff => diff.direction === 'removed').length;
-	return `
+	return html`
 		<section>
 			<h2>Round ${formatNumber(round)}</h2>
 			<p>${formatNumber(added)} added, ${formatNumber(removed)} removed</p>
 			<div class="requests">
-				${diffs.map(renderRequest).join('\n')}
+				${joinHtml(diffs.map(renderRequest), '\n')}
 			</div>
 		</section>`;
 }
@@ -227,27 +228,27 @@ export function renderHtml(base: BrowserMetricsReport, head: BrowserMetricsRepor
 	const rounds = [...new Set(diffs.map(diff => diff.round))].toSorted((a, b) => a - b);
 	const generatedAt = new Date().toISOString();
 	const content = diffs.length === 0
-		? '<section><p>No added or removed HTTP(S) requests were found in paired samples.</p></section>'
-		: rounds.map(round => renderRound(round, diffs.filter(diff => diff.round === round))).join('\n');
+		? html`<section><p>No added or removed HTTP(S) requests were found in paired samples.</p></section>`
+		: joinHtml(rounds.map(round => renderRound(round, diffs.filter(diff => diff.round === round))), '\n');
 
-	return `<!doctype html>
+	return String(html`<!doctype html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Frontend Browser Network Request Diff</title>
 	<style>
-${networkDiffHtmlStyles}
+${raw(networkDiffHtmlStyles)}
 	</style>
 </head>
 <body>
 	<main>
 		<h1>Frontend Browser Network Request Diff</h1>
-		<p class="meta">Generated at ${escapeHtml(generatedAt)}. Requests are compared per paired round by method, resource type, and exact URL. Bodies are shown for added/removed request instances when CDP exposes them.</p>
+		<p class="meta">Generated at ${generatedAt}. Requests are compared per paired round by method, resource type, and exact URL. Bodies are shown for added/removed request instances when CDP exposes them.</p>
 		${renderSummary(base, head, diffs)}
 		${content}
 	</main>
 </body>
 </html>
-`;
+`);
 }

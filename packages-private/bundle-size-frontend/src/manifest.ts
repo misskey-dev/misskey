@@ -6,6 +6,7 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileExists, fileSize, normalizePath, traverseDirectory } from './fs-utils';
+import type { Manifest, ManifestChunk } from 'vite';
 
 /**
  * 比較対象とするロケール。ロケール別チャンクは全ロケール分だと数が多すぎるため、
@@ -17,8 +18,6 @@ const locale = 'ja-JP';
  * `src` を持たないチャンクのうち、名前がビルド間で安定していて比較可能なもの。
  */
 const stableNamedChunks = new Set(['vue', 'i18n']);
-
-export type Manifest = Record<string, { file?: string; src?: string; name?: string; isEntry?: boolean; imports?: string[] }>;
 
 export type FileEntry = {
 	comparisonKey: string | null;
@@ -48,7 +47,7 @@ export function findEntryKey(manifest: Manifest) {
  * ビルド間で安定するチャンク識別子。出力ファイル名はハッシュ付きで毎回変わるため、
  * これが取れないチャンクは before/after の対応付けができない。
  */
-export function stableChunkKey(chunk: Manifest[string]) {
+export function stableChunkKey(chunk: ManifestChunk) {
 	if (chunk.src != null) return `src:${normalizePath(chunk.src)}`;
 	if (chunk.name != null && stableNamedChunks.has(chunk.name)) return `named:${chunk.name}`;
 	return null;

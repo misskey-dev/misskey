@@ -5,11 +5,11 @@
 
 import { copyFile, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
+import { execa } from 'execa';
 import { median, readIntegerEnv, readOptionalEnv } from 'diagnostics-shared';
 import { summarizeHeapSnapshotDataSamples, defaultHeapSnapshotBreakdownTopN } from 'diagnostics-shared/heap-snapshot';
 import { resetState } from './db';
 import { measureBackendMemory } from './measure';
-import { run } from './run';
 import { memoryPhases, type MemoryReport } from './types';
 
 const heapSnapshotLabels = ['base', 'head'] as const;
@@ -71,10 +71,11 @@ async function genSample(label: string, repoDir: string, round: number, options:
 	await resetState();
 
 	process.stderr.write(`[${label}] Running migrations\n`);
-	await run('pnpm', ['--filter', 'backend', 'migrate'], {
+	// 出力はログとして流しつつ手元にも残す (失敗時にexecaが例外メッセージへ含めてくれる)
+	await execa('pnpm', ['--filter', 'backend', 'migrate'], {
 		cwd: repoDir,
-		env: process.env,
-		logStdout: true,
+		stdout: ['pipe', process.stderr],
+		stderr: ['pipe', process.stderr],
 	});
 
 	process.stderr.write(`[${label}] Measuring memory\n`);

@@ -6,8 +6,15 @@
 		".": "./src/index.ts",
 		"./heap-snapshot": "./src/heap-snapshot/index.ts"
 	},
+	"scripts": {
+		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"lint": "pnpm typecheck && pnpm eslint",
+		"test": "vitest run",
+		"typecheck": "tsgo --noEmit"
+	},
 	"devDependencies": {
 		"@types/node": "26.0.1",
-		"typescript": "5.9.3"
+		"typescript": "5.9.3",
+		"vitest": "4.1.9"
 	}
 }

@@ -3,9 +3,13 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
+		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
 		"inspect": "tsx src/inspect.ts",
+		"lint": "pnpm typecheck && pnpm eslint",
+		"render-html": "tsx src/render-html.ts",
 		"render-md": "tsx src/render-md.ts",
-		"render-html": "tsx src/render-html.ts"
+		"test": "vitest run",
+		"typecheck": "tsgo --noEmit"
 	},
 	"dependencies": {
 		"diagnostics-shared": "workspace:*"
@@ -14,6 +18,7 @@
 		"@types/node": "26.0.1",
 		"playwright": "1.61.1",
 		"tsx": "4.22.4",
-		"typescript": "5.9.3"
+		"typescript": "5.9.3",
+		"vitest": "4.1.9"
 	}
 }
