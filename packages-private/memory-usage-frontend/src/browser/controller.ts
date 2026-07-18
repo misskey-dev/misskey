@@ -180,15 +180,22 @@ export class HeadlessChromeController {
 
 	public async takeHeapSnapshot(savePath?: string) {
 		const chunks: string[] = [];
-		this.cdp.on('HeapProfiler.addHeapSnapshotChunk', params => {
+		const onChunk = (params: { chunk: string }) => {
 			chunks.push(params.chunk);
-		});
+		};
+		this.cdp.on('HeapProfiler.addHeapSnapshotChunk', onChunk);
 
-		await this.cdp.send('HeapProfiler.enable');
-		await this.cdp.send('HeapProfiler.collectGarbage');
-		await this.cdp.send('HeapProfiler.takeHeapSnapshot', { reportProgress: false });
+		let content: string;
+		try {
+			await this.cdp.send('HeapProfiler.enable');
+			await this.cdp.send('HeapProfiler.collectGarbage');
+			await this.cdp.send('HeapProfiler.takeHeapSnapshot', { reportProgress: false });
+			content = chunks.join('');
+		} finally {
+			// 外さないとラウンドごとに積み上がり、古い配列にチャンクを流し続ける
+			this.cdp.off('HeapProfiler.addHeapSnapshotChunk', onChunk);
+		}
 
-		const content = chunks.join('');
 		if (savePath != null) {
 			await writeFile(savePath, content);
 		}

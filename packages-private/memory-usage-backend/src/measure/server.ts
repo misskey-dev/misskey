@@ -42,19 +42,46 @@ function isHeapSnapshotResponseMessage(message: unknown): message is HeapSnapsho
 
 export function waitForMessage<T>(serverProcess: ChildProcess, predicate: (message: unknown) => message is T, description: string, timeout: number) {
 	return new Promise<T>((resolve, reject) => {
-		const timer = globalThis.setTimeout(() => {
+		const cleanup = () => {
+			globalThis.clearTimeout(timer);
 			serverProcess.off('message', onMessage);
+			serverProcess.off('exit', onExit);
+			serverProcess.off('error', onError);
+			serverProcess.off('disconnect', onDisconnect);
+		};
+
+		const timer = globalThis.setTimeout(() => {
+			cleanup();
 			reject(new Error(`Timed out waiting for ${description}`));
 		}, timeout);
 
 		const onMessage = (message: unknown) => {
 			if (!predicate(message)) return;
-			globalThis.clearTimeout(timer);
-			serverProcess.off('message', onMessage);
+			cleanup();
 			resolve(message);
 		};
 
+		// 子が死んだ場合、待ち続けてもメッセージは来ない。
+		// タイムアウトまで待って誤解を招くエラーを出すより、理由を添えて即座に失敗させる
+		const onExit = (code: number | null, signal: string | null) => {
+			cleanup();
+			reject(new Error(`Server exited (code=${code}, signal=${signal}) while waiting for ${description}`));
+		};
+
+		const onError = (err: Error) => {
+			cleanup();
+			reject(new Error(`Server errored while waiting for ${description}: ${err.message}`));
+		};
+
+		const onDisconnect = () => {
+			cleanup();
+			reject(new Error(`Server IPC channel closed while waiting for ${description}`));
+		};
+
 		serverProcess.on('message', onMessage);
+		serverProcess.once('exit', onExit);
+		serverProcess.once('error', onError);
+		serverProcess.once('disconnect', onDisconnect);
 	});
 }
 
@@ -149,16 +176,24 @@ export async function requestHeapSnapshot(serverProcess: ChildProcess, snapshotP
  * SIGTERMで終了を促し、一定時間で落ちなければSIGKILLする。
  */
 export async function shutdownBackendServer(serverProcess: ChildProcess) {
-	const serverExited = new Promise<void>(resolve => {
-		const timer = globalThis.setTimeout(() => {
+	// 既に終了しているなら 'exit' はもう発火しないので、待つと無駄に10秒止まる
+	if (serverProcess.exitCode != null || serverProcess.signalCode != null) return;
+
+	await new Promise<void>(resolve => {
+		let forceTimer: NodeJS.Timeout | undefined;
+		const termTimer = globalThis.setTimeout(() => {
 			serverProcess.kill('SIGKILL');
-			resolve();
+			// SIGKILLは無視できないので通常はここで 'exit' が来る。
+			// D状態などで落ちない場合に計測全体を止めないよう、待ち時間には上限を設ける
+			forceTimer = globalThis.setTimeout(resolve, 5000);
 		}, 10000);
+
 		serverProcess.once('exit', () => {
-			globalThis.clearTimeout(timer);
+			globalThis.clearTimeout(termTimer);
+			if (forceTimer != null) globalThis.clearTimeout(forceTimer);
 			resolve();
 		});
+
+		serverProcess.kill('SIGTERM');
 	});
-	serverProcess.kill('SIGTERM');
-	await serverExited;
 }

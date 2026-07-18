@@ -8,11 +8,17 @@ on:
     paths:
       - packages-private/**
       - packages/shared/eslint.config.js
+      - package.json
+      - pnpm-workspace.yaml
+      - pnpm-lock.yaml
       - .github/workflows/packages-private.yml
   pull_request:
     paths:
       - packages-private/**
       - packages/shared/eslint.config.js
+      - package.json
+      - pnpm-workspace.yaml
+      - pnpm-lock.yaml
       - .github/workflows/packages-private.yml
 
 permissions:
@@ -32,6 +38,8 @@ jobs:
           - changelog-checker
     steps:
       - uses: actions/checkout@v6.0.3
+        with:
+          persist-credentials: false
       - name: Setup pnpm
         uses: pnpm/action-setup@v6.0.9
       - uses: actions/setup-node@v6.4.0

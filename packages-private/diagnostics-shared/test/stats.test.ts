@@ -84,6 +84,21 @@ describe('pairedDeltaSummary', () => {
 		expect(pairedDeltaSummary(base, head, sample => sample.value).samples).toBe(2);
 	});
 
+	// 1サンプルでも中央値・最小・最大は定まる (偏差は常に0)
+	test('summarizes a single paired round without treating MAD as an error', () => {
+		expect(pairedDeltaSummary([base[0]], [{ round: 1, value: 130 }], sample => sample.value)).toStrictEqual({
+			median: 30,
+			mad: 0,
+			min: 30,
+			max: 30,
+			samples: 1,
+		});
+	});
+
+	test('fails loudly when no round is shared', () => {
+		expect(() => pairedDeltaSummary(base, [{ round: 9, value: 1 }], sample => sample.value)).toThrow(/no rounds in common/);
+	});
+
 	// 負のroundはwarmupを表すので集計に混ぜない
 	test('ignores warmup rounds', () => {
 		const warmupBase = [{ round: -1, value: 0 }, ...base];

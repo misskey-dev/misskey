@@ -8,12 +8,17 @@ import { collapseHeapSnapshotBreakdown } from './breakdown';
 import {
 	heapSnapshotBreakdownCategories,
 	heapSnapshotCategories,
+	type HeapSnapshotCategory,
 	type HeapSnapshotData,
 } from './categories';
 
+function isComplete(values: Partial<Record<HeapSnapshotCategory, number>>): values is Record<HeapSnapshotCategory, number> {
+	return heapSnapshotCategories.every(category => values[category] != null);
+}
+
 /**
  * 複数ラウンド分のheap snapshotを、カテゴリ・内訳ごとの中央値にまとめる。
- * 有効なサンプルが1つも無ければ null を返す。
+ * 全カテゴリ分の値が揃わなければ null を返す。
  */
 export function summarizeHeapSnapshotDataSamples<T>(
 	samples: T[],
@@ -22,8 +27,8 @@ export function summarizeHeapSnapshotDataSamples<T>(
 ) {
 	const data = samples.map(getData);
 
-	const categories = {} as HeapSnapshotData['categories'];
-	const nodeCounts = {} as HeapSnapshotData['nodeCounts'];
+	const categories: Partial<HeapSnapshotData['categories']> = {};
+	const nodeCounts: Partial<HeapSnapshotData['nodeCounts']> = {};
 	for (const category of heapSnapshotCategories) {
 		const categoryValue = finiteMedian(data.map(snapshot => snapshot?.categories?.[category]));
 		if (categoryValue != null) categories[category] = categoryValue;
@@ -32,7 +37,9 @@ export function summarizeHeapSnapshotDataSamples<T>(
 		if (nodeCountValue != null) nodeCounts[category] = nodeCountValue;
 	}
 
-	if (Object.keys(categories).length === 0) return null;
+	// 一部のカテゴリだけ欠けた状態で返すと、呼び出し側が完全な値として扱って
+	// undefined を描画してしまう。全カテゴリ揃っていなければサマリ自体を無しとする
+	if (!isComplete(categories) || !isComplete(nodeCounts)) return null;
 
 	const breakdowns = {} as NonNullable<HeapSnapshotData['breakdowns']>;
 	for (const category of heapSnapshotBreakdownCategories) {

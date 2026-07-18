@@ -96,21 +96,21 @@ export function formatDeltaPercentInMdTable(deltaPercent: number, colorThreshold
 	return formatDeltaPercent(deltaPercent, colorThreshold).replaceAll('\\%', '\\\\%');
 }
 
-export function calcAndFormatDeltaNumber(before: number, after: number, colorThreshold = 0) {
+export function calcAndFormatDeltaNumber(before: number | null | undefined, after: number | null | undefined, colorThreshold = 0) {
 	if (before == null || after == null) return '-';
 	return formatColoredDelta(after - before, formatNumber, colorThreshold);
 }
 
-export function calcAndFormatDeltaBytes(before: number, after: number, colorThreshold = 0) {
+export function calcAndFormatDeltaBytes(before: number | null | undefined, after: number | null | undefined, colorThreshold = 0) {
 	if (before == null || after == null) return '-';
 	return formatDeltaBytes(after - before, colorThreshold);
 }
 
-export function calcAndFormatDeltaPercent(before: number, after: number, colorThreshold = 0) {
+export function calcAndFormatDeltaPercent(before: number | null | undefined, after: number | null | undefined, colorThreshold = 0) {
 	if (before == null || before === 0 || after == null || after === 0) return '-';
 	return formatDeltaPercent((after - before) / before * 100, colorThreshold);
 }
 
-export function calcAndFormatDeltaPercentInMdTable(before: number, after: number, colorThreshold = 0) {
+export function calcAndFormatDeltaPercentInMdTable(before: number | null | undefined, after: number | null | undefined, colorThreshold = 0) {
 	return calcAndFormatDeltaPercent(before, after, colorThreshold).replaceAll('\\%', '\\\\%');
 }

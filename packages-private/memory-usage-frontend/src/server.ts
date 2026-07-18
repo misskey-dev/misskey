@@ -32,15 +32,22 @@ export function startServer(label: string, repoDir: string) {
 	return child;
 }
 
+const serverStartupTimeoutMs = 120_000;
+
 export async function waitForServer(baseUrl: string, child: ChildProcess) {
 	const startedAt = Date.now();
-	while (Date.now() - startedAt < 120_000) {
+	while (Date.now() - startedAt < serverStartupTimeoutMs) {
 		if (child.exitCode != null) throw new Error(`Misskey server exited early with code ${child.exitCode}`);
 		try {
-			const response = await fetch(`${baseUrl}/`, { redirect: 'manual' });
+			// 応答が返らないままだとfetchが待ち続け、外側の120秒の上限を超えてしまう
+			const remainingMs = serverStartupTimeoutMs - (Date.now() - startedAt);
+			const response = await fetch(`${baseUrl}/`, {
+				redirect: 'manual',
+				signal: AbortSignal.timeout(remainingMs),
+			});
 			if (response.status < 500) return;
 		} catch {
-			// retry
+			// 中断・接続拒否いずれもまだ起動中とみなしてリトライする
 		}
 		await sleep(1_000);
 	}
@@ -66,9 +73,10 @@ export async function stopServer(child: ChildProcess) {
 			resolvePromise();
 			return;
 		}
-		child.once('exit', () => resolvePromise());
-		setTimeout(() => {
-			if (child.pid != null) {
+
+		const forceKillTimer = setTimeout(() => {
+			// 猶予の間に終了していれば、PIDが再利用されて無関係のプロセスを撃つ恐れがある
+			if (child.exitCode == null && child.pid != null) {
 				try {
 					if (process.platform === 'win32') {
 						spawnSync('taskkill', ['/pid', String(child.pid), '/t', '/f'], { stdio: 'ignore' });
@@ -80,6 +88,12 @@ export async function stopServer(child: ChildProcess) {
 				}
 			}
 			resolvePromise();
-		}, 10_000).unref();
+		}, 10_000);
+		forceKillTimer.unref();
+
+		child.once('exit', () => {
+			clearTimeout(forceKillTimer);
+			resolvePromise();
+		});
 	});
 }

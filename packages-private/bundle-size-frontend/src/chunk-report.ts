@@ -12,12 +12,15 @@ import type { CollectedReport, FileEntry } from './manifest';
  */
 const smallDeltaThreshold = 5;
 
-function entryDisplayName(entry: FileEntry) {
-	if (!entry) return '';
+/** diff表に個別行として出す上限。これを超えた分は `(other)` に集約する */
+const diffRowLimit = 30;
+
+function entryDisplayName(entry: FileEntry | undefined) {
+	if (entry == null) return '';
 	return entry.displayName || entry.file;
 }
 
-export function getChunkComparisonRows(keys: string[], before: Record<string, FileEntry>, after: Record<string, FileEntry>) {
+export function getChunkComparisonRows(keys: string[], before: Partial<Record<string, FileEntry>>, after: Partial<Record<string, FileEntry>>) {
 	return keys.map(key => {
 		const beforeEntry = before[key];
 		const afterEntry = after[key];
@@ -163,8 +166,13 @@ export function renderFrontendChunkReport(before: CollectedReport, after: Collec
 		afterSize: sumChunkSizes(after.chunks),
 	};
 	const diffGenerated = generatedAggregate(before.chunks, after.chunks);
-	const diffOther = comparisonRowsAggregate(changedRows.filter(hasSmallDelta));
-	const diffRows = changedRows.filter(row => !hasSmallDelta(row)).sort(compareChunkComparisonRows).slice(0, 30); // TODO: 実際に30を超えて切り捨てられたrowがあった場合はその旨をmarkdown内に表示するようにする
+	const largeDeltaRows = changedRows.filter(row => !hasSmallDelta(row)).sort(compareChunkComparisonRows);
+	const diffRows = largeDeltaRows.slice(0, diffRowLimit);
+	// 表示上限で切り捨てた行も `(other)` に含める。落とすと合計が実際の変化量と合わなくなる
+	const diffOther = comparisonRowsAggregate([
+		...changedRows.filter(hasSmallDelta),
+		...largeDeltaRows.slice(diffRowLimit),
+	]);
 
 	const beforeStartupFiles = new Set(before.startupFiles);
 	const afterStartupFiles = new Set(after.startupFiles);

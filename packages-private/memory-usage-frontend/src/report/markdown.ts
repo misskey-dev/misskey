@@ -19,12 +19,6 @@ export type RenderMarkdownOptions = {
 	detailedHtmlUrl?: string | null;
 };
 
-function formatValueWithSpread(report: BrowserMetricsReport, value: number, getSampleValue: (sample: BrowserMeasurementSample) => number | null | undefined, formatter: (value: number) => string) {
-	const spread = sampleSpread(report.samples.map(sample => getSampleValue(sample)));
-	if (spread == null) return formatter(value);
-	return `${formatter(value)}<br>± ${formatter(spread)}`;
-}
-
 function renderMetricRow(
 	label: string,
 	base: BrowserMetricsReport,
@@ -43,12 +37,9 @@ function renderMetricRow(
 	// 有意な閾値に満たない場合はそもそもrowとして出力しない
 	if (skipIfNotSignificant && (Math.abs(summary.median) < significantThreshold)) return null;
 
-	//const percent = baseValue === 0 ? null : summary.median * 100 / baseValue;
-	//const deltaMedian = `${formatColoredDelta(summary.median, formatter, colorThreshold)}<br>${percent == null ? '-' : formatDeltaPercentInMdTable(percent, 0.1)}`;
 	const deltaMedian = formatColoredDelta(summary.median, formatter, significantThreshold);
 
-	//return `| **${label}** | ${formatValueWithSpread(base, baseValue, getSampleValue, formatter)} | ${formatValueWithSpread(head, headValue, getSampleValue, formatter)} | ${deltaMedian} | ${summary == null ? '-' : formatter(summary.mad)} | ${summary == null ? '-' : formatColoredDelta(summary.min, formatter)} | ${summary == null ? '-' : formatColoredDelta(summary.max, formatter)} |`;
-	return `| **${label}** | ${formatter(baseValue)} | ${formatter(headValue)} | ${deltaMedian} | ${summary == null ? '-' : formatter(summary.mad)} | ${summary == null ? '-' : formatColoredDelta(summary.min, formatter, significantThreshold)} | ${summary == null ? '-' : formatColoredDelta(summary.max, formatter, significantThreshold)} |`;
+	return `| **${label}** | ${formatter(baseValue)} | ${formatter(headValue)} | ${deltaMedian} | ${formatter(summary.mad)} | ${formatColoredDelta(summary.min, formatter, significantThreshold)} | ${formatColoredDelta(summary.max, formatter, significantThreshold)} |`;
 }
 
 function resourceTypeBytes(report: BrowserMeasurement, resourceTypes: string[]) {

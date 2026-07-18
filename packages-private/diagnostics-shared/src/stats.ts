@@ -69,9 +69,14 @@ export function pairedDeltaSummary<T extends RoundedSample>(baseSamples: T[], he
 		values.push(headValue - baseValue);
 	}
 
+	// 対応するroundが1つも無いと中央値も最小/最大も定義できない。
+	// 静かにNaNやInfinityをレポートに載せるより、比較が成立していないと分かる形で落とす
+	if (values.length === 0) throw new Error('No paired samples to compare: base and head have no rounds in common');
+
 	return {
 		median: median(values),
-		mad: mad(values),
+		// 1サンプルでは中央値からの偏差が常に0になる (mad() は統計として無意味なので拒否する)
+		mad: values.length < 2 ? 0 : mad(values),
 		min: Math.min(...values),
 		max: Math.max(...values),
 		samples: values.length,

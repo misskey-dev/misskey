@@ -64,45 +64,43 @@ export async function measureBackendMemory(backendDir: string, options: MeasureB
 		process.stderr.write(`[server error] ${err}\n`);
 	});
 
-	const startupStartTime = Date.now();
+	// 途中で失敗しても子プロセスを残さない。残すと次のラウンドがポート衝突で落ちる
 	try {
+		const startupStartTime = Date.now();
 		await serverReady;
-	} catch (err) {
-		serverProcess.kill('SIGTERM');
-		throw err;
-	}
 
-	const startupTime = Date.now() - startupStartTime;
-	process.stderr.write(`Server started in ${startupTime}ms\n`);
+		const startupTime = Date.now() - startupStartTime;
+		process.stderr.write(`Server started in ${startupTime}ms\n`);
 
-	await triggerGc(serverProcess, settings.ipcTimeoutMs);
+		await triggerGc(serverProcess, settings.ipcTimeoutMs);
 
-	const pid = serverProcess.pid!;
-	const stableSmapsRollup = await measureMemoryUntilStable(() => getSmapsRollupMemoryUsage(pid));
-	const afterGc = {
-		memoryUsage: {
-			...await getMemoryUsage(pid),
-			...stableSmapsRollup.memoryUsage,
-			...await getRuntimeMemoryUsage(serverProcess, settings.ipcTimeoutMs),
-		},
-		stability: stableSmapsRollup.stability,
-	};
-	process.stderr.write(`Memory ${afterGc.stability.converged ? 'stabilized' : 'did not stabilize'} after ${afterGc.stability.readingCount} readings over ${Math.round(afterGc.stability.elapsedMs)}ms\n`);
-
-	const heapSnapshotAfterGc = await getHeapSnapshotStatistics(serverProcess, settings);
-
-	await shutdownBackendServer(serverProcess);
-
-	return {
-		timestamp: new Date().toISOString(),
-		phases: {
-			afterGc: {
-				memoryUsage: afterGc.memoryUsage,
-				memoryStability: afterGc.stability,
-				heapSnapshot: heapSnapshotAfterGc,
+		const pid = serverProcess.pid!;
+		const stableSmapsRollup = await measureMemoryUntilStable(() => getSmapsRollupMemoryUsage(pid));
+		const afterGc = {
+			memoryUsage: {
+				...await getMemoryUsage(pid),
+				...stableSmapsRollup.memoryUsage,
+				...await getRuntimeMemoryUsage(serverProcess, settings.ipcTimeoutMs),
 			},
-		},
-	};
+			stability: stableSmapsRollup.stability,
+		};
+		process.stderr.write(`Memory ${afterGc.stability.converged ? 'stabilized' : 'did not stabilize'} after ${afterGc.stability.readingCount} readings over ${Math.round(afterGc.stability.elapsedMs)}ms\n`);
+
+		const heapSnapshotAfterGc = await getHeapSnapshotStatistics(serverProcess, settings);
+
+		return {
+			timestamp: new Date().toISOString(),
+			phases: {
+				afterGc: {
+					memoryUsage: afterGc.memoryUsage,
+					memoryStability: afterGc.stability,
+					heapSnapshot: heapSnapshotAfterGc,
+				},
+			},
+		};
+	} finally {
+		await shutdownBackendServer(serverProcess);
+	}
 }
 
 async function getHeapSnapshotStatistics(

@@ -51,6 +51,9 @@ export function parseChangeLog(path: string): Release[] {
 			// リリース
 			release = new Release(toString(it));
 			releases.push(release);
+			// 直前のリリースのカテゴリを引き継ぐと、カテゴリ見出しの無いリスト項目が
+			// 前のリリースに混入するのでリセットする
+			category = null;
 		} else if (isHeading(it) && it.depth === 3 && release) {
 			// リリース配下のカテゴリ
 			category = new ReleaseCategory(toString(it));
