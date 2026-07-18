@@ -67,7 +67,7 @@ const emit = defineEmits<{
 }>();
 
 const activatedIndexes = ref(new Set<number>());
-const items = new Map<number, InstanceType<typeof XItem>>();
+const items = new Map<number, InstanceType<typeof XItem> | null>();
 const currentIndex = ref(props.defaultIndex ?? 0);
 
 watch(currentIndex, (newIndex, oldIndex) => {
@@ -75,10 +75,10 @@ watch(currentIndex, (newIndex, oldIndex) => {
 
 	nextTick(() => {
 		if (oldIndex != null && items.has(oldIndex)) {
-			items.get(oldIndex)!.onDeactive();
+			items.get(oldIndex)?.onDeactive();
 		}
 		if (items.has(newIndex)) {
-			items.get(newIndex)!.onActive();
+			items.get(newIndex)?.onActive();
 		}
 	});
 }, { immediate: true });
