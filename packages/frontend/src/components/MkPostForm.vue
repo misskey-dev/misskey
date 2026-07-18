@@ -548,8 +548,11 @@ function setVisibility() {
 			}
 		},
 		changeChannel: channel => {
+			// 通常の投稿とチャンネル投稿の間で切り替えた場合や、投稿先チャンネルを切り替えた場合に、切り替え前の下書きが残ってしまい不自然な挙動になるのを防ぐ
 			// computedで読み替えをするので、localOnlyとvisibilityの変更はしない
+			deleteDraft();
 			targetChannel.value = channel;
+			saveDraft();
 		},
 		closed: () => dispose(),
 	});
@@ -910,15 +913,6 @@ function saveDraft() {
 
 function deleteDraft() {
 	const draftsData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}') as StoredDrafts;
-
-	if (targetChannel.value) {
-		// draftKey.valueからchannel:${targetChannel.value.id}部分を削除したのがpartialDraftKey
-		// 通常の投稿からチャンネルに切り替えて投稿した際に、通常の投稿の下書きが残ってしまい不自然な挙動になるのを防ぐ
-		const partialDraftKey = draftKey.value.replace(`channel:${targetChannel.value.id}`, '');
-		if (draftsData[partialDraftKey]) {
-			delete draftsData[partialDraftKey];
-		}
-	}
 
 	delete draftsData[draftKey.value];
 
