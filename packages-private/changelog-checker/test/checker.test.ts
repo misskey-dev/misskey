@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { expect, suite, test } from 'vitest';
+import { expect, describe, test } from 'vitest';
 import { Release, ReleaseCategory } from '../src/parser.js';
 import { checkNewRelease, checkNewTopic } from '../src/checker.js';
 
-suite('checkNewRelease', () => {
+describe('checkNewRelease', () => {
 	test('headに新しいリリースがある1', () => {
 		const base = [new Release('2024.12.0')];
 		const head = [new Release('2024.12.1'), new Release('2024.12.0')];
@@ -45,9 +45,20 @@ suite('checkNewRelease', () => {
 		console.log(result.message);
 		expect(result.success).toBe(false);
 	});
+
+	// 先頭だけ比較していると、より古いリリースの書き換えを見逃す
+	test('追加分の直後は一致しているが、より古いリリースが書き換えられている', () => {
+		const base = [new Release('2024.12.1'), new Release('2024.12.0')];
+		const head = [new Release('2024.12.2'), new Release('2024.12.1'), new Release('2024.11.0')];
+
+		const result = checkNewRelease(base, head);
+
+		console.log(result.message);
+		expect(result.success).toBe(false);
+	});
 });
 
-suite('checkNewTopic', () => {
+describe('checkNewTopic', () => {
 	test('追記なし', () => {
 		const base = [
 			new Release('2024.12.1', [
@@ -414,5 +425,81 @@ suite('checkNewTopic', () => {
 
 		console.log(result.message);
 		expect(result.success).toBe(false);
+	});
+
+	// 件数が同じでも内容が変わっていれば履歴の書き換えなのでエラーにする
+	test('古いバージョンの項目が書き換えられたときはエラーになる', () => {
+		const base = [
+			new Release('2024.12.1', [
+				new ReleaseCategory('Server', ['feat1']),
+			]),
+			new Release('2024.12.0', [
+				new ReleaseCategory('Server', ['feat1', 'feat2']),
+			]),
+		];
+
+		const head = [
+			new Release('2024.12.1', [
+				new ReleaseCategory('Server', ['feat1']),
+			]),
+			new Release('2024.12.0', [
+				new ReleaseCategory('Server', ['feat1', 'feat2-rewritten']),
+			]),
+		];
+
+		const result = checkNewTopic(base, head);
+
+		console.log(result.message);
+		expect(result.success).toBe(false);
+	});
+
+	test('古いバージョンの項目が並べ替えられたときはエラーになる', () => {
+		const base = [
+			new Release('2024.12.1', [
+				new ReleaseCategory('Server', ['feat1']),
+			]),
+			new Release('2024.12.0', [
+				new ReleaseCategory('Server', ['feat1', 'feat2']),
+			]),
+		];
+
+		const head = [
+			new Release('2024.12.1', [
+				new ReleaseCategory('Server', ['feat1']),
+			]),
+			new Release('2024.12.0', [
+				new ReleaseCategory('Server', ['feat2', 'feat1']),
+			]),
+		];
+
+		const result = checkNewTopic(base, head);
+
+		console.log(result.message);
+		expect(result.success).toBe(false);
+	});
+
+	// 最新リリースの書き換えは通常の編集なので許容する
+	test('最新バージョンの項目を書き換えたときはエラーにならない', () => {
+		const base = [
+			new Release('2024.12.1', [
+				new ReleaseCategory('Server', ['feat1']),
+			]),
+			new Release('2024.12.0', [
+				new ReleaseCategory('Server', ['feat1']),
+			]),
+		];
+
+		const head = [
+			new Release('2024.12.1', [
+				new ReleaseCategory('Server', ['feat1-rewritten']),
+			]),
+			new Release('2024.12.0', [
+				new ReleaseCategory('Server', ['feat1']),
+			]),
+		];
+
+		const result = checkNewTopic(base, head);
+
+		expect(result.success).toBe(true);
 	});
 });

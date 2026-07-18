@@ -18,7 +18,7 @@ function abort(message?: string) {
 
 function main() {
 	if (!fs.existsSync('./CHANGELOG-base.md') || !fs.existsSync('./CHANGELOG-head.md')) {
-		console.error('CHANGELOG-base.md or CHANGELOG-head.md is missing.');
+		abort('CHANGELOG-base.md or CHANGELOG-head.md is missing.');
 		return;
 	}
 

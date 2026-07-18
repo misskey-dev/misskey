@@ -33,14 +33,20 @@ export function checkNewRelease(base: Release[], head: Release[]): Result {
 		return Result.ofFailed('Invalid release count.');
 	}
 
-	const baseLatest = base[0];
-	const headPrevious = head[releaseCountDiff];
-
-	if (baseLatest.releaseName !== headPrevious.releaseName) {
-		return Result.ofFailed('Contains unexpected releases.');
+	// 追加分を除いた残り (= base に既にあったリリース) が順序ごと一致することを確認する。
+	// 先頭だけ比較していると、より古いリリースが書き換えられていても素通りしてしまう
+	const existingReleases = head.slice(releaseCountDiff);
+	for (let relIdx = 0; relIdx < base.length; relIdx++) {
+		if (base[relIdx].releaseName !== existingReleases[relIdx].releaseName) {
+			return Result.ofFailed(`Contains unexpected releases. base:${base[relIdx].releaseName}, head:${existingReleases[relIdx].releaseName}`);
+		}
 	}
 
 	return Result.ofSuccess();
+}
+
+function isSameItems(base: string[], head: string[]) {
+	return base.length === head.length && base.every((item, idx) => item === head[idx]);
 }
 
 /**
@@ -78,9 +84,9 @@ export function checkNewTopic(base: Release[], head: Release[]): Result {
 					return Result.ofFailed(`Category is different. base:${baseCategory.categoryName}, head:${headCategory.categoryName}`);
 				}
 
-				if (baseCategory.items.length !== headCategory.items.length) {
+				if (!isSameItems(baseCategory.items, headCategory.items)) {
 					if (headLatest.releaseName !== headItem.releaseName) {
-						// 最新リリース以外に追記されていた場合
+						// 最新リリース以外が変更されていた場合
 						return Result.ofFailed(`There is an error in the update history. expected additions:${headLatest.releaseName}, actual additions:${headItem.releaseName}`);
 					}
 				}
