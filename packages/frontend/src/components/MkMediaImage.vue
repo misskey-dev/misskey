@@ -180,7 +180,7 @@ function onContextmenu(ev: PointerEvent) {
 	background-color: rgba(0, 0, 0, 0.3);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
-	border-radius: 0 0 0 9px;
+	border-radius: 0 8px 0 9px;
 	color: #fff;
 	font-size: 12px;
 	opacity: .5;
@@ -221,7 +221,7 @@ html[data-color-scheme=light] .visible {
 	background-color: rgba(0, 0, 0, 0.3);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
-	border-radius: 9px 0 0 0;
+	border-radius: 9px 0 8px 0;
 	color: #fff;
 	font-size: 0.8em;
 	width: 28px;
