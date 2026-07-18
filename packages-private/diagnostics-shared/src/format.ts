@@ -107,7 +107,7 @@ export function calcAndFormatDeltaBytes(before: number | null | undefined, after
 }
 
 export function calcAndFormatDeltaPercent(before: number | null | undefined, after: number | null | undefined, colorThreshold = 0) {
-	if (before == null || before === 0 || after == null || after === 0) return '-';
+	if (before == null || before === 0 || after == null) return '-';
 	return formatDeltaPercent((after - before) / before * 100, colorThreshold);
 }
 

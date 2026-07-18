@@ -41,7 +41,7 @@ export function summarizeHeapSnapshotDataSamples<T>(
 	// undefined を描画してしまう。全カテゴリ揃っていなければサマリ自体を無しとする
 	if (!isComplete(categories) || !isComplete(nodeCounts)) return null;
 
-	const breakdowns = {} as NonNullable<HeapSnapshotData['breakdowns']>;
+	const breakdowns: NonNullable<HeapSnapshotData['breakdowns']> = {};
 	for (const category of heapSnapshotBreakdownCategories) {
 		const childKeys = new Set(data.flatMap(snapshot => Object.keys(snapshot?.breakdowns?.[category] ?? {})));
 

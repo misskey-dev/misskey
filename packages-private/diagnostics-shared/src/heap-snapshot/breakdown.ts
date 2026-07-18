@@ -79,7 +79,7 @@ export function collapseHeapSnapshotBreakdowns(
 	breakdowns: Partial<Record<HeapSnapshotCategory, Record<string, number>>>,
 	topN = defaultHeapSnapshotBreakdownTopN,
 ) {
-	const collapsed = {} as NonNullable<HeapSnapshotData['breakdowns']>;
+	const collapsed: NonNullable<HeapSnapshotData['breakdowns']> = {};
 	for (const category of heapSnapshotBreakdownCategories) {
 		const categoryBreakdown = breakdowns[category];
 		if (categoryBreakdown == null) continue;

@@ -69,9 +69,16 @@ describe('escaping', () => {
 });
 
 describe('percent helpers', () => {
-	test('returns a placeholder when a side is zero or missing', () => {
+	// before が0だと変化率そのものが定義できない
+	test('returns a placeholder when the baseline is zero or missing', () => {
 		expect(calcAndFormatDeltaPercent(0, 10)).toBe('-');
-		expect(calcAndFormatDeltaPercent(10, 0)).toBe('-');
+		expect(calcAndFormatDeltaPercent(null, 10)).toBe('-');
+		expect(calcAndFormatDeltaPercent(10, null)).toBe('-');
+	});
+
+	// 0になったのは「消えた」という有効な結果なので、隠さず -100% として出す
+	test('formats a drop to zero as -100%', () => {
+		expect(calcAndFormatDeltaPercent(10, 0)).toBe('$\\color{green}{\\text{-100\\%}}$');
 	});
 
 	// Markdownのテーブルセル内ではLaTeXの \% がさらに食われるため二重にする

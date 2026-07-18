@@ -25,7 +25,8 @@ export const heapSnapshotBreakdownCategories = heapSnapshotCategories.filter(cat
 export type HeapSnapshotData = {
 	categories: Record<HeapSnapshotCategory, number>;
 	nodeCounts: Record<HeapSnapshotCategory, number>;
-	breakdowns?: Record<HeapSnapshotCategory, Record<string, number>>;
+	/** 内訳が空でないカテゴリだけが入る (`total` は内訳を持たない) */
+	breakdowns?: Partial<Record<HeapSnapshotCategory, Record<string, number>>>;
 };
 
 export type HeapSnapshotReport = {
@@ -48,6 +49,6 @@ export function createEmptyHeapSnapshotData(): HeapSnapshotData {
 	return {
 		categories,
 		nodeCounts,
-		breakdowns: {} as HeapSnapshotData['breakdowns'],
+		breakdowns: {},
 	};
 }
