@@ -127,7 +127,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import * as Misskey from 'misskey-js';
-import MkBlurhash from './MkBlurhash.vue';
 
 type Size = {
 	width: number;
@@ -179,7 +178,8 @@ export function calculateSourceTransform({
 
 <script lang="ts" setup>
 import { computed, nextTick, ref, useTemplateRef, markRaw, watch, provide } from 'vue';
-import MkVideoControl from './MkVideoControl.vue';
+import MkVideoControl from '@/components/MkVideoControl.vue';
+import MkBlurhash from '@/components/MkBlurhash.vue';
 import XFileInfo from './MkLightbox.item.fileinfo.vue';
 import type { MenuItem } from '@/types/menu.js';
 import { DI } from '@/di.js';

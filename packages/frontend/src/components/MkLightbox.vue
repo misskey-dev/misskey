@@ -209,6 +209,7 @@ const keymap = {
 } as const satisfies Keymap;
 
 onBeforeUnmount(() => {
+	items.clear();
 	window.removeEventListener('resize', onResize);
 	window.removeEventListener('popstate', onPopState);
 });
