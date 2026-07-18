@@ -10,20 +10,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 	tabindex="0"
 	:class="[
 		$style.audioContainer,
-		(audio.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive,
+		(audio.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive,
 	]"
 	@contextmenu.stop
 	@keydown.stop
 >
-	<button v-if="hide" :class="$style.hidden" @click="show">
+	<button v-if="hide" :class="$style.hidden" @click="reveal">
 		<div :class="$style.hiddenTextWrapper">
-			<b v-if="audio.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.dataSaver.media ? ` (${i18n.ts.audio}${audio.size ? ' ' + bytes(audio.size) : ''})` : '' }}</b>
-			<b v-else style="display: block;"><i class="ti ti-music"></i> {{ defaultStore.state.dataSaver.media && audio.size ? bytes(audio.size) : i18n.ts.audio }}</b>
+			<b v-if="audio.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ prefer.s.dataSaver.media ? ` (${i18n.ts.audio}${audio.size ? ' ' + bytes(audio.size) : ''})` : '' }}</b>
+			<b v-else style="display: block;"><i class="ti ti-music"></i> {{ prefer.s.dataSaver.media && audio.size ? bytes(audio.size) : i18n.ts.audio }}</b>
 			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 		</div>
 	</button>
 
-	<div v-else-if="defaultStore.reactiveState.useNativeUIForVideoAudioPlayer.value" :class="$style.nativeAudioContainer">
+	<div v-else-if="prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.nativeAudioContainer">
 		<audio
 			ref="audioEl"
 			preload="metadata"
@@ -49,8 +49,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				tabindex="-1"
 				@click.stop="togglePlayPause"
 			>
-				<i v-if="isPlaying" class="ti ti-player-pause-filled"></i>
-				<i v-else class="ti ti-player-play-filled"></i>
+				<i v-if="isPlaying" class="ti ti-player-pause"></i>
+				<i v-else class="ti ti-player-play"></i>
 			</button>
 		</div>
 		<div :class="[$style.controlsChild, $style.controlsRight]">
@@ -88,18 +88,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, watch, computed, ref, onDeactivated, onActivated, onMounted } from 'vue';
+import { useTemplateRef, watch, computed, ref, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
-import type { Keymap } from '@/scripts/hotkey.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard';
-import { defaultStore } from '@/store.js';
+import type { Keymap } from '@/utility/hotkey.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
-import { $i, iAmModerator } from '@/account.js';
+import { $i, iAmModerator } from '@/i.js';
+import { prefer } from '@/preferences.js';
+import { getFileMenu } from '@/utility/get-file-menu.js';
+import { canRevealFile, shouldHideFileByDefault } from '@/utility/sensitive-file.js';
 
 const props = defineProps<{
 	audio: Misskey.entities.DriveFile;
@@ -148,22 +150,17 @@ const keymap = {
 // PlayerElもしくはその子要素にフォーカスがあるかどうか
 function hasFocus() {
 	if (!playerEl.value) return false;
-	return playerEl.value === document.activeElement || playerEl.value.contains(document.activeElement);
+	return playerEl.value === window.document.activeElement || playerEl.value.contains(window.document.activeElement);
 }
 
-const playerEl = shallowRef<HTMLDivElement>();
-const audioEl = shallowRef<HTMLAudioElement>();
+const playerEl = useTemplateRef('playerEl');
+const audioEl = useTemplateRef('audioEl');
 
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.audio.isSensitive && defaultStore.state.nsfw !== 'ignore'));
+const hide = ref(shouldHideFileByDefault(props.audio));
 
-async function show() {
-	if (props.audio.isSensitive && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
-		const { canceled } = await os.confirm({
-			type: 'question',
-			text: i18n.ts.sensitiveMediaRevealConfirm,
-		});
-		if (canceled) return;
+async function reveal() {
+	if (!(await canRevealFile(props.audio))) {
+		return;
 	}
 
 	hide.value = false;
@@ -186,57 +183,37 @@ function showMenu(ev: MouseEvent) {
 			text: i18n.ts._mediaControls.playbackRate,
 			icon: 'ti ti-clock-play',
 			ref: speed,
-			options: {
-				'0.25x': 0.25,
-				'0.5x': 0.5,
-				'0.75x': 0.75,
-				'1.0x': 1,
-				'1.25x': 1.25,
-				'1.5x': 1.5,
-				'2.0x': 2,
-			},
+			options: [{
+				label: '0.25x',
+				value: 0.25,
+			}, {
+				label: '0.5x',
+				value: 0.5,
+			}, {
+				label: '0.75x',
+				value: 0.75,
+			}, {
+				label: '1.0x',
+				value: 1,
+			}, {
+				label: '1.25x',
+				value: 1.25,
+			}, {
+				label: '1.5x',
+				value: 1.5,
+			}, {
+				label: '2.0x',
+				value: 2,
+			}],
 		},
 		{
 			type: 'divider',
-		},
-		{
-			text: i18n.ts.hide,
-			icon: 'ti ti-eye-off',
-			action: () => {
-				hide.value = true;
-			},
 		},
 	];
 
-	if (iAmModerator) {
-		menu.push({
-			text: props.audio.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-			icon: props.audio.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',
-			danger: true,
-			action: () => toggleSensitive(props.audio),
-		});
-	}
-
-	if ($i?.id === props.audio.userId) {
-		menu.push({
-			type: 'divider',
-		}, {
-			type: 'link',
-			text: i18n.ts._fileViewer.title,
-			icon: 'ti ti-info-circle',
-			to: `/my/drive/file/${props.audio.id}`,
-		});
-	}
-
-	if (defaultStore.state.devMode) {
-		menu.push({ type: 'divider' }, {
-			icon: 'ti ti-id',
-			text: i18n.ts.copyFileId,
-			action: () => {
-				copyToClipboard(props.audio.id);
-			},
-		});
-	}
+	menu.push(...getFileMenu(props.audio, (newState) => {
+		hide.value = newState;
+	}));
 
 	menuShowing.value = true;
 	os.popupMenu(menu, ev.currentTarget ?? ev.target, {
@@ -244,13 +221,6 @@ function showMenu(ev: MouseEvent) {
 		onClosing: () => {
 			menuShowing.value = false;
 		},
-	});
-}
-
-function toggleSensitive(file: Misskey.entities.DriveFile) {
-	os.apiWithDialog('drive/files/update', {
-		fileId: file.id,
-		isSensitive: !file.isSensitive,
 	});
 }
 
@@ -388,7 +358,7 @@ onDeactivated(() => {
 	elapsedTimeMs.value = 0;
 	durationMs.value = 0;
 	bufferedEnd.value = 0;
-	hide.value = (defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.audio.isSensitive && defaultStore.state.nsfw !== 'ignore');
+	hide.value = (prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.audio.isSensitive && prefer.s.nsfw !== 'ignore');
 	stopAudioElWatch();
 	onceInit = false;
 	if (mediaTickFrameId) {

@@ -196,6 +196,25 @@ export class ApDeliverManagerService {
 		await manager.execute();
 	}
 
+	/**
+	 * Deliver activity to users
+	 * @param actor
+	 * @param activity Activity
+	 * @param targets Target users
+	 */
+	@bindThis
+	public async deliverToUsers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, targets: MiRemoteUser[]): Promise<void> {
+		const manager = new DeliverManager(
+			this.userEntityService,
+			this.followingsRepository,
+			this.queueService,
+			actor,
+			activity,
+		);
+		for (const to of targets) manager.addDirectRecipe(to);
+		await manager.execute();
+	}
+
 	@bindThis
 	public createDeliverManager(actor: { id: MiUser['id']; host: null; }, activity: IActivity | null): DeliverManager {
 		return new DeliverManager(

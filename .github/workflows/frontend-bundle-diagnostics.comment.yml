@@ -1,0 +1,44 @@
+name: Frontend bundle diagnostics (comment)
+
+on:
+  workflow_run:
+    workflows:
+      - Frontend bundle diagnostics (inspect)
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  comment:
+    name: Comment frontend bundle report
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: frontend-bundle-diagnostics-report-${{ github.event.workflow_run.id }}
+      cancel-in-progress: true
+    steps:
+      - name: Download bundle report
+        uses: actions/download-artifact@v8
+        with:
+          name: frontend-bundle-report
+          path: ${{ runner.temp }}/frontend-bundle-report
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Load PR number
+        id: load-pr-number
+        shell: bash
+        run: echo "pr-number=$(cat "$RUNNER_TEMP/frontend-bundle-report/pr-number.txt")" >> "$GITHUB_OUTPUT"
+
+      - name: Comment on pull request
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          pr-number: ${{ steps.load-pr-number.outputs.pr-number }}
+          comment-tag: frontend-bundle-diagnostics
+          file-path: ${{ runner.temp }}/frontend-bundle-report/frontend-bundle-diagnostics-report.md

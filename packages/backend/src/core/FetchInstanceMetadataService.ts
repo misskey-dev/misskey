@@ -5,9 +5,9 @@
 
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import { JSDOM } from 'jsdom';
 import tinycolor from 'tinycolor2';
 import * as Redis from 'ioredis';
+import * as htmlParser from 'node-html-parser';
 import type { MiInstance } from '@/models/Instance.js';
 import type Logger from '@/logger.js';
 import { DI } from '@/di-symbols.js';
@@ -15,7 +15,6 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import type { DOMWindow } from 'jsdom';
 
 type NodeInfo = {
 	openRegistrations?: unknown;
@@ -59,7 +58,7 @@ export class FetchInstanceMetadataService {
 		return await this.redisClient.set(
 			`fetchInstanceMetadata:mutex:v2:${host}`, '1',
 			'EX', 30, // 30秒したら自動でロック解除 https://github.com/misskey-dev/misskey/issues/13506#issuecomment-1975375395
-			'GET' // 古い値を返す（なかったらnull）
+			'GET', // 古い値を返す（なかったらnull）
 		);
 	}
 
@@ -181,15 +180,14 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async fetchDom(instance: MiInstance): Promise<Document> {
+	private async fetchDom(instance: MiInstance): Promise<htmlParser.HTMLElement> {
 		this.logger.info(`Fetching HTML of ${instance.host} ...`);
 
 		const url = 'https://' + instance.host;
 
 		const html = await this.httpRequestService.getHtml(url);
 
-		const { window } = new JSDOM(html);
-		const doc = window.document;
+		const doc = htmlParser.parse(html);
 
 		return doc;
 	}
@@ -206,12 +204,12 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async fetchFaviconUrl(instance: MiInstance, doc: Document | null): Promise<string | null> {
+	private async fetchFaviconUrl(instance: MiInstance, doc: htmlParser.HTMLElement | null): Promise<string | null> {
 		const url = 'https://' + instance.host;
 
 		if (doc) {
 			// https://github.com/misskey-dev/misskey/pull/8220#issuecomment-1025104043
-			const href = Array.from(doc.getElementsByTagName('link')).reverse().find(link => link.relList.contains('icon'))?.href;
+			const href = Array.from(doc.getElementsByTagName('link')).reverse().find(link => link.attributes.rel === 'icon')?.attributes.href;
 
 			if (href) {
 				return (new URL(href, url)).href;
@@ -232,7 +230,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async fetchIconUrl(instance: MiInstance, doc: Document | null, manifest: Record<string, any> | null): Promise<string | null> {
+	private async fetchIconUrl(instance: MiInstance, doc: htmlParser.HTMLElement | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (manifest && manifest.icons && manifest.icons.length > 0 && manifest.icons[0].src) {
 			const url = 'https://' + instance.host;
 			return (new URL(manifest.icons[0].src, url)).href;
@@ -246,9 +244,9 @@ export class FetchInstanceMetadataService {
 			// https://github.com/misskey-dev/misskey/pull/8220/files/0ec4eba22a914e31b86874f12448f88b3e58dd5a#r796487559
 			const href =
 				[
-					links.find(link => link.relList.contains('apple-touch-icon-precomposed'))?.href,
-					links.find(link => link.relList.contains('apple-touch-icon'))?.href,
-					links.find(link => link.relList.contains('icon'))?.href,
+					links.find(link => link.attributes.rel?.split(/\s+/).includes('apple-touch-icon-precomposed'))?.attributes.href,
+					links.find(link => link.attributes.rel?.split(/\s+/).includes('apple-touch-icon'))?.attributes.href,
+					links.find(link => link.attributes.rel?.split(/\s+/).includes('icon'))?.attributes.href,
 				]
 					.find(href => href);
 
@@ -261,7 +259,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async getThemeColor(info: NodeInfo | null, doc: Document | null, manifest: Record<string, any> | null): Promise<string | null> {
+	private async getThemeColor(info: NodeInfo | null, doc: htmlParser.HTMLElement | null, manifest: Record<string, any> | null): Promise<string | null> {
 		const themeColor = info?.metadata?.themeColor ?? doc?.querySelector('meta[name="theme-color"]')?.getAttribute('content') ?? manifest?.theme_color;
 
 		if (themeColor) {
@@ -273,7 +271,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async getSiteName(info: NodeInfo | null, doc: Document | null, manifest: Record<string, any> | null): Promise<string | null> {
+	private async getSiteName(info: NodeInfo | null, doc: htmlParser.HTMLElement | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (info && info.metadata) {
 			if (typeof info.metadata.nodeName === 'string') {
 				return info.metadata.nodeName;
@@ -298,7 +296,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async getDescription(info: NodeInfo | null, doc: Document | null, manifest: Record<string, any> | null): Promise<string | null> {
+	private async getDescription(info: NodeInfo | null, doc: htmlParser.HTMLElement | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (info && info.metadata) {
 			if (typeof info.metadata.nodeDescription === 'string') {
 				return info.metadata.nodeDescription;

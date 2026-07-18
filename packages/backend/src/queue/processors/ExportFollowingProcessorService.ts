@@ -94,7 +94,8 @@ export class ExportFollowingProcessorService {
 						continue;
 					}
 
-					const content = this.utilityService.getFullApAccount(u.username, u.host);
+					const userAcct = this.utilityService.getFullApAccount(u.username, u.host);
+					const content = `${userAcct},withReplies=${following.withReplies}`;
 					await new Promise<void>((res, rej) => {
 						stream.write(content + '\n', err => {
 							if (err) {

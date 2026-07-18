@@ -13,13 +13,13 @@
 		"module": "nodenext",
 		"moduleResolution": "nodenext",
 		"removeComments": false,
+		"skipLibCheck": true,
 		"noLib": false,
 		"strict": true,
 		"strictNullChecks": true,
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,
-		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
 			"@@/*": ["../frontend-shared/*"]
@@ -28,6 +28,7 @@
 			"./node_modules/@types",
 			"./src/@types"
 		],
+		"libReplacement": true,
 		"lib": [
 			"esnext",
 			"webworker"

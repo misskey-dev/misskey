@@ -6,9 +6,11 @@
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import * as yaml from 'js-yaml';
-import * as Sentry from '@sentry/node';
+import { type FastifyServerOptions } from 'fastify';
+import type * as Sentry from '@sentry/node';
+import type * as SentryVue from '@sentry/vue';
 import type { RedisOptions } from 'ioredis';
+import type { LogFormat, LogLevelSetting } from './logging/types.js';
 
 type RedisOptionsSource = Partial<RedisOptions> & {
 	host: string;
@@ -19,6 +21,27 @@ type RedisOptionsSource = Partial<RedisOptions> & {
 	prefix?: string;
 };
 
+type SentryBackendConfig = {
+	options: Partial<Sentry.NodeOptions>;
+	enableNodeProfiling: boolean;
+	disabledIntegrations?: string[];
+};
+
+type OtelBackendConfig = {
+	endpoint?: string;
+	headers?: Record<string, string>;
+	sampleRate?: number;
+	capturePgSpans?: boolean;
+	capturePgStatement?: boolean;
+	capturePgConnectionSpans?: boolean;
+	captureRedisCommandSpans?: boolean;
+	captureRedisConnectionSpans?: boolean;
+	captureRedisRootSpans?: boolean;
+	resourceAttributes?: Record<string, string>;
+	propagateTraceToRemote?: boolean;
+	jobTraceContextMode?: 'link' | 'parent';
+};
+
 /**
  * 設定ファイルの型
  */
@@ -26,7 +49,9 @@ type Source = {
 	url?: string;
 	port?: number;
 	socket?: string;
+	trustProxy?: FastifyServerOptions['trustProxy'];
 	chmodSocket?: string;
+	enableIpRateLimit?: boolean;
 	disableHsts?: boolean;
 	db: {
 		host: string;
@@ -61,8 +86,14 @@ type Source = {
 		index: string;
 		scope?: 'local' | 'global' | string[];
 	};
-	sentryForBackend?: { options: Partial<Sentry.NodeOptions>; enableNodeProfiling: boolean; };
-	sentryForFrontend?: { options: Partial<Sentry.NodeOptions> };
+	sentryForBackend?: SentryBackendConfig;
+	otelForBackend?: OtelBackendConfig;
+	sentryForFrontend?: {
+		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
+		vueIntegration?: SentryVue.VueIntegrationOptions | null;
+		browserTracingIntegration?: Parameters<typeof SentryVue.browserTracingIntegration>[0] | null;
+		replayIntegration?: Parameters<typeof SentryVue.replayIntegration>[0] | null;
+	};
 
 	publishTarballInsteadOfProvideRepositoryUrl?: boolean;
 
@@ -77,6 +108,7 @@ type Source = {
 	maxFileSize?: number;
 
 	clusterLimit?: number;
+	threadPoolSize?: number;
 
 	id: string;
 
@@ -93,10 +125,7 @@ type Source = {
 	inboxJobMaxAttempts?: number;
 
 	mediaProxy?: string;
-	proxyRemoteFiles?: boolean;
 	videoThumbnailGenerator?: string;
-
-	signToActivityPubGet?: boolean;
 
 	perChannelMaxNoteCacheCount?: number;
 	perUserNotificationsMaxCount?: number;
@@ -104,9 +133,12 @@ type Source = {
 	pidFile: string;
 
 	logging?: {
+		format?: LogFormat;
+		level?: LogLevelSetting;
+		domains?: Record<string, LogLevelSetting> | null;
 		sql?: {
-			disableQueryTruncation? : boolean,
-			enableQueryParamLogging? : boolean,
+			disableQueryTruncation?: boolean,
+			enableQueryParamLogging?: boolean,
 		}
 	}
 };
@@ -115,7 +147,9 @@ export type Config = {
 	url: string;
 	port: number;
 	socket: string | undefined;
+	trustProxy: NonNullable<FastifyServerOptions['trustProxy']>;
 	chmodSocket: string | undefined;
+	enableIpRateLimit: boolean;
 	disableHsts: boolean | undefined;
 	db: {
 		host: string;
@@ -151,6 +185,7 @@ export type Config = {
 	allowedPrivateNetworks: string[] | undefined;
 	maxFileSize: number;
 	clusterLimit: number | undefined;
+	threadPoolSize: number;
 	id: string;
 	outgoingAddress: string | undefined;
 	outgoingAddressFamily: 'ipv4' | 'ipv6' | 'dual' | undefined;
@@ -162,12 +197,13 @@ export type Config = {
 	relationshipJobPerSec: number | undefined;
 	deliverJobMaxAttempts: number | undefined;
 	inboxJobMaxAttempts: number | undefined;
-	proxyRemoteFiles: boolean | undefined;
-	signToActivityPubGet: boolean | undefined;
 	logging?: {
+		format?: LogFormat;
+		level?: LogLevelSetting;
+		domains?: Record<string, LogLevelSetting> | null;
 		sql?: {
-			disableQueryTruncation? : boolean,
-			enableQueryParamLogging? : boolean,
+			disableQueryTruncation?: boolean,
+			enableQueryParamLogging?: boolean,
 		}
 	}
 
@@ -183,10 +219,9 @@ export type Config = {
 	authUrl: string;
 	driveUrl: string;
 	userAgent: string;
-	frontendEntry: string;
 	frontendManifestExists: boolean;
-	frontendEmbedEntry: string;
 	frontendEmbedManifestExists: boolean;
+	rootDir: string;
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
 	videoThumbnailGenerator: string | null;
@@ -195,8 +230,14 @@ export type Config = {
 	redisForJobQueue: RedisOptions & RedisOptionsSource;
 	redisForTimelines: RedisOptions & RedisOptionsSource;
 	redisForReactions: RedisOptions & RedisOptionsSource;
-	sentryForBackend: { options: Partial<Sentry.NodeOptions>; enableNodeProfiling: boolean; } | undefined;
-	sentryForFrontend: { options: Partial<Sentry.NodeOptions> } | undefined;
+	sentryForBackend: SentryBackendConfig | undefined;
+	otelForBackend: OtelBackendConfig | undefined;
+	sentryForFrontend: {
+		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
+		vueIntegration?: SentryVue.VueIntegrationOptions | null;
+		browserTracingIntegration?: Parameters<typeof SentryVue.browserTracingIntegration>[0] | null;
+		replayIntegration?: Parameters<typeof SentryVue.replayIntegration>[0] | null;
+	} | undefined;
 	perChannelMaxNoteCacheCount: number;
 	perUserNotificationsMaxCount: number;
 	deactivateAntennaThreshold: number;
@@ -208,33 +249,39 @@ export type FulltextSearchProvider = 'sqlLike' | 'sqlPgroonga' | 'meilisearch';
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
-/**
- * Path of configuration directory
- */
-const dir = `${_dirname}/../../../.config`;
+/** Path of repository root directory */
+let rootDir = _dirname;
+// 見つかるまで上に遡る
+while (!fs.existsSync(resolve(rootDir, 'packages'))) {
+	const parentDir = dirname(rootDir);
+	if (parentDir === rootDir) {
+		throw new Error('Cannot find root directory');
+	}
+	rootDir = parentDir;
+}
 
-/**
- * Path of configuration file
- */
-const path = process.env.MISSKEY_CONFIG_YML
-	? resolve(dir, process.env.MISSKEY_CONFIG_YML)
-	: process.env.NODE_ENV === 'test'
-		? resolve(dir, 'test.yml')
-		: resolve(dir, 'default.yml');
+/** Path of configuration directory */
+const configDir = resolve(rootDir, '.config');
+/** Path of built directory */
+const projectBuiltDir = resolve(rootDir, 'built');
+
+const compiledConfigFilePathForTest = resolve(projectBuiltDir, '._config_.json');
+
+export const compiledConfigFilePath = fs.existsSync(compiledConfigFilePathForTest)
+	? compiledConfigFilePathForTest
+	: resolve(projectBuiltDir, '.config.json');
 
 export function loadConfig(): Config {
-	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
+	if (!fs.existsSync(compiledConfigFilePath)) {
+		throw new Error('Compiled configuration file not found. Try running \'pnpm compile-config\'.');
+	}
 
-	const frontendManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_vite_/manifest.json');
-	const frontendEmbedManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_embed_vite_/manifest.json');
-	const frontendManifest = frontendManifestExists ?
-		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_vite_/manifest.json`, 'utf-8'))
-		: { 'src/_boot_.ts': { file: 'src/_boot_.ts' } };
-	const frontendEmbedManifest = frontendEmbedManifestExists ?
-		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_embed_vite_/manifest.json`, 'utf-8'))
-		: { 'src/boot.ts': { file: 'src/boot.ts' } };
+	const meta = JSON.parse(fs.readFileSync(resolve(projectBuiltDir, 'meta.json'), 'utf-8'));
 
-	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
+	const frontendManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_vite_/manifest.json'));
+	const frontendEmbedManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_embed_vite_/manifest.json'));
+
+	const config = JSON.parse(fs.readFileSync(compiledConfigFilePath, 'utf-8')) as Source;
 
 	const url = tryCreateUrl(config.url ?? process.env.MISSKEY_URL ?? '');
 	const version = meta.version;
@@ -260,8 +307,17 @@ export function loadConfig(): Config {
 		url: url.origin,
 		port: config.port ?? parseInt(process.env.PORT ?? '', 10),
 		socket: config.socket,
+		trustProxy: config.trustProxy ?? [
+			'10.0.0.0/8',
+			'172.16.0.0/12',
+			'192.168.0.0/16',
+			'127.0.0.1/32',
+			'::1/128',
+			'fc00::/7',
+		],
 		chmodSocket: config.chmodSocket,
 		disableHsts: config.disableHsts,
+		enableIpRateLimit: config.enableIpRateLimit ?? true,
 		host,
 		hostname,
 		scheme,
@@ -281,6 +337,7 @@ export function loadConfig(): Config {
 		redisForTimelines: config.redisForTimelines ? convertRedisOptions(config.redisForTimelines, host) : redis,
 		redisForReactions: config.redisForReactions ? convertRedisOptions(config.redisForReactions, host) : redis,
 		sentryForBackend: config.sentryForBackend,
+		otelForBackend: config.otelForBackend,
 		sentryForFrontend: config.sentryForFrontend,
 		id: config.id,
 		proxy: config.proxy,
@@ -289,6 +346,7 @@ export function loadConfig(): Config {
 		allowedPrivateNetworks: config.allowedPrivateNetworks,
 		maxFileSize: config.maxFileSize ?? 262144000,
 		clusterLimit: config.clusterLimit,
+		threadPoolSize: config.threadPoolSize ?? 1,
 		outgoingAddress: config.outgoingAddress,
 		outgoingAddressFamily: config.outgoingAddressFamily,
 		deliverJobConcurrency: config.deliverJobConcurrency,
@@ -299,18 +357,15 @@ export function loadConfig(): Config {
 		relationshipJobPerSec: config.relationshipJobPerSec,
 		deliverJobMaxAttempts: config.deliverJobMaxAttempts,
 		inboxJobMaxAttempts: config.inboxJobMaxAttempts,
-		proxyRemoteFiles: config.proxyRemoteFiles,
-		signToActivityPubGet: config.signToActivityPubGet ?? true,
 		mediaProxy: externalMediaProxy ?? internalMediaProxy,
 		externalMediaProxyEnabled: externalMediaProxy !== null && externalMediaProxy !== internalMediaProxy,
 		videoThumbnailGenerator: config.videoThumbnailGenerator ?
 			config.videoThumbnailGenerator.endsWith('/') ? config.videoThumbnailGenerator.substring(0, config.videoThumbnailGenerator.length - 1) : config.videoThumbnailGenerator
 			: null,
 		userAgent: `Misskey/${version} (${config.url})`,
-		frontendEntry: frontendManifest['src/_boot_.ts'],
 		frontendManifestExists: frontendManifestExists,
-		frontendEmbedEntry: frontendEmbedManifest['src/boot.ts'],
 		frontendEmbedManifestExists: frontendEmbedManifestExists,
+		rootDir,
 		perChannelMaxNoteCacheCount: config.perChannelMaxNoteCacheCount ?? 1000,
 		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 500,
 		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
@@ -322,7 +377,7 @@ export function loadConfig(): Config {
 function tryCreateUrl(url: string) {
 	try {
 		return new URL(url);
-	} catch (e) {
+	} catch (_) {
 		throw new Error(`url="${url}" is not a valid URL.`);
 	}
 }

@@ -4,7 +4,14 @@
  */
 
 import { entities } from 'misskey-js';
-import { beforeEach, describe, test } from '@jest/globals';
+import {
+	beforeEach,
+	beforeAll,
+	afterAll,
+	describe,
+	expect,
+	test,
+} from 'vitest';
 import {
 	api,
 	captureWebhook,

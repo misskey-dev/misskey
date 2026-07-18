@@ -9,12 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>{{ i18n.ts._widgets.serverMetric }}</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="toggleView()"><i class="ti ti-selector"></i></button></template>
 
-	<div v-if="meta" data-cy-mkw-serverMetric class="mkw-serverMetric">
+	<div v-if="meta" data-testid="mkw-serverMetric" class="mkw-serverMetric">
 		<XCpuMemory v-if="widgetProps.view === 0" :connection="connection" :meta="meta"/>
 		<XNet v-else-if="widgetProps.view === 1" :connection="connection" :meta="meta"/>
 		<XCpu v-else-if="widgetProps.view === 2" :connection="connection" :meta="meta"/>
 		<XMemory v-else-if="widgetProps.view === 3" :connection="connection" :meta="meta"/>
-		<XDisk v-else-if="widgetProps.view === 4" :connection="connection" :meta="meta"/>
+		<XDisk v-else-if="widgetProps.view === 4" :meta="meta"/>
 	</div>
 </MkContainer>
 </template>
@@ -30,8 +30,8 @@ import XCpu from './cpu.vue';
 import XMemory from './mem.vue';
 import XDisk from './disk.vue';
 import MkContainer from '@/components/MkContainer.vue';
-import type { GetFormResultType } from '@/scripts/form.js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 
@@ -39,19 +39,21 @@ const name = 'serverMetric';
 
 const widgetPropsDef = {
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 	transparent: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 	view: {
-		type: 'number' as const,
+		type: 'number',
 		default: 0,
 		hidden: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 

@@ -16,7 +16,7 @@ import { ApiError } from '../../error.js';
 export const meta = {
 	secure: true,
 	requireCredential: true,
-	requireRolePolicy: 'canImportAntennas',
+	requiredRolePolicy: 'canImportAntennas',
 	prohibitMoved: true,
 
 	limit: {
@@ -74,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const userExist = await this.usersRepository.exists({ where: { id: me.id } });
 			if (!userExist) throw new ApiError(meta.errors.noSuchUser);
-			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
+			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId, userId: me.id });
 			if (file === null) throw new ApiError(meta.errors.noSuchFile);
 			if (file.size === 0) throw new ApiError(meta.errors.emptyFile);
 			const antennas: (_Antenna & { userListAccts: string[] | null })[] = JSON.parse(await this.downloadService.downloadTextFile(file.url));

@@ -9,7 +9,7 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 
-export type FanoutTimelineName =
+export type FanoutTimelineName = (
 	// home timeline
 	| `homeTimeline:${string}`
 	| `homeTimelineWithFiles:${string}` // only notes with files are included
@@ -37,6 +37,7 @@ export type FanoutTimelineName =
 
 	// role timelines
 	| `roleTimeline:${string}` // any notes are included
+);
 
 @Injectable()
 export class FanoutTimelineService {
@@ -110,5 +111,10 @@ export class FanoutTimelineService {
 	@bindThis
 	public purge(name: FanoutTimelineName) {
 		return this.redisForTimelines.del('list:' + name);
+	}
+
+	@bindThis
+	public remove(name: FanoutTimelineName, id: string) {
+		return this.redisForTimelines.lrem('list:' + name, 1, id);
 	}
 }

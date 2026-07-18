@@ -5,24 +5,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <!-- eslint-disable vue/no-v-html -->
 <template>
-<div :class="[$style.codeBlockRoot, { [$style.codeEditor]: codeEditor }, (darkMode ? $style.dark : $style.light)]" v-html="html"></div>
+<div
+	:class="[$style.codeBlockRoot, {
+		[$style.codeEditor]: codeEditor,
+		[$style.outerStyle]: !codeEditor && withOuterStyle,
+		[$style.dark]: darkMode,
+		[$style.light]: !darkMode,
+	}]" v-html="html"></div>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import { bundledLanguagesInfo } from 'shiki/langs';
 import type { BundledLanguage } from 'shiki/langs';
-import { getHighlighter, getTheme } from '@/scripts/code-highlighter.js';
-import { defaultStore } from '@/store.js';
+import { getHighlighter, getTheme } from '@/utility/code-highlighter.js';
+import { store } from '@/store.js';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	code: string;
 	lang?: string;
 	codeEditor?: boolean;
-}>();
+	withOuterStyle?: boolean;
+}>(), {
+	codeEditor: false,
+	withOuterStyle: true,
+});
 
 const highlighter = await getHighlighter();
-const darkMode = defaultStore.reactiveState.darkMode;
+const darkMode = store.r.darkMode;
 const codeLang = ref<BundledLanguage | 'aiscript'>('js');
 
 const [lightThemeName, darkThemeName] = await Promise.all([
@@ -73,19 +83,13 @@ watch(() => props.lang, (to) => {
 
 <style module lang="scss">
 .codeBlockRoot :global(.shiki) {
-	padding: 1em;
-	margin: .5em 0;
 	overflow: auto;
-	border-radius: 8px;
-	border: 1px solid var(--MI_THEME-divider);
 	font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
 
 	color: var(--shiki-fallback);
-	background-color: var(--shiki-fallback-bg);
 
 	& span {
 		color: var(--shiki-fallback);
-		background-color: var(--shiki-fallback-bg);
 	}
 
 	& pre,
@@ -94,24 +98,38 @@ watch(() => props.lang, (to) => {
 	}
 }
 
+.outerStyle.codeBlockRoot :global(.shiki) {
+	padding: 1em;
+	margin: 0;
+	border-radius: 8px;
+	border: 1px solid var(--MI_THEME-divider);
+	background-color: var(--shiki-fallback-bg);
+}
+
 .light.codeBlockRoot :global(.shiki) {
 	color: var(--shiki-light);
-	background-color: var(--shiki-light-bg);
 
 	& span {
 		color: var(--shiki-light);
-		background-color: var(--shiki-light-bg);
 	}
+}
+
+.light.outerStyle.codeBlockRoot :global(.shiki),
+.light.codeEditor.codeBlockRoot :global(.shiki) {
+	background-color: var(--shiki-light-bg);
 }
 
 .dark.codeBlockRoot :global(.shiki) {
 	color: var(--shiki-dark);
-	background-color: var(--shiki-dark-bg);
 
 	& span {
 		color: var(--shiki-dark);
-		background-color: var(--shiki-dark-bg);
 	}
+}
+
+.dark.outerStyle.codeBlockRoot :global(.shiki),
+.dark.codeEditor.codeBlockRoot :global(.shiki) {
+	background-color: var(--shiki-dark-bg);
 }
 
 .codeBlockRoot.codeEditor {

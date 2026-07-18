@@ -4,96 +4,147 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<FormSection first>
-		<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
-		<div class="_gaps_s">
-			<MkFolder v-for="type in notificationTypes.filter(x => !nonConfigurableNotificationTypes.includes(x))" :key="type">
-				<template #label>{{ i18n.ts._notification._types[type] }}</template>
-				<template #suffix>
-					{{
-						$i.notificationRecieveConfig[type]?.type === 'never' ? i18n.ts.none :
-						$i.notificationRecieveConfig[type]?.type === 'following' ? i18n.ts.following :
-						$i.notificationRecieveConfig[type]?.type === 'follower' ? i18n.ts.followers :
-						$i.notificationRecieveConfig[type]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
-						$i.notificationRecieveConfig[type]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
-						$i.notificationRecieveConfig[type]?.type === 'list' ? i18n.ts.userList :
-						i18n.ts.all
-					}}
-				</template>
+<SearchMarker path="/settings/notifications" :label="i18n.ts.notifications" :keywords="['notifications']" icon="ti ti-bell">
+	<div class="_gaps_m">
+		<MkFeatureBanner icon="/fluent-emoji/1f514.png" color="#ffff00">
+			<SearchText>{{ i18n.ts._settings.notificationsBanner }}</SearchText>
+		</MkFeatureBanner>
 
-				<XNotificationConfig
-					:userLists="userLists"
-					:value="$i.notificationRecieveConfig[type] ?? { type: 'all' }"
-					:configurableTypes="onlyOnOrOffNotificationTypes.includes(type) ? ['all', 'never'] : undefined"
-					@update="(res) => updateReceiveConfig(type, res)"
-				/>
-			</MkFolder>
-		</div>
-	</FormSection>
-	<FormSection>
-		<div class="_gaps_m">
-			<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
-			<FormLink @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
-		</div>
-	</FormSection>
-	<FormSection>
-		<div class="_gaps_m">
-			<FormLink @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</FormLink>
-			<FormLink @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</FormLink>
-		</div>
-	</FormSection>
-	<FormSection>
-		<template #label>{{ i18n.ts.pushNotification }}</template>
+		<FormSection first>
+			<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
+			<div class="_gaps_s">
+				<MkFolder v-for="type in configurableNotificationTypes" :key="type">
+					<template #label>{{ i18n.ts._notification._types[type] }}</template>
+					<template #suffix>
+						{{
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'never' ? i18n.ts.none :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'following' ? i18n.ts.following :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'follower' ? i18n.ts.followers :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'list' ? i18n.ts.userList :
+							i18n.ts.all
+						}}
+					</template>
 
-		<div class="_gaps_m">
-			<MkPushNotificationAllowButton ref="allowButton"/>
-			<MkSwitch :disabled="!pushRegistrationInServer" :modelValue="sendReadMessage" @update:modelValue="onChangeSendReadMessage">
-				<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
-				<template #caption>
-					<I18n :src="i18n.ts.sendPushNotificationReadMessageCaption">
-						<template #emptyPushNotificationMessage>{{ i18n.ts._notification.emptyPushNotificationMessage }}</template>
-					</I18n>
-				</template>
-			</MkSwitch>
-		</div>
-	</FormSection>
-</div>
+					<XNotificationConfig
+						:userLists="userLists"
+						:value="$i.notificationRecieveConfig[type] ?? { type: 'all' }"
+						:configurableTypes="(onlyOnOrOffNotificationTypes as string[]).includes(type) ? ['all', 'never'] : undefined"
+						@update="(res) => updateReceiveConfig(type, res)"
+					/>
+				</MkFolder>
+			</div>
+		</FormSection>
+
+		<FormSection>
+			<SearchMarker
+				:keywords="['notify', 'hide', 'user']"
+			>
+				<MkFolder>
+					<template #label><SearchLabel>{{ i18n.ts.notifyUsers }}</SearchLabel></template>
+					<MkPagination v-slot="{items}" :paginator="notifyUserPaginator" withControl>
+						<div class="_gaps_s">
+							<div v-for="item in items" :key="item.id" :class="[$style.userItem ]">
+								<div :class="$style.userItemMain">
+									<MkA :class="$style.userItemMainBody" :to="userPage(item.followee!)">
+										<MkUserCardMini :user="item.followee!"/>
+									</MkA>
+									<button class="_button" :class="$style.notifyMenu" @click="showNotifyMenu(item.followee!, $event)"><i class="ti ti-dots"></i></button>
+								</div>
+							</div>
+						</div>
+					</MkPagination>
+				</MkFolder>
+			</SearchMarker>
+		</FormSection>
+		<FormSection>
+			<div class="_gaps_m">
+				<FormLink to="/settings/sounds">{{ i18n.ts.notificationSoundSettings }}</FormLink>
+			</div>
+		</FormSection>
+		<FormSection>
+			<div class="_gaps_s">
+				<MkButton @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</MkButton>
+				<MkButton @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</MkButton>
+				<MkButton @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</MkButton>
+			</div>
+		</FormSection>
+		<FormSection>
+			<template #label>{{ i18n.ts.pushNotification }}</template>
+
+			<div class="_gaps_m">
+				<MkPushNotificationAllowButton ref="allowButton"/>
+				<MkSwitch :disabled="!pushRegistrationInServer" :modelValue="sendReadMessage" @update:modelValue="onChangeSendReadMessage">
+					<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
+					<template #caption>{{ i18n.ts.sendPushNotificationReadMessageCaption }}</template>
+				</MkSwitch>
+			</div>
+		</FormSection>
+	</div>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, computed } from 'vue';
+import { useTemplateRef, computed, ref, markRaw } from 'vue';
+import { notificationTypes } from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import XNotificationConfig from './notifications.notification-config.vue';
 import type { NotificationConfig } from './notifications.notification-config.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { signinRequired } from '@/account.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { ensureSignin } from '@/i.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
-import { notificationTypes } from '@@/js/const.js';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import { Paginator } from '@/utility/paginator.js';
+import MkPagination from '@/components/MkPagination.vue';
+import { userPage } from '@/filters/user.js';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
-const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'test', 'exportCompleted'] satisfies (typeof notificationTypes[number])[] as string[];
+async function showNotifyMenu(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
+	os.popupMenu([{
+		text: (user.notify === 'normal') ? i18n.ts.unnotifyNotes : i18n.ts.notifyNotes,
+		icon: (user.notify === 'normal') ? 'ti ti-x' : 'ti ti-plus',
+		action: async () => {
+			await os.apiWithDialog('following/update', {
+				userId: user.id,
+				notify: user.notify === 'normal' ? 'none' : 'normal',
+			}).then(() => {
+				user.notify = user.notify === 'normal' ? 'none' : 'normal';
+			});
+		},
+	}], ev.currentTarget ?? ev.target);
+}
 
-const onlyOnOrOffNotificationTypes = ['app', 'achievementEarned', 'login', 'createToken'] satisfies (typeof notificationTypes[number])[] as string[];
+const notifyUserPaginator = markRaw(new Paginator('following/list', {
+	limit: 10,
+	params: {
+		notification: true,
+	},
+}));
 
-const allowButton = shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
+const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'test', 'exportCompleted'] as const satisfies (typeof notificationTypes[number])[];
+
+const configurableNotificationTypes = notificationTypes.filter(type => !nonConfigurableNotificationTypes.includes(type as any)) as Exclude<typeof notificationTypes[number], typeof nonConfigurableNotificationTypes[number]>[];
+
+const onlyOnOrOffNotificationTypes = ['app', 'achievementEarned', 'login', 'createToken', 'scheduledNotePosted', 'scheduledNotePostFailed'] as const satisfies (typeof notificationTypes[number])[];
+
+const allowButton = useTemplateRef('allowButton');
 const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
 const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadMessage || false);
 const userLists = await misskeyApi('users/lists/list');
 
-async function readAllUnreadNotes() {
-	await os.apiWithDialog('i/read-all-unread-notes');
-}
-
 async function readAllNotifications() {
-	await os.apiWithDialog('notifications/mark-all-as-read');
+	await os.apiWithDialog('notifications/mark-all-as-read', {});
 }
 
 async function updateReceiveConfig(type: typeof notificationTypes[number], value: NotificationConfig) {
@@ -131,15 +182,37 @@ async function flushNotification() {
 
 	if (canceled) return;
 
-	os.apiWithDialog('notifications/flush');
+	os.apiWithDialog('notifications/flush', {});
 }
 
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.notifications,
 	icon: 'ti ti-bell',
 }));
 </script>
+
+<style lang="scss" module>
+.userItemMain {
+	display: flex;
+}
+
+.userItemMainBody {
+	flex: 1;
+	min-width: 0;
+	margin-right: 8px;
+
+	&:hover {
+		text-decoration: none;
+	}
+}
+
+.notifyMenu {
+	width: 32px;
+	height: 32px;
+	align-self: center;
+}
+</style>

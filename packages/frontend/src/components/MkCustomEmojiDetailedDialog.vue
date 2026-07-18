@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModalWindow ref="dialogEl" @close="cancel()" @closed="emit('closed')">
 	<template #header>:{{ emoji.name }}:</template>
 	<template #default>
-		<MkSpacer>
+		<div class="_spacer">
 			<div style="display: flex; flex-direction: column; gap: 1em;">
 				<div :class="$style.emojiImgWrapper">
 					<MkCustomEmoji :name="emoji.name" :normal="true" :useOriginalSize="true" style="height: 100%;"></MkCustomEmoji>
@@ -50,21 +50,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</template>
 				</MkKeyValue>
 			</div>
-		</MkSpacer>
+		</div>
 	</template>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import { shallowRef } from 'vue';
+import { useTemplateRef } from 'vue';
 import MkLink from '@/components/MkLink.vue';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 
 const props = defineProps<{
-  emoji: Misskey.entities.EmojiDetailed,
+	emoji: Misskey.entities.EmojiDetailed,
 }>();
 
 const emit = defineEmits<{
@@ -73,7 +73,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialogEl = useTemplateRef('dialogEl');
 
 function cancel() {
 	emit('cancel');

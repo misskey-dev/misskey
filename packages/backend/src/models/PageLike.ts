@@ -18,7 +18,7 @@ export class MiPageLike {
 	@Column(id())
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -27,7 +27,7 @@ export class MiPageLike {
 	@Column(id())
 	public pageId: MiPage['id'];
 
-	@ManyToOne(type => MiPage, {
+	@ManyToOne(() => MiPage, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

@@ -58,6 +58,10 @@ export class ExportMutingProcessorService {
 			let exportedCount = 0;
 			let cursor: MiMuting['id'] | null = null;
 
+			const total = await this.mutingsRepository.countBy({
+				muterId: user.id,
+			});
+
 			while (true) {
 				const mutes = await this.mutingsRepository.find({
 					where: {
@@ -98,11 +102,7 @@ export class ExportMutingProcessorService {
 					exportedCount++;
 				}
 
-				const total = await this.mutingsRepository.countBy({
-					muterId: user.id,
-				});
-
-				job.updateProgress(exportedCount / total);
+				job.updateProgress(exportedCount / total * 100);
 			}
 
 			stream.end();

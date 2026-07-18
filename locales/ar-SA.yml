@@ -68,7 +68,7 @@ receiveFollowRequest: "تلقيت طلب متابعة"
 followRequestAccepted: "قُبل طلب المتابعة"
 mention: "أشر الى"
 mentions: "الإشارات"
-directNotes: "الملاحظات المباشرة"
+directNotes: "رسالة خاصة"
 importAndExport: "إستورد / صدر"
 import: "استيراد"
 export: "تصدير"
@@ -215,7 +215,6 @@ noUsers: "ليس هناك مستخدمون"
 editProfile: "تعديل الملف التعريفي"
 noteDeleteConfirm: "هل تريد حذف هذه الملاحظة؟"
 pinLimitExceeded: "لا يمكنك تثبيت الملاحظات بعد الآن."
-intro: "لقد انتهت عملية تنصيب Misskey. الرجاء إنشاء حساب إداري."
 done: "تمّ"
 processing: "المعالجة جارية"
 preview: "معاينة"
@@ -251,7 +250,6 @@ removeAreYouSure: "متأكد من أنك تريد حذف {x}؟"
 deleteAreYouSure: "متأكد من أنك تريد حذف {x}؟"
 resetAreYouSure: "هل تريد إعادة التعيين؟"
 saved: "حُفظ"
-messaging: "المحادثة"
 upload: "ارفع"
 keepOriginalUploading: "ابق الصورة الأصلية"
 keepOriginalUploadingDescription: "يحفظ الصور المرفوعة على حالتها الأصلية، وان عطّل ستولد نسخة مخصصة من الصورة."
@@ -264,7 +262,6 @@ uploadFromUrlMayTakeTime: "سيستغرق بعض الوقت لاتمام الر�
 explore: "استكشاف"
 messageRead: "مقروءة"
 noMoreHistory: "لا يوجد المزيد من التاريخ"
-startMessaging: "ابدأ محادثة"
 nUsersRead: "قرأه {n}"
 agreeTo: "اوافق على {0}"
 agree: "أقبل"
@@ -436,8 +433,6 @@ retype: "أعد الكتابة"
 noteOf: "ملاحظات {user}"
 quoteAttached: "اِقتُبسَ"
 quoteQuestion: "أتريد تضمينها كاقتباس"
-noMessagesYet: "ليس هناك رسائل بعد"
-newMessageExists: "لقد تلقيت رسالة جديدة"
 onlyOneFileCanBeAttached: "يمكنك إرفاق ملف واحد بالرسالة"
 signinRequired: "رجاءً لِج"
 invitations: "دعوة"
@@ -680,7 +675,6 @@ experimental: "اختباري"
 developer: "المطور"
 makeExplorable: "أظهر الحساب في صفحة \"استكشاف\""
 makeExplorableDescription: "بتعطيل هذا الخيار لن يظهر حسابك في صفحة \"استكشاف\""
-showGapBetweenNotesInTimeline: "أظهر فجوات بين المشاركات في الخيط الزمني"
 left: "يسار"
 center: "وسط"
 wide: "عريض"
@@ -1012,6 +1006,26 @@ sourceCode: "الشفرة المصدرية"
 flip: "اقلب"
 lastNDays: "آخر {n} أيام"
 surrender: "ألغِ"
+postForm: "أنشئ ملاحظة"
+information: "عن"
+inMinutes: "د"
+inDays: "ي"
+widgets: "التطبيقات المُصغّرة"
+presets: "إعدادات مسبقة"
+previewingThemeRestore: "استرجاع"
+_imageEditing:
+  _vars:
+    filename: "اسم الملف"
+_imageFrameEditor:
+  font: "الخط"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+_chat:
+  invitations: "دعوة"
+  noHistory: "السجل فارغ"
+  members: "الأعضاء"
+  home: "الرئيسي"
+  send: "أرسل"
 _delivery:
   stop: "مُعلّق"
 _initialAccountSetting:
@@ -1236,7 +1250,6 @@ _theme:
     shadow: "الظل"
     navBg: "خلفية الشريط الجانبي"
     navFg: "نص الشريط الجانبي"
-    navHoverFg: "نص الشريط الجانبي (عند التمرير فوقه)"
     link: "رابط"
     hashtag: "وسم"
     mention: "أشر الى"
@@ -1251,7 +1264,6 @@ _theme:
     buttonBg: "خلفية الأزرار"
     buttonHoverBg: "خلفية الأزرار (عند التمرير فوقها)"
     inputBorder: "حواف حقل الإدخال"
-    driveFolderBg: "خلفية مجلد قرص التخزين"
     messageBg: "خلفية المحادثة"
 _sfx:
   note: "الملاحظات"
@@ -1311,6 +1323,7 @@ _permissions:
   "read:gallery": "اعرض المعرض"
   "write:gallery": "عدّل المعرض"
   "read:gallery-likes": "يعرض ما أعجبك من مشاركات المعرض"
+  "write:chat": "اكتب أو احذف رسائل محادثة"
 _auth:
   shareAccess: "أتريد التفويض لـ \"{name}\" بالوصول لحسابك؟"
   shareAccessAsk: "هل تخول لهذا التطبيق الوصول لحسابك؟"
@@ -1353,6 +1366,14 @@ _widgets:
   userList: "قائمة المستخدمين"
   _userList:
     chooseList: "اختر قائمة"
+_widgetOptions:
+  height: "الإرتفاع"
+  _button:
+    colored: "ملوّن"
+  _clock:
+    size: "الحجم"
+  _birthdayFollowings:
+    period: "المدة"
 _cw:
   hide: "إخفاء"
   show: "عرض المزيد"
@@ -1393,6 +1414,9 @@ _postForm:
   replyPlaceholder: "رد على هذه الملاحظة…"
   quotePlaceholder: "اقتبس هذه الملاحظة…"
   channelPlaceholder: "انشر في قناة..."
+  _howToUse:
+    visibility_title: "الظهور"
+    menu_title: "القائمة"
   _placeholders:
     a: "ما الذي تنوي فعله؟"
     b: "ماذا يحدث حولك ؟"
@@ -1584,3 +1608,25 @@ _offlineScreen:
 _remoteLookupErrors:
   _noSuchObject:
     title: "غير موجود"
+_search:
+  searchScopeAll: "الكل"
+  searchScopeLocal: "المحلي"
+  searchScopeUser: "مستخدم محدد"
+_watermarkEditor:
+  opacity: "الشفافية"
+  scale: "الحجم"
+  text: "نص"
+  position: "الموضع"
+  type: "نوع"
+  image: "صور"
+  advanced: "متقدم"
+_imageEffector:
+  _fxProps:
+    scale: "الحجم"
+    size: "الحجم"
+    offset: "الموضع"
+    color: "اللون"
+    opacity: "الشفافية"
+_qr:
+  showTabTitle: "المظهر"
+  raw: "نص"

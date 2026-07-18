@@ -5,8 +5,9 @@
 
 process.env.NODE_ENV = 'test';
 
-import { jest } from '@jest/globals';
-import { ModuleMocker } from 'jest-mock';
+import { describe, expect, beforeEach, afterEach, test, vi } from 'vitest';
+import type { Mocked } from 'vitest';
+import { mockDeep } from 'vitest-mock-extended';
 import { Test } from '@nestjs/testing';
 import { GlobalModule } from '@/GlobalModule.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
@@ -26,9 +27,6 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import type { TestingModule } from '@nestjs/testing';
-import type { MockFunctionMetadata } from 'jest-mock';
-
-const moduleMocker = new ModuleMocker(global);
 
 describe('AnnouncementService', () => {
 	let app: TestingModule;
@@ -36,15 +34,15 @@ describe('AnnouncementService', () => {
 	let usersRepository: UsersRepository;
 	let announcementsRepository: AnnouncementsRepository;
 	let announcementReadsRepository: AnnouncementReadsRepository;
-	let globalEventService: jest.Mocked<GlobalEventService>;
-	let moderationLogService: jest.Mocked<ModerationLogService>;
+	let globalEventService: Mocked<GlobalEventService>;
+	let moderationLogService: Mocked<ModerationLogService>;
 
 	function createUser(data: Partial<MiUser> = {}) {
 		const un = secureRndstr(16);
 		return usersRepository.insert({
 			id: genAidx(Date.now()),
 			username: un,
-			usernameLower: un,
+			usernameLower: un.toLowerCase(),
 			...data,
 		})
 			.then(x => usersRepository.findOneByOrFail(x.identifiers[0]));
@@ -76,17 +74,15 @@ describe('AnnouncementService', () => {
 			.useMocker((token) => {
 				if (token === GlobalEventService) {
 					return {
-						publishMainStream: jest.fn(),
-						publishBroadcastStream: jest.fn(),
+						publishMainStream: vi.fn(),
+						publishBroadcastStream: vi.fn(),
 					};
 				} else if (token === ModerationLogService) {
 					return {
-						log: jest.fn(),
+						log: vi.fn(),
 					};
 				} else if (typeof token === 'function') {
-					const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
-					const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-					return new Mock();
+					return mockDeep<typeof token>();
 				}
 			})
 			.compile();
@@ -97,16 +93,16 @@ describe('AnnouncementService', () => {
 		usersRepository = app.get<UsersRepository>(DI.usersRepository);
 		announcementsRepository = app.get<AnnouncementsRepository>(DI.announcementsRepository);
 		announcementReadsRepository = app.get<AnnouncementReadsRepository>(DI.announcementReadsRepository);
-		globalEventService = app.get<GlobalEventService>(GlobalEventService) as jest.Mocked<GlobalEventService>;
-		moderationLogService = app.get<ModerationLogService>(ModerationLogService) as jest.Mocked<ModerationLogService>;
+		globalEventService = app.get<GlobalEventService>(GlobalEventService) as Mocked<GlobalEventService>;
+		moderationLogService = app.get<ModerationLogService>(ModerationLogService) as Mocked<ModerationLogService>;
 	});
 
 	afterEach(async () => {
 		await Promise.all([
-			app.get(DI.metasRepository).delete({}),
-			usersRepository.delete({}),
-			announcementsRepository.delete({}),
-			announcementReadsRepository.delete({}),
+			app.get(DI.metasRepository).createQueryBuilder().delete().execute(),
+			usersRepository.createQueryBuilder().delete().execute(),
+			announcementsRepository.createQueryBuilder().delete().execute(),
+			announcementReadsRepository.createQueryBuilder().delete().execute(),
 		]);
 
 		await app.close();
@@ -203,7 +199,7 @@ describe('AnnouncementService', () => {
 		});
 	});
 
-	describe('read', () => {
+	describe.todo('read', () => {
 		// TODO
 	});
 });

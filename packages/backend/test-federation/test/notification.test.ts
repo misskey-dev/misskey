@@ -1,3 +1,4 @@
+import { describe, test, beforeAll, afterAll } from 'vitest';
 import * as Misskey from 'misskey-js';
 import { assertNotificationReceived, createAccount, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
 

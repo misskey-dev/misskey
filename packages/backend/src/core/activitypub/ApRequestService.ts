@@ -5,8 +5,10 @@
 
 import * as crypto from 'node:crypto';
 import { URL } from 'node:url';
+import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
-import { Window } from 'happy-dom';
+import * as htmlParser from 'node-html-parser';
+import { RsaKeyPair } from 'slacc';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/User.js';
@@ -17,7 +19,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
-import { assertActivityMatchesUrls } from '@/core/activitypub/misc/check-against-url.js';
+import { assertActivityMatchesUrl, FetchAllowSoftFailMask as FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
 import type { IObject } from './type.js';
 
 type Request = {
@@ -39,7 +41,7 @@ type PrivateKey = {
 };
 
 export class ApRequestCreator {
-	static createSignedPost(args: { key: PrivateKey, url: string, body: string, digest?: string, additionalHeaders: Record<string, string> }): Signed {
+	static async createSignedPost(args: { key: PrivateKey, url: string, body: string, digest?: string, additionalHeaders: Record<string, string> }): Promise<Signed> {
 		const u = new URL(args.url);
 		const digestHeader = args.digest ?? this.createDigest(args.body);
 
@@ -54,7 +56,7 @@ export class ApRequestCreator {
 			}, args.additionalHeaders),
 		};
 
-		const result = this.#signToRequest(request, args.key, ['(request-target)', 'date', 'host', 'digest']);
+		const result = await this.#signToRequest(request, args.key, ['(request-target)', 'date', 'host', 'digest']);
 
 		return {
 			request,
@@ -68,7 +70,7 @@ export class ApRequestCreator {
 		return `SHA-256=${crypto.createHash('sha256').update(body).digest('base64')}`;
 	}
 
-	static createSignedGet(args: { key: PrivateKey, url: string, additionalHeaders: Record<string, string> }): Signed {
+	static async createSignedGet(args: { key: PrivateKey, url: string, additionalHeaders: Record<string, string> }): Promise<Signed> {
 		const u = new URL(args.url);
 
 		const request: Request = {
@@ -81,7 +83,7 @@ export class ApRequestCreator {
 			}, args.additionalHeaders),
 		};
 
-		const result = this.#signToRequest(request, args.key, ['(request-target)', 'date', 'host', 'accept']);
+		const result = await this.#signToRequest(request, args.key, ['(request-target)', 'date', 'host']);
 
 		return {
 			request,
@@ -91,9 +93,10 @@ export class ApRequestCreator {
 		};
 	}
 
-	static #signToRequest(request: Request, key: PrivateKey, includeHeaders: string[]): Signed {
+	static async #signToRequest(request: Request, key: PrivateKey, includeHeaders: string[]): Promise<Signed> {
 		const signingString = this.#genSigningString(request, includeHeaders);
-		const signature = crypto.sign('sha256', Buffer.from(signingString), key.privateKeyPem).toString('base64');
+		const sign = promisify(RsaKeyPair.prototype.sign).bind(RsaKeyPair.fromPem(key.privateKeyPem));
+		const signature = (await sign(Buffer.from(signingString))).toString('base64');
 		const signatureHeader = `keyId="${key.keyId}",algorithm="rsa-sha256",headers="${includeHeaders.join(' ')}",signature="${signature}"`;
 
 		request.headers = this.#objectAssignWithLcKey(request.headers, {
@@ -160,7 +163,7 @@ export class ApRequestService {
 
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
-		const req = ApRequestCreator.createSignedPost({
+		const req = await ApRequestCreator.createSignedPost({
 			key: {
 				privateKeyPem: keypair.privateKey,
 				keyId: `${this.config.url}/users/${user.id}#main-key`,
@@ -185,11 +188,11 @@ export class ApRequestService {
 	 * @param url URL to fetch
 	 */
 	@bindThis
-	public async signedGet(url: string, user: { id: MiUser['id'] }, followAlternate?: boolean): Promise<unknown> {
+	public async signedGet(url: string, user: { id: MiUser['id'] }, allowSoftfail: FetchAllowSoftFailMask = FetchAllowSoftFailMask.Strict, followAlternate?: boolean): Promise<unknown> {
 		const _followAlternate = followAlternate ?? true;
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
-		const req = ApRequestCreator.createSignedGet({
+		const req = await ApRequestCreator.createSignedGet({
 			key: {
 				privateKeyPem: keypair.privateKey,
 				keyId: `${this.config.url}/users/${user.id}#main-key`,
@@ -215,41 +218,19 @@ export class ApRequestService {
 			_followAlternate === true
 		) {
 			const html = await res.text();
-			const { window, happyDOM } = new Window({
-				settings: {
-					disableJavaScriptEvaluation: true,
-					disableJavaScriptFileLoading: true,
-					disableCSSFileLoading: true,
-					disableComputedStyleRendering: true,
-					handleDisabledFileLoadingAsSuccess: true,
-					navigation: {
-						disableMainFrameNavigation: true,
-						disableChildFrameNavigation: true,
-						disableChildPageNavigation: true,
-						disableFallbackToSetURL: true,
-					},
-					timer: {
-						maxTimeout: 0,
-						maxIntervalTime: 0,
-						maxIntervalIterations: 0,
-					},
-				},
-			});
-			const document = window.document;
+
 			try {
-				document.documentElement.innerHTML = html;
+				const document = htmlParser.parse(html);
 
 				const alternate = document.querySelector('head > link[rel="alternate"][type="application/activity+json"]');
 				if (alternate) {
 					const href = alternate.getAttribute('href');
 					if (href && this.utilityService.punyHost(url) === this.utilityService.punyHost(href)) {
-						return await this.signedGet(href, user, false);
+						return await this.signedGet(href, user, allowSoftfail, false);
 					}
 				}
-			} catch (e) {
+			} catch (_) {
 				// something went wrong parsing the HTML, ignore the whole thing
-			} finally {
-				happyDOM.close().catch(err => {});
 			}
 		}
 		//#endregion
@@ -258,7 +239,7 @@ export class ApRequestService {
 		const finalUrl = res.url; // redirects may have been involved
 		const activity = await res.json() as IObject;
 
-		assertActivityMatchesUrls(activity, [finalUrl]);
+		assertActivityMatchesUrl(url, activity, finalUrl, allowSoftfail);
 
 		return activity;
 	}

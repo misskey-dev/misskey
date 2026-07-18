@@ -51,7 +51,7 @@ export const packedFlashSchema = {
 		},
 		likedCount: {
 			type: 'number',
-			optional: false, nullable: true,
+			optional: false, nullable: false,
 		},
 		isLiked: {
 			type: 'boolean',

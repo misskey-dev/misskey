@@ -1,10 +1,65 @@
 packages:
- - 'packages/backend'
- - 'packages/frontend-shared'
- - 'packages/frontend'
- - 'packages/frontend-embed'
- - 'packages/sw'
- - 'packages/misskey-js'
- - 'packages/misskey-js/generator'
- - 'packages/misskey-reversi'
- - 'packages/misskey-bubble-game'
+  - packages/backend
+  - packages/frontend-shared
+  - packages/frontend
+  - packages/frontend-builder
+  - packages/frontend-embed
+  - packages/i18n
+  - packages/icons-subsetter
+  - packages/sw
+  - packages/misskey-js
+  - packages/misskey-js/generator
+  - packages/misskey-reversi
+  - packages/misskey-bubble-game
+allowBuilds:
+  '@nestjs/core': true
+  '@parcel/watcher': true
+  '@sentry/profiling-node': true
+  '@sentry-internal/node-cpu-profiler': true
+  '@sentry/node-cpu-profiler': true
+  bufferutil: true
+  canvas: true
+  core-js: true
+  esbuild: true
+  msgpackr-extract: true
+  msw: true
+  nice-napi: true
+  re2: true
+  sharp: true
+  utf-8-validate: true
+  v-code-diff: true
+  vue-demi: true
+  exifreader: false
+  protobufjs: false
+minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
+minimumReleaseAgeExclude:
+  - '@misskey-dev/*'
+  - '@syuilo/aiscript'
+  - buraha
+  - mfm-js
+  - slacc
+  - slacc-android-arm-eabi
+  - slacc-android-arm64
+  - slacc-darwin-arm64
+  - slacc-darwin-universal
+  - slacc-darwin-x64
+  - slacc-freebsd-x64
+  - slacc-linux-arm-gnueabihf
+  - slacc-linux-arm64-gnu
+  - slacc-linux-arm64-musl
+  - slacc-linux-x64-gnu
+  - slacc-linux-x64-musl
+  - slacc-win32-arm64-msvc
+  - slacc-win32-x64-msvc
+  - '@typescript/native-preview*'
+  - vite # そのうち消す
+  # Renovate security update: @opentelemetry/core@2.8.0
+  - "@opentelemetry/core@2.8.0"
+overrides:
+  '@aiscript-dev/aiscript-languageserver': '-'
+  'bullmq>ioredis': 5.11.1
+  chokidar: 5.0.0
+  lodash: 4.18.1
+engineStrict: true
+saveExact: true
+shellEmulator: true

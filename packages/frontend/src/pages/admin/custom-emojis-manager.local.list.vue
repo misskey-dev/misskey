@@ -51,6 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 import type { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 import type { GridSortOrderKey } from './custom-emojis-manager.impl.js';
+import type { PageHeaderItem } from '@/types/page-header.js';
 
 export type EmojiSearchQuery = {
 	name: string | null;
@@ -71,6 +72,9 @@ export type EmojiSearchQuery = {
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onMounted, ref, nextTick, useCssModule } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
+import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
+import type { GridSetting } from '@/components/grid/grid.js';
 import * as os from '@/os.js';
 import {
 	emptyStrToEmptyArray,
@@ -82,15 +86,11 @@ import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import { validators } from '@/components/grid/cell-validators.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
-import { selectFile } from '@/scripts/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import { copyGridDataToClipboard, removeDataFromGrid } from '@/components/grid/grid-utils.js';
-import { useLoading } from "@/components/hook/useLoading.js";
-
-import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
-import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
-import type { GridSetting } from '@/components/grid/grid.js';
+import { useLoading } from '@/composables/use-loading.js';
 
 type GridItem = {
 	checked: boolean;
@@ -109,7 +109,7 @@ type GridItem = {
 	publicUrl?: string | null;
 	originalUrl?: string | null;
 	type: string | null;
-}
+};
 
 function setupGrid(): GridSetting {
 	const $style = useCssModule();
@@ -175,7 +175,10 @@ function setupGrid(): GridSetting {
 			{
 				bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 'auto', validators: [required],
 				async customValueEditor(row, col, value, cellElement) {
-					const file = await selectFile(cellElement);
+					const file = await selectFile({
+						anchorElement: cellElement,
+						multiple: false,
+					});
 					gridItems.value[row.index].url = file.url;
 					gridItems.value[row.index].fileId = file.id;
 
@@ -248,7 +251,7 @@ function setupGrid(): GridSetting {
 						icon: 'ti ti-trash',
 						action: () => {
 							removeDataFromGrid(context, (cell) => {
-								gridItems.value[cell.row.index][cell.column.setting.bindTo] = undefined;
+								(gridItems.value[cell.row.index] as any)[cell.column.setting.bindTo] = undefined;
 							});
 						},
 					},
@@ -286,7 +289,7 @@ const searchQuery = ref<EmojiSearchQuery>({
 	localOnly: null,
 	roles: [],
 	sortOrders: [],
-	limit: 25,
+	limit: 100,
 });
 let searchWindowOpening = false;
 
@@ -452,7 +455,7 @@ function onGridCellValidation(event: GridCellValidationEvent) {
 function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	const { row, column, newValue } = event;
 	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
-		gridItems.value[row.index][column.setting.bindTo] = newValue;
+		(gridItems.value[row.index] as any)[column.setting.bindTo] = newValue;
 	}
 }
 
@@ -465,8 +468,8 @@ async function refreshCustomEmojis() {
 		aliases: emptyStrToUndefined(searchQuery.value.aliases),
 		category: emptyStrToUndefined(searchQuery.value.category),
 		license: emptyStrToUndefined(searchQuery.value.license),
-		isSensitive: searchQuery.value.sensitive ? Boolean(searchQuery.value.sensitive).valueOf() : undefined,
-		localOnly: searchQuery.value.localOnly ? Boolean(searchQuery.value.localOnly).valueOf() : undefined,
+		isSensitive: searchQuery.value.sensitive != null ? Boolean(searchQuery.value.sensitive).valueOf() : undefined,
+		localOnly: searchQuery.value.localOnly != null ? Boolean(searchQuery.value.localOnly).valueOf() : undefined,
 		updatedAtFrom: emptyStrToUndefined(searchQuery.value.updatedAtFrom),
 		updatedAtTo: emptyStrToUndefined(searchQuery.value.updatedAtTo),
 		roleIds: searchQuery.value.roles.map(it => it.id),
@@ -501,7 +504,7 @@ function refreshGridItems() {
 		name: it.name,
 		host: it.host ?? '',
 		category: it.category ?? '',
-		aliases: it.aliases.join(','),
+		aliases: it.aliases.join(' '),
 		license: it.license ?? '',
 		isSensitive: it.isSensitive,
 		localOnly: it.localOnly,
@@ -523,13 +526,13 @@ const headerPageMetadata = computed(() => ({
 	icon: 'ti ti-icons',
 }));
 
-const headerActions = computed(() => [{
+const headerActions = computed<PageHeaderItem[]>(() => [{
 	icon: 'ti ti-search',
 	text: i18n.ts.search,
-	handler: () => {
+	handler: async () => {
 		if (searchWindowOpening) return;
 		searchWindowOpening = true;
-		const { dispose } = os.popup(defineAsyncComponent(() => import('./custom-emojis-manager.local.list.search.vue')), {
+		const { dispose } = await os.popupAsyncWithDialog(import('./custom-emojis-manager.local.list.search.vue').then(x => x.default), {
 			query: searchQuery.value,
 		}, {
 			queryUpdated: (query: EmojiSearchQuery) => {
@@ -550,7 +553,7 @@ const headerActions = computed(() => [{
 }, {
 	icon: 'ti ti-list-numbers',
 	text: i18n.ts._customEmojisManager._gridCommon.searchLimit,
-	handler: (ev: MouseEvent) => {
+	handler: (ev) => {
 		async function changeSearchLimit(to: number) {
 			if (updatedItemsCount.value > 0) {
 				const { canceled } = await os.confirm({
@@ -585,29 +588,25 @@ const headerActions = computed(() => [{
 }, {
 	icon: 'ti ti-notes',
 	text: i18n.ts._customEmojisManager._gridCommon.registrationLogs,
-	handler: () => {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('./custom-emojis-manager.local.list.logs.vue')), {
+	handler: async () => {
+		const { dispose } = await os.popupAsyncWithDialog(import('./custom-emojis-manager.local.list.logs.vue').then(x => x.default), {
 			logs: requestLogs.value,
 		}, {
 			closed: () => {
 				dispose();
 			},
 		});
-	}
+	},
 }]);
 </script>
 
 <style module lang="scss">
-.violationRow {
-	background-color: var(--MI_THEME-infoWarnBg);
-}
-
 .changedRow {
-	background-color: var(--MI_THEME-infoBg);
+	background-color: var(--MI_THEME-infoBg) !important;
 }
 
-.editedRow {
-	background-color: var(--MI_THEME-infoBg);
+.violationRow {
+	background-color: var(--MI_THEME-infoWarnBg) !important;
 }
 
 .main {

@@ -1,32 +1,33 @@
-name: Lint
+name: Locale
 
 on:
   push:
     paths:
+      - packages/i18n/**
       - locales/**
       - .github/workflows/locale.yml
   pull_request:
     paths:
+      - packages/i18n/**
       - locales/**
       - .github/workflows/locale.yml
-
-env:
-  COREPACK_DEFAULT_TO_LATEST: 0
-
 jobs:
   locale_verify:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-    - uses: actions/checkout@v4.1.1
-      with:
-        fetch-depth: 0
-        submodules: true
-    - uses: pnpm/action-setup@v4
-    - uses: actions/setup-node@v4.1.0
-      with:
-        node-version-file: '.node-version'
-        cache: 'pnpm'
-    - run: corepack enable
-    - run: pnpm i --frozen-lockfile
-    - run: cd locales && node verify.js
+      - uses: actions/checkout@v6.0.3
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.9
+      - uses: actions/setup-node@v6.4.0
+        with:
+          node-version-file: ".node-version"
+          cache: "pnpm"
+      - run: pnpm i --frozen-lockfile
+      - run: pnpm --filter i18n build
+      - name: Verify Locales
+        working-directory: ./packages/i18n
+        run: pnpm run verify

@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			key="input"
 			:message="message"
 			:openOnRemote="openOnRemote"
+			:initialUsername="initialUsername"
 
 			@usernameSubmitted="onUsernameSubmitted"
 			@passkeyClick="onPasskeyLogin"
@@ -66,21 +67,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref, shallowRef, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import { supported as webAuthnSupported, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
-
-import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/browser-ponyfill';
-import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
-import { login } from '@/account.js';
+import { browserSupportsWebAuthn } from '@simplewebauthn/browser';
+import type { PublicKeyCredentialRequestOptionsJSON, AuthenticationResponseJSON } from '@simplewebauthn/browser';
+import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
+import type { PwResponse } from '@/components/MkSignin.password.vue';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { showSuspendedDialog } from '@/utility/show-suspended-dialog.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
 import XInput from '@/components/MkSignin.input.vue';
 import XPassword from '@/components/MkSignin.password.vue';
-import type { PwResponse } from '@/components/MkSignin.password.vue';
 import XTotp from '@/components/MkSignin.totp.vue';
 import XPasskey from '@/components/MkSignin.passkey.vue';
+import { login } from '@/accounts.js';
 
 const emit = defineEmits<{
 	(ev: 'login', v: Misskey.entities.SigninFlowResponse & { finished: true }): void;
@@ -90,10 +90,12 @@ const props = withDefaults(defineProps<{
 	autoSet?: boolean;
 	message?: string,
 	openOnRemote?: OpenOnRemoteOptions,
+	initialUsername?: string;
 }>(), {
 	autoSet: false,
 	message: '',
 	openOnRemote: undefined,
+	initialUsername: undefined,
 });
 
 const page = ref<'input' | 'password' | 'totp' | 'passkey'>('input');
@@ -106,20 +108,18 @@ const userInfo = ref<null | Misskey.entities.UserDetailed>(null);
 const password = ref('');
 
 //#region Passkey Passwordless
-const credentialRequest = shallowRef<CredentialRequestOptions | null>(null);
+const credentialRequest = shallowRef<PublicKeyCredentialRequestOptionsJSON | null>(null);
 const passkeyContext = ref('');
 const doingPasskeyFromInputPage = ref(false);
 
 function onPasskeyLogin(): void {
-	if (webAuthnSupported()) {
+	if (browserSupportsWebAuthn()) {
 		doingPasskeyFromInputPage.value = true;
 		waiting.value = true;
 		misskeyApi('signin-with-passkey', {})
 			.then((res) => {
 				passkeyContext.value = res.context ?? '';
-				credentialRequest.value = parseRequestOptionsFromJSON({
-					publicKey: res.option,
-				});
+				credentialRequest.value = res.option;
 
 				page.value = 'passkey';
 				waiting.value = false;
@@ -128,12 +128,12 @@ function onPasskeyLogin(): void {
 	}
 }
 
-function onPasskeyDone(credential: AuthenticationPublicKeyCredential): void {
+function onPasskeyDone(credential: AuthenticationResponseJSON): void {
 	waiting.value = true;
 
 	if (doingPasskeyFromInputPage.value) {
 		misskeyApi('signin-with-passkey', {
-			credential: credential.toJSON(),
+			credential: credential,
 			context: passkeyContext.value,
 		}).then((res) => {
 			if (res.signinResponse == null) {
@@ -147,7 +147,7 @@ function onPasskeyDone(credential: AuthenticationPublicKeyCredential): void {
 		tryLogin({
 			username: userInfo.value.username,
 			password: password.value,
-			credential: credential.toJSON(),
+			credential: credential,
 		});
 	}
 }
@@ -249,10 +249,8 @@ async function tryLogin(req: Partial<Misskey.entities.SigninFlowRequest>): Promi
 					break;
 				}
 				case 'passkey': {
-					if (webAuthnSupported()) {
-						credentialRequest.value = parseRequestOptionsFromJSON({
-							publicKey: res.authRequest,
-						});
+					if (browserSupportsWebAuthn()) {
+						credentialRequest.value = res.authRequest;
 						page.value = 'passkey';
 					} else {
 						page.value = 'totp';

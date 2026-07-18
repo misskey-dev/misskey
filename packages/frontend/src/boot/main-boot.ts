@@ -5,55 +5,56 @@
 
 import { createApp, defineAsyncComponent, markRaw } from 'vue';
 import { ui } from '@@/js/config.js';
-import { common } from './common.js';
 import * as Misskey from 'misskey-js';
+import { compareVersions } from 'compare-versions';
+import { common } from './common.js';
 import type { Component } from 'vue';
+import type { Keymap } from '@/utility/hotkey.js';
 import { i18n } from '@/i18n.js';
-import { alert, confirm, popup, post, toast } from '@/os.js';
+import { alert, confirm, popup, post } from '@/os.js';
 import { useStream } from '@/stream.js';
-import * as sound from '@/scripts/sound.js';
-import { $i, signout, updateAccountPartial } from '@/account.js';
+import * as sound from '@/utility/sound.js';
+import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
-import { ColdDeviceStorage, defaultStore } from '@/store.js';
-import { reactionPicker } from '@/scripts/reaction-picker.js';
+import { store } from '@/store.js';
+import { reactionPicker } from '@/utility/reaction-picker.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
-import { initializeSw } from '@/scripts/initialize-sw.js';
-import { deckStore } from '@/ui/deck/deck-store.js';
-import { emojiPicker } from '@/scripts/emoji-picker.js';
-import { mainRouter } from '@/router/main.js';
-import { makeHotkey } from '@/scripts/hotkey.js';
-import type { Keymap } from '@/scripts/hotkey.js';
+import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
+import { initializeSw } from '@/utility/initialize-sw.js';
+import { emojiPicker } from '@/utility/emoji-picker.js';
+import { mainRouter } from '@/router.js';
+import { makeHotkey } from '@/utility/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
+import { prefer } from '@/preferences.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
+import { unisonReload } from '@/utility/unison-reload.js';
+import { isBirthday } from '@/utility/is-birthday.js';
 
 export async function mainBoot() {
-	const { isClientUpdated } = await common(() => {
+	const { isClientUpdated, lastVersion } = await common(async () => {
 		let uiStyle = ui;
 		const searchParams = new URLSearchParams(window.location.search);
 
 		if (!$i) uiStyle = 'visitor';
 
 		if (searchParams.has('zen')) uiStyle = 'zen';
-		if (uiStyle === 'deck' && deckStore.state.useSimpleUiForNonRootPages && location.pathname !== '/') uiStyle = 'zen';
+		if (uiStyle === 'deck' && prefer.s['deck.useSimpleUiForNonRootPages'] && window.location.pathname !== '/') uiStyle = 'zen';
 
 		if (searchParams.has('ui')) uiStyle = searchParams.get('ui');
 
 		let rootComponent: Component;
 		switch (uiStyle) {
 			case 'zen':
-				rootComponent = defineAsyncComponent(() => import('@/ui/zen.vue'));
+				rootComponent = await import('@/ui/zen.vue').then(x => x.default);
 				break;
 			case 'deck':
-				rootComponent = defineAsyncComponent(() => import('@/ui/deck.vue'));
+				rootComponent = await import('@/ui/deck.vue').then(x => x.default);
 				break;
 			case 'visitor':
-				rootComponent = defineAsyncComponent(() => import('@/ui/visitor.vue'));
-				break;
-			case 'classic':
-				rootComponent = defineAsyncComponent(() => import('@/ui/classic.vue'));
+				rootComponent = await import('@/ui/visitor.vue').then(x => x.default);
 				break;
 			default:
-				rootComponent = defineAsyncComponent(() => import('@/ui/universal.vue'));
+				rootComponent = await import('@/ui/universal.vue').then(x => x.default);
 				break;
 		}
 
@@ -69,63 +70,22 @@ export async function mainBoot() {
 		});
 	}
 
-	const stream = useStream();
-
-	let reloadDialogShowing = false;
-	stream.on('_disconnected_', async () => {
-		if (defaultStore.state.serverDisconnectedBehavior === 'reload') {
-			location.reload();
-		} else if (defaultStore.state.serverDisconnectedBehavior === 'dialog') {
-			if (reloadDialogShowing) return;
-			reloadDialogShowing = true;
-			const { canceled } = await confirm({
-				type: 'warning',
-				title: i18n.ts.disconnectedFromServer,
-				text: i18n.ts.reloadConfirm,
-			});
-			reloadDialogShowing = false;
-			if (!canceled) {
-				location.reload();
-			}
-		}
-	});
-
-	stream.on('emojiAdded', emojiData => {
-		addCustomEmoji(emojiData.emoji);
-	});
-
-	stream.on('emojiUpdated', emojiData => {
-		updateCustomEmojis(emojiData.emojis);
-	});
-
-	stream.on('emojiDeleted', emojiData => {
-		removeCustomEmojis(emojiData.emojis);
-	});
-
-	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
-		import('@/plugin.js').then(async ({ install }) => {
-			// Workaround for https://bugs.webkit.org/show_bug.cgi?id=242740
-			await new Promise(r => setTimeout(r, 0));
-			install(plugin);
-		});
-	}
-
 	try {
-		if (defaultStore.state.enableSeasonalScreenEffect) {
+		if (prefer.s.enableSeasonalScreenEffect) {
 			const month = new Date().getMonth() + 1;
-			if (defaultStore.state.hemisphere === 'S') {
+			if (prefer.s.hemisphere === 'S') {
 				// ▼南半球
 				if (month === 7 || month === 8) {
-					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					const SnowfallEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
 					new SnowfallEffect({}).render();
 				}
 			} else {
 				// ▼北半球
 				if (month === 12 || month === 1) {
-					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					const SnowfallEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
 					new SnowfallEffect({}).render();
 				} else if (month === 3 || month === 4) {
-					const SakuraEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					const SakuraEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
 					new SakuraEffect({
 						sakura: true,
 					}).render();
@@ -138,8 +98,8 @@ export async function mainBoot() {
 	}
 
 	if ($i) {
-		defaultStore.loaded.then(() => {
-			if (defaultStore.state.accountSetupWizard !== -1) {
+		store.loaded.then(async () => {
+			if (store.s.accountSetupWizard !== -1) {
 				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {
 					closed: () => dispose(),
 				});
@@ -154,7 +114,7 @@ export async function mainBoot() {
 			});
 		}
 
-		function onAnnouncementCreated (ev: { announcement: Misskey.entities.Announcement }) {
+		function onAnnouncementCreated(ev: { announcement: Misskey.entities.Announcement }) {
 			const announcement = ev.announcement;
 			if (announcement.display === 'dialog') {
 				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
@@ -164,8 +124,6 @@ export async function mainBoot() {
 				});
 			}
 		}
-
-		stream.on('announcementCreated', onAnnouncementCreated);
 
 		if ($i.isDeleted) {
 			alert({
@@ -178,12 +136,8 @@ export async function mainBoot() {
 		const m = now.getMonth() + 1;
 		const d = now.getDate();
 
-		if ($i.birthday) {
-			const bm = parseInt($i.birthday.split('-')[1]);
-			const bd = parseInt($i.birthday.split('-')[2]);
-			if (m === bm && d === bd) {
-				claimAchievement('loggedInOnBirthday');
-			}
+		if (isBirthday($i, now)) {
+			claimAchievement('loggedInOnBirthday');
 		}
 
 		if (m === 1 && d === 1) {
@@ -262,7 +216,7 @@ export async function mainBoot() {
 			let lastVisibilityChangedAt = Date.now();
 
 			function claimPlainLucky() {
-				if (document.visibilityState !== 'visible') {
+				if (window.document.visibilityState !== 'visible') {
 					if (justPlainLuckyTimer != null) window.clearTimeout(justPlainLuckyTimer);
 					return;
 				}
@@ -277,7 +231,7 @@ export async function mainBoot() {
 			window.addEventListener('visibilitychange', () => {
 				const now = Date.now();
 
-				if (document.visibilityState === 'visible') {
+				if (window.document.visibilityState === 'visible') {
 					// タブを高速で切り替えたら取得処理が何度も走るのを防ぐ
 					if ((now - lastVisibilityChangedAt) < 1000 * 10) {
 						justPlainLuckyTimer = window.setTimeout(claimPlainLucky, 1000 * 10);
@@ -322,7 +276,7 @@ export async function mainBoot() {
 
 		const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
 		const neverShowDonationInfo = miLocalStorage.getItem('neverShowDonationInfo');
-		if (neverShowDonationInfo !== 'true' && (createdAt.getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
+		if (neverShowDonationInfo !== 'true' && (createdAt.getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !window.location.pathname.startsWith('/miauth')) {
 			if (latestDonationInfoShownAt == null || (new Date(latestDonationInfoShownAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 30)))) {
 				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {
 					closed: () => dispose(),
@@ -337,88 +291,124 @@ export async function mainBoot() {
 			});
 		}
 
-		if ('Notification' in window) {
-			// 許可を得ていなかったらリクエスト
-			if (Notification.permission === 'default') {
-				Notification.requestPermission();
-			}
+		if (store.s.realtimeMode) {
+			const stream = useStream();
+
+			let reloadDialogShowing = false;
+			stream.on('_disconnected_', async () => {
+				if (prefer.s.serverDisconnectedBehavior === 'reload') {
+					window.location.reload();
+				} else if (prefer.s.serverDisconnectedBehavior === 'dialog') {
+					if (reloadDialogShowing) return;
+					reloadDialogShowing = true;
+					const { canceled } = await confirm({
+						type: 'warning',
+						title: i18n.ts.disconnectedFromServer,
+						text: i18n.ts.reloadConfirm,
+					});
+					reloadDialogShowing = false;
+					if (!canceled) {
+						window.location.reload();
+					}
+				}
+			});
+
+			stream.on('emojiAdded', emojiData => {
+				addCustomEmoji(emojiData.emoji);
+			});
+
+			stream.on('emojiUpdated', emojiData => {
+				updateCustomEmojis(emojiData.emojis);
+			});
+
+			stream.on('emojiDeleted', emojiData => {
+				removeCustomEmojis(emojiData.emojis);
+			});
+
+			stream.on('announcementCreated', onAnnouncementCreated);
+
+			const main = markRaw(stream.useChannel('main', null, 'System'));
+
+			// 自分の情報が更新されたとき
+			main.on('meUpdated', i => {
+				updateCurrentAccountPartial(i);
+			});
+
+			main.on('readAllNotifications', () => {
+				updateCurrentAccountPartial({
+					hasUnreadNotification: false,
+					unreadNotificationsCount: 0,
+				});
+			});
+
+			main.on('unreadNotification', () => {
+				const unreadNotificationsCount = ($i?.unreadNotificationsCount ?? 0) + 1;
+				updateCurrentAccountPartial({
+					hasUnreadNotification: true,
+					unreadNotificationsCount,
+				});
+			});
+
+			main.on('newChatMessage', () => {
+				updateCurrentAccountPartial({ hasUnreadChatMessages: true });
+				sound.playMisskeySfx('chatMessage');
+			});
+
+			main.on('readAllAnnouncements', () => {
+				updateCurrentAccountPartial({ hasUnreadAnnouncement: false });
+			});
+
+			// 個人宛てお知らせが発行されたとき
+			main.on('announcementCreated', onAnnouncementCreated);
 		}
-
-		const main = markRaw(stream.useChannel('main', null, 'System'));
-
-		// 自分の情報が更新されたとき
-		main.on('meUpdated', i => {
-			updateAccountPartial(i);
-		});
-
-		main.on('readAllNotifications', () => {
-			updateAccountPartial({
-				hasUnreadNotification: false,
-				unreadNotificationsCount: 0,
-			});
-		});
-
-		main.on('unreadNotification', () => {
-			const unreadNotificationsCount = ($i?.unreadNotificationsCount ?? 0) + 1;
-			updateAccountPartial({
-				hasUnreadNotification: true,
-				unreadNotificationsCount,
-			});
-		});
-
-		main.on('unreadMention', () => {
-			updateAccountPartial({ hasUnreadMentions: true });
-		});
-
-		main.on('readAllUnreadMentions', () => {
-			updateAccountPartial({ hasUnreadMentions: false });
-		});
-
-		main.on('unreadSpecifiedNote', () => {
-			updateAccountPartial({ hasUnreadSpecifiedNotes: true });
-		});
-
-		main.on('readAllUnreadSpecifiedNotes', () => {
-			updateAccountPartial({ hasUnreadSpecifiedNotes: false });
-		});
-
-		main.on('readAllAntennas', () => {
-			updateAccountPartial({ hasUnreadAntenna: false });
-		});
-
-		main.on('unreadAntenna', () => {
-			updateAccountPartial({ hasUnreadAntenna: true });
-			sound.playMisskeySfx('antenna');
-		});
-
-		main.on('readAllAnnouncements', () => {
-			updateAccountPartial({ hasUnreadAnnouncement: false });
-		});
-
-		// 個人宛てお知らせが発行されたとき
-		main.on('announcementCreated', onAnnouncementCreated);
-
-		// トークンが再生成されたとき
-		// このままではMisskeyが利用できないので強制的にサインアウトさせる
-		main.on('myTokenRegenerated', () => {
-			signout();
-		});
 	}
 
 	// shortcut
+	let safemodeRequestCount = 0;
+	let safemodeRequestTimer: number | null = null;
 	const keymap = {
 		'p|n': () => {
 			if ($i == null) return;
 			post();
 		},
-		'd': () => {
-			defaultStore.set('darkMode', !defaultStore.state.darkMode);
+		'd': async () => {
+			const value = !store.s.darkMode;
+			if (prefer.s.syncDeviceDarkMode) {
+				const { canceled } = await confirm({
+					type: 'question',
+					text: i18n.tsx.switchDarkModeManuallyWhenSyncEnabledConfirm({ x: i18n.ts.syncDeviceDarkMode }),
+				});
+				if (canceled) return;
+
+				prefer.commit('syncDeviceDarkMode', false);
+				store.set('darkMode', value);
+			} else {
+				store.set('darkMode', value);
+			}
 		},
 		's': () => {
 			mainRouter.push('/search');
 		},
+		'g': {
+			callback: () => {
+				// mを5回押すとセーフモードに入る
+				safemodeRequestCount++;
+				if (safemodeRequestCount >= 5) {
+					miLocalStorage.setItem('isSafeMode', 'true');
+					unisonReload();
+				} else {
+					if (safemodeRequestTimer != null) {
+						window.clearTimeout(safemodeRequestTimer);
+					}
+					safemodeRequestTimer = window.setTimeout(() => {
+						safemodeRequestCount = 0;
+					}, 300);
+				}
+			},
+			allowRepeat: true,
+		},
 	} as const satisfies Keymap;
-	document.addEventListener('keydown', makeHotkey(keymap), { passive: false });
+	window.document.addEventListener('keydown', makeHotkey(keymap), { passive: false });
 
 	initializeSw();
 }

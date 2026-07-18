@@ -6,7 +6,8 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { host, origin, relativeFetch, signup } from '../utils.js';
+import { beforeAll, describe, test } from 'vitest';
+import { api, host, origin, relativeFetch, signup } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('.well-known', () => {
@@ -14,6 +15,7 @@ describe('.well-known', () => {
 
 	beforeAll(async () => {
 		alice = await signup({ username: 'alice' });
+		await api('admin/update-meta', { federation: 'all' }, alice as misskey.entities.SignupResponse);
 	}, 1000 * 60 * 2);
 
 	test('nodeinfo', async () => {
