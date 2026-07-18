@@ -3,9 +3,20 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"check": "tsx src/index.ts"
+		"inspect": "tsx src/inspect.ts",
+		"measure": "tsx src/measure-once.ts",
+		"render-md": "tsx src/render-md.ts",
+		"test": "tsx --test src/measure/stability.test.ts"
+	},
+	"dependencies": {
+		"diagnostics-shared": "workspace:*"
 	},
 	"devDependencies": {
-		"tsx": "4.22.4"
+		"@types/node": "26.0.1",
+		"@types/pg": "8.20.0",
+		"ioredis": "5.11.1",
+		"pg": "8.22.0",
+		"tsx": "4.22.4",
+		"typescript": "5.9.3"
 	}
 }

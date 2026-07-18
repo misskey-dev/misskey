@@ -3,9 +3,14 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"check": "tsx src/index.ts"
+		"render-md": "tsx src/render-md.ts"
+	},
+	"dependencies": {
+		"diagnostics-shared": "workspace:*"
 	},
 	"devDependencies": {
-		"tsx": "4.22.4"
+		"@types/node": "26.0.1",
+		"tsx": "4.22.4",
+		"typescript": "5.9.3"
 	}
 }

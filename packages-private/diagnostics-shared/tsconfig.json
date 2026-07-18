@@ -13,8 +13,7 @@
 		"types": ["node"]
 	},
 	"include": [
-		"src/**/*.ts",
-		"test/**/*.ts"
+		"src/**/*.ts"
 	],
 	"exclude": []
 }

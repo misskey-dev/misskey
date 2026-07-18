@@ -9,10 +9,12 @@
 		"strictNullChecks": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
+		"noEmit": true,
 		"types": ["node"]
 	},
 	"include": [
-		"src/**/*.ts"
+		"src/**/*.ts",
+		"test/**/*.ts"
 	],
 	"exclude": []
 }
