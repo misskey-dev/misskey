@@ -129,7 +129,7 @@ useInterval(() => {
 });
 
 watch(() => props.channelId, async () => {
-	const channelId = props.channelId
+	const channelId = props.channelId;
 	const _channel = await misskeyApi('channels/show', {
 		channelId: channelId,
 	});
