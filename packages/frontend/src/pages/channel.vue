@@ -133,7 +133,7 @@ watch(() => props.channelId, async () => {
 		channelId: props.channelId,
 	});
 
-	miLocalStorage.setItem(`channel:${props.channelId}`, JSON.stringify(channel.value));
+	miLocalStorage.setItem(`channel:${props.channelId}`, JSON.stringify(_channel));
 	favorited.value = _channel.isFavorited ?? false;
 	if (favorited.value || _channel.isFollowing) {
 		tab.value = 'timeline';
