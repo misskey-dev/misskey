@@ -44,7 +44,6 @@ jobs:
           }
 
           directories=(
-            "cypress/e2e"
             "packages/backend/migration"
             "packages/backend/src"
             "packages/backend/test"

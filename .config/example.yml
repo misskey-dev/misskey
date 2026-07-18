@@ -308,7 +308,7 @@ id: 'aidx'
 #  # To check enabled names, set `options.debug: true` and see
 #  # "Integration installed: <name>" in the Sentry logs.
 #  #
-#  # As of 2026-07-05 / @sentry/node 10.59.0, useful names for Misskey include:
+#  # As of 2026-07-07 / @sentry/node 10.62.0, useful names for Misskey include:
 #  #   Postgres  ... DB queries (when pg is externalized)
 #  #   Redis     ... ioredis commands
 #  #   Fastify   ... inbound HTTP routes
@@ -317,6 +317,74 @@ id: 'aidx'
 #  disabledIntegrations: ['Postgres']
 #  options:
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
+#    # By default, Misskey prevents Sentry trace headers (`sentry-trace` and
+#    # `baggage`) from being sent to remote ActivityPub/Webhook/etc. hosts.
+#    # To intentionally propagate distributed traces to trusted internal services,
+#    # list only those internal URL patterns here.
+#    # Avoid broad patterns that match remote servers unless you intentionally
+#    # want to restore Sentry's legacy behavior of propagating traces to all
+#    # outbound HTTP requests.
+#    #tracePropagationTargets: []
+#    # Internal allowlist example:
+#    #tracePropagationTargets:
+#    #  - 'internal-service.example'
+
+#   ┌─────────┐
+#───┘ Tracing └────────────────────────────────────────────────
+# OpenTelemetry distributed tracing (Traces only, opt-in).
+# Existing API and Queue spans are exported to an OTLP http/protobuf endpoint.
+#
+# Standard OTEL_* environment variables are honored for values omitted below:
+# OTEL_EXPORTER_OTLP_TRACES_ENDPOINT, OTEL_EXPORTER_OTLP_ENDPOINT,
+# OTEL_EXPORTER_OTLP_HEADERS, OTEL_TRACES_SAMPLER, OTEL_TRACES_SAMPLER_ARG, etc.
+#
+# When this is enabled together with sentryForBackend, Misskey shares Sentry's
+# TracerProvider and adds an OTLP SpanProcessor to it. In that mode:
+# - sampleRate below is ignored; sampling follows sentryForBackend.options
+#   tracesSampleRate / tracesSampler.
+# - resourceAttributes below is ignored; set OTEL_SERVICE_NAME and
+#   OTEL_RESOURCE_ATTRIBUTES in the environment if you need to override them.
+# - spans produced by Sentry integrations are exported to both Sentry and OTLP.
+# - sentry-trace / baggage propagation to outbound remote requests is disabled
+#   by default while OTel is enabled. Set propagateTraceToRemote: true only if
+#   you intentionally want Sentry trace propagation for your deployment.
+
+#otelForBackend:
+#  endpoint: 'http://localhost:4318/v1/traces'
+#  #headers:
+#  #  authorization: 'Bearer xxxxx'
+#  #sampleRate: 1.0
+#  # Record PostgreSQL query spans. Disabled by default to avoid instrumentation
+#  # overhead when database-level diagnostics are not needed.
+#  #capturePgSpans: false
+#  # Include raw SQL text in PostgreSQL spans. Requires capturePgSpans and is
+#  # disabled by default because non-parameterized queries can expose values to
+#  # the OTLP Collector.
+#  #capturePgStatement: false
+#  # Include PostgreSQL connection-pool spans with an existing parent span.
+#  # Requires capturePgSpans and is disabled by default to avoid noisy spans
+#  # from connection churn.
+#  #capturePgConnectionSpans: false
+#  # Record Redis command spans. Disabled by default because subscribing to the
+#  # ioredis diagnostics channel adds work to every Redis command, including
+#  # commands without a parent span. Enable for development diagnostics or when
+#  # the added overhead is acceptable in production.
+#  #captureRedisCommandSpans: false
+#  # Include Redis startup/reconnect spans. Disabled by default to avoid noisy
+#  # connection churn; these spans are recorded even without an HTTP or job
+#  # parent span.
+#  #captureRedisConnectionSpans: false
+#  # Record Redis commands without an HTTP or job parent span. Disabled by
+#  # default because queue polling and background work can produce many root
+#  # traces; only applies when captureRedisCommandSpans is enabled.
+#  #captureRedisRootSpans: false
+#  #resourceAttributes:
+#  #  deployment.environment: 'production'
+#  #propagateTraceToRemote: false
+#  # Queue worker spans are independent traces linked to their enqueuer by default.
+#  # Set to 'parent' to make them child spans instead. This can create very large
+#  # traces for high-fan-out queues such as federation delivery.
+#  #jobTraceContextMode: 'link'
 
 #sentryForFrontend:
 #  vueIntegration:
@@ -395,9 +463,8 @@ proxyBypassHosts:
 # For security reasons, uploading attachments from the intranet is prohibited,
 # but exceptions can be made from the following settings. Default value is "undefined".
 # Read changelog to learn more (Improvements of 12.90.0 (2021/09/04)).
-#allowedPrivateNetworks: [
-#  '127.0.0.1/32'
-#]
+#allowedPrivateNetworks:
+#  - '127.0.0.1/32'
 
 # Upload or download file size limits (bytes)
 #maxFileSize: 262144000
@@ -407,6 +474,16 @@ proxyBypassHosts:
 
 # Log settings
 # logging:
+#   # ログの出力形式。「json」で1行JSON、未指定時は「pretty」です。
+#   format: pretty
+#   # Minimum level for all loggers. Defaults to info in production and debug otherwise.
+#   level: info
+#   # The longest matching logger domain takes precedence over the global level.
+#   domains:
+#     core.boot: info
+#     queue: error
+#     queue.deliver: debug
+#     db.sql: off
 #   sql:
 #     # Outputs query parameters during SQL execution to the log.
 #     # default: false

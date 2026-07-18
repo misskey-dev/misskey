@@ -233,15 +233,24 @@ proxyBypassHosts:
 # For security reasons, uploading attachments from the intranet is prohibited,
 # but exceptions can be made from the following settings. Default value is "undefined".
 # Read changelog to learn more (Improvements of 12.90.0 (2021/09/04)).
-#allowedPrivateNetworks: [
-#  '127.0.0.1/32'
-#]
+#allowedPrivateNetworks:
+#  - '127.0.0.1/32'
 
 # Upload or download file size limits (bytes)
 #maxFileSize: 262144000
 
 # Log settings
 # logging:
+#   # ログの出力形式。「json」で1行JSON、未指定時は「pretty」です。
+#   format: pretty
+#   # Minimum level for all loggers. Defaults to info in production and debug otherwise.
+#   level: info
+#   # The longest matching logger domain takes precedence over the global level.
+#   domains:
+#     core.boot: info
+#     queue: error
+#     queue.deliver: debug
+#     db.sql: off
 #   sql:
 #     # Outputs query parameters during SQL execution to the log.
 #     # default: false
