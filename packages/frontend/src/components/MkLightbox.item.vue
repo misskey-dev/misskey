@@ -471,7 +471,6 @@ let currentPointerId: number | null = null;
 let currentPointerStartOffset = { x: 0, y: 0 };
 let isVerticalSwiping = false;
 let isHorizontalSwiping = false;
-let verticalSwipeDelta = 0;
 let horizontalSwipeDelta = 0;
 /** 軸が確定した時点のポインタ位置。ここを基準にスワイプ量を測ることで、確定時に描画が飛ぶのを防ぐ */
 let swipeOrigin = { x: 0, y: 0 };
@@ -532,7 +531,6 @@ function onPointerdown(ev: PointerEvent) {
 	lastY = ev.clientY;
 	pointerVec = { x: 0, y: 0 };
 	velocitySamples = [];
-	verticalSwipeDelta = 0;
 	horizontalSwipeDelta = 0;
 	// スワイプで閉じた直後はitemがv-showで残ったままなので (MkLightbox.vue参照)、閉じるアニメーション中に
 	// 触るとロック済みの軸が引き継がれてヒステリシスを経ずにスワイプが始まってしまう。ここで必ず解除する
@@ -545,6 +543,9 @@ function onPointerdown(ev: PointerEvent) {
 			x: ev.clientX,
 			y: ev.clientY,
 		};
+		// pointerdown自体を最初のサンプルとして積む。これがないとpointermoveが1回しか発生しないような
+		// 素早いフリックでサンプルが1つしか溜まらず、速度が常に0と評価されてスワイプが成立しない
+		pushVelocitySample(ev.timeStamp, ev.clientX, ev.clientY);
 	}
 }
 
@@ -595,7 +596,6 @@ function onPointermove(ev: PointerEvent) {
 		} else {
 			if (isVerticalSwiping) {
 				transform.value.y += deltaY;
-				verticalSwipeDelta += deltaY;
 			} else if (isHorizontalSwiping) {
 				horizontalSwipeDelta = ev.clientX - swipeOrigin.x;
 				emit('horizontalSwipe', horizontalSwipeDelta);
@@ -646,10 +646,16 @@ function onPointerup(ev: PointerEvent) {
 		// 直前のフリックの速度で誤ってスワイプが成立するのを防ぐことができる
 		pointerVec = getVelocity(ev.timeStamp);
 
+		// 判定にはジェスチャー開始点からの総移動量を使う。描画用のdelta (transform.y / horizontalSwipeDelta) は
+		// 軸が確定した地点を基準にしており、確定までのヒステリシス分と確定したpointermove自体の移動量を含まないため、
+		// pointermoveが1回しか発生しないような素早いフリックがそのまま握り潰されてしまう
+		const totalSwipeX = ev.clientX - currentPointerStartOffset.x;
+		const totalSwipeY = ev.clientY - currentPointerStartOffset.y;
+
 		if (isVerticalSwiping) {
 			const closeThreshold = (window.innerHeight / 3) * MIN_RATIO_TO_CLOSE;
-			const shouldCloseByUpwardSwipe = verticalSwipeDelta < -closeThreshold || (verticalSwipeDelta < 0 && pointerVec.y < -MIN_VELOCITY_TO_SWIPE); // 上の方で離された、または上に向かって強めに弾かれた
-			const shouldCloseByDownwardSwipe = verticalSwipeDelta > closeThreshold || (verticalSwipeDelta > 0 && pointerVec.y > MIN_VELOCITY_TO_SWIPE); // 下の方で離された、または下に向かって強めに弾かれた
+			const shouldCloseByUpwardSwipe = totalSwipeY < -closeThreshold || (totalSwipeY < 0 && pointerVec.y < -MIN_VELOCITY_TO_SWIPE); // 上の方で離された、または上に向かって強めに弾かれた
+			const shouldCloseByDownwardSwipe = totalSwipeY > closeThreshold || (totalSwipeY > 0 && pointerVec.y > MIN_VELOCITY_TO_SWIPE); // 下の方で離された、または下に向かって強めに弾かれた
 			if (shouldCloseByUpwardSwipe || shouldCloseByDownwardSwipe) {
 				closeThis();
 				return;
@@ -657,8 +663,8 @@ function onPointerup(ev: PointerEvent) {
 
 			resetToNeutral();
 		} else if (isHorizontalSwiping) {
-			const shouldNext = horizontalSwipeDelta < -HORIZONTAL_SWIPE_DISTANCE_THRESHOLD || (horizontalSwipeDelta < 0 && pointerVec.x < -MIN_VELOCITY_TO_SWIPE); // 左の方で離された、または左に向かって強めに弾かれた
-			const shouldPrev = horizontalSwipeDelta > HORIZONTAL_SWIPE_DISTANCE_THRESHOLD || (horizontalSwipeDelta > 0 && pointerVec.x > MIN_VELOCITY_TO_SWIPE); // 右の方で離された、または右に向かって強めに弾かれた
+			const shouldNext = totalSwipeX < -HORIZONTAL_SWIPE_DISTANCE_THRESHOLD || (totalSwipeX < 0 && pointerVec.x < -MIN_VELOCITY_TO_SWIPE); // 左の方で離された、または左に向かって強めに弾かれた
+			const shouldPrev = totalSwipeX > HORIZONTAL_SWIPE_DISTANCE_THRESHOLD || (totalSwipeX > 0 && pointerVec.x > MIN_VELOCITY_TO_SWIPE); // 右の方で離された、または右に向かって強めに弾かれた
 			if (shouldNext) {
 				emit('next');
 			} else if (shouldPrev) {
@@ -701,7 +707,6 @@ function cancelPointerGesture() {
 	clickAction = null;
 	pointerVec = { x: 0, y: 0 };
 	velocitySamples = [];
-	verticalSwipeDelta = 0;
 	horizontalSwipeDelta = 0;
 	swipeOrigin = { x: 0, y: 0 };
 	isVerticalSwiping = false;
