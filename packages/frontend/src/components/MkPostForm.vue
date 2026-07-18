@@ -912,6 +912,8 @@ function saveDraft() {
 }
 
 function deleteDraft() {
+	if (props.instant || props.mock) return;
+
 	const draftsData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}') as StoredDrafts;
 
 	delete draftsData[draftKey.value];
