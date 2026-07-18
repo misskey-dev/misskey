@@ -12,7 +12,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		(video.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive,
 	]"
 	@contextmenu.stop="onContextmenu"
-	@keydown.stop
 >
 	<button v-if="hide" :class="$style.hidden" @click="reveal">
 		<div :class="$style.hiddenTextWrapper">
@@ -22,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</button>
 
-	<div v-else :class="$style.videoRoot" @click="emit('mediaClick', $event)">
+	<div v-else :class="$style.videoRoot" @pointerup="emit('mediaClick', $event)">
 		<img
 			v-if="video.thumbnailUrl"
 			:class="$style.video"
