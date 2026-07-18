@@ -6,7 +6,8 @@
 import { copyFile, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { execa } from 'execa';
-import { median, readIntegerEnv, readOptionalEnv } from 'diagnostics-shared';
+import { readIntegerEnv, readOptionalEnv } from 'diagnostics-shared/env';
+import { median } from 'diagnostics-shared/stats';
 import { summarizeHeapSnapshotDataSamples, defaultHeapSnapshotBreakdownTopN } from 'diagnostics-shared/heap-snapshot';
 import { resetState } from './db';
 import { measureBackendMemory } from './measure';

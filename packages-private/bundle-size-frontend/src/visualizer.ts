@@ -3,7 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { calcAndFormatDeltaBytes, calcAndFormatDeltaNumber, calcAndFormatDeltaPercent, formatBytes, formatNumber } from 'diagnostics-shared';
+import {
+	calcAndFormatDeltaBytes,
+	calcAndFormatDeltaNumber,
+	calcAndFormatDeltaPercent,
+	formatBytes,
+	formatNumber,
+} from 'diagnostics-shared/format';
 
 /**
  * rollup-plugin-visualizer が出力する `stats.json` のうち、ここで使う部分のみの型。

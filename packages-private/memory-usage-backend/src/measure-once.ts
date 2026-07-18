@@ -4,7 +4,7 @@
  */
 
 import { resolve } from 'node:path';
-import { readOptionalEnv } from 'diagnostics-shared';
+import { readOptionalEnv } from 'diagnostics-shared/env';
 import { measureBackendMemory } from './measure';
 
 // ローカルデバッグ用: バックエンド1回分の計測結果をJSONで出力する

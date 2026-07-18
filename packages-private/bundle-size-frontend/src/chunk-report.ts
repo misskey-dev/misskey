@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { calcAndFormatDeltaBytes, calcAndFormatDeltaPercentInMdTable, escapeMdTableCell, formatBytes } from 'diagnostics-shared';
+import {
+	calcAndFormatDeltaBytes,
+	calcAndFormatDeltaPercentInMdTable,
+	escapeMdTableCell,
+	formatBytes,
+} from 'diagnostics-shared/format';
 import type { CollectedReport, FileEntry } from './manifest';
 
 /**

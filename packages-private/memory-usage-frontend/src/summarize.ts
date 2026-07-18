@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { finiteMedian } from 'diagnostics-shared';
+import { finiteMedian } from 'diagnostics-shared/stats';
 import { summarizeHeapSnapshotDataSamples } from 'diagnostics-shared/heap-snapshot';
 import { summarizeBrowserDiagnostics } from './browser/diagnostics';
 import type { BrowserMeasurement, BrowserMeasurementSample, BrowserMetricsReport, NetworkSummary } from './types';

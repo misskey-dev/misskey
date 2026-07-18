@@ -3,14 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	formatColoredDelta,
-	formatDeltaPercentInMdTable,
-	formatKiBAsMb,
-	median,
-	pairedDeltaSummary,
-	sampleSpread,
-} from 'diagnostics-shared';
+import { formatColoredDelta, formatDeltaPercentInMdTable, formatKiBAsMb } from 'diagnostics-shared/format';
+import { median, pairedDeltaSummary, sampleSpread } from 'diagnostics-shared/stats';
 import { renderHeapSnapshotTable } from 'diagnostics-shared/heap-snapshot';
 import type { MemoryPhase, MemoryReport } from '../types';
 

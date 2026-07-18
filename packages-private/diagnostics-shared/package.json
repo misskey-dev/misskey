@@ -3,7 +3,10 @@
 	"private": true,
 	"type": "module",
 	"exports": {
-		".": "./src/index.ts",
+		"./env": "./src/env.ts",
+		"./format": "./src/format.ts",
+		"./html": "./src/html.ts",
+		"./stats": "./src/stats.ts",
 		"./heap-snapshot": "./src/heap-snapshot/index.ts"
 	},
 	"scripts": {

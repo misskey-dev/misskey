@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { median } from 'diagnostics-shared';
+import { median } from 'diagnostics-shared/stats';
 import type { BrowserDiagnostics } from '../types';
 
 export function summarizeBrowserDiagnostics(samples: BrowserDiagnostics[]): BrowserDiagnostics {

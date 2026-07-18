@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { formatBytes, formatNumber, html, joinHtml, raw, type Raw } from 'diagnostics-shared';
+import { formatBytes, formatNumber } from 'diagnostics-shared/format';
+import { type Raw, html, joinHtml, raw } from 'diagnostics-shared/html';
 import { networkDiffHtmlStyles } from './html-styles';
 import type { BrowserMeasurementSample, BrowserMetricsReport, NetworkRequest } from '../types';
 

@@ -3,13 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	formatBytes,
-	formatColoredDelta,
-	formatNumber,
-	pairedDeltaSummary,
-	sampleSpread,
-} from 'diagnostics-shared';
+import { formatBytes, formatColoredDelta, formatNumber } from 'diagnostics-shared/format';
+import { pairedDeltaSummary, sampleSpread } from 'diagnostics-shared/stats';
 import { renderHeapSnapshotTable, type HeapSnapshotReport } from 'diagnostics-shared/heap-snapshot';
 import type { BrowserMeasurement, BrowserMeasurementSample, BrowserMetricsReport } from '../types';
 

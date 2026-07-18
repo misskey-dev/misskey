@@ -5,7 +5,7 @@
 
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import { readRequiredEnv } from 'diagnostics-shared';
+import { readRequiredEnv } from 'diagnostics-shared/env';
 import { collectReport } from './manifest';
 import { renderBundleReportMarkdown } from './report';
 import type { VisualizerReport } from './visualizer';

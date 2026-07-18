@@ -6,7 +6,7 @@
 import * as fs from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { readBooleanEnv, readIntegerEnv } from 'diagnostics-shared';
+import { readBooleanEnv, readIntegerEnv } from 'diagnostics-shared/env';
 import { analyzeHeapSnapshot, defaultHeapSnapshotBreakdownTopN, type HeapSnapshotData } from 'diagnostics-shared/heap-snapshot';
 import { getMemoryUsage, getSmapsRollupMemoryUsage } from './proc';
 import {

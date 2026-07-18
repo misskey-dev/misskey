@@ -5,7 +5,7 @@
 
 import { copyFile, mkdir, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
-import { readIntegerEnv, readOptionalEnv } from 'diagnostics-shared';
+import { readIntegerEnv, readOptionalEnv } from 'diagnostics-shared/env';
 import { analyzeHeapSnapshot, defaultHeapSnapshotBreakdownTopN } from 'diagnostics-shared/heap-snapshot';
 import { HeadlessChromeController } from './browser/controller';
 import { summarizeNetwork } from './browser/network';

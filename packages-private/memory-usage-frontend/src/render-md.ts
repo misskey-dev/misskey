@@ -5,7 +5,7 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { readOptionalEnv, readRequiredEnv } from 'diagnostics-shared';
+import { readOptionalEnv, readRequiredEnv } from 'diagnostics-shared/env';
 import { renderMarkdown } from './report/markdown';
 import type { BrowserMetricsReport } from './types';
 

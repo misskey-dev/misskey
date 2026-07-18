@@ -5,7 +5,7 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { readRequiredEnv } from 'diagnostics-shared';
+import { readRequiredEnv } from 'diagnostics-shared/env';
 import { renderMemoryReportMarkdown } from './report/markdown';
 import type { MemoryReport } from './types';
 
