@@ -7,7 +7,7 @@ import * as Misskey from 'misskey-js';
 import { defineAsyncComponent } from 'vue';
 import { selectDriveFolder } from './drive.js';
 import type { MenuItem } from '@/types/menu.js';
-import { $i } from '@/account';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import * as os from '@/os.js';

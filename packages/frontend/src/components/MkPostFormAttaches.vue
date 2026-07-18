@@ -44,7 +44,7 @@ import { inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu';
 import { copyToClipboard } from '@/utility/copy-to-clipboard';
-import { $i } from '@/account';
+import { $i } from '@/i.js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import MkDraggable from '@/components/MkDraggable.vue';
 import * as os from '@/os.js';
