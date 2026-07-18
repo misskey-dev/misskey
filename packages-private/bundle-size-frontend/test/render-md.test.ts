@@ -17,7 +17,9 @@ async function loadStats(name: string) {
 }
 
 /**
- * レポートの中身そのものではなく「リファクタで出力が変わっていないこと」を守るためのテスト。
+ * 出力をゴールデンファイルで固定する。
+ * 意図的に変更したときは `vitest -u` で更新し、__snapshots__ の差分もレビューすること。
+ *
  * fixture は before/after でサイズが変わるchunk・ja-JPローカライズchunk・
  * マニフェスト外の孤児chunk を含めてあり、diff表と集約行がすべて出る形になっている。
  */

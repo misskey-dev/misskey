@@ -16,8 +16,8 @@ async function loadFixture(name: string) {
 }
 
 /**
- * レポートの中身そのものではなく「リファクタで出力が変わっていないこと」を守るためのテスト。
- * 期待値は test/__snapshots__/ にMarkdownのまま置いてあるので、差分はそのままレビューできる。
+ * 出力をゴールデンファイルで固定する。
+ * 意図的に変更したときは `vitest -u` で更新し、__snapshots__ の差分もレビューすること。
  */
 test('renders the backend memory report', async () => {
 	const markdown = renderMemoryReportMarkdown(await loadFixture('base'), await loadFixture('head'), {
