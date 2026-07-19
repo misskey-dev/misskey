@@ -61,8 +61,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="image.comment" :class="$style.indicator">ALT</div>
 			<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--MI_THEME-warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
 		</div>
-		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
-		<i class="ti ti-eye-off" :class="$style.hide" @click.stop="hide = true"></i>
+		<button :class="[$style.menu, $style.menuBottom]" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
+		<button :class="[$style.menu, $style.menuTop]" class="_button" @click.stop="hide = true"><i class="ti ti-eye-off" style="vertical-align: middle;"></i></button>
 	</template>
 </div>
 </template>
@@ -174,23 +174,6 @@ function onContextmenu(ev: PointerEvent) {
 	cursor: pointer;
 }
 
-.hide {
-	display: block;
-	position: absolute;
-	background-color: rgba(0, 0, 0, 0.3);
-	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
-	backdrop-filter: var(--MI-blur, blur(15px));
-	border-radius: 0 0 0 9px;
-	color: #fff;
-	font-size: 12px;
-	opacity: .5;
-	padding: 5px 8px;
-	text-align: center;
-	cursor: pointer;
-	top: 0;
-	right: 0;
-}
-
 .hiddenTextWrapper {
 	display: table-cell;
 	text-align: center;
@@ -221,13 +204,22 @@ html[data-color-scheme=light] .visible {
 	background-color: rgba(0, 0, 0, 0.3);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
-	border-radius: 9px 0 0 0;
 	color: #fff;
 	font-size: 0.8em;
 	width: 28px;
 	height: 28px;
 	text-align: center;
+}
+
+.menuBottom {
+	border-radius: 8px 0 8px 0;
 	bottom: 0;
+	right: 0;
+}
+
+.menuTop {
+	border-radius: 0 8px 0 8px;
+	top: 0;
 	right: 0;
 }
 
