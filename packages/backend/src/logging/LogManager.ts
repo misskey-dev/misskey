@@ -13,7 +13,7 @@ import {
 	type LogNormalizationProfile,
 } from './LogNormalizer.js';
 import type { LogBackend } from './LogBackend.js';
-import type { LogLevel, LogLevelSetting, LogRecord, LogRecordInput } from './types.js';
+import type { LogLevel, LogLevelSetting, LogRecord, LogRecordInput, LogTraceContextProvider } from './types.js';
 
 /** ログを出力したプロセスを識別するための情報です。 */
 export type LogProcessInfo = {
@@ -113,6 +113,7 @@ export class LogManager {
 	private backend: LogBackend;
 	private readonly dependencies: LogManagerDependencies;
 	private normalizationProfile: LogNormalizationProfile;
+	private traceContextProvider: LogTraceContextProvider | undefined;
 	private configuredLevel: LogLevelSetting | undefined;
 	private configuredDomains: readonly (readonly [string, LogLevelSetting])[];
 	private shutdownPromise: Promise<void> | undefined;
@@ -132,6 +133,7 @@ export class LogManager {
 			...dependencies,
 		};
 		this.normalizationProfile = options.normalizationProfile ?? 'standard';
+		this.traceContextProvider = undefined;
 		this.configuredLevel = undefined;
 		this.configuredDomains = [];
 	}
@@ -154,6 +156,11 @@ export class LogManager {
 	/** 正規化方式を切り替え、既に作成済みのLoggerにも反映します。 */
 	public setNormalizationProfile(profile: LogNormalizationProfile): void {
 		this.normalizationProfile = profile;
+	}
+
+	/** ログ出力時にactiveなTrace Contextを取得する処理を登録します。 */
+	public setTraceContextProvider(provider?: LogTraceContextProvider): void {
+		this.traceContextProvider = provider;
 	}
 
 	/** backendに残っているログをflushしてから終了処理を行います。 */
@@ -220,6 +227,8 @@ export class LogManager {
 		const normalizedError = typeof error !== 'undefined'
 			? serializeLogError(error, { profile: this.normalizationProfile })
 			: undefined;
+		// 実際に出力するログだけ、TelemetryからactiveなTrace Contextを取得します。
+		const traceContext = this.traceContextProvider?.();
 		const record = {
 			...inputWithoutStructuredValues,
 			context,
@@ -228,6 +237,7 @@ export class LogManager {
 			processId: processInfo.processId,
 			isPrimary: processInfo.isPrimary,
 			workerId: processInfo.workerId,
+			...(traceContext ?? {}),
 			...(normalizedAttributes ? { attributes: normalizedAttributes } : {}),
 			...(normalizedError ? { error: normalizedError } : {}),
 		} as LogRecord;

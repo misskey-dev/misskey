@@ -11,8 +11,13 @@ const mocks = vi.hoisted(() => {
 		sentryCreate: vi.fn(),
 		sentryCreateWithOtlpExport: vi.fn(),
 		otelCreate: vi.fn(),
+		setLogTraceContextProvider: vi.fn(),
 	};
 });
+
+vi.mock('@/logging/logging-runtime.js', () => ({
+	setLogTraceContextProvider: mocks.setLogTraceContextProvider,
+}));
 
 vi.mock('@/core/telemetry/adapters/SentryTelemetryAdapter.js', () => ({
 	SentryTelemetryAdapter: {
@@ -40,6 +45,7 @@ describe('telemetry-registry', () => {
 		mocks.sentryCreate.mockReset();
 		mocks.sentryCreateWithOtlpExport.mockReset();
 		mocks.otelCreate.mockReset();
+		mocks.setLogTraceContextProvider.mockReset();
 		mocks.sentryCreate.mockResolvedValue({ shutdown: vi.fn(), captureMessage: vi.fn(), startSpan: vi.fn() });
 		mocks.sentryCreateWithOtlpExport.mockResolvedValue({ shutdown: vi.fn(), captureMessage: vi.fn(), startSpan: vi.fn() });
 		mocks.otelCreate.mockResolvedValue({ shutdown: vi.fn(), captureMessage: vi.fn(), startSpan: vi.fn() });
@@ -57,6 +63,32 @@ describe('telemetry-registry', () => {
 		});
 		expect(mocks.sentryCreate).not.toHaveBeenCalled();
 		expect(mocks.sentryCreateWithOtlpExport).not.toHaveBeenCalled();
+	});
+
+	test('registers the adapter trace context provider after telemetry initialization', async () => {
+		const { initTelemetry } = await import('@/core/telemetry/telemetry-registry.js');
+		const getActiveTraceContext = vi.fn(() => ({
+			traceId: '0123456789abcdef0123456789abcdef',
+			spanId: '0123456789abcdef',
+			traceFlags: 0,
+		}));
+		mocks.otelCreate.mockResolvedValue({
+			shutdown: vi.fn(),
+			captureMessage: vi.fn(),
+			startSpan: vi.fn(),
+			getActiveTraceContext,
+		});
+
+		await initTelemetry(config({ otelForBackend: { endpoint: 'http://collector:4318/v1/traces' } }));
+
+		expect(mocks.setLogTraceContextProvider).toHaveBeenCalledWith(expect.any(Function));
+		const provider = mocks.setLogTraceContextProvider.mock.calls[0][0] as () => unknown;
+		expect(provider()).toEqual({
+			traceId: '0123456789abcdef0123456789abcdef',
+			spanId: '0123456789abcdef',
+			traceFlags: 0,
+		});
+		expect(getActiveTraceContext).toHaveBeenCalledOnce();
 	});
 
 	test('adds OTLP export to the Sentry provider when both Sentry and OTel are configured', async () => {

@@ -8,8 +8,8 @@ import { BootstrapConsoleBackend } from './BootstrapConsoleBackend.js';
 import { JsonConsoleBackend } from './JsonConsoleBackend.js';
 import { PrettyConsoleBackend } from './PrettyConsoleBackend.js';
 import type { LogManagerConfiguration } from './LogManager.js';
+import type { LogTraceContextProvider, LogFormat } from './types.js';
 import type { LogBackend } from './LogBackend.js';
-import type { LogFormat } from './types.js';
 
 /**
  * プロセス内のすべてのLoggerが共有するLogManagerです。
@@ -30,6 +30,11 @@ export function configureLogging(configuration?: LogManagerConfiguration & { rea
 	const backend = createLoggingBackend(configuration?.format);
 	logManager.configure(configuration);
 	logManager.setBackend(backend);
+}
+
+/** Telemetry初期化後に、ログへTrace Contextを付加する取得処理を登録します。 */
+export function setLogTraceContextProvider(provider?: LogTraceContextProvider): void {
+	logManager.setTraceContextProvider(provider);
 }
 
 /** プロセス終了前に現在のログ出力処理を保留分まで書き出して閉じます。 */

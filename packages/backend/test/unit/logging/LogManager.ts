@@ -5,7 +5,7 @@
 
 import { describe, expect, test, vi } from 'vitest';
 import type { LogBackend } from '@/logging/LogBackend.js';
-import type { LogRecordInput } from '@/logging/types.js';
+import type { LogRecordInput, LogTraceContext } from '@/logging/types.js';
 import { LogManager } from '@/logging/LogManager.js';
 
 /** テストで使う最小構成のログ入力を作成します。 */
@@ -85,6 +85,39 @@ describe('LogManager', () => {
 			isPrimary: false,
 			workerId: 7,
 		});
+	});
+
+	test('adds active trace context to the record after filtering', () => {
+		const { manager, write } = createManager();
+		const traceContext: LogTraceContext = {
+			traceId: '0123456789abcdef0123456789abcdef',
+			spanId: '0123456789abcdef',
+			traceFlags: 0,
+		};
+		const provider = vi.fn(() => traceContext);
+		manager.setTraceContextProvider(provider);
+
+		manager.write(createInput());
+
+		expect(provider).toHaveBeenCalledOnce();
+		expect(write.mock.calls[0][0]).toMatchObject(traceContext);
+	});
+
+	test('does not get trace context for logs that will not be written', () => {
+		const provider = vi.fn(() => ({
+			traceId: '0123456789abcdef0123456789abcdef',
+			spanId: '0123456789abcdef',
+			traceFlags: 1,
+		}));
+		const filtered = createManager({ configuration: { level: 'warn' } });
+		filtered.manager.setTraceContextProvider(provider);
+		filtered.manager.write(createInput('info'));
+
+		const quiet = createManager({ quiet: true });
+		quiet.manager.setTraceContextProvider(provider);
+		quiet.manager.write(createInput('error'));
+
+		expect(provider).not.toHaveBeenCalled();
 	});
 
 	test('does not call the backend in quiet mode', () => {

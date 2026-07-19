@@ -55,6 +55,7 @@
 - Enhance: API内部エラーのログに構造化属性と正規化したエラー情報を付与し、認証情報を自動的に秘匿するように（従来形式の表示は維持）
 - Enhance: ログ全体の既定levelとlogger domainごとの出力levelを設定できるように
 - Enhance: バックエンドのログを1行JSON形式で出力できるように
+- Enhance: OpenTelemetryのTrace Contextを構造化ログへ関連付けられるように
 - Fix: `/stats` API のレスポンス型が正しくない問題を修正
 - Fix: ハッシュタグに関連するデータを更新する際のエラーハンドリングを修正
 - Fix: Sentry 使用環境下にて、Misskey が発行した SQL クエリが span に含まれない問題を修正

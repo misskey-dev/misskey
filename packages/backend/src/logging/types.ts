@@ -26,6 +26,16 @@ export type LogAttributeValue =
 /** 正規化後のログ属性です。 */
 export type LogAttributes = Readonly<Record<string, LogAttributeValue>>;
 
+/** activeなSpanとログを関連付けるためのTrace Contextです。 */
+export type LogTraceContext = {
+	readonly traceId: string;
+	readonly spanId: string;
+	readonly traceFlags: number;
+};
+
+/** LogManagerが出力直前に呼び出すTrace Context取得処理です。 */
+export type LogTraceContextProvider = () => LogTraceContext | undefined;
+
 /** ロガーの呼び出し側が構造化ログとして指定する入力です。 */
 export type LogWriteInput = {
 	readonly level: LogLevel;
@@ -81,6 +91,9 @@ export type LogRecord = Omit<LogRecordInput, 'attributes' | 'error'> & {
 	readonly processId: number;
 	readonly isPrimary: boolean;
 	readonly workerId: number | null;
+	readonly traceId?: string;
+	readonly spanId?: string;
+	readonly traceFlags?: number;
 	readonly attributes?: LogAttributes;
 	readonly error?: SerializedError;
 };

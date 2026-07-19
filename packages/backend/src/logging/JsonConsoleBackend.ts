@@ -23,6 +23,9 @@ type JsonLogRecord = {
 	readonly processId: number;
 	readonly isPrimary: boolean;
 	readonly workerId: number | null;
+	readonly trace_id?: string;
+	readonly span_id?: string;
+	readonly trace_flags?: number;
 };
 
 const defaultDependencies: JsonConsoleBackendDependencies = {
@@ -45,6 +48,10 @@ function createJsonLogRecord(record: LogRecord): JsonLogRecord {
 		processId: record.processId,
 		isPrimary: record.isPrimary,
 		workerId: record.workerId,
+		// active Spanの情報は値が存在するログだけ、標準のsnake_case名で出力します。
+		...(record.traceId != null ? { trace_id: record.traceId } : {}),
+		...(record.spanId != null ? { span_id: record.spanId } : {}),
+		...(record.traceFlags != null ? { trace_flags: record.traceFlags } : {}),
 	};
 }
 
