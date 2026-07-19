@@ -558,7 +558,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					break;
 				case 'specified':
 					// specified / direct noteはspecifiedのみreply可能
-					if (data.visibility === 'specified') {
+					if (data.visibility !== 'specified') {
 						data.visibility = 'specified';
 					}
 					break;
