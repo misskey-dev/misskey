@@ -19,21 +19,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 		</div>
 		<div :class="$style.headerRight">
-			<template v-if="!(targetChannel != null && fixed)">
-				<button ref="visibilityButton" v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
-					<template v-if="targetChannel">
-						<span><i class="ti ti-device-tv"></i></span>
-						<span v-if="targetChannel" :class="$style.headerRightButtonText">{{ targetChannelName }}</span>
-					</template>
-					<template v-else>
-						<span v-if="actualVisibility === 'public'"><i class="ti ti-world"></i></span>
-						<span v-if="actualVisibility === 'home'"><i class="ti ti-home"></i></span>
-						<span v-if="actualVisibility === 'followers'"><i class="ti ti-lock"></i></span>
-						<span v-if="actualVisibility === 'specified'"><i class="ti ti-mail"></i></span>
-						<span :class="$style.headerRightButtonText">{{ i18n.ts._visibility[actualVisibility] }}</span>
-					</template>
-				</button>
-			</template>
+			<button ref="visibilityButton" v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
+				<template v-if="targetChannel">
+					<span><i class="ti ti-device-tv"></i></span>
+					<span v-if="targetChannel" :class="$style.headerRightButtonText">{{ targetChannelName }}</span>
+				</template>
+				<template v-else>
+					<span v-if="actualVisibility === 'public'"><i class="ti ti-world"></i></span>
+					<span v-if="actualVisibility === 'home'"><i class="ti ti-home"></i></span>
+					<span v-if="actualVisibility === 'followers'"><i class="ti ti-lock"></i></span>
+					<span v-if="actualVisibility === 'specified'"><i class="ti ti-mail"></i></span>
+					<span :class="$style.headerRightButtonText">{{ i18n.ts._visibility[actualVisibility] }}</span>
+				</template>
+			</button>
 			<button v-if="visibility !== 'specified'" v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: actualLocalOnly }]" :disabled="targetChannel != null" @click="toggleLocalOnly">
 				<span v-if="!actualLocalOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
