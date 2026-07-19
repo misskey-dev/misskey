@@ -243,7 +243,9 @@ export class ApiCallService implements OnApplicationShutdown {
 			return call;
 		}).catch(err => {
 			this.#sendAuthenticationError(reply, err);
-		}));
+		})).finally(() => {
+			cleanup();
+		});
 	}
 
 	@bindThis
