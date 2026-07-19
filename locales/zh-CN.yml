@@ -57,7 +57,7 @@ deleteAndEditConfirm: "要删除该帖并重新编辑吗？该帖下的所有回
 addToList: "添加至列表"
 addToAntenna: "添加到天线"
 sendMessage: "发送消息"
-copyRSS: "复制RSS"
+copyRSS: "复制 RSS"
 copyUsername: "复制用户名"
 copyUserId: "复制用户 ID"
 copyNoteId: "复制帖子 ID"
@@ -485,7 +485,7 @@ markAsReadAllNotifications: "将所有通知标为已读"
 markAsReadAllUnreadNotes: "将所有帖子标记为已读"
 markAsReadAllTalkMessages: "将所有私信标记为已读"
 help: "帮助"
-inputMessageHere: "在此键入信息"
+inputMessageHere: "在此输入信息"
 close: "关闭"
 invites: "邀请"
 members: "成员"
@@ -2600,7 +2600,7 @@ _widgetOptions:
   _jobQueue:
     sound: "播放音效"
   _rss:
-    url: "RSS feed 的 URL"
+    url: "RSS 订阅源网址"
     refreshIntervalSec: "更新间隔（秒）"
     maxEntries: "最大显示个数"
   _rssTicker:
