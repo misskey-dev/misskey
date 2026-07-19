@@ -539,7 +539,7 @@ function setVisibility() {
 		isSilenced: $i.isSilenced,
 		anchorElement: visibilityButton.value,
 		currentChannel: targetChannel.value,
-		...(replyTargetNote.value ? { disableChangingVisibility: replyTargetNote.value.visibility === 'specified' || replyTargetNote.value.channelId } : {}),
+		...(replyTargetNote.value ? { disableChangingVisibility: replyTargetNote.value.visibility === 'specified' || replyTargetNote.value.channelId != null } : {}),
 	}, {
 		changeVisibility: v => {
 			visibility.value = v;
