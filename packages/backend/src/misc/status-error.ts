@@ -2,14 +2,15 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { StatusCode } from 'hono/utils/http-status';
 
 export class StatusError extends Error {
-	public statusCode: number;
+	public statusCode: StatusCode;
 	public statusMessage?: string;
 	public isClientError: boolean;
 	public isRetryable: boolean;
 
-	constructor(message: string, statusCode: number, statusMessage?: string) {
+	constructor(message: string, statusCode: StatusCode, statusMessage?: string) {
 		super(message);
 		this.name = 'StatusError';
 		this.statusCode = statusCode;

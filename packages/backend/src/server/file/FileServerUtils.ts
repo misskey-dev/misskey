@@ -4,10 +4,11 @@
  */
 
 import * as fs from 'node:fs';
+import type { Readable as NodeReadableStream } from 'node:stream';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
 import type { IImageStreamable } from '@/core/ImageProcessingService.js';
-import type { FastifyReply } from 'fastify';
+import type { Context as HonoContext } from 'hono';
 
 export type RangeStream = {
 	stream: fs.ReadStream;
@@ -15,6 +16,33 @@ export type RangeStream = {
 	end: number;
 	chunksize: number;
 };
+
+/** Node FS Streamから、Web標準のReadableStreamに変換するユーティリティ */
+export function nodeStreamToWebStream(stream: NodeReadableStream): ReadableStream<Uint8Array> {
+	return new ReadableStream<Uint8Array>({
+		start(controller) {
+			stream.on('data', (chunk) => {
+				controller.enqueue(new Uint8Array(typeof chunk === 'string' ? Buffer.from(chunk) : chunk));
+			});
+			stream.on('end', () => {
+				controller.close();
+			});
+			stream.on('error', (err) => {
+				controller.error(err);
+			});
+		},
+	});
+}
+
+/** Bufferから、Web標準のReadableStreamに変換するユーティリティ */
+export function bufferToWebStream(data: Buffer): ReadableStream<Uint8Array> {
+	return new ReadableStream<Uint8Array>({
+		start(controller) {
+			controller.enqueue(new Uint8Array(data));
+			controller.close();
+		},
+	});
+}
 
 /**
  * Range リクエストに対応したストリームを作成する
@@ -61,17 +89,17 @@ export function getSafeContentType(mime: string): string {
  * Range ヘッダーがない場合は通常のストリームを返す
  */
 export function handleRangeRequest(
-	reply: FastifyReply,
-	rangeHeader: string | undefined,
+	ctx: HonoContext,
 	size: number,
 	path: string,
-): fs.ReadStream {
+) {
+	const rangeHeader = ctx.req.header('Range');
 	if (rangeHeader && size > 0) {
 		const { stream, start, end, chunksize } = createRangeStream(rangeHeader, size, path);
-		reply.header('Content-Range', `bytes ${start}-${end}/${size}`);
-		reply.header('Accept-Ranges', 'bytes');
-		reply.header('Content-Length', chunksize);
-		reply.code(206);
+		ctx.header('Content-Range', `bytes ${start}-${end}/${size}`);
+		ctx.header('Accept-Ranges', 'bytes');
+		ctx.header('Content-Length', chunksize.toString());
+		ctx.status(206);
 		return stream;
 	}
 	return fs.createReadStream(path);
@@ -88,14 +116,14 @@ export type FileResponseOptions = {
  * ファイルレスポンス用の共通ヘッダーを設定する
  */
 export function setFileResponseHeaders(
-	reply: FastifyReply,
+	ctx: HonoContext,
 	options: FileResponseOptions,
 ): void {
-	reply.header('Content-Type', getSafeContentType(options.mime));
-	reply.header('Cache-Control', options.cacheControl ?? 'max-age=31536000, immutable');
-	reply.header('Content-Disposition', contentDisposition('inline', options.filename));
+	ctx.header('Content-Type', getSafeContentType(options.mime));
+	ctx.header('Cache-Control', options.cacheControl ?? 'max-age=31536000, immutable');
+	ctx.header('Content-Disposition', contentDisposition('inline', options.filename));
 	if (options.size !== undefined) {
-		reply.header('Content-Length', options.size);
+		ctx.header('Content-Length', options.size.toString());
 	}
 }
 

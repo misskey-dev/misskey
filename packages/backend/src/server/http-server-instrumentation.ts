@@ -4,7 +4,8 @@
  */
 
 import type { Config } from '@/config.js';
-import type { FastifyInstance } from 'fastify';
+import type { Hono } from 'hono';
+import type { ApiEnv } from './api/ApiServerTypes.js';
 
 type TelemetryConfig = Pick<Config, 'otelForBackend' | 'sentryForBackend'>;
 
@@ -17,19 +18,15 @@ export function shouldRegisterHttpServerInstrumentation(config: TelemetryConfig)
  * すべてのルート・フックより前にリクエスト計装を登録し、ActivityPubや
  * well-knownを含む全HTTP受信経路を1つのroot spanとして計測する。
  */
-export async function registerHttpServerInstrumentation(fastify: FastifyInstance, config: TelemetryConfig): Promise<void> {
+export async function registerHttpServerInstrumentation(honoApp: Hono<ApiEnv>, config: TelemetryConfig): Promise<void> {
 	if (!shouldRegisterHttpServerInstrumentation(config)) return;
 
-	const { FastifyOtelInstrumentation } = await import('@fastify/otel');
-	const instrumentation = new FastifyOtelInstrumentation({
-		requestHook: (span, request) => {
-			const route = request.routeOptions.url;
-			if (route != null) {
-				// デフォルトだとトレース名が「request」で固定されてしまうため、判別がつかなくなる。
-				// ルート名をspan名に設定することで、トレースビューでルートごとの処理時間を確認できるようになる。
-				span.updateName(`${request.method} ${route}`);
-			}
+	const { httpInstrumentationMiddleware } = await import('@hono/otel');
+	honoApp.use(httpInstrumentationMiddleware({
+		spanNameFactory: (ctx) => {
+			// デフォルトだとトレース名が「request」で固定されてしまうため、判別がつかなくなる。
+			// ルート名をspan名に設定することで、トレースビューでルートごとの処理時間を確認できるようになる。
+			return `${ctx.req.method} ${ctx.req.path}`;
 		},
-	});
-	await fastify.register(instrumentation.plugin());
+	}));
 }

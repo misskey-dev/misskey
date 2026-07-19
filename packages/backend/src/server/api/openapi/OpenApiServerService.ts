@@ -4,12 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { Hono } from 'hono';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { genOpenapiSpec } from './gen-spec.js';
 import { ApiDocPage } from './api-doc.js';
-import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 @Injectable()
 export class OpenApiServerService {
@@ -20,16 +20,19 @@ export class OpenApiServerService {
 	}
 
 	@bindThis
-	public createServer(fastify: FastifyInstance, _options: FastifyPluginOptions, done: (err?: Error) => void) {
-		fastify.get('/api-doc', async (_request, reply) => {
-			reply.header('Cache-Control', 'public, max-age=86400');
-			reply.type('text/html; charset=utf-8');
-			reply.send(await ApiDocPage());
+	public createServer(): Hono {
+		const hono = new Hono();
+
+		hono.get('/api-doc', (ctx) => {
+			ctx.header('Cache-Control', 'public, max-age=86400');
+			return ctx.html(ApiDocPage());
 		});
-		fastify.get('/api.json', (_request, reply) => {
-			reply.header('Cache-Control', 'public, max-age=600');
-			reply.send(genOpenapiSpec(this.config));
+
+		hono.get('/api.json', (ctx) => {
+			ctx.header('Cache-Control', 'public, max-age=600');
+			return ctx.json(genOpenapiSpec(this.config));
 		});
-		done();
+
+		return hono;
 	}
 }

@@ -8,6 +8,7 @@ import * as stream from 'node:stream/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import chalk from 'chalk';
 import got, * as Got from 'got';
+import type { StatusCode } from 'hono/utils/http-status';
 import { parse } from 'content-disposition';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -100,7 +101,7 @@ export class DownloadService {
 			await stream.pipeline(req, fs.createWriteStream(path));
 		} catch (e) {
 			if (e instanceof Got.HTTPError) {
-				throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);
+				throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode as StatusCode, e.response.statusMessage);
 			} else {
 				throw e;
 			}

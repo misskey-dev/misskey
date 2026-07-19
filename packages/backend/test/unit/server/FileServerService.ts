@@ -5,8 +5,10 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import fastifyStatic from '@fastify/static';
-import Fastify, { type FastifyInstance } from 'fastify';
+import { serve } from '@hono/node-server';
+import type { ServerType } from '@hono/node-server';
+import { Hono } from 'hono';
+import type { Context as HonoContext } from 'hono';
 import { describe, expect, test, beforeAll, afterAll, afterEach } from 'vitest';
 import sharp from 'sharp';
 import { DataSource, type Repository } from 'typeorm';
@@ -30,37 +32,99 @@ const dummyBuffer = fs.readFileSync(dummyPath);
 const svgBuffer = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"></svg>', 'utf8');
 const textBuffer = Buffer.from('dummy text', 'utf8');
 
+type HonoTestResponse = {
+	statusCode: number;
+	headers: Record<string, string>;
+	body: Uint8Array;
+};
+
+type HonoTestServer = {
+	inject: (request: {
+		method: string;
+		url: string;
+		headers?: Record<string, string>;
+	}) => Promise<HonoTestResponse>;
+	close: () => Promise<void>;
+};
+
+type ListeningHonoServer = ServerType;
+
+function createHonoTestServer(app: Hono): HonoTestServer {
+	return {
+		inject: async ({ method, url, headers }) => {
+			const response = await app.request(new Request(new URL(url, 'http://127.0.0.1').toString(), {
+				method,
+				headers,
+			}));
+
+			return {
+				statusCode: response.status,
+				headers: Object.fromEntries(Array.from(response.headers.entries(), ([key, value]) => [key.toLowerCase(), value])),
+				body: new Uint8Array(await response.arrayBuffer()),
+			};
+		},
+		close: async () => {},
+	};
+}
+
+async function closeListeningServer(server: ListeningHonoServer): Promise<void> {
+	if (!server.listening) return;
+
+	await new Promise<void>((resolve, reject) => {
+		server.close((err) => {
+			if (err != null) {
+				reject(err);
+				return;
+			}
+
+			resolve();
+		});
+	});
+}
+
+async function startListeningHonoServer(app: Hono): Promise<{ server: ListeningHonoServer; baseUrl: string; }> {
+	return await new Promise((resolve, reject) => {
+		const onError = (error: Error) => {
+			server.off('error', onError);
+			reject(error);
+		};
+
+		const server = serve({
+			fetch: app.fetch,
+			hostname: '127.0.0.1',
+			port: 0,
+		}, (info) => {
+			server.off('error', onError);
+			resolve({
+				server,
+				baseUrl: `http://127.0.0.1:${info.port}`,
+			});
+		});
+
+		server.once('error', onError);
+	});
+}
+
 async function createRemoteFileServer() {
 	const flatPngBuffer = await sharp({
 		create: { width: 8, height: 8, channels: 3, background: { r: 0, g: 0, b: 0 } },
 	}).png().toBuffer();
-	const server = Fastify();
+	const app = new Hono();
+	const respondWithBuffer = (ctx: HonoContext, body: Buffer, contentType: string) => {
+		ctx.header('Content-Type', contentType);
+		ctx.header('Content-Length', String(body.length));
+		return ctx.body(new Uint8Array(body));
+	};
 
-	server.get('/dummy.png', async (_request, reply) => {
-		reply.header('Content-Type', 'image/png');
-		reply.header('Content-Length', String(dummyBuffer.length));
-		return reply.send(dummyBuffer);
-	});
+	app.get('/dummy.png', (ctx) => respondWithBuffer(ctx, dummyBuffer, 'image/png'));
 
-	server.get('/dummy.svg', async (_request, reply) => {
-		reply.header('Content-Type', 'image/svg+xml');
-		reply.header('Content-Length', String(svgBuffer.length));
-		return reply.send(svgBuffer);
-	});
+	app.get('/dummy.svg', (ctx) => respondWithBuffer(ctx, svgBuffer, 'image/svg+xml'));
 
-	server.get('/dummy.txt', async (_request, reply) => {
-		reply.header('Content-Type', 'text/plain');
-		reply.header('Content-Length', String(textBuffer.length));
-		return reply.send(textBuffer);
-	});
+	app.get('/dummy.txt', (ctx) => respondWithBuffer(ctx, textBuffer, 'text/plain'));
 
-	server.get('/flat.png', async (_request, reply) => {
-		reply.header('Content-Type', 'image/png');
-		reply.header('Content-Length', String(flatPngBuffer.length));
-		return reply.send(flatPngBuffer);
-	});
+	app.get('/flat.png', (ctx) => respondWithBuffer(ctx, flatPngBuffer, 'image/png'));
 
-	const baseUrl = await server.listen({ port: 0, host: '127.0.0.1' });
+	const { server, baseUrl } = await startListeningHonoServer(app);
 
 	return {
 		server,
@@ -73,15 +137,15 @@ async function createRemoteFileServer() {
 
 describe('FileServerService', () => {
 	let db: DataSource;
-	let fastify: FastifyInstance;
-	let externalFastify: FastifyInstance;
+	let honoServer: HonoTestServer;
+	let externalHonoServer: HonoTestServer;
 	let driveFilesRepository: Repository<MiDriveFile>;
 	let internalStorageService: InternalStorageService;
 	let idService: IdService;
 	let config: Config;
 	let fileServerService: FileServerService;
 	let externalFileServerService: FileServerService;
-	let remoteServer: FastifyInstance;
+	let remoteServer: ListeningHonoServer;
 	let remotePngUrl: string;
 	let remoteSvgUrl: string;
 	let remoteTextUrl: string;
@@ -169,13 +233,7 @@ describe('FileServerService', () => {
 			loggerService,
 		);
 
-		fastify = Fastify();
-		await fastify.register(fastifyStatic, {
-			root: path.resolve('src/server/assets'),
-			serve: false,
-		});
-		fileServerService.createServer(fastify, {}, () => {});
-		await fastify.ready();
+		honoServer = createHonoTestServer(fileServerService.createServer());
 
 		const externalConfig = {
 			...config,
@@ -192,13 +250,7 @@ describe('FileServerService', () => {
 			internalStorageService,
 			loggerService,
 		);
-		externalFastify = Fastify();
-		await externalFastify.register(fastifyStatic, {
-			root: path.resolve('src/server/assets'),
-			serve: false,
-		});
-		externalFileServerService.createServer(externalFastify, {}, () => {});
-		await externalFastify.ready();
+		externalHonoServer = createHonoTestServer(externalFileServerService.createServer());
 
 		const remoteServerInfo = await createRemoteFileServer();
 		remoteServer = remoteServerInfo.server;
@@ -228,9 +280,9 @@ describe('FileServerService', () => {
 	});
 
 	afterAll(async () => {
-		await fastify.close();
-		await externalFastify.close();
-		await remoteServer.close();
+		await honoServer.close();
+		await externalHonoServer.close();
+		await closeListeningServer(remoteServer);
 		await db.destroy();
 		if (createdFallbackAssets) {
 			fs.rmSync(fallbackAssetsDir, { recursive: true, force: true });
@@ -243,7 +295,7 @@ describe('FileServerService', () => {
 			process.env.NODE_ENV = 'test';
 
 			try {
-				const res = await fastify.inject({
+				const res = await honoServer.inject({
 					method: 'GET',
 					url: '/files/app-default.jpg',
 				});
@@ -263,7 +315,7 @@ describe('FileServerService', () => {
 			process.env.NODE_ENV = 'development';
 
 			try {
-				const res = await fastify.inject({
+				const res = await honoServer.inject({
 					method: 'GET',
 					url: '/files/app-default.jpg',
 				});
@@ -276,7 +328,7 @@ describe('FileServerService', () => {
 		});
 
 		test('GET /files/app-default.jpg?x=1 クエリを除去してリダイレクトする', async () => {
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: '/files/app-default.jpg?x=1',
 			});
@@ -291,7 +343,7 @@ describe('FileServerService', () => {
 		test('GET /files/:key 404 のときダミー画像を返す', async () => {
 			const accessKey = randomString();
 
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/files/${accessKey}`,
 			});
@@ -309,7 +361,7 @@ describe('FileServerService', () => {
 				isLink: false,
 			});
 
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/files/${accessKey}`,
 			});
@@ -331,7 +383,7 @@ describe('FileServerService', () => {
 				isLink: false,
 			});
 
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/files/${accessKey}`,
 				headers: {
@@ -356,7 +408,7 @@ describe('FileServerService', () => {
 				isLink: false,
 			});
 
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/files/${accessKey}`,
 				headers: {
@@ -382,7 +434,7 @@ describe('FileServerService', () => {
 				name: 'sample.png',
 			});
 
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/files/${thumbnailKey}`,
 				headers: {
@@ -410,7 +462,7 @@ describe('FileServerService', () => {
 				name: 'sample.png',
 			});
 
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/files/${thumbnailKey}`,
 			});
@@ -433,7 +485,7 @@ describe('FileServerService', () => {
 				name: 'sample.png',
 			});
 
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/files/${webpublicKey}`,
 			});
@@ -454,7 +506,7 @@ describe('FileServerService', () => {
 				type: 'application/x-msdownload',
 			});
 
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/files/${accessKey}`,
 			});
@@ -471,7 +523,7 @@ describe('FileServerService', () => {
 				isLink: false,
 			});
 
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/files/${accessKey}`,
 			});
@@ -490,7 +542,7 @@ describe('FileServerService', () => {
 				name: 'remote.png',
 			});
 
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/files/${accessKey}`,
 			});
@@ -512,7 +564,7 @@ describe('FileServerService', () => {
 				name: 'remote.png',
 			});
 
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/files/${accessKey}`,
 				headers: {
@@ -540,7 +592,7 @@ describe('FileServerService', () => {
 				name: 'remote.png',
 			});
 
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/files/${thumbnailKey}`,
 			});
@@ -564,7 +616,7 @@ describe('FileServerService', () => {
 				type: 'image/svg+xml',
 			});
 
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/files/${webpublicKey}`,
 			});
@@ -577,7 +629,7 @@ describe('FileServerService', () => {
 
 	describe('GET /files/:key/*', () => {
 		test('GET /files/:key/* 正規の /files/:key にリダイレクトする', async () => {
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: '/files/testkey/extra/path',
 			});
@@ -590,7 +642,7 @@ describe('FileServerService', () => {
 
 	describe('GET /proxy/:url*', () => {
 		test('GET /proxy/:url* 外部メディアプロキシへリダイレクトする', async () => {
-			const res = await externalFastify.inject({
+			const res = await externalHonoServer.inject({
 				method: 'GET',
 				url: '/proxy/path-part?url=https%3A%2F%2Fexample.com%2Fimg.png&static=1',
 			});
@@ -604,7 +656,7 @@ describe('FileServerService', () => {
 		});
 
 		test('GET /proxy/:url* misskey User-Agent を拒否する', async () => {
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: '/proxy/any?url=https%3A%2F%2Fexample.com%2Fimg.png',
 				headers: {
@@ -617,7 +669,7 @@ describe('FileServerService', () => {
 		});
 
 		test('GET /proxy/:url* origin 指定時は User-Agent 必須を検証する', async () => {
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: '/proxy/any?url=https%3A%2F%2Fexample.com%2Fimg.png&origin=1',
 				headers: {
@@ -632,7 +684,7 @@ describe('FileServerService', () => {
 		});
 
 		test('GET /proxy/:url* emoji 指定で非画像は 404 を返す', async () => {
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/proxy/any?url=${encodeURIComponent(remoteTextUrl)}&emoji=1`,
 				headers: {
@@ -645,7 +697,7 @@ describe('FileServerService', () => {
 		});
 
 		test('GET /proxy/:url* 非画像は 403 を返す', async () => {
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/proxy/any?url=${encodeURIComponent(remoteTextUrl)}`,
 				headers: {
@@ -658,7 +710,7 @@ describe('FileServerService', () => {
 		});
 
 		test('GET /proxy/:url* emoji static で webp を返す', async () => {
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/proxy/any?url=${encodeURIComponent(remotePngUrl)}&emoji=1&static=1`,
 				headers: {
@@ -673,7 +725,7 @@ describe('FileServerService', () => {
 		});
 
 		test('GET /proxy/:url* avatar static で webp を返す', async () => {
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/proxy/any?url=${encodeURIComponent(remotePngUrl)}&avatar=1&static=1`,
 				headers: {
@@ -688,7 +740,7 @@ describe('FileServerService', () => {
 		});
 
 		test('GET /proxy/:url* static で webp を返す', async () => {
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/proxy/any?url=${encodeURIComponent(remotePngUrl)}&static=1`,
 				headers: {
@@ -703,7 +755,7 @@ describe('FileServerService', () => {
 		});
 
 		test('GET /proxy/:url* preview で webp を返す', async () => {
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/proxy/any?url=${encodeURIComponent(remotePngUrl)}&preview=1`,
 				headers: {
@@ -718,7 +770,7 @@ describe('FileServerService', () => {
 		});
 
 		test('GET /proxy/:url* svg を webp に変換する', async () => {
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/proxy/any?url=${encodeURIComponent(remoteSvgUrl)}`,
 				headers: {
@@ -733,7 +785,7 @@ describe('FileServerService', () => {
 		});
 
 		test('GET /proxy/:url* badge で低エントロピー画像は 404 を返す', async () => {
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/proxy/any?url=${encodeURIComponent(remoteFlatPngUrl)}&badge=1`,
 				headers: {
@@ -754,7 +806,7 @@ describe('FileServerService', () => {
 				isLink: false,
 			});
 
-			const res = await fastify.inject({
+			const res = await honoServer.inject({
 				method: 'GET',
 				url: `/proxy/any?url=${encodeURIComponent(`${config.url}/files/${accessKey}`)}&origin=1`,
 				headers: {

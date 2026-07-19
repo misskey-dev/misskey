@@ -11,39 +11,29 @@ const mocks = vi.hoisted(() => ({
 	instrumentation: vi.fn(),
 }));
 
-vi.mock('@fastify/otel', () => ({
-	FastifyOtelInstrumentation: class {
-		public plugin = mocks.plugin;
-
-		public constructor(options: unknown) {
-			mocks.instrumentation(options);
-		}
-	},
+vi.mock('@hono/otel', () => ({
+	httpInstrumentationMiddleware: vi.fn().mockImplementation((options) => {
+		mocks.instrumentation(options);
+		return 'middleware';
+	}),
 }));
 
 describe('http-server-instrumentation', () => {
-	test('registers Fastify instrumentation when only OpenTelemetry is configured', async () => {
-		const plugin = vi.fn();
-		const fastify = { register: vi.fn().mockResolvedValue(undefined) };
-		mocks.plugin.mockReturnValue(plugin);
+	test('registers Hono instrumentation when only OpenTelemetry is configured', async () => {
+		const honoApp = { use: vi.fn() };
 
-		await registerHttpServerInstrumentation(fastify as any, { otelForBackend: {} } as any);
+		await registerHttpServerInstrumentation(honoApp as any, { otelForBackend: {} } as any);
 
 		expect(mocks.instrumentation).toHaveBeenCalledTimes(1);
-		expect(fastify.register).toHaveBeenCalledWith(plugin);
-
-		const requestHook = mocks.instrumentation.mock.calls[0][0].requestHook;
-		const span = { updateName: vi.fn() };
-		requestHook(span, { method: 'POST', routeOptions: { url: '/notes/create' } });
-		expect(span.updateName).toHaveBeenCalledWith('POST /notes/create');
+		expect(honoApp.use).toHaveBeenCalledWith('middleware');
 	});
 
-	test('does not register duplicate request instrumentation with Sentry', async () => {
-		const fastify = { register: vi.fn() };
+	test('does not register duplicate request instrumentation with OpenTelemetry and Sentry', async () => {
+		const honoApp = { use: vi.fn() };
 
-		await registerHttpServerInstrumentation(fastify as any, { otelForBackend: {}, sentryForBackend: {} } as any);
+		await registerHttpServerInstrumentation(honoApp as any, { otelForBackend: {}, sentryForBackend: {} } as any);
 
-		expect(fastify.register).not.toHaveBeenCalled();
+		expect(honoApp.use).not.toHaveBeenCalled();
 		expect(shouldRegisterHttpServerInstrumentation({ otelForBackend: {}, sentryForBackend: {} } as any)).toBe(false);
 	});
 

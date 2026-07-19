@@ -2,14 +2,15 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { StatusCode } from 'hono/utils/http-status';
 
 export class OAuthProviderError extends Error {
 	public error: string;
 	public error_description?: string;
 	public expose = true;
 	public allow_redirect = true;
-	public status = 400;
-	public statusCode = 400;
+	public status: StatusCode = 400;
+	public statusCode: StatusCode = 400;
 
 	constructor(error: string, description?: string) {
 		super(description ?? error);

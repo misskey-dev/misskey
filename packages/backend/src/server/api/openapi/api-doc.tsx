@@ -2,11 +2,14 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { raw } from 'hono/utils/html';
 
 export function ApiDocPage() {
+	const doctypeTag = raw('<!DOCTYPE html>');
+
 	return (
 		<>
-			{'<!DOCTYPE html>'}
+			{doctypeTag}
 			<html>
 				<head>
 					<meta charset="UTF-8" />

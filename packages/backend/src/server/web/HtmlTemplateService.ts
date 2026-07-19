@@ -11,7 +11,6 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { htmlSafeJsonStringify } from '@/misc/json-stringify-html-safe.js';
 import { MetaEntityService } from '@/core/entities/MetaEntityService.js';
-import type { FastifyReply } from 'fastify';
 import type { Manifest } from 'vite';
 import type { Config } from '@/config.js';
 import type { MiMeta } from '@/models/Meta.js';
@@ -175,11 +174,5 @@ export class HtmlTemplateService {
 			frontendEmbedBootloaderJs: this.frontendEmbedBootloaderJs,
 			frontendEmbedBootloaderCss: this.frontendEmbedBootloaderCss,
 		};
-	}
-
-	public static async replyHtml(reply: FastifyReply, html: string | Promise<string>) {
-		reply.header('Content-Type', 'text/html; charset=utf-8');
-		const _html = await html;
-		return reply.send(_html);
 	}
 }

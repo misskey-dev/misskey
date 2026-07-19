@@ -3,11 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Readable } from 'node:stream';
 import { Inject, Injectable } from '@nestjs/common';
-import cors from '@fastify/cors';
-import multipart from '@fastify/multipart';
 import { ModuleRef } from '@nestjs/core';
-import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
+import { Hono } from 'hono';
+import { TrieRouter } from 'hono/router/trie-router';
+import type { Handler } from 'hono';
+import { bodyLimit } from 'hono/body-limit';
+import { cors } from 'hono/cors';
+import { HttpStatusError } from '@/misc/http-status-error.js';
 import type { Config } from '@/config.js';
 import type { InstancesRepository, AccessTokensRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -18,7 +22,8 @@ import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';
 import { SigninWithPasskeyApiService } from './SigninWithPasskeyApiService.js';
-import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import type { ApiContext, ApiEnv, ApiMultipartData } from './ApiServerTypes.js';
+import type { IEndpoint } from './endpoints.js';
 
 @Injectable()
 export class ApiServerService {
@@ -44,106 +49,195 @@ export class ApiServerService {
 	}
 
 	@bindThis
-	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		fastify.register(cors, {
+	private async parseJsonBody(ctx: ApiContext): Promise<Record<string, unknown> | Response> {
+		try {
+			const parsed = await ctx.req.json();
+			if (parsed == null || Array.isArray(parsed) || typeof parsed !== 'object') {
+				return ctx.body(null, 400);
+			}
+
+			return parsed as Record<string, unknown>;
+		} catch {
+			return ctx.body(null, 400);
+		}
+	}
+
+	@bindThis
+	private async parseMultipartBody(ctx: ApiContext): Promise<ApiMultipartData | Response | null> {
+		try {
+			const body = await ctx.req.parseBody({ all: true });
+			let file: File | null = null;
+			const fields: Record<string, unknown> = {};
+
+			for (const [key, rawValue] of Object.entries(body)) {
+				const values = Array.isArray(rawValue) ? rawValue : [rawValue];
+				const files = values.filter((value): value is File => value instanceof File);
+				if (files.length > 0) {
+					if (file != null || files.length !== 1 || values.length !== 1) {
+						return ctx.body(null, 400);
+					}
+
+					file = files[0];
+					continue;
+				}
+
+				fields[key] = values.length === 1 ? values[0] : values;
+			}
+
+			if (file == null) {
+				return null;
+			}
+
+			return {
+				filename: file.name,
+				file: Readable.fromWeb(file.stream()),
+				truncated: false,
+				fields,
+			};
+		} catch {
+			return ctx.body(null, 400);
+		}
+	}
+
+	@bindThis
+	private finalize(ctx: ApiContext, result: unknown): Response {
+		if (result instanceof Response) {
+			return result;
+		}
+
+		const status = ctx.res.status === 200 ? 200 : ctx.res.status;
+
+		if (result == null) {
+			return ctx.body(null, status as never);
+		}
+
+		if (typeof result === 'string') {
+			if (ctx.res.headers.get('Content-Type') == null) {
+				ctx.header('Content-Type', 'application/json');
+			}
+			return ctx.body(result, status as never);
+		}
+
+		return ctx.json(result, status as never);
+	}
+
+	@bindThis
+	private async invoke(ctx: ApiContext, handler: () => Promise<unknown>): Promise<Response> {
+		try {
+			return this.finalize(ctx, await handler());
+		} catch (err) {
+			if (err instanceof HttpStatusError) {
+				return ctx.body(err.message, err.statusCode as never);
+			}
+
+			throw err;
+		}
+	}
+
+	@bindThis
+	public createServer(): Hono<ApiEnv> {
+		const hono = new Hono<ApiEnv>({
+			router: new TrieRouter(),
+		});
+
+		const jsonBodyLimit = bodyLimit({
+			maxSize: 1024 * 1024,
+			onError: (ctx) => ctx.body(null, 413),
+		});
+
+		const multipartBodyLimit = bodyLimit({
+			maxSize: this.config.maxFileSize,
+			onError: (ctx) => ctx.body(null, 413),
+		});
+
+		hono.use('*', cors({
 			origin: '*',
+		}));
+
+		hono.use('*', async (ctx, next) => {
+			ctx.header('Cache-Control', 'private, max-age=0, must-revalidate');
+			await next();
 		});
 
-		fastify.register(multipart, {
-			limits: {
-				fileSize: this.config.maxFileSize,
-				files: 1,
-			},
-		});
+		hono.use('*', async (ctx, next) => {
+			if (ctx.req.method === 'GET') {
+				return await next();
+			}
 
-		// Prevent cache
-		fastify.addHook('onRequest', (request, reply, done) => {
-			reply.header('Cache-Control', 'private, max-age=0, must-revalidate');
-			done();
+			const contentType = ctx.req.header('Content-Type') || '';
+
+			if (contentType.includes('multipart/form-data')) {
+				return await multipartBodyLimit(ctx, next);
+			} else {
+				return await jsonBodyLimit(ctx, next);
+			}
 		});
 
 		for (const endpoint of endpoints) {
-			const ep = {
-				name: endpoint.name,
-				meta: endpoint.meta,
-				params: endpoint.params,
-				exec: this.moduleRef.get('ep:' + endpoint.name, { strict: false }).exec,
+			const handler = async (ctx: ApiContext) => {
+				if (ctx.req.method === 'GET' && !endpoint.meta.allowGet) {
+					return ctx.body(null, 405);
+				}
+
+				const exec = this.moduleRef.get('ep:' + endpoint.name, { strict: false }).exec;
+				const ep = {
+					name: endpoint.name,
+					meta: endpoint.meta,
+					params: endpoint.params,
+					exec,
+				} satisfies IEndpoint & { exec: any };
+
+				if (endpoint.meta.requireFile) {
+					const multipartData = await this.parseMultipartBody(ctx);
+					if (multipartData instanceof Response) return multipartData;
+					if (multipartData == null) return ctx.body(null, 400);
+
+					return await this.apiCallService.handleMultipartRequest(ep, ctx, multipartData);
+				} else {
+					const parsedBody = ctx.req.method === 'GET' ? undefined : await this.parseJsonBody(ctx);
+					if (parsedBody instanceof Response) return parsedBody;
+
+					return await this.apiCallService.handleRequest(ep, ctx, parsedBody);
+				}
 			};
 
-			if (endpoint.meta.requireFile) {
-				fastify.all<{
-					Params: { endpoint: string; },
-					Body: Record<string, unknown>,
-					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, async (request, reply) => {
-					if (request.method === 'GET' && !endpoint.meta.allowGet) {
-						reply.code(405);
-						reply.send();
-						return;
-					}
+			const registerRoute = (path: string, handler: Handler) => {
+				hono.post(path, handler);
 
-					// Await so that any error can automatically be translated to HTTP 500
-					await this.apiCallService.handleMultipartRequest(ep, request, reply);
-					return reply;
-				});
-			} else {
-				fastify.all<{
-					Params: { endpoint: string; },
-					Body: Record<string, unknown>,
-					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, { bodyLimit: 1024 * 1024 }, async (request, reply) => {
-					if (request.method === 'GET' && !endpoint.meta.allowGet) {
-						reply.code(405);
-						reply.send();
-						return;
-					}
+				// GET が許可されている場合のみ GET も登録
+				if (endpoint.meta.allowGet) {
+					hono.get(path, handler);
+				}
+			};
 
-					// Await so that any error can automatically be translated to HTTP 500
-					await this.apiCallService.handleRequest(ep, request, reply);
-					return reply;
-				});
-			}
+			registerRoute('/' + endpoint.name, handler);
 		}
 
-		fastify.post<{
-			Body: {
-				username: string;
-				password: string;
-				host?: string;
-				invitationCode?: string;
-				emailAddress?: string;
-				'hcaptcha-response'?: string;
-				'g-recaptcha-response'?: string;
-				'turnstile-response'?: string;
-				'm-captcha-response'?: string;
-				'testcaptcha-response'?: string;
-			}
-		}>('/signup', (request, reply) => this.signupApiService.signup(request, reply));
+		hono.post('/signup', jsonBodyLimit, async (ctx) => {
+			const body = await this.parseJsonBody(ctx);
+			if (body instanceof Response) return body;
+			return await this.invoke(ctx, async () => await this.signupApiService.signup(ctx, body));
+		});
 
-		fastify.post<{
-			Body: {
-				username: string;
-				password?: string;
-				token?: string;
-				credential?: AuthenticationResponseJSON;
-				'hcaptcha-response'?: string;
-				'g-recaptcha-response'?: string;
-				'turnstile-response'?: string;
-				'm-captcha-response'?: string;
-				'testcaptcha-response'?: string;
-			};
-		}>('/signin-flow', (request, reply) => this.signinApiService.signin(request, reply));
+		hono.post('/signin-flow', jsonBodyLimit, async (ctx) => {
+			const body = await this.parseJsonBody(ctx);
+			if (body instanceof Response) return body;
+			return await this.invoke(ctx, async () => await this.signinApiService.signin(ctx, body));
+		});
 
-		fastify.post<{
-			Body: {
-				credential?: AuthenticationResponseJSON;
-				context?: string;
-			};
-		}>('/signin-with-passkey', (request, reply) => this.signinWithPasskeyApiService.signin(request, reply));
+		hono.post('/signin-with-passkey', jsonBodyLimit, async (ctx) => {
+			const body = await this.parseJsonBody(ctx);
+			if (body instanceof Response) return body;
+			return await this.invoke(ctx, async () => await this.signinWithPasskeyApiService.signin(ctx, body));
+		});
 
-		fastify.post<{ Body: { code: string; } }>('/signup-pending', (request, reply) => this.signupApiService.signupPending(request, reply));
+		hono.post('/signup-pending', jsonBodyLimit, async (ctx) => {
+			const body = await this.parseJsonBody(ctx);
+			if (body instanceof Response) return body;
+			return await this.invoke(ctx, async () => await this.signupApiService.signupPending(ctx, body));
+		});
 
-		fastify.get('/v1/instance/peers', async (request, reply) => {
+		hono.get('/v1/instance/peers', async (ctx) => {
 			const instances = await this.instancesRepository.find({
 				select: { host: true },
 				where: {
@@ -151,12 +245,12 @@ export class ApiServerService {
 				},
 			});
 
-			return instances.map(instance => instance.host);
+			return ctx.json(instances.map(instance => instance.host));
 		});
 
-		fastify.post<{ Params: { session: string; } }>('/miauth/:session/check', async (request, reply) => {
+		hono.post('/miauth/:session/check', async (ctx) => {
 			const token = await this.accessTokensRepository.findOneBy({
-				session: request.params.session,
+				session: ctx.req.param('session'),
 			});
 
 			if (token && token.session != null && !token.fetched) {
@@ -164,45 +258,37 @@ export class ApiServerService {
 					fetched: true,
 				});
 
-				return {
+				return ctx.json({
 					ok: true,
 					token: token.token,
 					user: await this.userEntityService.pack(token.userId, null, { schema: 'UserDetailedNotMe' }),
-				};
+				});
 			} else {
-				return {
+				return ctx.json({
 					ok: false,
-				};
+				});
 			}
 		});
 
-		fastify.all('/clear-browser-cache', (request, reply) => {
-			if (['GET', 'POST'].includes(request.method)) {
-				reply.header('Clear-Site-Data', '"cache", "prefetchCache", "prerenderCache", "executionContexts"');
-				reply.code(204);
-				reply.send();
-			} else {
-				reply.code(405);
-				reply.send();
-			}
+		hono.on(['GET', 'POST'], '/clear-browser-cache', (ctx) => {
+			ctx.header('Clear-Site-Data', '"cache", "prefetchCache", "prerenderCache", "executionContexts"');
+			return ctx.body(null, 204);
 		});
 
 		// Make sure any unknown path under /api returns HTTP 404 Not Found,
 		// because otherwise ClientServerService will return the base client HTML
 		// page with HTTP 200.
-		fastify.get('/*', (request, reply) => {
-			reply.code(404);
-			// Mock ApiCallService.send's error handling
-			reply.send({
+		hono.all('/*', (ctx) => {
+			return ctx.json({
 				error: {
 					message: 'Unknown API endpoint.',
 					code: 'UNKNOWN_API_ENDPOINT',
 					id: '2ca3b769-540a-4f08-9dd5-b5a825b6d0f1',
 					kind: 'client',
 				},
-			});
+			}, 404);
 		});
 
-		done();
+		return hono;
 	}
 }

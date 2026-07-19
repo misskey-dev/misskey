@@ -24,15 +24,12 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"jsx": "react-jsx",
-		"jsxImportSource": "@kitajs/html",
+		"jsxImportSource": "hono/jsx",
 		"rootDir": "./src",
 		"paths": {
 			"@/*": ["./src/*"]
 		},
 		"outDir": "./built",
-		"plugins": [
-			{"name": "@kitajs/ts-html-plugin"}
-		],
 		"types": [
 			"node"
 		],
