@@ -191,6 +191,12 @@ function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
 	&.active {
 		color: var(--MI_THEME-accent);
 	}
+
+	&:disabled {
+		opacity: 0.7;
+		cursor: not-allowed;
+		background: none;
+	}
 }
 
 .icon {
