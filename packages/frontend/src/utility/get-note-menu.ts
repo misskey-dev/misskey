@@ -623,14 +623,20 @@ export function getRenoteMenu(props: {
 	renoteButton: ShallowRef<HTMLElement | null | undefined>;
 	mock?: boolean;
 }) {
-	const appearNote = getAppearNote(props.note) ?? props.note;
+	if (!$i?.policies.canNote || $i?.policies.renotePolicy === 'disallow') {
+		return {
+			menu: [],
+		};
+	}
+
+	const appearNote = getAppearNote(props.note);
 
 	const channelRenoteItems: MenuItem[] = [];
 	const normalRenoteItems: MenuItem[] = [];
 	const normalExternalChannelRenoteItems: MenuItem[] = [];
 
 	if (appearNote.channel) {
-		channelRenoteItems.push(...[{
+		channelRenoteItems.push({
 			text: i18n.ts.inChannelRenote,
 			icon: 'ti ti-repeat',
 			action: () => {
@@ -654,22 +660,26 @@ export function getRenoteMenu(props: {
 					});
 				}
 			},
-		}, {
-			text: i18n.ts.inChannelQuote,
-			icon: 'ti ti-quote',
-			action: () => {
-				if (!props.mock) {
-					os.post({
-						renote: appearNote,
-						channel: appearNote.channel,
-					});
-				}
-			},
-		}]);
+		});
+
+		if ($i?.policies.renotePolicy === 'allow') {
+			channelRenoteItems.push({
+				text: i18n.ts.inChannelQuote,
+				icon: 'ti ti-quote',
+				action: () => {
+					if (!props.mock) {
+						os.post({
+							renote: appearNote,
+							channel: appearNote.channel!,
+						});
+					}
+				},
+			});
+		}
 	}
 
 	if (!appearNote.channel || appearNote.channel.allowRenoteToExternal) {
-		normalRenoteItems.push(...[{
+		normalRenoteItems.push({
 			text: i18n.ts.renote,
 			icon: 'ti ti-repeat',
 			action: () => {
@@ -684,7 +694,9 @@ export function getRenoteMenu(props: {
 				}
 
 				const configuredVisibility = prefer.s.rememberNoteVisibility ? store.s.visibility : prefer.s.defaultNoteVisibility;
-				const localOnly = prefer.s.rememberNoteVisibility ? store.s.localOnly : prefer.s.defaultNoteLocalOnly;
+				const configuredLocalOnly = prefer.s.rememberNoteVisibility ? store.s.localOnly : prefer.s.defaultNoteLocalOnly;
+				// 連合が許可されていないなら、設定に関わらずローカルのみにする
+				const localOnly = $i?.policies.canFederateNote === false ? true : configuredLocalOnly;
 
 				let visibility = appearNote.visibility;
 				visibility = smallerVisibility(visibility, configuredVisibility);
@@ -703,15 +715,19 @@ export function getRenoteMenu(props: {
 					});
 				}
 			},
-		}, ...(props.mock ? [] : [{
-			text: i18n.ts.quote,
-			icon: 'ti ti-quote',
-			action: () => {
-				os.post({
-					renote: appearNote,
-				});
-			},
-		}])]);
+		});
+
+		if (!props.mock && $i?.policies.renotePolicy === 'allow') {
+			normalRenoteItems.push({
+				text: i18n.ts.quote,
+				icon: 'ti ti-quote',
+				action: () => {
+					os.post({
+						renote: appearNote,
+					});
+				},
+			});
+		}
 
 		normalExternalChannelRenoteItems.push({
 			type: 'parent',

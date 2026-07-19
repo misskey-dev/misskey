@@ -31,10 +31,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkDraggable>
 	<p
 		:class="[$style.remain, {
-			[$style.exceeded]: props.modelValue.length > 16,
+			[$style.exceeded]: props.modelValue.length > props.noteFilesLimit,
 		}]"
 	>
-		{{ props.modelValue.length }}/16
+		{{ props.modelValue.length }}/{{ props.noteFilesLimit }}
 	</p>
 </div>
 </template>
@@ -55,6 +55,8 @@ import { globalEvents } from '@/events.js';
 
 const props = defineProps<{
 	modelValue: Misskey.entities.DriveFile[];
+	/** 投稿に使用するアカウントのポリシー由来の添付上限 */
+	noteFilesLimit: number;
 	detachMediaFn?: (id: string) => void;
 }>();
 

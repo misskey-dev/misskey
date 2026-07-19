@@ -152,7 +152,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:myReaction="$appearNote.myReaction"
 					:noteId="appearNote.id"
 				/>
-				<button class="_button" :class="$style.noteFooterButton" @click="reply()">
+				<button
+					class="_button"
+					:class="$style.noteFooterButton"
+					:disabled="!canReply"
+					@click="reply()"
+				>
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.repliesCount) }}</p>
 				</button>
@@ -299,6 +304,7 @@ const {
 	translation,
 	muted,
 	canRenote,
+	canReply,
 	isMyRenote,
 	parsed,
 	urls,
@@ -622,7 +628,11 @@ const keymap = {
 		margin-right: 28px;
 	}
 
-	&:hover {
+	&:disabled {
+		cursor: not-allowed;
+	}
+
+	&:not(:disabled):hover {
 		color: var(--MI_THEME-fgHighlighted);
 	}
 }
