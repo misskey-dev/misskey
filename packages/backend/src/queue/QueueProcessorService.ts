@@ -504,8 +504,22 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 		//#region ended poll notification
 		{
+			const logger = this.logger.createSubLogger('ended-poll-notification');
+
 			this.endedPollNotificationQueueWorker = new Bull.Worker(QUEUE.ENDED_POLL_NOTIFICATION, (job) => {
-				return this.telemetryService.startSpanWithTraceContext('Queue: EndedPollNotification', job.data, () => this.endedPollNotificationProcessorService.process(job));
+				return runQueueJobWithTraceContext(
+					this.telemetryService,
+					'Queue: EndedPollNotification',
+					job.data,
+					() => this.endedPollNotificationProcessorService.process(job),
+					err => {
+						logger.error(`failed(${err.name}: ${err.message}) id=${job.id}`, { job: renderJob(job), e: renderError(err) });
+						this.telemetryService.captureMessage(`Queue: EndedPollNotification: ${err.name}: ${err.message}`, {
+							level: 'error',
+							extra: { job, err },
+						});
+					},
+				);
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.ENDED_POLL_NOTIFICATION),
 				autorun: false,
@@ -515,8 +529,22 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 		//#region post scheduled note
 		{
-			this.postScheduledNoteQueueWorker = new Bull.Worker(QUEUE.POST_SCHEDULED_NOTE, async (job) => {
-				return this.telemetryService.startSpanWithTraceContext('Queue: PostScheduledNote', job.data, () => this.postScheduledNoteProcessorService.process(job));
+			const logger = this.logger.createSubLogger('post-scheduled-note');
+
+			this.postScheduledNoteQueueWorker = new Bull.Worker(QUEUE.POST_SCHEDULED_NOTE, (job) => {
+				return runQueueJobWithTraceContext(
+					this.telemetryService,
+					'Queue: PostScheduledNote',
+					job.data,
+					() => this.postScheduledNoteProcessorService.process(job),
+					err => {
+						logger.error(`failed(${err.name}: ${err.message}) id=${job.id}`, { job: renderJob(job), e: renderError(err) });
+						this.telemetryService.captureMessage(`Queue: PostScheduledNote: ${err.name}: ${err.message}`, {
+							level: 'error',
+							extra: { job, err },
+						});
+					},
+				);
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.POST_SCHEDULED_NOTE),
 				autorun: false,
