@@ -22,6 +22,7 @@
 		"@mcaptcha/core-glue": "0.1.0-alpha-5",
 		"@misskey-dev/browser-image-resizer": "2024.1.0",
 		"@misskey-dev/emoji-data": "17.0.3",
+		"@misskey-dev/tagcanvas-es": "0.1.1",
 		"@sentry/vue": "10.62.0",
 		"@simplewebauthn/browser": "13.3.0",
 		"@syuilo/aiscript": "1.2.1",

@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkTagCloud v-if="activeInstances" ref="cloud">
 			<li v-for="instance in activeInstances" :key="instance.id">
 				<a @click.prevent="onInstanceClick(instance)">
-					<img style="width: 32px;" :src="getInstanceIcon(instance)">
+					<img width="32" height="32" :src="getInstanceIcon(instance)">
 				</a>
 			</li>
 		</MkTagCloud>
@@ -61,8 +61,8 @@ function onInstanceClick(i: Misskey.entities.FederationInstance) {
 
 useInterval(() => {
 	misskeyApi('federation/instances', {
-		sort: '+latestRequestReceivedAt',
-		limit: 25,
+	sort: '+latestRequestReceivedAt',
+	limit: 25,
 	}).then(res => {
 		activeInstances.value = res;
 		if (cloud.value) cloud.value.update();

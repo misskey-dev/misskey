@@ -572,6 +572,9 @@ importers:
       '@misskey-dev/emoji-data':
         specifier: 17.0.3
         version: 17.0.3
+      '@misskey-dev/tagcanvas-es':
+        specifier: 0.1.1
+        version: 0.1.1
       '@sentry/vue':
         specifier: 10.62.0
         version: 10.62.0(vue@3.5.39(typescript@5.9.3))
@@ -2370,6 +2373,9 @@ packages:
 
   '@misskey-dev/summaly@5.5.1':
     resolution: {integrity: sha512-CfpVtmFgltjNS1FAS5+bOluKAF/irZuQnUxAw66ydnp/uesiNNu62ltf9gEgwutT5S+itGtlnP87AOx6DDn/1A==}
+
+  '@misskey-dev/tagcanvas-es@0.1.1':
+    resolution: {integrity: sha512-dacF2JrCBBpnf16SZGwIIZP+PE4wdU+JkAjWSmz+7kVWY00cllwLGA5rrRo1dFUBTJvtaiTtEoTx4N07IXLaKg==}
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4':
     resolution: {integrity: sha512-LCkGo6JDfaBhgST7UpPWgNgLINpcpabaHfyz5OBx75nUYxBsaEPxjnyNjWpeb/xBup/682QnBfRBy2/LvPutZQ==}
@@ -10456,6 +10462,8 @@ snapshots:
       ipaddr.js: 2.4.0
     optionalDependencies:
       fastify: 5.8.5
+
+  '@misskey-dev/tagcanvas-es@0.1.1': {}
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4':
     optional: true
