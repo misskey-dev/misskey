@@ -27,13 +27,13 @@ const tagCanvas = shallowRef<TagCanvas | null>(null);
 const width = ref(300);
 
 function createTagCanvas() {
-	if (tagsEl.value == null || canvasEl.value == null) return;
-	if (tagsEl.value.children[0].children.length === 0) return;
-
 	if (tagCanvas.value) {
 		tagCanvas.value.destroy();
 		tagCanvas.value = null;
 	}
+
+	if (tagsEl.value == null || canvasEl.value == null) return;
+	if (tagsEl.value.children[0].children.length === 0) return;
 
 	tagCanvas.value = new TagCanvas(canvasEl.value, {
 		tagContainer: tagsEl.value,
