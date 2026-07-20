@@ -4,7 +4,7 @@
  */
 
 import type { CDPSession } from 'playwright';
-import type { NetworkRequest, NetworkSummary, WebSocketConnection } from '../types';
+import type { NetworkRequest, NetworkSummary, WebSocketConnection } from './types';
 
 function normalizeHeaders(headers: Record<string, unknown> | undefined) {
 	if (headers == null) return undefined;

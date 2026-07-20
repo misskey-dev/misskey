@@ -33,8 +33,7 @@ jobs:
         workspace:
           - diagnostics-shared
           - diagnostics-backend
-          - diagnostics-frontend-browser
-          - diagnostics-frontend-bundle
+          - diagnostics-frontend
           - changelog-checker
     steps:
       - uses: actions/checkout@v6.0.3

@@ -6,9 +6,9 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { renderHtml } from '../src/report/html';
-import { renderMarkdown } from '../src/report/markdown';
-import type { BrowserMetricsReport } from '../src/types';
+import { renderBrowserDiagnosticsHtml } from '../../src/browser/report/html';
+import { renderBrowserDiagnosticsMarkdown } from '../../src/browser/report/markdown';
+import type { BrowserMetricsReport } from '../../src/browser/types';
 
 const fixturesDir = join(import.meta.dirname, 'fixtures');
 
@@ -17,7 +17,7 @@ async function loadFixture(name: string) {
 }
 
 beforeEach(() => {
-	// renderHtml() が生成時刻を埋め込むので、スナップショットが揺れないよう時刻を固定する
+	// renderBrowserDiagnosticsHtml() が生成時刻を埋め込むので、スナップショットが揺れないよう時刻を固定する
 	vi.useFakeTimers();
 	vi.setSystemTime(new Date('2026-07-18T00:00:00.000Z'));
 });
@@ -31,7 +31,7 @@ afterEach(() => {
  * 意図的に変更したときは `vitest -u` で更新し、__snapshots__ の差分もレビューすること。
  */
 test('renders the browser diagnostics markdown report', async () => {
-	const markdown = renderMarkdown(await loadFixture('base'), await loadFixture('head'), {
+	const markdown = renderBrowserDiagnosticsMarkdown(await loadFixture('base'), await loadFixture('head'), {
 		baseHeapSnapshotUrl: 'https://example.invalid/base',
 		headHeapSnapshotUrl: 'https://example.invalid/head',
 		detailedHtmlUrl: 'https://example.invalid/html',
@@ -41,7 +41,7 @@ test('renders the browser diagnostics markdown report', async () => {
 });
 
 test('omits the details link when no detailed html artifact was uploaded', async () => {
-	const markdown = renderMarkdown(await loadFixture('base'), await loadFixture('head'), {
+	const markdown = renderBrowserDiagnosticsMarkdown(await loadFixture('base'), await loadFixture('head'), {
 		baseHeapSnapshotUrl: 'https://example.invalid/base',
 		headHeapSnapshotUrl: 'https://example.invalid/head',
 		detailedHtmlUrl: null,
@@ -51,7 +51,7 @@ test('omits the details link when no detailed html artifact was uploaded', async
 });
 
 test('renders the network request diff html report', async () => {
-	const html = renderHtml(await loadFixture('base'), await loadFixture('head'));
+	const html = renderBrowserDiagnosticsHtml(await loadFixture('base'), await loadFixture('head'));
 
 	await expect(html).toMatchFileSnapshot('./__snapshots__/render-html.html');
 });
@@ -62,7 +62,7 @@ test('escapes html metacharacters coming from the browser session', async () => 
 	// CDP由来の値は原理的には任意の文字列になりうるので、生HTMLとして出ないことを確かめる
 	head.samples[0].networkRequests[0].url = 'http://127.0.0.1:61812/"><script>alert(1)</script>';
 
-	const html = renderHtml(base, head);
+	const html = renderBrowserDiagnosticsHtml(base, head);
 
 	expect(html).not.toContain('<script>alert(1)</script>');
 	expect(html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');

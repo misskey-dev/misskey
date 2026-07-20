@@ -5,9 +5,9 @@
 
 import { writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
-import type { Browser, BrowserContext, CDPSession, Page } from 'playwright';
 import { enableNetworkTracking, type NetworkTracker } from './network';
-import type { BrowserDiagnostics, BrowserMeasurement, NetworkRequest, TabMemory, WebSocketConnection } from '../types';
+import type { Browser, BrowserContext, CDPSession, Page } from 'playwright';
+import type { BrowserDiagnostics, BrowserMeasurement, NetworkRequest, TabMemory, WebSocketConnection } from './types';
 
 export type HeadlessChromeOptions = {
 	scenarioTimeoutMs: number;

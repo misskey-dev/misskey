@@ -1,12 +1,12 @@
 {
-	"name": "diagnostics-frontend-browser",
+	"name": "diagnostics-frontend",
 	"private": true,
 	"type": "module",
 	"scripts": {
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"inspect": "tsx src/inspect.ts",
+		"inspect-browser": "tsx src/inspect-browser.ts",
 		"lint": "pnpm typecheck && pnpm eslint",
-		"render-html": "tsx src/render-html.ts",
+		"render-browser-html": "tsx src/render-browser-html.ts",
 		"render-md": "tsx src/render-md.ts",
 		"test": "vitest run",
 		"typecheck": "tsc --noEmit"

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { closeUserSetupDialog, postNote, registerUser, resetState, signupThroughUi, visitHome } from '../../../packages/frontend/test/e2e/shared';
+import { closeUserSetupDialog, postNote, registerUser, resetState, signupThroughUi, visitHome } from '../../../../packages/frontend/test/e2e/shared';
 import { sleep } from './server';
-import type { HeadlessChromeController } from './browser/controller';
+import type { HeadlessChromeController } from './controller';
 
 export const scenarioDescription = 'fresh browser signup, first timeline note, after the note becomes visible';
 

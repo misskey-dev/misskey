@@ -4,11 +4,11 @@
  */
 
 import { formatBytes, formatColoredDelta, formatNumber } from 'diagnostics-shared/format';
-import { pairedDeltaSummary, sampleSpread } from 'diagnostics-shared/stats';
+import { pairedDeltaSummary } from 'diagnostics-shared/stats';
 import { renderHeapSnapshotTable, type HeapSnapshotReport } from 'diagnostics-shared/heap-snapshot';
 import type { BrowserMeasurement, BrowserMeasurementSample, BrowserMetricsReport } from '../types';
 
-export type RenderMarkdownOptions = {
+export type RenderBrowserDiagnosticsMarkdownOptions = {
 	baseHeapSnapshotUrl: string;
 	headHeapSnapshotUrl: string;
 	detailedHtmlUrl?: string | null;
@@ -154,7 +154,7 @@ function toHeapSnapshotReport(report: BrowserMetricsReport): HeapSnapshotReport 
 	};
 }
 
-export function renderMarkdown(base: BrowserMetricsReport, head: BrowserMetricsReport, options: RenderMarkdownOptions) {
+export function renderBrowserDiagnosticsMarkdown(base: BrowserMetricsReport, head: BrowserMetricsReport, options: RenderBrowserDiagnosticsMarkdownOptions) {
 	const detailedHtmlUrl = options.detailedHtmlUrl;
 	const heapSnapshotTable = renderHeapSnapshotTable(toHeapSnapshotReport(base), toHeapSnapshotReport(head));
 	const lines = [

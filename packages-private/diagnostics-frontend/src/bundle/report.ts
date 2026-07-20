@@ -5,7 +5,7 @@
 
 import { renderFrontendChunkReport } from './chunk-report';
 import { collectVisualizerReport, renderVisualizerSummaryTable, type VisualizerReport } from './visualizer';
-import type { CollectedReport } from './manifest';
+import type { CollectedBundleReport } from './manifest';
 
 export type RenderBundleReportOptions = {
 	/** rollup-plugin-visualizer が出力したtreemap HTMLのartifact URL */
@@ -13,8 +13,8 @@ export type RenderBundleReportOptions = {
 };
 
 export function renderBundleReportMarkdown(
-	before: CollectedReport,
-	after: CollectedReport,
+	before: CollectedBundleReport,
+	after: CollectedBundleReport,
 	beforeStats: VisualizerReport,
 	afterStats: VisualizerReport,
 	options: RenderBundleReportOptions,

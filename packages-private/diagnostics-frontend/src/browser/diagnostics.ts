@@ -4,7 +4,7 @@
  */
 
 import { median } from 'diagnostics-shared/stats';
-import type { BrowserDiagnostics } from '../types';
+import type { BrowserDiagnostics } from './types';
 
 export function summarizeBrowserDiagnostics(samples: BrowserDiagnostics[]): BrowserDiagnostics {
 	const medianOf = (select: (sample: BrowserDiagnostics) => number) => median(samples.map(select));

@@ -5,7 +5,7 @@
 
 import { finiteMedian } from 'diagnostics-shared/stats';
 import { summarizeHeapSnapshotDataSamples } from 'diagnostics-shared/heap-snapshot';
-import { summarizeBrowserDiagnostics } from './browser/diagnostics';
+import { summarizeBrowserDiagnostics } from './diagnostics';
 import type { BrowserMeasurement, BrowserMeasurementSample, BrowserMetricsReport, NetworkSummary } from './types';
 
 export type SummarizeOptions = {

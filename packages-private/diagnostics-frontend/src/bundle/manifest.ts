@@ -6,7 +6,16 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileExists, fileSize, normalizePath, traverseDirectory } from './fs-utils';
-import type { Manifest, ManifestChunk } from 'vite';
+
+export type BundleManifestChunk = {
+	file: string;
+	src?: string;
+	name?: string;
+	isEntry?: boolean;
+	imports?: string[];
+};
+
+export type BundleManifest = Record<string, BundleManifestChunk>;
 
 /**
  * 比較対象とするロケール。ロケール別チャンクは全ロケール分だと数が多すぎるため、
@@ -27,15 +36,15 @@ export type FileEntry = {
 	size: number;
 };
 
-export type CollectedReport = {
-	manifest: Manifest;
+export type CollectedBundleReport = {
+	manifest: BundleManifest;
 	chunks: FileEntry[];
 	comparableChunks: Record<string, FileEntry>;
 	chunksByManifestKey: Record<string, FileEntry>;
 	startupFiles: string[];
 };
 
-export function findEntryKey(manifest: Manifest) {
+export function findEntryKey(manifest: BundleManifest) {
 	const entries = Object.entries(manifest);
 	return entries.find(([key, chunk]) => key === 'src/_boot_.ts' || chunk.src === 'src/_boot_.ts')?.[0]
 		?? entries.find(([, chunk]) => chunk.name === 'entry' && chunk.isEntry)?.[0]
@@ -47,7 +56,7 @@ export function findEntryKey(manifest: Manifest) {
  * ビルド間で安定するチャンク識別子。出力ファイル名はハッシュ付きで毎回変わるため、
  * これが取れないチャンクは before/after の対応付けができない。
  */
-export function stableChunkKey(chunk: ManifestChunk) {
+export function stableChunkKey(chunk: BundleManifestChunk) {
 	if (chunk.src != null) return `src:${normalizePath(chunk.src)}`;
 	if (chunk.name != null && stableNamedChunks.has(chunk.name)) return `named:${chunk.name}`;
 	return null;
@@ -56,7 +65,7 @@ export function stableChunkKey(chunk: ManifestChunk) {
 /**
  * 起動時に必ず読み込まれるチャンク (entry とその静的 import) の manifest キーを集める。
  */
-export function collectStartupManifestKeys(manifest: Manifest) {
+export function collectStartupManifestKeys(manifest: BundleManifest) {
 	const entryKey = findEntryKey(manifest);
 	const keys = new Set<string>();
 	if (entryKey == null) throw new Error('Unable to find frontend startup entry in Vite manifest.');
@@ -101,10 +110,10 @@ export async function resolveBuiltFile(outDir: string, file: string) {
 	};
 }
 
-export async function collectReport(repoDir: string): Promise<CollectedReport> {
+export async function collectBundleReport(repoDir: string): Promise<CollectedBundleReport> {
 	const outDir = path.join(repoDir, 'built/_frontend_vite_');
 	const manifestPath = path.join(outDir, 'manifest.json');
-	const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8')) as Manifest;
+	const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8')) as BundleManifest;
 	const chunksByFile = new Map<string, FileEntry>();
 	const comparableChunks = new Map<string, FileEntry>();
 	const chunksByManifestKey = new Map<string, FileEntry>();

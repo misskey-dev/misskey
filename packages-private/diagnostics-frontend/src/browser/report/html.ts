@@ -224,7 +224,7 @@ function renderRound(round: number, diffs: RequestDiff[]): Raw {
 		</section>`;
 }
 
-export function renderHtml(base: BrowserMetricsReport, head: BrowserMetricsReport) {
+export function renderBrowserDiagnosticsHtml(base: BrowserMetricsReport, head: BrowserMetricsReport) {
 	const diffs = diffReports(base, head);
 	const rounds = [...new Set(diffs.map(diff => diff.round))].toSorted((a, b) => a - b);
 	const generatedAt = new Date().toISOString();

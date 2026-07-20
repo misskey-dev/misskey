@@ -7,16 +7,16 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { afterAll, beforeAll, expect, test } from 'vitest';
-import { collectReport } from '../src/manifest';
-import { renderBundleReportMarkdown } from '../src/report';
-import type { VisualizerReport } from '../src/visualizer';
+import { collectBundleReport } from '../../src/bundle/manifest';
+import { renderBundleReportMarkdown } from '../../src/bundle/report';
+import type { VisualizerReport } from '../../src/bundle/visualizer';
 
 const fixturesDir = join(import.meta.dirname, 'fixtures');
 
 /**
  * ビルド成果物のfixture。
  *
- * `collectReport` はファイルの中身を見ずサイズしか使わないので、実体は指定バイト数の
+ * `collectBundleReport` はファイルの中身を見ずサイズしか使わないので、実体は指定バイト数の
  * 詰め物でよい。ディレクトリ名が `built` になるためリポジトリにはコミットできず
  * (ルートの .gitignore がビルド成果物として除外する)、テスト実行時に組み立てている。
  */
@@ -56,7 +56,7 @@ let repoDirs: { before: string; after: string };
 let workDir: string;
 
 beforeAll(async () => {
-	workDir = await mkdtemp(join(tmpdir(), 'diagnostics-frontend-bundle-'));
+	workDir = await mkdtemp(join(tmpdir(), 'diagnostics-frontend-test-'));
 
 	for (const label of ['before', 'after'] as const) {
 		const outDir = join(workDir, label, 'built/_frontend_vite_');
@@ -90,8 +90,8 @@ async function loadStats(name: string) {
  */
 test('renders the frontend bundle report', async () => {
 	const markdown = renderBundleReportMarkdown(
-		await collectReport(repoDirs.before),
-		await collectReport(repoDirs.after),
+		await collectBundleReport(repoDirs.before),
+		await collectBundleReport(repoDirs.after),
 		await loadStats('before'),
 		await loadStats('after'),
 		{ visualizerArtifactUrl: 'https://example.invalid/treemap' },
@@ -101,5 +101,5 @@ test('renders the frontend bundle report', async () => {
 });
 
 test('fails loudly when the built output is missing', async () => {
-	await expect(collectReport(join(workDir, 'nonexistent'))).rejects.toThrow();
+	await expect(collectBundleReport(join(workDir, 'nonexistent'))).rejects.toThrow();
 });

@@ -9,10 +9,10 @@ import { readIntegerEnv, readOptionalEnv } from 'diagnostics-shared/env';
 import { analyzeHeapSnapshot, defaultHeapSnapshotBreakdownTopN } from 'diagnostics-shared/heap-snapshot';
 import { HeadlessChromeController } from './browser/controller';
 import { summarizeNetwork } from './browser/network';
-import { prepareInstance, runSignupAndPostScenario, scenarioDescription } from './scenario';
-import { startServer, stopServer, waitForServer } from './server';
-import { selectRepresentativeSample, summarizeSamples } from './summarize';
-import type { BrowserMeasurementSample, BrowserMetricsReport } from './types';
+import { prepareInstance, runSignupAndPostScenario, scenarioDescription } from './browser/scenario';
+import { startServer, stopServer, waitForServer } from './browser/server';
+import { selectRepresentativeSample, summarizeSamples } from './browser/summarize';
+import type { BrowserMeasurementSample, BrowserMetricsReport } from './browser/types';
 
 type Label = 'base' | 'head';
 
@@ -110,7 +110,7 @@ async function genReport(label: Label, repoDir: string, outputPath: string) {
 async function main() {
 	const [baseDirArg, headDirArg, baseOutputArg, headOutputArg] = process.argv.slice(2);
 	if (baseDirArg == null || headDirArg == null || baseOutputArg == null || headOutputArg == null) {
-		throw new Error('Usage: inspect <baseDir> <headDir> <baseOutputJson> <headOutputJson>');
+		throw new Error('Usage: inspect-browser <baseDir> <headDir> <baseOutputJson> <headOutputJson>');
 	}
 
 	for (const label of labels) {

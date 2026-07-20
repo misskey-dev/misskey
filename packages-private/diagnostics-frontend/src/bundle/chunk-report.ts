@@ -9,7 +9,7 @@ import {
 	escapeMdTableCell,
 	formatBytes,
 } from 'diagnostics-shared/format';
-import type { CollectedReport, FileEntry } from './manifest';
+import type { CollectedBundleReport, FileEntry } from './manifest';
 
 /**
  * この差分以下のチャンクは個別に出さず `(other)` にまとめる。
@@ -158,7 +158,7 @@ export function chunkMarkdownTable(
 	return lines.join('\n');
 }
 
-export function renderFrontendChunkReport(before: CollectedReport, after: CollectedReport) {
+export function renderFrontendChunkReport(before: CollectedBundleReport, after: CollectedBundleReport) {
 	const beforeComparable = before.comparableChunks;
 	const afterComparable = after.comparableChunks;
 	const allChunkKeys = [...new Set([...Object.keys(beforeComparable), ...Object.keys(afterComparable)])];
