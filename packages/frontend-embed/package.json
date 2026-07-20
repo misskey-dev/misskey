@@ -45,6 +45,7 @@
 		"lightningcss": "1.32.0",
 		"sass-embedded": "1.100.0",
 		"tsx": "4.23.0",
+		"typescript": "6.0.2",
 		"vite": "8.1.4",
 		"vue-component-type-helpers": "3.3.7",
 		"vue-eslint-parser": "10.4.1",
