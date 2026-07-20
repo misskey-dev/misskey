@@ -174,19 +174,7 @@ export function renderFrontendDiagnosticsMarkdown(input: FrontendDiagnosticsMark
 	const detailedHtmlUrl = browser.detailedHtmlUrl;
 	const heapSnapshotTable = renderHeapSnapshotTable(toHeapSnapshotReport(browser.base), toHeapSnapshotReport(browser.head));
 	const lines = [
-		'# Frontend Diagnostics',
-		'',
-		'## 📦 Frontend Bundle Report',
-		'',
-		renderFrontendChunkReport(bundle.before, bundle.after),
-		'',
-		'## Bundle Stats',
-		'',
-		renderVisualizerSummaryTable(collectVisualizerReport(bundle.beforeStats), collectVisualizerReport(bundle.afterStats)),
-		'',
-		`[Open treemap HTML](${bundle.visualizerArtifactUrl})`,
-		'',
-		'## 🖥 Frontend Browser Diagnostics Report',
+		'## 🖥 Frontend Diagnostics',
 		'',
 		renderBrowserSummaryTable(browser.base, browser.head),
 		'',
@@ -210,6 +198,14 @@ export function renderFrontendDiagnosticsMarkdown(input: FrontendDiagnosticsMark
 		//'',
 		`Download representative heap snapshot: [base](${browser.baseHeapSnapshotUrl}) / [head](${browser.headHeapSnapshotUrl})`,
 		'</details>',
+		'',
+		'### 📦 Bundle Stats',
+		'',
+		renderFrontendChunkReport(bundle.before, bundle.after),
+		'',
+		renderVisualizerSummaryTable(collectVisualizerReport(bundle.beforeStats), collectVisualizerReport(bundle.afterStats)),
+		'',
+		`[Open treemap HTML](${bundle.visualizerArtifactUrl})`,
 		'',
 	];
 
