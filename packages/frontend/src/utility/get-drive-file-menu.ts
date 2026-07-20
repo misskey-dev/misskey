@@ -131,6 +131,7 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		icon: 'ti ti-pencil',
 		action: () => os.post({
 			initialFiles: [file],
+			instant: true,
 		}),
 	}, {
 		text: i18n.ts.copyUrl,

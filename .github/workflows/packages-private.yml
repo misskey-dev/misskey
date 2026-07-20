@@ -1,0 +1,53 @@
+name: Lint and test packages-private
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+    paths:
+      - packages-private/**
+      - packages/shared/eslint.config.js
+      - package.json
+      - pnpm-workspace.yaml
+      - pnpm-lock.yaml
+      - .github/workflows/packages-private.yml
+  pull_request:
+    paths:
+      - packages-private/**
+      - packages/shared/eslint.config.js
+      - package.json
+      - pnpm-workspace.yaml
+      - pnpm-lock.yaml
+      - .github/workflows/packages-private.yml
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace:
+          - diagnostics-shared
+          - diagnostics-backend
+          - diagnostics-frontend-browser
+          - diagnostics-frontend-bundle
+          - changelog-checker
+    steps:
+      - uses: actions/checkout@v6.0.3
+        with:
+          persist-credentials: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.9
+      - uses: actions/setup-node@v6.4.0
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+      - run: pnpm --filter ${{ matrix.workspace }}... install --frozen-lockfile
+      # lint = typecheck + eslint
+      - run: pnpm --filter ${{ matrix.workspace }} run lint
+      # 各パッケージは必ず test スクリプトを持たせる (無いと ERR_PNPM_RECURSIVE_RUN_NO_SCRIPT で落ちる)
+      - run: pnpm --filter ${{ matrix.workspace }} run test

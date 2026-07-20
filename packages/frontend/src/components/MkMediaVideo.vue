@@ -12,7 +12,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		(video.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive,
 	]"
 	@contextmenu.stop="onContextmenu"
-	@keydown.stop
 >
 	<button v-if="hide" :class="$style.hidden" @click="reveal">
 		<div :class="$style.hiddenTextWrapper">
@@ -22,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</button>
 
-	<div v-else :class="$style.videoRoot" @click="emit('mediaClick', $event)">
+	<div v-else :class="$style.videoRoot" @pointerup="emit('mediaClick', $event)">
 		<img
 			v-if="video.thumbnailUrl"
 			:class="$style.video"
@@ -42,8 +41,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-player-play"></i>
 			</div>
 		</div>
-		<button :class="[$style.menu, $style.menuBottom]" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
-		<button :class="[$style.menu, $style.menuTop]" class="_button" @click.stop="hide = true"><i class="ti ti-eye-off" style="vertical-align: middle;"></i></button>
+		<button :class="[$style.menu, $style.menuBottom]" class="_button" @click.stop="showMenu" @pointerup.stop><i class="ti ti-dots" style="vertical-align: middle;" aria-hidden="true"></i></button>
+		<button :class="[$style.menu, $style.menuTop]" class="_button" @click.stop="hide = true" @pointerup.stop><i class="ti ti-eye-off" style="vertical-align: middle;" aria-hidden="true"></i></button>
 	</div>
 </div>
 </template>

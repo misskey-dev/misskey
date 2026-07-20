@@ -13,10 +13,15 @@ jobs:
     steps:
       - name: Checkout head
         uses: actions/checkout@v6.0.3
-      - name: Setup Node.js
+
+      - name: setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: setup node
         uses: actions/setup-node@v6.4.0
         with:
           node-version-file: '.node-version'
+          cache: pnpm
 
       - name: Checkout base
         run: |
@@ -27,17 +32,16 @@ jobs:
           git checkout origin/${{ github.base_ref }} CHANGELOG.md
 
       - name: Copy to Checker directory for CHANGELOG-base.md
-        run: cp _base/CHANGELOG.md scripts/changelog-checker/CHANGELOG-base.md
+        run: cp _base/CHANGELOG.md packages-private/changelog-checker/CHANGELOG-base.md
       - name: Copy to Checker directory for CHANGELOG-head.md
-        run: cp CHANGELOG.md scripts/changelog-checker/CHANGELOG-head.md
+        run: cp CHANGELOG.md packages-private/changelog-checker/CHANGELOG-head.md
       - name: diff
         continue-on-error: true
         run: diff -u CHANGELOG-base.md CHANGELOG-head.md
-        working-directory: scripts/changelog-checker
+        working-directory: packages-private/changelog-checker
 
-      - name: Setup Checker
-        run: npm install
-        working-directory: scripts/changelog-checker
+      - name: Install dependencies
+        run: pnpm --filter changelog-checker... install --frozen-lockfile
+
       - name: Run Checker
-        run: npm run run
-        working-directory: scripts/changelog-checker
+        run: pnpm --filter changelog-checker check

@@ -19,6 +19,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6.0.3
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.9
+      - name: Use Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm --filter diagnostics-backend... install --frozen-lockfile
+
       - name: Download artifacts
         uses: actions/download-artifact@v8
         with:
@@ -60,7 +70,11 @@ jobs:
         env:
           MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_BASE: ${{ steps.find-heap-snapshot-artifacts.outputs.base-url }}
           MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_HEAD: ${{ steps.find-heap-snapshot-artifacts.outputs.head-url }}
-        run: node .github/scripts/backend-diagnostics.render-md.mts ./artifacts/memory-base.json ./artifacts/memory-head.json ./output.md
+        run: >-
+          pnpm --filter diagnostics-backend run render-md
+          "$GITHUB_WORKSPACE/artifacts/memory-base.json"
+          "$GITHUB_WORKSPACE/artifacts/memory-head.json"
+          "$GITHUB_WORKSPACE/output.md"
       - uses: thollander/actions-comment-pull-request@v3
         with:
           pr-number: ${{ steps.load-pr-num.outputs.pr-number }}
@@ -71,6 +85,6 @@ jobs:
         if: failure() && steps.load-pr-num.outputs.pr-number
         with:
           pr-number: ${{ steps.load-pr-num.outputs.pr-number }}
-          comment-tag: show_memory_diff_error
+          comment-tag: show_memory_diff
           message: |
             An error occurred while comparing backend memory usage. See [workflow logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.

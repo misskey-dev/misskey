@@ -161,6 +161,40 @@ describe('SentryTelemetryAdapter', () => {
 	});
 });
 
+describe('SentryTelemetryAdapter trace context', () => {
+	test('returns the active span context for log enrichment', async () => {
+		const activeSpan = {
+			spanContext: () => ({
+				traceId: '0123456789abcdef0123456789abcdef',
+				spanId: '0123456789abcdef',
+				traceFlags: 0,
+			}),
+		};
+		vi.doMock('@sentry/node', () => ({
+			init: vi.fn(),
+			close: vi.fn(),
+			getActiveSpan: vi.fn(() => activeSpan),
+		}));
+		vi.doMock('@sentry/profiling-node', () => ({
+			nodeProfilingIntegration: vi.fn(),
+		}));
+
+		const adapter = await SentryTelemetryAdapter.create({
+			enableNodeProfiling: false,
+			options: {},
+		});
+
+		expect(adapter.getActiveTraceContext()).toEqual({
+			traceId: '0123456789abcdef0123456789abcdef',
+			spanId: '0123456789abcdef',
+			traceFlags: 0,
+		});
+
+		vi.doUnmock('@sentry/node');
+		vi.doUnmock('@sentry/profiling-node');
+	});
+});
+
 describe('SentryTelemetryAdapter.shutdown', () => {
 	test('bounds Sentry.close() with a timeout so a stuck transport cannot hang process shutdown', async () => {
 		const close = vi.fn().mockResolvedValue(true);

@@ -9,10 +9,8 @@ on:
     paths:
       - packages/backend/**
       - packages/misskey-js/**
-      - .github/scripts/utility.mts
-      - .github/scripts/backend-diagnostics.render-md.mts
-      - .github/scripts/backend-diagnostics.inspect.mts
-      - .github/scripts/memory-stability-util*.mts
+      - packages-private/diagnostics-shared/**
+      - packages-private/diagnostics-backend/**
       - .github/workflows/backend-diagnostics.inspect.yml
       - .github/workflows/backend-diagnostics.comment.yml
 
@@ -89,11 +87,17 @@ jobs:
       working-directory: head
       run: pnpm build
     - name: Measure backend memory usage
+      working-directory: head
       env:
         MK_MEMORY_COMPARE_ROUNDS: 10
         MK_MEMORY_COMPARE_WARMUP_ROUNDS: 1
         MK_MEMORY_HEAP_SNAPSHOT: 1
-      run: node head/.github/scripts/backend-diagnostics.inspect.mts base head memory-base.json memory-head.json
+        # 計測ハーネスはhead側のものを両方に使うが、成果物はrunnerのworkspace直下に出す
+        MK_MEMORY_HEAP_SNAPSHOT_OUTPUT_DIR: ${{ github.workspace }}
+      run: >-
+        pnpm --filter diagnostics-backend run inspect
+        "$GITHUB_WORKSPACE/base" "$GITHUB_WORKSPACE/head"
+        "$GITHUB_WORKSPACE/memory-base.json" "$GITHUB_WORKSPACE/memory-head.json"
     - name: Upload base heap snapshot
       uses: actions/upload-artifact@v7
       with:

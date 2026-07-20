@@ -9,3 +9,9 @@ reviews:
     drafts: false
     base_branches:
       - "develop"
+    ignore_title_keywords:
+      - "New Crowdin updates"
+    ignore_usernames:
+      - "dependabot[bot]"
+      - "renovate[bot]"
+      - "github-actions[bot]"

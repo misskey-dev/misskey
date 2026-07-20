@@ -20,8 +20,8 @@ on:
       - pnpm-lock.yaml
       - pnpm-workspace.yaml
       - .node-version
-      - .github/scripts/utility.mts
-      - .github/scripts/frontend-bundle-diagnostics.render-md.mts
+      - packages-private/diagnostics-shared/**
+      - packages-private/diagnostics-frontend-bundle/**
       - .github/workflows/frontend-bundle-diagnostics.inspect.yml
       - .github/workflows/frontend-bundle-diagnostics.comment.yml
 
@@ -114,6 +114,7 @@ jobs:
 
       - name: Generate report markdown
         shell: bash
+        working-directory: after
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -121,7 +122,10 @@ jobs:
           FRONTEND_BUNDLE_REPORT_ARTIFACT_URL: ${{ steps.upload-bundle-visualizer.outputs.artifact-url }}
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-bundle-report"
-          node after/.github/scripts/frontend-bundle-diagnostics.render-md.mts before after "$REPORT_DIR/before-stats.json" "$REPORT_DIR/after-stats.json" "$REPORT_DIR/frontend-bundle-diagnostics-report.md"
+          pnpm --filter diagnostics-frontend-bundle run render-md \
+            "$GITHUB_WORKSPACE/before" "$GITHUB_WORKSPACE/after" \
+            "$REPORT_DIR/before-stats.json" "$REPORT_DIR/after-stats.json" \
+            "$REPORT_DIR/frontend-bundle-diagnostics-report.md"
           printf '%s\n' "$PR_NUMBER" > "$REPORT_DIR/pr-number.txt"
           printf '%s\n' "$BASE_SHA" > "$REPORT_DIR/base-sha.txt"
           printf '%s\n' "$HEAD_SHA" > "$REPORT_DIR/head-sha.txt"

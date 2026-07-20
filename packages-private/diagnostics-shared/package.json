@@ -1,0 +1,23 @@
+{
+	"name": "diagnostics-shared",
+	"private": true,
+	"type": "module",
+	"exports": {
+		"./env": "./src/env.ts",
+		"./format": "./src/format.ts",
+		"./html": "./src/html.ts",
+		"./stats": "./src/stats.ts",
+		"./heap-snapshot": "./src/heap-snapshot/index.ts"
+	},
+	"scripts": {
+		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"lint": "pnpm typecheck && pnpm eslint",
+		"test": "vitest run",
+		"typecheck": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"@types/node": "26.1.1",
+		"typescript": "5.9.3",
+		"vitest": "4.1.10"
+	}
+}

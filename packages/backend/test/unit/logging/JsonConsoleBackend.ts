@@ -62,6 +62,23 @@ describe('JsonConsoleBackend', () => {
 		});
 	});
 
+	test('writes trace context using the standard JSON field names', () => {
+		const output = vi.fn<(line: string) => void>();
+		const backend = new JsonConsoleBackend({ output });
+
+		backend.write(createRecord({
+			traceId: '0123456789abcdef0123456789abcdef',
+			spanId: '0123456789abcdef',
+			traceFlags: 0,
+		}));
+
+		expect(JSON.parse(output.mock.calls[0][0])).toMatchObject({
+			trace_id: '0123456789abcdef0123456789abcdef',
+			span_id: '0123456789abcdef',
+			trace_flags: 0,
+		});
+	});
+
 	test('escapes newlines so each record remains one physical line', () => {
 		const output = vi.fn<(line: string) => void>();
 		const backend = new JsonConsoleBackend({ output });

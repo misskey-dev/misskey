@@ -153,6 +153,28 @@ describe('OpenTelemetryAdapter', () => {
 		expect(span.end).toHaveBeenCalledTimes(1);
 	});
 
+	test('returns the active span context for log enrichment', () => {
+		const adapter = new OpenTelemetryAdapter({
+			tracer: { startActiveSpan: vi.fn() },
+			provider: { shutdown: vi.fn() },
+			getActiveSpan: () => ({
+				spanContext: () => ({
+					traceId: '0123456789abcdef0123456789abcdef',
+					spanId: '0123456789abcdef',
+					traceFlags: 0,
+				}),
+			} as any),
+			spanStatusCodeError: SpanStatusCode.ERROR,
+			shutdownTimeout: 10,
+		});
+
+		expect(adapter.getActiveTraceContext()).toEqual({
+			traceId: '0123456789abcdef0123456789abcdef',
+			spanId: '0123456789abcdef',
+			traceFlags: 0,
+		});
+	});
+
 	test('bridges captureMessage to the active span when one exists', () => {
 		const activeSpan = {
 			recordException: vi.fn(),

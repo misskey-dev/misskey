@@ -36,6 +36,8 @@
 - Fix: 自分へのメンションに対する色分けで、判定が大文字/小文字を区別していた問題を修正
 - Fix: いくつかのイベントリスナーが正しく解除されない問題を修正（メモリ使用量の改善）
 - Fix: 非ログイン時トップページをスクロール操作できないことがある問題を修正
+- Fix: ローカルユーザーへのホスト付きメンションが本文に含まれる指名ノートの作成時、投稿フォームにて、当該ユーザーが宛先に含まれていても正しく認識されない問題を修正
+- Fix: ドライブの「このファイルからノートを作成」やギャラリーの「ノートで共有」、誕生日ウィジェットからのノート作成において、通常投稿の下書きが表示される問題を修正
 
 ### Server
 - Feat: OpenTelemetryサポート
@@ -49,16 +51,19 @@
     - ジョブキュー（エンキュー元のトレースを含む）
 - Enhance: Sentry バックエンドの自動計装を `sentryForBackend.disabledIntegrations` で個別に無効化できるように
 - Enhance: センシティブメディアの判定を外部サービス ([sensitive-detector](https://github.com/misskey-dev/sensitive-detector)) に分離し、`nsfwjs` / `@tensorflow/tfjs(-node)` の同梱と NSFW 判定モデルを廃止 (#16804)
-- Enhance: Node.js 22.23.0以降、24.17.0以降、26.4.0以降をサポートするように
+- Enhance: Node.js 22.22.2以降、24.17.0以降、26.4.0以降をサポートするように
 - Enhance: Docker Image の Node.js を 26.4.0 に、Debian を trixie (v13) に更新
 - Enhance: URLプレビューの結果を内部でキャッシュするように
 - Enhance: API内部エラーのログに構造化属性と正規化したエラー情報を付与し、認証情報を自動的に秘匿するように（従来形式の表示は維持）
 - Enhance: ログ全体の既定levelとlogger domainごとの出力levelを設定できるように
 - Enhance: バックエンドのログを1行JSON形式で出力できるように
+- Enhance: OpenTelemetryのTrace Contextを構造化ログへ関連付けられるように
 - Fix: `/stats` API のレスポンス型が正しくない問題を修正
 - Fix: ハッシュタグに関連するデータを更新する際のエラーハンドリングを修正
 - Fix: Sentry 使用環境下にて、Misskey が発行した SQL クエリが span に含まれない問題を修正
 - Fix: Sentry 使用環境下にて、外部送信リクエストへ `sentry-trace` / `baggage` ヘッダーが既定で付与されないように
+- Fix: フォロワー限定投稿へのリプライをホーム投稿に出来る問題を修正
+- Fix: ファイルをアップロードするAPIにて、処理終了後に一時ファイルが削除されないことがある問題を修正
 
 ## 2026.6.0
 

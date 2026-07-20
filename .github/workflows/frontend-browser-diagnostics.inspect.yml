@@ -22,12 +22,8 @@ on:
       - pnpm-workspace.yaml
       - .node-version
       - .github/misskey/test.yml
-      - .github/scripts/utility.mts
-      - .github/scripts/heap-snapshot-util.mts
-      - .github/scripts/chrome.mts
-      - .github/scripts/frontend-browser-diagnostics.render-additional-html.mts
-      - .github/scripts/frontend-browser-diagnostics.render-md.mts
-      - .github/scripts/frontend-browser-diagnostics.inspect.mts
+      - packages-private/diagnostics-shared/**
+      - packages-private/diagnostics-frontend-browser/**
       - .github/workflows/frontend-browser-diagnostics.inspect.yml
       - .github/workflows/frontend-browser-diagnostics.comment.yml
 
@@ -116,18 +112,23 @@ jobs:
         run: pnpm build
 
       - name: Install Playwright browsers
-        working-directory: after/packages/frontend
+        working-directory: after/packages-private/diagnostics-frontend-browser
         run: pnpm exec playwright install --with-deps --no-shell chromium
 
       - name: Measure frontend browser metrics
         shell: bash
+        working-directory: after
         env:
           FRONTEND_BROWSER_METRICS_SAMPLE_COUNT: 5
           MK_ENABLE_CROSS_ORIGIN_ISOLATION: "true"
+          # 計測ハーネスはafter側のものを両方に使うが、成果物はrunnerのworkspace直下に出す
+          FRONTEND_BROWSER_HEAP_SNAPSHOT_OUTPUT_DIR: ${{ github.workspace }}
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-browser-diagnostics"
           mkdir -p "$REPORT_DIR"
-          node after/.github/scripts/frontend-browser-diagnostics.inspect.mts before after "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json"
+          pnpm --filter diagnostics-frontend-browser run inspect \
+            "$GITHUB_WORKSPACE/before" "$GITHUB_WORKSPACE/after" \
+            "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json"
 
       - name: Upload browser base heap snapshot
         id: upload-browser-base-heap-snapshot
@@ -149,11 +150,14 @@ jobs:
 
       - name: Generate browser detailed html
         shell: bash
+        working-directory: after
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-browser-diagnostics"
           test -s "$REPORT_DIR/before-browser.json"
           test -s "$REPORT_DIR/after-browser.json"
-          node after/.github/scripts/frontend-browser-diagnostics.render-additional-html.mts "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" "$REPORT_DIR/frontend-browser-detailed-html.html"
+          pnpm --filter diagnostics-frontend-browser run render-html \
+            "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" \
+            "$REPORT_DIR/frontend-browser-detailed-html.html"
 
       - name: Upload browser detailed html
         id: upload-browser-detailed-html
@@ -167,6 +171,7 @@ jobs:
 
       - name: Generate browser metrics report
         shell: bash
+        working-directory: after
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -178,7 +183,9 @@ jobs:
           REPORT_DIR="$RUNNER_TEMP/frontend-browser-diagnostics"
           test -s "$REPORT_DIR/before-browser.json"
           test -s "$REPORT_DIR/after-browser.json"
-          node after/.github/scripts/frontend-browser-diagnostics.render-md.mts "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" "$REPORT_DIR/frontend-browser-diagnostics.md"
+          pnpm --filter diagnostics-frontend-browser run render-md \
+            "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" \
+            "$REPORT_DIR/frontend-browser-diagnostics.md"
           printf '%s\n' "$PR_NUMBER" > "$REPORT_DIR/pr-number.txt"
           printf '%s\n' "$BASE_SHA" > "$REPORT_DIR/base-sha.txt"
           printf '%s\n' "$HEAD_SHA" > "$REPORT_DIR/head-sha.txt"
