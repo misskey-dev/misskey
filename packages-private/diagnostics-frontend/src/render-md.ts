@@ -6,9 +6,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { readOptionalEnv, readRequiredEnv } from 'diagnostics-shared/env';
-import { renderBrowserDiagnosticsMarkdown } from './browser/report/markdown';
 import { collectBundleReport } from './bundle/manifest';
-import { renderBundleReportMarkdown } from './bundle/report';
 import { renderFrontendDiagnosticsMarkdown } from './report';
 import type { BrowserMetricsReport } from './browser/types';
 import type { VisualizerReport } from './bundle/visualizer';
@@ -43,27 +41,22 @@ const [
 	readFile(resolve(afterBrowserFileArg), 'utf8'),
 ]);
 
-const bundleMarkdown = renderBundleReportMarkdown(
-	beforeBundle,
-	afterBundle,
-	JSON.parse(beforeBundleStatsJson) as VisualizerReport,
-	JSON.parse(afterBundleStatsJson) as VisualizerReport,
-	{
-		visualizerArtifactUrl: readRequiredEnv('FRONTEND_BUNDLE_REPORT_ARTIFACT_URL'),
-	},
-);
-
-const browserMarkdown = renderBrowserDiagnosticsMarkdown(
-	JSON.parse(beforeBrowserJson) as BrowserMetricsReport,
-	JSON.parse(afterBrowserJson) as BrowserMetricsReport,
-	{
-		baseHeapSnapshotUrl: readRequiredEnv('FRONTEND_BROWSER_BASE_HEAP_SNAPSHOT_ARTIFACT_URL'),
-		headHeapSnapshotUrl: readRequiredEnv('FRONTEND_BROWSER_HEAD_HEAP_SNAPSHOT_ARTIFACT_URL'),
-		detailedHtmlUrl: readOptionalEnv('FRONTEND_BROWSER_DETAILED_HTML_ARTIFACT_URL'),
-	},
-);
-
 await writeFile(
 	resolve(outputFileArg),
-	renderFrontendDiagnosticsMarkdown(bundleMarkdown, browserMarkdown),
+	renderFrontendDiagnosticsMarkdown({
+		bundle: {
+			before: beforeBundle,
+			after: afterBundle,
+			beforeStats: JSON.parse(beforeBundleStatsJson) as VisualizerReport,
+			afterStats: JSON.parse(afterBundleStatsJson) as VisualizerReport,
+			visualizerArtifactUrl: readRequiredEnv('FRONTEND_BUNDLE_REPORT_ARTIFACT_URL'),
+		},
+		browser: {
+			base: JSON.parse(beforeBrowserJson) as BrowserMetricsReport,
+			head: JSON.parse(afterBrowserJson) as BrowserMetricsReport,
+			baseHeapSnapshotUrl: readRequiredEnv('FRONTEND_BROWSER_BASE_HEAP_SNAPSHOT_ARTIFACT_URL'),
+			headHeapSnapshotUrl: readRequiredEnv('FRONTEND_BROWSER_HEAD_HEAP_SNAPSHOT_ARTIFACT_URL'),
+			detailedHtmlUrl: readOptionalEnv('FRONTEND_BROWSER_DETAILED_HTML_ARTIFACT_URL'),
+		},
+	}),
 );

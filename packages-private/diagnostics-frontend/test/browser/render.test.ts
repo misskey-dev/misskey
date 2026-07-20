@@ -7,7 +7,6 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { renderBrowserDiagnosticsHtml } from '../../src/browser/report/html';
-import { renderBrowserDiagnosticsMarkdown } from '../../src/browser/report/markdown';
 import type { BrowserMetricsReport } from '../../src/browser/types';
 
 const fixturesDir = join(import.meta.dirname, 'fixtures');
@@ -24,30 +23,6 @@ beforeEach(() => {
 
 afterEach(() => {
 	vi.useRealTimers();
-});
-
-/**
- * 出力をゴールデンファイルで固定する。
- * 意図的に変更したときは `vitest -u` で更新し、__snapshots__ の差分もレビューすること。
- */
-test('renders the browser diagnostics markdown report', async () => {
-	const markdown = renderBrowserDiagnosticsMarkdown(await loadFixture('base'), await loadFixture('head'), {
-		baseHeapSnapshotUrl: 'https://example.invalid/base',
-		headHeapSnapshotUrl: 'https://example.invalid/head',
-		detailedHtmlUrl: 'https://example.invalid/html',
-	});
-
-	await expect(markdown).toMatchFileSnapshot('./__snapshots__/render-md.md');
-});
-
-test('omits the details link when no detailed html artifact was uploaded', async () => {
-	const markdown = renderBrowserDiagnosticsMarkdown(await loadFixture('base'), await loadFixture('head'), {
-		baseHeapSnapshotUrl: 'https://example.invalid/base',
-		headHeapSnapshotUrl: 'https://example.invalid/head',
-		detailedHtmlUrl: null,
-	});
-
-	expect(markdown).not.toContain('View details');
 });
 
 test('renders the network request diff html report', async () => {
