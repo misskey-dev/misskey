@@ -56,7 +56,7 @@ let repoDirs: { before: string; after: string };
 let workDir: string;
 
 beforeAll(async () => {
-	workDir = await mkdtemp(join(tmpdir(), 'bundle-size-frontend-'));
+	workDir = await mkdtemp(join(tmpdir(), 'diagnostics-frontend-bundle-'));
 
 	for (const label of ['before', 'after'] as const) {
 		const outDir = join(workDir, label, 'built/_frontend_vite_');

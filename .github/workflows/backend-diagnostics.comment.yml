@@ -27,7 +27,7 @@ jobs:
           node-version-file: '.node-version'
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm --filter memory-usage-backend... install --frozen-lockfile
+        run: pnpm --filter diagnostics-backend... install --frozen-lockfile
 
       - name: Download artifacts
         uses: actions/download-artifact@v8
@@ -71,7 +71,7 @@ jobs:
           MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_BASE: ${{ steps.find-heap-snapshot-artifacts.outputs.base-url }}
           MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_HEAD: ${{ steps.find-heap-snapshot-artifacts.outputs.head-url }}
         run: >-
-          pnpm --filter memory-usage-backend run render-md
+          pnpm --filter diagnostics-backend run render-md
           "$GITHUB_WORKSPACE/artifacts/memory-base.json"
           "$GITHUB_WORKSPACE/artifacts/memory-head.json"
           "$GITHUB_WORKSPACE/output.md"

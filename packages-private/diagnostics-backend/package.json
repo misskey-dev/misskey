@@ -1,5 +1,5 @@
 {
-	"name": "memory-usage-backend",
+	"name": "diagnostics-backend",
 	"private": true,
 	"type": "module",
 	"scripts": {

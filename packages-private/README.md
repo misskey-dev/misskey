@@ -7,9 +7,9 @@
 | パッケージ | 用途 |
 | --- | --- |
 | [`diagnostics-shared`](./diagnostics-shared) | 計測系パッケージが共有する統計・書式整形・V8 heap snapshot解析のユーティリティ |
-| [`memory-usage-backend`](./memory-usage-backend) | バックエンドのメモリ使用量をbase/headで比較し、PRコメント用のMarkdownを生成する |
-| [`memory-usage-frontend`](./memory-usage-frontend) | ヘッドレスChromeでフロントエンドを操作し、メモリ・ネットワーク等の指標をbase/headで比較する |
-| [`bundle-size-frontend`](./bundle-size-frontend) | フロントエンドのビルド成果物のchunkサイズをbase/headで比較する |
+| [`diagnostics-backend`](./diagnostics-backend) | バックエンドのメモリ使用量をbase/headで比較し、PRコメント用のMarkdownを生成する |
+| [`diagnostics-frontend-browser`](./diagnostics-frontend-browser) | ヘッドレスChromeでフロントエンドを操作し、メモリ・ネットワーク等の指標をbase/headで比較する |
+| [`diagnostics-frontend-bundle`](./diagnostics-frontend-bundle) | フロントエンドのビルド成果物のchunkサイズをbase/headで比較する |
 | [`changelog-checker`](./changelog-checker) | `CHANGELOG.md` の追記内容を検証する |
 
 ## GitHub Actionsからの呼び出し方
@@ -22,7 +22,7 @@ CLIに渡すパスはすべて呼び出し側のカレントディレクトリ�
 - name: Generate report
   working-directory: after
   run: >-
-    pnpm --filter bundle-size-frontend run render-md
+    pnpm --filter diagnostics-frontend-bundle run render-md
     "$GITHUB_WORKSPACE/before" "$GITHUB_WORKSPACE/after"
     "$REPORT_DIR/before-stats.json" "$REPORT_DIR/after-stats.json"
     "$REPORT_DIR/report.md"

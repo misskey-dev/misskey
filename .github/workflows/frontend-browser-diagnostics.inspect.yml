@@ -23,7 +23,7 @@ on:
       - .node-version
       - .github/misskey/test.yml
       - packages-private/diagnostics-shared/**
-      - packages-private/memory-usage-frontend/**
+      - packages-private/diagnostics-frontend-browser/**
       - .github/workflows/frontend-browser-diagnostics.inspect.yml
       - .github/workflows/frontend-browser-diagnostics.comment.yml
 
@@ -112,7 +112,7 @@ jobs:
         run: pnpm build
 
       - name: Install Playwright browsers
-        working-directory: after/packages-private/memory-usage-frontend
+        working-directory: after/packages-private/diagnostics-frontend-browser
         run: pnpm exec playwright install --with-deps --no-shell chromium
 
       - name: Measure frontend browser metrics
@@ -126,7 +126,7 @@ jobs:
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-browser-diagnostics"
           mkdir -p "$REPORT_DIR"
-          pnpm --filter memory-usage-frontend run inspect \
+          pnpm --filter diagnostics-frontend-browser run inspect \
             "$GITHUB_WORKSPACE/before" "$GITHUB_WORKSPACE/after" \
             "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json"
 
@@ -155,7 +155,7 @@ jobs:
           REPORT_DIR="$RUNNER_TEMP/frontend-browser-diagnostics"
           test -s "$REPORT_DIR/before-browser.json"
           test -s "$REPORT_DIR/after-browser.json"
-          pnpm --filter memory-usage-frontend run render-html \
+          pnpm --filter diagnostics-frontend-browser run render-html \
             "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" \
             "$REPORT_DIR/frontend-browser-detailed-html.html"
 
@@ -183,7 +183,7 @@ jobs:
           REPORT_DIR="$RUNNER_TEMP/frontend-browser-diagnostics"
           test -s "$REPORT_DIR/before-browser.json"
           test -s "$REPORT_DIR/after-browser.json"
-          pnpm --filter memory-usage-frontend run render-md \
+          pnpm --filter diagnostics-frontend-browser run render-md \
             "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" \
             "$REPORT_DIR/frontend-browser-diagnostics.md"
           printf '%s\n' "$PR_NUMBER" > "$REPORT_DIR/pr-number.txt"

@@ -32,9 +32,9 @@ jobs:
       matrix:
         workspace:
           - diagnostics-shared
-          - memory-usage-backend
-          - memory-usage-frontend
-          - bundle-size-frontend
+          - diagnostics-backend
+          - diagnostics-frontend-browser
+          - diagnostics-frontend-bundle
           - changelog-checker
     steps:
       - uses: actions/checkout@v6.0.3

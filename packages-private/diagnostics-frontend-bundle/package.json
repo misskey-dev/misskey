@@ -1,5 +1,5 @@
 {
-	"name": "bundle-size-frontend",
+	"name": "diagnostics-frontend-bundle",
 	"private": true,
 	"type": "module",
 	"scripts": {

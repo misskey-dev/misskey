@@ -1,5 +1,5 @@
 {
-	"name": "memory-usage-frontend",
+	"name": "diagnostics-frontend-browser",
 	"private": true,
 	"type": "module",
 	"scripts": {

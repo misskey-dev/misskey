@@ -10,7 +10,7 @@ on:
       - packages/backend/**
       - packages/misskey-js/**
       - packages-private/diagnostics-shared/**
-      - packages-private/memory-usage-backend/**
+      - packages-private/diagnostics-backend/**
       - .github/workflows/backend-diagnostics.inspect.yml
       - .github/workflows/backend-diagnostics.comment.yml
 
@@ -95,7 +95,7 @@ jobs:
         # 計測ハーネスはhead側のものを両方に使うが、成果物はrunnerのworkspace直下に出す
         MK_MEMORY_HEAP_SNAPSHOT_OUTPUT_DIR: ${{ github.workspace }}
       run: >-
-        pnpm --filter memory-usage-backend run inspect
+        pnpm --filter diagnostics-backend run inspect
         "$GITHUB_WORKSPACE/base" "$GITHUB_WORKSPACE/head"
         "$GITHUB_WORKSPACE/memory-base.json" "$GITHUB_WORKSPACE/memory-head.json"
     - name: Upload base heap snapshot

@@ -21,7 +21,7 @@ on:
       - pnpm-workspace.yaml
       - .node-version
       - packages-private/diagnostics-shared/**
-      - packages-private/bundle-size-frontend/**
+      - packages-private/diagnostics-frontend-bundle/**
       - .github/workflows/frontend-bundle-diagnostics.inspect.yml
       - .github/workflows/frontend-bundle-diagnostics.comment.yml
 
@@ -122,7 +122,7 @@ jobs:
           FRONTEND_BUNDLE_REPORT_ARTIFACT_URL: ${{ steps.upload-bundle-visualizer.outputs.artifact-url }}
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-bundle-report"
-          pnpm --filter bundle-size-frontend run render-md \
+          pnpm --filter diagnostics-frontend-bundle run render-md \
             "$GITHUB_WORKSPACE/before" "$GITHUB_WORKSPACE/after" \
             "$REPORT_DIR/before-stats.json" "$REPORT_DIR/after-stats.json" \
             "$REPORT_DIR/frontend-bundle-diagnostics-report.md"
