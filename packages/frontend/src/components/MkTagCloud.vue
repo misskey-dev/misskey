@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, ref, shallowRef, useTemplateRef } from 'vue';
+import { onMounted, onBeforeUnmount, nextTick, ref, shallowRef, useTemplateRef } from 'vue';
 import { themeManager } from '@/theme.js';
 import tinycolor from 'tinycolor2';
 import { TagCanvas } from '@misskey-dev/tagcanvas-es';
@@ -58,7 +58,9 @@ function createTagCanvas() {
 onMounted(() => {
 	if (rootEl.value) width.value = rootEl.value.offsetWidth;
 
-	createTagCanvas();
+	nextTick(() => {
+		createTagCanvas();
+	});
 });
 
 onBeforeUnmount(() => {
