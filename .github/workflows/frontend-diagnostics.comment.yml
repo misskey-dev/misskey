@@ -19,39 +19,10 @@ jobs:
     if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     concurrency:
-      group: frontend-diagnostics-report-${{ github.event.workflow_run.pull_requests[0].number || format('{0}-{1}', github.event.workflow_run.head_repository.id, github.event.workflow_run.head_branch) }}
+      group: frontend-diagnostics-report-${{ github.event.workflow_run.id }}
       cancel-in-progress: true
     steps:
-      - name: Resolve current pull request
-        id: resolve-pr
-        uses: actions/github-script@v9
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const workflowRun = context.payload.workflow_run;
-            const associatedPullRequests = workflowRun.pull_requests ?? [];
-            if (associatedPullRequests.length !== 1) {
-              throw new Error(`Expected exactly one pull request for workflow run ${workflowRun.id}, got ${associatedPullRequests.length}.`);
-            }
-
-            const runPullRequest = associatedPullRequests[0];
-            const { data: currentPullRequest } = await github.rest.pulls.get({
-              owner,
-              repo,
-              pull_number: runPullRequest.number,
-            });
-
-            if (currentPullRequest.state !== 'open' || currentPullRequest.head.sha !== runPullRequest.head.sha) {
-              core.notice(`Skipping stale frontend diagnostics report for pull request #${runPullRequest.number}.`);
-              core.setOutput('is-current', 'false');
-              return;
-            }
-
-            core.setOutput('is-current', 'true');
-            core.setOutput('pr-number', String(runPullRequest.number));
-
       - name: Download frontend diagnostics report
-        if: steps.resolve-pr.outputs.is-current == 'true'
         uses: actions/download-artifact@v8
         with:
           name: frontend-diagnostics
@@ -59,6 +30,41 @@ jobs:
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
           run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Resolve current pull request
+        id: resolve-pr
+        uses: actions/github-script@v9
+        env:
+          PR_NUMBER_FILE: ${{ runner.temp }}/frontend-diagnostics/pr-number.txt
+        with:
+          script: |
+            const fs = require('fs/promises');
+            const { owner, repo } = context.repo;
+            const workflowRun = context.payload.workflow_run;
+            const pullRequestNumberText = (await fs.readFile(process.env.PR_NUMBER_FILE, 'utf8')).trim();
+            if (!/^[1-9]\d*$/.test(pullRequestNumberText)) {
+              throw new Error('Invalid pull request number in frontend diagnostics artifact.');
+            }
+
+            const pullRequestNumber = Number(pullRequestNumberText);
+            if (!Number.isSafeInteger(pullRequestNumber)) {
+              throw new Error('Pull request number in frontend diagnostics artifact is not a safe integer.');
+            }
+
+            const { data: currentPullRequest } = await github.rest.pulls.get({
+              owner,
+              repo,
+              pull_number: pullRequestNumber,
+            });
+
+            if (currentPullRequest.state !== 'open' || currentPullRequest.head.sha !== workflowRun.head_sha) {
+              core.notice(`Skipping stale frontend diagnostics report for pull request #${pullRequestNumber}.`);
+              core.setOutput('is-current', 'false');
+              return;
+            }
+
+            core.setOutput('is-current', 'true');
+            core.setOutput('pr-number', String(pullRequestNumber));
 
       - name: Comment on pull request
         if: steps.resolve-pr.outputs.is-current == 'true'

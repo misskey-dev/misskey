@@ -197,6 +197,7 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           FRONTEND_BUNDLE_REPORT_ARTIFACT_URL: ${{ steps.upload-bundle-visualizer.outputs.artifact-url }}
           FRONTEND_BROWSER_BASE_HEAP_SNAPSHOT_ARTIFACT_URL: ${{ steps.upload-browser-base-heap-snapshot.outputs.artifact-url }}
           FRONTEND_BROWSER_HEAD_HEAP_SNAPSHOT_ARTIFACT_URL: ${{ steps.upload-browser-head-heap-snapshot.outputs.artifact-url }}
@@ -212,6 +213,7 @@ jobs:
             "$REPORT_DIR/before-bundle-stats.json" "$REPORT_DIR/after-bundle-stats.json" \
             "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" \
             "$REPORT_DIR/frontend-diagnostics.md"
+          printf '%s\n' "$PR_NUMBER" > "$REPORT_DIR/pr-number.txt"
           printf '%s\n' "$BASE_SHA" > "$REPORT_DIR/base-sha.txt"
           printf '%s\n' "$HEAD_SHA" > "$REPORT_DIR/head-sha.txt"
           printf '%s\n' "${{ github.event.pull_request.html_url }}" > "$REPORT_DIR/pr-url.txt"
@@ -222,6 +224,7 @@ jobs:
           REPORT_DIR="$RUNNER_TEMP/frontend-diagnostics"
           test -s "$REPORT_DIR/frontend-diagnostics.md"
           test -s "$REPORT_DIR/frontend-browser-detailed-html.html"
+          test -s "$REPORT_DIR/pr-number.txt"
           test -s "$REPORT_DIR/head-sha.txt"
           cat "$REPORT_DIR/frontend-diagnostics.md" >> "$GITHUB_STEP_SUMMARY"
 
@@ -235,6 +238,7 @@ jobs:
             ${{ runner.temp }}/frontend-diagnostics/before-browser.json
             ${{ runner.temp }}/frontend-diagnostics/after-browser.json
             ${{ runner.temp }}/frontend-diagnostics/frontend-diagnostics.md
+            ${{ runner.temp }}/frontend-diagnostics/pr-number.txt
             ${{ runner.temp }}/frontend-diagnostics/base-sha.txt
             ${{ runner.temp }}/frontend-diagnostics/head-sha.txt
             ${{ runner.temp }}/frontend-diagnostics/pr-url.txt
