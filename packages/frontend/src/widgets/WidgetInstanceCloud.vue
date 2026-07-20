@@ -61,8 +61,8 @@ function onInstanceClick(i: Misskey.entities.FederationInstance) {
 
 useInterval(() => {
 	misskeyApi('federation/instances', {
-	sort: '+latestRequestReceivedAt',
-	limit: 25,
+		sort: '+latestRequestReceivedAt',
+		limit: 25,
 	}).then(res => {
 		activeInstances.value = res;
 		if (cloud.value) cloud.value.update();
