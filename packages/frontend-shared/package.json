@@ -4,14 +4,14 @@
 	"private": true,
 	"scripts": {
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"typecheck": "tsgo --noEmit",
+		"typecheck": "tsc --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "26.0.1",
+		"@types/node": "26.1.1",
 		"@types/tinycolor2": "1.4.6",
-		"@typescript-eslint/eslint-plugin": "8.62.0",
-		"@typescript-eslint/parser": "8.62.0",
+		"@typescript-eslint/eslint-plugin": "8.63.0",
+		"@typescript-eslint/parser": "8.63.0",
 		"eslint-plugin-vue": "10.9.2",
 		"vue-eslint-parser": "10.4.1"
 	},
@@ -23,7 +23,7 @@
 		"i18n": "workspace:*",
 		"json5": "2.2.3",
 		"misskey-js": "workspace:*",
-		"shiki": "4.3.0",
+		"shiki": "4.3.1",
 		"tinycolor2": "1.6.0",
 		"vue": "3.5.39"
 	}

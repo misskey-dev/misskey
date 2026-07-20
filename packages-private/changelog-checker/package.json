@@ -10,16 +10,15 @@
 		"test:coverage": "vitest run --coverage",
 		"typecheck": "tsgo --noEmit"
 	},
-	"devDependencies": {
-		"@types/mdast": "4.0.4",
-		"@types/node": "26.0.1",
-		"@vitest/coverage-v8": "4.1.9",
-		"mdast-util-to-string": "4.0.0",
-		"remark": "15.0.1",
-		"remark-parse": "11.0.0",
+  "devDependencies": {
+    "@types/mdast": "4.0.4",
+    "@types/node": "26.1.1",
+    "@vitest/coverage-v8": "4.1.10",
+    "mdast-util-to-string": "4.0.0",
+    "remark": "15.0.1",
+    "remark-parse": "11.0.0",
 		"tsx": "4.22.4",
-		"typescript": "5.9.3",
-		"unified": "11.0.5",
-		"vitest": "4.1.9"
-	}
+    "unified": "11.0.5",
+    "vitest": "4.1.10"
+  }
 }

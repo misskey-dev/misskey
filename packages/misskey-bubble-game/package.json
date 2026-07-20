@@ -20,15 +20,15 @@
 		"build": "node ./build.js",
 		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"typecheck": "tsgo --noEmit",
+		"typecheck": "tsc --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
 		"@types/matter-js": "0.20.2",
-		"@types/node": "26.0.1",
+		"@types/node": "26.1.1",
 		"@types/seedrandom": "3.0.8",
-		"@typescript-eslint/eslint-plugin": "8.62.0",
-		"@typescript-eslint/parser": "8.62.0",
+		"@typescript-eslint/eslint-plugin": "8.63.0",
+		"@typescript-eslint/parser": "8.63.0",
 		"esbuild": "0.28.1",
 		"execa": "9.6.1",
 		"nodemon": "3.1.14"
