@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkTagCloud v-if="activeInstances" ref="cloud">
 			<li v-for="instance in activeInstances" :key="instance.id">
 				<a @click.prevent="onInstanceClick(instance)">
-					<img width="32" height="32" :src="getInstanceIcon(instance)">
+					<img style="width: 32px;" :src="getInstanceIcon(instance)">
 				</a>
 			</li>
 		</MkTagCloud>

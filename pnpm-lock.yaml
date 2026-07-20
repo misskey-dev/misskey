@@ -573,8 +573,8 @@ importers:
         specifier: 17.0.3
         version: 17.0.3
       '@misskey-dev/tagcanvas-es':
-        specifier: 0.1.1
-        version: 0.1.1
+        specifier: 0.1.2
+        version: 0.1.2
       '@sentry/vue':
         specifier: 10.62.0
         version: 10.62.0(vue@3.5.39(typescript@5.9.3))
@@ -2374,8 +2374,8 @@ packages:
   '@misskey-dev/summaly@5.5.1':
     resolution: {integrity: sha512-CfpVtmFgltjNS1FAS5+bOluKAF/irZuQnUxAw66ydnp/uesiNNu62ltf9gEgwutT5S+itGtlnP87AOx6DDn/1A==}
 
-  '@misskey-dev/tagcanvas-es@0.1.1':
-    resolution: {integrity: sha512-dacF2JrCBBpnf16SZGwIIZP+PE4wdU+JkAjWSmz+7kVWY00cllwLGA5rrRo1dFUBTJvtaiTtEoTx4N07IXLaKg==}
+  '@misskey-dev/tagcanvas-es@0.1.2':
+    resolution: {integrity: sha512-SGqyu30/CCQyIC95Zcmj3k1vYXwfX66/arsxpl1UUulUqvlRpTpuhB7kEAAps1lqXin0rQzXknb31EeveNKsaw==}
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4':
     resolution: {integrity: sha512-LCkGo6JDfaBhgST7UpPWgNgLINpcpabaHfyz5OBx75nUYxBsaEPxjnyNjWpeb/xBup/682QnBfRBy2/LvPutZQ==}
@@ -10013,7 +10013,7 @@ snapshots:
   '@fastify/otel@0.19.0(@opentelemetry/api@1.9.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
-      '@opentelemetry/core': 2.7.1(@opentelemetry/api@1.9.1)
+      '@opentelemetry/core': 2.8.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/instrumentation': 0.218.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/semantic-conventions': 1.40.0
       minimatch: 10.2.5
@@ -10463,7 +10463,7 @@ snapshots:
     optionalDependencies:
       fastify: 5.8.5
 
-  '@misskey-dev/tagcanvas-es@0.1.1': {}
+  '@misskey-dev/tagcanvas-es@0.1.2': {}
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4':
     optional: true
@@ -10670,7 +10670,7 @@ snapshots:
   '@opentelemetry/instrumentation-pg@0.72.0(@opentelemetry/api@1.9.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
-      '@opentelemetry/core': 2.7.1(@opentelemetry/api@1.9.1)
+      '@opentelemetry/core': 2.8.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/instrumentation': 0.220.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/semantic-conventions': 1.40.0
       '@opentelemetry/sql-common': 0.42.0(@opentelemetry/api@1.9.1)
@@ -10775,7 +10775,7 @@ snapshots:
   '@opentelemetry/sql-common@0.42.0(@opentelemetry/api@1.9.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
-      '@opentelemetry/core': 2.7.1(@opentelemetry/api@1.9.1)
+      '@opentelemetry/core': 2.8.0(@opentelemetry/api@1.9.1)
 
   '@oxc-parser/binding-android-arm-eabi@0.127.0':
     optional: true
