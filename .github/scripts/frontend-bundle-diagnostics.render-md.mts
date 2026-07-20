@@ -317,7 +317,7 @@ function renderVisualizerSummaryTable(before: ReturnType<typeof collectVisualize
 		`</tr>`,
 		`</tbody>`,
 		`</table>`,
-	];
+	].join('\n');
 }
 
 function getChunkComparisonRows(keys: string[], before: Record<string, FileEntry>, after: Record<string, FileEntry>) {

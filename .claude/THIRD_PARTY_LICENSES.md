@@ -19,7 +19,7 @@
 |---|---|---|---|
 | `skills/context-budget/SKILL.md` | `skills/context-budget/SKILL.md` | ECC | description を日本語化、Misskey 固有メモを追記 |
 | `commands/harness-audit.md` | `commands/harness-audit.md` | ECC | scripts 依存の自動採点を、Claude が `pnpm`/`git`/`grep` で手動採点する版に書き換え。Misskey 固有の評価軸 (SPDX / endpoint-list / migration / locales) を組み込み |
-| `commands/quality-gate.md` | `commands/quality-gate.md` | ECC | 言語自動判定を排除し Misskey 固定 pipeline (`pnpm` + tsgo + ESLint + Vitest) に。Prettier/Biome フェーズを削除 |
+| `commands/quality-gate.md` | `commands/quality-gate.md` | ECC | 言語自動判定を排除し Misskey 固定 pipeline (`pnpm` + tsc + ESLint + Vitest) に。Prettier/Biome フェーズを削除 |
 
 ### MIT License (full text)
 
