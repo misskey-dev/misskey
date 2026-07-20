@@ -64,13 +64,13 @@
 		"@types/node": "26.1.1",
 		"@typescript-eslint/eslint-plugin": "8.63.0",
 		"@typescript-eslint/parser": "8.63.0",
-		"@typescript/native-preview": "7.0.0-dev.20260426.1",
+		"@typescript/native": "npm:typescript@7.0.2",
 		"cross-env": "10.1.0",
 		"eslint": "9.39.5",
 		"globals": "17.7.0",
 		"ncp": "2.0.0",
 		"pnpm": "11.11.0",
 		"start-server-and-test": "3.0.11",
-		"typescript": "5.9.3"
+		"typescript": "npm:@typescript/typescript6@6.0.2"
 	}
 }

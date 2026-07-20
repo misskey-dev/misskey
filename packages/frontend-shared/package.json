@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"typecheck": "tsgo --noEmit",
+		"typecheck": "tsc --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {

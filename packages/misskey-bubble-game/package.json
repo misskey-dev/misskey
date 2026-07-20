@@ -20,7 +20,7 @@
 		"build": "node ./build.js",
 		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"typecheck": "tsgo --noEmit",
+		"typecheck": "tsc --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
