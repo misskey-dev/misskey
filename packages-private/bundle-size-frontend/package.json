@@ -7,7 +7,7 @@
 		"lint": "pnpm typecheck && pnpm eslint",
 		"render-md": "tsx src/render-md.ts",
 		"test": "vitest run",
-		"typecheck": "tsgo --noEmit"
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"diagnostics-shared": "workspace:*"

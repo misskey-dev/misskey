@@ -13,7 +13,7 @@
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
 		"lint": "pnpm typecheck && pnpm eslint",
 		"test": "vitest run",
-		"typecheck": "tsgo --noEmit"
+		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {
 		"@types/node": "26.1.1",
