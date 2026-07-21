@@ -67,7 +67,7 @@
 <details>
 <summary>V8 heap snapshot statistics</summary>
 
-| Metric | Base | Head | Delta | Combined MAD | Result |
+| Metric | Base | Head | Delta | MAD | Result |
 | --- | ---: | ---: | ---: | ---: | --- |
 | $\color{gray}{\rule{8pt}{8pt}}$ **Total** | 1 MB <br> ± 10 KB | 1.1 MB <br> ± 11 KB | $\text{+82 KB}$<br>$\color{orange}{\text{+8\\%}}$ | 15 KB | increase |
 | | | | | | |

@@ -91,7 +91,7 @@ function formatMemoryDeltaPercent(summary: IndependentDeltaSummary) {
 
 function renderMainTableForPhase(base: MemoryReport, head: MemoryReport, phase: MemoryPhase) {
 	const lines = [
-		'| Metric | Base | Head | Delta | Combined MAD | Result |',
+		'| Metric | Base | Head | Delta | MAD | Result |',
 		'| --- | ---: | ---: | ---: | ---: | --- |',
 	];
 
@@ -170,7 +170,7 @@ export function renderMemoryReportMarkdown(base: MemoryReport, head: MemoryRepor
 		lines.push('');
 	}
 
-	lines.push(`_Values are median ± MAD (${base.samples.length} base / ${head.samples.length} head samples). Delta is Head - Base. Results are increase or decrease only when |Delta| > 3 × Combined MAD._`);
+	lines.push(`_Values are median ± MAD (${base.samples.length} base / ${head.samples.length} head samples). Delta is Head - Base. Results are increase or decrease only when |Delta| > 3 × MAD._`);
 	lines.push('');
 
 	const nonConvergedSamples = countNonConvergedMemorySamples(base, head);

@@ -75,12 +75,12 @@ The three-times-combined-MAD rule is a deliberately conservative heuristic based
 
 Change the main backend memory table to:
 
-| Metric | Base | Head | Delta | Combined MAD | Result |
+| Metric | Base | Head | Delta | MAD | Result |
 | --- | ---: | ---: | ---: | ---: | --- |
 
 - Base and Head continue to show median and individual MAD.
 - Delta shows `headMedian - baseMedian` and its percentage relative to `baseMedian`.
-- Combined MAD shows the noise scale used for the verdict.
+- MAD shows the noise scale used for the verdict.
 - A displayed delta is colored orange or green only when both conditions hold: the verdict is `increase` or `decrease`, and that displayed value exceeds its existing display-level threshold. The existing thresholds remain 100 KiB for an absolute backend memory delta and 0.1 percentage points for its percentage delta.
 - A `within noise` or `inconclusive` delta remains uncolored.
 - Remove paired-delta MAD/min/max columns from the main backend report because their pairing is arbitrary for independent process starts. Raw samples remain downloadable in the JSON artifacts.
@@ -89,7 +89,7 @@ Change the main backend memory table to:
 
 Apply the same independent delta calculation and noise-aware coloring to the shared V8 heap snapshot table. The shared `HeapSnapshotReport` input shape remains unchanged: it continues to contain a summary and `{ round, data }` samples, which are sufficient for calculating independent medians and MADs. The existing heap snapshot display thresholds remain 100,000 bytes for an absolute delta and 0.1 percentage points for its percentage delta.
 
-The shared heap snapshot table also uses `Metric | Base | Head | Delta | Combined MAD | Result`. Preserve its category swatches, category composition details, and the Total row's percentage presentation, but remove the arbitrary paired-delta MAD/min/max columns. Values displayed as Base and Head come from the same independent summary as Delta so that the displayed arithmetic is consistent.
+The shared heap snapshot table also uses `Metric | Base | Head | Delta | MAD | Result`. Preserve its category swatches, category composition details, and the Total row's percentage presentation, but remove the arbitrary paired-delta MAD/min/max columns. Values displayed as Base and Head come from the same independent summary as Delta so that the displayed arithmetic is consistent.
 
 Both backend and frontend diagnostics call the shared `renderHeapSnapshotTable`, so both reports receive the corrected table format and statistics. This does not require changes to the frontend workflow YAML, browser measurement JSON, or frontend adapter. The backend adapter filters out samples without a snapshot before constructing `HeapSnapshotReport`, because only its final three measured rounds contain snapshots. Other frontend diagnostics tables remain unchanged.
 
@@ -102,7 +102,7 @@ For the observed PR #17756 data, the corrected PSS row should be approximately:
 - Base: 297.8 MB +/- 5.9 MB
 - Head: 298.3 MB +/- 4.4 MB
 - Delta: +0.5 MB (+0.2%), uncolored
-- Combined MAD: about 7.3 MB
+- MAD: about 7.3 MB
 - Result: `within noise`
 
 ## Failure and edge-case handling

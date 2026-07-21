@@ -251,7 +251,7 @@ git commit -m "feat(diagnostics): add independent delta summary"
 
 **Interfaces:**
 - Consumes: the existing `HeapSnapshotReport` `{ summary, samples: { round, data }[] }` shape.
-- Produces: `renderHeapSnapshotTable(base, head)` with `Metric | Base | Head | Delta | Combined MAD | Result`.
+- Produces: `renderHeapSnapshotTable(base, head)` with `Metric | Base | Head | Delta | MAD | Result`.
 - Preserves: frontend adapters, browser JSON fixtures, frontend workflow YAML, category swatches/details, and Sankey rendering.
 
 - [ ] **Step 1: Add focused shared-renderer tests**
@@ -413,7 +413,7 @@ function categoryDeltaSummary(base: HeapSnapshotReport, head: HeapSnapshotReport
  */
 export function renderHeapSnapshotTable(base: HeapSnapshotReport, head: HeapSnapshotReport) {
 	const lines = [
-		'| Metric | Base | Head | Delta | Combined MAD | Result |',
+		'| Metric | Base | Head | Delta | MAD | Result |',
 		'| --- | ---: | ---: | ---: | ---: | --- |',
 	];
 	const totalSummary = categoryDeltaSummary(base, head, 'total');
@@ -720,7 +720,7 @@ function formatMemoryDeltaPercent(summary: IndependentDeltaSummary) {
 
 function renderMainTableForPhase(base: MemoryReport, head: MemoryReport, phase: MemoryPhase) {
 	const lines = [
-		'| Metric | Base | Head | Delta | Combined MAD | Result |',
+		'| Metric | Base | Head | Delta | MAD | Result |',
 		'| --- | ---: | ---: | ---: | ---: | --- |',
 	];
 
@@ -753,7 +753,7 @@ function countNonConvergedMemorySamples(base: MemoryReport, head: MemoryReport) 
 In `renderMemoryReportMarkdown`, add this immediately after the memory-table loop:
 
 ```ts
-	lines.push(`_Values are median ± MAD (${base.samples.length} base / ${head.samples.length} head samples). Delta is Head - Base. Results are increase or decrease only when |Delta| > 3 × Combined MAD._`);
+	lines.push(`_Values are median ± MAD (${base.samples.length} base / ${head.samples.length} head samples). Delta is Head - Base. Results are increase or decrease only when |Delta| > 3 × MAD._`);
 	lines.push('');
 
 	const nonConvergedSamples = countNonConvergedMemorySamples(base, head);
@@ -782,7 +782,7 @@ Replace the old `getDiffPercent`, `isBeyondSampleNoise`, and final PSS warning b
 pnpm --filter diagnostics-backend exec vitest run test/render-md.test.ts --update
 ```
 
-Expected: PASS. Confirm the golden contains six columns, `Combined MAD`, result labels, the method note, and the existing PSS warning for the clearly increasing fixture.
+Expected: PASS. Confirm the golden contains six columns, `MAD`, result labels, the method note, and the existing PSS warning for the clearly increasing fixture.
 
 - [ ] **Step 6: Run backend and shared tests/lint**
 
