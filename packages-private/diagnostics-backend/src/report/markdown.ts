@@ -5,7 +5,7 @@
 
 import { formatColoredDelta, formatDeltaPercentInMdTable, formatKiBAsMb } from 'diagnostics-shared/format';
 import { median, pairedDeltaSummary, sampleSpread } from 'diagnostics-shared/stats';
-import { renderHeapSnapshotTable } from 'diagnostics-shared/heap-snapshot';
+import { renderHeapSnapshotTable, type HeapSnapshotReport } from 'diagnostics-shared/heap-snapshot';
 import type { MemoryPhase, MemoryReport } from '../types';
 
 export type RenderMemoryReportOptions = {
@@ -79,25 +79,25 @@ function renderMainTableForPhase(base: MemoryReport, head: MemoryReport, phase: 
 	return lines.join('\n');
 }
 
-function renderHeapSnapshotSection(base: MemoryReport, head: MemoryReport) {
-	const baseHeapSnapshotReport = {
-		summary: base.summary.afterGc.heapSnapshot!,
-		samples: base.samples.map(sample => ({
-			round: sample.round,
-			data: sample.phases.afterGc.heapSnapshot!,
-		})),
-	};
+function toHeapSnapshotReport(report: MemoryReport): HeapSnapshotReport | null {
+	const summary = report.summary.afterGc.heapSnapshot;
+	if (summary == null) return null;
 
-	const headHeapSnapshotReport = {
-		summary: head.summary.afterGc.heapSnapshot!,
-		samples: head.samples.map(sample => ({
-			round: sample.round,
-			data: sample.phases.afterGc.heapSnapshot!,
-		})),
+	return {
+		summary,
+		samples: report.samples.flatMap(sample => {
+			const data = sample.phases.afterGc.heapSnapshot;
+			return data == null ? [] : [{ round: sample.round, data }];
+		}),
 	};
+}
+
+function renderHeapSnapshotSection(base: MemoryReport, head: MemoryReport) {
+	const baseHeapSnapshotReport = toHeapSnapshotReport(base);
+	const headHeapSnapshotReport = toHeapSnapshotReport(head);
+	if (baseHeapSnapshotReport == null || headHeapSnapshotReport == null) return null;
 
 	const table = renderHeapSnapshotTable(baseHeapSnapshotReport, headHeapSnapshotReport);
-	if (table == null) return null;
 
 	const lines = [
 		'### V8 Heap Snapshot Statistics',

@@ -27,3 +27,22 @@ test('renders the backend memory report', async () => {
 
 	await expect(markdown).toMatchFileSnapshot('./__snapshots__/render-md.md');
 });
+
+test('filters rounds without heap snapshots before rendering', async () => {
+	const base = await loadFixture('base');
+	const head = await loadFixture('head');
+	for (const report of [base, head]) {
+		for (const sample of report.samples.slice(0, -1)) {
+			sample.phases.afterGc.heapSnapshot = null;
+		}
+	}
+
+	const markdown = renderMemoryReportMarkdown(base, head, {
+		baseHeapSnapshotUrl: 'https://example.invalid/base',
+		headHeapSnapshotUrl: 'https://example.invalid/head',
+	});
+	const totalRow = markdown.split('\n').find(line => line.includes('**Total**'))!;
+
+	expect(totalRow).toContain('inconclusive');
+	expect(totalRow).not.toContain('NaN');
+});

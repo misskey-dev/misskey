@@ -67,17 +67,17 @@
 <details>
 <summary>V8 heap snapshot statistics</summary>
 
-| Metric | Base | Head | Δ median | Δ MAD | Δ min | Δ max |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| $\color{gray}{\rule{8pt}{8pt}}$ **Total** | 1 MB <br> ± 10 KB | 1.1 MB <br> ± 11 KB | $\text{+82 KB}$<br>$\color{orange}{\text{+8\\%}}$ | 800 B | $\text{+81 KB}$ | $\text{+82 KB}$ |
-| | | | | | | |
-| <details><summary>$\color{orange}{\rule{8pt}{8pt}}$ **Code**</summary>200% → 200%</details> | 2 MB | 2.2 MB | $\color{orange}{\text{+163 KB}}$ | 1.6 KB | $\color{orange}{\text{+162 KB}}$ | $\color{orange}{\text{+165 KB}}$ |
-| <details><summary>$\color{red}{\rule{8pt}{8pt}}$ **Strings**</summary>300% → 300%</details> | 3.1 MB | 3.3 MB | $\color{orange}{\text{+245 KB}}$ | 2.4 KB | $\color{orange}{\text{+242 KB}}$ | $\color{orange}{\text{+247 KB}}$ |
-| <details><summary>$\color{cyan}{\rule{8pt}{8pt}}$ **JS arrays**</summary>400% → 400%</details> | 4.1 MB | 4.4 MB | $\color{orange}{\text{+326 KB}}$ | 3.2 KB | $\color{orange}{\text{+323 KB}}$ | $\color{orange}{\text{+330 KB}}$ |
-| <details><summary>$\color{green}{\rule{8pt}{8pt}}$ **Typed arrays**</summary>500% → 500%</details> | 5.1 MB | 5.5 MB | $\color{orange}{\text{+408 KB}}$ | 4 KB | $\color{orange}{\text{+404 KB}}$ | $\color{orange}{\text{+412 KB}}$ |
-| <details><summary>$\color{yellow}{\rule{8pt}{8pt}}$ **System objects**</summary>600% → 600%</details> | 6.1 MB | 6.6 MB | $\color{orange}{\text{+490 KB}}$ | 4.8 KB | $\color{orange}{\text{+485 KB}}$ | $\color{orange}{\text{+494 KB}}$ |
-| <details><summary>$\color{violet}{\rule{8pt}{8pt}}$ **Other JS objs**</summary>700% → 700%</details> | 7.1 MB | 7.7 MB | $\color{orange}{\text{+571 KB}}$ | 5.6 KB | $\color{orange}{\text{+566 KB}}$ | $\color{orange}{\text{+577 KB}}$ |
-| <details><summary>$\color{pink}{\rule{8pt}{8pt}}$ **Other non-JS objs**</summary>800% → 800%</details> | 8.2 MB | 8.8 MB | $\color{orange}{\text{+653 KB}}$ | 6.4 KB | $\color{orange}{\text{+646 KB}}$ | $\color{orange}{\text{+659 KB}}$ |
+| Metric | Base | Head | Delta | Combined MAD | Result |
+| --- | ---: | ---: | ---: | ---: | --- |
+| $\color{gray}{\rule{8pt}{8pt}}$ **Total** | 1 MB <br> ± 10 KB | 1.1 MB <br> ± 11 KB | $\text{+82 KB}$<br>$\color{orange}{\text{+8\\%}}$ | 15 KB | increase |
+| | | | | | |
+| <details><summary>$\color{orange}{\rule{8pt}{8pt}}$ **Code**</summary>200% → 200%</details> | 2 MB | 2.2 MB | $\color{orange}{\text{+163 KB}}$ | 29 KB | increase |
+| <details><summary>$\color{red}{\rule{8pt}{8pt}}$ **Strings**</summary>300% → 300%</details> | 3.1 MB | 3.3 MB | $\color{orange}{\text{+245 KB}}$ | 44 KB | increase |
+| <details><summary>$\color{cyan}{\rule{8pt}{8pt}}$ **JS arrays**</summary>400% → 400%</details> | 4.1 MB | 4.4 MB | $\color{orange}{\text{+326 KB}}$ | 59 KB | increase |
+| <details><summary>$\color{green}{\rule{8pt}{8pt}}$ **Typed arrays**</summary>500% → 500%</details> | 5.1 MB | 5.5 MB | $\color{orange}{\text{+408 KB}}$ | 74 KB | increase |
+| <details><summary>$\color{yellow}{\rule{8pt}{8pt}}$ **System objects**</summary>600% → 600%</details> | 6.1 MB | 6.6 MB | $\color{orange}{\text{+490 KB}}$ | 88 KB | increase |
+| <details><summary>$\color{violet}{\rule{8pt}{8pt}}$ **Other JS objs**</summary>700% → 700%</details> | 7.1 MB | 7.7 MB | $\color{orange}{\text{+571 KB}}$ | 103 KB | increase |
+| <details><summary>$\color{pink}{\rule{8pt}{8pt}}$ **Other non-JS objs**</summary>800% → 800%</details> | 8.2 MB | 8.8 MB | $\color{orange}{\text{+653 KB}}$ | 118 KB | increase |
 
 Download representative heap snapshot: [base](https://example.invalid/base) / [head](https://example.invalid/head)
 </details>
