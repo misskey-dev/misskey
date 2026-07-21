@@ -260,11 +260,11 @@ function stopQr() {
 }
 
 onActivated(() => {
-	startQr;
+	startQr();
 });
 
 onDeactivated(() => {
-	stopQr;
+	stopQr();
 });
 
 const alertLock = ref(false);
