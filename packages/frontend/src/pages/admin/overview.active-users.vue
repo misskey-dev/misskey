@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef, ref } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -161,8 +161,12 @@ async function renderChart() {
 	fetching.value = false;
 }
 
-onMounted(async () => {
+onMounted(() => {
 	renderChart();
+});
+
+onUnmounted(() => {
+	chartInstance?.destroy();
 });
 </script>
 
