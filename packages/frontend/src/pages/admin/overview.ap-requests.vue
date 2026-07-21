@@ -35,6 +35,7 @@ initChart();
 
 let chartInstance1: Chart | null = null;
 let chartInstance2: Chart | null = null;
+let disposed = false;
 
 const chartLimit = 50;
 const chartEl = useTemplateRef('chartEl');
@@ -73,6 +74,8 @@ onMounted(async () => {
 	};
 
 	const raw = await misskeyApi('charts/ap-request', { limit: chartLimit, span: 'day' });
+
+	if (disposed || chartEl.value == null || chartEl2.value == null) return;
 
 	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 	const succColor = '#87e000';
@@ -278,6 +281,7 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
+	disposed = true;
 	chartInstance1?.destroy();
 	chartInstance2?.destroy();
 });

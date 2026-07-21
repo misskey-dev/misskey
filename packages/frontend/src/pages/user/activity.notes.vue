@@ -37,6 +37,7 @@ const chartEl = useTemplateRef('chartEl');
 const legendEl = useTemplateRef('legendEl');
 const now = new Date();
 let chartInstance: Chart | null = null;
+let disposed = false;
 const chartLimit = 50;
 const fetching = ref(true);
 
@@ -65,6 +66,8 @@ async function renderChart() {
 	};
 
 	const raw = await misskeyApi('charts/user/notes', { userId: props.user.id, limit: chartLimit, span: 'day' });
+
+	if (disposed || chartEl.value == null) return;
 
 	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
@@ -176,6 +179,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+	disposed = true;
 	chartInstance?.destroy();
 });
 </script>
