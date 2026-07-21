@@ -15,3 +15,14 @@ reviews:
       - "dependabot[bot]"
       - "renovate[bot]"
       - "github-actions[bot]"
+  path_instructions:
+    - path: "**/*"
+      instructions: |
+        【レビュー対象外】
+        - フォーマット違反、型エラー、SPDXヘッダーの記載漏れ等、静的解析で検出可能な問題については、別Workflow（CI/CD）でチェックされるため、レビュー対象外として無視してください。
+        
+        【注力してほしい観点】
+        - ビジネスロジックの不備、セキュリティ、パフォーマンス、設計パターンの適切性などに焦点を当ててレビューしてください。
+  path_filters:
+    - "!CHANGELOG.md"
+    - "!**/__snapshots__/**"
