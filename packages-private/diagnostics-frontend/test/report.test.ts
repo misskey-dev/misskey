@@ -151,6 +151,10 @@ test('renders one frontend diagnostics markdown report from bundle and browser d
 	const markdown = await renderReport('https://example.invalid/html');
 
 	await expect(markdown).toMatchFileSnapshot('./__snapshots__/report.md');
+	expect(markdown).toContain('| Metric | @ Base | @ Head | Δ | MAD |');
+	expect(markdown).not.toContain('| Metric | @ Base | @ Head | Δ | MAD | Result |');
+	expect(markdown).toContain('<summary>Requests by resource type</summary>');
+	expect(markdown).toContain('## 📦 Bundle Stats');
 });
 
 test('omits the browser details link when no detailed html artifact was uploaded', async () => {
@@ -176,7 +180,9 @@ test('renders the difference of independent medians instead of the paired median
 	expect(row).toContain('100 <br> ± 0');
 	expect(row).toContain('200 <br> ± 0');
 	expect(row).toContain('$\\color{orange}{\\text{+100}}$<br>$\\color{orange}{\\text{+100\\\\%}}$');
-	expect(row).toContain('| 0 | increase |');
+	expect(row).toContain('| 0 |');
+	expect(row.split('|')).toHaveLength(7);
+	expect(row).not.toMatch(/increase|decrease|within noise|inconclusive/);
 	expect(row).not.toContain('\\color{green}');
 });
 
@@ -248,7 +254,7 @@ test('renders a directional encoded byte delta at the absolute threshold', async
 	expect(row).toContain('$\\color{orange}{\\text{+10 KB}}$');
 });
 
-test('colours absolute and relative deltas using independent thresholds', async () => {
+test('colours absolute and relative deltas together when the row is significant', async () => {
 	const base = withMetricSamples(
 		await loadBrowserReport('base'),
 		[100_000_000, 100_000_000, 100_000_000],
@@ -263,8 +269,9 @@ test('colours absolute and relative deltas using independent thresholds', async 
 	const row = requireMetricRow(await renderReport(null, { base, head }), 'Encoded network');
 
 	expect(row).toContain('100 MB <br> ± 0 B');
-	expect(row).toContain('$\\color{orange}{\\text{+20 KB}}$<br>$\\text{+0\\\\%}$');
-	expect(row).toContain('| 0 B | increase |');
+	expect(row).toContain('$\\color{orange}{\\text{+20 KB}}$<br>$\\color{orange}{\\text{+0\\\\%}}$');
+	expect(row).toContain('| 0 B |');
+	expect(row.split('|')).toHaveLength(7);
 });
 
 test('renders an unavailable relative delta when the base median is zero', async () => {
@@ -282,10 +289,10 @@ test('renders an unavailable relative delta when the base median is zero', async
 	const row = requireMetricRow(await renderReport(null, { base, head }), 'Requests');
 
 	expect(row).toContain('$\\color{orange}{\\text{+2}}$<br>-');
-	expect(row).toContain('increase');
+	expect(row).not.toContain('increase');
 });
 
-test('hides an inconclusive metric with fewer than two samples on one side', async () => {
+test('throws for a metric with fewer than two samples on one side', async () => {
 	const base = withMetricSamples(
 		await loadBrowserReport('base'),
 		[100],
@@ -297,7 +304,6 @@ test('hides an inconclusive metric with fewer than two samples on one side', asy
 		(sample, value) => { sample.network.requestCount = value; },
 	);
 
-	const markdown = await renderReport(null, { base, head });
-
-	expect(markdown).not.toContain('| **Requests** |');
+	await expect(renderReport(null, { base, head }))
+		.rejects.toThrow('At least two samples per side are required');
 });

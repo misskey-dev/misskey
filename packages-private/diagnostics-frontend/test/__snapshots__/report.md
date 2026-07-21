@@ -1,14 +1,14 @@
 ## 🖥 Frontend Diagnostics Report
 
-| Metric | @ Base | @ Head | Δ | MAD | Result |
-| --- | ---: | ---: | ---: | ---: | --- |
-| **Encoded network** | 1 MB <br> ± 10 KB | 1.1 MB <br> ± 11 KB | $\color{orange}{\text{+83 KB}}$<br>$\color{orange}{\text{+8\\%}}$ | 15 KB | increase |
-| **Decoded body** | 3.5 MB <br> ± 34 KB | 3.7 MB <br> ± 37 KB | $\color{orange}{\text{+277 KB}}$<br>$\color{orange}{\text{+8\\%}}$ | 50 KB | increase |
-| **Same-origin encoded** | 1 MB <br> ± 10 KB | 1.1 MB <br> ± 11 KB | $\color{orange}{\text{+82 KB}}$<br>$\color{orange}{\text{+8\\%}}$ | 15 KB | increase |
-| **Script encoded** | 918 KB <br> ± 9 KB | 991 KB <br> ± 9.7 KB | $\color{orange}{\text{+73 KB}}$<br>$\color{orange}{\text{+8\\%}}$ | 13 KB | increase |
-| **Page-attributed memory** | 92 MB <br> ± 900 KB | 99 MB <br> ± 972 KB | $\color{orange}{\text{+7.3 MB}}$<br>$\color{orange}{\text{+8\\%}}$ | 1.3 MB | increase |
+| Metric | @ Base | @ Head | Δ | MAD |
+| --- | ---: | ---: | ---: | ---: |
+| **Encoded network** | 1 MB <br> ± 10 KB | 1.1 MB <br> ± 11 KB | $\color{orange}{\text{+83 KB}}$<br>$\color{orange}{\text{+8\\%}}$ | 15 KB |
+| **Decoded body** | 3.5 MB <br> ± 34 KB | 3.7 MB <br> ± 37 KB | $\color{orange}{\text{+277 KB}}$<br>$\color{orange}{\text{+8\\%}}$ | 50 KB |
+| **Same-origin encoded** | 1 MB <br> ± 10 KB | 1.1 MB <br> ± 11 KB | $\color{orange}{\text{+82 KB}}$<br>$\color{orange}{\text{+8\\%}}$ | 15 KB |
+| **Script encoded** | 918 KB <br> ± 9 KB | 991 KB <br> ± 9.7 KB | $\color{orange}{\text{+73 KB}}$<br>$\color{orange}{\text{+8\\%}}$ | 13 KB |
+| **Page-attributed memory** | 92 MB <br> ± 900 KB | 99 MB <br> ± 972 KB | $\color{orange}{\text{+7.3 MB}}$<br>$\color{orange}{\text{+8\\%}}$ | 1.3 MB |
 
-_Values are median ± MAD (3 base / 3 head samples). Δ is Head - Base. Only changes outside observed noise that reach the display threshold are shown._
+_Values are median ± MAD (3 base / 3 head samples). Δ is Head - Base. Only changes whose absolute delta reaches the metric threshold and exceeds 3 × MAD are shown._
 
 [View details](https://example.invalid/html)
 
@@ -67,17 +67,17 @@ _Values are median ± MAD (3 base / 3 head samples). Δ is Head - Base. Only cha
 <details>
 <summary>V8 heap snapshot statistics</summary>
 
-| Metric | @ Base | @ Head | Δ | MAD | Result |
-| --- | ---: | ---: | ---: | ---: | --- |
-| $\color{gray}{\rule{8pt}{8pt}}$ **Total** | 1 MB <br> ± 10 KB | 1.1 MB <br> ± 11 KB | $\text{+82 KB}$<br>$\color{orange}{\text{+8\\%}}$ | 15 KB | increase |
-| | | | | | |
-| <details><summary>$\color{orange}{\rule{8pt}{8pt}}$ **Code**</summary>200% → 200%</details> | 2 MB | 2.2 MB | $\color{orange}{\text{+163 KB}}$ | 29 KB | increase |
-| <details><summary>$\color{red}{\rule{8pt}{8pt}}$ **Strings**</summary>300% → 300%</details> | 3.1 MB | 3.3 MB | $\color{orange}{\text{+245 KB}}$ | 44 KB | increase |
-| <details><summary>$\color{cyan}{\rule{8pt}{8pt}}$ **JS arrays**</summary>400% → 400%</details> | 4.1 MB | 4.4 MB | $\color{orange}{\text{+326 KB}}$ | 59 KB | increase |
-| <details><summary>$\color{green}{\rule{8pt}{8pt}}$ **Typed arrays**</summary>500% → 500%</details> | 5.1 MB | 5.5 MB | $\color{orange}{\text{+408 KB}}$ | 74 KB | increase |
-| <details><summary>$\color{yellow}{\rule{8pt}{8pt}}$ **System objects**</summary>600% → 600%</details> | 6.1 MB | 6.6 MB | $\color{orange}{\text{+490 KB}}$ | 88 KB | increase |
-| <details><summary>$\color{violet}{\rule{8pt}{8pt}}$ **Other JS objs**</summary>700% → 700%</details> | 7.1 MB | 7.7 MB | $\color{orange}{\text{+571 KB}}$ | 103 KB | increase |
-| <details><summary>$\color{pink}{\rule{8pt}{8pt}}$ **Other non-JS objs**</summary>800% → 800%</details> | 8.2 MB | 8.8 MB | $\color{orange}{\text{+653 KB}}$ | 118 KB | increase |
+| Metric | @ Base | @ Head | Δ | MAD |
+| --- | ---: | ---: | ---: | ---: |
+| $\color{gray}{\rule{8pt}{8pt}}$ **Total** | 1 MB <br> ± 10 KB | 1.1 MB <br> ± 11 KB | $\text{+82 KB}$<br>$\text{+8\\%}$ | 15 KB |
+| | | | | |
+| $\color{orange}{\rule{8pt}{8pt}}$ **Code** | 2 MB | 2.2 MB | $\color{orange}{\text{+163 KB}}$ | 29 KB |
+| $\color{red}{\rule{8pt}{8pt}}$ **Strings** | 3.1 MB | 3.3 MB | $\color{orange}{\text{+245 KB}}$ | 44 KB |
+| $\color{cyan}{\rule{8pt}{8pt}}$ **JS arrays** | 4.1 MB | 4.4 MB | $\color{orange}{\text{+326 KB}}$ | 59 KB |
+| $\color{green}{\rule{8pt}{8pt}}$ **Typed arrays** | 5.1 MB | 5.5 MB | $\color{orange}{\text{+408 KB}}$ | 74 KB |
+| $\color{yellow}{\rule{8pt}{8pt}}$ **System objects** | 6.1 MB | 6.6 MB | $\color{orange}{\text{+490 KB}}$ | 88 KB |
+| $\color{violet}{\rule{8pt}{8pt}}$ **Other JS objs** | 7.1 MB | 7.7 MB | $\color{orange}{\text{+571 KB}}$ | 103 KB |
+| $\color{pink}{\rule{8pt}{8pt}}$ **Other non-JS objs** | 8.2 MB | 8.8 MB | $\color{orange}{\text{+653 KB}}$ | 118 KB |
 
 Download representative heap snapshot: [base](https://example.invalid/base) / [head](https://example.invalid/head)
 </details>
