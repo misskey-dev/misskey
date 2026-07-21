@@ -12,6 +12,9 @@ export function shouldCollectHeapSnapshot(round: number, totalRounds: number, re
 	return round > totalRounds - snapshotRounds;
 }
 
+/**
+ * 中央値に最も近いラウンドを代表として選ぶ。外れ値のスナップショットを成果物にしないため。
+ */
 export function selectRepresentativeHeapSnapshotRound<T extends { round: number }>(
 	samples: T[],
 	medianTotal: number | null | undefined,
