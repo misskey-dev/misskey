@@ -40,6 +40,7 @@ export class MutingEntityService {
 			id: muting.id,
 			createdAt: this.idService.parse(muting.id).date.toISOString(),
 			expiresAt: muting.expiresAt ? muting.expiresAt.toISOString() : null,
+			mutingType: muting.mutingType,
 			muteeId: muting.muteeId,
 			mutee: hints?.packedMutee ?? this.userEntityService.pack(muting.muteeId, me, {
 				schema: 'UserDetailedNotMe',

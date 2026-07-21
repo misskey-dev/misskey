@@ -22,6 +22,11 @@ export const packedMutingSchema = {
 			optional: false, nullable: true,
 			format: 'date-time',
 		},
+		mutingType: {
+			type: 'string',
+			optional: false, nullable: false,
+			enum: ['all', 'timelineOnly'],
+		},
 		muteeId: {
 			type: 'string',
 			optional: false, nullable: false,

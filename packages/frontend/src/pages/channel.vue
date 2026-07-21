@@ -81,6 +81,7 @@ import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue'
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { openMuteSettingDialog } from '@/utility/mute-confirm.js';
 import { $i, iAmModerator } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
@@ -195,33 +196,14 @@ async function mute() {
 	if (!channel.value) return;
 	const _channel = channel.value;
 
-	const { canceled, result: period } = await os.select({
-		title: i18n.ts.mutePeriod,
-		items: [{
-			value: 'indefinitely', label: i18n.ts.indefinitely,
-		}, {
-			value: 'tenMinutes', label: i18n.ts.tenMinutes,
-		}, {
-			value: 'oneHour', label: i18n.ts.oneHour,
-		}, {
-			value: 'oneDay', label: i18n.ts.oneDay,
-		}, {
-			value: 'oneWeek', label: i18n.ts.oneWeek,
-		}],
-		default: 'indefinitely',
+	const res = await openMuteSettingDialog({
+		withMuteType: false,
 	});
-	if (canceled) return;
-
-	const expiresAt = period === 'indefinitely' ? null
-		: period === 'tenMinutes' ? Date.now() + (1000 * 60 * 10)
-		: period === 'oneHour' ? Date.now() + (1000 * 60 * 60)
-		: period === 'oneDay' ? Date.now() + (1000 * 60 * 60 * 24)
-		: period === 'oneWeek' ? Date.now() + (1000 * 60 * 60 * 24 * 7)
-		: null;
+	if (res.canceled) return;
 
 	os.apiWithDialog('channels/mute/create', {
 		channelId: _channel.id,
-		expiresAt,
+		expiresAt: res.expiresAt,
 	}).then(() => {
 		_channel.isMuting = true;
 	});

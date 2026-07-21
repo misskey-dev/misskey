@@ -73,10 +73,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const [
-				userIdsWhoMeMuting,
+				userIdsWhoMeMutingMap,
 			] = me ? await Promise.all([
 				this.cacheService.userMutingsCache.fetch(me.id),
-			]) : [new Set<string>()];
+			]) : [new Map<string, { mutingType: 'all' | 'timelineOnly' }>()];
+
+			// Convert to Set for backward compatibility with isUserRelated
+			const userIdsWhoMeMuting = new Set(userIdsWhoMeMutingMap.keys());
 
 			const query = this.notesRepository.createQueryBuilder('note')
 				.where('note.id IN (:...noteIds)', { noteIds: noteIds })

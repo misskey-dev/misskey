@@ -55,6 +55,12 @@ export const paramDef = {
 			nullable: true,
 			description: 'A Unix Epoch timestamp that must lie in the future. `null` means an indefinite mute.',
 		},
+		mutingType: {
+			type: 'string',
+			enum: ['all', 'timelineOnly'],
+			default: 'all',
+			description: 'Type of muting. `all` mutes everything including notifications. `timelineOnly` mutes only timeline and search, but allows notifications.',
+		},
 	},
 	required: ['userId'],
 } as const;
@@ -98,7 +104,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return;
 			}
 
-			await this.userMutingService.mute(muter, mutee, ps.expiresAt ? new Date(ps.expiresAt) : null);
+			await this.userMutingService.mute(muter, mutee, ps.expiresAt ? new Date(ps.expiresAt) : null, ps.mutingType ?? 'all');
 		});
 	}
 }
