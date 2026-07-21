@@ -564,6 +564,7 @@ export const packedMeDetailedOnlySchema = {
 		unreadNotificationsCount: {
 			type: 'number',
 			nullable: false, optional: false,
+			description: 'Saturates at 100. The actual number of unread notifications may be larger.',
 		},
 		mutedWords: {
 			type: 'array',
