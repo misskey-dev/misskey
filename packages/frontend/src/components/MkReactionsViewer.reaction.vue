@@ -61,7 +61,7 @@ const buttonEl = useTemplateRef('buttonEl');
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
 
 const canToggle = computed(() => {
-	const emoji = customEmojisMap.get(emojiName.value) ?? getUnicodeEmojiOrNull(props.reaction);
+	const emoji = customEmojisMap.value.get(emojiName.value) ?? getUnicodeEmojiOrNull(props.reaction);
 
 	// TODO
 	//return !props.reaction.match(/@\w/) && $i && emoji && checkReactionPermissions($i, props.note, emoji);
@@ -106,7 +106,7 @@ async function toggleReaction() {
 					noteId: props.noteId,
 					reaction: props.reaction,
 				}).then(() => {
-					const emoji = customEmojisMap.get(emojiName.value);
+					const emoji = customEmojisMap.value.get(emojiName.value);
 					if (emoji == null && getUnicodeEmojiOrNull(props.reaction) == null) {
 						return;
 					}
@@ -140,7 +140,7 @@ async function toggleReaction() {
 			noteId: props.noteId,
 			reaction: props.reaction,
 		}).then(() => {
-			const emoji = customEmojisMap.get(emojiName.value);
+			const emoji = customEmojisMap.value.get(emojiName.value);
 			if (emoji == null && getUnicodeEmojiOrNull(props.reaction) == null) {
 				return;
 			}

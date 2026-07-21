@@ -257,8 +257,8 @@ watch(q, () => {
 				}
 			}
 		} else {
-			if (customEmojisMap.has(newQ)) {
-				matches.add(customEmojisMap.get(newQ)!);
+			if (customEmojisMap.value.has(newQ)) {
+				matches.add(customEmojisMap.value.get(newQ)!);
 			}
 			if (matches.size >= max) return matches;
 
@@ -405,7 +405,7 @@ function getDef(emoji: string): string | Misskey.entities.EmojiSimple | UnicodeE
 		// カスタム絵文字が存在する場合はその情報を持つオブジェクトを返し、
 		// サーバの管理画面から削除された等で情報が見つからない場合は名前の文字列をそのまま返しておく（undefinedを返すとエラーになるため）
 		const name = emoji.replaceAll(':', '');
-		return customEmojisMap.get(name) ?? emoji;
+		return customEmojisMap.value.get(name) ?? emoji;
 	} else {
 		return getUnicodeEmoji(emoji);
 	}
@@ -476,7 +476,7 @@ function done(query?: string): boolean | void {
 	if (query == null || typeof query !== 'string') return;
 
 	const q2 = query.replace(/:/g, '');
-	const exactMatchCustom = customEmojisMap.get(q2);
+	const exactMatchCustom = customEmojisMap.value.get(q2);
 	if (exactMatchCustom) {
 		chosen(exactMatchCustom);
 		return true;

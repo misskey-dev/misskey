@@ -322,6 +322,7 @@ import type {
 	EmojiRequest,
 	EmojiResponse,
 	EmojisResponse,
+	EmojisStatsResponse,
 	EndpointRequest,
 	EndpointResponse,
 	EndpointsResponse,
@@ -879,6 +880,7 @@ export type Endpoints = {
 	'email-address/available': { req: EmailAddressAvailableRequest; res: EmailAddressAvailableResponse };
 	'emoji': { req: EmojiRequest; res: EmojiResponse };
 	'emojis': { req: EmptyRequest; res: EmojisResponse };
+	'emojis/stats': { req: EmptyRequest; res: EmojisStatsResponse };
 	'endpoint': { req: EndpointRequest; res: EndpointResponse };
 	'endpoints': { req: EmptyRequest; res: EndpointsResponse };
 	'export-custom-emojis': { req: EmptyRequest; res: EmptyResponse };
