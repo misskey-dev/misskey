@@ -90,7 +90,7 @@ function resourceTypeSampleBytes(sample: BrowserMeasurementSample, resourceTypes
 }
 
 function renderBrowserSummaryTable(base: BrowserMetricsReport, head: BrowserMetricsReport) {
-	//function getMetric(report: BrowserMeasurement, key: string) {
+	//function getMetric(report: BrowserMeasurementSample, key: string) {
 	//	return report.performance.cdpMetrics[key];
 	//}
 

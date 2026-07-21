@@ -197,6 +197,23 @@ test('hides a threshold-sized change that remains within observed noise', async 
 	expect(markdown).not.toContain('| **Requests** |');
 });
 
+test('renders a directional request count delta at the absolute threshold', async () => {
+	const base = withMetricSamples(
+		await loadBrowserReport('base'),
+		[100, 100, 100],
+		(sample, value) => { sample.network.requestCount = value; },
+	);
+	const head = withMetricSamples(
+		await loadBrowserReport('head'),
+		[101, 101, 101],
+		(sample, value) => { sample.network.requestCount = value; },
+	);
+
+	const row = requireMetricRow(await renderReport(null, { base, head }), 'Requests');
+
+	expect(row).toContain('$\\color{orange}{\\text{+1}}$');
+});
+
 test('hides a directional byte change below the existing absolute threshold', async () => {
 	const base = withMetricSamples(
 		await loadBrowserReport('base'),
@@ -212,6 +229,23 @@ test('hides a directional byte change below the existing absolute threshold', as
 	const markdown = await renderReport(null, { base, head });
 
 	expect(markdown).not.toContain('| **Encoded network** |');
+});
+
+test('renders a directional encoded byte delta at the absolute threshold', async () => {
+	const base = withMetricSamples(
+		await loadBrowserReport('base'),
+		[1_000_000, 1_000_000, 1_000_000],
+		(sample, value) => { sample.network.totalEncodedBytes = value; },
+	);
+	const head = withMetricSamples(
+		await loadBrowserReport('head'),
+		[1_010_000, 1_010_000, 1_010_000],
+		(sample, value) => { sample.network.totalEncodedBytes = value; },
+	);
+
+	const row = requireMetricRow(await renderReport(null, { base, head }), 'Encoded network');
+
+	expect(row).toContain('$\\color{orange}{\\text{+10 KB}}$');
 });
 
 test('colours absolute and relative deltas using independent thresholds', async () => {
