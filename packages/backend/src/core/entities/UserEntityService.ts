@@ -58,6 +58,10 @@ import { toArray } from '@/misc/prelude/array.js';
 const Ajv = _Ajv.default;
 const ajv = new Ajv();
 
+// 未読通知数はこの件数で打ち切る (UI は 99 超を "99+" と表示するため、それ以上数えても意味がない)
+const UNREAD_NOTIFICATION_COUNT_LIMIT = 100;
+const UNREAD_NOTIFICATION_BATCH_SIZE = 100;
+
 function isLocalUser(user: MiUser): user is MiLocalUser;
 function isLocalUser<T extends { host: MiUser['host'] }>(user: T): user is (T & { host: null; });
 
@@ -346,32 +350,41 @@ export class UserEntityService implements OnModuleInit {
 
 		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
 
-		// 未読範囲の Stream エントリを取得する。
-		// latestReadNotificationId が無い (一度も既読化していない) 場合は Stream 全体が未読範囲。
-		// 既読位置がある場合は exclusive 比較で「既読位置より新しい」エントリだけ拾う。
-		const notificationsRes = latestReadNotificationId
-			? await this.redisClient.xrevrange(
-				`notificationTimeline:${userId}`,
-				'+',
-				'(' + latestReadNotificationId,
-			)
-			: await this.redisClient.xrevrange(
-				`notificationTimeline:${userId}`,
-				'+',
-				'-',
-			);
-
-		if (notificationsRes.length === 0) return response;
-
 		// Stream 上のエントリ数をそのまま未読カウントにすると、
 		// packMany で除外される通知 (削除済みノート・サスペンドされた notifier・
 		// 解決済みフォローリクエスト・削除済みロール等) も含めてしまい、
 		// 「通知ページには表示されないのにバッジだけ残る」という乖離が発生する (misskey-dev/misskey#17427)。
 		// API 表示と一致させるため、packMany と同じバリデータを通した件数を未読数とする。
-		const notifications = notificationsRes.map(x => JSON.parse(x[1][1])) as MiNotification[];
-		const validNotifications = await this.notificationEntityService.packMany(notifications, userId);
+		//
+		// ただし未読範囲全件 (最大 perUserNotificationsMaxCount 件) を毎回 pack すると
+		// MeDetailed を返すホットパスで DB 参照が嵩むため、バッチに分けて pack し、
+		// UNREAD_NOTIFICATION_COUNT_LIMIT 件に達した時点で打ち切る (UI の表示は 99 超で "99+")。
+		// latestReadNotificationId が無い (一度も既読化していない) 場合は Stream 全体が未読範囲。
+		// 既読位置がある場合は exclusive 比較で「既読位置より新しい」エントリだけ拾う。
+		let cursor = latestReadNotificationId ? '(' + latestReadNotificationId : '-';
 
-		response.unreadCount = validNotifications.length;
+		while (response.unreadCount < UNREAD_NOTIFICATION_COUNT_LIMIT) {
+			const notificationsRes = await this.redisClient.xrange(
+				`notificationTimeline:${userId}`,
+				cursor,
+				'+',
+				'COUNT', UNREAD_NOTIFICATION_BATCH_SIZE,
+			);
+
+			if (notificationsRes.length === 0) break;
+
+			const notifications = notificationsRes.map(x => JSON.parse(x[1][1])) as MiNotification[];
+			const validNotifications = await this.notificationEntityService.packMany(notifications, userId);
+			response.unreadCount += validNotifications.length;
+
+			if (notificationsRes.length < UNREAD_NOTIFICATION_BATCH_SIZE) break;
+			cursor = '(' + notificationsRes[notificationsRes.length - 1][0];
+		}
+
+		// バッチ境界で LIMIT を超え得るため飽和させる
+		if (response.unreadCount > UNREAD_NOTIFICATION_COUNT_LIMIT) {
+			response.unreadCount = UNREAD_NOTIFICATION_COUNT_LIMIT;
+		}
 		response.hasUnread = response.unreadCount > 0;
 
 		return response;
