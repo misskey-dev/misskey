@@ -247,10 +247,24 @@ async function toggleFlash(to = false) {
 	}
 }
 
-async function startQr() {
+function startQr() {
 	if (!scannerInstance.value) return;
-	await scannerInstance.value.start();
-	qrStarted.value = true;
+	qrStarted.value = false;
+	scannerInstance.value.start()
+		.then(async () => {
+			qrStarted.value = true;
+			if (!scannerInstance.value) return;
+			flashCanToggle.value = await scannerInstance.value.hasFlash();
+			flash.value = scannerInstance.value.isFlashOn();
+		})
+		.catch(err => {
+			qrStarted.value = false;
+			os.alert({
+				type: 'error',
+				text: err.toString(),
+			});
+			console.error(err);
+		});
 }
 
 function stopQr() {
@@ -311,21 +325,7 @@ onMounted(() => {
 		},
 	);
 
-	scannerInstance.value.start()
-		.then(async () => {
-			qrStarted.value = true;
-			if (!scannerInstance.value) return;
-			flashCanToggle.value = await scannerInstance.value.hasFlash();
-			flash.value = scannerInstance.value.isFlashOn();
-		})
-		.catch(err => {
-			qrStarted.value = false;
-			os.alert({
-				type: 'error',
-				text: err.toString(),
-			});
-			console.error(err);
-		});
+	startQr();
 });
 
 onUnmounted(() => {
