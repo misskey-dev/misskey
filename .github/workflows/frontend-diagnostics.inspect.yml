@@ -61,64 +61,64 @@ jobs:
           persist-credentials: false
           repository: ${{ github.event.pull_request.base.repo.full_name }}
           ref: ${{ github.event.pull_request.base.sha }}
-          path: before
+          path: base
           submodules: true
 
-      - name: Checkout pull request
+      - name: Checkout head
         uses: actions/checkout@v6.0.3
         with:
           persist-credentials: false
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.sha }}
-          path: after
+          path: head
           submodules: true
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6.0.9
         with:
-          package_json_file: after/package.json
+          package_json_file: head/package.json
 
       - name: Setup Node.js
         uses: actions/setup-node@v6.4.0
         with:
-          node-version-file: after/.node-version
+          node-version-file: head/.node-version
           cache: pnpm
           cache-dependency-path: |
-            before/pnpm-lock.yaml
-            after/pnpm-lock.yaml
+            base/pnpm-lock.yaml
+            head/pnpm-lock.yaml
 
       - name: Prepare report output
         shell: bash
         run: mkdir -p "$RUNNER_TEMP/frontend-diagnostics"
 
       - name: Install dependencies for base
-        working-directory: before
+        working-directory: base
         run: pnpm i --frozen-lockfile
 
       - name: Configure base
-        working-directory: before
+        working-directory: base
         run: cp .github/misskey/test.yml .config
 
       - name: Build base
-        working-directory: before
+        working-directory: base
         env:
           FRONTEND_BUNDLE_VISUALIZER: 'true'
-          FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-diagnostics/before-bundle-stats.json
+          FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-diagnostics/base-bundle-stats.json
         run: pnpm build
 
-      - name: Install dependencies for pull request
-        working-directory: after
+      - name: Install dependencies for head
+        working-directory: head
         run: pnpm i --frozen-lockfile
 
-      - name: Configure pull request
-        working-directory: after
+      - name: Configure head
+        working-directory: head
         run: cp .github/misskey/test.yml .config
 
-      - name: Build pull request
-        working-directory: after
+      - name: Build head
+        working-directory: head
         env:
           FRONTEND_BUNDLE_VISUALIZER: 'true'
-          FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-diagnostics/after-bundle-stats.json
+          FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-diagnostics/head-bundle-stats.json
           FRONTEND_BUNDLE_VISUALIZER_HTML_FILE: ${{ runner.temp }}/frontend-diagnostics/frontend-bundle-visualizer.html
         run: pnpm build
 
@@ -133,22 +133,22 @@ jobs:
           retention-days: 7
 
       - name: Install Playwright browsers
-        working-directory: after/packages-private/diagnostics-frontend
+        working-directory: head/packages-private/diagnostics-frontend
         run: pnpm exec playwright install --with-deps --no-shell chromium
 
       - name: Measure frontend browser metrics
         shell: bash
-        working-directory: after
+        working-directory: head
         env:
           FRONTEND_BROWSER_METRICS_SAMPLE_COUNT: 5
           MK_ENABLE_CROSS_ORIGIN_ISOLATION: "true"
-          # 計測ハーネスはafter側のものを両方に使うが、成果物はrunnerのworkspace直下に出す
+          # 計測ハーネスはhead側のものを両方に使うが、成果物はrunnerのworkspace直下に出す
           FRONTEND_BROWSER_HEAP_SNAPSHOT_OUTPUT_DIR: ${{ github.workspace }}
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-diagnostics"
           pnpm --filter diagnostics-frontend run inspect-browser \
-            "$GITHUB_WORKSPACE/before" "$GITHUB_WORKSPACE/after" \
-            "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json"
+            "$GITHUB_WORKSPACE/base" "$GITHUB_WORKSPACE/head" \
+            "$REPORT_DIR/base-browser.json" "$REPORT_DIR/head-browser.json"
 
       - name: Upload browser base heap snapshot
         id: upload-browser-base-heap-snapshot
@@ -172,13 +172,13 @@ jobs:
 
       - name: Generate browser detailed html
         shell: bash
-        working-directory: after
+        working-directory: head
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-diagnostics"
-          test -s "$REPORT_DIR/before-browser.json"
-          test -s "$REPORT_DIR/after-browser.json"
+          test -s "$REPORT_DIR/base-browser.json"
+          test -s "$REPORT_DIR/head-browser.json"
           pnpm --filter diagnostics-frontend run render-browser-html \
-            "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" \
+            "$REPORT_DIR/base-browser.json" "$REPORT_DIR/head-browser.json" \
             "$REPORT_DIR/frontend-browser-detailed-html.html"
 
       - name: Upload browser detailed html
@@ -193,7 +193,7 @@ jobs:
 
       - name: Generate frontend diagnostics report
         shell: bash
-        working-directory: after
+        working-directory: head
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -204,14 +204,14 @@ jobs:
           FRONTEND_BROWSER_DETAILED_HTML_ARTIFACT_URL: ${{ steps.upload-browser-detailed-html.outputs.artifact-url }}
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-diagnostics"
-          test -s "$REPORT_DIR/before-bundle-stats.json"
-          test -s "$REPORT_DIR/after-bundle-stats.json"
-          test -s "$REPORT_DIR/before-browser.json"
-          test -s "$REPORT_DIR/after-browser.json"
+          test -s "$REPORT_DIR/base-bundle-stats.json"
+          test -s "$REPORT_DIR/head-bundle-stats.json"
+          test -s "$REPORT_DIR/base-browser.json"
+          test -s "$REPORT_DIR/head-browser.json"
           pnpm --filter diagnostics-frontend run render-md \
-            "$GITHUB_WORKSPACE/before" "$GITHUB_WORKSPACE/after" \
-            "$REPORT_DIR/before-bundle-stats.json" "$REPORT_DIR/after-bundle-stats.json" \
-            "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" \
+            "$GITHUB_WORKSPACE/base" "$GITHUB_WORKSPACE/head" \
+            "$REPORT_DIR/base-bundle-stats.json" "$REPORT_DIR/head-bundle-stats.json" \
+            "$REPORT_DIR/base-browser.json" "$REPORT_DIR/head-browser.json" \
             "$REPORT_DIR/frontend-diagnostics.md"
           printf '%s\n' "$PR_NUMBER" > "$REPORT_DIR/pr-number.txt"
           printf '%s\n' "$BASE_SHA" > "$REPORT_DIR/base-sha.txt"
@@ -233,10 +233,10 @@ jobs:
         with:
           name: frontend-diagnostics
           path: |
-            ${{ runner.temp }}/frontend-diagnostics/before-bundle-stats.json
-            ${{ runner.temp }}/frontend-diagnostics/after-bundle-stats.json
-            ${{ runner.temp }}/frontend-diagnostics/before-browser.json
-            ${{ runner.temp }}/frontend-diagnostics/after-browser.json
+            ${{ runner.temp }}/frontend-diagnostics/base-bundle-stats.json
+            ${{ runner.temp }}/frontend-diagnostics/head-bundle-stats.json
+            ${{ runner.temp }}/frontend-diagnostics/base-browser.json
+            ${{ runner.temp }}/frontend-diagnostics/head-browser.json
             ${{ runner.temp }}/frontend-diagnostics/frontend-diagnostics.md
             ${{ runner.temp }}/frontend-diagnostics/pr-number.txt
             ${{ runner.temp }}/frontend-diagnostics/base-sha.txt

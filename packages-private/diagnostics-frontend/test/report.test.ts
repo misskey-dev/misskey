@@ -33,7 +33,7 @@ const manifest = {
 };
 
 const fileSizes = {
-	before: {
+	base: {
 		'assets/boot-a1.js': 20_000,
 		'assets/vue-b2.js': 90_000,
 		'assets/foo-d4.js': 5_000,
@@ -41,7 +41,7 @@ const fileSizes = {
 		'ja-JP/i18n-c3.js': 4_000,
 		'ja-JP/orphan.js': 1_200,
 	},
-	after: {
+	head: {
 		// 差が小さすぎる (閾値5バイト以下) ので「(other)」に集約される
 		'assets/boot-a1.js': 20_003,
 		// 明確に増えるので diff表に行として出る
@@ -52,15 +52,15 @@ const fileSizes = {
 		// manifestに載らない出力なので「(other generated chunks)」に集約される
 		'ja-JP/orphan.js': 1_500,
 	},
-} as const satisfies Record<'before' | 'after', Record<string, number>>;
+} as const satisfies Record<'base' | 'head', Record<string, number>>;
 
-let repoDirs: { before: string; after: string };
+let repoDirs: { base: string; head: string };
 let workDir: string;
 
 beforeAll(async () => {
 	workDir = await mkdtemp(join(tmpdir(), 'diagnostics-frontend-report-test-'));
 
-	for (const label of ['before', 'after'] as const) {
+	for (const label of ['base', 'head'] as const) {
 		const outDir = join(workDir, label, 'built/_frontend_vite_');
 		await mkdir(outDir, { recursive: true });
 		await writeFile(join(outDir, 'manifest.json'), JSON.stringify(manifest));
@@ -73,8 +73,8 @@ beforeAll(async () => {
 	}
 
 	repoDirs = {
-		before: join(workDir, 'before'),
-		after: join(workDir, 'after'),
+		base: join(workDir, 'base'),
+		head: join(workDir, 'head'),
 	};
 });
 
@@ -82,7 +82,7 @@ afterAll(async () => {
 	await rm(workDir, { recursive: true, force: true });
 });
 
-async function loadBundleStats(name: 'before' | 'after') {
+async function loadBundleStats(name: 'base' | 'head') {
 	return JSON.parse(await readFile(join(bundleFixturesDir, `${name}-stats.json`), 'utf8')) as VisualizerReport;
 }
 
@@ -93,10 +93,10 @@ async function loadBrowserReport(name: 'base' | 'head') {
 async function renderReport(detailedHtmlUrl: string | null) {
 	return renderFrontendDiagnosticsMarkdown({
 		bundle: {
-			before: await collectBundleReport(repoDirs.before),
-			after: await collectBundleReport(repoDirs.after),
-			beforeStats: await loadBundleStats('before'),
-			afterStats: await loadBundleStats('after'),
+			base: await collectBundleReport(repoDirs.base),
+			head: await collectBundleReport(repoDirs.head),
+			baseStats: await loadBundleStats('base'),
+			headStats: await loadBundleStats('head'),
 			visualizerArtifactUrl: 'https://example.invalid/treemap',
 		},
 		browser: {

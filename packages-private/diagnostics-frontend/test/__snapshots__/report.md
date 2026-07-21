@@ -87,7 +87,7 @@ Download representative heap snapshot: [base](https://example.invalid/base) / [h
 <details>
 <summary>Chunk size diff (2 updated, 0 added, 0 removed)</summary>
 
-| Chunk | Before | After | Δ | Δ (%) |
+| Chunk | Base | Head | Δ | Δ (%) |
 | --- | ---: | ---: | ---: | ---: |
 | (total) | 120 KB | 127 KB | $\color{orange}{\text{+6.3 KB}}$ | $\color{orange}{\text{+5.2\\%}}$ |
 | | | | | |
@@ -100,7 +100,7 @@ Download representative heap snapshot: [base](https://example.invalid/base) / [h
 <details>
 <summary>Startup chunk size (2 updated, 0 added, 0 removed)</summary>
 
-| Chunk | Before | After | Δ | Δ (%) |
+| Chunk | Base | Head | Δ | Δ (%) |
 | --- | ---: | ---: | ---: | ---: |
 | (total) | 114 KB | 120 KB | $\color{orange}{\text{+6 KB}}$ | $\color{orange}{\text{+5.3\\%}}$ |
 | | | | | |
@@ -132,7 +132,7 @@ _Startup chunks are the Vite entry for `src/_boot_.ts` and its static imports._
 </thead>
 <tbody>
 <tr>
-<th><b>Before</b></th>
+<th><b>Base</b></th>
 <td>2</td>
 <td>6</td>
 <td>1</td>
@@ -143,7 +143,7 @@ _Startup chunks are the Vite entry for `src/_boot_.ts` and its static imports._
 <td>5.3 KB</td>
 </tr>
 <tr>
-<th><b>After</b></th>
+<th><b>Head</b></th>
 <td>2</td>
 <td>7</td>
 <td>1</td>

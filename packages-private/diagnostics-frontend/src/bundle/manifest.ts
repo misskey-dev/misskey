@@ -54,7 +54,7 @@ export function findEntryKey(manifest: BundleManifest) {
 
 /**
  * ビルド間で安定するチャンク識別子。出力ファイル名はハッシュ付きで毎回変わるため、
- * これが取れないチャンクは before/after の対応付けができない。
+ * これが取れないチャンクは base/head の対応付けができない。
  */
 export function stableChunkKey(chunk: BundleManifestChunk) {
 	if (chunk.src != null) return `src:${normalizePath(chunk.src)}`;

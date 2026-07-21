@@ -19,12 +19,12 @@ CLIに渡すパスはすべて呼び出し側のカレントディレクトリ�
 
 ```yaml
 - name: Generate report
-  working-directory: after
+  working-directory: head
   run: >-
     pnpm --filter diagnostics-frontend run render-md
-    "$GITHUB_WORKSPACE/before" "$GITHUB_WORKSPACE/after"
-    "$REPORT_DIR/before-bundle-stats.json" "$REPORT_DIR/after-bundle-stats.json"
-    "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json"
+    "$GITHUB_WORKSPACE/base" "$GITHUB_WORKSPACE/head"
+    "$REPORT_DIR/base-bundle-stats.json" "$REPORT_DIR/head-bundle-stats.json"
+    "$REPORT_DIR/base-browser.json" "$REPORT_DIR/head-browser.json"
     "$REPORT_DIR/report.md"
 ```
 

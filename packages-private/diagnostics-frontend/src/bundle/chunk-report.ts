@@ -25,21 +25,21 @@ function entryDisplayName(entry: FileEntry | undefined) {
 	return entry.displayName || entry.file;
 }
 
-export function getChunkComparisonRows(keys: string[], before: Partial<Record<string, FileEntry>>, after: Partial<Record<string, FileEntry>>) {
+export function getChunkComparisonRows(keys: string[], base: Partial<Record<string, FileEntry>>, head: Partial<Record<string, FileEntry>>) {
 	return keys.map(key => {
-		const beforeEntry = before[key];
-		const afterEntry = after[key];
-		const beforeSize = beforeEntry?.size ?? 0;
-		const afterSize = afterEntry?.size ?? 0;
+		const baseEntry = base[key];
+		const headEntry = head[key];
+		const baseSize = baseEntry?.size ?? 0;
+		const headSize = headEntry?.size ?? 0;
 		return {
 			key,
-			name: entryDisplayName(beforeEntry ?? afterEntry),
-			beforeFile: beforeEntry?.file,
-			afterFile: afterEntry?.file,
-			beforeSize,
-			afterSize,
-			changeType: beforeEntry == null ? 'added' : afterEntry == null ? 'removed' : beforeSize !== afterSize ? 'updated' : 'unchanged',
-			sortSize: Math.max(beforeSize, afterSize),
+			name: entryDisplayName(baseEntry ?? headEntry),
+			baseFile: baseEntry?.file,
+			headFile: headEntry?.file,
+			baseSize,
+			headSize,
+			changeType: baseEntry == null ? 'added' : headEntry == null ? 'removed' : baseSize !== headSize ? 'updated' : 'unchanged',
+			sortSize: Math.max(baseSize, headSize),
 		};
 	});
 }
@@ -47,10 +47,10 @@ export function getChunkComparisonRows(keys: string[], before: Partial<Record<st
 export type ChunkComparisonRow = ReturnType<typeof getChunkComparisonRows>[number];
 
 export type ChunkAggregate = {
-	beforeSize: number;
-	afterSize: number;
-	beforeCount: number;
-	afterCount: number;
+	baseSize: number;
+	headSize: number;
+	baseCount: number;
+	headCount: number;
 };
 
 export function sumChunkSizes(chunks: FileEntry[]) {
@@ -58,29 +58,29 @@ export function sumChunkSizes(chunks: FileEntry[]) {
 }
 
 /**
- * 比較キーを持たない (= before/after で対応付けできない) チャンクの合計。
+ * 比較キーを持たない (= base/head で対応付けできない) チャンクの合計。
  */
-export function generatedAggregate(before: FileEntry[], after: FileEntry[]): ChunkAggregate {
-	const beforeGenerated = before.filter(chunk => chunk.comparisonKey == null);
-	const afterGenerated = after.filter(chunk => chunk.comparisonKey == null);
+export function generatedAggregate(base: FileEntry[], head: FileEntry[]): ChunkAggregate {
+	const baseGenerated = base.filter(chunk => chunk.comparisonKey == null);
+	const headGenerated = head.filter(chunk => chunk.comparisonKey == null);
 	return {
-		beforeSize: sumChunkSizes(beforeGenerated),
-		afterSize: sumChunkSizes(afterGenerated),
-		beforeCount: beforeGenerated.length,
-		afterCount: afterGenerated.length,
+		baseSize: sumChunkSizes(baseGenerated),
+		headSize: sumChunkSizes(headGenerated),
+		baseCount: baseGenerated.length,
+		headCount: headGenerated.length,
 	};
 }
 
 export function hasSmallDelta(row: ChunkComparisonRow) {
-	return Math.abs(row.afterSize - row.beforeSize) <= smallDeltaThreshold;
+	return Math.abs(row.headSize - row.baseSize) <= smallDeltaThreshold;
 }
 
 export function comparisonRowsAggregate(rows: ChunkComparisonRow[]): ChunkAggregate {
 	return {
-		beforeSize: rows.reduce((sum, row) => sum + row.beforeSize, 0),
-		afterSize: rows.reduce((sum, row) => sum + row.afterSize, 0),
-		beforeCount: rows.filter(row => row.beforeFile != null).length,
-		afterCount: rows.filter(row => row.afterFile != null).length,
+		baseSize: rows.reduce((sum, row) => sum + row.baseSize, 0),
+		headSize: rows.reduce((sum, row) => sum + row.headSize, 0),
+		baseCount: rows.filter(row => row.baseFile != null).length,
+		headCount: rows.filter(row => row.headFile != null).length,
 	};
 }
 
@@ -108,69 +108,69 @@ export function formatChunkChangeSummary(label: string, summary: ReturnType<type
  * 差分の絶対値が大きい順。同着は増加側・元サイズ・名前の順で決定的に並べる。
  */
 export function compareChunkComparisonRows(a: ChunkComparisonRow, b: ChunkComparisonRow) {
-	return Math.abs(b.afterSize - b.beforeSize) - Math.abs(a.afterSize - a.beforeSize)
-		|| (b.afterSize - b.beforeSize) - (a.afterSize - a.beforeSize)
+	return Math.abs(b.headSize - b.baseSize) - Math.abs(a.headSize - a.baseSize)
+		|| (b.headSize - b.baseSize) - (a.headSize - a.baseSize)
 		|| b.sortSize - a.sortSize
 		|| a.name.localeCompare(b.name);
 }
 
 export function chunkFileDisplay(row: ChunkComparisonRow) {
-	if (row.beforeFile == null) return row.afterFile ?? '';
-	if (row.afterFile == null || row.beforeFile === row.afterFile) return row.beforeFile;
-	return `${row.beforeFile} → ${row.afterFile}`;
+	if (row.baseFile == null) return row.headFile ?? '';
+	if (row.headFile == null || row.baseFile === row.headFile) return row.baseFile;
+	return `${row.baseFile} → ${row.headFile}`;
 }
 
 export function chunkMarkdownTable(
 	rows: ChunkComparisonRow[],
-	total?: { beforeSize: number; afterSize: number },
+	total?: { baseSize: number; headSize: number },
 	generated?: ChunkAggregate,
 	other?: ChunkAggregate,
 ) {
-	const hasGenerated = generated != null && (generated.beforeCount > 0 || generated.afterCount > 0);
-	const hasOther = other != null && (other.beforeCount > 0 || other.afterCount > 0);
+	const hasGenerated = generated != null && (generated.baseCount > 0 || generated.headCount > 0);
+	const hasOther = other != null && (other.baseCount > 0 || other.headCount > 0);
 	if (rows.length === 0 && total == null && !hasGenerated && !hasOther) return '_No data_';
 
 	const lines = [
-		'| Chunk | Before | After | Δ | Δ (%) |',
+		'| Chunk | Base | Head | Δ | Δ (%) |',
 		'| --- | ---: | ---: | ---: | ---: |',
 	];
 	if (total != null) {
-		lines.push(`| (total) | ${formatBytes(total.beforeSize)} | ${formatBytes(total.afterSize)} | ${calcAndFormatDeltaBytes(total.beforeSize, total.afterSize, 1000)} | ${calcAndFormatDeltaPercentInMdTable(total.beforeSize, total.afterSize, 0.1)} |`);
+		lines.push(`| (total) | ${formatBytes(total.baseSize)} | ${formatBytes(total.headSize)} | ${calcAndFormatDeltaBytes(total.baseSize, total.headSize, 1000)} | ${calcAndFormatDeltaPercentInMdTable(total.baseSize, total.headSize, 0.1)} |`);
 		lines.push('| | | | | |');
 	}
 
 	for (const row of rows) {
 		const chunkFile = chunkFileDisplay(row);
 		if (row.changeType === 'added') {
-			lines.push(`| <details><summary>\`${escapeMdTableCell(row.name)}\`</summary> \`${escapeMdTableCell(chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | $\\color{orange}{\\text{( + )}}$ |`);
+			lines.push(`| <details><summary>\`${escapeMdTableCell(row.name)}\`</summary> \`${escapeMdTableCell(chunkFile)}\` </details> | ${formatBytes(row.baseSize)} | ${formatBytes(row.headSize)} | ${calcAndFormatDeltaBytes(row.baseSize, row.headSize, 1000)} | $\\color{orange}{\\text{( + )}}$ |`);
 		} else if (row.changeType === 'removed') {
-			lines.push(`| <details><summary>\`${escapeMdTableCell(row.name)}\`</summary> \`${escapeMdTableCell(chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | $\\color{green}{\\text{( - )}}$ |`);
+			lines.push(`| <details><summary>\`${escapeMdTableCell(row.name)}\`</summary> \`${escapeMdTableCell(chunkFile)}\` </details> | ${formatBytes(row.baseSize)} | ${formatBytes(row.headSize)} | ${calcAndFormatDeltaBytes(row.baseSize, row.headSize, 1000)} | $\\color{green}{\\text{( - )}}$ |`);
 		} else {
-			lines.push(`| <details><summary>\`${escapeMdTableCell(row.name)}\`</summary> \`${escapeMdTableCell(chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | ${calcAndFormatDeltaPercentInMdTable(row.beforeSize, row.afterSize, 0.1)} |`);
+			lines.push(`| <details><summary>\`${escapeMdTableCell(row.name)}\`</summary> \`${escapeMdTableCell(chunkFile)}\` </details> | ${formatBytes(row.baseSize)} | ${formatBytes(row.headSize)} | ${calcAndFormatDeltaBytes(row.baseSize, row.headSize, 1000)} | ${calcAndFormatDeltaPercentInMdTable(row.baseSize, row.headSize, 0.1)} |`);
 		}
 	}
 	if (hasGenerated) {
-		lines.push(`| (other generated chunks) | ${formatBytes(generated.beforeSize)} | ${formatBytes(generated.afterSize)} | ${calcAndFormatDeltaBytes(generated.beforeSize, generated.afterSize, 1000)} | ${calcAndFormatDeltaPercentInMdTable(generated.beforeSize, generated.afterSize, 0.1)} |`);
+		lines.push(`| (other generated chunks) | ${formatBytes(generated.baseSize)} | ${formatBytes(generated.headSize)} | ${calcAndFormatDeltaBytes(generated.baseSize, generated.headSize, 1000)} | ${calcAndFormatDeltaPercentInMdTable(generated.baseSize, generated.headSize, 0.1)} |`);
 	}
 	if (hasOther) {
-		lines.push(`| (other) | ${formatBytes(other.beforeSize)} | ${formatBytes(other.afterSize)} | ${calcAndFormatDeltaBytes(other.beforeSize, other.afterSize, 1000)} | ${calcAndFormatDeltaPercentInMdTable(other.beforeSize, other.afterSize, 0.1)} |`);
+		lines.push(`| (other) | ${formatBytes(other.baseSize)} | ${formatBytes(other.headSize)} | ${calcAndFormatDeltaBytes(other.baseSize, other.headSize, 1000)} | ${calcAndFormatDeltaPercentInMdTable(other.baseSize, other.headSize, 0.1)} |`);
 	}
 	return lines.join('\n');
 }
 
-export function renderFrontendChunkReport(before: CollectedBundleReport, after: CollectedBundleReport) {
-	const beforeComparable = before.comparableChunks;
-	const afterComparable = after.comparableChunks;
-	const allChunkKeys = [...new Set([...Object.keys(beforeComparable), ...Object.keys(afterComparable)])];
-	const allComparisonRows = getChunkComparisonRows(allChunkKeys, beforeComparable, afterComparable);
+export function renderFrontendChunkReport(base: CollectedBundleReport, head: CollectedBundleReport) {
+	const baseComparable = base.comparableChunks;
+	const headComparable = head.comparableChunks;
+	const allChunkKeys = [...new Set([...Object.keys(baseComparable), ...Object.keys(headComparable)])];
+	const allComparisonRows = getChunkComparisonRows(allChunkKeys, baseComparable, headComparable);
 
 	const changedRows = allComparisonRows.filter((row) => row.changeType !== 'unchanged');
 	const diffSummary = summarizeChunkChanges(changedRows);
 	const diffTotal = {
-		beforeSize: sumChunkSizes(before.chunks),
-		afterSize: sumChunkSizes(after.chunks),
+		baseSize: sumChunkSizes(base.chunks),
+		headSize: sumChunkSizes(head.chunks),
 	};
-	const diffGenerated = generatedAggregate(before.chunks, after.chunks);
+	const diffGenerated = generatedAggregate(base.chunks, head.chunks);
 	const largeDeltaRows = changedRows.filter(row => !hasSmallDelta(row)).sort(compareChunkComparisonRows);
 	const diffRows = largeDeltaRows.slice(0, diffRowLimit);
 	// 表示上限で切り捨てた行も `(other)` に含める。落とすと合計が実際の変化量と合わなくなる
@@ -179,22 +179,22 @@ export function renderFrontendChunkReport(before: CollectedBundleReport, after: 
 		...largeDeltaRows.slice(diffRowLimit),
 	]);
 
-	const beforeStartupFiles = new Set(before.startupFiles);
-	const afterStartupFiles = new Set(after.startupFiles);
-	const beforeStartupChunks = before.chunks.filter(chunk => beforeStartupFiles.has(chunk.file));
-	const afterStartupChunks = after.chunks.filter(chunk => afterStartupFiles.has(chunk.file));
-	const beforeStartupComparable = comparableMap(beforeStartupChunks);
-	const afterStartupComparable = comparableMap(afterStartupChunks);
-	const startupKeys = [...new Set([...Object.keys(beforeStartupComparable), ...Object.keys(afterStartupComparable)])];
-	const startupComparisonRows = getChunkComparisonRows(startupKeys, beforeStartupComparable, afterStartupComparable);
+	const baseStartupFiles = new Set(base.startupFiles);
+	const headStartupFiles = new Set(head.startupFiles);
+	const baseStartupChunks = base.chunks.filter(chunk => baseStartupFiles.has(chunk.file));
+	const headStartupChunks = head.chunks.filter(chunk => headStartupFiles.has(chunk.file));
+	const baseStartupComparable = comparableMap(baseStartupChunks);
+	const headStartupComparable = comparableMap(headStartupChunks);
+	const startupKeys = [...new Set([...Object.keys(baseStartupComparable), ...Object.keys(headStartupComparable)])];
+	const startupComparisonRows = getChunkComparisonRows(startupKeys, baseStartupComparable, headStartupComparable);
 	const startupSummary = summarizeChunkChanges(startupComparisonRows);
 	const startupOther = comparisonRowsAggregate(startupComparisonRows.filter(hasSmallDelta));
 	const startupRows = startupComparisonRows.filter(row => !hasSmallDelta(row)).sort(compareChunkComparisonRows);
 	const startupTotal = {
-		beforeSize: sumChunkSizes(beforeStartupChunks),
-		afterSize: sumChunkSizes(afterStartupChunks),
+		baseSize: sumChunkSizes(baseStartupChunks),
+		headSize: sumChunkSizes(headStartupChunks),
 	};
-	const startupGenerated = generatedAggregate(beforeStartupChunks, afterStartupChunks);
+	const startupGenerated = generatedAggregate(baseStartupChunks, headStartupChunks);
 
 	return [
 		'<details>',

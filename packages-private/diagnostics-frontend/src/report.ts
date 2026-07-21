@@ -13,10 +13,10 @@ import type { BrowserMeasurement, BrowserMeasurementSample, BrowserMetricsReport
 
 export type FrontendDiagnosticsMarkdownInput = {
 	bundle: {
-		before: CollectedBundleReport;
-		after: CollectedBundleReport;
-		beforeStats: VisualizerReport;
-		afterStats: VisualizerReport;
+		base: CollectedBundleReport;
+		head: CollectedBundleReport;
+		baseStats: VisualizerReport;
+		headStats: VisualizerReport;
 		/** rollup-plugin-visualizer が出力したtreemap HTMLのartifact URL */
 		visualizerArtifactUrl: string;
 	};
@@ -201,9 +201,9 @@ export function renderFrontendDiagnosticsMarkdown(input: FrontendDiagnosticsMark
 		'',
 		'### 📦 Bundle Stats',
 		'',
-		renderFrontendChunkReport(bundle.before, bundle.after),
+		renderFrontendChunkReport(bundle.base, bundle.head),
 		'',
-		renderVisualizerSummaryTable(collectVisualizerReport(bundle.beforeStats), collectVisualizerReport(bundle.afterStats)),
+		renderVisualizerSummaryTable(collectVisualizerReport(bundle.baseStats), collectVisualizerReport(bundle.headStats)),
 		'',
 		`[Open treemap HTML](${bundle.visualizerArtifactUrl})`,
 		'',
