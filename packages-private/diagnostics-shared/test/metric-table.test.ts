@@ -66,10 +66,15 @@ describe('renderMetricComparisonTable', () => {
 		expect(table).not.toContain('\\color{');
 		expect(renderMetricComparisonTable(base, head, [defaultRow], {
 			onlySignificantChanges: true,
-		})).toBe([
-			'| Metric | @ Base | @ Head | Δ | MAD |',
-			'| --- | ---: | ---: | ---: | ---: |',
-		].join('\n'));
+		})).toBe('**(No data)**');
+	});
+
+	test('renders a no-data marker when no rows are configured', () => {
+		expect(renderMetricComparisonTable(
+			samples(100, 100, 100),
+			samples(120, 120, 120),
+			[],
+		)).toBe('**(No data)**');
 	});
 
 	test('treats the absolute threshold itself as significant', () => {

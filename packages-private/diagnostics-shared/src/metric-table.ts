@@ -59,10 +59,7 @@ export function renderMetricComparisonTable<T>(
 	rows: MetricComparisonRow<T>[],
 	options: MetricComparisonTableOptions = {},
 ): string {
-	const lines = [
-		'| Metric | @ Base | @ Head | Δ | MAD |',
-		'| --- | ---: | ---: | ---: | ---: |',
-	];
+	const lines: string[] = [];
 
 	for (const row of rows) {
 		const summary = independentDeltaSummary(baseSamples, headSamples, row.getValue);
@@ -73,5 +70,11 @@ export function renderMetricComparisonTable<T>(
 		if (row.separatorAfter === true) lines.push('| | | | | |');
 	}
 
-	return lines.join('\n');
+	if (lines.length === 0) return '**(No data)**';
+
+	return [
+		'| Metric | @ Base | @ Head | Δ | MAD |',
+		'| --- | ---: | ---: | ---: | ---: |',
+		...lines,
+	].join('\n');
 }
