@@ -23,14 +23,19 @@ function report(totals: number[]): HeapSnapshotReport {
 		round: index + 1,
 		data: snapshot(total),
 	}));
+	const summary = summarizeHeapSnapshotDataSamples(samples, sample => sample.data);
+	if (summary == null) throw new Error('expected heap snapshot samples to produce a summary');
+
 	return {
-		summary: summarizeHeapSnapshotDataSamples(samples, sample => sample.data)!,
+		summary,
 		samples,
 	};
 }
 
 function totalRow(markdown: string) {
-	return markdown.split('\n').find(line => line.includes('**Total**'))!;
+	const row = markdown.split('\n').find(line => line.includes('**Total**'));
+	if (row === undefined) throw new Error('expected heap snapshot table to contain a Total row');
+	return row;
 }
 
 describe('renderHeapSnapshotTable', () => {

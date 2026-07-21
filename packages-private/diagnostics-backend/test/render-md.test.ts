@@ -31,7 +31,15 @@ function replacePssSamples(report: MemoryReport, values: number[]) {
 }
 
 function findMetricRow(markdown: string, metric: string) {
-	return markdown.split('\n').find(line => line.startsWith(`| **${metric}**`))!;
+	const row = markdown.split('\n').find(line => line.startsWith(`| **${metric}**`));
+	if (row === undefined) throw new Error(`expected memory report to contain a ${metric} row`);
+	return row;
+}
+
+function findTotalRow(markdown: string) {
+	const row = markdown.split('\n').find(line => line.includes('**Total**'));
+	if (row === undefined) throw new Error('expected heap snapshot table to contain a Total row');
+	return row;
 }
 
 /**
@@ -60,7 +68,7 @@ test('filters rounds without heap snapshots before rendering', async () => {
 		baseHeapSnapshotUrl: 'https://example.invalid/base',
 		headHeapSnapshotUrl: 'https://example.invalid/head',
 	});
-	const totalRow = markdown.split('\n').find(line => line.includes('**Total**'))!;
+	const totalRow = findTotalRow(markdown);
 
 	expect(totalRow).toContain('inconclusive');
 	expect(totalRow).not.toContain('NaN');
