@@ -25,7 +25,7 @@ The variation is concentrated in `Private_Dirty`, rather than `Shared_Clean` or 
 
 ## Selected approach
 
-Use independent-sample aggregation for the backend memory and heap snapshot reports, make report coloring noise-aware, increase memory sampling from ten to fifteen rounds per side, and limit heap snapshot collection to the final three rounds per side.
+Use independent-sample aggregation for the backend memory report and the shared heap snapshot table used by both backend and frontend diagnostics. Make report coloring noise-aware, increase backend memory sampling from ten to fifteen rounds per side, and limit backend heap snapshot collection to the final three rounds per side.
 
 This is preferred over a display-only fix because fifteen cold starts modestly stabilize the median. It is preferred over bootstrap confidence intervals or dedicated-runner calibration because the primary requirement is conservative presentation, and the existing MAD-based report already provides an understandable measure of observed spread.
 
@@ -73,7 +73,7 @@ The three-times-combined-MAD rule is a deliberately conservative heuristic based
 
 ## Report presentation
 
-Change the main memory table to:
+Change the main backend memory table to:
 
 | Metric | Base | Head | Delta | Combined MAD | Result |
 | --- | ---: | ---: | ---: | ---: | --- |
@@ -81,13 +81,19 @@ Change the main memory table to:
 - Base and Head continue to show median and individual MAD.
 - Delta shows `headMedian - baseMedian` and its percentage relative to `baseMedian`.
 - Combined MAD shows the noise scale used for the verdict.
-- A delta is colored orange or green only when the verdict is `increase` or `decrease` and it also exceeds the existing display-level absolute threshold.
+- A displayed delta is colored orange or green only when both conditions hold: the verdict is `increase` or `decrease`, and that displayed value exceeds its existing display-level threshold. The existing thresholds remain 100 KiB for an absolute backend memory delta and 0.1 percentage points for its percentage delta.
 - A `within noise` or `inconclusive` delta remains uncolored.
 - Remove paired-delta MAD/min/max columns from the main backend report because their pairing is arbitrary for independent process starts. Raw samples remain downloadable in the JSON artifacts.
 - Add a short note explaining the sample count, median/MAD notation, and the three-times-combined-MAD verdict rule.
 - If any memory sample did not converge, add a visible warning and mark memory verdicts inconclusive.
 
-Apply the same independent delta calculation and noise-aware coloring to the V8 heap snapshot table. Only samples containing a snapshot participate in snapshot medians and MADs. Snapshot verdicts depend on snapshot sample sufficiency, not PSS convergence.
+Apply the same independent delta calculation and noise-aware coloring to the shared V8 heap snapshot table. The shared `HeapSnapshotReport` input shape remains unchanged: it continues to contain a summary and `{ round, data }` samples, which are sufficient for calculating independent medians and MADs. The existing heap snapshot display thresholds remain 100,000 bytes for an absolute delta and 0.1 percentage points for its percentage delta.
+
+The shared heap snapshot table also uses `Metric | Base | Head | Delta | Combined MAD | Result`. Preserve its category swatches, category composition details, and the Total row's percentage presentation, but remove the arbitrary paired-delta MAD/min/max columns. Values displayed as Base and Head come from the same independent summary as Delta so that the displayed arithmetic is consistent.
+
+Both backend and frontend diagnostics call the shared `renderHeapSnapshotTable`, so both reports receive the corrected table format and statistics. This does not require changes to the frontend workflow YAML, browser measurement JSON, or frontend adapter. The backend adapter filters out samples without a snapshot before constructing `HeapSnapshotReport`, because only its final three measured rounds contain snapshots. Other frontend diagnostics tables remain unchanged.
+
+Only samples containing a snapshot participate in snapshot medians and MADs. Snapshot verdicts depend on snapshot sample sufficiency, not PSS convergence.
 
 The existing PSS warning remains limited to increases greater than 5%, but it must also require an `increase` verdict from the common noise classification.
 
@@ -117,7 +123,7 @@ Add or update focused tests for:
 - Fewer than two valid samples producing `inconclusive` without throwing.
 - A non-converged memory sample forcing an inconclusive memory verdict.
 - Snapshot summaries ignoring rounds without snapshots while still selecting a representative artifact from the final snapshot rounds.
-- Updated Markdown golden output.
+- Updated backend and frontend Markdown golden output for the shared heap snapshot table. The frontend workflow and measurement fixture formats remain unchanged.
 
 Run the diagnostics package tests and type/lint checks during implementation. Before handoff, run the Misskey shipping checklist appropriate to the changed workflow and packages.
 
@@ -126,7 +132,9 @@ Run the diagnostics package tests and type/lint checks during implementation. Be
 - The reported delta equals the displayed head median minus the displayed base median for every backend memory and heap snapshot metric.
 - PSS/USS differences within three times combined MAD are not colored as regressions or improvements.
 - Non-converged or undersampled measurements are visibly inconclusive.
-- The workflow records fifteen memory samples and three heap snapshot samples per side.
+- The backend workflow records fifteen memory samples and three heap snapshot samples per side.
 - Representative base and head heap snapshot artifacts are still uploaded.
-- The backend diagnostics and shared diagnostics test suites pass.
+- Backend and frontend heap snapshot tables use the shared independent-sample calculation without changing `HeapSnapshotReport` or either workflow's artifact format.
+- The frontend workflow YAML and browser measurement collection remain unchanged; only its generated heap snapshot table and corresponding Markdown golden output change.
+- The backend diagnostics, frontend diagnostics, and shared diagnostics test suites pass.
 - Total workflow duration remains at or below approximately 1.5 times the current duration; if the first real run exceeds that bound, reduce measured rounds while keeping the aggregation and presentation changes.
