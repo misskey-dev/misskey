@@ -83,3 +83,6 @@ vite.config.local-dev.ts.timestamp-*
 
 # Affinity
 *.af~lock~
+
+# Local Git worktrees
+/.worktrees/
