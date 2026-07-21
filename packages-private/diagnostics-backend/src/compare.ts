@@ -6,10 +6,15 @@
 import { copyFile, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { execa } from 'execa';
-import { readIntegerEnv, readOptionalEnv } from 'diagnostics-shared/env';
+import { readBooleanEnv, readIntegerEnv, readOptionalEnv } from 'diagnostics-shared/env';
 import { median } from 'diagnostics-shared/stats';
 import { summarizeHeapSnapshotDataSamples, defaultHeapSnapshotBreakdownTopN } from 'diagnostics-shared/heap-snapshot';
 import { resetState } from './db';
+import {
+	clampHeapSnapshotRounds,
+	selectRepresentativeHeapSnapshotRound,
+	shouldCollectHeapSnapshot,
+} from './heap-snapshot-sampling';
 import { measureBackendMemory } from './measure';
 import { memoryPhases, type MemoryReport } from './types';
 
@@ -67,7 +72,12 @@ export function summarizeSamples(samples: MemoryReport['samples']) {
 	return summary;
 }
 
-async function genSample(label: string, repoDir: string, round: number, options: { heapSnapshotSavePath?: string } = {}) {
+type GenSampleOptions = {
+	collectHeapSnapshot?: boolean;
+	heapSnapshotSavePath?: string;
+};
+
+async function genSample(label: string, repoDir: string, round: number, options: GenSampleOptions = {}) {
 	process.stderr.write(`[${label}] Resetting database and Redis\n`);
 	await resetState();
 
@@ -82,7 +92,7 @@ async function genSample(label: string, repoDir: string, round: number, options:
 	process.stderr.write(`[${label}] Measuring memory\n`);
 	return await measureBackendMemory(resolve(repoDir, 'packages/backend'), {
 		// warmupラウンド (round <= 0) は捨てるので、重いheap snapshotは取らない
-		...(round <= 0 ? { heapSnapshot: false } : {}),
+		...(round <= 0 || options.collectHeapSnapshot === false ? { heapSnapshot: false } : {}),
 		heapSnapshotSavePath: options.heapSnapshotSavePath ?? null,
 	});
 }
@@ -91,32 +101,12 @@ function heapSnapshotPath(label: HeapSnapshotLabel, round: number) {
 	return join(HEAP_SNAPSHOT_WORK_DIRS[label], `round-${round}.heapsnapshot`);
 }
 
-/**
- * 中央値に最も近いラウンドを代表として選ぶ。外れ値のスナップショットを成果物にしないため。
- */
-function selectRepresentativeHeapSnapshotRound(samples: MemoryReport['samples'], summary: MemoryReport['summary']) {
-	const medianTotal = summary.afterGc.heapSnapshot?.categories.total;
-	if (medianTotal == null || !Number.isFinite(medianTotal)) return null;
-
-	let selected: { round: number; distance: number } | null = null;
-	for (const sample of samples) {
-		const total = sample.phases.afterGc.heapSnapshot?.categories.total;
-		if (total == null || !Number.isFinite(total)) continue;
-
-		const distance = Math.abs(total - medianTotal);
-		if (selected == null || distance < selected.distance || (distance === selected.distance && sample.round < selected.round)) {
-			selected = {
-				round: sample.round,
-				distance,
-			};
-		}
-	}
-
-	return selected?.round ?? null;
-}
-
 async function saveRepresentativeHeapSnapshot(label: HeapSnapshotLabel, samples: MemoryReport['samples'], summary: MemoryReport['summary']) {
-	const round = selectRepresentativeHeapSnapshotRound(samples, summary);
+	const round = selectRepresentativeHeapSnapshotRound(
+		samples,
+		summary.afterGc.heapSnapshot?.categories.total,
+		sample => sample.phases.afterGc.heapSnapshot?.categories.total,
+	);
 	if (round == null) return;
 
 	await copyFile(heapSnapshotPath(label, round), HEAP_SNAPSHOT_OUTPUT_PATHS[label]);
@@ -131,6 +121,11 @@ async function saveRepresentativeHeapSnapshot(label: HeapSnapshotLabel, samples:
 export async function compareBackendMemory(options: CompareOptions) {
 	const rounds = readIntegerEnv('MK_MEMORY_COMPARE_ROUNDS', 5, 1);
 	const warmupRounds = readIntegerEnv('MK_MEMORY_COMPARE_WARMUP_ROUNDS', 1, 0);
+	const heapSnapshotsEnabled = readBooleanEnv('MK_MEMORY_HEAP_SNAPSHOT', false);
+	const requestedHeapSnapshotRounds = heapSnapshotsEnabled
+		? readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_ROUNDS', rounds, 1)
+		: 0;
+	const heapSnapshotRounds = clampHeapSnapshotRounds(rounds, requestedHeapSnapshotRounds);
 	const startedAt = new Date().toISOString();
 
 	for (const label of heapSnapshotLabels) {
@@ -161,7 +156,11 @@ export async function compareBackendMemory(options: CompareOptions) {
 		process.stderr.write(`Starting measurement round ${round}/${rounds}: ${order.join(' -> ')}\n`);
 
 		for (const label of order) {
-			const sample = await genSample(label, reports[label].dir, round, { heapSnapshotSavePath: heapSnapshotPath(label, round) });
+			const collectHeapSnapshot = shouldCollectHeapSnapshot(round, rounds, heapSnapshotRounds);
+			const sample = await genSample(label, reports[label].dir, round, {
+				collectHeapSnapshot,
+				...(collectHeapSnapshot ? { heapSnapshotSavePath: heapSnapshotPath(label, round) } : {}),
+			});
 			reports[label].samples.push({
 				...sample,
 				round,
@@ -186,6 +185,7 @@ export async function compareBackendMemory(options: CompareOptions) {
 				strategy: 'interleaved-pairs',
 				rounds,
 				warmupRounds,
+				heapSnapshotRounds,
 				startedAt,
 			},
 			summary: summaries[label],
