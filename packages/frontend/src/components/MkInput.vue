@@ -54,7 +54,6 @@ type ModelValueType<T extends SupportedTypes> =
 <script lang="ts" setup generic="T extends SupportedTypes = 'text'">
 import { onMounted, onUnmounted, nextTick, ref, useTemplateRef, watch, computed, toRefs } from 'vue';
 import { throttle, debounce } from 'throttle-debounce';
-import { useInterval } from '@@/js/use-interval.js';
 import type { InputHTMLAttributes } from 'vue';
 import type { SuggestionType } from '@/utility/autocomplete.js';
 import MkButton from '@/components/MkButton.vue';
@@ -163,25 +162,27 @@ watch([changed, invalid], ([newChanged, newInvalid]) => {
 
 // このコンポーネントが作成された時、非表示状態である場合がある
 // 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
-useInterval(() => {
+const updatePadding = (entries: ResizeObserverEntry[]) => {
 	if (inputEl.value == null) return;
 
-	if (prefixEl.value) {
-		if (prefixEl.value.offsetWidth) {
-			inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
+	for (const entry of entries) {
+		const width = entry.borderBoxSize[0].inlineSize;
+		if (width === 0) continue;
+		if (entry.target === prefixEl.value) {
+			inputEl.value.style.paddingLeft = width + 'px';
+		} else if (entry.target === suffixEl.value) {
+			inputEl.value.style.paddingRight = width + 'px';
 		}
 	}
-	if (suffixEl.value) {
-		if (suffixEl.value.offsetWidth) {
-			inputEl.value.style.paddingRight = suffixEl.value.offsetWidth + 'px';
-		}
-	}
-}, 100, {
-	immediate: true,
-	afterMounted: true,
-});
+};
+
+let paddingObserver: ResizeObserver | null = null;
 
 onMounted(() => {
+	paddingObserver = new ResizeObserver(updatePadding);
+	if (prefixEl.value) paddingObserver.observe(prefixEl.value);
+	if (suffixEl.value) paddingObserver.observe(suffixEl.value);
+
 	nextTick(() => {
 		if (props.autofocus) {
 			focus();
@@ -194,6 +195,9 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+	paddingObserver?.disconnect();
+	paddingObserver = null;
+
 	if (autocompleteWorker) {
 		autocompleteWorker.detach();
 	}
