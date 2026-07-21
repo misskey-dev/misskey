@@ -316,14 +316,15 @@ describe('renderHeapSnapshotTable', () => {
 		expect(row).toContain('increase');
 	});
 
-	test('leaves a directional delta uncoloured below the display threshold', () => {
+	test('applies the absolute and percentage display thresholds independently', () => {
 		const row = totalRow(renderHeapSnapshotTable(
 			report([1_000_000, 1_000_000, 1_000_000]),
 			report([1_050_000, 1_050_000, 1_050_000]),
 		));
 
 		expect(row).toContain('increase');
-		expect(row).not.toContain('\\color{orange}');
+		expect(row).toContain('$\\text{+50 KB}$');
+		expect(row).toContain('\\color{orange}{\\text{+5');
 	});
 
 	test('renders a single snapshot per side as inconclusive without throwing', () => {
