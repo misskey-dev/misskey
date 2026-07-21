@@ -34,10 +34,15 @@ export function startServer(label: string, repoDir: string) {
 
 const serverStartupTimeoutMs = 120_000;
 
+function hasExited(child: ChildProcess) {
+	return child.exitCode != null || child.signalCode != null;
+}
+
 export async function waitForServer(baseUrl: string, child: ChildProcess) {
 	const startedAt = Date.now();
 	while (Date.now() - startedAt < serverStartupTimeoutMs) {
 		if (child.exitCode != null) throw new Error(`Misskey server exited early with code ${child.exitCode}`);
+		if (child.signalCode != null) throw new Error(`Misskey server exited early with signal ${child.signalCode}`);
 		try {
 			// 応答が返らないままだとfetchが待ち続け、外側の120秒の上限を超えてしまう
 			const remainingMs = serverStartupTimeoutMs - (Date.now() - startedAt);
@@ -55,7 +60,7 @@ export async function waitForServer(baseUrl: string, child: ChildProcess) {
 }
 
 export async function stopServer(child: ChildProcess) {
-	if (child.exitCode != null) return;
+	if (hasExited(child)) return;
 
 	if (process.platform === 'win32') {
 		spawnSync('taskkill', ['/pid', String(child.pid), '/t', '/f'], { stdio: 'ignore' });
@@ -69,14 +74,14 @@ export async function stopServer(child: ChildProcess) {
 	}
 
 	await new Promise<void>(resolvePromise => {
-		if (child.exitCode != null) {
+		if (hasExited(child)) {
 			resolvePromise();
 			return;
 		}
 
 		const forceKillTimer = setTimeout(() => {
 			// 猶予の間に終了していれば、PIDが再利用されて無関係のプロセスを撃つ恐れがある
-			if (child.exitCode == null && child.pid != null) {
+			if (!hasExited(child) && child.pid != null) {
 				try {
 					if (process.platform === 'win32') {
 						spawnSync('taskkill', ['/pid', String(child.pid), '/t', '/f'], { stdio: 'ignore' });
