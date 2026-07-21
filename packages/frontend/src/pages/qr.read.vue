@@ -247,17 +247,26 @@ async function toggleFlash(to = false) {
 	}
 }
 
+// hasFlashなどの後続の処理がカメラを再起動する可能性があるため、
+// start() が完了するまでの間に停止された場合は結果を破棄する必要がある
+let initializeId = 0;
+
 function startQr() {
 	if (!scannerInstance.value) return;
+	const currentInitializeId = ++initializeId;
 	qrStarted.value = false;
 	scannerInstance.value.start()
 		.then(async () => {
+			if (currentInitializeId !== initializeId) return;
 			qrStarted.value = true;
 			if (!scannerInstance.value) return;
-			flashCanToggle.value = await scannerInstance.value.hasFlash();
+			const hasFlash = await scannerInstance.value.hasFlash();
+			if (currentInitializeId !== initializeId) return;
+			flashCanToggle.value = hasFlash;
 			flash.value = scannerInstance.value.isFlashOn();
 		})
 		.catch(err => {
+			if (currentInitializeId !== initializeId) return;
 			qrStarted.value = false;
 			os.alert({
 				type: 'error',
@@ -268,6 +277,7 @@ function startQr() {
 }
 
 function stopQr() {
+	initializeId++;
 	if (!scannerInstance.value) return;
 	scannerInstance.value.stop();
 	qrStarted.value = false;
@@ -334,6 +344,7 @@ onUnmounted(() => {
 		timer.value = null;
 	}
 
+	initializeId++;
 	scannerInstance.value?.destroy();
 });
 </script>
