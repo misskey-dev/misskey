@@ -199,7 +199,7 @@ export function renderFrontendDiagnosticsMarkdown(input: FrontendDiagnosticsMark
 		`Download representative heap snapshot: [base](${browser.baseHeapSnapshotUrl}) / [head](${browser.headHeapSnapshotUrl})`,
 		'</details>',
 		'',
-		'### 📦 Bundle Stats',
+		'## 📦 Bundle Stats',
 		'',
 		renderFrontendChunkReport(bundle.base, bundle.head),
 		'',

@@ -82,7 +82,7 @@
 Download representative heap snapshot: [base](https://example.invalid/base) / [head](https://example.invalid/head)
 </details>
 
-### 📦 Bundle Stats
+## 📦 Bundle Stats
 
 <details>
 <summary>Chunk size diff (2 updated, 0 added, 0 removed)</summary>
