@@ -3,13 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	formatBytes,
-	formatDeltaBytes,
-	formatDeltaPercentInMdTable,
-	formatPercent,
-} from '../format';
-import { independentDeltaSummary, type IndependentDeltaSummary, type IndependentDeltaVerdict } from '../stats';
+import { formatBytes } from '../format';
+import { renderMetricComparisonTable } from '../metric-table';
 import {
 	heapSnapshotCategories,
 	heapSnapshotCategory,
@@ -19,7 +14,6 @@ import {
 
 /** これ未満のバイト差分には色を付けない (0.1 MB) */
 const byteColorThreshold = 100_000;
-const percentColorThreshold = 0.1;
 
 function categoryValue(report: HeapSnapshotReport, category: HeapSnapshotCategory) {
 	return report.summary.categories[category];
@@ -29,80 +23,23 @@ function swatch(category: HeapSnapshotCategory) {
 	return `$\\color{${heapSnapshotCategory[category].color}}{\\rule{8pt}{8pt}}$ **${heapSnapshotCategory[category].label}**`;
 }
 
-function isDirectionalVerdict(verdict: IndependentDeltaVerdict) {
-	return verdict === 'increase' || verdict === 'decrease';
-}
-
-function formatOptionalBytes(value: number | null) {
-	return value == null ? '-' : formatBytes(value);
-}
-
-function formatMedianWithMad(value: number | null, spread: number | null) {
-	if (value == null) return '-';
-	return `${formatBytes(value)} <br> ± ${formatOptionalBytes(spread)}`;
-}
-
-function formatSnapshotDelta(summary: IndependentDeltaSummary) {
-	if (summary.delta == null) return '-';
-	return formatDeltaBytes(
-		summary.delta,
-		isDirectionalVerdict(summary.verdict) ? byteColorThreshold : Number.POSITIVE_INFINITY,
-	);
-}
-
-function formatSnapshotDeltaPercent(summary: IndependentDeltaSummary) {
-	if (summary.baseMedian == null || summary.baseMedian === 0 || summary.delta == null) return '-';
-	const percent = summary.delta * 100 / summary.baseMedian;
-	return formatDeltaPercentInMdTable(
-		percent,
-		isDirectionalVerdict(summary.verdict) ? percentColorThreshold : Number.POSITIVE_INFINITY,
-	);
-}
-
-function formatCategoryPercent(value: number | null, total: number | null) {
-	if (value == null || total == null || total === 0) return '-';
-	return formatPercent((value * 100) / total);
-}
-
-function categoryDeltaSummary(base: HeapSnapshotReport, head: HeapSnapshotReport, category: HeapSnapshotCategory) {
-	return independentDeltaSummary(
-		base.samples,
-		head.samples,
-		sample => sample.data.categories[category],
-	);
-}
-
 /**
  * base / head のheap snapshotをカテゴリ別に比較するMarkdownテーブルを描画する。
  */
 export function renderHeapSnapshotTable(base: HeapSnapshotReport, head: HeapSnapshotReport) {
-	const lines = [
-		'| Metric | @ Base | @ Head | Δ | MAD | Result |',
-		'| --- | ---: | ---: | ---: | ---: | --- |',
-	];
-	const totalSummary = categoryDeltaSummary(base, head, 'total');
-	const baseTotal = totalSummary.baseMedian;
-	const headTotal = totalSummary.headMedian;
-
-	for (const category of heapSnapshotCategories) {
-		const summary = category === 'total' ? totalSummary : categoryDeltaSummary(base, head, category);
-		const baseValue = summary.baseMedian;
-		const headValue = summary.headMedian;
-		const combinedMad = formatOptionalBytes(summary.combinedMad);
-
-		if (category === 'total') {
-			const delta = `${formatSnapshotDelta(summary)}<br>${formatSnapshotDeltaPercent(summary)}`;
-			lines.push(`| ${swatch(category)} | ${formatMedianWithMad(baseValue, summary.baseMad)} | ${formatMedianWithMad(headValue, summary.headMad)} | ${delta} | ${combinedMad} | ${summary.verdict} |`);
-			lines.push('| | | | | | |');
-		} else {
-			const basePercent = formatCategoryPercent(baseValue, baseTotal);
-			const headPercent = formatCategoryPercent(headValue, headTotal);
-			const metric = `<details><summary>${swatch(category)}</summary>${basePercent} → ${headPercent}</details>`;
-			lines.push(`| ${metric} | ${formatOptionalBytes(baseValue)} | ${formatOptionalBytes(headValue)} | ${formatSnapshotDelta(summary)} | ${combinedMad} | ${summary.verdict} |`);
-		}
-	}
-
-	return lines.join('\n');
+	return renderMetricComparisonTable(
+		base.samples,
+		head.samples,
+		heapSnapshotCategories.map(category => ({
+			label: swatch(category),
+			getValue: sample => sample.data.categories[category],
+			formatValue: formatBytes,
+			absoluteThreshold: byteColorThreshold,
+			showMedianMad: category === 'total',
+			showDeltaPercentage: category === 'total',
+			separatorAfter: category === 'total',
+		})),
+	);
 }
 
 const sankeyChildMinRatio = 0.3;

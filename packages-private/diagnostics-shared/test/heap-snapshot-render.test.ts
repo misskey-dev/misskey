@@ -46,35 +46,58 @@ describe('renderHeapSnapshotTable', () => {
 		));
 
 		expect(row).toContain('$\\text{+100 KB}$');
-		expect(row).toContain('within noise');
+		expect(row).not.toContain('within noise');
 		expect(row).not.toContain('\\color{orange}');
 	});
 
-	test('colours a clear increase that also reaches the display threshold', () => {
+	test('colours both delta lines for a clear increase at or above the absolute threshold', () => {
 		const row = totalRow(renderHeapSnapshotTable(
 			report([1_000_000, 1_000_000, 1_000_000]),
 			report([1_200_000, 1_200_000, 1_200_000]),
 		));
 
-		expect(row).toContain('\\color{orange}');
-		expect(row).toContain('increase');
+		expect(row).toContain('$\\color{orange}{\\text{+200 KB}}$');
+		expect(row).toContain('$\\color{orange}{\\text{+20\\\\%}}$');
+		expect(row).not.toContain('increase');
 	});
 
-	test('applies the absolute and percentage display thresholds independently', () => {
+	test('leaves both delta lines uncoloured below the absolute threshold', () => {
 		const row = totalRow(renderHeapSnapshotTable(
 			report([1_000_000, 1_000_000, 1_000_000]),
 			report([1_050_000, 1_050_000, 1_050_000]),
 		));
 
-		expect(row).toContain('increase');
-		expect(row).toContain('$\\text{+50 KB}$');
-		expect(row).toContain('\\color{orange}{\\text{+5');
+		expect(row).toContain('$\\text{+50 KB}$<br>$\\text{+5\\\\%}$');
+		expect(row.split('|')[4]).not.toContain('\\color{');
 	});
 
-	test('renders a single snapshot per side as inconclusive without throwing', () => {
-		const row = totalRow(renderHeapSnapshotTable(report([1_000_000]), report([1_200_000])));
+	test('throws when only one snapshot per side reaches the renderer', () => {
+		expect(() => renderHeapSnapshotTable(
+			report([1_000_000]),
+			report([1_200_000]),
+		)).toThrow('At least two samples per side are required');
+	});
 
-		expect(row).toContain('inconclusive');
-		expect(row).not.toContain('\\color{orange}');
+	test('uses two-line formatting only for Total and puts a five-column separator after it', () => {
+		const table = renderHeapSnapshotTable(
+			report([1_000_000, 1_000_000, 1_000_000]),
+			report([1_200_000, 1_200_000, 1_200_000]),
+		);
+		const lines = table.split('\n');
+		const totalIndex = lines.findIndex(line => line.includes('**Total**'));
+		const categoryRow = lines.find(line => line.includes('**Code**'));
+
+		expect(lines.slice(0, 2)).toStrictEqual([
+			'| Metric | @ Base | @ Head | Δ | MAD |',
+			'| --- | ---: | ---: | ---: | ---: |',
+		]);
+		expect(table).not.toContain('Result');
+		expect(totalIndex).toBeGreaterThan(1);
+		expect(lines[totalIndex].match(/<br>/g)).toHaveLength(3);
+		expect(lines[totalIndex + 1]).toBe('| | | | | |');
+		expect(categoryRow).toBeDefined();
+		expect(categoryRow).not.toContain('<br>');
+		expect(categoryRow).not.toContain('<details>');
+		expect(categoryRow).not.toContain('→');
 	});
 });
