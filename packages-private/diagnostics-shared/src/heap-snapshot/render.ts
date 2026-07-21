@@ -77,7 +77,7 @@ function categoryDeltaSummary(base: HeapSnapshotReport, head: HeapSnapshotReport
  */
 export function renderHeapSnapshotTable(base: HeapSnapshotReport, head: HeapSnapshotReport) {
 	const lines = [
-		'| Metric | Base | Head | Delta | MAD | Result |',
+		'| Metric | @ Base | @ Head | Δ | MAD | Result |',
 		'| --- | ---: | ---: | ---: | ---: | --- |',
 	];
 	const totalSummary = categoryDeltaSummary(base, head, 'total');

@@ -91,7 +91,7 @@ function formatMemoryDeltaPercent(summary: IndependentDeltaSummary) {
 
 function renderMainTableForPhase(base: MemoryReport, head: MemoryReport, phase: MemoryPhase) {
 	const lines = [
-		'| Metric | Base | Head | Delta | MAD | Result |',
+		'| Metric | @ Base | @ Head | Δ | MAD | Result |',
 		'| --- | ---: | ---: | ---: | ---: | --- |',
 	];
 

@@ -1,7 +1,7 @@
 ## ⚙️ Backend Diagnostics Report
 
 ### Memory: After GC
-| Metric | Base | Head | Delta | MAD | Result |
+| Metric | @ Base | @ Head | Δ | MAD | Result |
 | --- | ---: | ---: | ---: | ---: | --- |
 | **HeapUsed** | 152 MB <br> ± 1 MB | 168 MB <br> ± 1 MB | $\color{orange}{\text{+16 MB}}$<br>$\color{orange}{\text{+10.5\\%}}$ | 1.4 MB | increase |
 | **PSS** | 202 MB <br> ± 1 MB | 218 MB <br> ± 1 MB | $\color{orange}{\text{+16 MB}}$<br>$\color{orange}{\text{+7.9\\%}}$ | 1.4 MB | increase |
@@ -12,7 +12,7 @@ _Values are median ± MAD (3 base / 3 head samples). Delta is Head - Base. Resul
 
 ### V8 Heap Snapshot Statistics
 
-| Metric | Base | Head | Delta | MAD | Result |
+| Metric | @ Base | @ Head | Δ | MAD | Result |
 | --- | ---: | ---: | ---: | ---: | --- |
 | $\color{gray}{\rule{8pt}{8pt}}$ **Total** | 40 MB <br> ± 200 KB | 44 MB <br> ± 200 KB | $\color{orange}{\text{+3.2 MB}}$<br>$\color{orange}{\text{+7.9\\%}}$ | 283 KB | increase |
 | | | | | | |
