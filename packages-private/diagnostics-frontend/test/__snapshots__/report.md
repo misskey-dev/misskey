@@ -8,7 +8,7 @@
 | **Script encoded** | 918 KB <br> ± 9 KB | 991 KB <br> ± 9.7 KB | $\color{orange}{\text{+73 KB}}$<br>$\color{orange}{\text{+8\\%}}$ | 13 KB |
 | **Page-attributed memory** | 92 MB <br> ± 900 KB | 99 MB <br> ± 972 KB | $\color{orange}{\text{+7.3 MB}}$<br>$\color{orange}{\text{+8\\%}}$ | 1.3 MB |
 
-_Values are median ± MAD (3 base / 3 head samples). Δ is Head - Base. Only changes whose absolute delta reaches the metric threshold and exceeds 3 × MAD are shown._
+<i>Only metrics showing significant changes are displayed.</i>
 
 [View details](https://example.invalid/html)
 

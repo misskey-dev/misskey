@@ -224,7 +224,7 @@ export function renderFrontendDiagnosticsMarkdown(input: FrontendDiagnosticsMark
 		'',
 		renderBrowserSummaryTable(browser.base, browser.head),
 		'',
-		`_Values are median ± MAD (${browser.base.samples.length} base / ${browser.head.samples.length} head samples). Δ is Head - Base. Only changes whose absolute delta reaches the metric threshold and exceeds 3 × MAD are shown._`,
+		'<i>Only metrics showing significant changes are displayed.</i>',
 		'',
 		detailedHtmlUrl == null || detailedHtmlUrl === '' ? null : `[View details](${detailedHtmlUrl})`,
 		detailedHtmlUrl == null || detailedHtmlUrl === '' ? null : '',
