@@ -1,12 +1,14 @@
 ## ⚙️ Backend Diagnostics Report
 
 ### Memory: After GC
-| Metric | Base | Head | Δ median | Δ MAD | Δ min | Δ max |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| **HeapUsed** | 152 MB <br> ± 1 MB | 168 MB <br> ± 1 MB | $\color{orange}{\text{+16 MB}}$<br>$\color{orange}{\text{+10.5\\%}}$ | 0 MB | $\color{orange}{\text{+16 MB}}$ | $\color{orange}{\text{+16 MB}}$ |
-| **PSS** | 202 MB <br> ± 1 MB | 218 MB <br> ± 1 MB | $\color{orange}{\text{+16 MB}}$<br>$\color{orange}{\text{+7.9\\%}}$ | 0 MB | $\color{orange}{\text{+16 MB}}$ | $\color{orange}{\text{+16 MB}}$ |
-| **USS** | 184 MB <br> ± 1 MB | 200 MB <br> ± 1 MB | $\color{orange}{\text{+16 MB}}$<br>$\color{orange}{\text{+8.7\\%}}$ | 0 MB | $\color{orange}{\text{+16 MB}}$ | $\color{orange}{\text{+16 MB}}$ |
-| **External** | 8.2 MB <br> ± 0.1 MB | 8.2 MB <br> ± 0.1 MB | 0 MB<br>0% | 0 MB | 0 MB | 0 MB |
+| Metric | Base | Head | Delta | Combined MAD | Result |
+| --- | ---: | ---: | ---: | ---: | --- |
+| **HeapUsed** | 152 MB <br> ± 1 MB | 168 MB <br> ± 1 MB | $\color{orange}{\text{+16 MB}}$<br>$\color{orange}{\text{+10.5\\%}}$ | 1.4 MB | increase |
+| **PSS** | 202 MB <br> ± 1 MB | 218 MB <br> ± 1 MB | $\color{orange}{\text{+16 MB}}$<br>$\color{orange}{\text{+7.9\\%}}$ | 1.4 MB | increase |
+| **USS** | 184 MB <br> ± 1 MB | 200 MB <br> ± 1 MB | $\color{orange}{\text{+16 MB}}$<br>$\color{orange}{\text{+8.7\\%}}$ | 1.4 MB | increase |
+| **External** | 8.2 MB <br> ± 0.1 MB | 8.2 MB <br> ± 0.1 MB | 0 MB<br>0% | 0.1 MB | within noise |
+
+_Values are median ± MAD (3 base / 3 head samples). Delta is Head - Base. Results are increase or decrease only when |Delta| > 3 × Combined MAD._
 
 ### V8 Heap Snapshot Statistics
 
