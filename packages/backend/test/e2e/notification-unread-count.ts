@@ -7,8 +7,9 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'node:assert';
 import { setTimeout } from 'node:timers/promises';
-import { beforeAll, beforeEach, describe, test } from 'vitest';
-import { api, post, signup } from '../utils.js';
+import * as Redis from 'ioredis';
+import { afterAll, beforeAll, beforeEach, describe, test } from 'vitest';
+import { api, post, signup, waitFire } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 // このテストは https://github.com/misskey-dev/misskey/issues/17427
@@ -122,5 +123,114 @@ describe('Notification unread count consistency (misskey-dev/misskey#17427)', ()
 		// バッジカウントも同様に減っているはず (修正前は Stream に残っていたのでカウントだけ残る現象が出た)
 		assert.strictEqual(afterDelete.body.unreadNotificationsCount, notificationsRes.body.length,
 			'ノート削除後: unreadNotificationsCount は API レスポンス件数と一致する');
+	}, 1000 * 30);
+});
+
+// 「通知タブを開いても未読バルーンが消えず、リロードでのみ消える」現象の切り分けテスト。
+//
+// フロントは通知タブを開くと i/notifications-grouped (markAsRead=true 既定) を叩き、
+// バックエンドの NotificationService.readAllNotification() が既読位置を進めた場合に
+// mainStream へ 'readAllNotifications' を publish する。フロントのバルーンはこの
+// イベントを受けて初めて消えるため、イベントが publish されない経路が 1 つでもあると
+// 「バックエンドは既読 (リロードでバッジ 0) なのにバルーンだけ残る」状態になる。
+describe('Notification badge: readAllNotifications event delivery', () => {
+	let carol: misskey.entities.SignupResponse;
+	let dave: misskey.entities.SignupResponse;
+	let redis: Redis.Redis;
+
+	beforeAll(async () => {
+		carol = await signup({ username: 'carol_n17427' });
+		dave = await signup({ username: 'dave_n17427' });
+		// keyPrefix はサーバー側 (RedisService) と同じく config.redis.prefix (= url のホスト名) に合わせる
+		redis = new Redis.Redis({ host: '127.0.0.1', port: 56312, keyPrefix: 'misskey.local:' });
+	}, 1000 * 60 * 2);
+
+	afterAll(async () => {
+		redis.disconnect();
+	});
+
+	beforeEach(async () => {
+		await api('notifications/flush', {}, carol);
+		await api('notifications/flush', {}, dave);
+		await setTimeout(500);
+	});
+
+	test('通常フロー: 通知タブを開く (i/notifications-grouped) と readAllNotifications が飛ぶ', async () => {
+		await post(dave, { text: `@carol_n17427 hi ${Date.now()}` });
+		await setTimeout(2500);
+
+		const before = await api('i', {}, carol);
+		assert.ok(before.body.unreadNotificationsCount >= 1, '前提: 未読が 1 件以上ある');
+
+		const fired = await waitFire(
+			carol, 'main',
+			() => api('i/notifications-grouped', {}, carol),
+			msg => msg.type === 'readAllNotifications',
+		);
+		assert.strictEqual(fired, true,
+			'通知タブを開いたら mainStream に readAllNotifications が publish されるべき');
+
+		const after = await api('i', {}, carol);
+		assert.strictEqual(after.body.unreadNotificationsCount, 0);
+	}, 1000 * 30);
+
+	test('フォロリク解決フロー: 表示 0 件でも通知タブを開けば readAllNotifications が飛ぶ', async () => {
+		await api('i/update', { isLocked: true }, carol);
+		await api('following/create', { userId: carol.id }, dave);
+		await setTimeout(2500);
+
+		// 通知ページを開かずにフォローリクエストページから承認する
+		await api('following/requests/accept', { userId: dave.id }, carol);
+		await setTimeout(2500);
+
+		const fired = await waitFire(
+			carol, 'main',
+			() => api('i/notifications-grouped', {}, carol),
+			msg => msg.type === 'readAllNotifications',
+		);
+		assert.strictEqual(fired, true,
+			'表示対象が減っていても既読化イベントは publish されるべき');
+
+		const after = await api('i', {}, carol);
+		assert.strictEqual(after.body.unreadNotificationsCount, 0);
+
+		await api('i/update', { isLocked: false }, carol);
+		await api('following/delete', { userId: carol.id }, dave);
+	}, 1000 * 30);
+
+	test('同一ミリ秒に 10 件以上通知が積まれた場合でも readAllNotifications が飛ぶ (Stream ID の文字列比較の罠)', async () => {
+		// 実在する通知エントリの JSON を種として使うため、まず実通知を 2 件発生させる
+		await post(dave, { text: `@carol_n17427 seed1 ${Date.now()}` });
+		await post(dave, { text: `@carol_n17427 seed2 ${Date.now()}` });
+		await setTimeout(2500);
+
+		const streamKey = `notificationTimeline:${carol.id}`;
+		const entries = await redis.xrange(streamKey, '-', '+');
+		assert.ok(entries.length >= 2, '前提: Stream に実通知が 2 件以上ある');
+
+		const [json1, json2] = [entries[0][1][1], entries[1][1][1]];
+		const lastId = entries[entries.length - 1][0];
+		const baseMs = Number(lastId.split('-')[0]) + 1000;
+
+		// 「同一 ms 内で seq=9 まで読み、その後同一 ms 内に seq=10 が積まれた」状態を再現する。
+		// Redis Stream ID は数値比較では 9 < 10 だが、JS の文字列比較では '9' > '10'。
+		await redis.xadd(streamKey, `${baseMs}-9`, 'data', json1);
+		await redis.xadd(streamKey, `${baseMs}-10`, 'data', json2);
+		await redis.set(`latestReadNotification:${carol.id}`, `${baseMs}-9`);
+
+		const before = await api('i', {}, carol);
+		assert.strictEqual(before.body.unreadNotificationsCount, 1,
+			'前提: seq=10 のエントリ 1 件だけが未読 (Redis は数値比較で正しく認識する)');
+
+		const fired = await waitFire(
+			carol, 'main',
+			() => api('i/notifications-grouped', {}, carol),
+			msg => msg.type === 'readAllNotifications',
+		);
+		assert.strictEqual(fired, true,
+			'未読が残っている以上、既読化時に readAllNotifications が publish されるべき');
+
+		const after = await api('i', {}, carol);
+		assert.strictEqual(after.body.unreadNotificationsCount, 0);
 	}, 1000 * 30);
 });
