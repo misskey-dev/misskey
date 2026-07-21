@@ -1,4 +1,4 @@
-## 🖥 Frontend Diagnostics
+## 🖥 Frontend Diagnostics Report
 
 | Metric | Base | Head | Δ median | Δ MAD | Δ min | Δ max |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |

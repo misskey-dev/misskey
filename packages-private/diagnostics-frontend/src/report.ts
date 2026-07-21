@@ -174,7 +174,7 @@ export function renderFrontendDiagnosticsMarkdown(input: FrontendDiagnosticsMark
 	const detailedHtmlUrl = browser.detailedHtmlUrl;
 	const heapSnapshotTable = renderHeapSnapshotTable(toHeapSnapshotReport(browser.base), toHeapSnapshotReport(browser.head));
 	const lines = [
-		'## 🖥 Frontend Diagnostics',
+		'## 🖥 Frontend Diagnostics Report',
 		'',
 		renderBrowserSummaryTable(browser.base, browser.head),
 		'',
