@@ -9,7 +9,7 @@ import { dirname, join } from 'node:path';
 import { afterAll, beforeAll, expect, test } from 'vitest';
 import { collectBundleReport } from '../src/bundle/manifest';
 import { renderFrontendDiagnosticsMarkdown } from '../src/report';
-import type { BrowserMetricsReport } from '../src/browser/types';
+import type { BrowserMeasurementSample, BrowserMetricsReport } from '../src/browser/types';
 import type { VisualizerReport } from '../src/bundle/visualizer';
 
 const bundleFixturesDir = join(import.meta.dirname, 'bundle/fixtures');
@@ -90,7 +90,15 @@ async function loadBrowserReport(name: 'base' | 'head') {
 	return JSON.parse(await readFile(join(browserFixturesDir, `${name}.json`), 'utf8')) as BrowserMetricsReport;
 }
 
-async function renderReport(detailedHtmlUrl: string | null) {
+type BrowserReports = {
+	base: BrowserMetricsReport;
+	head: BrowserMetricsReport;
+};
+
+async function renderReport(detailedHtmlUrl: string | null, reports?: BrowserReports) {
+	const base = reports?.base ?? await loadBrowserReport('base');
+	const head = reports?.head ?? await loadBrowserReport('head');
+
 	return renderFrontendDiagnosticsMarkdown({
 		bundle: {
 			base: await collectBundleReport(repoDirs.base),
@@ -100,13 +108,39 @@ async function renderReport(detailedHtmlUrl: string | null) {
 			visualizerArtifactUrl: 'https://example.invalid/treemap',
 		},
 		browser: {
-			base: await loadBrowserReport('base'),
-			head: await loadBrowserReport('head'),
+			base,
+			head,
 			baseHeapSnapshotUrl: 'https://example.invalid/base',
 			headHeapSnapshotUrl: 'https://example.invalid/head',
 			detailedHtmlUrl,
 		},
 	});
+}
+
+function withMetricSamples(
+	report: BrowserMetricsReport,
+	values: number[],
+	setValue: (sample: BrowserMeasurementSample, value: number) => void,
+): BrowserMetricsReport {
+	const cloned = structuredClone(report);
+	const samples = values.map((value, index) => {
+		const sample = structuredClone(cloned.samples[index % cloned.samples.length]);
+		sample.round = index + 1;
+		setValue(sample, value);
+		return sample;
+	});
+
+	return {
+		...cloned,
+		sampleCount: samples.length,
+		samples,
+	};
+}
+
+function requireMetricRow(markdown: string, label: string) {
+	const row = markdown.split('\n').find(line => line.startsWith(`| **${label}** |`));
+	if (row == null) throw new Error(`Metric row not found: ${label}`);
+	return row;
 }
 
 /**
@@ -123,4 +157,113 @@ test('omits the browser details link when no detailed html artifact was uploaded
 	const markdown = await renderReport(null);
 
 	expect(markdown).not.toContain('View details');
+});
+
+test('renders the difference of independent medians instead of the paired median delta', async () => {
+	const base = withMetricSamples(
+		await loadBrowserReport('base'),
+		[100, 100, 100, 1_000, 1_000],
+		(sample, value) => { sample.network.requestCount = value; },
+	);
+	const head = withMetricSamples(
+		await loadBrowserReport('head'),
+		[0, 0, 200, 200, 200],
+		(sample, value) => { sample.network.requestCount = value; },
+	);
+
+	const row = requireMetricRow(await renderReport(null, { base, head }), 'Requests');
+
+	expect(row).toContain('100 <br> ± 0');
+	expect(row).toContain('200 <br> ± 0');
+	expect(row).toContain('$\\color{orange}{\\text{+100}}$<br>$\\color{orange}{\\text{+100\\\\%}}$');
+	expect(row).toContain('| 0 | increase |');
+	expect(row).not.toContain('\\color{green}');
+});
+
+test('hides a threshold-sized change that remains within observed noise', async () => {
+	const base = withMetricSamples(
+		await loadBrowserReport('base'),
+		[100, 110, 120],
+		(sample, value) => { sample.network.requestCount = value; },
+	);
+	const head = withMetricSamples(
+		await loadBrowserReport('head'),
+		[110, 120, 130],
+		(sample, value) => { sample.network.requestCount = value; },
+	);
+
+	const markdown = await renderReport(null, { base, head });
+
+	expect(markdown).not.toContain('| **Requests** |');
+});
+
+test('hides a directional byte change below the existing absolute threshold', async () => {
+	const base = withMetricSamples(
+		await loadBrowserReport('base'),
+		[1_000_000, 1_000_000, 1_000_000],
+		(sample, value) => { sample.network.totalEncodedBytes = value; },
+	);
+	const head = withMetricSamples(
+		await loadBrowserReport('head'),
+		[1_005_000, 1_005_000, 1_005_000],
+		(sample, value) => { sample.network.totalEncodedBytes = value; },
+	);
+
+	const markdown = await renderReport(null, { base, head });
+
+	expect(markdown).not.toContain('| **Encoded network** |');
+});
+
+test('colours absolute and relative deltas using independent thresholds', async () => {
+	const base = withMetricSamples(
+		await loadBrowserReport('base'),
+		[100_000_000, 100_000_000, 100_000_000],
+		(sample, value) => { sample.network.totalEncodedBytes = value; },
+	);
+	const head = withMetricSamples(
+		await loadBrowserReport('head'),
+		[100_020_000, 100_020_000, 100_020_000],
+		(sample, value) => { sample.network.totalEncodedBytes = value; },
+	);
+
+	const row = requireMetricRow(await renderReport(null, { base, head }), 'Encoded network');
+
+	expect(row).toContain('100 MB <br> ± 0 B');
+	expect(row).toContain('$\\color{orange}{\\text{+20 KB}}$<br>$\\text{+0\\\\%}$');
+	expect(row).toContain('| 0 B | increase |');
+});
+
+test('renders an unavailable relative delta when the base median is zero', async () => {
+	const base = withMetricSamples(
+		await loadBrowserReport('base'),
+		[0, 0, 0],
+		(sample, value) => { sample.network.requestCount = value; },
+	);
+	const head = withMetricSamples(
+		await loadBrowserReport('head'),
+		[2, 2, 2],
+		(sample, value) => { sample.network.requestCount = value; },
+	);
+
+	const row = requireMetricRow(await renderReport(null, { base, head }), 'Requests');
+
+	expect(row).toContain('$\\color{orange}{\\text{+2}}$<br>-');
+	expect(row).toContain('increase');
+});
+
+test('hides an inconclusive metric with fewer than two samples on one side', async () => {
+	const base = withMetricSamples(
+		await loadBrowserReport('base'),
+		[100],
+		(sample, value) => { sample.network.requestCount = value; },
+	);
+	const head = withMetricSamples(
+		await loadBrowserReport('head'),
+		[102, 102],
+		(sample, value) => { sample.network.requestCount = value; },
+	);
+
+	const markdown = await renderReport(null, { base, head });
+
+	expect(markdown).not.toContain('| **Requests** |');
 });

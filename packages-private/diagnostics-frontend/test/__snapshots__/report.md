@@ -1,14 +1,14 @@
 ## 🖥 Frontend Diagnostics Report
 
-| Metric | Base | Head | Δ median | Δ MAD | Δ min | Δ max |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| **Encoded network** | 1 MB | 1.1 MB | $\color{orange}{\text{+83 KB}}$ | 816 B | $\color{orange}{\text{+82 KB}}$ | $\color{orange}{\text{+84 KB}}$ |
-| **Decoded body** | 3.5 MB | 3.7 MB | $\color{orange}{\text{+277 KB}}$ | 2.7 KB | $\color{orange}{\text{+274 KB}}$ | $\color{orange}{\text{+279 KB}}$ |
-| **Same-origin encoded** | 1 MB | 1.1 MB | $\color{orange}{\text{+82 KB}}$ | 800 B | $\color{orange}{\text{+81 KB}}$ | $\color{orange}{\text{+82 KB}}$ |
-| **Script encoded** | 918 KB | 991 KB | $\color{orange}{\text{+73 KB}}$ | 720 B | $\color{orange}{\text{+73 KB}}$ | $\color{orange}{\text{+74 KB}}$ |
-| **Page-attributed memory** | 92 MB | 99 MB | $\color{orange}{\text{+7.3 MB}}$ | 72 KB | $\color{orange}{\text{+7.3 MB}}$ | $\color{orange}{\text{+7.4 MB}}$ |
+| Metric | @ Base | @ Head | Δ | MAD | Result |
+| --- | ---: | ---: | ---: | ---: | --- |
+| **Encoded network** | 1 MB <br> ± 10 KB | 1.1 MB <br> ± 11 KB | $\color{orange}{\text{+83 KB}}$<br>$\color{orange}{\text{+8\\%}}$ | 15 KB | increase |
+| **Decoded body** | 3.5 MB <br> ± 34 KB | 3.7 MB <br> ± 37 KB | $\color{orange}{\text{+277 KB}}$<br>$\color{orange}{\text{+8\\%}}$ | 50 KB | increase |
+| **Same-origin encoded** | 1 MB <br> ± 10 KB | 1.1 MB <br> ± 11 KB | $\color{orange}{\text{+82 KB}}$<br>$\color{orange}{\text{+8\\%}}$ | 15 KB | increase |
+| **Script encoded** | 918 KB <br> ± 9 KB | 991 KB <br> ± 9.7 KB | $\color{orange}{\text{+73 KB}}$<br>$\color{orange}{\text{+8\\%}}$ | 13 KB | increase |
+| **Page-attributed memory** | 92 MB <br> ± 900 KB | 99 MB <br> ± 972 KB | $\color{orange}{\text{+7.3 MB}}$<br>$\color{orange}{\text{+8\\%}}$ | 1.3 MB | increase |
 
-<i>Only metrics showing significant changes are displayed.</i>
+_Values are median ± MAD (3 base / 3 head samples). Δ is Head - Base. Only changes outside observed noise that reach the display threshold are shown._
 
 [View details](https://example.invalid/html)
 

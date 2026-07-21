@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { formatBytes, formatColoredDelta, formatNumber } from 'diagnostics-shared/format';
+import { formatBytes, formatColoredDelta, formatDeltaPercentInMdTable, formatNumber } from 'diagnostics-shared/format';
 import { renderHeapSnapshotTable, type HeapSnapshotReport } from 'diagnostics-shared/heap-snapshot';
-import { pairedDeltaSummary } from 'diagnostics-shared/stats';
+import { independentDeltaSummary, type IndependentDeltaSummary, type IndependentDeltaVerdict } from 'diagnostics-shared/stats';
 import { renderFrontendChunkReport } from './bundle/chunk-report';
 import { collectVisualizerReport, renderVisualizerSummaryTable, type VisualizerReport } from './bundle/visualizer';
 import type { CollectedBundleReport } from './bundle/manifest';
-import type { BrowserMeasurement, BrowserMeasurementSample, BrowserMetricsReport } from './browser/types';
+import type { BrowserMeasurementSample, BrowserMetricsReport } from './browser/types';
 
 export type FrontendDiagnosticsMarkdownInput = {
 	bundle: {
@@ -29,84 +29,113 @@ export type FrontendDiagnosticsMarkdownInput = {
 	};
 };
 
+const percentColorThreshold = 0.1;
+
+function isDirectionalVerdict(verdict: IndependentDeltaVerdict) {
+	return verdict === 'increase' || verdict === 'decrease';
+}
+
+function formatOptionalMetricValue(value: number | null, formatter: (value: number) => string) {
+	return value == null ? '-' : formatter(value);
+}
+
+function formatMetricMedianWithMad(
+	value: number | null,
+	spread: number | null,
+	formatter: (value: number) => string,
+) {
+	if (value == null) return '-';
+	return `${formatter(value)} <br> ± ${formatOptionalMetricValue(spread, formatter)}`;
+}
+
+function formatMetricDelta(
+	summary: IndependentDeltaSummary,
+	formatter: (value: number) => string,
+	absoluteThreshold: number,
+) {
+	if (summary.delta == null) return '-';
+	return formatColoredDelta(
+		summary.delta,
+		formatter,
+		isDirectionalVerdict(summary.verdict) ? absoluteThreshold : Number.POSITIVE_INFINITY,
+	);
+}
+
+function formatMetricDeltaPercent(summary: IndependentDeltaSummary) {
+	if (summary.baseMedian == null || summary.baseMedian === 0 || summary.delta == null) return '-';
+	const percent = summary.delta * 100 / summary.baseMedian;
+	return formatDeltaPercentInMdTable(
+		percent,
+		isDirectionalVerdict(summary.verdict) ? percentColorThreshold : Number.POSITIVE_INFINITY,
+	);
+}
+
 function renderMetricRow(
 	label: string,
 	base: BrowserMetricsReport,
 	head: BrowserMetricsReport,
-	getSummaryValue: (summary: BrowserMeasurement) => number,
 	getSampleValue: (sample: BrowserMeasurementSample) => number,
 	formatter: (value: number) => string,
-	significantThreshold = 0,
-	skipIfNotSignificant = true,
+	significantThreshold: number,
 ) {
-	const baseValue = getSummaryValue(base.summary);
-	const headValue = getSummaryValue(head.summary);
-	if (baseValue == null || headValue == null || !Number.isFinite(baseValue) || !Number.isFinite(headValue)) return null;
+	const summary = independentDeltaSummary(base.samples, head.samples, getSampleValue);
+	if (!isDirectionalVerdict(summary.verdict) || summary.delta == null || Math.abs(summary.delta) < significantThreshold) return null;
 
-	const summary = pairedDeltaSummary(base.samples, head.samples, sample => getSampleValue(sample));
-	// 有意な閾値に満たない場合はそもそもrowとして出力しない
-	if (skipIfNotSignificant && (Math.abs(summary.median) < significantThreshold)) return null;
-
-	const deltaMedian = formatColoredDelta(summary.median, formatter, significantThreshold);
-
-	return `| **${label}** | ${formatter(baseValue)} | ${formatter(headValue)} | ${deltaMedian} | ${formatter(summary.mad)} | ${formatColoredDelta(summary.min, formatter, significantThreshold)} | ${formatColoredDelta(summary.max, formatter, significantThreshold)} |`;
-}
-
-function resourceTypeBytes(report: BrowserMeasurement, resourceTypes: string[]) {
-	return resourceTypes.reduce((sum, resourceType) => sum + (report.network.byResourceType[resourceType]?.encodedBytes ?? 0), 0);
+	const delta = `${formatMetricDelta(summary, formatter, significantThreshold)}<br>${formatMetricDeltaPercent(summary)}`;
+	return `| **${label}** | ${formatMetricMedianWithMad(summary.baseMedian, summary.baseMad, formatter)} | ${formatMetricMedianWithMad(summary.headMedian, summary.headMad, formatter)} | ${delta} | ${formatOptionalMetricValue(summary.combinedMad, formatter)} | ${summary.verdict} |`;
 }
 
 function resourceTypeSampleBytes(sample: BrowserMeasurementSample, resourceTypes: string[]) {
-	return resourceTypeBytes(sample, resourceTypes);
+	return resourceTypes.reduce((sum, resourceType) => sum + (sample.network.byResourceType[resourceType]?.encodedBytes ?? 0), 0);
 }
 
-function renderBrowserSummaryTable(base: BrowserMetricsReport, head: BrowserMetricsReport, all = false) {
+function renderBrowserSummaryTable(base: BrowserMetricsReport, head: BrowserMetricsReport) {
 	//function getMetric(report: BrowserMeasurement, key: string) {
 	//	return report.performance.cdpMetrics[key];
 	//}
 
 	const rows = [
-		//renderMetricRow('Scenario duration', base, head, summary => summary.durationMs, sample => sample.durationMs, formatMs),
-		renderMetricRow('Requests', base, head, summary => summary.network.requestCount, sample => sample.network.requestCount, formatNumber, 1, !all),
-		//renderMetricRow('Failed requests', base, head, summary => summary.network.failedRequestCount, sample => sample.network.failedRequestCount, formatNumber),
-		renderMetricRow('Encoded network', base, head, summary => summary.network.totalEncodedBytes, sample => sample.network.totalEncodedBytes, formatBytes, 10000, !all),
-		renderMetricRow('Decoded body', base, head, summary => summary.network.totalDecodedBodyBytes, sample => sample.network.totalDecodedBodyBytes, formatBytes, 10000, !all),
-		renderMetricRow('Same-origin encoded', base, head, summary => summary.network.sameOriginEncodedBytes, sample => sample.network.sameOriginEncodedBytes, formatBytes, 10000, !all),
-		renderMetricRow('Third-party encoded', base, head, summary => summary.network.thirdPartyEncodedBytes, sample => sample.network.thirdPartyEncodedBytes, formatBytes, 10000, !all),
-		renderMetricRow('Script encoded', base, head, summary => resourceTypeBytes(summary, ['Script']), sample => resourceTypeSampleBytes(sample, ['Script']), formatBytes, 10000, !all),
-		renderMetricRow('Stylesheet encoded', base, head, summary => resourceTypeBytes(summary, ['Stylesheet']), sample => resourceTypeSampleBytes(sample, ['Stylesheet']), formatBytes, 10000, !all),
-		renderMetricRow('Fetch/XHR encoded', base, head, summary => resourceTypeBytes(summary, ['Fetch', 'XHR']), sample => resourceTypeSampleBytes(sample, ['Fetch', 'XHR']), formatBytes, 10000, !all),
-		renderMetricRow('Image encoded', base, head, summary => resourceTypeBytes(summary, ['Image']), sample => resourceTypeSampleBytes(sample, ['Image']), formatBytes, 10000, !all),
-		renderMetricRow('Font encoded', base, head, summary => resourceTypeBytes(summary, ['Font']), sample => resourceTypeSampleBytes(sample, ['Font']), formatBytes, 10000, !all),
-		//renderMetricRow('First contentful paint', base, head, summary => summary.performance.webVitals.firstContentfulPaintMs, sample => sample.performance.webVitals.firstContentfulPaintMs, formatMs),
-		//renderMetricRow('Load event end', base, head, summary => summary.performance.webVitals.loadEventEndMs, sample => sample.performance.webVitals.loadEventEndMs, formatMs),
-		//renderMetricRow('Long tasks', base, head, summary => summary.performance.webVitals.longTaskCount, sample => sample.performance.webVitals.longTaskCount, formatNumber),
-		//renderMetricRow('Long task duration', base, head, summary => summary.performance.webVitals.longTaskDurationMs, sample => sample.performance.webVitals.longTaskDurationMs, formatMs),
-		//renderMetricRow('Max long task', base, head, summary => summary.performance.webVitals.maxLongTaskDurationMs, sample => sample.performance.webVitals.maxLongTaskDurationMs, formatMs),
-		//renderMetricRow('JS heap used', base, head, summary => summary.performance.runtimeHeap?.usedSize ?? getMetric(summary, 'JSHeapUsedSize'), sample => sample.performance.runtimeHeap?.usedSize ?? getMetric(sample, 'JSHeapUsedSize'), formatBytes),
-		//renderMetricRow('JS heap total', base, head, summary => summary.performance.runtimeHeap?.totalSize ?? getMetric(summary, 'JSHeapTotalSize'), sample => sample.performance.runtimeHeap?.totalSize ?? getMetric(sample, 'JSHeapTotalSize'), formatBytes),
-		//renderMetricRow('V8 heap snapshot total', base, head, summary => summary.heapSnapshot.categories.total, sample => sample.heapSnapshot.categories.total, formatBytes, 10000),
-		//renderMetricRow('DOM elements', base, head, summary => summary.performance.webVitals.domElements, sample => sample.performance.webVitals.domElements, formatNumber),
-		//renderMetricRow('CDP nodes', base, head, summary => getMetric(summary, 'Nodes'), sample => getMetric(sample, 'Nodes'), formatNumber),
-		//renderMetricRow('JS event listeners', base, head, summary => getMetric(summary, 'JSEventListeners'), sample => getMetric(sample, 'JSEventListeners'), formatNumber),
-		//renderMetricRow('Layout count', base, head, summary => getMetric(summary, 'LayoutCount'), sample => getMetric(sample, 'LayoutCount'), formatNumber),
-		//renderMetricRow('Recalc style count', base, head, summary => getMetric(summary, 'RecalcStyleCount'), sample => getMetric(sample, 'RecalcStyleCount'), formatNumber),
-		//renderMetricRow('Script duration', base, head, summary => getMetric(summary, 'ScriptDuration'), sample => getMetric(sample, 'ScriptDuration'), formatSecondsAsMs),
-		//renderMetricRow('Task duration', base, head, summary => getMetric(summary, 'TaskDuration'), sample => getMetric(sample, 'TaskDuration'), formatSecondsAsMs),
-		renderMetricRow('WebSocket connections', base, head, summary => summary.network.webSocketConnectionCount, sample => sample.network.webSocketConnectionCount, formatNumber, 1, !all),
-		renderMetricRow('WebSocket sent', base, head, summary => summary.network.webSocketSentBytes, sample => sample.network.webSocketSentBytes, formatBytes, 10000, !all),
-		renderMetricRow('WebSocket received', base, head, summary => summary.network.webSocketReceivedBytes, sample => sample.network.webSocketReceivedBytes, formatBytes, 10000, !all),
-		renderMetricRow('Page errors', base, head, summary => summary.diagnostics.pageErrorCount, sample => sample.diagnostics.pageErrorCount, formatNumber, 1, !all),
-		renderMetricRow('Console log', base, head, summary => summary.diagnostics.console.log, sample => sample.diagnostics.console.log, formatNumber, 1, !all),
-		renderMetricRow('Console warnings', base, head, summary => summary.diagnostics.console.warning, sample => sample.diagnostics.console.warning, formatNumber, 1, !all),
-		renderMetricRow('Console errors', base, head, summary => summary.diagnostics.console.error, sample => sample.diagnostics.console.error, formatNumber, 1, !all),
-		renderMetricRow('Console info', base, head, summary => summary.diagnostics.console.info, sample => sample.diagnostics.console.info, formatNumber, 1, !all),
-		renderMetricRow('Page-attributed memory', base, head, summary => summary.performance.tabMemory.totalBytes, sample => sample.performance.tabMemory.totalBytes, formatBytes, 10000, !all),
+		//renderMetricRow('Scenario duration', base, head, sample => sample.durationMs, formatMs, 0),
+		renderMetricRow('Requests', base, head, sample => sample.network.requestCount, formatNumber, 1),
+		//renderMetricRow('Failed requests', base, head, sample => sample.network.failedRequestCount, formatNumber, 1),
+		renderMetricRow('Encoded network', base, head, sample => sample.network.totalEncodedBytes, formatBytes, 10_000),
+		renderMetricRow('Decoded body', base, head, sample => sample.network.totalDecodedBodyBytes, formatBytes, 10_000),
+		renderMetricRow('Same-origin encoded', base, head, sample => sample.network.sameOriginEncodedBytes, formatBytes, 10_000),
+		renderMetricRow('Third-party encoded', base, head, sample => sample.network.thirdPartyEncodedBytes, formatBytes, 10_000),
+		renderMetricRow('Script encoded', base, head, sample => resourceTypeSampleBytes(sample, ['Script']), formatBytes, 10_000),
+		renderMetricRow('Stylesheet encoded', base, head, sample => resourceTypeSampleBytes(sample, ['Stylesheet']), formatBytes, 10_000),
+		renderMetricRow('Fetch/XHR encoded', base, head, sample => resourceTypeSampleBytes(sample, ['Fetch', 'XHR']), formatBytes, 10_000),
+		renderMetricRow('Image encoded', base, head, sample => resourceTypeSampleBytes(sample, ['Image']), formatBytes, 10_000),
+		renderMetricRow('Font encoded', base, head, sample => resourceTypeSampleBytes(sample, ['Font']), formatBytes, 10_000),
+		//renderMetricRow('First contentful paint', base, head, sample => sample.performance.webVitals.firstContentfulPaintMs, formatMs, 0),
+		//renderMetricRow('Load event end', base, head, sample => sample.performance.webVitals.loadEventEndMs, formatMs, 0),
+		//renderMetricRow('Long tasks', base, head, sample => sample.performance.webVitals.longTaskCount, formatNumber, 1),
+		//renderMetricRow('Long task duration', base, head, sample => sample.performance.webVitals.longTaskDurationMs, formatMs, 0),
+		//renderMetricRow('Max long task', base, head, sample => sample.performance.webVitals.maxLongTaskDurationMs, formatMs, 0),
+		//renderMetricRow('JS heap used', base, head, sample => sample.performance.runtimeHeap?.usedSize ?? getMetric(sample, 'JSHeapUsedSize'), formatBytes, 10_000),
+		//renderMetricRow('JS heap total', base, head, sample => sample.performance.runtimeHeap?.totalSize ?? getMetric(sample, 'JSHeapTotalSize'), formatBytes, 10_000),
+		//renderMetricRow('V8 heap snapshot total', base, head, sample => sample.heapSnapshot.categories.total, formatBytes, 10_000),
+		//renderMetricRow('DOM elements', base, head, sample => sample.performance.webVitals.domElements, formatNumber, 1),
+		//renderMetricRow('CDP nodes', base, head, sample => getMetric(sample, 'Nodes'), formatNumber, 1),
+		//renderMetricRow('JS event listeners', base, head, sample => getMetric(sample, 'JSEventListeners'), formatNumber, 1),
+		//renderMetricRow('Layout count', base, head, sample => getMetric(sample, 'LayoutCount'), formatNumber, 1),
+		//renderMetricRow('Recalc style count', base, head, sample => getMetric(sample, 'RecalcStyleCount'), formatNumber, 1),
+		//renderMetricRow('Script duration', base, head, sample => getMetric(sample, 'ScriptDuration'), formatSecondsAsMs, 0),
+		//renderMetricRow('Task duration', base, head, sample => getMetric(sample, 'TaskDuration'), formatSecondsAsMs, 0),
+		renderMetricRow('WebSocket connections', base, head, sample => sample.network.webSocketConnectionCount, formatNumber, 1),
+		renderMetricRow('WebSocket sent', base, head, sample => sample.network.webSocketSentBytes, formatBytes, 10_000),
+		renderMetricRow('WebSocket received', base, head, sample => sample.network.webSocketReceivedBytes, formatBytes, 10_000),
+		renderMetricRow('Page errors', base, head, sample => sample.diagnostics.pageErrorCount, formatNumber, 1),
+		renderMetricRow('Console log', base, head, sample => sample.diagnostics.console.log, formatNumber, 1),
+		renderMetricRow('Console warnings', base, head, sample => sample.diagnostics.console.warning, formatNumber, 1),
+		renderMetricRow('Console errors', base, head, sample => sample.diagnostics.console.error, formatNumber, 1),
+		renderMetricRow('Console info', base, head, sample => sample.diagnostics.console.info, formatNumber, 1),
+		renderMetricRow('Page-attributed memory', base, head, sample => sample.performance.tabMemory.totalBytes, formatBytes, 10_000),
 	].filter(row => row != null);
 
 	return [
-		'| Metric | Base | Head | Δ median | Δ MAD | Δ min | Δ max |',
-		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
+		'| Metric | @ Base | @ Head | Δ | MAD | Result |',
+		'| --- | ---: | ---: | ---: | ---: | --- |',
 		...rows,
 	].join('\n');
 }
@@ -178,7 +207,7 @@ export function renderFrontendDiagnosticsMarkdown(input: FrontendDiagnosticsMark
 		'',
 		renderBrowserSummaryTable(browser.base, browser.head),
 		'',
-		'<i>Only metrics showing significant changes are displayed.</i>',
+		`_Values are median ± MAD (${browser.base.samples.length} base / ${browser.head.samples.length} head samples). Δ is Head - Base. Only changes outside observed noise that reach the display threshold are shown._`,
 		'',
 		detailedHtmlUrl == null || detailedHtmlUrl === '' ? null : `[View details](${detailedHtmlUrl})`,
 		detailedHtmlUrl == null || detailedHtmlUrl === '' ? null : '',
