@@ -4,7 +4,16 @@
  */
 
 import { describe, expect, test } from 'vitest';
-import { finiteMedian, independentDeltaSummary, mad, median, pairedDeltaSummary, sampleSpread } from '../src/stats';
+import {
+	finiteMedian,
+	independentDeltaSummary,
+	isOutsideObservedNoise,
+	mad,
+	median,
+	pairedDeltaSummary,
+	sampleSpread,
+	type IndependentDeltaSummary,
+} from '../src/stats';
 
 describe('median', () => {
 	test('takes the middle value of an odd-length sample', () => {
@@ -126,66 +135,60 @@ describe('independentDeltaSummary', () => {
 			headMad: 3_400,
 			baseSamples: 5,
 			headSamples: 5,
-			verdict: 'within noise',
 		});
 		expect(summary.combinedMad).toBeCloseTo(Math.hypot(2_900, 3_400));
 	});
 
-	test('allows unequal sample counts and ignores non-finite values', () => {
+	test('allows unequal sample counts', () => {
 		const summary = independentDeltaSummary(
-			[{ value: 10 }, { value: 20 }, { value: Number.NaN }],
+			[{ value: 10 }, { value: 20 }],
 			[{ value: 20 }, { value: 30 }, { value: 40 }],
 			sample => sample.value,
 		);
 
-		expect(summary).toMatchObject({
+		expect(summary).toStrictEqual({
 			baseMedian: 15,
 			headMedian: 30,
 			delta: 15,
+			baseMad: 5,
+			headMad: 10,
+			combinedMad: Math.hypot(5, 10),
 			baseSamples: 2,
 			headSamples: 3,
-			verdict: 'within noise',
 		});
 	});
 
-	test('returns inconclusive without throwing when either side has fewer than two values', () => {
-		expect(independentDeltaSummary(
+	test('throws when either side has fewer than two samples', () => {
+		expect(() => independentDeltaSummary(
 			[{ value: 10 }],
 			[{ value: 20 }, { value: 20 }],
 			sample => sample.value,
-		)).toStrictEqual({
-			baseMedian: 10,
-			headMedian: 20,
-			delta: 10,
-			baseMad: null,
-			headMad: 0,
-			combinedMad: null,
-			baseSamples: 1,
-			headSamples: 2,
-			verdict: 'inconclusive',
-		});
+		)).toThrow('At least two samples per side are required');
+
+		expect(() => independentDeltaSummary(
+			[{ value: 10 }, { value: 10 }],
+			[{ value: 20 }],
+			sample => sample.value,
+		)).toThrow('At least two samples per side are required');
 	});
 
-	test('classifies clear increases and decreases when MAD is zero', () => {
-		expect(independentDeltaSummary(
-			[{ value: 10 }, { value: 10 }],
-			[{ value: 11 }, { value: 11 }],
-			sample => sample.value,
-		).verdict).toBe('increase');
+	test('treats exactly three combined MADs as noise and only larger deltas as outside noise', () => {
+		function summary(delta: number, combinedMad: number): IndependentDeltaSummary {
+			return {
+				baseMedian: 100,
+				headMedian: 100 + delta,
+				delta,
+				baseMad: 0,
+				headMad: combinedMad,
+				combinedMad,
+				baseSamples: 3,
+				headSamples: 3,
+			};
+		}
 
-		expect(independentDeltaSummary(
-			[{ value: 10 }, { value: 10 }],
-			[{ value: 9 }, { value: 9 }],
-			sample => sample.value,
-		).verdict).toBe('decrease');
-	});
-
-	test('can force a statistically sufficient result to inconclusive', () => {
-		expect(independentDeltaSummary(
-			[{ value: 10 }, { value: 10 }],
-			[{ value: 20 }, { value: 20 }],
-			sample => sample.value,
-			{ forceInconclusive: true },
-		).verdict).toBe('inconclusive');
+		expect(isOutsideObservedNoise(summary(29, 10))).toBe(false);
+		expect(isOutsideObservedNoise(summary(30, 10))).toBe(false);
+		expect(isOutsideObservedNoise(summary(31, 10))).toBe(true);
+		expect(isOutsideObservedNoise(summary(-31, 10))).toBe(true);
 	});
 });

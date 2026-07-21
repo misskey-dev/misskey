@@ -37,65 +37,47 @@ export function sampleSpread(values: (number | null | undefined)[]) {
 	return mad(finiteValues);
 }
 
-export type IndependentDeltaVerdict = 'inconclusive' | 'within noise' | 'increase' | 'decrease';
-
 export type IndependentDeltaSummary = {
-	baseMedian: number | null;
-	headMedian: number | null;
-	delta: number | null;
-	baseMad: number | null;
-	headMad: number | null;
-	combinedMad: number | null;
+	baseMedian: number;
+	headMedian: number;
+	delta: number;
+	baseMad: number;
+	headMad: number;
+	combinedMad: number;
 	baseSamples: number;
 	headSamples: number;
-	verdict: IndependentDeltaVerdict;
 };
-
-export type IndependentDeltaSummaryOptions = {
-	forceInconclusive?: boolean;
-};
-
-function finiteSampleValues<T>(samples: T[], getValue: (sample: T) => number | null | undefined) {
-	return samples
-		.map(getValue)
-		.filter((value): value is number => value != null && Number.isFinite(value));
-}
 
 export function independentDeltaSummary<T>(
 	baseSamples: T[],
 	headSamples: T[],
-	getValue: (sample: T) => number | null | undefined,
-	options: IndependentDeltaSummaryOptions = {},
+	getValue: (sample: T) => number,
 ): IndependentDeltaSummary {
-	const baseValues = finiteSampleValues(baseSamples, getValue);
-	const headValues = finiteSampleValues(headSamples, getValue);
-	const baseMedian = finiteMedian(baseValues);
-	const headMedian = finiteMedian(headValues);
-	const delta = baseMedian == null || headMedian == null ? null : headMedian - baseMedian;
-	const baseMad = sampleSpread(baseValues);
-	const headMad = sampleSpread(headValues);
-	const combinedMad = baseMad == null || headMad == null ? null : Math.hypot(baseMad, headMad);
-
-	let verdict: IndependentDeltaVerdict;
-	if (options.forceInconclusive === true || delta == null || combinedMad == null) {
-		verdict = 'inconclusive';
-	} else if (Math.abs(delta) <= combinedMad * 3) {
-		verdict = 'within noise';
-	} else {
-		verdict = delta > 0 ? 'increase' : 'decrease';
+	const baseValues = baseSamples.map(getValue);
+	const headValues = headSamples.map(getValue);
+	if (baseValues.length < 2 || headValues.length < 2) {
+		throw new Error('At least two samples per side are required');
 	}
+
+	const baseMedian = median(baseValues);
+	const headMedian = median(headValues);
+	const baseMad = mad(baseValues);
+	const headMad = mad(headValues);
 
 	return {
 		baseMedian,
 		headMedian,
-		delta,
+		delta: headMedian - baseMedian,
 		baseMad,
 		headMad,
-		combinedMad,
+		combinedMad: Math.hypot(baseMad, headMad),
 		baseSamples: baseValues.length,
 		headSamples: headValues.length,
-		verdict,
 	};
+}
+
+export function isOutsideObservedNoise(summary: IndependentDeltaSummary) {
+	return Math.abs(summary.delta) > summary.combinedMad * 3;
 }
 
 type RoundedSample = { round: number };
