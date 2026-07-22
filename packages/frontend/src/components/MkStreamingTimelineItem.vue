@@ -52,8 +52,8 @@ const innerEl = useTemplateRef('innerEl');
 
 const animating = ref(false);
 
-watch(() => props.animatingIn === true || props.animatingOut === true, (shouldAnimate) => {
-	if (shouldAnimate) animating.value = true;
+watch([() => props.animatingIn, () => props.animatingOut], ([animatingIn, animatingOut]) => {
+	if (animatingIn === true || animatingOut === true) animating.value = true;
 }, { immediate: true });
 
 function onAnimationEnd() {
