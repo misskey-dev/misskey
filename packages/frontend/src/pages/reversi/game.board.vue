@@ -303,7 +303,11 @@ if (!props.game.isEnded) {
 				props.connection!.send('claimTimeIsUp', {});
 			}
 		}
-	}, TIMER_INTERVAL_SEC * 1000, { immediate: false, afterMounted: true });
+	}, TIMER_INTERVAL_SEC * 1000, {
+		immediate: false,
+		afterMounted: true,
+		keepRunningWhenHidden: true, // 対局の制限時間管理のため、バックグラウンドでも止めない
+	});
 }
 
 async function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
