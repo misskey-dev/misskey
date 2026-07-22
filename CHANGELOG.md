@@ -44,6 +44,7 @@
 - Fix: ノートの詳細表示で削除された引用元が表示されない問題を修正
 
 ### Server
+- Fix: チャートの日次補正 (resyncCharts) が大規模テーブルの集計で statement timeout に達して毎回失敗し、ノート・ユーザー総数が実際の値から乖離し続ける問題を修正
 - Feat: OpenTelemetryサポート
   - 詳細な設定はconfigファイルを参照してください。
   - Sentryとの併用も可能です。Sentry併用時は、PostgreSQL Query と Redis command は Sentry で計装されます。
