@@ -120,6 +120,10 @@ const { data } = toRefs(props);
  */
 const bus = new GridEventEmitter();
 /**
+ * {@link resizeObserver}が発行した、まだ実行されていない{@link setTimeout}のID。アンマウント時にまとめて破棄するために保持する。
+ */
+const resizeTimeoutIds = new Set<number>();
+/**
  * テーブルコンポーネントのリサイズイベントを監視するための{@link ResizeObserver}。
  * 表示切替を検知し、サイズの再計算要求を発行するために使用する（マウント時にコンテンツが表示されていない場合、初手のサイズの自動計算が正常に働かないため）
  *
@@ -128,7 +132,13 @@ const bus = new GridEventEmitter();
  *
  * @see {@link onResize}
  */
-const resizeObserver = new ResizeObserver((entries) => window.setTimeout(() => onResize(entries)));
+const resizeObserver = new ResizeObserver((entries) => {
+	const timeoutId = window.setTimeout(() => {
+		resizeTimeoutIds.delete(timeoutId);
+		onResize(entries);
+	});
+	resizeTimeoutIds.add(timeoutId);
+});
 
 const rootEl = useTemplateRef('rootEl');
 /**
@@ -1268,6 +1278,14 @@ onMounted(() => {
 
 onUnmounted(() => {
 	resizeObserver.disconnect();
+	for (const timeoutId of resizeTimeoutIds) {
+		window.clearTimeout(timeoutId);
+	}
+	resizeTimeoutIds.clear();
+
+	// 選択操作の途中でアンマウントされた場合、windowに登録したままのリスナーが残ってしまうので解除しておく
+	unregisterMouseMove();
+	unregisterMouseUp();
 });
 </script>
 
