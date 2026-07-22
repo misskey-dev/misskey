@@ -60,21 +60,26 @@ export function renderMetricComparisonTable<T>(
 	options: MetricComparisonTableOptions = {},
 ): string {
 	const lines: string[] = [];
+	let omitted = false;
 
 	for (const row of rows) {
 		const summary = independentDeltaSummary(baseSamples, headSamples, row.getValue);
 		const significant = isSignificant(summary, row.absoluteThreshold);
-		if (options.onlySignificantChanges === true && !significant) continue;
+		if (options.onlySignificantChanges === true && !significant) {
+			omitted = true;
+			continue;
+		}
 
 		lines.push(`| ${row.label} | ${formatMedian(summary.baseMedian, summary.baseMad, row)} | ${formatMedian(summary.headMedian, summary.headMad, row)} | ${formatDelta(summary, row, significant)} | ${row.formatValue(summary.combinedMad)} |`);
 		if (row.separatorAfter === true) lines.push('| | | | | |');
 	}
 
-	if (lines.length === 0) return '**(No data)**';
+	if (lines.length === 0) return '**(No significant changes)**';
 
 	return [
 		'| Metric | @ Base | @ Head | Δ | MAD |',
 		'| --- | ---: | ---: | ---: | ---: |',
 		...lines,
+		...(omitted ? ['', '<small><i>Only metrics showing significant changes are displayed.</i></small>'] : []),
 	].join('\n');
 }

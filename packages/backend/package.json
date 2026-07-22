@@ -148,7 +148,7 @@
 		"tinycolor2": "1.6.0",
 		"tmp": "0.2.7",
 		"tsc-alias": "1.9.0",
-		"typeorm": "1.0.0",
+		"typeorm": "1.1.0",
 		"ulid": "3.0.2",
 		"vary": "1.1.2",
 		"web-push": "3.6.7",

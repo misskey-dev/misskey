@@ -70,6 +70,7 @@ function renderMainTableForPhase(base: MemoryReport, head: MemoryReport, phase: 
 			formatValue: formatKiBAsMb,
 			absoluteThreshold: memoryColorThresholdKiB,
 		})),
+		{ onlySignificantChanges: true },
 	);
 }
 
@@ -138,7 +139,6 @@ export function renderMemoryReportMarkdown(base: MemoryReport, head: MemoryRepor
 		lines.push('');
 	}
 
-	lines.push(`_Values are median ± MAD (${base.samples.length} base / ${head.samples.length} head samples). Delta is Head - Base. Deltas are highlighted when their absolute value reaches the metric threshold and exceeds 3 × MAD._`);
 	lines.push('');
 
 	const nonConvergedSamples = countNonConvergedMemorySamples(base, head);

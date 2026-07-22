@@ -6,9 +6,9 @@
 | **HeapUsed** | 152 MB <br> ± 1 MB | 168 MB <br> ± 1 MB | $\color{orange}{\text{+16 MB}}$<br>$\color{orange}{\text{+10.5\\%}}$ | 1.4 MB |
 | **PSS** | 202 MB <br> ± 1 MB | 218 MB <br> ± 1 MB | $\color{orange}{\text{+16 MB}}$<br>$\color{orange}{\text{+7.9\\%}}$ | 1.4 MB |
 | **USS** | 184 MB <br> ± 1 MB | 200 MB <br> ± 1 MB | $\color{orange}{\text{+16 MB}}$<br>$\color{orange}{\text{+8.7\\%}}$ | 1.4 MB |
-| **External** | 8.2 MB <br> ± 0.1 MB | 8.2 MB <br> ± 0.1 MB | 0 MB<br>0% | 0.1 MB |
 
-_Values are median ± MAD (3 base / 3 head samples). Delta is Head - Base. Deltas are highlighted when their absolute value reaches the metric threshold and exceeds 3 × MAD._
+<small><i>Only metrics showing significant changes are displayed.</i></small>
+
 
 ### V8 Heap Snapshot Statistics
 

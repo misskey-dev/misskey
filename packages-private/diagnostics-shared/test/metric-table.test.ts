@@ -66,7 +66,7 @@ describe('renderMetricComparisonTable', () => {
 		expect(table).not.toContain('\\color{');
 		expect(renderMetricComparisonTable(base, head, [defaultRow], {
 			onlySignificantChanges: true,
-		})).toBe('**(No data)**');
+		})).toBe('**(No significant changes)**');
 	});
 
 	test('renders a no-data marker when no rows are configured', () => {
@@ -74,7 +74,7 @@ describe('renderMetricComparisonTable', () => {
 			samples(100, 100, 100),
 			samples(120, 120, 120),
 			[],
-		)).toBe('**(No data)**');
+		)).toBe('**(No significant changes)**');
 	});
 
 	test('treats the absolute threshold itself as significant', () => {
