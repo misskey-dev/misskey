@@ -3,13 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	formatBytes,
-	formatDeltaBytes,
-	formatDeltaPercentInMdTable,
-	formatPercent,
-} from '../format';
-import { mad, pairedDeltaSummary } from '../stats';
+import { formatBytes } from '../format';
+import { renderMetricComparisonTable } from '../metric-table';
 import {
 	heapSnapshotCategories,
 	heapSnapshotCategory,
@@ -24,15 +19,6 @@ function categoryValue(report: HeapSnapshotReport, category: HeapSnapshotCategor
 	return report.summary.categories[category];
 }
 
-function categorySampleSpread(report: HeapSnapshotReport, category: HeapSnapshotCategory) {
-	const values = report.samples
-		.map(sample => sample.data.categories[category])
-		.filter(value => Number.isFinite(value));
-	if (values.length < 2) throw new Error(`Not enough samples for category ${category}`);
-
-	return mad(values);
-}
-
 function swatch(category: HeapSnapshotCategory) {
 	return `$\\color{${heapSnapshotCategory[category].color}}{\\rule{8pt}{8pt}}$ **${heapSnapshotCategory[category].label}**`;
 }
@@ -41,38 +27,19 @@ function swatch(category: HeapSnapshotCategory) {
  * base / head のheap snapshotをカテゴリ別に比較するMarkdownテーブルを描画する。
  */
 export function renderHeapSnapshotTable(base: HeapSnapshotReport, head: HeapSnapshotReport) {
-	const lines = [
-		'| Metric | Base | Head | Δ median | Δ MAD | Δ min | Δ max |',
-		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
-	];
-	const baseTotal = categoryValue(base, 'total');
-	const headTotal = categoryValue(head, 'total');
-
-	for (const category of heapSnapshotCategories) {
-		const baseValue = categoryValue(base, category);
-		const headValue = categoryValue(head, category);
-		const summary = pairedDeltaSummary(base.samples, head.samples, sample => sample.data.categories[category]);
-		const deltaColumns = `${formatBytes(summary.mad)} | ${formatDeltaBytes(summary.min, byteColorThreshold)} | ${formatDeltaBytes(summary.max, byteColorThreshold)}`;
-
-		if (category === 'total') {
-			// Totalだけはばらつきと変化率も併記する
-			const percent = summary.median * 100 / baseValue;
-			const deltaMedian = `${formatDeltaBytes(summary.median, byteColorThreshold)}<br>${formatDeltaPercentInMdTable(percent, 0.1)}`;
-			const baseText = `${formatBytes(baseValue)} <br> ± ${formatBytes(categorySampleSpread(base, category))}`;
-			const headText = `${formatBytes(headValue)} <br> ± ${formatBytes(categorySampleSpread(head, category))}`;
-			lines.push(`| ${swatch(category)} | ${baseText} | ${headText} | ${deltaMedian} | ${deltaColumns} |`);
-			lines.push('| | | | | | | |');
-		} else {
-			// 各カテゴリはTotalに占める割合の推移をdetailsで見せる
-			const basePercent = formatPercent((baseValue * 100) / baseTotal);
-			const headPercent = formatPercent((headValue * 100) / headTotal);
-			const metricText = `<details><summary>${swatch(category)}</summary>${basePercent} → ${headPercent}</details>`;
-			lines.push(`| ${metricText} | ${formatBytes(baseValue)} | ${formatBytes(headValue)} | ${formatDeltaBytes(summary.median, byteColorThreshold)} | ${deltaColumns} |`);
-		}
-	}
-
-	if (lines.length === 2) return null;
-	return lines.join('\n');
+	return renderMetricComparisonTable(
+		base.samples,
+		head.samples,
+		heapSnapshotCategories.map(category => ({
+			label: swatch(category),
+			getValue: sample => sample.data.categories[category],
+			formatValue: formatBytes,
+			absoluteThreshold: byteColorThreshold,
+			showMedianMad: category === 'total',
+			showDeltaPercentage: category === 'total',
+			separatorAfter: category === 'total',
+		})),
+	);
 }
 
 const sankeyChildMinRatio = 0.3;

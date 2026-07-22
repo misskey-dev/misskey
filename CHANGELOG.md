@@ -38,7 +38,9 @@
 - Fix: いくつかのイベントリスナーが正しく解除されない問題を修正（メモリ使用量の改善）
 - Fix: 非ログイン時トップページをスクロール操作できないことがある問題を修正
 - Fix: ローカルユーザーへのホスト付きメンションが本文に含まれる指名ノートの作成時、投稿フォームにて、当該ユーザーが宛先に含まれていても正しく認識されない問題を修正
+- Fix: チャートの描画終了後にリソースが解放されない問題を修正
 - Fix: ドライブの「このファイルからノートを作成」やギャラリーの「ノートで共有」、誕生日ウィジェットからのノート作成において、通常投稿の下書きが表示される問題を修正
+- Fix: QRコードリーダーがページを離れても停止しない問題を修正
 
 ### Server
 - Feat: OpenTelemetryサポート
@@ -50,15 +52,16 @@
     - 全ての受信HTTPリクエスト
     - 全ての送信HTTPリクエスト
     - ジョブキュー（エンキュー元のトレースを含む）
+- Feat: ログ基盤の刷新（部分的に導入中）
+  - API内部エラーのログに構造化属性と正規化したエラー情報を付与し、認証情報を自動的に秘匿するように（従来形式の表示は維持）
+  - ログ全体の既定出力レベルとドメインごとの出力レベルを設定できるように
+  - バックエンドのログを1行JSON形式で出力できるように
+  - OpenTelemetryのTrace ContextをJSON形式のログへ関連付けられるように
 - Enhance: Sentry バックエンドの自動計装を `sentryForBackend.disabledIntegrations` で個別に無効化できるように
 - Enhance: センシティブメディアの判定を外部サービス ([sensitive-detector](https://github.com/misskey-dev/sensitive-detector)) に分離し、`nsfwjs` / `@tensorflow/tfjs(-node)` の同梱と NSFW 判定モデルを廃止 (#16804)
 - Enhance: Node.js 22.22.2以降、24.17.0以降、26.4.0以降をサポートするように
 - Enhance: Docker Image の Node.js を 26.4.0 に、Debian を trixie (v13) に更新
 - Enhance: URLプレビューの結果を内部でキャッシュするように
-- Enhance: API内部エラーのログに構造化属性と正規化したエラー情報を付与し、認証情報を自動的に秘匿するように（従来形式の表示は維持）
-- Enhance: ログ全体の既定levelとlogger domainごとの出力levelを設定できるように
-- Enhance: バックエンドのログを1行JSON形式で出力できるように
-- Enhance: OpenTelemetryのTrace Contextを構造化ログへ関連付けられるように
 - Fix: `/stats` API のレスポンス型が正しくない問題を修正
 - Fix: ハッシュタグに関連するデータを更新する際のエラーハンドリングを修正
 - Fix: Sentry 使用環境下にて、Misskey が発行した SQL クエリが span に含まれない問題を修正

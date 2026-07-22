@@ -37,6 +37,7 @@ export type MemoryReport = {
 		strategy: string;
 		rounds: number;
 		warmupRounds: number;
+		heapSnapshotRounds?: number;
 		startedAt: string;
 	};
 	summary: Record<MemoryPhase, {
