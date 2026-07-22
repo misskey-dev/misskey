@@ -279,29 +279,50 @@ function putStone(pos: number) {
 	});
 	appliedOps.push(id);
 
-	myTurnTimerRmain.value = game.value.timeLimitForEachTurn;
-	opTurnTimerRmain.value = game.value.timeLimitForEachTurn;
+	resetTurnTimer();
 
 	checkEnd();
 }
 
 const myTurnTimerRmain = ref<number>(game.value.timeLimitForEachTurn);
 const opTurnTimerRmain = ref<number>(game.value.timeLimitForEachTurn);
+let turnTimerDeadline = Date.now() + game.value.timeLimitForEachTurn * 1000;
+
+// バックグラウンドではタイマーがスロットリングされて呼び出し間隔が延びるため、
+// 固定値の減算ではなく期限の絶対時刻との差分で残り時間を計算する
+function updateTurnTimerRmain(): number {
+	const remain = Math.min(game.value.timeLimitForEachTurn, Math.max(0, Math.ceil((turnTimerDeadline - Date.now()) / 1000)));
+	myTurnTimerRmain.value = remain;
+	opTurnTimerRmain.value = remain;
+	return remain;
+}
+
+// 着手を検知した直後は、その時点のローカル時刻を基準に期限を設定する (サーバーとの時計のズレの影響を受けないため)
+function resetTurnTimer() {
+	turnTimerDeadline = Date.now() + game.value.timeLimitForEachTurn * 1000;
+	updateTurnTimerRmain();
+}
+
+// ページを開いた時点や再取得時は手番の開始時刻をローカルでは知り得ないため、
+// サーバーが記録したログの時刻 (絶対時刻) を基準に期限を復元する
+function restoreTurnTimer() {
+	const logs = Reversi.Serializer.deserializeLogs(game.value.logs);
+	const turnStartedAt = logs.at(-1)?.time ?? (game.value.startedAt != null ? Date.parse(game.value.startedAt) : Date.now());
+	turnTimerDeadline = turnStartedAt + game.value.timeLimitForEachTurn * 1000;
+	updateTurnTimerRmain();
+}
+
+restoreTurnTimer();
 
 const TIMER_INTERVAL_SEC = 3;
 if (!props.game.isEnded) {
 	useInterval(() => {
-		if (myTurnTimerRmain.value > 0) {
-			myTurnTimerRmain.value = Math.max(0, myTurnTimerRmain.value - TIMER_INTERVAL_SEC);
-		}
-		if (opTurnTimerRmain.value > 0) {
-			opTurnTimerRmain.value = Math.max(0, opTurnTimerRmain.value - TIMER_INTERVAL_SEC);
-		}
+		if (game.value.isEnded) return;
 
-		if (iAmPlayer.value) {
-			if ((isMyTurn.value && myTurnTimerRmain.value === 0) || (!isMyTurn.value && opTurnTimerRmain.value === 0)) {
-				props.connection!.send('claimTimeIsUp', {});
-			}
+		const remain = updateTurnTimerRmain();
+
+		if (iAmPlayer.value && remain === 0) {
+			props.connection!.send('claimTimeIsUp', {});
 		}
 	}, TIMER_INTERVAL_SEC * 1000, { immediate: false, afterMounted: true });
 }
@@ -333,8 +354,7 @@ async function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) 
 				engine.value.putStone(log.pos);
 				triggerRef(engine);
 
-				myTurnTimerRmain.value = game.value.timeLimitForEachTurn;
-				opTurnTimerRmain.value = game.value.timeLimitForEachTurn;
+				resetTurnTimer();
 
 				checkEnd();
 				break;
@@ -397,6 +417,8 @@ function restoreGame(_game: Misskey.entities.ReversiGameDetailed) {
 	});
 
 	logPos.value = game.value.logs.length;
+
+	restoreTurnTimer();
 
 	checkEnd();
 }
