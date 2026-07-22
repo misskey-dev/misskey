@@ -14,7 +14,7 @@ declare const _PERF_PREFIX_: string;
 // for dev-mode
 declare const _LANGS_FULL_: string[][];
 
-// TagCanvas
 interface Window {
 	TagCanvas: any;
+	errored?: boolean;
 }

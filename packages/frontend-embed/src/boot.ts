@@ -129,44 +129,48 @@ const rootEl = ((): HTMLElement => {
 
 postMessageToParentWindow('misskey:embed:ready');
 
-app.mount(rootEl);
+// もし、ここまでの処理でエラースクリーンが出ていた場合はマウントしない
+// （Vue側のインタフェースと干渉して操作不能になることがあるため）
+if (!window.errored) {
+	app.mount(rootEl);
 
-// boot.jsのやつを解除
-window.onerror = null;
-window.onunhandledrejection = null;
+	// boot.jsのやつを解除
+	window.onerror = null;
+	window.onunhandledrejection = null;
 
-removeSplash();
+	removeSplash();
 
-//#region Self-XSS 対策メッセージ
-console.log(
-	`%c${i18n.ts._selfXssPrevention.warning}`,
-	'color: #f00; background-color: #ff0; font-size: 36px; padding: 4px;',
-);
-console.log(
-	`%c${i18n.ts._selfXssPrevention.title}`,
-	'color: #f00; font-weight: 900; font-family: "Hiragino Sans W9", "Hiragino Kaku Gothic ProN", sans-serif; font-size: 24px;',
-);
-console.log(
-	`%c${i18n.ts._selfXssPrevention.description1}`,
-	'font-size: 16px; font-weight: 700;',
-);
-console.log(
-	`%c${i18n.ts._selfXssPrevention.description2}`,
-	'font-size: 16px;',
-	'font-size: 20px; font-weight: 700; color: #f00;',
-);
-console.log(i18n.tsx._selfXssPrevention.description3({ link: 'https://misskey-hub.net/docs/for-users/resources/self-xss/' }));
-//#endregion
+	//#region Self-XSS 対策メッセージ
+	console.log(
+		`%c${i18n.ts._selfXssPrevention.warning}`,
+		'color: #f00; background-color: #ff0; font-size: 36px; padding: 4px;',
+	);
+	console.log(
+		`%c${i18n.ts._selfXssPrevention.title}`,
+		'color: #f00; font-weight: 900; font-family: "Hiragino Sans W9", "Hiragino Kaku Gothic ProN", sans-serif; font-size: 24px;',
+	);
+	console.log(
+		`%c${i18n.ts._selfXssPrevention.description1}`,
+		'font-size: 16px; font-weight: 700;',
+	);
+	console.log(
+		`%c${i18n.ts._selfXssPrevention.description2}`,
+		'font-size: 16px;',
+		'font-size: 20px; font-weight: 700; color: #f00;',
+	);
+	console.log(i18n.tsx._selfXssPrevention.description3({ link: 'https://misskey-hub.net/docs/for-users/resources/self-xss/' }));
+	//#endregion
 
-function removeSplash() {
-	const splash = window.document.getElementById('splash');
-	if (splash) {
-		splash.style.opacity = '0';
-		splash.style.pointerEvents = 'none';
+	function removeSplash() {
+		const splash = window.document.getElementById('splash');
+		if (splash) {
+			splash.style.opacity = '0';
+			splash.style.pointerEvents = 'none';
 
-		// transitionendイベントが発火しない場合があるため
-		window.setTimeout(() => {
-			splash.remove();
-		}, 1000);
+			// transitionendイベントが発火しない場合があるため
+			window.setTimeout(() => {
+				splash.remove();
+			}, 1000);
+		}
 	}
 }

@@ -7,12 +7,16 @@
 
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
+	window.errored = false;
+
 	window.onerror = (e) => {
 		console.error(e);
+		window.errored = true;
 		renderError('SOMETHING_HAPPENED');
 	};
 	window.onunhandledrejection = (e) => {
 		console.error(e);
+		window.errored = true;
 		renderError('SOMETHING_HAPPENED_IN_PROMISE');
 	};
 
