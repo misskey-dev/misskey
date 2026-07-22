@@ -118,7 +118,7 @@ export class JsonConsoleBackend implements LogBackend {
 		this.dependencies.output(JSON.stringify(createJsonLogRecord(record)));
 	}
 
-	/** Access logを本文・認証情報を含まない1行JSONとして出力します。 */
+	/** Access logを1行JSONとして出力します。本文は設定で有効化された場合のみ、秘匿処理済みで含まれます。 */
 	public writeAccess(record: AccessLogRecord): void {
 		// JSON.stringifyが改行をエスケープするため、1件を1物理行に保ちます。
 		this.dependencies.output(JSON.stringify(createJsonAccessLogRecord(record)));

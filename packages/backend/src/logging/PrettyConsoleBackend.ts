@@ -8,7 +8,7 @@ import { default as convertColor } from 'color-convert';
 import { format as dateFormat } from 'date-fns';
 import { envOption } from '@/env.js';
 import type { LogBackend } from './LogBackend.js';
-import type { AccessLogRecord, LogRecord } from './types.js';
+import type { AccessLogRecord, LogAttributeValue, LogRecord } from './types.js';
 
 /** 見やすい形式の出力処理が外部から受け取る依存関係です。 */
 export type PrettyConsoleBackendDependencies = {
@@ -20,6 +20,15 @@ const defaultDependencies: PrettyConsoleBackendDependencies = {
 	output: (...args) => console.log(...args),
 	withLogTime: () => envOption.withLogTime,
 };
+
+/** Pretty形式でだけnull prototypeを通常のオブジェクトへ変換し、正規化済みの値自体は変更しません。 */
+function toPrettyLogValue(value: LogAttributeValue): LogAttributeValue {
+	if (Array.isArray(value)) return value.map(item => toPrettyLogValue(item));
+	if (value !== null && typeof value === 'object') {
+		return Object.fromEntries(Object.entries(value).map(([key, child]) => [key, toPrettyLogValue(child)]));
+	}
+	return value;
+}
 
 /**
  * 人が読みやすい従来形式へ整形し、コンソールへ出力します。
@@ -106,8 +115,8 @@ export class PrettyConsoleBackend implements LogBackend {
 
 		const details = {
 			...(record.errorType != null ? { errorType: record.errorType } : {}),
-			...(record.requestBody !== undefined ? { requestBody: record.requestBody } : {}),
-			...(record.responseBody !== undefined ? { responseBody: record.responseBody } : {}),
+			...(record.requestBody !== undefined ? { requestBody: toPrettyLogValue(record.requestBody) } : {}),
+			...(record.responseBody !== undefined ? { responseBody: toPrettyLogValue(record.responseBody) } : {}),
 		};
 		const args: unknown[] = [log];
 		if (Object.keys(details).length > 0) args.push(details);
