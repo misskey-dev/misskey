@@ -7,12 +7,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div
 		ref="rootEl"
 		:class="[$style.root, {
-			[$style.enter]: animatingIn,
+			[$style.enter]: animatingIn && animating && !animatingOut,
 			[$style.leave]: animatingOut,
 			[$style.animating]: animating,
 		}]"
-		@animationstart="animating = true"
-		@animationend="animating = false"
+		@animationend.self="onAnimationEnd"
+		@animationcancel.self="onAnimationEnd"
 	>
 		<div ref="innerEl">
 			<slot></slot>
@@ -40,7 +40,7 @@ if (!supportsInterpolateSize) {
 </script>
 
 <script setup lang="ts">
-import { useTemplateRef, onMounted, onBeforeUnmount, ref } from 'vue';
+import { useTemplateRef, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 
 const props = defineProps<{
 	animatingIn?: boolean;
@@ -51,6 +51,16 @@ const rootEl = useTemplateRef('rootEl');
 const innerEl = useTemplateRef('innerEl');
 
 const animating = ref(false);
+
+watch(() => props.animatingIn === true || props.animatingOut === true, (shouldAnimate) => {
+	if (shouldAnimate) animating.value = true;
+}, { immediate: true });
+
+function onAnimationEnd() {
+	// 削除アニメーション中（enterから差し替わった場合を含む）は、要素が消えるまで再生中扱いのままにする
+	if (props.animatingOut === true) return;
+	animating.value = false;
+}
 
 onMounted(() => {
 	if (resizeObserver != null && rootEl.value != null && innerEl.value != null) {
