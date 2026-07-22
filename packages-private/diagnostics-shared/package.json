@@ -7,6 +7,7 @@
 		"./format": "./src/format.ts",
 		"./html": "./src/html.ts",
 		"./stats": "./src/stats.ts",
+		"./metric-table": "./src/metric-table.ts",
 		"./heap-snapshot": "./src/heap-snapshot/index.ts"
 	},
 	"scripts": {

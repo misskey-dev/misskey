@@ -3,9 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { formatColoredDelta, formatDeltaPercentInMdTable, formatKiBAsMb } from 'diagnostics-shared/format';
-import { median, pairedDeltaSummary, sampleSpread } from 'diagnostics-shared/stats';
-import { renderHeapSnapshotTable } from 'diagnostics-shared/heap-snapshot';
+import { formatKiBAsMb } from 'diagnostics-shared/format';
+import { renderHeapSnapshotTable, type HeapSnapshotReport } from 'diagnostics-shared/heap-snapshot';
+import { renderMetricComparisonTable } from 'diagnostics-shared/metric-table';
+import {
+	independentDeltaSummary,
+	isOutsideObservedNoise,
+	type IndependentDeltaSummary,
+} from 'diagnostics-shared/stats';
 import type { MemoryPhase, MemoryReport } from '../types';
 
 export type RenderMemoryReportOptions = {
@@ -29,6 +34,8 @@ const memoryMetrics = [
 
 type MemoryMetric = typeof memoryMetrics[number];
 
+const memoryColorThresholdKiB = 100;
+
 function formatMemoryMetricName(metric: MemoryMetric) {
 	return metric === 'Pss' ? 'PSS' : metric;
 }
@@ -40,64 +47,52 @@ function getMemoryValueFromSample(sample: MemoryReport['samples'][number], phase
 	return memoryUsage.Private_Clean + memoryUsage.Private_Dirty;
 }
 
-function getSampleValues(report: MemoryReport, phase: MemoryPhase, metric: MemoryMetric) {
-	return report.samples.map(sample => getMemoryValueFromSample(sample, phase, metric));
+function summarizeMemoryMetric(base: MemoryReport, head: MemoryReport, phase: MemoryPhase, metric: MemoryMetric) {
+	return independentDeltaSummary(
+		base.samples,
+		head.samples,
+		sample => getMemoryValueFromSample(sample, phase, metric),
+	);
 }
 
-function getMemoryValue(report: MemoryReport, phase: MemoryPhase, metric: MemoryMetric) {
-	if (metric !== 'USS') return report.summary[phase].memoryUsage[metric];
-	return median(getSampleValues(report, phase, metric));
-}
-
-function getSampleSpread(report: MemoryReport, phase: MemoryPhase, metric: MemoryMetric) {
-	return sampleSpread(getSampleValues(report, phase, metric));
+function getDeltaPercent(summary: IndependentDeltaSummary) {
+	if (summary.baseMedian === 0) return null;
+	return summary.delta * 100 / summary.baseMedian;
 }
 
 function renderMainTableForPhase(base: MemoryReport, head: MemoryReport, phase: MemoryPhase) {
-	const lines = [
-		'| Metric | Base | Head | Δ median | Δ MAD | Δ min | Δ max |',
-		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
-	];
+	return renderMetricComparisonTable(
+		base.samples,
+		head.samples,
+		memoryMetrics.map(metric => ({
+			label: `**${formatMemoryMetricName(metric)}**`,
+			getValue: sample => getMemoryValueFromSample(sample, phase, metric),
+			formatValue: formatKiBAsMb,
+			absoluteThreshold: memoryColorThresholdKiB,
+		})),
+		{ onlySignificantChanges: true },
+	);
+}
 
-	function formatDeltaMemory(deltaKiB: number) {
-		return formatColoredDelta(deltaKiB, v => formatKiBAsMb(v), 100); // 0.1 MB threshold
-	}
+function toHeapSnapshotReport(report: MemoryReport): HeapSnapshotReport | null {
+	const summary = report.summary.afterGc.heapSnapshot;
+	if (summary == null) return null;
 
-	for (const metric of memoryMetrics) {
-		const baseValue = getMemoryValue(base, phase, metric);
-		const headValue = getMemoryValue(head, phase, metric);
-
-		const baseSpread = getSampleSpread(base, phase, metric);
-		const headSpread = getSampleSpread(head, phase, metric);
-		const summary = pairedDeltaSummary(base.samples, head.samples, (sample) => getMemoryValueFromSample(sample, phase, metric));
-		const percent = summary.median * 100 / baseValue;
-		const deltaMedian = `${formatDeltaMemory(summary.median)}<br>${formatDeltaPercentInMdTable(percent, 0.1)}`;
-
-		lines.push(`| **${formatMemoryMetricName(metric)}** | ${formatKiBAsMb(baseValue)} <br> ± ${formatKiBAsMb(baseSpread)} | ${formatKiBAsMb(headValue)} <br> ± ${formatKiBAsMb(headSpread)} | ${deltaMedian} | ${formatKiBAsMb(summary.mad)} | ${formatDeltaMemory(summary.min)} | ${formatDeltaMemory(summary.max)} |`);
-	}
-
-	return lines.join('\n');
+	return {
+		summary,
+		samples: report.samples.flatMap(sample => {
+			const data = sample.phases.afterGc.heapSnapshot;
+			return data == null ? [] : [{ round: sample.round, data }];
+		}),
+	};
 }
 
 function renderHeapSnapshotSection(base: MemoryReport, head: MemoryReport) {
-	const baseHeapSnapshotReport = {
-		summary: base.summary.afterGc.heapSnapshot!,
-		samples: base.samples.map(sample => ({
-			round: sample.round,
-			data: sample.phases.afterGc.heapSnapshot!,
-		})),
-	};
-
-	const headHeapSnapshotReport = {
-		summary: head.summary.afterGc.heapSnapshot!,
-		samples: head.samples.map(sample => ({
-			round: sample.round,
-			data: sample.phases.afterGc.heapSnapshot!,
-		})),
-	};
+	const baseHeapSnapshotReport = toHeapSnapshotReport(base);
+	const headHeapSnapshotReport = toHeapSnapshotReport(head);
+	if (baseHeapSnapshotReport == null || headHeapSnapshotReport == null) return null;
 
 	const table = renderHeapSnapshotTable(baseHeapSnapshotReport, headHeapSnapshotReport);
-	if (table == null) return null;
 
 	const lines = [
 		'### V8 Heap Snapshot Statistics',
@@ -119,29 +114,11 @@ function renderHeapSnapshotSection(base: MemoryReport, head: MemoryReport) {
 	return lines.join('\n');
 }
 
-function getDiffPercent(base: MemoryReport, head: MemoryReport, phase: MemoryPhase, metric: MemoryMetric) {
-	const baseValue = getMemoryValue(base, phase, metric);
-	const headValue = getMemoryValue(head, phase, metric);
-	return ((headValue - baseValue) * 100) / baseValue;
-}
-
-/**
- * 増加分がサンプルのばらつきを明確に超えているかを見る。
- * 測定ノイズで警告が出続けるのを避けるため、合成ばらつきの3倍を閾値にする。
- */
-function isBeyondSampleNoise(base: MemoryReport, head: MemoryReport, phase: MemoryPhase, metric: MemoryMetric) {
-	const baseValue = getMemoryValue(base, phase, metric);
-	const headValue = getMemoryValue(head, phase, metric);
-
-	const delta = headValue - baseValue;
-	if (delta <= 0) return false;
-
-	const baseSpread = getSampleSpread(base, phase, metric);
-	const headSpread = getSampleSpread(head, phase, metric);
-	if (baseSpread == null || headSpread == null) return true;
-
-	const combinedSpread = Math.hypot(baseSpread, headSpread);
-	return delta > combinedSpread * 3;
+function countNonConvergedMemorySamples(base: MemoryReport, head: MemoryReport) {
+	return [base, head]
+		.flatMap(report => report.samples)
+		.filter(sample => memoryReportPhases.some(phase => !sample.phases[phase.key].memoryStability.converged))
+		.length;
 }
 
 export function renderMemoryReportMarkdown(base: MemoryReport, head: MemoryReport, options: RenderMemoryReportOptions) {
@@ -162,6 +139,15 @@ export function renderMemoryReportMarkdown(base: MemoryReport, head: MemoryRepor
 		lines.push('');
 	}
 
+	lines.push('');
+
+	const nonConvergedSamples = countNonConvergedMemorySamples(base, head);
+	if (nonConvergedSamples > 0) {
+		const noun = nonConvergedSamples === 1 ? 'sample' : 'samples';
+		lines.push(`⚠️ **Measurement warning**: ${nonConvergedSamples} memory ${noun} did not converge.`);
+		lines.push('');
+	}
+
 	const heapSnapshotSection = renderHeapSnapshotSection(base, head);
 	if (heapSnapshotSection != null) {
 		lines.push(heapSnapshotSection);
@@ -172,8 +158,14 @@ export function renderMemoryReportMarkdown(base: MemoryReport, head: MemoryRepor
 	lines.push('');
 
 	const warningMetric = 'Pss';
-	const warningDiffPercent = getDiffPercent(base, head, 'afterGc', warningMetric);
-	if (warningDiffPercent > 5 && isBeyondSampleNoise(base, head, 'afterGc', warningMetric)) {
+	const warningSummary = summarizeMemoryMetric(base, head, 'afterGc', warningMetric);
+	const warningDiffPercent = getDeltaPercent(warningSummary);
+	if (
+		warningSummary.delta > 0 &&
+		warningDiffPercent != null &&
+		warningDiffPercent > 5 &&
+		isOutsideObservedNoise(warningSummary)
+	) {
 		lines.push(`⚠️ **Warning**: Memory usage (${formatMemoryMetricName(warningMetric)}) has increased by more than 5% and exceeds the observed sample noise. Please verify this is not an unintended change.`);
 		lines.push('');
 	}

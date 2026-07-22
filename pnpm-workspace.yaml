@@ -56,6 +56,8 @@ minimumReleaseAgeExclude:
   - vite # そのうち消す
   # Renovate security update: @opentelemetry/core@2.8.0
   - "@opentelemetry/core@2.8.0"
+  # Renovate security update: typeorm@1.1.0
+  - typeorm@1.1.0
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   'bullmq>ioredis': 5.11.1

@@ -37,6 +37,49 @@ export function sampleSpread(values: (number | null | undefined)[]) {
 	return mad(finiteValues);
 }
 
+export type IndependentDeltaSummary = {
+	baseMedian: number;
+	headMedian: number;
+	delta: number;
+	baseMad: number;
+	headMad: number;
+	combinedMad: number;
+	baseSamples: number;
+	headSamples: number;
+};
+
+export function independentDeltaSummary<T>(
+	baseSamples: T[],
+	headSamples: T[],
+	getValue: (sample: T) => number,
+): IndependentDeltaSummary {
+	const baseValues = baseSamples.map(getValue);
+	const headValues = headSamples.map(getValue);
+	if (baseValues.length < 2 || headValues.length < 2) {
+		throw new Error('At least two samples per side are required');
+	}
+
+	const baseMedian = median(baseValues);
+	const headMedian = median(headValues);
+	const baseMad = mad(baseValues);
+	const headMad = mad(headValues);
+
+	return {
+		baseMedian,
+		headMedian,
+		delta: headMedian - baseMedian,
+		baseMad,
+		headMad,
+		combinedMad: Math.hypot(baseMad, headMad),
+		baseSamples: baseValues.length,
+		headSamples: headValues.length,
+	};
+}
+
+export function isOutsideObservedNoise(summary: IndependentDeltaSummary) {
+	return Math.abs(summary.delta) > summary.combinedMad * 3;
+}
+
 type RoundedSample = { round: number };
 
 function indexByRound<T extends RoundedSample>(samples: T[]) {

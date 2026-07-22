@@ -89,9 +89,10 @@ jobs:
     - name: Measure backend memory usage
       working-directory: head
       env:
-        MK_MEMORY_COMPARE_ROUNDS: 10
+        MK_MEMORY_COMPARE_ROUNDS: 15
         MK_MEMORY_COMPARE_WARMUP_ROUNDS: 1
         MK_MEMORY_HEAP_SNAPSHOT: 1
+        MK_MEMORY_HEAP_SNAPSHOT_ROUNDS: 3
         # 計測ハーネスはhead側のものを両方に使うが、成果物はrunnerのworkspace直下に出す
         MK_MEMORY_HEAP_SNAPSHOT_OUTPUT_DIR: ${{ github.workspace }}
       run: >-
