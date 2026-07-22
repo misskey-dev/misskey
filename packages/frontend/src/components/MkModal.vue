@@ -74,6 +74,8 @@ const props = withDefaults(defineProps<{
 	transparentBg?: boolean;
 	hasInteractionWithOtherFocusTrappedEls?: boolean;
 	returnFocusTo?: HTMLElement | null;
+	/** 一度開いたあとは再アライメント (再配置・高さ再計算) しない。背景のスクロールやアンカー移動でモーダルが動くのを防ぐ */
+	keepAlignment?: boolean;
 }>(), {
 	manualShowing: null,
 	anchorElement: null,
@@ -84,6 +86,7 @@ const props = withDefaults(defineProps<{
 	transparentBg: false,
 	hasInteractionWithOtherFocusTrappedEls: false,
 	returnFocusTo: null,
+	keepAlignment: false,
 });
 
 const emit = defineEmits<{
@@ -172,10 +175,14 @@ const keymap = {
 const MARGIN = 16;
 const SCROLLBAR_THICKNESS = 16;
 
+// keepAlignment 指定時、一度配置が確定したら再アライメントを止めるためのフラグ
+let alignmentFrozen = false;
+
 const align = () => {
 	if (props.anchorElement == null) return;
 	if (type.value === 'drawer') return;
 	if (type.value === 'dialog') return;
+	if (props.keepAlignment && alignmentFrozen) return;
 
 	if (content.value == null) return;
 
@@ -287,6 +294,9 @@ const align = () => {
 
 const onOpened = () => {
 	emit('opened');
+
+	// 開ききった時点の配置を確定させ、以降は背景の変化で動かさない
+	if (props.keepAlignment) alignmentFrozen = true;
 
 	// contentの子要素にアクセスするためレンダリングの完了を待つ必要がある（nextTickが必要）
 	nextTick(() => {
