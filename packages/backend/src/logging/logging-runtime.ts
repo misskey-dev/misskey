@@ -28,8 +28,16 @@ function createLoggingBackend(format: unknown): LogBackend {
 export function configureLogging(configuration?: LogManagerConfiguration & { readonly format?: LogFormat }): void {
 	// 出力処理を先に検証し、設定値が不正な場合は現在の出力処理を壊さないようにします。
 	const backend = createLoggingBackend(configuration?.format);
-	logManager.configure(configuration);
+	const warnings = logManager.configure(configuration);
 	logManager.setBackend(backend);
+	// 設定を無視した理由を、選択済みの形式で起動時に一度だけ知らせます。
+	for (const message of warnings) {
+		logManager.write({
+			level: 'warn',
+			message,
+			context: [{ name: 'logging' }],
+		});
+	}
 }
 
 /** Telemetry初期化後に、ログへTrace Contextを付加する取得処理を登録します。 */

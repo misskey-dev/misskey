@@ -4,7 +4,7 @@
  */
 
 import type { LogBackend } from './LogBackend.js';
-import type { LogRecord } from './types.js';
+import type { AccessLogRecord, LogRecord } from './types.js';
 
 /** JSON形式のログを1行で出力する処理が外部から受け取る依存関係です。 */
 export type JsonConsoleBackendDependencies = {
@@ -20,6 +20,26 @@ type JsonLogRecord = {
 	readonly eventName?: string;
 	readonly attributes?: LogRecord['attributes'];
 	readonly error?: LogRecord['error'];
+	readonly processId: number;
+	readonly isPrimary: boolean;
+	readonly workerId: number | null;
+	readonly trace_id?: string;
+	readonly span_id?: string;
+	readonly trace_flags?: number;
+};
+
+/** Access logのJSON出力項目です。通常ログと混同しない形を保ちます。 */
+type JsonAccessLogRecord = {
+	readonly type: 'access';
+	readonly timestamp: string;
+	readonly method: string;
+	readonly route: string | null;
+	readonly statusCode: number;
+	readonly durationMs: number;
+	readonly responseSizeBytes: number | null;
+	readonly errorType?: string;
+	readonly requestBody?: AccessLogRecord['requestBody'];
+	readonly responseBody?: AccessLogRecord['responseBody'];
 	readonly processId: number;
 	readonly isPrimary: boolean;
 	readonly workerId: number | null;
@@ -55,6 +75,28 @@ function createJsonLogRecord(record: LogRecord): JsonLogRecord {
 	};
 }
 
+/** Access logから公開する項目だけを選び、1行JSONの形へ整えます。 */
+function createJsonAccessLogRecord(record: AccessLogRecord): JsonAccessLogRecord {
+	return {
+		type: 'access',
+		timestamp: record.timestamp,
+		method: record.method,
+		route: record.route,
+		statusCode: record.statusCode,
+		durationMs: record.durationMs,
+		responseSizeBytes: record.responseSizeBytes,
+		...(record.errorType != null ? { errorType: record.errorType } : {}),
+		...(record.requestBody !== undefined ? { requestBody: record.requestBody } : {}),
+		...(record.responseBody !== undefined ? { responseBody: record.responseBody } : {}),
+		processId: record.processId,
+		isPrimary: record.isPrimary,
+		workerId: record.workerId,
+		...(record.traceId != null ? { trace_id: record.traceId } : {}),
+		...(record.spanId != null ? { span_id: record.spanId } : {}),
+		...(record.traceFlags != null ? { trace_flags: record.traceFlags } : {}),
+	};
+}
+
 /**
  * LogRecordを1行のJSONへ変換し、ログ収集基盤が扱える標準出力へ渡します。
  * LoggerやLogManagerから出力形式を切り離し、Pretty形式と同じ記録を共有します。
@@ -74,5 +116,11 @@ export class JsonConsoleBackend implements LogBackend {
 	public write(record: LogRecord): void {
 		// JSON.stringifyが改行などをエスケープするため、1ログ1行の契約を保てます。
 		this.dependencies.output(JSON.stringify(createJsonLogRecord(record)));
+	}
+
+	/** Access logを本文・認証情報を含まない1行JSONとして出力します。 */
+	public writeAccess(record: AccessLogRecord): void {
+		// JSON.stringifyが改行をエスケープするため、1件を1物理行に保ちます。
+		this.dependencies.output(JSON.stringify(createJsonAccessLogRecord(record)));
 	}
 }

@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, test, vi } from 'vitest';
-import type { LogRecord } from '@/logging/types.js';
+import type { AccessLogRecord, LogRecord } from '@/logging/types.js';
 import { JsonConsoleBackend } from '@/logging/JsonConsoleBackend.js';
 
 /** JSON形式のテストで使う共通のログを作成します。 */
@@ -23,6 +23,48 @@ function createRecord(overrides: Partial<LogRecord> = {}): LogRecord {
 }
 
 describe('JsonConsoleBackend', () => {
+	test('writes Access log as a separate one-line schema', () => {
+		const output = vi.fn<(line: string) => void>();
+		const backend = new JsonConsoleBackend({ output });
+		const record: AccessLogRecord = {
+			type: 'access',
+			timestamp: '2025-01-02T03:04:05.678Z',
+			method: 'GET',
+			route: '/items/:id',
+			statusCode: 500,
+			durationMs: 12.5,
+			responseSizeBytes: null,
+			errorType: 'TypeError',
+			requestBody: { token: '[REDACTED]' },
+			processId: 1234,
+			isPrimary: true,
+			workerId: null,
+			traceId: 'trace',
+			spanId: 'span',
+			traceFlags: 1,
+		};
+
+		backend.writeAccess(record);
+
+		expect(JSON.parse(output.mock.calls[0][0])).toEqual({
+			type: 'access',
+			timestamp: '2025-01-02T03:04:05.678Z',
+			method: 'GET',
+			route: '/items/:id',
+			statusCode: 500,
+			durationMs: 12.5,
+			responseSizeBytes: null,
+			errorType: 'TypeError',
+			requestBody: { token: '[REDACTED]' },
+			processId: 1234,
+			isPrimary: true,
+			workerId: null,
+			trace_id: 'trace',
+			span_id: 'span',
+			trace_flags: 1,
+		});
+	});
+
 	test('writes a stable one-line JSON record', () => {
 		const output = vi.fn<(line: string) => void>();
 		const backend = new JsonConsoleBackend({ output });
