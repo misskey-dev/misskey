@@ -11,13 +11,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div
 		ref="mainEl"
 		:class="$style.main"
-		@pointerdown.passive.stop="onPointerdown"
-		@pointermove.passive.stop="onPointermove"
-		@pointerup.passive.stop="onPointerup"
-		@pointercancel.passive.stop="cancelPointerGesture"
-		@touchstart.passive.stop="onTouchstart"
-		@touchmove.passive.stop="onTouchmove"
-		@touchcancel.passive.stop="cancelPointerGesture"
+		@pointerdown.passive="onPointerdown"
+		@pointermove.passive="onPointermove"
+		@pointerup.passive="onPointerup"
+		@pointercancel.passive="cancelPointerGesture"
+		@touchstart.passive="onTouchstart"
+		@touchmove.passive="onTouchmove"
+		@touchcancel.passive="cancelPointerGesture"
 		@contextmenu="cancelPointerGesture"
 		@wheel="onWheel"
 		@click="onClick"
@@ -392,11 +392,14 @@ function resetToNeutral() {
 }
 
 function closeThis() {
-	emit('close');
-
 	infoShowing.value = false;
 
-	if (rootEl.value == null) return;
+	if (rootEl.value == null) {
+		nextTick(() => {
+			emit('close');
+		});
+		return;
+	}
 
 	const sourceTransform = getScaleAndTranslationForSourceElement();
 	if (sourceTransform != null) {
@@ -408,6 +411,10 @@ function closeThis() {
 	} else {
 		hideForFallback.value = true;
 	}
+
+	nextTick(() => {
+		emit('close');
+	});
 }
 
 function onWheel(event: WheelEvent) {
