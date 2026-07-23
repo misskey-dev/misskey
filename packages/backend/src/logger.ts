@@ -8,7 +8,8 @@ import { logManager } from './logging/logging-runtime.js';
 import type { LogEntryInput, LogLevel, LoggerContext, LogWriteInput } from './logging/types.js';
 import type { Keyword } from 'color-convert';
 
-type LegacyData = Record<string, unknown> | null;
+// 旧APIのdataは表示用の任意値を受け取り、Errorや配列も既存呼び出しで使用されています。
+type LegacyData = Record<string, any> | null;
 
 /**
  * ロガー名の階層と従来の公開APIを提供する薄い窓口です。
