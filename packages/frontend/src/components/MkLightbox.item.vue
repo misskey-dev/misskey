@@ -723,6 +723,8 @@ function onTouchmove(ev: TouchEvent) {
 	doubleTapDetector.onTouchmove(ev);
 
 	// スワイプ操作中は、ブラウザがタッチを慣性スクロールとして認識するのを防ぐためにpreventDefaultする必要がある
+	// touch-action: noneが指定されているが、それだけではブラウザによっては慣性スクロールが発生した扱いになり、
+	// その後のタップが慣性スクロールを止めるためのタップという扱いで握りつぶされてしまうことがあるので必要
 	if (isVerticalSwiping || isHorizontalSwiping || isZooming.value || pointerEventCache.size > 1) {
 		ev.preventDefault();
 	}
