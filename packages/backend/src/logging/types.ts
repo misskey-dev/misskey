@@ -52,13 +52,17 @@ export type LogTraceContext = {
 /** LogManagerが出力直前に呼び出すTrace Context取得処理です。 */
 export type LogTraceContextProvider = () => LogTraceContext | undefined;
 
-/** ロガーの呼び出し側が構造化ログとして指定する入力です。 */
-export type LogWriteInput = {
-	readonly level: LogLevel;
+/** level別のLoggerメソッドが受け取る構造化ログの共通入力です。 */
+export type LogEntryInput = {
 	readonly message: string;
 	readonly eventName?: string;
 	readonly attributes?: Readonly<Record<string, unknown>>;
 	readonly error?: unknown;
+};
+
+/** 動的なlevelを含めてLogManagerへ渡す構造化ログの入力です。 */
+export type LogWriteInput = LogEntryInput & {
+	readonly level: LogLevel;
 };
 
 /**
