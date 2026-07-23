@@ -657,7 +657,9 @@ function onPointerup(ev: PointerEvent) {
 			const shouldCloseByUpwardSwipe = totalSwipeY < -closeThreshold || (totalSwipeY < 0 && pointerVec.y < -MIN_VELOCITY_TO_SWIPE); // 上の方で離された、または上に向かって強めに弾かれた
 			const shouldCloseByDownwardSwipe = totalSwipeY > closeThreshold || (totalSwipeY > 0 && pointerVec.y > MIN_VELOCITY_TO_SWIPE); // 下の方で離された、または下に向かって強めに弾かれた
 			if (shouldCloseByUpwardSwipe || shouldCloseByDownwardSwipe) {
-				closeThis();
+				nextTick(() => {
+					closeThis();
+				});
 				return;
 			}
 
