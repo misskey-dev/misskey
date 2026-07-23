@@ -392,14 +392,11 @@ function resetToNeutral() {
 }
 
 function closeThis() {
+	emit('close');
+
 	infoShowing.value = false;
 
-	if (rootEl.value == null) {
-		nextTick(() => {
-			emit('close');
-		});
-		return;
-	}
+	if (rootEl.value == null) return;
 
 	const sourceTransform = getScaleAndTranslationForSourceElement();
 	if (sourceTransform != null) {
@@ -411,10 +408,6 @@ function closeThis() {
 	} else {
 		hideForFallback.value = true;
 	}
-
-	nextTick(() => {
-		emit('close');
-	});
 }
 
 function onWheel(event: WheelEvent) {
@@ -664,9 +657,7 @@ function onPointerup(ev: PointerEvent) {
 			const shouldCloseByUpwardSwipe = totalSwipeY < -closeThreshold || (totalSwipeY < 0 && pointerVec.y < -MIN_VELOCITY_TO_SWIPE); // 上の方で離された、または上に向かって強めに弾かれた
 			const shouldCloseByDownwardSwipe = totalSwipeY > closeThreshold || (totalSwipeY > 0 && pointerVec.y > MIN_VELOCITY_TO_SWIPE); // 下の方で離された、または下に向かって強めに弾かれた
 			if (shouldCloseByUpwardSwipe || shouldCloseByDownwardSwipe) {
-				nextTick(() => {
-					closeThis();
-				});
+				closeThis();
 				return;
 			}
 
