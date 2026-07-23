@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.iconOnly]: iconOnly }]">
+<div :class="[$style.root, { [$style.iconOnly]: iconOnly, [$style.noAnim]: !prefer.s.animation }]">
 	<div :class="$style.body">
 		<div :class="$style.top">
 			<button v-tooltip.noDelay.right="instance.name ?? i18n.ts.instance" class="_button" :class="$style.instance" @click="openInstanceMenu">
@@ -152,13 +152,7 @@ watch(store.r.menuDisplay, () => {
 });
 
 function toggleIconOnly() {
-	if (window.document.startViewTransition && prefer.s.animation) {
-		window.document.startViewTransition(() => {
-			store.set('menuDisplay', iconOnly.value ? 'sideFull' : 'sideIcon');
-		});
-	} else {
-		store.set('menuDisplay', iconOnly.value ? 'sideFull' : 'sideIcon');
-	}
+	store.set('menuDisplay', iconOnly.value ? 'sideFull' : 'sideIcon');
 }
 
 function toggleRealtimeMode(ev: PointerEvent) {
@@ -209,6 +203,20 @@ function menuEdit() {
 	flex: 0 0 var(--nav-width);
 	width: var(--nav-width);
 	box-sizing: border-box;
+	transition: flex-basis 0.25s ease, width 0.25s ease;
+	will-change: width, flex-basis;
+}
+
+.root.noAnim {
+	transition: none;
+
+	.body {
+		transition: none;
+	}
+
+	.subButtons {
+		transition: none;
+	}
 }
 
 .body {
@@ -221,6 +229,7 @@ function menuEdit() {
 	overscroll-behavior: contain;
 	background: var(--MI_THEME-navBg);
 	contain: strict;
+	transition: width 0.25s ease;
 
 	/* 画面が縦に長い、設置している項目数が少ないなどの環境においても確実にbottomを最下部に表示するため */
 	display: flex;
@@ -331,6 +340,7 @@ function menuEdit() {
 	bottom: 80px;
 	z-index: 1001;
 	box-sizing: border-box;
+	transition: left 0.25s ease;
 }
 
 .subButton {

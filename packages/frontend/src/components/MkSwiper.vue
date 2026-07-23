@@ -246,6 +246,6 @@ watch(tabModel, (newTab, oldTab) => {
 }
 
 .swiping {
-	transition: transform .2s ease-out;
+	transition: none;
 }
 </style>

@@ -121,7 +121,7 @@ function onMousedown(evt: MouseEvent): void {
 		ripple.style.transform = 'scale(' + (scale / 2) + ')';
 	}, 1);
 	window.setTimeout(() => {
-		ripple.style.transition = 'all 1s ease';
+		ripple.style.transition = 'opacity 1s ease';
 		ripple.style.opacity = '0';
 	}, 1000);
 	window.setTimeout(() => {
@@ -159,6 +159,7 @@ function onMousedown(evt: MouseEvent): void {
 
 	&:not(:disabled):active {
 		background: var(--MI_THEME-buttonHoverBg);
+		transform: scale(0.98);
 	}
 
 	&.iconOnly {
@@ -312,7 +313,7 @@ function onMousedown(evt: MouseEvent): void {
 	background: rgba(0, 0, 0, 0.1);
 	opacity: 1;
 	transform: scale(1);
-	transition: all 0.5s cubic-bezier(0,.5,0,1);
+	transition: transform 0.5s cubic-bezier(0,.5,0,1), opacity 0.5s cubic-bezier(0,.5,0,1);
 }
 
 .content {

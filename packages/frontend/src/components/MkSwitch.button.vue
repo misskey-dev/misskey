@@ -77,7 +77,7 @@ const toggle = () => {
 	width: calc(var(--height) - 6px);
 	height: calc(var(--height) - 6px);
 	border-radius: 999px;
-	transition: all 0.2s ease;
+	transition: left 0.2s ease, background-color 0.2s ease;
 
 	&:not(.knobChecked) {
 		left: 3px;

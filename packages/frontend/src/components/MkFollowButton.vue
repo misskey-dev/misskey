@@ -220,7 +220,7 @@ onBeforeUnmount(() => {
 	}
 
 	&:active {
-		//background: mix($primary, #fff, 40);
+		transform: scale(0.98);
 	}
 
 	&.active {

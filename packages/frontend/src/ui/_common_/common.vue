@@ -228,7 +228,17 @@ if ($i) {
 }
 .transition_notification_leaveTo {
 	opacity: 0;
-	transform: translateX(-250px);
+	transform: translateX(250px);
+}
+// 左側配置の通知は左方向に出退場させる (空間的一貫性)
+.notificationsPosition_leftTop,
+.notificationsPosition_leftBottom {
+	.transition_notification_enterFrom {
+		transform: translateX(-250px);
+	}
+	.transition_notification_leaveTo {
+		transform: translateX(-250px);
+	}
 }
 
 .menuDrawerBg {
@@ -397,7 +407,7 @@ if ($i) {
 		border-top-color: var(--MI_THEME-accent);
 		border-left-color: var(--MI_THEME-accent);
 		border-radius: 50%;
-		animation: progress-spinner 400ms linear infinite;
+		animation: progress-spinner 600ms linear infinite;
 	}
 }
 

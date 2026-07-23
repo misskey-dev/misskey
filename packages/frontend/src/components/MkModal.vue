@@ -364,7 +364,7 @@ defineExpose({
 
 	> .content {
     transform: translateY(0px);
-		transition: opacity 0.3s ease-in, transform 0.3s cubic-bezier(.5,-0.5,1,.5) !important;
+		transition: opacity 0.3s ease-out, transform 0.3s cubic-bezier(.5,-0.5,1,.5) !important;
 	}
 }
 .transition_send_enterFrom,
@@ -401,7 +401,7 @@ defineExpose({
 		pointer-events: none;
 		opacity: 0;
 		transform-origin: var(--transformOrigin);
-		transform: scale(0.9);
+		transform: scale(0.95);
 	}
 }
 
@@ -426,7 +426,7 @@ defineExpose({
 		pointer-events: none;
 		opacity: 0;
 		transform-origin: var(--transformOrigin);
-		transform: scale(0.9);
+		transform: scale(0.95);
 	}
 }
 

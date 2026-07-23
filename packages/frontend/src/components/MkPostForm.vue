@@ -1583,7 +1583,8 @@ defineExpose({
 
 	&:not(:disabled):active {
 		> .submitInner {
-			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
+			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 10)), hsl(from var(--MI_THEME-accent) h s calc(l + 10)));
+			transform: scale(0.98);
 		}
 	}
 }

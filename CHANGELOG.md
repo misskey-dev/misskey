@@ -1,3 +1,23 @@
+## Unreleased
+
+### General
+-
+
+### Client
+- Enhance: UIアニメーションとボタンの押下フィードバックを改善
+  - `transition: all` を特定プロパティに限定 (MkButton, MkSwitch, MkSwitch.button)
+  - ボタンの `:active` 時に scale(0.98) の押下フィードバックを追加 (MkButton, MkPostForm, MkFollowButton)
+  - MkRadios の `scale(0)` を `scale(0.5)` に変更してサブピixel描画の問題を修正
+  - MkModal: `ease-in` → `ease-out`, `scale(0.9)` → `scale(0.95)`
+  - MkTooltip: 200ms → 150ms でよりスナッピーに
+  - スピナー: 400ms → 600ms で知覚パフォーマンスを向上
+  - 通知の退出方向を入場方向に合わせて空間的一貫性を修正
+  - MkSwiper: ジェスチャー中のトランジションを削除して中断可能性を向上
+  - ナビバー: サイドバーの折りたたみをCSS widthトランジションでスムーズに
+
+### Server
+-
+
 ## 2026.7.0
 
 ### Note
