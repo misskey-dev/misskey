@@ -284,7 +284,7 @@ function shouldHideInGallery(content: Content): boolean {
 	if (!hiddenByDefault) return false;
 
 	// ギャラリー起動時に最初に開いたセンシティブ画像だけは初期表示で隠さない
-	if (content.file.isSensitive && prefer.s.nsfw !== 'force' && props.initiallyOpened) {
+	if (content.file.isSensitive && props.initiallyOpened) {
 		return false;
 	}
 
