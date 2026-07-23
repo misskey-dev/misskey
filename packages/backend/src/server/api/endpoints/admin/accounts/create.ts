@@ -95,7 +95,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					// 初期パスワードが設定されていないのに初期パスワードが入力された場合
 					throw new ApiError(meta.errors.wrongInitialPassword);
 				}
-			} else if ((this.serverSettings.rootUserId != null && await this.roleService.isAdministrator(me)) || token !== null) {
+			} else if ((this.serverSettings.rootUserId != null && !(await this.roleService.isAdministrator(me))) || token !== null) {
 				// 初回セットアップではなく、管理者でない場合 or 外部トークンを使用している場合
 				throw new ApiError(meta.errors.accessDenied);
 			}
