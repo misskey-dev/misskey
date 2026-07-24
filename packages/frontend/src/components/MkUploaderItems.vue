@@ -88,7 +88,7 @@ watch(() => props.items, () => {
 			objectUrlMap.delete(item);
 		}
 	}
-}, { immediate: true });
+}, { immediate: true, deep: true });
 
 onUnmounted(() => {
 	for (const url of objectUrlMap.values()) {
