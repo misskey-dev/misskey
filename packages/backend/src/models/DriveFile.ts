@@ -8,6 +8,9 @@ import { id } from './util/id.js';
 import { MiUser } from './User.js';
 import { MiDriveFolder } from './DriveFolder.js';
 
+export const driveFileSensitiveReasons = ['user', 'moderator', 'auto', 'none'] as const;
+export type DriveFileSensitiveReason = typeof driveFileSensitiveReasons[number];
+
 @Entity('drive_file')
 @Index(['userId', 'folderId', 'id'])
 export class MiDriveFile {
@@ -154,6 +157,12 @@ export class MiDriveFile {
 		comment: 'Whether the DriveFile is NSFW.',
 	})
 	public isSensitive: boolean;
+
+	@Column('enum', {
+		enum: driveFileSensitiveReasons,
+		default: 'user',
+	})
+	public sensitiveChangeReason: DriveFileSensitiveReason;
 
 	@Index()
 	@Column('boolean', {

@@ -44,6 +44,7 @@ import { inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu';
 import { copyToClipboard } from '@/utility/copy-to-clipboard';
+import { $i } from '@/i.js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import MkDraggable from '@/components/MkDraggable.vue';
 import * as os from '@/os.js';
@@ -103,11 +104,25 @@ function toggleSensitive(file: Misskey.entities.DriveFile) {
 		return;
 	}
 
+	if (!$i?.isModerator && file.isSensitive && file.sensitiveChangeReason === 'moderator') {
+		os.alert({
+			type: 'warning',
+			text: i18n.ts.canNotUnmarkSensitive_markedByModerator,
+		});
+		return;
+	}
+
 	misskeyApi('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
 	}).then(() => {
 		emit('changeSensitive', file, !file.isSensitive);
+	}).catch(err => {
+		os.alert({
+			type: 'error',
+			title: i18n.ts.error,
+			text: err.message,
+		});
 	});
 }
 

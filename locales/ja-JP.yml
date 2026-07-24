@@ -144,6 +144,7 @@ attachCancel: "添付取り消し"
 deleteFile: "ファイルを削除"
 markAsSensitive: "センシティブとして設定"
 unmarkAsSensitive: "センシティブを解除する"
+canNotUnmarkSensitive_markedByModerator: "モデレーターによってセンシティブとして設定されたため解除できません。"
 enterFileName: "ファイル名を入力"
 mute: "ミュート"
 unmute: "ミュート解除"
@@ -3098,6 +3099,7 @@ _fileViewer:
   attachedNotes: "添付されているノート"
   usage: "利用"
   thisPageCanBeSeenFromTheAuthor: "このページは、このファイルをアップロードしたユーザーしか閲覧できません。"
+  setAsSensitiveByModerator: "このファイルはモデレーターによりセンシティブとして設定されました。"
 
 _externalResourceInstaller:
   title: "外部サイトからインストール"

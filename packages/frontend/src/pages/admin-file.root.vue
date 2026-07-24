@@ -127,12 +127,12 @@ async function toggleSensitive() {
 	});
 
 	if (canceled) return;
-	isSensitive.value = !isSensitive.value;
 
 	os.apiWithDialog('drive/files/update', {
 		fileId: props.file.id,
 		isSensitive: !props.file.isSensitive,
-	});
+	})
+	.then(() => isSensitive.value = !isSensitive.value);
 }
 
 const headerActions = computed(() => [{
