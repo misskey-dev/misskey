@@ -10,9 +10,10 @@ import { registerDiagLogger } from '@/core/telemetry/telemetry-diag.js';
 import { installHttpClientInstrumentation } from '@/core/telemetry/http-client-instrumentation.js';
 import { installDatabaseInstrumentation } from '@/core/telemetry/database-instrumentation.js';
 import { installRedisInstrumentation } from '@/core/telemetry/redis-instrumentation.js';
+import { SanitizingSpanProcessor } from '@/core/telemetry/SanitizingSpanProcessor.js';
 import { executeSpan, getQueueTraceContextMode, injectActiveTraceContext, recordSpanError, startSpanWithQueueTraceContext } from '@/core/telemetry/queue-trace-context.js';
 import type { LogTraceContext } from '@/logging/types.js';
-import type { Span, SpanStatusCode, Tracer } from '@opentelemetry/api';
+import type { Attributes, Span, SpanStatusCode, Tracer } from '@opentelemetry/api';
 import type { Resource, ResourceDetector } from '@opentelemetry/resources';
 import type { ParentBasedSampler, Sampler } from '@opentelemetry/sdk-trace-base';
 import type { OtelBackendRuntimeConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
@@ -83,7 +84,11 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 			...(config.endpoint != null ? { url: config.endpoint } : {}),
 			...(config.headers != null ? { headers: config.headers } : {}),
 		});
-		const spanProcessor = new BatchSpanProcessor(exporter);
+		// SQL 本文の許可と運用者定義の resource 属性を、OTLP 送信前の加工に反映する。
+		const spanProcessor = new SanitizingSpanProcessor(new BatchSpanProcessor(exporter), undefined, {
+			allowDbStatement: config.capturePgStatement === true,
+			allowedResourceKeys: new Set(Object.keys(config.resourceAttributes ?? {})),
+		});
 
 		// SDK 2.xではSpanProcessorをprovider生成時に渡す。ここでOTel単体用のproviderを作る。
 		const provider = new NodeTracerProvider({
@@ -146,18 +151,28 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 		});
 	}
 
-	public captureMessage(message: string, _opts: TelemetryCaptureMessageOptions): void {
+	public captureMessage(message: string, opts: TelemetryCaptureMessageOptions): void {
 		// captureMessageは例外通知APIなので、OTelでは対象spanにエラー状態を付ける。
 		// アクティブspanが無い場合(例: BullMQのjob処理が既に完了しspanが閉じた後の'failed'イベント)でも
 		// 通知を握り潰さないよう、報告専用の短命spanを作ってそこに記録する。
 		const span = this.deps.getActiveSpan();
+		const attributes = toSpanAttributes(opts.extra);
 		if (span != null) {
 			recordSpanError(span, new Error(message), this.deps.spanStatusCodeError);
+			// 障害箇所は例外イベントの message で識別する。extra は属性として付けるが、
+			// OTLP へ出るのは許可一覧に載っているキーだけで、それ以外は送信前に落ちる。
+			if (attributes != null) {
+				span.setAttributes(attributes);
+			}
 			return;
 		}
 
-		this.deps.tracer.startActiveSpan('captureMessage', reportSpan => {
+		// 呼び出し側の message を span 名に使い、失敗した処理を一覧上で識別できるようにする。
+		this.deps.tracer.startActiveSpan(message, reportSpan => {
 			recordSpanError(reportSpan, new Error(message), this.deps.spanStatusCodeError);
+			if (attributes != null) {
+				reportSpan.setAttributes(attributes);
+			}
 			reportSpan.end();
 		});
 	}
@@ -165,7 +180,9 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 	/** activeなSpanの識別子を、Logging基盤で扱える形式へ変換します。 */
 	public getActiveTraceContext(): LogTraceContext | undefined {
 		const activeSpan = this.deps.getActiveSpan();
-		if (activeSpan == null) return undefined;
+		if (activeSpan == null) {
+			return undefined;
+		}
 
 		const { traceId, spanId, traceFlags } = activeSpan.spanContext();
 		return { traceId, spanId, traceFlags };
@@ -179,14 +196,18 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 	public injectTraceContext(carrier: QueueTraceContextCarrier): void {
 		const queueTraceContext = this.deps.queueTraceContext;
 		// Queue context 用の依存は任意なので、無い場合はジョブデータを変更しない。
-		if (queueTraceContext == null) return;
+		if (queueTraceContext == null) {
+			return;
+		}
 		injectActiveTraceContext(queueTraceContext, carrier);
 	}
 
 	public startSpanWithTraceContext<T>(name: string, jobData: object, fn: () => T): T {
 		const queueTraceContext = this.deps.queueTraceContext;
 		// Queue context 用の依存が無い場合は、従来の span 作成経路と同じ動作を保つ。
-		if (queueTraceContext == null) return this.startSpan(name, fn);
+		if (queueTraceContext == null) {
+			return this.startSpan(name, fn);
+		}
 
 		return startSpanWithQueueTraceContext(queueTraceContext, name, jobData, fn, () => this.startSpan(name, fn));
 	}
@@ -204,9 +225,30 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 				timer = setTimeout(resolve, this.deps.shutdownTimeout);
 			}),
 		]).finally(() => {
-			if (timer != null) clearTimeout(timer);
+			if (timer != null) {
+				clearTimeout(timer);
+			}
 		});
 	}
+}
+
+/**
+ * captureMessage の付加情報から、OTel の span 属性として扱えるプリミティブ値だけを取り出す。
+ *
+ * 送信可能なキーは、export 時に `SanitizingSpanProcessor` が別途制限する。
+ */
+function toSpanAttributes(extra: TelemetryCaptureMessageOptions['extra']): Attributes | undefined {
+	if (extra == null) {
+		return undefined;
+	}
+
+	const attributes: Attributes = {};
+	for (const [key, value] of Object.entries(extra)) {
+		if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+			attributes[key] = value;
+		}
+	}
+	return attributes;
 }
 
 export function createResource(config: OtelBackendRuntimeConfig, deps: CreateResourceDeps): Resource {
@@ -242,18 +284,28 @@ export function createSampler(sampleRate: number, deps: CreateSamplerDeps): Pare
 export function getMisskeyProcessRole(): string {
 	// Trace backend上でserver/queue/workerを見分けられるよう、Misskey固有の役割をresourceに載せる。
 	if (envOption.disableClustering) {
-		if (envOption.onlyServer) return 'primary-server';
-		if (envOption.onlyQueue) return 'primary-queue';
+		if (envOption.onlyServer) {
+			return 'primary-server';
+		}
+		if (envOption.onlyQueue) {
+			return 'primary-queue';
+		}
 		return 'primary-server+queue';
 	}
 
 	if (cluster.isPrimary) {
-		if (envOption.onlyServer) return 'fork-only';
-		if (envOption.onlyQueue) return 'primary-queue';
+		if (envOption.onlyServer) {
+			return 'fork-only';
+		}
+		if (envOption.onlyQueue) {
+			return 'primary-queue';
+		}
 		return 'primary-server';
 	}
 
 	// worker.tsのworkerMainに合わせる: onlyServerならserver()、それ以外はjobQueue()を実行する。
-	if (envOption.onlyServer) return 'worker-server';
+	if (envOption.onlyServer) {
+		return 'worker-server';
+	}
 	return 'worker-queue';
 }

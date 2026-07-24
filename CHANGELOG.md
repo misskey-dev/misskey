@@ -50,12 +50,12 @@
 ### Server
 - Feat: OpenTelemetryサポート
   - 詳細な設定はconfigファイルを参照してください。
-  - Sentryとの併用も可能です。Sentry併用時は、PostgreSQL Query と Redis command は Sentry で計装されます。
+  - Sentryとの併用も可能です。Sentry併用時、Sentry自身の自動計装によるスパン（PostgreSQL Query、Redis command、HTTP等）は既定（`sentryAutoInstrumentationExport: 'none'`）ではOTLPへ一切出力されません。`'safe'` に設定した場合にHTTPとFastifyのライフサイクルフックが、さらに各種captureフラグを有効にした場合にPostgreSQL・Redisの対応するスパンが、個別にOTLPへ出力されます。
   - 以下の自動計装をサポートしています。（計装対象にする項目は設定可能）
     - PostgreSQL query
     - Redis command
-    - 全ての受信HTTPリクエスト
-    - 全ての送信HTTPリクエスト
+    - 全ての受信HTTPリクエスト（Fastifyのライフサイクルフックごとの所要時間を含む。フック名と関数名のみを記録し、パスやクエリは記録しません）
+    - 全ての送信HTTPリクエスト（接続先のオリジンのみを記録し、パスやクエリは記録しません）
     - ジョブキュー（エンキュー元のトレースを含む）
 - Feat: ログ基盤の刷新
   - API内部エラーのログに構造化属性と正規化したエラー情報を付与し、認証情報を自動的に秘匿するように（従来形式の表示は維持）
@@ -71,7 +71,7 @@
 - Fix: `/stats` API のレスポンス型が正しくない問題を修正
 - Fix: ハッシュタグに関連するデータを更新する際のエラーハンドリングを修正
 - Fix: Sentry 使用環境下にて、Misskey が発行した SQL クエリが span に含まれない問題を修正
-- Fix: Sentry 使用環境下にて、外部送信リクエストへ `sentry-trace` / `baggage` ヘッダーが既定で付与されないように
+- Fix: Sentry 使用環境下にて、外部送信リクエストへ `sentry-trace` / `baggage` ヘッダーが既定で付与されないように（`otelForBackend.propagateTraceToRemote: true` を設定する場合は `sentryForBackend.options.tracePropagationTargets` の明示指定が必須になり、未指定時は起動に失敗するように）
 - Fix: フォロワー限定投稿へのリプライをホーム投稿に出来る問題を修正
 - Fix: ファイルをアップロードするAPIにて、処理終了後に一時ファイルが削除されないことがある問題を修正
 - Fix: 初期設定で作成したアカウント以外でアカウント作成APIが使用できない問題を修正

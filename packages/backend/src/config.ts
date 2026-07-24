@@ -40,6 +40,7 @@ type OtelBackendConfig = {
 	resourceAttributes?: Record<string, string>;
 	propagateTraceToRemote?: boolean;
 	jobTraceContextMode?: 'link' | 'parent';
+	sentryAutoInstrumentationExport?: 'none' | 'safe';
 };
 
 /**
