@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, onUnmounted, watch } from 'vue';
 import { isLink } from '@@/js/is-link.js';
 import type { UploaderItem } from '@/composables/use-uploader.js';
 import { getUploadName } from '@/composables/use-uploader.js';
@@ -71,6 +71,32 @@ const emit = defineEmits<{
 	(ev: 'showMenu', item: UploaderItem, event: PointerEvent): void;
 	(ev: 'showMenuViaContextmenu', item: UploaderItem, event: PointerEvent): void;
 }>();
+
+//#region objectUrlMap
+const objectUrlMap = new Map<UploaderItem, string>();
+
+watch(() => props.items, () => {
+	for (const item of props.items) {
+		if (!objectUrlMap.has(item)) {
+			objectUrlMap.set(item, URL.createObjectURL(item.file));
+		}
+	}
+
+	for (const [item, url] of objectUrlMap.entries()) {
+		if (!props.items.includes(item)) {
+			URL.revokeObjectURL(url);
+			objectUrlMap.delete(item);
+		}
+	}
+}, { immediate: true });
+
+onUnmounted(() => {
+	for (const url of objectUrlMap.values()) {
+		URL.revokeObjectURL(url);
+	}
+	objectUrlMap.clear();
+});
+//#endregion
 
 function getUploadNameParts(item: UploaderItem): {
 	baseName: string;
@@ -104,7 +130,7 @@ async function onThumbnailClick(item: UploaderItem, ev: PointerEvent) {
 		const contents = props.items.filter(item => item.file.type.startsWith('image') || item.file.type.startsWith('video')).map(item => ({
 			id: item.id,
 			type: (item.file.type.startsWith('video') ? 'video' as const : 'image' as const),
-			url: item.thumbnail!,
+			url: objectUrlMap.get(item),
 			thumbnailUrl: item.thumbnail,
 			filename: getUploadName(item),
 		}));
