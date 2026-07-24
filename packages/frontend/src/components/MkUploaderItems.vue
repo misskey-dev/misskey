@@ -130,7 +130,7 @@ async function onThumbnailClick(item: UploaderItem, ev: PointerEvent) {
 		const contents = props.items.filter(item => item.file.type.startsWith('image') || item.file.type.startsWith('video')).map(item => ({
 			id: item.id,
 			type: (item.file.type.startsWith('video') ? 'video' as const : 'image' as const),
-			url: objectUrlMap.get(item),
+			url: objectUrlMap.get(item)!,
 			thumbnailUrl: item.thumbnail,
 			filename: getUploadName(item),
 		}));
