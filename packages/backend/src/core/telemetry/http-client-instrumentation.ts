@@ -32,25 +32,31 @@ export function createHttpClientInstrumentation(deps: HttpClientInstrumentationD
 	const spans = new WeakMap<ClientRequest, HttpClientSpan>();
 
 	const unsubscribeCreated = deps.subscribe(HTTP_CLIENT_REQUEST_CREATED, (message: unknown) => {
-		const { request } = message as RequestCreatedMessage;
-		const { url, host, port } = getRequestDetails(request);
-		const method = request.method ?? 'GET';
-		const span = deps.tracer.startSpan(method, {
-			kind: deps.spanKindClient,
-			attributes: {
-				'http.request.method': method,
-				'url.full': url,
-				'server.address': host,
-				'server.port': port,
-			},
-		});
-		spans.set(request, span);
+		try {
+			const { request } = message as RequestCreatedMessage;
+			const { origin, host, port } = getRequestDetails(request);
+			const method = request.method || 'GET';
+			const span = deps.tracer.startSpan(`${method} ${host}`, {
+				kind: deps.spanKindClient,
+				attributes: {
+					'http.request.method': method,
+					'url.full': origin,
+					'server.address': host,
+					'server.port': port,
+				},
+			});
+			spans.set(request, span);
+		} catch {
+			// 不正な request 情報では計装だけを諦め、HTTP 処理には影響させない。
+		}
 	});
 
 	const unsubscribeResponseFinish = deps.subscribe(HTTP_CLIENT_RESPONSE_FINISH, (message: unknown) => {
 		const { request, response } = message as ResponseFinishMessage;
 		const span = spans.get(request);
-		if (span == null) return;
+		if (span == null) {
+			return;
+		}
 
 		const statusCode = response.statusCode;
 		if (statusCode != null) {
@@ -70,7 +76,9 @@ export function createHttpClientInstrumentation(deps: HttpClientInstrumentationD
 	const unsubscribeRequestError = deps.subscribe(HTTP_CLIENT_REQUEST_ERROR, (message: unknown) => {
 		const { request, error } = message as RequestErrorMessage;
 		const span = spans.get(request);
-		if (span == null) return;
+		if (span == null) {
+			return;
+		}
 
 		span.recordException(error);
 		span.setAttribute('error.type', getErrorType(error));
@@ -97,18 +105,13 @@ export function installHttpClientInstrumentation(deps: Omit<HttpClientInstrument
 	});
 }
 
-function getRequestDetails(request: ClientRequest): { url: string; host: string; port: number } {
+function getRequestDetails(request: ClientRequest): { origin: string; host: string; port: number } {
 	const protocol = request.protocol ?? 'http:';
 	const host = request.getHeader('host')?.toString() ?? request.host ?? 'localhost';
 	const url = new URL(request.path || '/', `${protocol}//${host}`);
-	// URL 属性には認証情報やクエリ文字列を含めない。
-	url.username = '';
-	url.password = '';
-	url.search = '';
-	url.hash = '';
-
 	return {
-		url: url.toString(),
+		// 外向き request の path・query・userinfo は監視情報へ渡さず、origin だけを残す。
+		origin: url.origin,
 		host: url.hostname,
 		// URL.port は既定ポートでは空文字列になるため、スキームから補う。
 		port: url.port === '' ? (url.protocol === 'https:' ? 443 : 80) : Number(url.port),

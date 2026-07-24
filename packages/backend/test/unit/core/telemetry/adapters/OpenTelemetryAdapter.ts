@@ -8,8 +8,8 @@ import { SpanStatusCode } from '@opentelemetry/api';
 import { defaultResource, detectResources, envDetector, resourceFromAttributes } from '@opentelemetry/resources';
 import { ParentBasedSampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-base';
 import { ATTR_SERVICE_INSTANCE_ID, ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
-import type { Context, SpanContext } from '@opentelemetry/api';
 import { OpenTelemetryAdapter, createResource, createSampler, getMisskeyProcessRole } from '@/core/telemetry/adapters/OpenTelemetryAdapter.js';
+import type { Context, SpanContext } from '@opentelemetry/api';
 
 const mocks = vi.hoisted(() => {
 	return {
@@ -116,7 +116,9 @@ describe('OpenTelemetryAdapter', () => {
 			isPropagationApi: true,
 			inject: vi.fn(),
 			extract(this: { isPropagationApi: boolean }) {
-				if (!this.isPropagationApi) throw new Error('lost propagation API receiver');
+				if (!this.isPropagationApi) {
+					throw new Error('lost propagation API receiver');
+				}
 				return extractedContext;
 			},
 		};
@@ -179,6 +181,7 @@ describe('OpenTelemetryAdapter', () => {
 		const activeSpan = {
 			recordException: vi.fn(),
 			setStatus: vi.fn(),
+			setAttributes: vi.fn(),
 		};
 		const adapter = new OpenTelemetryAdapter({
 			tracer: { startActiveSpan: vi.fn() },
@@ -190,7 +193,7 @@ describe('OpenTelemetryAdapter', () => {
 
 		adapter.captureMessage('Queue failed', {
 			level: 'error',
-			extra: { queue: 'deliver' },
+			extra: { 'queue.name': 'deliver' },
 		});
 
 		expect(activeSpan.recordException).toHaveBeenCalledWith(expect.objectContaining({
@@ -200,6 +203,34 @@ describe('OpenTelemetryAdapter', () => {
 			code: SpanStatusCode.ERROR,
 			message: 'Queue failed',
 		});
+		// OTel-only でも調査用の識別子を残せるよう、extra を span 属性へ設定する。
+		expect(activeSpan.setAttributes).toHaveBeenCalledWith({ 'queue.name': 'deliver' });
+	});
+
+	test('drops non-primitive extra values before they reach span.setAttributes (extra can carry arbitrary shapes like { job, err })', () => {
+		const activeSpan = {
+			recordException: vi.fn(),
+			setStatus: vi.fn(),
+			setAttributes: vi.fn(),
+		};
+		const adapter = new OpenTelemetryAdapter({
+			tracer: { startActiveSpan: vi.fn() },
+			provider: { shutdown: vi.fn() },
+			getActiveSpan: () => activeSpan as any,
+			spanStatusCodeError: SpanStatusCode.ERROR,
+			shutdownTimeout: 10,
+		});
+
+		adapter.captureMessage('Queue: Deliver: Error: boom', {
+			level: 'error',
+			extra: {
+				job: { id: '1', data: { to: 'https://webhook.example/secret' } },
+				err: new Error('boom'),
+				'queue.name': 'deliver',
+			},
+		});
+
+		expect(activeSpan.setAttributes).toHaveBeenCalledWith({ 'queue.name': 'deliver' });
 	});
 
 	test('times out shutdown instead of waiting forever', async () => {
@@ -237,11 +268,12 @@ describe('OpenTelemetryAdapter', () => {
 		vi.useRealTimers();
 	});
 
-	test('captureMessage starts a standalone span to report the error when there is no active span', () => {
+	test('captureMessage names the standalone report span after the caller message and forwards operational attributes', () => {
 		const reportSpan = {
 			end: vi.fn(),
 			recordException: vi.fn(),
 			setStatus: vi.fn(),
+			setAttributes: vi.fn(),
 		};
 		const tracer = {
 			startActiveSpan: vi.fn((_name: string, fn: (spanArg: typeof reportSpan) => void) => fn(reportSpan)),
@@ -254,19 +286,21 @@ describe('OpenTelemetryAdapter', () => {
 			shutdownTimeout: 10,
 		});
 
-		adapter.captureMessage('Queue: Deliver failed', {
+		// 報告専用 span を呼び出し元ごとに識別できるよう、message を名前に使うことを確認する。
+		adapter.captureMessage('Queue job failed', {
 			level: 'error',
-			extra: { queue: 'deliver' },
+			extra: { 'queue.name': 'deliver', 'error.type': 'Error' },
 		});
 
-		expect(tracer.startActiveSpan).toHaveBeenCalledWith('captureMessage', expect.any(Function));
+		expect(tracer.startActiveSpan).toHaveBeenCalledWith('Queue job failed', expect.any(Function));
 		expect(reportSpan.recordException).toHaveBeenCalledWith(expect.objectContaining({
-			message: 'Queue: Deliver failed',
+			message: 'Queue job failed',
 		}));
 		expect(reportSpan.setStatus).toHaveBeenCalledWith({
 			code: SpanStatusCode.ERROR,
-			message: 'Queue: Deliver failed',
+			message: 'Queue job failed',
 		});
+		expect(reportSpan.setAttributes).toHaveBeenCalledWith({ 'queue.name': 'deliver', 'error.type': 'Error' });
 		expect(reportSpan.end).toHaveBeenCalledTimes(1);
 	});
 });
@@ -316,17 +350,17 @@ describe('createResource', () => {
 				defaultResource,
 				resourceFromAttributes,
 				detectResources,
-					envDetector,
-					serviceNameAttribute: ATTR_SERVICE_NAME,
-					serviceInstanceIdAttribute: ATTR_SERVICE_INSTANCE_ID,
-					serviceVersionAttribute: ATTR_SERVICE_VERSION,
-					serviceVersion: '2026.1.0',
-				});
+				envDetector,
+				serviceNameAttribute: ATTR_SERVICE_NAME,
+				serviceInstanceIdAttribute: ATTR_SERVICE_INSTANCE_ID,
+				serviceVersionAttribute: ATTR_SERVICE_VERSION,
+				serviceVersion: '2026.1.0',
+			});
 
-				expect(resource.attributes[ATTR_SERVICE_NAME]).toBe('config-service');
-				expect(resource.attributes[ATTR_SERVICE_INSTANCE_ID]).toBe('env-instance');
-				expect(resource.attributes[ATTR_SERVICE_VERSION]).toBe('2026.1.0');
-				expect(resource.attributes['deployment.environment']).toBe('production');
+			expect(resource.attributes[ATTR_SERVICE_NAME]).toBe('config-service');
+			expect(resource.attributes[ATTR_SERVICE_INSTANCE_ID]).toBe('env-instance');
+			expect(resource.attributes[ATTR_SERVICE_VERSION]).toBe('2026.1.0');
+			expect(resource.attributes['deployment.environment']).toBe('production');
 			expect(resource.attributes['misskey.process.role']).toBe('env-role');
 			expect(resource.attributes['env.only']).toBe('value');
 			expect(resource.attributes['config.only']).toBe('value');

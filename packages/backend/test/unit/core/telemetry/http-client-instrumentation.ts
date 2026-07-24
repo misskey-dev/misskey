@@ -44,11 +44,11 @@ describe('http-client-instrumentation', () => {
 			response: { statusCode: 201, httpVersion: '1.1' },
 		});
 
-		expect(tracer.startSpan).toHaveBeenCalledWith('POST', {
+		expect(tracer.startSpan).toHaveBeenCalledWith('POST remote.example', {
 			kind: SpanKind.CLIENT,
 			attributes: {
 				'http.request.method': 'POST',
-				'url.full': 'https://remote.example:8443/inbox',
+				'url.full': 'https://remote.example:8443',
 				'server.address': 'remote.example',
 				'server.port': 8443,
 			},
