@@ -58,7 +58,7 @@
 		"@fastify/http-proxy": "11.5.0",
 		"@fastify/multipart": "10.1.0",
 		"@fastify/otel": "0.20.1",
-		"@fastify/static": "10.1.0",
+		"@fastify/static": "10.1.2",
 		"@kitajs/html": "4.2.13",
 		"@misskey-dev/emoji-assets": "17.0.3",
 		"@misskey-dev/emoji-data": "17.0.3",
