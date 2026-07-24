@@ -43,7 +43,7 @@ jobs:
         ports:
           - 56312:6379
       meilisearch:
-        image: getmeili/meilisearch:v1.48.1
+        image: getmeili/meilisearch:v1.49.0
         ports:
           - 57712:7700
         env:
@@ -60,7 +60,7 @@ jobs:
       run: |
         sudo apt install -y ffmpeg
     - name: Use Node.js
-      uses: actions/setup-node@v6.4.0
+      uses: actions/setup-node@v6.5.0
       with:
         node-version-file: ${{ matrix.node-version-file }}
         cache: 'pnpm'
@@ -109,7 +109,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6.0.9
       - name: Use Node.js
-        uses: actions/setup-node@v6.4.0
+        uses: actions/setup-node@v6.5.0
         with:
           node-version-file: ${{ matrix.node-version-file }}
           cache: 'pnpm'
@@ -156,7 +156,7 @@ jobs:
         id: current-date
         run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
       - name: Use Node.js
-        uses: actions/setup-node@v6.4.0
+        uses: actions/setup-node@v6.5.0
         with:
           node-version-file: ${{ matrix.node-version-file }}
           cache: 'pnpm'
