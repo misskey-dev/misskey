@@ -241,7 +241,7 @@ proxyBypassHosts:
 
 # Log settings
 # logging:
-#   # ログの出力形式。「json」で1行JSON、未指定時は「pretty」です。
+#   # Log output format. "json" outputs one-line JSON; defaults to "pretty".
 #   format: pretty
 #   # Minimum level for all loggers. Defaults to info in production and debug otherwise.
 #   level: info
@@ -251,6 +251,19 @@ proxyBypassHosts:
 #     queue: error
 #     queue.deliver: debug
 #     db.sql: off
+#   # HTTP status classes to record in the access log. No output when unspecified.
+#   access:
+#     statusClasses:
+#       - '2xx'
+#       - '3xx'
+#       - '4xx'
+#       - '5xx'
+#     # Enable body logging explicitly only during development.
+#     bodies:
+#       request: false
+#       response: false
+#       # 16 KiB by default, up to 128 KiB.
+#       maxBytes: 16384
 #   sql:
 #     # Outputs query parameters during SQL execution to the log.
 #     # default: false

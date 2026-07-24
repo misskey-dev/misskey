@@ -4,7 +4,7 @@
  */
 
 import type { LogBackend } from './LogBackend.js';
-import type { LogRecord } from './types.js';
+import type { AccessLogRecord, LogRecord } from './types.js';
 
 /** 設定読込前の最小出力処理が外部から受け取る依存関係です。 */
 export type BootstrapConsoleBackendDependencies = {
@@ -45,5 +45,10 @@ export class BootstrapConsoleBackend implements LogBackend {
 		}
 
 		this.dependencies.output(...args);
+	}
+
+	/** 設定前のAccess logは本文を含めず、最小限の情報だけを出力します。 */
+	public writeAccess(record: AccessLogRecord): void {
+		this.dependencies.output(`${record.timestamp} ACCESS ${record.method} ${record.route ?? '-'} ${record.statusCode}`);
 	}
 }

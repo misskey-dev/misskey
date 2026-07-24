@@ -60,6 +60,7 @@ const sensitiveKeyParts = [
 	'apikey',
 	'privatekey',
 	'credential',
+	'captcha',
 	'hcaptcharesponse',
 	'grecaptcharesponse',
 	'turnstileresponse',
@@ -288,6 +289,14 @@ export function normalizeLogAttributes(value: unknown, options: LogNormalization
 	const normalized = normalizeValue(value, [], 0, new WeakSet<object>(), limits, redactor);
 	const root = isObject(normalized) && !Array.isArray(normalized) ? normalized : { value: normalized };
 	return trimToByteLimit(root as LogAttributes, limits.maxBytes) as LogAttributes;
+}
+
+/** 本文など単独の値を、既存ログと同じ秘匿・切り詰め規則で正規化します。 */
+export function normalizeLogValue(value: unknown, options: LogNormalizationOptions = {}): LogAttributeValue {
+	const limits = resolveLogNormalizationLimits(options);
+	const redactor = options.redactor ?? defaultLogRedactor;
+	const normalized = normalizeValue(value, [], 0, new WeakSet<object>(), limits, redactor);
+	return trimToByteLimit(normalized, limits.maxBytes);
 }
 
 /** 旧APIのdata領域から、エラー本体を見つけて構造化した形へ渡します。 */

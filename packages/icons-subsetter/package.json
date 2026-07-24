@@ -7,19 +7,19 @@
 	"scripts": {
 		"build": "tsx src/generator.ts",
 		"eslint": "eslint src/**/*.ts",
-		"typecheck": "tsgo --noEmit",
+		"typecheck": "tsc --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "26.0.1",
+		"@types/node": "26.1.1",
 		"@types/wawoff2": "1.0.2",
-		"@typescript-eslint/eslint-plugin": "8.62.0",
-		"@typescript-eslint/parser": "8.62.0"
+		"@typescript-eslint/eslint-plugin": "8.63.0",
+		"@typescript-eslint/parser": "8.63.0"
 	},
 	"dependencies": {
 		"@tabler/icons-webfont": "3.35.0",
 		"harfbuzzjs": "1.4.0",
-		"tsx": "4.22.4",
+		"tsx": "4.23.0",
 		"wawoff2": "2.0.1"
 	},
 	"files": [

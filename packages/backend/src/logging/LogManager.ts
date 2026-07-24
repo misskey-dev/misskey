@@ -9,11 +9,23 @@ import { envOption } from '@/env.js';
 import {
 	findLegacyLogError,
 	normalizeLogAttributes,
+	normalizeLogValue,
 	serializeLogError,
 	type LogNormalizationProfile,
 } from './LogNormalizer.js';
 import type { LogBackend } from './LogBackend.js';
-import type { LogLevel, LogLevelSetting, LogRecord, LogRecordInput } from './types.js';
+import type {
+	AccessLogConfiguration,
+	AccessLogRecord,
+	AccessLogRecordInput,
+	AccessLogStatusClass,
+	LogLevel,
+	LogLevelSetting,
+	LogRecord,
+	LogRecordInput,
+	LogTraceContext,
+	LogTraceContextProvider,
+} from './types.js';
 
 /** ログを出力したプロセスを識別するための情報です。 */
 export type LogProcessInfo = {
@@ -43,6 +55,17 @@ export type LogManagerOptions = {
 export type LogManagerConfiguration = {
 	readonly level?: LogLevelSetting;
 	readonly domains?: Readonly<Record<string, LogLevelSetting>> | null;
+	readonly access?: AccessLogConfiguration;
+};
+
+/** 正規化済みのAccess log設定です。 */
+export type ResolvedAccessLogConfiguration = {
+	readonly statusClasses: readonly AccessLogStatusClass[];
+	readonly bodies: {
+		readonly request: boolean;
+		readonly response: boolean;
+		readonly maxBytes: number;
+	};
 };
 
 const logLevelOrder: Readonly<Record<LogLevel, number>> = {
@@ -54,6 +77,9 @@ const logLevelOrder: Readonly<Record<LogLevel, number>> = {
 };
 
 const validLogLevels = new Set<LogLevelSetting>(['debug', 'info', 'warn', 'error', 'fatal', 'off']);
+const validAccessStatusClasses = new Set<AccessLogStatusClass>(['2xx', '3xx', '4xx', '5xx']);
+const defaultAccessBodyMaxBytes = 16 * 1024;
+const maxAccessBodyBytes = 128 * 1024;
 
 function validateLogLevel(value: unknown, path: string): LogLevelSetting | undefined {
 	if (typeof value === 'undefined') return undefined;
@@ -69,14 +95,96 @@ function validateDomainName(domain: string): void {
 	}
 }
 
-function resolveConfiguration(configuration: LogManagerConfiguration | undefined): {
+/** Access logを明示的に有効化していない場合の設定を作成します。 */
+function createDisabledAccessLogConfiguration(): ResolvedAccessLogConfiguration {
+	return {
+		statusClasses: [],
+		bodies: {
+			request: false,
+			response: false,
+			maxBytes: defaultAccessBodyMaxBytes,
+		},
+	};
+}
+
+/** Access log設定を検証し、本番環境では本文だけを無効化します。 */
+function resolveAccessConfiguration(configuration: unknown, nodeEnv: string | undefined): {
+	readonly access: ResolvedAccessLogConfiguration;
+	readonly warnings: readonly string[];
+} {
+	if (configuration == null) return { access: createDisabledAccessLogConfiguration(), warnings: [] };
+	if (typeof configuration !== 'object' || Array.isArray(configuration)) {
+		throw new Error('logging.access must be an object');
+	}
+
+	const raw = configuration as {
+		statusClasses?: unknown;
+		bodies?: unknown;
+	};
+	let statusClasses: AccessLogStatusClass[] = [];
+	if (typeof raw.statusClasses !== 'undefined') {
+		if (!Array.isArray(raw.statusClasses)) {
+			throw new Error('logging.access.statusClasses must be an array');
+		}
+		statusClasses = [...new Set(raw.statusClasses.map((statusClass, index) => {
+			if (typeof statusClass !== 'string' || !validAccessStatusClasses.has(statusClass as AccessLogStatusClass)) {
+				throw new Error(`logging.access.statusClasses[${index}] must be one of 2xx, 3xx, 4xx, or 5xx`);
+			}
+			return statusClass as AccessLogStatusClass;
+		}))];
+	}
+
+	let request = false;
+	let response = false;
+	let maxBytes = defaultAccessBodyMaxBytes;
+	if (typeof raw.bodies !== 'undefined') {
+		if (typeof raw.bodies !== 'object' || raw.bodies === null || Array.isArray(raw.bodies)) {
+			throw new Error('logging.access.bodies must be an object');
+		}
+		const bodies = raw.bodies as { request?: unknown; response?: unknown; maxBytes?: unknown };
+		if (typeof bodies.request !== 'undefined' && typeof bodies.request !== 'boolean') {
+			throw new Error('logging.access.bodies.request must be a boolean');
+		}
+		if (typeof bodies.response !== 'undefined' && typeof bodies.response !== 'boolean') {
+			throw new Error('logging.access.bodies.response must be a boolean');
+		}
+		const configuredMaxBytes = bodies.maxBytes;
+		if (typeof configuredMaxBytes !== 'undefined' && (typeof configuredMaxBytes !== 'number' || !Number.isSafeInteger(configuredMaxBytes) || configuredMaxBytes <= 0 || configuredMaxBytes > maxAccessBodyBytes)) {
+			throw new Error(`logging.access.bodies.maxBytes must be a positive integer no greater than ${maxAccessBodyBytes}`);
+		}
+		request = bodies.request ?? false;
+		response = bodies.response ?? false;
+		maxBytes = typeof configuredMaxBytes === 'number' ? configuredMaxBytes : defaultAccessBodyMaxBytes;
+	}
+
+	if (nodeEnv === 'production' && (request || response)) {
+		return {
+			access: {
+				statusClasses,
+				bodies: { request: false, response: false, maxBytes },
+			},
+			warnings: ['logging.access.bodies is disabled in production mode'],
+		};
+	}
+
+	return {
+		access: { statusClasses, bodies: { request, response, maxBytes } },
+		warnings: [],
+	};
+}
+
+/** 通常ログとAccess logの設定をまとめて検証し、起動時警告も返します。 */
+function resolveConfiguration(configuration: LogManagerConfiguration | undefined, nodeEnv: string | undefined): {
 	readonly level: LogLevelSetting | undefined;
 	readonly domains: readonly (readonly [string, LogLevelSetting])[];
+	readonly access: ResolvedAccessLogConfiguration;
+	readonly warnings: readonly string[];
 } {
-	if (configuration == null) return { level: undefined, domains: [] };
+	if (configuration == null) return { level: undefined, domains: [], access: createDisabledAccessLogConfiguration(), warnings: [] };
 
 	const level = validateLogLevel(configuration.level, 'logging.level');
-	if (configuration.domains == null) return { level, domains: [] };
+	const access = resolveAccessConfiguration(configuration.access, nodeEnv);
+	if (configuration.domains == null) return { level, domains: [], ...access };
 	if (typeof configuration.domains !== 'object' || configuration.domains === null || Array.isArray(configuration.domains)) {
 		throw new Error('logging.domains must be an object');
 	}
@@ -90,7 +198,7 @@ function resolveConfiguration(configuration: LogManagerConfiguration | undefined
 		return [domain, level] as const;
 	}).sort((left, right) => right[0].length - left[0].length);
 
-	return { level, domains };
+	return { level, domains, ...access };
 }
 
 const defaultDependencies: LogManagerDependencies = {
@@ -113,8 +221,10 @@ export class LogManager {
 	private backend: LogBackend;
 	private readonly dependencies: LogManagerDependencies;
 	private normalizationProfile: LogNormalizationProfile;
+	private traceContextProvider: LogTraceContextProvider | undefined;
 	private configuredLevel: LogLevelSetting | undefined;
 	private configuredDomains: readonly (readonly [string, LogLevelSetting])[];
+	private accessConfiguration: ResolvedAccessLogConfiguration;
 	private shutdownPromise: Promise<void> | undefined;
 
 	/**
@@ -132,8 +242,10 @@ export class LogManager {
 			...dependencies,
 		};
 		this.normalizationProfile = options.normalizationProfile ?? 'standard';
+		this.traceContextProvider = undefined;
 		this.configuredLevel = undefined;
 		this.configuredDomains = [];
+		this.accessConfiguration = createDisabledAccessLogConfiguration();
 	}
 
 	/**
@@ -145,15 +257,32 @@ export class LogManager {
 	}
 
 	/** 起動時の既定levelとdomain別levelを適用します。 */
-	public configure(configuration?: LogManagerConfiguration): void {
-		const resolved = resolveConfiguration(configuration);
+	public configure(configuration?: LogManagerConfiguration): readonly string[] {
+		const resolved = resolveConfiguration(configuration, this.dependencies.getNodeEnv());
 		this.configuredLevel = resolved.level;
 		this.configuredDomains = resolved.domains;
+		this.accessConfiguration = resolved.access;
+		return resolved.warnings;
+	}
+
+	/** Fastifyフックが参照する正規化済みのAccess log設定を返します。 */
+	public getAccessLogConfiguration(): ResolvedAccessLogConfiguration {
+		return this.accessConfiguration;
 	}
 
 	/** 正規化方式を切り替え、既に作成済みのLoggerにも反映します。 */
 	public setNormalizationProfile(profile: LogNormalizationProfile): void {
 		this.normalizationProfile = profile;
+	}
+
+	/** ログ出力時にactiveなTrace Contextを取得する処理を登録します。 */
+	public setTraceContextProvider(provider?: LogTraceContextProvider): void {
+		this.traceContextProvider = provider;
+	}
+
+	/** 現在の処理に紐付くTrace Contextを取得します。 */
+	public getActiveTraceContext(): LogTraceContext | undefined {
+		return this.traceContextProvider?.();
 	}
 
 	/** backendに残っているログをflushしてから終了処理を行います。 */
@@ -220,6 +349,8 @@ export class LogManager {
 		const normalizedError = typeof error !== 'undefined'
 			? serializeLogError(error, { profile: this.normalizationProfile })
 			: undefined;
+		// 実際に出力するログだけ、TelemetryからactiveなTrace Contextを取得します。
+		const traceContext = this.traceContextProvider?.();
 		const record = {
 			...inputWithoutStructuredValues,
 			context,
@@ -228,10 +359,56 @@ export class LogManager {
 			processId: processInfo.processId,
 			isPrimary: processInfo.isPrimary,
 			workerId: processInfo.workerId,
+			...(traceContext ?? {}),
 			...(normalizedAttributes ? { attributes: normalizedAttributes } : {}),
 			...(normalizedError ? { error: normalizedError } : {}),
 		} as LogRecord;
 
 		this.backend.write(record);
+	}
+
+	/** status classの設定を確認し、Access logの出力対象か判断します。 */
+	public shouldWriteAccess(statusCode: number): boolean {
+		if (this.dependencies.isQuiet()) return false;
+		const statusClass = `${Math.floor(statusCode / 100)}xx` as AccessLogStatusClass;
+		return validAccessStatusClasses.has(statusClass) && this.accessConfiguration.statusClasses.includes(statusClass);
+	}
+
+	/** Access logのフック自体を登録してよい状態か、quietを含めて判定します。 */
+	public isAccessLogEnabled(): boolean {
+		return !this.dependencies.isQuiet() && this.accessConfiguration.statusClasses.length > 0;
+	}
+
+	/** HTTP応答へ共通情報と本文の安全な正規化を加えてAccess logを渡します。 */
+	public writeAccess(input: AccessLogRecordInput): void {
+		if (!this.shouldWriteAccess(input.statusCode)) return;
+
+		const processInfo = this.dependencies.getProcessInfo();
+		const { requestBody, responseBody, traceContext, ...inputWithoutOptionalValues } = input;
+		const bodyOptions = {
+			profile: this.normalizationProfile,
+			limits: { maxBytes: this.accessConfiguration.bodies.maxBytes },
+		} as const;
+		const normalizedRequestBody = this.accessConfiguration.bodies.request && typeof requestBody !== 'undefined'
+			? normalizeLogValue(requestBody, bodyOptions)
+			: undefined;
+		const normalizedResponseBody = this.accessConfiguration.bodies.response && typeof responseBody !== 'undefined'
+			? normalizeLogValue(responseBody, bodyOptions)
+			: undefined;
+		// HTTPフックが開始時に保持したContextだけを使い、応答時に別のSpanを紐付けません。
+		const resolvedTraceContext = traceContext;
+		const record: AccessLogRecord = {
+			type: 'access',
+			...inputWithoutOptionalValues,
+			timestamp: this.dependencies.now().toISOString(),
+			processId: processInfo.processId,
+			isPrimary: processInfo.isPrimary,
+			workerId: processInfo.workerId,
+			...(typeof normalizedRequestBody !== 'undefined' ? { requestBody: normalizedRequestBody } : {}),
+			...(typeof normalizedResponseBody !== 'undefined' ? { responseBody: normalizedResponseBody } : {}),
+			...(resolvedTraceContext ?? {}),
+		};
+
+		this.backend.writeAccess?.(record);
 	}
 }
