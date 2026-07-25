@@ -110,18 +110,22 @@ export class HashtagService {
 		const localOrRemoteUserIds = isLocal ? columns.localUserIds : columns.remoteUserIds;
 		const localOrRemoteUserCount = isLocal ? columns.localUsersCount : columns.remoteUsersCount;
 
-		await using runner = this.db.createQueryRunner('master');
-		await runner.query(
-			`INSERT into "hashtag"("id", "name", "${totalUserIds}", "${totalUsersCount}", "${localOrRemoteUserIds}",
-			                       "${localOrRemoteUserCount}")
-			 VALUES ($3, $1, ARRAY [$2], 1, ARRAY [$2], 1)
-			 ON CONFLICT ("name")
-				 DO UPDATE SET "${totalUserIds}"           = ${appendUserIdIfNotExists(totalUserIds)},
-				               "${totalUsersCount}"        = ${incrementCountIfNotExists(totalUserIds, totalUsersCount)},
-				               "${localOrRemoteUserIds}"   = ${appendUserIdIfNotExists(localOrRemoteUserIds)},
-				               "${localOrRemoteUserCount}" = ${incrementCountIfNotExists(localOrRemoteUserIds, localOrRemoteUserCount)}`,
-			[tag, user.id, this.idService.gen()],
-		);
+		const runner = this.db.createQueryRunner('master');
+		try {
+			await runner.query(
+				`INSERT into "hashtag"("id", "name", "${totalUserIds}", "${totalUsersCount}", "${localOrRemoteUserIds}",
+				                       "${localOrRemoteUserCount}")
+				 VALUES ($3, $1, ARRAY [$2], 1, ARRAY [$2], 1)
+				 ON CONFLICT ("name")
+					 DO UPDATE SET "${totalUserIds}"           = ${appendUserIdIfNotExists(totalUserIds)},
+					               "${totalUsersCount}"        = ${incrementCountIfNotExists(totalUserIds, totalUsersCount)},
+					               "${localOrRemoteUserIds}"   = ${appendUserIdIfNotExists(localOrRemoteUserIds)},
+					               "${localOrRemoteUserCount}" = ${incrementCountIfNotExists(localOrRemoteUserIds, localOrRemoteUserCount)}`,
+				[tag, user.id, this.idService.gen()],
+			);
+		} finally {
+			await runner.release();
+		}
 
 		function appendUserIdIfNotExists(userIds: keyof MiHashtag & `${string}UserIds`): string {
 			return `CASE WHEN NOT ("hashtag"."${userIds}" @> ARRAY[$2 ::varchar]) THEN array_append("hashtag"."${userIds}", $2) ELSE "hashtag"."${userIds}" END`;
@@ -142,16 +146,20 @@ export class HashtagService {
 		const localOrRemoteUserIds = isLocal ? columns.localUserIds : columns.remoteUserIds;
 		const localOrRemoteUserCount = isLocal ? columns.localUsersCount : columns.remoteUsersCount;
 
-		await using runner = this.db.createQueryRunner('master');
-		await runner.query(
-			`UPDATE "hashtag"
-			 SET "${totalUserIds}"           = array_remove("${totalUserIds}", $2),
-			     "${totalUsersCount}"        = ${decrementIfExists(totalUserIds, totalUsersCount)},
-			     "${localOrRemoteUserIds}"   = array_remove("${localOrRemoteUserIds}", $2),
-			     "${localOrRemoteUserCount}" = ${decrementIfExists(localOrRemoteUserIds, localOrRemoteUserCount)}
-			 WHERE "name" = $1`,
-			[tag, user.id],
-		);
+		const runner = this.db.createQueryRunner('master');
+		try {
+			await runner.query(
+				`UPDATE "hashtag"
+				 SET "${totalUserIds}"           = array_remove("${totalUserIds}", $2),
+				     "${totalUsersCount}"        = ${decrementIfExists(totalUserIds, totalUsersCount)},
+				     "${localOrRemoteUserIds}"   = array_remove("${localOrRemoteUserIds}", $2),
+				     "${localOrRemoteUserCount}" = ${decrementIfExists(localOrRemoteUserIds, localOrRemoteUserCount)}
+				 WHERE "name" = $1`,
+				[tag, user.id],
+			);
+		} finally {
+			await runner.release();
+		}
 
 		function decrementIfExists(userIds: keyof MiHashtag & `${string}UserIds`, userCount: keyof MiHashtag & `${string}UsersCount`): string {
 			return `CASE WHEN ("${userIds}" @> ARRAY[$2]) THEN "${userCount}" - 1 ELSE "${userCount}" END`;
