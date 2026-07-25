@@ -110,18 +110,18 @@ export class HashtagService {
 		const localOrRemoteUserIds = isLocal ? columns.localUserIds : columns.remoteUserIds;
 		const localOrRemoteUserCount = isLocal ? columns.localUsersCount : columns.remoteUsersCount;
 
-		await this.db.createQueryRunner('master')
-			.query(
-				`INSERT into "hashtag"("id", "name", "${totalUserIds}", "${totalUsersCount}", "${localOrRemoteUserIds}",
-				                       "${localOrRemoteUserCount}")
-				 VALUES ($3, $1, ARRAY [$2], 1, ARRAY [$2], 1)
-				 ON CONFLICT ("name")
-					 DO UPDATE SET "${totalUserIds}"           = ${appendUserIdIfNotExists(totalUserIds)},
-					               "${totalUsersCount}"        = ${incrementCountIfNotExists(totalUserIds, totalUsersCount)},
-					               "${localOrRemoteUserIds}"   = ${appendUserIdIfNotExists(localOrRemoteUserIds)},
-					               "${localOrRemoteUserCount}" = ${incrementCountIfNotExists(localOrRemoteUserIds, localOrRemoteUserCount)}`,
-				[tag, user.id, this.idService.gen()],
-			);
+		await using runner = this.db.createQueryRunner('master');
+		await runner.query(
+			`INSERT into "hashtag"("id", "name", "${totalUserIds}", "${totalUsersCount}", "${localOrRemoteUserIds}",
+			                       "${localOrRemoteUserCount}")
+			 VALUES ($3, $1, ARRAY [$2], 1, ARRAY [$2], 1)
+			 ON CONFLICT ("name")
+				 DO UPDATE SET "${totalUserIds}"           = ${appendUserIdIfNotExists(totalUserIds)},
+				               "${totalUsersCount}"        = ${incrementCountIfNotExists(totalUserIds, totalUsersCount)},
+				               "${localOrRemoteUserIds}"   = ${appendUserIdIfNotExists(localOrRemoteUserIds)},
+				               "${localOrRemoteUserCount}" = ${incrementCountIfNotExists(localOrRemoteUserIds, localOrRemoteUserCount)}`,
+			[tag, user.id, this.idService.gen()],
+		);
 
 		function appendUserIdIfNotExists(userIds: keyof MiHashtag & `${string}UserIds`): string {
 			return `CASE WHEN NOT ("hashtag"."${userIds}" @> ARRAY[$2 ::varchar]) THEN array_append("hashtag"."${userIds}", $2) ELSE "hashtag"."${userIds}" END`;
