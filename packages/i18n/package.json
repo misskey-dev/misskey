@@ -38,6 +38,6 @@
 		"tsx": "4.23.0"
 	},
 	"dependencies": {
-		"js-yaml": "5.2.1"
+		"js-yaml": "5.2.2"
 	}
 }
