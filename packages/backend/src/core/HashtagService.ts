@@ -142,16 +142,16 @@ export class HashtagService {
 		const localOrRemoteUserIds = isLocal ? columns.localUserIds : columns.remoteUserIds;
 		const localOrRemoteUserCount = isLocal ? columns.localUsersCount : columns.remoteUsersCount;
 
-		await this.db.createQueryRunner('master')
-			.query(
-				`UPDATE "hashtag"
-				 SET "${totalUserIds}"           = array_remove("${totalUserIds}", $2),
-				     "${totalUsersCount}"        = ${decrementIfExists(totalUserIds, totalUsersCount)},
-				     "${localOrRemoteUserIds}"   = array_remove("${localOrRemoteUserIds}", $2),
-				     "${localOrRemoteUserCount}" = ${decrementIfExists(localOrRemoteUserIds, localOrRemoteUserCount)}
-				 WHERE "name" = $1`,
-				[tag, user.id],
-			);
+		await using runner = this.db.createQueryRunner('master');
+		await runner.query(
+			`UPDATE "hashtag"
+			 SET "${totalUserIds}"           = array_remove("${totalUserIds}", $2),
+			     "${totalUsersCount}"        = ${decrementIfExists(totalUserIds, totalUsersCount)},
+			     "${localOrRemoteUserIds}"   = array_remove("${localOrRemoteUserIds}", $2),
+			     "${localOrRemoteUserCount}" = ${decrementIfExists(localOrRemoteUserIds, localOrRemoteUserCount)}
+			 WHERE "name" = $1`,
+			[tag, user.id],
+		);
 
 		function decrementIfExists(userIds: keyof MiHashtag & `${string}UserIds`, userCount: keyof MiHashtag & `${string}UsersCount`): string {
 			return `CASE WHEN ("${userIds}" @> ARRAY[$2]) THEN "${userCount}" - 1 ELSE "${userCount}" END`;
