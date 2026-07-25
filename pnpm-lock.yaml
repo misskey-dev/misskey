@@ -27,8 +27,8 @@ importers:
         specifier: 5.2.1
         version: 5.2.1
       tar:
-        specifier: 7.5.20
-        version: 7.5.20
+        specifier: 7.5.21
+        version: 7.5.21
     devDependencies:
       '@eslint/js':
         specifier: 9.39.5
@@ -192,8 +192,8 @@ importers:
         specifier: 0.20.1
         version: 0.20.1(@opentelemetry/api@1.9.1)
       '@fastify/static':
-        specifier: 10.1.0
-        version: 10.1.0
+        specifier: 10.1.2
+        version: 10.1.2
       '@kitajs/html':
         specifier: 4.2.13
         version: 4.2.13
@@ -1955,8 +1955,8 @@ packages:
   '@fastify/send@4.1.0':
     resolution: {integrity: sha512-TMYeQLCBSy2TOFmV95hQWkiTYgC/SEx7vMdV+wnZVX4tt8VBLKzmH8vV9OzJehV0+XBfg+WxPMt5wp+JBUKsVw==}
 
-  '@fastify/static@10.1.0':
-    resolution: {integrity: sha512-iK/8TvRM/EgNOyQL+EpWu+x3aR6o4GWt+UI+27zmE7w6t/6d80mXqOtWLdEKQ13vL/g1Jry0ae2icj6GP7tGzA==}
+  '@fastify/static@10.1.2':
+    resolution: {integrity: sha512-G/g18cG9tLutT/OVyN1AIsHIl9L1UwmJ+S3dkyhVpplIx0nEMicd7RGQ+uJLyhKKF4a3tTcQydccn3Mop1fX+Q==}
 
   '@file-type/xml@0.4.4':
     resolution: {integrity: sha512-NhCyXoHlVZ8TqM476hyzwGJ24+D5IPSaZhmrPj7qXnEVb3q6jrFzA3mM9TBpknKSI9EuQeGTKRg2DXGUwvBBoQ==}
@@ -8613,8 +8613,8 @@ packages:
   tar-stream@3.2.0:
     resolution: {integrity: sha512-ojzvCvVaNp6aOTFmG7jaRD0meowIAuPc3cMMhSgKiVWws1GyHbGd/xvnyuRKcKlMpt3qvxx6r0hreCNITP9hIg==}
 
-  tar@7.5.20:
-    resolution: {integrity: sha512-9FcyK4PA6+WbzlTM9WhQm6vB5W7cP7dUiPsv1g7YDwEQnQ1CGpK3MGlKk/ITVWMk05kHZuBhmVhiv8LZoy/PFQ==}
+  tar@7.5.21:
+    resolution: {integrity: sha512-XdhtCvlMywwxpCW8YEq3lOXBJpUPTR2OHHcwLPO3HwsJqOHa2Ok/oJ7ruGzp+JrKoRPVCzJwAdEjqLW/vNRPHA==}
     engines: {node: '>=18'}
 
   taskkill@5.0.0:
@@ -10088,7 +10088,7 @@ snapshots:
       http-errors: 2.0.1
       mime: 3.0.0
 
-  '@fastify/static@10.1.0':
+  '@fastify/static@10.1.2':
     dependencies:
       '@fastify/accept-negotiator': 2.0.1
       '@fastify/error': 4.2.0
@@ -15928,7 +15928,7 @@ snapshots:
       nopt: 10.0.1
       proc-log: 7.0.0
       semver: 7.8.5
-      tar: 7.5.20
+      tar: 7.5.21
       tinyglobby: 0.2.17
       undici: 6.25.0
       which: 7.0.0
@@ -17586,7 +17586,7 @@ snapshots:
       - bare-buffer
       - react-native-b4a
 
-  tar@7.5.20:
+  tar@7.5.21:
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
       chownr: 3.0.0
