@@ -10,11 +10,11 @@
 import cluster from 'node:cluster';
 import { EventEmitter } from 'node:events';
 import { writeHeapSnapshot } from 'node:v8';
-import chalk from 'chalk';
 import Xev from 'xev';
 import Logger from '@/logger.js';
-import { isTelemetryShutdownInProgress } from '@/core/telemetry/telemetry-shutdown.js';
 import { envOption } from '../env.js';
+import { installProcessErrorHandlers } from './process-error-handler.js';
+import { isShutdownInProgress } from './shutdown-handler.js';
 import { readyRef } from './ready.js';
 
 import 'reflect-metadata';
@@ -27,6 +27,8 @@ EventEmitter.defaultMaxListeners = 128;
 const logger = new Logger('core', 'cyan');
 const clusterLogger = logger.createSubLogger('cluster', 'orange');
 const ev = new Xev();
+
+installProcessErrorHandlers({ logger, quiet: envOption.quiet });
 
 //#region Events
 
@@ -42,32 +44,19 @@ cluster.on('online', worker => {
 
 // Listen for dying workers
 cluster.on('exit', worker => {
-	if (isTelemetryShutdownInProgress()) {
+	if (isShutdownInProgress()) {
 		clusterLogger.info(`Process exited during shutdown: [${worker.id}]`);
 		return;
 	}
 
-	// Replace the dead worker,
-	// we're not sentimental
-	clusterLogger.error(chalk.red(`[${worker.id}] died :(`));
+	// 終了したワーカーは従来どおり再生成し、表示色は出力処理へ任せます。
+	clusterLogger.error(`[${worker.id}] died :(`);
 	cluster.fork();
-});
-
-// Display detail of unhandled promise rejection
-if (!envOption.quiet) {
-	process.on('unhandledRejection', console.dir);
-}
-
-// Display detail of uncaught exception
-process.on('uncaughtException', err => {
-	try {
-		logger.error(err);
-		console.trace(err);
-	} catch { }
 });
 
 // Dying away...
 process.on('exit', code => {
+	if (isShutdownInProgress()) return;
 	logger.info(`The process is going to exit with code ${code}`);
 });
 
@@ -75,12 +64,10 @@ process.on('exit', code => {
 
 if (!envOption.disableClustering) {
 	if (cluster.isPrimary) {
-		logger.info(`Start main process... pid: ${process.pid}`);
 		const { masterMain } = await import('./master.js');
 		await masterMain();
 		ev.mount();
 	} else if (cluster.isWorker) {
-		logger.info(`Start worker process... pid: ${process.pid}`);
 		const { workerMain } = await import('./worker.js');
 		await workerMain();
 	} else {
@@ -88,7 +75,6 @@ if (!envOption.disableClustering) {
 	}
 } else {
 	// 非clusterの場合はMasterのみが起動するため、Workerの処理は行わない(cluster.isWorker === trueの状態でこのブロックに来ることはない)
-	logger.info(`Start main process... pid: ${process.pid}`);
 	const { masterMain } = await import('./master.js');
 	await masterMain();
 	ev.mount();

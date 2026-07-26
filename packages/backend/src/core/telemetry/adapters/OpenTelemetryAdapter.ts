@@ -11,6 +11,7 @@ import { installHttpClientInstrumentation } from '@/core/telemetry/http-client-i
 import { installDatabaseInstrumentation } from '@/core/telemetry/database-instrumentation.js';
 import { installRedisInstrumentation } from '@/core/telemetry/redis-instrumentation.js';
 import { executeSpan, getQueueTraceContextMode, injectActiveTraceContext, recordSpanError, startSpanWithQueueTraceContext } from '@/core/telemetry/queue-trace-context.js';
+import type { LogTraceContext } from '@/logging/types.js';
 import type { Span, SpanStatusCode, Tracer } from '@opentelemetry/api';
 import type { Resource, ResourceDetector } from '@opentelemetry/resources';
 import type { ParentBasedSampler, Sampler } from '@opentelemetry/sdk-trace-base';
@@ -159,6 +160,15 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 			recordSpanError(reportSpan, new Error(message), this.deps.spanStatusCodeError);
 			reportSpan.end();
 		});
+	}
+
+	/** activeなSpanの識別子を、Logging基盤で扱える形式へ変換します。 */
+	public getActiveTraceContext(): LogTraceContext | undefined {
+		const activeSpan = this.deps.getActiveSpan();
+		if (activeSpan == null) return undefined;
+
+		const { traceId, spanId, traceFlags } = activeSpan.spanContext();
+		return { traceId, spanId, traceFlags };
 	}
 
 	public startSpan<T>(name: string, fn: () => T): T {

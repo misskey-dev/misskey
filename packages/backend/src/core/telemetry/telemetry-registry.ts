@@ -4,6 +4,7 @@
  */
 
 import type { Config } from '@/config.js';
+import { setLogTraceContextProvider } from '@/logging/logging-runtime.js';
 import { OpenTelemetryAdapter } from './adapters/OpenTelemetryAdapter.js';
 import { SentryTelemetryAdapter } from './adapters/SentryTelemetryAdapter.js';
 import type { OtelBackendRuntimeConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './adapters/TelemetryAdapter.js';
@@ -23,14 +24,21 @@ export async function initTelemetry(config: Config): Promise<void> {
 	};
 
 	// SentryとOTelを同時に使う場合はproviderを分けず、Sentry側へOTLP processorを追加する。
+	let adapter: TelemetryAdapter | undefined;
 	if (config.sentryForBackend && otelForBackend) {
-		adapters.push(await SentryTelemetryAdapter.createWithOtlpExport(config.sentryForBackend, otelForBackend));
+		adapter = await SentryTelemetryAdapter.createWithOtlpExport(config.sentryForBackend, otelForBackend);
 	} else if (config.sentryForBackend) {
 		// Sentry単体時は既存のSentry adapterだけを登録する。
-		adapters.push(await SentryTelemetryAdapter.create(config.sentryForBackend));
+		adapter = await SentryTelemetryAdapter.create(config.sentryForBackend);
 	} else if (otelForBackend) {
 		// OTel単体時だけMisskey自身でNodeTracerProviderを立てる。
-		adapters.push(await OpenTelemetryAdapter.create(otelForBackend));
+		adapter = await OpenTelemetryAdapter.create(otelForBackend);
+	}
+
+	if (adapter != null) {
+		adapters.push(adapter);
+		// Telemetryの初期化後に登録し、初期化前のBootstrapログは従来どおり出力する。
+		setLogTraceContextProvider(() => adapter.getActiveTraceContext?.());
 	}
 }
 

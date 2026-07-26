@@ -11,18 +11,30 @@ import chalkTemplate from 'chalk-template';
 import Logger from '@/logger.js';
 import { loadConfig } from '@/config.js';
 import type { Config } from '@/config.js';
+import { configureLogging, shutdownLogging } from '@/logging/logging-runtime.js';
+import type { LogFormat } from '@/logging/types.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
 import { envOption } from '@/env.js';
-import { initTelemetry } from '@/core/telemetry/telemetry-registry.js';
-import { installTelemetrySignalHandlers } from '@/core/telemetry/telemetry-shutdown.js';
+import { initTelemetry, shutdownTelemetry } from '@/core/telemetry/telemetry-registry.js';
 import { initExtraThreadPool, jobQueue, server } from './common.js';
+import { installShutdownSignalHandlers } from './shutdown-handler.js';
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta');
 
 const themeColor = chalk.hex('#86b300');
 
-function greet(props: { version: string }) {
+/** 起動時の案内を、選択されたログ形式に合わせて出力します。 */
+function greet(props: { version: string; format: LogFormat }) {
+	if (!envOption.quiet && props.format === 'json') {
+		// JSONモードでは生のコンソール出力を避け、各案内を1件ずつ構造化ログにします。
+		bootLogger.info('Welcome to Misskey!');
+		bootLogger.info(`Misskey v${props.version}`, null, true);
+		bootLogger.info('Misskey is an open-source decentralized microblogging platform.');
+		bootLogger.info('If you like Misskey, please consider donating to support dev. https://misskey-hub.net/docs/donate/');
+		return;
+	}
+
 	if (!envOption.quiet) {
 		//#region Misskey logo
 		const v = `v${props.version}`;
@@ -53,7 +65,9 @@ export async function masterMain() {
 	// initialize app
 	try {
 		config = loadConfigBoot();
-		greet({ version: config.version });
+		logger.info(`Start main process... pid: ${process.pid}`);
+		bootLogger.createSubLogger('config').succ('Loaded');
+		greet({ version: config.version, format: config.logging?.format ?? 'pretty' });
 		showEnvironment();
 		await showMachineInfo(bootLogger);
 		showNodejsVersion();
@@ -74,7 +88,10 @@ export async function masterMain() {
 		bootLogger.error(e instanceof Error ? e : new Error(String(e)), null, true);
 		process.exit(1);
 	}
-	installTelemetrySignalHandlers();
+	installShutdownSignalHandlers({
+		shutdownTasks: [shutdownTelemetry, shutdownLogging],
+		onRegistered: message => bootLogger.info(message),
+	});
 
 	bootLogger.info(
 		`mode: [disableClustering: ${envOption.disableClustering}, onlyServer: ${envOption.onlyServer}, onlyQueue: ${envOption.onlyQueue}]`,
@@ -132,12 +149,14 @@ function showNodejsVersion(): void {
 	nodejsLogger.info(`Version ${process.version} detected.`);
 }
 
+/** 設定を読み込み、成功時に後続のログ出力形式を適用します。 */
 function loadConfigBoot(): Config {
 	const configLogger = bootLogger.createSubLogger('config');
 	let config;
 
 	try {
 		config = loadConfig();
+		configureLogging(config.logging);
 	} catch (exception) {
 		if (typeof exception === 'string') {
 			configLogger.error(exception);
@@ -148,8 +167,6 @@ function loadConfigBoot(): Config {
 		}
 		throw exception;
 	}
-
-	configLogger.succ('Loaded');
 
 	return config;
 }

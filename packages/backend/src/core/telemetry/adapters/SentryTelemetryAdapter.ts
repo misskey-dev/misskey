@@ -6,6 +6,7 @@
 import Logger from '@/logger.js';
 import { registerDiagLogger } from '@/core/telemetry/telemetry-diag.js';
 import { getQueueTraceContextMode, injectActiveTraceContext, startSpanWithQueueTraceContext } from '@/core/telemetry/queue-trace-context.js';
+import type { LogTraceContext } from '@/logging/types.js';
 import type * as SentryNode from '@sentry/node';
 import type { NodeOptions } from '@sentry/node';
 import type { OtelBackendRuntimeConfig, SentryBackendConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
@@ -173,6 +174,15 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 			...(opts.userId != null ? { user: { id: opts.userId } } : {}),
 			extra: opts.extra,
 		});
+	}
+
+	/** activeなSpanの識別子を、Logging基盤で扱える形式へ変換します。 */
+	public getActiveTraceContext(): LogTraceContext | undefined {
+		const activeSpan = this.Sentry.getActiveSpan();
+		if (activeSpan == null) return undefined;
+
+		const { traceId, spanId, traceFlags } = activeSpan.spanContext();
+		return { traceId, spanId, traceFlags };
 	}
 
 	public startSpan<T>(name: string, fn: () => T): T {
