@@ -73,11 +73,12 @@ export class SanitizingSpanProcessor implements SpanProcessor {
 
 	/**
 	 * 下流に溜まった送信待ちの計測情報を送る。
-	 * 下流の実装が同期的に失敗しても、終了処理全体を止めない。
+	 * 下流の失敗で終了処理全体を止めないよう、同期の throw と Promise の reject の両方を吸収する。
+	 * 失敗の内容は OTel の diag logger 経由で報告されるため、ここでは再送も記録もしない。
 	 */
 	public forceFlush(): ReturnType<SpanProcessor['forceFlush']> {
 		try {
-			return this.downstream.forceFlush();
+			return Promise.resolve(this.downstream.forceFlush()).catch(() => undefined);
 		} catch {
 			return Promise.resolve();
 		}
@@ -85,11 +86,12 @@ export class SanitizingSpanProcessor implements SpanProcessor {
 
 	/**
 	 * 下流の送信処理を終了する。
-	 * 監視用の送信失敗によって、アプリケーションの終了を妨げない。
+	 * 監視用の送信失敗によってアプリケーションの終了を妨げないよう、
+	 * `forceFlush` と同じく同期の throw と Promise の reject の両方を吸収する。
 	 */
 	public shutdown(): ReturnType<SpanProcessor['shutdown']> {
 		try {
-			return this.downstream.shutdown();
+			return Promise.resolve(this.downstream.shutdown()).catch(() => undefined);
 		} catch {
 			return Promise.resolve();
 		}

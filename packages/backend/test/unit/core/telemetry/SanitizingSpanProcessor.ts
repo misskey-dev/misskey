@@ -39,6 +39,26 @@ function requestLoopback(url: string): Promise<void> {
 }
 
 describe('SanitizingSpanProcessor', () => {
+	test('absorbs downstream forceFlush/shutdown failures whether they throw or reject', async () => {
+		// MultiSpanProcessor.shutdown() は Promise.all の reject をそのまま返すため、
+		// 下流の送信失敗を吸収しないと provider 全体の終了処理が失敗になる。
+		const rejecting = {
+			onStart: vi.fn(), onEnd: vi.fn(),
+			forceFlush: vi.fn(async () => { throw new Error('flush failed'); }),
+			shutdown: vi.fn(async () => { throw new Error('shutdown failed'); }),
+		};
+		await expect(new SanitizingSpanProcessor(rejecting as any).forceFlush()).resolves.toBeUndefined();
+		await expect(new SanitizingSpanProcessor(rejecting as any).shutdown()).resolves.toBeUndefined();
+
+		const throwing = {
+			onStart: vi.fn(), onEnd: vi.fn(),
+			forceFlush: vi.fn(() => { throw new Error('flush failed'); }),
+			shutdown: vi.fn(() => { throw new Error('shutdown failed'); }),
+		};
+		await expect(new SanitizingSpanProcessor(throwing as any).forceFlush()).resolves.toBeUndefined();
+		await expect(new SanitizingSpanProcessor(throwing as any).shutdown()).resolves.toBeUndefined();
+	});
+
 	test('exports only a sanitized detached copy', () => {
 		const downstream = { onStart: vi.fn(), onEnd: vi.fn(), forceFlush: vi.fn(), shutdown: vi.fn() };
 		const processor = new SanitizingSpanProcessor(downstream as any);
