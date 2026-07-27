@@ -11,6 +11,14 @@ describe('telemetry sanitizer validation', () => {
 		expect(isWithinObservabilityLimit({ value: 'あ'.repeat(100000) })).toBe(false);
 	});
 
+	test('allows data within the limit and fails closed on values that cannot be serialized', () => {
+		// 上限側だけを固定すると、実装が常に false を返すようになっても気付けない。
+		expect(isWithinObservabilityLimit({ value: 'ok' })).toBe(true);
+		const circular: Record<string, unknown> = {};
+		circular.self = circular;
+		expect(isWithinObservabilityLimit(circular)).toBe(false);
+	});
+
 	test('accepts valid trace and span IDs', () => {
 		expect(isTraceId('0123456789abcdef0123456789abcdef')).toBe(true);
 		expect(isTraceId('0123456789ABCDEF0123456789ABCDEF')).toBe(true);

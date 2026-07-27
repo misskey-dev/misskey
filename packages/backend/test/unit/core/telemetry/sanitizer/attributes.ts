@@ -176,7 +176,9 @@ describe('telemetry attribute sanitizer', () => {
 				'db.system.name': 'postgresql',
 			}, { allowDbStatement: true })['db.statement']).toBe(sql);
 		});
+	});
 
+	describe('Fastify hook attributes', () => {
 		test('keeps the Fastify hook attributes @fastify/otel actually produces', () => {
 			// 値の材料は登録時に確定する関数名とプラグイン名だけで、リクエスト由来の値を含まない。
 			expect(sanitizeAttributes({

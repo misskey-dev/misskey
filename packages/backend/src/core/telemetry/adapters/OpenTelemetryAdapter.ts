@@ -159,7 +159,8 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 		const attributes = toSpanAttributes(opts.extra);
 		if (span != null) {
 			recordSpanError(span, new Error(message), this.deps.spanStatusCodeError);
-			// キュー名や endpoint 名を属性に残し、OTel-only 構成でも障害箇所を識別できるようにする。
+			// 障害箇所は例外イベントの message で識別する。extra は属性として付けるが、
+			// OTLP へ出るのは許可一覧に載っているキーだけで、それ以外は送信前に落ちる。
 			if (attributes != null) {
 				span.setAttributes(attributes);
 			}

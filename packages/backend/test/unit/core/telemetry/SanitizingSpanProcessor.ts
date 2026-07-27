@@ -6,7 +6,7 @@
 import { once } from 'node:events';
 import { createServer, get } from 'node:http';
 import { describe, expect, test, vi } from 'vitest';
-import { SpanKind } from '@opentelemetry/api';
+import { context, propagation, SpanKind, trace } from '@opentelemetry/api';
 import * as Sentry from '@sentry/node';
 import { createSanitizedReadableSpan, isAllowedCombinedScope, SanitizingSpanProcessor } from '@/core/telemetry/SanitizingSpanProcessor.js';
 import { exceptionMessageMaxBytes, exceptionStacktraceMaxBytes } from '@/core/telemetry/sanitizer/text.js';
@@ -270,6 +270,11 @@ describe('SanitizingSpanProcessor', () => {
 		} finally {
 			await new Promise<void>((resolve, reject) => server.close(error => error == null ? resolve() : reject(error)));
 			await Sentry.close(1000);
+			// `Sentry.close()` だけでは global TracerProvider の登録が残り、同じワーカーの後続テストで
+			// `Sentry.init()` や `NodeTracerProvider` の再登録と干渉する。
+			trace.disable();
+			context.disable();
+			propagation.disable();
 		}
 	}, 10000);
 

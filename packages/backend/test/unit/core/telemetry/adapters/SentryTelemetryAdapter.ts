@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import { SentryTelemetryAdapter, buildSentryIntegrations, buildSentryNodeOptions, buildSentryOtlpInitOptions, resolveSentryAutoInstrumentationExport } from '@/core/telemetry/adapters/SentryTelemetryAdapter.js';
 
 type TestIntegration = Parameters<ReturnType<typeof buildSentryIntegrations>>[0][number];
@@ -432,26 +432,29 @@ describe('SentryTelemetryAdapter.createWithOtlpExport', () => {
 		vi.resetModules();
 		const { SentryTelemetryAdapter: MockedSentryTelemetryAdapter } = await import('@/core/telemetry/adapters/SentryTelemetryAdapter.js');
 
-		await MockedSentryTelemetryAdapter.createWithOtlpExport({
-			enableNodeProfiling: false,
-			options: {},
-		}, {
-			serviceVersion: '2026.1.0',
-			capturePgStatement: true,
-		});
+		try {
+			await MockedSentryTelemetryAdapter.createWithOtlpExport({
+				enableNodeProfiling: false,
+				options: {},
+			}, {
+				serviceVersion: '2026.1.0',
+				capturePgStatement: true,
+			});
 
-		// `capturePgStatement` が OTLP 用 processor の属性ポリシーだけに渡ることを確認する。
-		// Sentry 自身の PostgreSQL 計装と送信は、このポリシーを参照しない。
-		expect(sanitizingSpanProcessorArgs).toHaveLength(1);
-		expect(sanitizingSpanProcessorArgs[0][2]).toEqual({ allowDbStatement: true });
-
-		vi.doUnmock('@sentry/node');
-		vi.doUnmock('@sentry/profiling-node');
-		vi.doUnmock('@opentelemetry/api');
-		vi.doUnmock('@opentelemetry/sdk-trace-base');
-		vi.doUnmock('@opentelemetry/exporter-trace-otlp-proto');
-		vi.doUnmock('@/core/telemetry/SanitizingSpanProcessor.js');
-		vi.resetModules();
+			// `capturePgStatement` が OTLP 用 processor の属性ポリシーだけに渡ることを確認する。
+			// Sentry 自身の PostgreSQL 計装と送信は、このポリシーを参照しない。
+			expect(sanitizingSpanProcessorArgs).toHaveLength(1);
+			expect(sanitizingSpanProcessorArgs[0][2]).toEqual({ allowDbStatement: true });
+		} finally {
+			// assertion が失敗しても module mock を後続テストへ持ち越さない。
+			vi.doUnmock('@sentry/node');
+			vi.doUnmock('@sentry/profiling-node');
+			vi.doUnmock('@opentelemetry/api');
+			vi.doUnmock('@opentelemetry/sdk-trace-base');
+			vi.doUnmock('@opentelemetry/exporter-trace-otlp-proto');
+			vi.doUnmock('@/core/telemetry/SanitizingSpanProcessor.js');
+			vi.resetModules();
+		}
 	});
 });
 
@@ -494,13 +497,14 @@ describe('SentryTelemetryAdapter.startSpan', () => {
 		return { adapter, startActiveSpan, sentryStartSpan: startSpan };
 	}
 
-	function unmockCombined(): void {
+	// assertion が失敗したテストでも module mock を後続テストへ持ち越さないよう、解除は afterEach で行う。
+	afterEach(() => {
 		vi.doUnmock('@sentry/node');
 		vi.doUnmock('@sentry/profiling-node');
 		vi.doUnmock('@opentelemetry/api');
 		vi.doUnmock('@opentelemetry/sdk-trace-base');
 		vi.doUnmock('@opentelemetry/exporter-trace-otlp-proto');
-	}
+	});
 
 	test('combined: uses the OTel tracer (not Sentry.startSpan) and ends the span on success', async () => {
 		const span = createFakeSpan();
@@ -512,8 +516,6 @@ describe('SentryTelemetryAdapter.startSpan', () => {
 		expect(span.end).toHaveBeenCalledTimes(1);
 		expect(span.recordException).not.toHaveBeenCalled();
 		expect(span.setStatus).not.toHaveBeenCalled();
-
-		unmockCombined();
 	});
 
 	test('combined: records a synchronous throw as an exception event with ERROR status, ends the span, and rethrows', async () => {
@@ -525,8 +527,6 @@ describe('SentryTelemetryAdapter.startSpan', () => {
 		expect(span.recordException).toHaveBeenCalledTimes(1);
 		expect(span.setStatus).toHaveBeenCalledWith(expect.objectContaining({ code: 2 }));
 		expect(span.end).toHaveBeenCalledTimes(1);
-
-		unmockCombined();
 	});
 
 	test('combined: records a rejected promise the same way and keeps the rejection observable to the caller', async () => {
@@ -538,8 +538,6 @@ describe('SentryTelemetryAdapter.startSpan', () => {
 		expect(span.recordException).toHaveBeenCalledTimes(1);
 		expect(span.setStatus).toHaveBeenCalledWith(expect.objectContaining({ code: 2 }));
 		expect(span.end).toHaveBeenCalledTimes(1);
-
-		unmockCombined();
 	});
 
 	test('combined: does not end the span before an async fn settles', async () => {
@@ -552,8 +550,6 @@ describe('SentryTelemetryAdapter.startSpan', () => {
 		settle?.();
 		await pending;
 		expect(span.end).toHaveBeenCalledTimes(1);
-
-		unmockCombined();
 	});
 
 	test('Sentry-only: keeps using Sentry.startSpan (no OTel provider exists in this configuration)', async () => {
@@ -565,8 +561,5 @@ describe('SentryTelemetryAdapter.startSpan', () => {
 
 		expect(adapter.startSpan('API: notes/show', () => 'result')).toBe('result');
 		expect(startSpan).toHaveBeenCalledWith({ name: 'API: notes/show' }, expect.any(Function));
-
-		vi.doUnmock('@sentry/node');
-		vi.doUnmock('@sentry/profiling-node');
 	});
 });

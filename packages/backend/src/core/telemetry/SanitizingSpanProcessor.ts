@@ -161,6 +161,12 @@ function safeScopeName(value: unknown): string {
 	return typeof value === 'string' && /^@?[A-Za-z0-9._/-]{1,128}$/.test(value) ? value : marker;
 }
 
+// `@opentelemetry/api` の SpanKind と同じ値。出力可否の判定を数値のまま読み違えないようにする。
+// この module は同 package を型としてしか読み込まないため、enum ではなくローカル定数で持つ。
+const spanKindInternal = 0;
+const spanKindServer = 1;
+const spanKindClient = 2;
+
 /**
  * Sentry と同じ計測提供者を使う場合に、出力を許可する計測情報か判定する。
  * 将来追加される計測を意図せず公開しないよう、確認済みの組み合わせだけを許可する。
@@ -182,7 +188,7 @@ export function isAllowedCombinedScope(policy: 'none' | 'safe', scope: Scope, sp
 
 	// PostgreSQL は、明示的に有効化した問い合わせと接続だけを許可する。
 	// 確認済みの計測元・種別・名前の組み合わせ以外は出力しない。
-	if (span.kind === 2 && (attrs['db.system'] === 'postgresql' || attrs['db.system.name'] === 'postgresql')) {
+	if (span.kind === spanKindClient && (attrs['db.system'] === 'postgresql' || attrs['db.system.name'] === 'postgresql')) {
 		if (capture.capturePgSpans && origin === 'auto.db.otel.postgres' && pgQueryNamePattern.test(span.name)) {
 			return true;
 		}
@@ -195,7 +201,7 @@ export function isAllowedCombinedScope(policy: 'none' | 'safe', scope: Scope, sp
 
 	// Redis は、明示的に有効化した接続と命令だけを許可する。
 	// 親がない命令は、根の計測を許可した場合に限る。
-	if (span.kind === 0 && origin === 'auto.db.redis.diagnostic_channel' && attrs['db.system.name'] === 'redis') {
+	if (span.kind === spanKindInternal && origin === 'auto.db.redis.diagnostic_channel' && attrs['db.system.name'] === 'redis') {
 		if (attrs['sentry.op'] === 'db.redis.connect' && span.name === 'redis-connect') {
 			return capture.captureRedisConnectionSpans;
 		}
@@ -209,24 +215,24 @@ export function isAllowedCombinedScope(policy: 'none' | 'safe', scope: Scope, sp
 
 	// Fastify の hook / route handler は、OTel-only 構成と同じく hook 区間の所要時間として残す。
 	// 名前も属性もプラグイン登録時に確定する識別子だけで、リクエスト由来の値を含まない。
-	if (span.kind === 0 && origin === 'auto.http.otel.fastify' && typeof attrs['sentry.op'] === 'string' && fastifyHookOps.has(attrs['sentry.op'])) {
+	if (span.kind === spanKindInternal && origin === 'auto.http.otel.fastify' && typeof attrs['sentry.op'] === 'string' && fastifyHookOps.has(attrs['sentry.op'])) {
 		return true;
 	}
 
 	// HTTP は、ルートに一致した受信 span と、送信先を確認できる client span に限る。
 	// 受信側は Sentry が使う旧属性名と現行の属性名の両方を受け付ける。
-	return (span.kind === 1
+	return (span.kind === spanKindServer
 			&& origin === 'auto.http.otel.http'
 			&& attrs['sentry.op'] === 'http.server'
 			&& (typeof attrs['http.method'] === 'string' || typeof attrs['http.request.method'] === 'string')
 			&& typeof attrs['http.route'] === 'string')
-		|| (span.kind === 0
+		|| (span.kind === spanKindInternal
 			&& origin === 'auto.http.client'
 			&& attrs['sentry.op'] === 'http.client'
 			&& typeof attrs['http.request.method'] === 'string'
 			&& typeof attrs['url.full'] === 'string')
 		// native fetch は別の origin を使い `sentry.op` を持たないため、専用の組み合わせで許可する。
-		|| (span.kind === 2
+		|| (span.kind === spanKindClient
 			&& origin === 'auto.http.otel.node_fetch'
 			&& typeof attrs['http.request.method'] === 'string'
 			&& typeof attrs['url.full'] === 'string');

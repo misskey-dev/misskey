@@ -330,7 +330,7 @@ id: 'aidx'
 #  # To check enabled names, set `options.debug: true` and see
 #  # "Integration installed: <name>" in the Sentry logs.
 #  #
-#  # As of 2026-07-07 / @sentry/node 10.62.0, useful names for Misskey include:
+#  # As of 2026-07-27 / @sentry/node 10.65.0, useful names for Misskey include:
 #  #   Postgres    ... DB queries (when pg is externalized)
 #  #   Redis       ... ioredis commands
 #  #   Fastify     ... inbound HTTP routes
