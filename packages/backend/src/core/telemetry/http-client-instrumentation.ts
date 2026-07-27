@@ -34,9 +34,9 @@ export function createHttpClientInstrumentation(deps: HttpClientInstrumentationD
 	const unsubscribeCreated = deps.subscribe(HTTP_CLIENT_REQUEST_CREATED, (message: unknown) => {
 		try {
 			const { request } = message as RequestCreatedMessage;
-			const { origin, host, port } = getRequestDetails(request);
+			const { origin, host, displayHost, port } = getRequestDetails(request);
 			const method = request.method || 'GET';
-			const span = deps.tracer.startSpan(`${method} ${host}`, {
+			const span = deps.tracer.startSpan(`${method} ${displayHost}`, {
 				kind: deps.spanKindClient,
 				attributes: {
 					'http.request.method': method,
@@ -105,14 +105,18 @@ export function installHttpClientInstrumentation(deps: Omit<HttpClientInstrument
 	});
 }
 
-function getRequestDetails(request: ClientRequest): { origin: string; host: string; port: number } {
+function getRequestDetails(request: ClientRequest): { origin: string; host: string; displayHost: string; port: number } {
 	const protocol = request.protocol ?? 'http:';
 	const host = request.getHeader('host')?.toString() ?? request.host ?? 'localhost';
 	const url = new URL(request.path || '/', `${protocol}//${host}`);
 	return {
 		// 外向き request の path・query・userinfo は監視情報へ渡さず、origin だけを残す。
 		origin: url.origin,
+		// semconv の server.address は port を含まない。
 		host: url.hostname,
+		// span 名には port を含む形を使う。sanitizer は `url.full` の host から名前を組み直すため、
+		// hostname だけにすると送信前後で名前が変わり、port だけが違う送信先も同じ名前にまとまってしまう。
+		displayHost: url.host,
 		// URL.port は既定ポートでは空文字列になるため、スキームから補う。
 		port: url.port === '' ? (url.protocol === 'https:' ? 443 : 80) : Number(url.port),
 	};
