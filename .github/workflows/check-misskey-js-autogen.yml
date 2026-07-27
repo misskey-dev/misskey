@@ -22,6 +22,8 @@ jobs:
         with:
           submodules: true
           persist-credentials: false
+          # Fork code is executed here, but the token is read-only and not persisted, no secrets are exposed, and no cache is written
+          allow-unsafe-pr-checkout: true
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
 
       - name: setup pnpm
@@ -32,7 +34,7 @@ jobs:
         uses: actions/setup-node@v7.0.0
         with:
           node-version-file: '.node-version'
-          cache: pnpm
+          # キャッシュに変なものが紛れ込んでいると後続のワークフローで問題が起きる可能性があるので、ここではキャッシュを使わない
 
       - name: install dependencies
         run: pnpm i --frozen-lockfile
@@ -70,6 +72,8 @@ jobs:
         with:
           submodules: true
           persist-credentials: false
+          # Fork code is only uploaded as an artifact, never executed, and the token is read-only and not persisted
+          allow-unsafe-pr-checkout: true
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
 
       - name: Upload From Merged
