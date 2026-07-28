@@ -199,51 +199,54 @@ export class ApiCallService implements OnApplicationShutdown {
 			reply.send();
 			return;
 		}
-
 		const [path, cleanup] = await createTemp();
-		await stream.pipeline(multipartData.file, fs.createWriteStream(path));
 
-		// ファイルサイズが制限を超えていた場合
-		// なお truncated はストリームを読み切ってからでないと機能しないため、stream.pipeline より後にある必要がある
-		if (multipartData.file.truncated) {
-			cleanup();
-			reply.code(413);
-			reply.send();
-			return;
-		}
+		try {
+			await stream.pipeline(multipartData.file, fs.createWriteStream(path));
 
-		const fields = {} as Record<string, unknown>;
-		for (const [k, v] of Object.entries(multipartData.fields)) {
-			fields[k] = typeof v === 'object' && 'value' in v ? v.value : undefined;
-		}
-
-		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1 (case sensitive)
-		const token = request.headers.authorization?.startsWith('Bearer ')
-			? request.headers.authorization.slice(7)
-			: fields['i'];
-		if (token != null && typeof token !== 'string') {
-			reply.code(400);
-			return;
-		}
-
-		return await this.telemetryService.startSpan('API: ' + endpoint.name, () => this.authenticateService.authenticate(token).then(([user, app]) => {
-			const call = this.call(endpoint, user, app, fields, {
-				name: multipartData.filename,
-				path: path,
-			}, request).then((res) => {
-				this.send(reply, res);
-			}).catch((err: ApiError) => {
-				this.#sendApiError(reply, err);
-			});
-
-			if (user) {
-				this.logIp(request, user);
+			// ファイルサイズが制限を超えていた場合
+			// なお truncated はストリームを読み切ってからでないと機能しないため、stream.pipeline より後にある必要がある
+			if (multipartData.file.truncated) {
+				reply.code(413);
+				reply.send();
+				return;
 			}
 
-			return call;
-		}).catch(err => {
-			this.#sendAuthenticationError(reply, err);
-		}));
+			const fields = {} as Record<string, unknown>;
+			for (const [k, v] of Object.entries(multipartData.fields)) {
+				fields[k] = typeof v === 'object' && 'value' in v ? v.value : undefined;
+			}
+
+			// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1 (case sensitive)
+			const token = request.headers.authorization?.startsWith('Bearer ')
+				? request.headers.authorization.slice(7)
+				: fields['i'];
+			if (token != null && typeof token !== 'string') {
+				reply.code(400);
+				return;
+			}
+
+			return await this.telemetryService.startSpan('API: ' + endpoint.name, () => this.authenticateService.authenticate(token).then(([user, app]) => {
+				const call = this.call(endpoint, user, app, fields, {
+					name: multipartData.filename,
+					path: path,
+				}, request).then((res) => {
+					this.send(reply, res);
+				}).catch((err: ApiError) => {
+					this.#sendApiError(reply, err);
+				});
+
+				if (user) {
+					this.logIp(request, user);
+				}
+
+				return call;
+			}).catch(err => {
+				this.#sendAuthenticationError(reply, err);
+			}));
+		} finally {
+			cleanup();
+		}
 	}
 
 	@bindThis

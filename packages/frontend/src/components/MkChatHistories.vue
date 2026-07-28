@@ -87,7 +87,7 @@ onDeactivated(() => {
 
 useInterval(() => {
 	// TODO: DOM的にバックグラウンドになっていないかどうかも考慮する
-	if (!window.document.hidden && isActivated) {
+	if (isActivated) {
 		fetchHistory();
 	}
 }, 1000 * 10, {

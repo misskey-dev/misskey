@@ -5,7 +5,7 @@
 
 import { describe, expect, test, vi } from 'vitest';
 import type { LogBackend } from '@/logging/LogBackend.js';
-import type { LogRecordInput } from '@/logging/types.js';
+import type { AccessLogRecord, AccessLogRecordInput, LogRecordInput, LogTraceContext } from '@/logging/types.js';
 import { LogManager } from '@/logging/LogManager.js';
 
 /** テストで使う最小構成のログ入力を作成します。 */
@@ -31,10 +31,15 @@ function createManager(options: {
 	configuration?: {
 		level?: 'debug' | 'info' | 'warn' | 'error' | 'fatal' | 'off';
 		domains?: Record<string, 'debug' | 'info' | 'warn' | 'error' | 'fatal' | 'off'>;
+		access?: {
+			statusClasses?: ('2xx' | '3xx' | '4xx' | '5xx')[];
+			bodies?: { request?: boolean; response?: boolean; maxBytes?: number };
+		};
 	};
 } = {}) {
 	const write = vi.fn<LogBackend['write']>();
-	const manager = new LogManager({ write }, {
+	const writeAccess = vi.fn<(record: AccessLogRecord) => void>();
+	const manager = new LogManager({ write, writeAccess }, {
 		now: () => new Date('2025-01-02T03:04:05.678Z'),
 		getProcessInfo: () => ({
 			processId: 1234,
@@ -49,7 +54,7 @@ function createManager(options: {
 	});
 	if (options.configuration) manager.configure(options.configuration);
 
-	return { manager, write };
+	return { manager, write, writeAccess };
 }
 
 describe('LogManager', () => {
@@ -85,6 +90,39 @@ describe('LogManager', () => {
 			isPrimary: false,
 			workerId: 7,
 		});
+	});
+
+	test('adds active trace context to the record after filtering', () => {
+		const { manager, write } = createManager();
+		const traceContext: LogTraceContext = {
+			traceId: '0123456789abcdef0123456789abcdef',
+			spanId: '0123456789abcdef',
+			traceFlags: 0,
+		};
+		const provider = vi.fn(() => traceContext);
+		manager.setTraceContextProvider(provider);
+
+		manager.write(createInput());
+
+		expect(provider).toHaveBeenCalledOnce();
+		expect(write.mock.calls[0][0]).toMatchObject(traceContext);
+	});
+
+	test('does not get trace context for logs that will not be written', () => {
+		const provider = vi.fn(() => ({
+			traceId: '0123456789abcdef0123456789abcdef',
+			spanId: '0123456789abcdef',
+			traceFlags: 1,
+		}));
+		const filtered = createManager({ configuration: { level: 'warn' } });
+		filtered.manager.setTraceContextProvider(provider);
+		filtered.manager.write(createInput('info'));
+
+		const quiet = createManager({ quiet: true });
+		quiet.manager.setTraceContextProvider(provider);
+		quiet.manager.write(createInput('error'));
+
+		expect(provider).not.toHaveBeenCalled();
 	});
 
 	test('does not call the backend in quiet mode', () => {
@@ -188,6 +226,89 @@ describe('LogManager', () => {
 		expect(() => manager.configure({ level: 'notice' as never })).toThrow('logging.level');
 		expect(() => manager.configure({ domains: { queue: 'notice' as never } })).toThrow('logging.domains.queue');
 		expect(() => manager.configure({ domains: { 'queue.': 'info' } })).toThrow('invalid domain name');
+		expect(() => manager.configure({ access: { statusClasses: ['1xx' as never] } })).toThrow('statusClasses');
+		expect(() => manager.configure({ access: { statusClasses: '4xx' as never } })).toThrow('statusClasses');
+		expect(() => manager.configure({ access: { bodies: null as never } })).toThrow('bodies');
+		expect(() => manager.configure({ access: { bodies: { maxBytes: 0 } } })).toThrow('maxBytes');
+		expect(() => manager.configure({ access: { bodies: { maxBytes: 1.5 } } })).toThrow('maxBytes');
+		expect(() => manager.configure({ access: { bodies: { maxBytes: 128 * 1024 + 1 } } })).toThrow('maxBytes');
+	});
+
+	test('filters Access log by status class and keeps it independent from application level', () => {
+		const { manager, write, writeAccess } = createManager({ configuration: { level: 'off', access: { statusClasses: ['4xx', '5xx'] } } });
+		const input: AccessLogRecordInput = {
+			method: 'GET',
+			route: '/items/:id',
+			statusCode: 200,
+			durationMs: 1,
+			responseSizeBytes: 10,
+		};
+
+		manager.writeAccess(input);
+		manager.writeAccess({ ...input, statusCode: 404 });
+		manager.writeAccess({ ...input, statusCode: 500 });
+
+		expect(write).not.toHaveBeenCalled();
+		expect(writeAccess).toHaveBeenCalledTimes(2);
+		expect(writeAccess.mock.calls[0][0]).toMatchObject({ type: 'access', statusCode: 404, processId: 1234, workerId: null });
+	});
+
+	test('normalizes Access log bodies and keeps captured Trace Context', () => {
+		const { manager, writeAccess } = createManager({
+			configuration: {
+				access: {
+					statusClasses: ['2xx'],
+					bodies: { request: true, response: true, maxBytes: 1024 },
+				},
+			},
+		});
+		const input: AccessLogRecordInput = {
+			method: 'POST',
+			route: '/body',
+			statusCode: 200,
+			durationMs: 2,
+			responseSizeBytes: 20,
+			requestBody: { i: 'secret', nested: { password: 'secret' } },
+			responseBody: { token: 'secret', value: 'visible' },
+			traceContext: { traceId: 'trace', spanId: 'span', traceFlags: 1 },
+		};
+
+		manager.writeAccess(input);
+
+		expect(writeAccess).toHaveBeenCalledWith(expect.objectContaining({
+			requestBody: { i: '[REDACTED]', nested: { password: '[REDACTED]' } },
+			responseBody: { token: '[REDACTED]', value: 'visible' },
+			traceId: 'trace',
+			spanId: 'span',
+		}));
+	});
+
+	test('does not write Access log by default and preserves the default body limit', () => {
+		const { manager, writeAccess } = createManager();
+
+		manager.writeAccess({
+			method: 'GET',
+			route: '/disabled',
+			statusCode: 200,
+			durationMs: 1,
+			responseSizeBytes: null,
+		});
+
+		expect(manager.getAccessLogConfiguration().bodies.maxBytes).toBe(16 * 1024);
+		expect(writeAccess).not.toHaveBeenCalled();
+	});
+
+	test('accepts the maximum configured body limit', () => {
+		const { manager } = createManager({
+			configuration: {
+				access: {
+					statusClasses: ['2xx'],
+					bodies: { maxBytes: 128 * 1024 },
+				},
+			},
+		});
+
+		expect(manager.getAccessLogConfiguration().bodies.maxBytes).toBe(128 * 1024);
 	});
 
 	test('uses a replaced backend for subsequent records', () => {

@@ -11,6 +11,7 @@ import { MiUserProfile } from '@/models/UserProfile.js';
 import { MiUserSecurityKey } from '@/models/UserSecurityKey.js';
 import type { UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 export const meta = {
@@ -25,6 +26,11 @@ export const meta = {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
 			id: 'ccafc7fe-5074-4edd-9dc0-8ef9ef6a701d',
+		},
+		accessDenied: {
+			message: 'Access denied.',
+			code: 'ACCESS_DENIED',
+			id: 'cda8f8ce-89a6-4f92-8055-33bbe0c1464d',
 		},
 	},
 } as const;
@@ -46,6 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		private roleService: RoleService,
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -53,6 +60,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (user == null) {
 				throw new ApiError(meta.errors.noSuchUser);
+			}
+
+			if (await this.roleService.isAdministrator(user) && me.id !== user.id) {
+				throw new ApiError(meta.errors.accessDenied);
 			}
 
 			await this.db.transaction(async (transactionalEntityManager) => {

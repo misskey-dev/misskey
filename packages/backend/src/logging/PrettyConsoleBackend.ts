@@ -8,7 +8,7 @@ import { default as convertColor } from 'color-convert';
 import { format as dateFormat } from 'date-fns';
 import { envOption } from '@/env.js';
 import type { LogBackend } from './LogBackend.js';
-import type { LogRecord } from './types.js';
+import type { AccessLogRecord, LogAttributeValue, LogRecord } from './types.js';
 
 /** 見やすい形式の出力処理が外部から受け取る依存関係です。 */
 export type PrettyConsoleBackendDependencies = {
@@ -20,6 +20,15 @@ const defaultDependencies: PrettyConsoleBackendDependencies = {
 	output: (...args) => console.log(...args),
 	withLogTime: () => envOption.withLogTime,
 };
+
+/** Pretty形式でだけnull prototypeを通常のオブジェクトへ変換し、正規化済みの値自体は変更しません。 */
+function toPrettyLogValue(value: LogAttributeValue): LogAttributeValue {
+	if (Array.isArray(value)) return value.map(item => toPrettyLogValue(item));
+	if (value !== null && typeof value === 'object') {
+		return Object.fromEntries(Object.entries(value).map(([key, child]) => [key, toPrettyLogValue(child)]));
+	}
+	return value;
+}
 
 /**
  * 人が読みやすい従来形式へ整形し、コンソールへ出力します。
@@ -85,6 +94,32 @@ export class PrettyConsoleBackend implements LogBackend {
 				...(record.error != null ? { error: record.error } : {}),
 			});
 		}
+		this.dependencies.output(...args);
+	}
+
+	/** Access logを人が読みやすい1行へ整形し、本文は追加情報として表示します。 */
+	public writeAccess(record: AccessLogRecord): void {
+		const statusLevel = record.statusCode >= 500 ? 'error' : record.statusCode >= 400 ? 'warn' : 'info';
+		const label =
+			statusLevel === 'error' ? chalk.red('ERR ') :
+			statusLevel === 'warn' ? chalk.yellow('WARN') :
+			chalk.blue('INFO');
+		const worker = record.isPrimary ? '*' : record.workerId;
+		const route = record.route ?? '-';
+		const size = record.responseSizeBytes == null ? '-' : `${record.responseSizeBytes}B`;
+		const message = `${record.method} ${route} ${record.statusCode} ${record.durationMs.toFixed(2)}ms ${size}`;
+		let log = `${label} ${worker}\t[access]\t${message}`;
+		if (this.dependencies.withLogTime()) {
+			log = chalk.gray(dateFormat(new Date(record.timestamp), 'HH:mm:ss')) + ' ' + log;
+		}
+
+		const details = {
+			...(record.errorType != null ? { errorType: record.errorType } : {}),
+			...(record.requestBody !== undefined ? { requestBody: toPrettyLogValue(record.requestBody) } : {}),
+			...(record.responseBody !== undefined ? { responseBody: toPrettyLogValue(record.responseBody) } : {}),
+		};
+		const args: unknown[] = [log];
+		if (Object.keys(details).length > 0) args.push(details);
 		this.dependencies.output(...args);
 	}
 }

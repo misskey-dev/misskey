@@ -75,25 +75,27 @@ const fetchEndpoint = computed(() => {
 	url.searchParams.set('url', widgetProps.url);
 	return url.toString();
 });
-const intervalClear = ref<(() => void) | undefined>();
+let intervalClear: (() => void) | null | undefined = null;
 
 const tick = () => {
-	if (window.document.visibilityState === 'hidden' && rawItems.value.length !== 0) return;
-
 	window.fetch(fetchEndpoint.value, {})
 		.then(res => res.json())
 		.then((feed: Misskey.entities.FetchRssResponse) => {
-			rawItems.value = feed.items;
+			rawItems.value = feed.items.filter((item) => {
+				if (!item.link) return false;
+				const itemUrl = new URL(item.link);
+				return ['http:', 'https:'].includes(itemUrl.protocol);
+			});
 			fetching.value = false;
 		});
 };
 
 watch(fetchEndpoint, tick);
 watch(() => widgetProps.refreshIntervalSec, () => {
-	if (intervalClear.value) {
-		intervalClear.value();
+	if (intervalClear != null) {
+		intervalClear();
 	}
-	intervalClear.value = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
+	intervalClear = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
 		immediate: true,
 		afterMounted: true,
 	});
