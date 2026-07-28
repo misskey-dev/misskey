@@ -74,7 +74,8 @@ export function createRedisInstrumentation(deps: RedisInstrumentationDeps, optio
 	if (options.captureCommandSpans === true) {
 		const commandChannel = deps.tracingChannel<IORedisCommandContext>('ioredis:command');
 		const commandSubscribers = createTracingChannelSubscribers(commandChannel, deps, requireParentSpan, message => ({
-			name: message.command,
+			// sanitizer が許可する Redis 計装の固定語彙に揃え、構成間で同じ名前を使う。
+			name: `redis-${message.command}`,
 			attributes: {
 				'db.system.name': 'redis',
 				'db.namespace': message.database.toString(10),
@@ -89,7 +90,8 @@ export function createRedisInstrumentation(deps: RedisInstrumentationDeps, optio
 		const connectChannel = deps.tracingChannel<IORedisConnectContext>('ioredis:connect');
 		// Connection spans are explicitly opt-in and should include startup and reconnect attempts.
 		const connectSubscribers = createTracingChannelSubscribers(connectChannel, deps, false, message => ({
-			name: 'connect',
+			// コマンド span と同じ固定語彙を使う。
+			name: 'redis-connect',
 			attributes: {
 				'db.system.name': 'redis',
 				'db.operation.name': 'connect',

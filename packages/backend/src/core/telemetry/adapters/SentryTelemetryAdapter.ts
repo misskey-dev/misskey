@@ -5,7 +5,8 @@
 
 import Logger from '@/logger.js';
 import { registerDiagLogger } from '@/core/telemetry/telemetry-diag.js';
-import { getQueueTraceContextMode, injectActiveTraceContext, startSpanWithQueueTraceContext } from '@/core/telemetry/queue-trace-context.js';
+import { executeSpan, getQueueTraceContextMode, injectActiveTraceContext, startSpanWithQueueTraceContext } from '@/core/telemetry/queue-trace-context.js';
+import { isAllowedCombinedScope, SanitizingSpanProcessor } from '@/core/telemetry/SanitizingSpanProcessor.js';
 import type { LogTraceContext } from '@/logging/types.js';
 import type * as SentryNode from '@sentry/node';
 import type { NodeOptions } from '@sentry/node';
@@ -31,6 +32,7 @@ type BuildSentryIntegrationsOptions = {
 
 export function buildSentryIntegrations(options: BuildSentryIntegrationsOptions): SentryIntegrationFactory {
 	return (defaults) => {
+		// 利用者が明示した無効化設定だけを反映し、Sentry 既定の計装選択を維持する。
 		const disabledIntegrations = new Set(options.disabledIntegrations ?? []);
 		const defaultIntegrationNames = new Set(defaults.map((integration) => integration.name));
 		const unknownIntegrations = [...disabledIntegrations].filter((name) => !defaultIntegrationNames.has(name));
@@ -51,14 +53,14 @@ export function buildSentryNodeOptions(
 	nodeProfilingIntegration?: () => SentryIntegration,
 ): SentryNodeOptions {
 	return {
-		// Do not send Sentry trace headers to remote ActivityPub/Webhook/etc. hosts by default.
-		// Admins can opt in for trusted internal services via sentryForBackend.options.
+		// ActivityPub や Webhook などの外部宛てには、既定で Sentry の trace header を送らない。
+		// 信頼できる内部サービスだけ、管理者が設定で明示的に許可できる。
 		tracePropagationTargets: [],
 
 		// Performance Monitoring
-		tracesSampleRate: 1.0, //  Capture 100% of the transactions
+		tracesSampleRate: 1.0, // transaction をすべて採取する
 
-		// Set sampling rate for profiling - this is relative to tracesSampleRate
+		// profiling の採取率は tracesSampleRate に対する相対値
 		profilesSampleRate: 1.0,
 
 		maxBreadcrumbs: 0,
@@ -73,6 +75,20 @@ export function buildSentryNodeOptions(
 	};
 }
 
+/**
+ * Sentry の自動計装を OTLP へ再出力する範囲を検証する。
+ * 未知の値は無効設定として扱わず、起動時に報告する。
+ */
+export function resolveSentryAutoInstrumentationExport(value: unknown): 'none' | 'safe' {
+	if (value == null) {
+		return 'none';
+	}
+	if (value !== 'none' && value !== 'safe') {
+		throw new Error('otelForBackend.sentryAutoInstrumentationExport must be either \'none\' or \'safe\'.');
+	}
+	return value;
+}
+
 type BuildSentryOtlpInitOptions = {
 	sentryConfig: SentryBackendConfig;
 	otelConfig: OtelBackendRuntimeConfig;
@@ -83,9 +99,15 @@ type BuildSentryOtlpInitOptions = {
 
 export function buildSentryOtlpInitOptions(options: BuildSentryOtlpInitOptions): SentryNodeOptions {
 	// OTel併存時も、remoteへtrace headerを漏らさないデフォルトはSentry単体時と揃える。
-	// propagateTraceToRemote: true か、options.tracePropagationTargets の明示指定がある場合のみ既定を上書きする。
+	// key が存在して値が `undefined` の項目を spread し、既定の `[]` を上書きしないよう、値を分離して明示時だけ戻す。
 	const { tracePropagationTargets, ...sentryOptions } = options.sentryConfig.options;
-	const propagateTraceToRemote = options.otelConfig.propagateTraceToRemote === true || tracePropagationTargets != null;
+
+	// 送信先の未指定は、絞り込み先の指定漏れか意図的な全許可かを判別できない。
+	// 全 outbound host への伝播にも、無言での伝播無効にも倒さず、起動時に失敗させる。
+	if (options.otelConfig.propagateTraceToRemote === true && tracePropagationTargets == null) {
+		throw new Error('otelForBackend.propagateTraceToRemote is true but sentryForBackend.options.tracePropagationTargets is not set. Specify tracePropagationTargets explicitly (e.g. internal service hostnames only); otherwise the Sentry trace/baggage headers (including the project public key) would propagate to every outbound host.');
+	}
+
 	const warn = options.warn ?? ((message: string) => logger.warn(message));
 
 	if (options.otelConfig.sampleRate != null) {
@@ -101,11 +123,14 @@ export function buildSentryOtlpInitOptions(options: BuildSentryOtlpInitOptions):
 			...options.sentryConfig,
 			options: {
 				...sentryOptions,
-				...(propagateTraceToRemote ? { tracePropagationTargets } : {}),
+				...(tracePropagationTargets != null ? { tracePropagationTargets } : {}),
 			},
 		}, options.nodeProfilingIntegration),
 
 		// Sentryの単一TracerProviderにOTLP processorを追加し、親欠損や二重providerを避ける。
+		// 利用者が登録した processor を保持し、設定の上書きを防ぐ。
+		// TracerProvider は各 processor に同じ未加工の span を独立して渡すため、利用者の processor は sanitizer を経由しない。
+		// 利用者自身の processor が送る情報の加工は、その processor と送信先の設定に委ねる。
 		openTelemetrySpanProcessors: [
 			...(options.sentryConfig.options.openTelemetrySpanProcessors ?? []),
 			options.otlpProcessor as NonNullable<SentryNodeOptions['openTelemetrySpanProcessors']>[number],
@@ -142,10 +167,20 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 		registerDiagLogger(diag, DiagLogLevel.WARN);
 
 		// OTLP送信だけを担うprocessorを作り、provider生成はSentry.init側に任せる。
-		const otlpProcessor = new BatchSpanProcessor(new OTLPTraceExporter({
+		const exportPolicy = resolveSentryAutoInstrumentationExport(otelConfig.sentryAutoInstrumentationExport);
+		const exporter = new OTLPTraceExporter({
 			...(otelConfig.endpoint != null ? { url: otelConfig.endpoint } : {}),
 			...(otelConfig.headers != null ? { headers: otelConfig.headers } : {}),
-		}));
+		});
+		const otlpProcessor = new SanitizingSpanProcessor(new BatchSpanProcessor(exporter), (scope, span) => isAllowedCombinedScope(exportPolicy, scope, span, {
+			capturePgSpans: otelConfig.capturePgSpans === true,
+			capturePgConnectionSpans: otelConfig.capturePgConnectionSpans === true,
+			captureRedisCommandSpans: otelConfig.captureRedisCommandSpans === true,
+			captureRedisConnectionSpans: otelConfig.captureRedisConnectionSpans === true,
+			captureRedisRootSpans: otelConfig.captureRedisRootSpans === true,
+		}), {
+			allowDbStatement: otelConfig.capturePgStatement === true,
+		});
 
 		// SentryとOTLPを同一providerに集約することで、どちらの宛先にも同じspan実体を流す。
 		Sentry.init(buildSentryOtlpInitOptions({
@@ -157,8 +192,9 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 
 		// Sentry が初期化した同じ OTel provider から tracer/context API を受け取り、
 		// Queue を跨ぐ context 伝播も Sentry と OTLP の両方へ同一 span として出力する。
+		const tracer = trace.getTracer('misskey-backend');
 		return new SentryTelemetryAdapter(Sentry, {
-			tracer: trace.getTracer('misskey-backend'),
+			tracer,
 			propagation,
 			trace,
 			getActiveContext: () => context.active(),
@@ -179,25 +215,35 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 	/** activeなSpanの識別子を、Logging基盤で扱える形式へ変換します。 */
 	public getActiveTraceContext(): LogTraceContext | undefined {
 		const activeSpan = this.Sentry.getActiveSpan();
-		if (activeSpan == null) return undefined;
+		if (activeSpan == null) {
+			return undefined;
+		}
 
 		const { traceId, spanId, traceFlags } = activeSpan.spanContext();
 		return { traceId, spanId, traceFlags };
 	}
 
 	public startSpan<T>(name: string, fn: () => T): T {
+		const queueTraceContext = this.queueTraceContext;
+		if (queueTraceContext != null) {
+			return queueTraceContext.tracer.startActiveSpan(name, span => executeSpan(span, fn, queueTraceContext.spanStatusCodeError));
+		}
 		return this.Sentry.startSpan({ name }, fn);
 	}
 
 	public injectTraceContext(carrier: QueueTraceContextCarrier): void {
 		// Sentry 単体構成では queueTraceContext を持たず、従来どおりジョブデータを変更しない。
-		if (this.queueTraceContext == null) return;
+		if (this.queueTraceContext == null) {
+			return;
+		}
 		injectActiveTraceContext(this.queueTraceContext, carrier);
 	}
 
 	public startSpanWithTraceContext<T>(name: string, jobData: object, fn: () => T): T {
 		// Sentry 単体構成では Sentry 既存の span 作成経路を使う。
-		if (this.queueTraceContext == null) return this.startSpan(name, fn);
+		if (this.queueTraceContext == null) {
+			return this.startSpan(name, fn);
+		}
 
 		return startSpanWithQueueTraceContext(this.queueTraceContext, name, jobData, fn, () => this.startSpan(name, fn));
 	}

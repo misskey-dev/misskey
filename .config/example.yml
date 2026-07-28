@@ -300,32 +300,71 @@ id: 'aidx'
 
 # Sentry is available for error tracking.
 # See the Sentry documentation for more details on options.
+#
+# Data sent to Sentry follows the Sentry SDK's own default behavior and is
+# governed by your Sentry configuration below (and by Sentry's own product
+# defaults -- e.g. parameterized SQL statements, exception messages and
+# stack traces with source context, and request/host metadata). Misskey does
+# not filter or reduce what Sentry itself receives; if you need to limit
+# that, use Sentry's own options (see the Sentry Node SDK docs) or your
+# organization's Sentry data scrubbing settings.
+#
+# One exception: the tracePropagationTargets default ([]) and the
+# propagateTraceToRemote startup check further below govern what Misskey
+# sends to third-party remote hosts (federated ActivityPub inboxes, webhook
+# targets), not what Sentry itself receives. They do not filter or reduce
+# anything Sentry collects.
+
+# Uncomment the properties below to enable Sentry for the backend.
 
 #sentryForBackend:
+#  # ------------------------------------------------------------
+#  # Enables @sentry/profiling-node's CPU profiler.
+#  # ------------------------------------------------------------
+
 #  enableNodeProfiling: true
+
+#  # ------------------------------------------------------------
 #  # Specify Sentry integration names to disable individual auto-instrumentation.
 #  # The names are integration .name values, not factory function names.
 #  # To check enabled names, set `options.debug: true` and see
 #  # "Integration installed: <name>" in the Sentry logs.
 #  #
-#  # As of 2026-07-07 / @sentry/node 10.62.0, useful names for Misskey include:
-#  #   Postgres  ... DB queries (when pg is externalized)
-#  #   Redis     ... ioredis commands
-#  #   Fastify   ... inbound HTTP routes
-#  #   Http      ... inbound/outbound HTTP; disabling this can also affect request isolation
-#  #   NodeFetch ... fetch/undici requests
+#  # As of 2026-07-27 / @sentry/node 10.65.0, useful names for Misskey include:
+#  #   Postgres    ... DB queries (when pg is externalized)
+#  #   Redis       ... ioredis commands
+#  #   Fastify     ... inbound HTTP routes
+#  #   Http        ... inbound/outbound HTTP; disabling this can also affect request isolation
+#  #   NodeFetch   ... fetch/undici requests
+#  #   RequestData ... copies the raw request (URL, headers, body) onto event.request
+#  # ------------------------------------------------------------
+
 #  disabledIntegrations: ['Postgres']
+
 #  options:
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
+
+#    # ------------------------------------------------------------
 #    # By default, Misskey prevents Sentry trace headers (`sentry-trace` and
 #    # `baggage`) from being sent to remote ActivityPub/Webhook/etc. hosts.
+#    # This is not about what Sentry itself receives -- it is about what
+#    # Misskey sends to third-party remote hosts. The outgoing baggage
+#    # carries the Sentry project's public key (the only credential needed
+#    # to send events into that project), so propagating it to arbitrary
+#    # federated/webhook targets would hand out a credential to them.
 #    # To intentionally propagate distributed traces to trusted internal services,
 #    # list only those internal URL patterns here.
 #    # Avoid broad patterns that match remote servers unless you intentionally
 #    # want to restore Sentry's legacy behavior of propagating traces to all
 #    # outbound HTTP requests.
+#    # ------------------------------------------------------------
+
 #    #tracePropagationTargets: []
+
+#    # ------------------------------------------------------------
 #    # Internal allowlist example:
+#    # ------------------------------------------------------------
+
 #    #tracePropagationTargets:
 #    #  - 'internal-service.example'
 
@@ -333,6 +372,10 @@ id: 'aidx'
 #───┘ Tracing └────────────────────────────────────────────────
 # OpenTelemetry distributed tracing (Traces only, opt-in).
 # Existing API and Queue spans are exported to an OTLP http/protobuf endpoint.
+#
+# In OTel-only mode (sentryForBackend not configured), the resource sent to
+# your collector always includes service.instance.id (hostname:pid) so you
+# can tell processes apart.
 #
 # Standard OTEL_* environment variables are honored for values omitted below:
 # OTEL_EXPORTER_OTLP_TRACES_ENDPOINT, OTEL_EXPORTER_OTLP_ENDPOINT,
@@ -344,47 +387,170 @@ id: 'aidx'
 #   tracesSampleRate / tracesSampler.
 # - resourceAttributes below is ignored; set OTEL_SERVICE_NAME and
 #   OTEL_RESOURCE_ATTRIBUTES in the environment if you need to override them.
-# - spans produced by Sentry integrations are exported to both Sentry and OTLP.
+#   Note that keys declared this way are still not exported to OTLP in this
+#   mode: only a fixed set of resource attribute keys (service.*,
+#   telemetry.sdk.*, process.runtime.*, misskey.process.role) passes the
+#   OTLP export filter when sentryForBackend is configured.
+# - Sentry integrations stay enabled; whether any of their spans reach OTLP is
+#   governed entirely by sentryAutoInstrumentationExport below (default
+#   'none' exports none of them), not by disabling the integration itself.
+#   'safe' is a precondition checked uniformly before the PostgreSQL/Redis/HTTP
+#   branches below: with 'none', none of the capture* flags have any effect on
+#   what reaches OTLP, no matter which are enabled.
 # - sentry-trace / baggage propagation to outbound remote requests is disabled
-#   by default while OTel is enabled. Set propagateTraceToRemote: true only if
-#   you intentionally want Sentry trace propagation for your deployment.
+#   by default. Setting propagateTraceToRemote: true requires an explicit
+#   sentryForBackend.options.tracePropagationTargets (see above); startup
+#   fails otherwise. This is enforced because the outgoing baggage carries
+#   the Sentry project's public key (the only credential needed to send
+#   events into that project), plus org_id, environment, release and the
+#   transaction name -- propagating that to untrusted remotes (every
+#   federated ActivityPub inbox, every webhook target) hands out a
+#   credential.
+
+# Uncomment the properties below to enable OpenTelemetry for the backend.
 
 #otelForBackend:
 #  endpoint: 'http://localhost:4318/v1/traces'
+
 #  #headers:
 #  #  authorization: 'Bearer xxxxx'
+
 #  #sampleRate: 1.0
-#  # Record PostgreSQL query spans. Disabled by default to avoid instrumentation
-#  # overhead when database-level diagnostics are not needed.
+
+#  # ------------------------------------------------------------
+#  # Record PostgreSQL query spans.
+#  #
+#  # OTel-only: disabled by default to avoid instrumentation overhead when
+#  # database-level diagnostics are not needed; the instrumentation itself is
+#  # only installed while this is true.
+#  #
+#  # Combined with sentryForBackend: Sentry's own PostgreSQL integration
+#  # instruments queries either way, so this flag does not control overhead
+#  # in this mode -- it only selects whether those spans are additionally
+#  # re-exported to your OTLP collector (also requires
+#  # sentryAutoInstrumentationExport: 'safe', see below). To avoid the
+#  # instrumentation overhead itself here, disable Sentry's own integration
+#  # via sentryForBackend.disabledIntegrations: ['Postgres'].
+#  # ------------------------------------------------------------
+
 #  #capturePgSpans: false
-#  # Include raw SQL text in PostgreSQL spans. Requires capturePgSpans and is
-#  # disabled by default because non-parameterized queries can expose values to
-#  # the OTLP Collector.
+
+#  # ------------------------------------------------------------
+#  # Include SQL statement text (db.statement / db.query.text) on PostgreSQL
+#  # spans. Requires capturePgSpans. Disabled by default: statement text adds
+#  # a meaningful amount of payload volume, and non-parameterized queries can
+#  # embed values.
+#  #
+#  # This setting is OTLP-only routing: it only controls whether the text
+#  # reaches span attributes on the OTLP export -- the collector configured
+#  # in endpoint above. It is wired only into the OTLP span processor and has
+#  # no effect on Sentry. What Sentry's own PostgreSQL instrumentation
+#  # collects and sends is entirely up to Sentry's own SDK behavior and your
+#  # Sentry configuration, independent of this flag.
+#  #
+#  # With sentryForBackend also configured, the text additionally requires
+#  # capturePgSpans: true and sentryAutoInstrumentationExport: 'safe' to
+#  # reach OTLP at all. In OTel-only mode, capturePgStatement: false instead
+#  # replaces the statement with '[REDACTED]' at collection time.
+#  #
+#  # What is exported here is truncated to 8 KiB UTF-8 on a character
+#  # boundary, with NUL, CR, LF and ESC control characters removed. Bind
+#  # parameter values are never included, in any configuration.
+#  # ------------------------------------------------------------
+
 #  #capturePgStatement: false
+
+#  # ------------------------------------------------------------
 #  # Include PostgreSQL connection-pool spans with an existing parent span.
-#  # Requires capturePgSpans and is disabled by default to avoid noisy spans
-#  # from connection churn.
+#  # Requires capturePgSpans.
+#  #
+#  # OTel-only: disabled by default to avoid noisy spans from connection
+#  # churn.
+#  #
+#  # Combined with sentryForBackend: same re-export-only caveat as
+#  # capturePgSpans above -- use sentryForBackend.disabledIntegrations:
+#  # ['Postgres'] to avoid the underlying instrumentation overhead in this
+#  # mode.
+#  # ------------------------------------------------------------
+
 #  #capturePgConnectionSpans: false
-#  # Record Redis command spans. Disabled by default because subscribing to the
-#  # ioredis diagnostics channel adds work to every Redis command, including
-#  # commands without a parent span. Enable for development diagnostics or when
-#  # the added overhead is acceptable in production.
+
+#  # ------------------------------------------------------------
+#  # Record Redis command spans.
+#  #
+#  # OTel-only: disabled by default because subscribing to the ioredis
+#  # diagnostics channel adds work to every Redis command, including commands
+#  # without a parent span. Enable for development diagnostics or when the
+#  # added overhead is acceptable in production.
+#  #
+#  # Combined with sentryForBackend: Sentry's own Redis integration
+#  # instruments commands either way, so this flag only selects whether those
+#  # spans are additionally re-exported to your OTLP collector (also requires
+#  # sentryAutoInstrumentationExport: 'safe', see below). To avoid the
+#  # instrumentation overhead itself here, disable Sentry's own integration
+#  # via sentryForBackend.disabledIntegrations: ['Redis'].
+#  # ------------------------------------------------------------
+
 #  #captureRedisCommandSpans: false
-#  # Include Redis startup/reconnect spans. Disabled by default to avoid noisy
-#  # connection churn; these spans are recorded even without an HTTP or job
-#  # parent span.
+
+#  # ------------------------------------------------------------
+#  # Include Redis startup/reconnect spans; these spans are recorded even
+#  # without an HTTP or job parent span.
+#  #
+#  # OTel-only: disabled by default to avoid noisy connection churn.
+#  #
+#  # Combined with sentryForBackend: same re-export-only caveat as
+#  # captureRedisCommandSpans above -- use
+#  # sentryForBackend.disabledIntegrations: ['Redis'] to avoid the underlying
+#  # instrumentation overhead in this mode.
+#  # ------------------------------------------------------------
+
 #  #captureRedisConnectionSpans: false
-#  # Record Redis commands without an HTTP or job parent span. Disabled by
-#  # default because queue polling and background work can produce many root
-#  # traces; only applies when captureRedisCommandSpans is enabled.
+
+#  # ------------------------------------------------------------
+#  # Record Redis commands without an HTTP or job parent span. Only applies
+#  # when captureRedisCommandSpans is enabled, in either mode below.
+#  #
+#  # OTel-only: disabled by default because queue polling and background work
+#  # can produce many root traces.
+#  #
+#  # Combined with sentryForBackend: same re-export-only caveat as
+#  # captureRedisCommandSpans above.
+#  # ------------------------------------------------------------
+
 #  #captureRedisRootSpans: false
+
 #  #resourceAttributes:
 #  #  deployment.environment: 'production'
+
+#  # ------------------------------------------------------------
+#  # See "sentry-trace / baggage propagation" above for the requirements that
+#  # apply when this is combined with sentryForBackend.
+#  # ------------------------------------------------------------
+
 #  #propagateTraceToRemote: false
+
+#  # ------------------------------------------------------------
 #  # Queue worker spans are independent traces linked to their enqueuer by default.
 #  # Set to 'parent' to make them child spans instead. This can create very large
 #  # traces for high-fan-out queues such as federation delivery.
+#  # ------------------------------------------------------------
+
 #  #jobTraceContextMode: 'link'
+
+#  # ------------------------------------------------------------
+#  # When used with sentryForBackend, this is a precondition, not an add-on:
+#  # with the default 'none', none of Sentry's own auto-instrumented spans
+#  # (PostgreSQL, Redis, or HTTP server/client) reach your OTLP collector,
+#  # even if the capture* flags above are enabled -- only Misskey's own spans
+#  # are exported. Set to 'safe' to additionally allow supported Sentry
+#  # scopes through: the capture* flags above then select which
+#  # PostgreSQL/Redis scopes are exported, and HTTP server/client scopes are
+#  # exported unconditionally once 'safe' is set. Unknown SDK spans remain
+#  # blocked either way.
+#  # ------------------------------------------------------------
+
+#  #sentryAutoInstrumentationExport: 'none'
 
 #sentryForFrontend:
 #  vueIntegration:

@@ -6,6 +6,8 @@
 import { describe, expect, test, vi } from 'vitest';
 import { SpanKind, SpanStatusCode } from '@opentelemetry/api';
 import { createHttpClientInstrumentation } from '@/core/telemetry/http-client-instrumentation.js';
+import { sanitizeAttributes } from '@/core/telemetry/sanitizer/attributes.js';
+import { safeName } from '@/core/telemetry/sanitizer/span-name.js';
 
 function request() {
 	return {
@@ -44,11 +46,12 @@ describe('http-client-instrumentation', () => {
 			response: { statusCode: 201, httpVersion: '1.1' },
 		});
 
-		expect(tracer.startSpan).toHaveBeenCalledWith('POST', {
+		// span 名は sanitizer が `url.full` の host から組み直す形と一致させる (port 込み)。
+		expect(tracer.startSpan).toHaveBeenCalledWith('POST remote.example:8443', {
 			kind: SpanKind.CLIENT,
 			attributes: {
 				'http.request.method': 'POST',
-				'url.full': 'https://remote.example:8443/inbox',
+				'url.full': 'https://remote.example:8443',
 				'server.address': 'remote.example',
 				'server.port': 8443,
 			},
@@ -104,5 +107,26 @@ describe('http-client-instrumentation', () => {
 
 		expect(span.setAttribute).toHaveBeenCalledWith('error.type', '502');
 		expect(span.setStatus).toHaveBeenCalledWith({ code: SpanStatusCode.ERROR });
+	});
+
+	test('produces a span name the sanitizer reproduces as-is, so the exported name matches the in-process one', () => {
+		// 計装側が hostname、sanitizer 側が `url.full` の host を使うと、送信前後で名前が食い違い、
+		// port だけが違う送信先が同じ名前にまとまる。この 2 つの実装が一致し続けることを固定する。
+		const listeners = new Map<string, (message: unknown) => void>();
+		const startSpan = vi.fn(() => ({ end: vi.fn(), recordException: vi.fn(), setAttribute: vi.fn(), setStatus: vi.fn() }));
+		createHttpClientInstrumentation({
+			tracer: { startSpan } as any,
+			spanKindClient: SpanKind.CLIENT,
+			spanStatusCodeError: SpanStatusCode.ERROR,
+			subscribe: (name, listener) => {
+				listeners.set(name, listener);
+				return () => listeners.delete(name);
+			},
+		});
+
+		listeners.get('http.client.request.created')!({ request: request() });
+
+		const [name, options] = startSpan.mock.calls[0] as unknown as [string, { attributes: Record<string, unknown> }];
+		expect(safeName(name, sanitizeAttributes(options.attributes))).toBe(name);
 	});
 });

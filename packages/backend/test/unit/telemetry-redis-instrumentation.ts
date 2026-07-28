@@ -25,7 +25,8 @@ describe('redis-instrumentation', () => {
 		subscribers.start(command);
 		subscribers.asyncEnd(command);
 
-		expect(tracer.startSpan).toHaveBeenCalledWith('get', expect.objectContaining({
+		// 構成間で同じ Redis span 名を使い、sanitizer の固定語彙にも一致させる。
+		expect(tracer.startSpan).toHaveBeenCalledWith('redis-get', expect.objectContaining({
 			kind: SpanKind.CLIENT,
 			attributes: expect.objectContaining({
 				'db.system.name': 'redis',
@@ -119,7 +120,7 @@ describe('redis-instrumentation', () => {
 		subscribers.get('ioredis:connect').start(connection);
 		subscribers.get('ioredis:connect').asyncEnd(connection);
 
-		expect(tracer.startSpan).toHaveBeenCalledWith('connect', expect.objectContaining({
+		expect(tracer.startSpan).toHaveBeenCalledWith('redis-connect', expect.objectContaining({
 			kind: SpanKind.CLIENT,
 			attributes: expect.objectContaining({
 				'db.operation.name': 'connect',
