@@ -83,7 +83,7 @@ const tick = () => {
 		.then((feed: Misskey.entities.FetchRssResponse) => {
 			rawItems.value = feed.items.filter((item) => {
 				if (!item.link) return false;
-				const itemUrl = new URL(item.link);
+				const itemUrl = new URL(item.link, base);
 				return ['http:', 'https:'].includes(itemUrl.protocol);
 			});
 			fetching.value = false;
