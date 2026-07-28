@@ -234,29 +234,35 @@ export function useUploader(options: {
 						closed: () => dispose(),
 					});
 				},
-			}, {
-				text: i18n.ts.preview,
-				icon: 'ti ti-photo-search',
-				action: async () => {
-					const contents = items.value
-						.filter(item => item.file.type.startsWith('image/') || item.file.type.startsWith('video/'))
-						.map<Content>(item => ({
-							id: item.id,
-							type: item.file.type.startsWith('video/') ? 'video' : 'image',
-							url: item.objectUrl,
-							thumbnail: item.thumbnail,
-							filename: getUploadName(item),
-							caption: item.caption ?? null,
-						}));
+			});
 
-					const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
-						defaultIndex: contents.findIndex(x => x.id === item.id),
-						contents,
-					}, {
-						closed: () => dispose(),
-					});
-				},
-			}, {
+			if (item.file.type.startsWith('image/') || item.file.type.startsWith('video/')) {
+				menu.push({
+					text: i18n.ts.preview,
+					icon: 'ti ti-photo-search',
+					action: async () => {
+						const contents = items.value
+							.filter(item => item.file.type.startsWith('image/') || item.file.type.startsWith('video/'))
+							.map<Content>(item => ({
+								id: item.id,
+								type: item.file.type.startsWith('video/') ? 'video' : 'image',
+								url: item.objectUrl,
+								thumbnail: item.thumbnail,
+								filename: getUploadName(item),
+								caption: item.caption ?? null,
+							}));
+
+						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
+							defaultIndex: contents.findIndex(x => x.id === item.id),
+							contents,
+						}, {
+							closed: () => dispose(),
+						});
+					},
+				});
+			}
+
+			menu.push({
 				type: 'divider',
 			});
 		}
