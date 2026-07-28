@@ -7,126 +7,16 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { type FastifyServerOptions } from 'fastify';
-import type * as Sentry from '@sentry/node';
-import type * as SentryVue from '@sentry/vue';
+import { parseConfigSource } from './config-schema.js';
 import type { RedisOptions } from 'ioredis';
-import type { AccessLogConfiguration, LogFormat, LogLevelSetting } from './logging/types.js';
-
-type RedisOptionsSource = Partial<RedisOptions> & {
-	host: string;
-	port: number;
-	family?: number;
-	pass: string;
-	db?: number;
-	prefix?: string;
-};
-
-type SentryBackendConfig = {
-	options: Partial<Sentry.NodeOptions>;
-	enableNodeProfiling: boolean;
-	disabledIntegrations?: string[];
-};
-
-/**
- * 設定ファイルの型
- */
-type Source = {
-	url?: string;
-	port?: number;
-	socket?: string;
-	trustProxy?: FastifyServerOptions['trustProxy'];
-	chmodSocket?: string;
-	enableIpRateLimit?: boolean;
-	disableHsts?: boolean;
-	db: {
-		host: string;
-		port: number;
-		db?: string;
-		user?: string;
-		pass?: string;
-		disableCache?: boolean;
-		extra?: { [x: string]: string };
-	};
-	dbReplications?: boolean;
-	dbSlaves?: {
-		host: string;
-		port: number;
-		db: string;
-		user: string;
-		pass: string;
-	}[];
-	redis: RedisOptionsSource;
-	redisForPubsub?: RedisOptionsSource;
-	redisForJobQueue?: RedisOptionsSource;
-	redisForTimelines?: RedisOptionsSource;
-	redisForReactions?: RedisOptionsSource;
-	fulltextSearch?: {
-		provider?: FulltextSearchProvider;
-	};
-	meilisearch?: {
-		host: string;
-		port: string;
-		apiKey: string;
-		ssl?: boolean;
-		index: string;
-		scope?: 'local' | 'global' | string[];
-	};
-	sentryForBackend?: SentryBackendConfig;
-	sentryForFrontend?: {
-		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
-		vueIntegration?: SentryVue.VueIntegrationOptions | null;
-		browserTracingIntegration?: Parameters<typeof SentryVue.browserTracingIntegration>[0] | null;
-		replayIntegration?: Parameters<typeof SentryVue.replayIntegration>[0] | null;
-	};
-
-	publishTarballInsteadOfProvideRepositoryUrl?: boolean;
-
-	setupPassword?: string;
-
-	proxy?: string;
-	proxySmtp?: string;
-	proxyBypassHosts?: string[];
-
-	allowedPrivateNetworks?: string[];
-
-	maxFileSize?: number;
-
-	clusterLimit?: number;
-	threadPoolSize?: number;
-
-	id: string;
-
-	outgoingAddress?: string;
-	outgoingAddressFamily?: 'ipv4' | 'ipv6' | 'dual';
-
-	deliverJobConcurrency?: number;
-	inboxJobConcurrency?: number;
-	relationshipJobConcurrency?: number;
-	deliverJobPerSec?: number;
-	inboxJobPerSec?: number;
-	relationshipJobPerSec?: number;
-	deliverJobMaxAttempts?: number;
-	inboxJobMaxAttempts?: number;
-
-	mediaProxy?: string;
-	videoThumbnailGenerator?: string;
-
-	perChannelMaxNoteCacheCount?: number;
-	perUserNotificationsMaxCount?: number;
-	deactivateAntennaThreshold?: number;
-	pidFile: string;
-
-	logging?: {
-		format?: LogFormat;
-		level?: LogLevelSetting;
-		domains?: Record<string, LogLevelSetting> | null;
-		access?: AccessLogConfiguration;
-		sql?: {
-			disableQueryTruncation?: boolean,
-			enableQueryParamLogging?: boolean,
-		}
-	}
-};
+import type {
+	ConfigSource,
+	FulltextSearchProvider,
+	OtelBackendConfig,
+	RedisOptionsSource,
+	SentryBackendConfig,
+	SentryFrontendConfig,
+} from './config-schema.js';
 
 export type Config = {
 	url: string;
@@ -143,7 +33,7 @@ export type Config = {
 		user: string;
 		pass: string;
 		disableCache?: boolean;
-		extra?: { [x: string]: string };
+		extra?: Record<string, unknown>;
 	};
 	dbReplications: boolean | undefined;
 	dbSlaves: {
@@ -153,17 +43,8 @@ export type Config = {
 		user: string;
 		pass: string;
 	}[] | undefined;
-	fulltextSearch?: {
-		provider?: FulltextSearchProvider;
-	};
-	meilisearch: {
-		host: string;
-		port: string;
-		apiKey: string;
-		ssl?: boolean;
-		index: string;
-		scope?: 'local' | 'global' | string[];
-	} | undefined;
+	fulltextSearch: ConfigSource['fulltextSearch'];
+	meilisearch: ConfigSource['meilisearch'];
 	proxy: string | undefined;
 	proxySmtp: string | undefined;
 	proxyBypassHosts: string[] | undefined;
@@ -171,7 +52,7 @@ export type Config = {
 	maxFileSize: number;
 	clusterLimit: number | undefined;
 	threadPoolSize: number;
-	id: string;
+	id: ConfigSource['id'];
 	outgoingAddress: string | undefined;
 	outgoingAddressFamily: 'ipv4' | 'ipv6' | 'dual' | undefined;
 	deliverJobConcurrency: number | undefined;
@@ -182,16 +63,7 @@ export type Config = {
 	relationshipJobPerSec: number | undefined;
 	deliverJobMaxAttempts: number | undefined;
 	inboxJobMaxAttempts: number | undefined;
-	logging?: {
-		format?: LogFormat;
-		level?: LogLevelSetting;
-		domains?: Record<string, LogLevelSetting> | null;
-		access?: AccessLogConfiguration;
-		sql?: {
-			disableQueryTruncation?: boolean,
-			enableQueryParamLogging?: boolean,
-		}
-	}
+	logging: ConfigSource['logging'];
 
 	version: string;
 	publishTarballInsteadOfProvideRepositoryUrl: boolean;
@@ -217,19 +89,20 @@ export type Config = {
 	redisForTimelines: RedisOptions & RedisOptionsSource;
 	redisForReactions: RedisOptions & RedisOptionsSource;
 	sentryForBackend: SentryBackendConfig | undefined;
-	sentryForFrontend: {
-		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
-		vueIntegration?: SentryVue.VueIntegrationOptions | null;
-		browserTracingIntegration?: Parameters<typeof SentryVue.browserTracingIntegration>[0] | null;
-		replayIntegration?: Parameters<typeof SentryVue.replayIntegration>[0] | null;
-	} | undefined;
+	otelForBackend: OtelBackendConfig | undefined;
+	sentryForFrontend: SentryFrontendConfig | undefined;
 	perChannelMaxNoteCacheCount: number;
 	perUserNotificationsMaxCount: number;
 	deactivateAntennaThreshold: number;
-	pidFile: string;
+	pidFile: string | undefined;
 };
 
-export type FulltextSearchProvider = 'sqlLike' | 'sqlPgroonga' | 'meilisearch';
+export type { FulltextSearchProvider };
+
+export type LoadConfigOptions = {
+	forceConfigValidation?: boolean;
+	onWarning?: (message: string) => void;
+};
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -256,7 +129,7 @@ export const compiledConfigFilePath = fs.existsSync(compiledConfigFilePathForTes
 	? compiledConfigFilePathForTest
 	: resolve(projectBuiltDir, '.config.json');
 
-export function loadConfig(): Config {
+export function loadConfig(options: LoadConfigOptions = {}): Config {
 	if (!fs.existsSync(compiledConfigFilePath)) {
 		throw new Error('Compiled configuration file not found. Try running \'pnpm compile-config\'.');
 	}
@@ -266,7 +139,13 @@ export function loadConfig(): Config {
 	const frontendManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_vite_/manifest.json'));
 	const frontendEmbedManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_embed_vite_/manifest.json'));
 
-	const config = JSON.parse(fs.readFileSync(compiledConfigFilePath, 'utf-8')) as Source;
+	const config = parseConfigSource(
+		JSON.parse(fs.readFileSync(compiledConfigFilePath, 'utf-8')),
+		{
+			forceValidation: options.forceConfigValidation,
+			onWarning: options.onWarning,
+		},
+	);
 
 	const url = tryCreateUrl(config.url ?? process.env.MISSKEY_URL ?? '');
 	const version = meta.version;
@@ -278,6 +157,7 @@ export function loadConfig(): Config {
 	const dbDb = config.db.db ?? process.env.DATABASE_DB ?? '';
 	const dbUser = config.db.user ?? process.env.DATABASE_USER ?? '';
 	const dbPass = config.db.pass ?? process.env.DATABASE_PASSWORD ?? '';
+	const port = resolvePort(config.port, process.env.PORT);
 
 	const externalMediaProxy = config.mediaProxy ?
 		config.mediaProxy.endsWith('/') ? config.mediaProxy.substring(0, config.mediaProxy.length - 1) : config.mediaProxy
@@ -290,7 +170,7 @@ export function loadConfig(): Config {
 		publishTarballInsteadOfProvideRepositoryUrl: !!config.publishTarballInsteadOfProvideRepositoryUrl,
 		setupPassword: config.setupPassword,
 		url: url.origin,
-		port: config.port ?? parseInt(process.env.PORT ?? '', 10),
+		port,
 		socket: config.socket,
 		trustProxy: config.trustProxy ?? [
 			'10.0.0.0/8',
@@ -322,6 +202,7 @@ export function loadConfig(): Config {
 		redisForTimelines: config.redisForTimelines ? convertRedisOptions(config.redisForTimelines, host) : redis,
 		redisForReactions: config.redisForReactions ? convertRedisOptions(config.redisForReactions, host) : redis,
 		sentryForBackend: config.sentryForBackend,
+		otelForBackend: config.otelForBackend,
 		sentryForFrontend: config.sentryForFrontend,
 		id: config.id,
 		proxy: config.proxy,
@@ -362,8 +243,18 @@ function tryCreateUrl(url: string) {
 	try {
 		return new URL(url);
 	} catch (_) {
-		throw new Error(`url="${url}" is not a valid URL.`);
+		throw new Error('Invalid configuration:\n- url: Must be a valid URL');
 	}
+}
+
+function resolvePort(configPort: number | undefined, environmentPort: string | undefined): number {
+	if (configPort != null) return configPort;
+
+	const port = Number(environmentPort);
+	if (environmentPort == null || environmentPort.length === 0 || !Number.isSafeInteger(port) || port < 0 || port > 65535) {
+		throw new Error('Invalid configuration:\n- port: Must be an integer between 0 and 65535');
+	}
+	return port;
 }
 
 function convertRedisOptions(options: RedisOptionsSource, host: string): RedisOptions & RedisOptionsSource {

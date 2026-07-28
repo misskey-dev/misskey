@@ -73,6 +73,10 @@
 #
 # setupPassword: example_password_please_change_this_or_you_will_get_hacked
 
+# Validate this configuration before Misskey starts.
+# Use "legacy" only temporarily to retain the unvalidated behavior of older versions.
+# configValidation: strict
+
 #   ┌─────┐
 #───┘ URL └─────────────────────────────────────────────────────
 

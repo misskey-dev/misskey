@@ -2,6 +2,10 @@
 # Misskey configuration
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+# Validate this configuration before Misskey starts.
+# Use "legacy" only temporarily to retain the unvalidated behavior of older versions.
+# configValidation: strict
+
 #   ┌─────┐
 #───┘ URL └─────────────────────────────────────────────────────
 

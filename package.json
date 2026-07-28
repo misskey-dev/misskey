@@ -25,6 +25,7 @@
 	"private": true,
 	"scripts": {
 		"compile-config": "cd packages/backend && pnpm compile-config",
+		"validate-config": "cd packages/backend && pnpm validate-config",
 		"build-pre": "node scripts/build-pre.mjs",
 		"build-assets": "node ./scripts/build-assets.mjs",
 		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",

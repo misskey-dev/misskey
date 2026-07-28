@@ -431,12 +431,18 @@ importers:
       tsc-alias:
         specifier: 1.9.0
         version: 1.9.0
+      tsx:
+        specifier: 4.23.1
+        version: 4.23.1
       typeorm:
         specifier: 1.1.0
         version: 1.1.0(ioredis@5.11.1)(pg@8.22.0)
       ulid:
         specifier: 3.0.2
         version: 3.0.2
+      valibot:
+        specifier: 1.4.2
+        version: 1.4.2(@typescript/typescript6@6.0.2)
       vary:
         specifier: 1.1.2
         version: 1.1.2
@@ -8946,6 +8952,14 @@ packages:
       vue: ^2.6.0 || >=3.0.0
     peerDependenciesMeta:
       '@vue/composition-api':
+        optional: true
+
+  valibot@1.4.2:
+    resolution: {integrity: sha512-gjdCvJ6d3RyHAneqxMYMW9QMCwYMb3jpOO0IyHZV1bnRHFBHrX3VkIILt5XYR0WhwHiH7Mty8ovuPZ/O3gamrg==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
         optional: true
 
   valid-data-url@3.0.1:
@@ -17786,6 +17800,10 @@ snapshots:
       highlight.js: 11.11.1
       vue: 3.5.39(typescript@6.0.2)
       vue-demi: 0.14.10(vue@3.5.39(typescript@6.0.2))
+
+  valibot@1.4.2(@typescript/typescript6@6.0.2):
+    optionalDependencies:
+      typescript: '@typescript/typescript6@6.0.2'
 
   valid-data-url@3.0.1: {}
 

@@ -1,5 +1,11 @@
 ## Unreleased
 
+### Note
+
+- configファイルはデフォルトで設定値の検証が行われるようになりました。ソフトウェア更新に際して `pnpm --filter backend validate-config` を実行し、報告された問題を修正してください。
+  - `signToActivityPubGet`、`proxyRemoteFiles`、`disallowExternalApRedirect` がconfigファイルに残っている場合は削除してください。これらの設定はコントロールパネルへ移動済みです。
+  - 問題をすぐに修正できない場合は、configファイルに `configValidation: legacy` を指定すると、警告を出しつつ従来どおり検証せずに起動できます。
+
 ### General
 -
 
@@ -7,8 +13,7 @@
 -
 
 ### Server
--
-
+- Enhance: configファイルの読み込み時の設定値検証と検証コマンドを追加
 
 ## 2026.7.0
 

@@ -152,11 +152,20 @@ function showNodejsVersion(): void {
 /** 設定を読み込み、成功時に後続のログ出力形式を適用します。 */
 function loadConfigBoot(): Config {
 	const configLogger = bootLogger.createSubLogger('config');
+	const configWarnings: string[] = [];
 	let config;
 
 	try {
-		config = loadConfig();
+		config = loadConfig({
+			onWarning: warning => configWarnings.push(warning),
+		});
 		configureLogging(config.logging);
+		for (const warning of configWarnings) {
+			configLogger.warn({
+				message: warning,
+				eventName: 'config.validation.disabled',
+			});
+		}
 	} catch (exception) {
 		if (typeof exception === 'string') {
 			configLogger.error(exception);
