@@ -15,11 +15,24 @@ import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/misc
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { MiRepository, miRepository } from '@/models/_.js';
-import type { DataSource, Repository } from 'typeorm';
+import type { DataSource, EntityManager, Repository } from 'typeorm';
 
 const COLUMN_PREFIX = '___' as const;
 const UNIQUE_TEMP_COLUMN_PREFIX = 'unique_temp___' as const;
 const COLUMN_DELIMITER = '_' as const;
+
+/**
+ * resync (tickMajor) の実カウント専用ヘルパー。
+ * 巨大テーブルの count はアプリ既定の statement_timeout (10秒) を超過して失敗するため、
+ * トランザクション内の SET LOCAL でこの実行だけ制限を延長する。
+ * SET LOCAL はトランザクション内でのみ有効なので、通常クエリのタイムアウトには影響しない。
+ */
+export async function resyncQueryWithExtendedTimeout<T>(db: DataSource, queries: (em: EntityManager) => Promise<T>): Promise<T> {
+	return await db.transaction(async em => {
+		await em.query('SET LOCAL statement_timeout = \'10min\'');
+		return await queries(em);
+	});
+}
 
 type Schema = Record<string, {
 	uniqueIncrement?: boolean;

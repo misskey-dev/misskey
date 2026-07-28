@@ -32,9 +32,27 @@ export class ResyncChartsProcessorService {
 		// DBへの同時接続を避けるためにPromise.allを使わずひとつずつ実行する
 		// TODO: ユーザーごとのチャートも更新する
 		// TODO: インスタンスごとのチャートも更新する
-		await this.driveChart.resync();
-		await this.notesChart.resync();
-		await this.usersChart.resync();
+		// 1つのチャートの失敗が残りのチャートの補正を道連れにしないよう、チャートごとに捕捉する
+		const charts = [
+			['drive', () => this.driveChart.resync()],
+			['notes', () => this.notesChart.resync()],
+			['users', () => this.usersChart.resync()],
+		] as const;
+
+		const failed: string[] = [];
+		for (const [chartName, resync] of charts) {
+			try {
+				await resync();
+			} catch (err) {
+				this.logger.error(`Failed to resync ${chartName} chart: ${err}`);
+				failed.push(chartName);
+			}
+		}
+
+		if (failed.length > 0) {
+			// ジョブとしては失敗扱いにして Bull の記録に残す
+			throw new Error(`Failed to resync charts: ${failed.join(', ')}`);
+		}
 
 		this.logger.succ('All charts successfully resynced.');
 	}

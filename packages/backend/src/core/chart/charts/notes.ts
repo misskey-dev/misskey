@@ -6,12 +6,11 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Not, IsNull, DataSource } from 'typeorm';
 import * as Redis from 'ioredis';
-import type { NotesRepository } from '@/models/_.js';
-import type { MiNote } from '@/models/Note.js';
+import { MiNote } from '@/models/Note.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { acquireChartInsertLock } from '@/misc/distributed-lock.js';
-import Chart from '../core.js';
+import Chart, { resyncQueryWithExtendedTimeout } from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/notes.js';
 import type { KVs } from '../core.js';
@@ -28,18 +27,16 @@ export default class NotesChart extends Chart<typeof schema> { // eslint-disable
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
 		private chartLoggerService: ChartLoggerService,
 	) {
 		super(db, (k) => acquireChartInsertLock(redisClient, k), chartLoggerService.logger, name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
-		const [localCount, remoteCount] = await Promise.all([
-			this.notesRepository.countBy({ userHost: IsNull() }),
-			this.notesRepository.countBy({ userHost: Not(IsNull()) }),
+		// note テーブルの全件 count はデフォルトの statement_timeout (10秒) を超過しうるため延長する
+		const [localCount, remoteCount] = await resyncQueryWithExtendedTimeout(this.db, async em => [
+			await em.countBy(MiNote, { userHost: IsNull() }),
+			await em.countBy(MiNote, { userHost: Not(IsNull()) }),
 		]);
 
 		return {
