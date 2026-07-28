@@ -16,10 +16,19 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import Logger from '../logger.js';
 
 const logger = new Logger('hashtag/create');
+
+type AttachedOrMentioned = 'attached' | 'mentioned';
+type UpdatingHashtagColumn = {
+	totalUserIds: keyof MiHashtag & `${AttachedOrMentioned}UserIds`,
+	totalUsersCount: keyof MiHashtag & `${AttachedOrMentioned}UsersCount`,
+	localUserIds: keyof MiHashtag & `${AttachedOrMentioned}LocalUserIds`,
+	localUsersCount: keyof MiHashtag & `${AttachedOrMentioned}LocalUsersCount`,
+	remoteUserIds: keyof MiHashtag & `${AttachedOrMentioned}RemoteUserIds`,
+	remoteUsersCount: keyof MiHashtag & `${AttachedOrMentioned}RemoteUsersCount`,
+};
 
 @Injectable()
 export class HashtagService {
@@ -68,126 +77,93 @@ export class HashtagService {
 		// TODO: サンプリング
 		this.updateHashtagsRanking(tag, user.id);
 
-		{
-			const index = await this.hashtagsRepository.findOneBy({ name: tag });
+		const column: UpdatingHashtagColumn = isUserAttached ? {
+			totalUserIds: 'attachedUserIds',
+			totalUsersCount: 'attachedUsersCount',
+			localUserIds: 'attachedLocalUserIds',
+			localUsersCount: 'attachedLocalUsersCount',
+			remoteUserIds: 'attachedRemoteUserIds',
+			remoteUsersCount: 'attachedRemoteUsersCount',
+		} : {
+			totalUserIds: 'mentionedUserIds',
+			totalUsersCount: 'mentionedUsersCount',
+			localUserIds: 'mentionedLocalUserIds',
+			localUsersCount: 'mentionedLocalUsersCount',
+			remoteUserIds: 'mentionedRemoteUserIds',
+			remoteUsersCount: 'mentionedRemoteUsersCount',
+		};
 
-			if (index == null && inc) {
-				try {
-					if (isUserAttached) {
-						await this.hashtagsRepository.insert({
-							id: this.idService.gen(),
-							name: tag,
-							mentionedUserIds: [],
-							mentionedUsersCount: 0,
-							mentionedLocalUserIds: [],
-							mentionedLocalUsersCount: 0,
-							mentionedRemoteUserIds: [],
-							mentionedRemoteUsersCount: 0,
-							attachedUserIds: [user.id],
-							attachedUsersCount: 1,
-							attachedLocalUserIds: this.userEntityService.isLocalUser(user) ? [user.id] : [],
-							attachedLocalUsersCount: this.userEntityService.isLocalUser(user) ? 1 : 0,
-							attachedRemoteUserIds: this.userEntityService.isRemoteUser(user) ? [user.id] : [],
-							attachedRemoteUsersCount: this.userEntityService.isRemoteUser(user) ? 1 : 0,
-						} as MiHashtag);
-					} else {
-						await this.hashtagsRepository.insert({
-							id: this.idService.gen(),
-							name: tag,
-							mentionedUserIds: [user.id],
-							mentionedUsersCount: 1,
-							mentionedLocalUserIds: this.userEntityService.isLocalUser(user) ? [user.id] : [],
-							mentionedLocalUsersCount: this.userEntityService.isLocalUser(user) ? 1 : 0,
-							mentionedRemoteUserIds: this.userEntityService.isRemoteUser(user) ? [user.id] : [],
-							mentionedRemoteUsersCount: this.userEntityService.isRemoteUser(user) ? 1 : 0,
-							attachedUserIds: [],
-							attachedUsersCount: 0,
-							attachedLocalUserIds: [],
-							attachedLocalUsersCount: 0,
-							attachedRemoteUserIds: [],
-							attachedRemoteUsersCount: 0,
-						} as MiHashtag);
-					}
-					return;
-				} catch (err) {
-					if (isDuplicateKeyValueError(err)) {
-						logger.info(`Duplicate insertion detected. Falling back to update. #${tag}`);
-					} else {
-						throw err;
-					}
-				}
-			}
+		if (inc) {
+			await this.#incrementHashTag(user, tag, column);
+		} else {
+			await this.#decrementHashTag(user, tag, column);
+		}
+	}
+
+	async #incrementHashTag(
+		user: { id: MiUser['id']; host: MiUser['host']; },
+		tag: string,
+		columns: UpdatingHashtagColumn,
+	) {
+		const isLocal = this.userEntityService.isLocalUser(user);
+		const { totalUserIds, totalUsersCount } = columns;
+		const localOrRemoteUserIds = isLocal ? columns.localUserIds : columns.remoteUserIds;
+		const localOrRemoteUserCount = isLocal ? columns.localUsersCount : columns.remoteUsersCount;
+
+		const runner = this.db.createQueryRunner('master');
+		try {
+			await runner.query(
+				`INSERT into "hashtag"("id", "name", "${totalUserIds}", "${totalUsersCount}", "${localOrRemoteUserIds}",
+				                       "${localOrRemoteUserCount}")
+				 VALUES ($3, $1, ARRAY [$2], 1, ARRAY [$2], 1)
+				 ON CONFLICT ("name")
+					 DO UPDATE SET "${totalUserIds}"           = ${appendUserIdIfNotExists(totalUserIds)},
+					               "${totalUsersCount}"        = ${incrementCountIfNotExists(totalUserIds, totalUsersCount)},
+					               "${localOrRemoteUserIds}"   = ${appendUserIdIfNotExists(localOrRemoteUserIds)},
+					               "${localOrRemoteUserCount}" = ${incrementCountIfNotExists(localOrRemoteUserIds, localOrRemoteUserCount)}`,
+				[tag, user.id, this.idService.gen()],
+			);
+		} finally {
+			await runner.release();
 		}
 
-		await this.db.transaction(async transactionalEntityManager => {
-			const transactionalHashtagRepository = transactionalEntityManager
-				.getRepository(MiHashtag);
+		function appendUserIdIfNotExists(userIds: keyof MiHashtag & `${string}UserIds`): string {
+			return `CASE WHEN NOT ("hashtag"."${userIds}" @> ARRAY[$2 ::varchar]) THEN array_append("hashtag"."${userIds}", $2) ELSE "hashtag"."${userIds}" END`;
+		}
 
-			const index = await transactionalHashtagRepository
-				.createQueryBuilder()
-				.setLock('pessimistic_write')
-				.where('name = :name', { name: tag })
-				.getOne();
+		function incrementCountIfNotExists(userIds: keyof MiHashtag & `${string}UserIds`, userCount: keyof MiHashtag & `${string}UsersCount`): string {
+			return `CASE WHEN NOT ("hashtag"."${userIds}" @> ARRAY[$2 ::varchar]) THEN "hashtag"."${userCount}" + 1 ELSE "hashtag"."${userCount}" END`;
+		}
+	}
 
-			if (index == null) return;
+	async #decrementHashTag(
+		user: { id: MiUser['id']; host: MiUser['host']; },
+		tag: string,
+		columns: UpdatingHashtagColumn,
+	) {
+		const isLocal = this.userEntityService.isLocalUser(user);
+		const { totalUserIds, totalUsersCount } = columns;
+		const localOrRemoteUserIds = isLocal ? columns.localUserIds : columns.remoteUserIds;
+		const localOrRemoteUserCount = isLocal ? columns.localUsersCount : columns.remoteUsersCount;
 
-			const set = {} as any;
+		const runner = this.db.createQueryRunner('master');
+		try {
+			await runner.query(
+				`UPDATE "hashtag"
+				 SET "${totalUserIds}"           = array_remove("${totalUserIds}", $2),
+				     "${totalUsersCount}"        = ${decrementIfExists(totalUserIds, totalUsersCount)},
+				     "${localOrRemoteUserIds}"   = array_remove("${localOrRemoteUserIds}", $2),
+				     "${localOrRemoteUserCount}" = ${decrementIfExists(localOrRemoteUserIds, localOrRemoteUserCount)}
+				 WHERE "name" = $1`,
+				[tag, user.id],
+			);
+		} finally {
+			await runner.release();
+		}
 
-			if (isUserAttached) {
-				if (inc) {
-					// 自分が初めてこのタグを使ったなら
-					if (!index.attachedUserIds.some(id => id === user.id)) {
-						set.attachedUserIds = () => `array_append("attachedUserIds", '${user.id}')`;
-						set.attachedUsersCount = () => '"attachedUsersCount" + 1';
-					}
-					// 自分が(ローカル内で)初めてこのタグを使ったなら
-					if (this.userEntityService.isLocalUser(user) && !index.attachedLocalUserIds.some(id => id === user.id)) {
-						set.attachedLocalUserIds = () => `array_append("attachedLocalUserIds", '${user.id}')`;
-						set.attachedLocalUsersCount = () => '"attachedLocalUsersCount" + 1';
-					}
-					// 自分が(リモートで)初めてこのタグを使ったなら
-					if (this.userEntityService.isRemoteUser(user) && !index.attachedRemoteUserIds.some(id => id === user.id)) {
-						set.attachedRemoteUserIds = () => `array_append("attachedRemoteUserIds", '${user.id}')`;
-						set.attachedRemoteUsersCount = () => '"attachedRemoteUsersCount" + 1';
-					}
-				} else {
-					set.attachedUserIds = () => `array_remove("attachedUserIds", '${user.id}')`;
-					set.attachedUsersCount = () => '"attachedUsersCount" - 1';
-					if (this.userEntityService.isLocalUser(user)) {
-						set.attachedLocalUserIds = () => `array_remove("attachedLocalUserIds", '${user.id}')`;
-						set.attachedLocalUsersCount = () => '"attachedLocalUsersCount" - 1';
-					} else {
-						set.attachedRemoteUserIds = () => `array_remove("attachedRemoteUserIds", '${user.id}')`;
-						set.attachedRemoteUsersCount = () => '"attachedRemoteUsersCount" - 1';
-					}
-				}
-			} else {
-				// 自分が初めてこのタグを使ったなら
-				if (!index.mentionedUserIds.some(id => id === user.id)) {
-					set.mentionedUserIds = () => `array_append("mentionedUserIds", '${user.id}')`;
-					set.mentionedUsersCount = () => '"mentionedUsersCount" + 1';
-				}
-				// 自分が(ローカル内で)初めてこのタグを使ったなら
-				if (this.userEntityService.isLocalUser(user) && !index.mentionedLocalUserIds.some(id => id === user.id)) {
-					set.mentionedLocalUserIds = () => `array_append("mentionedLocalUserIds", '${user.id}')`;
-					set.mentionedLocalUsersCount = () => '"mentionedLocalUsersCount" + 1';
-				}
-				// 自分が(リモートで)初めてこのタグを使ったなら
-				if (this.userEntityService.isRemoteUser(user) && !index.mentionedRemoteUserIds.some(id => id === user.id)) {
-					set.mentionedRemoteUserIds = () => `array_append("mentionedRemoteUserIds", '${user.id}')`;
-					set.mentionedRemoteUsersCount = () => '"mentionedRemoteUsersCount" + 1';
-				}
-			}
-
-			if (Object.keys(set).length > 0) {
-				await transactionalHashtagRepository
-					.createQueryBuilder()
-					.update()
-					.where('id = :id', { id: index.id })
-					.set(set)
-					.execute();
-			}
-		});
+		function decrementIfExists(userIds: keyof MiHashtag & `${string}UserIds`, userCount: keyof MiHashtag & `${string}UsersCount`): string {
+			return `CASE WHEN ("${userIds}" @> ARRAY[$2]) THEN "${userCount}" - 1 ELSE "${userCount}" END`;
+		}
 	}
 
 	@bindThis

@@ -48,13 +48,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, nextTick, onBeforeUnmount, onMounted } from 'vue';
+import { ref, watch, nextTick, onBeforeUnmount, onMounted, useTemplateRef } from 'vue';
 import XItem from './MkLightbox.item.vue';
 import type { Content } from './MkLightbox.item.vue';
 import type { Keymap } from '@/utility/hotkey.js';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 import { isTouchUsing } from '@/utility/touch.js';
+import { focusTrap } from '@/utility/focus-trap.js';
 
 const props = withDefaults(defineProps<{
 	defaultIndex?: number;
@@ -66,6 +67,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
+const rootEl = useTemplateRef('rootEl');
 const activatedIndexes = ref(new Set<number>());
 const items = new Map<number, InstanceType<typeof XItem> | null>();
 const currentIndex = ref(props.defaultIndex ?? 0);
@@ -192,7 +194,22 @@ function onPopState() {
 	}
 }
 
+let releaseFocusTrap: (() => void) | null = null;
+
 onMounted(() => {
+	watch([showing], ([showing]) => {
+		if (showing === true) {
+			if (rootEl.value != null) {
+				const { release } = focusTrap(rootEl.value);
+
+				releaseFocusTrap = release;
+				rootEl.value.focus();
+			}
+		} else {
+			releaseFocusTrap?.();
+		}
+	}, { immediate: true });
+
 	window.history.pushState(null, '', '#pswp');
 	window.addEventListener('popstate', onPopState);
 });
