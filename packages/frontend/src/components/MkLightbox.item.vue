@@ -119,7 +119,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="[$style.footer, { [$style.infoShowing]: infoShowing && !isZooming }]">
 		<div v-if="content.type === 'video' && !hide && !prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.mediaControl">
-			<MkVideoControl v-if="videoEl != null" ref="videoControl" :videoEl="videoEl"/>
+			<XControl v-if="videoEl != null" ref="mediaControl"/>
 		</div>
 	</div>
 </div>
@@ -178,8 +178,8 @@ export function calculateSourceTransform({
 
 <script lang="ts" setup>
 import { computed, nextTick, ref, useTemplateRef, markRaw, watch, provide, onBeforeUnmount } from 'vue';
-import MkVideoControl from '@/components/MkVideoControl.vue';
 import MkBlurhash from '@/components/MkBlurhash.vue';
+import XControl from './MkLightbox.item.controls.vue';
 import XFileInfo from './MkLightbox.item.fileinfo.vue';
 import type { MenuItem } from '@/types/menu.js';
 import { DI } from '@/di.js';
@@ -211,17 +211,17 @@ const emit = defineEmits<{
 const rootEl = useTemplateRef('rootEl');
 const mainEl = useTemplateRef('mainEl');
 const videoEl = useTemplateRef('videoEl');
-const videoControl = useTemplateRef('videoControl');
+const mediaControl = useTemplateRef('mediaControl');
 
-provide(DI.mkLightboxItemVideoEl, videoEl);
+provide(DI.mkLightboxItemMediaEl, videoEl);
 
 const originalContentLoaded = ref(false);
 const thumbnailContentLoaded = ref(false);
 const enableTransition = ref(false);
 const infoShowing = ref(false);
 const hide = ref(true);
-const isVideoPlaying = computed(() => videoControl.value?.isPlaying ?? false);
-const isVideoActuallyPlaying = computed(() => videoControl.value?.isActuallyPlaying ?? false);
+const isVideoPlaying = computed(() => mediaControl.value?.isPlaying ?? false);
+const isVideoActuallyPlaying = computed(() => mediaControl.value?.isActuallyPlaying ?? false);
 let canOpenAnimation = false;
 
 const headerSize = 30;

@@ -48,7 +48,7 @@ import * as os from '@/os.js';
 import hasAudio from '@/utility/media-has-audio.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 
-const videoEl = inject(DI.mkLightboxItemVideoEl, shallowRef<HTMLVideoElement | null>(null));
+const mediaEl = inject(DI.mkLightboxItemMediaEl, shallowRef<HTMLVideoElement | HTMLAudioElement | null>(null));
 
 // Menu
 const menuShowing = ref(false);
@@ -118,8 +118,8 @@ const rangePercent = computed({
 		return (elapsedTimeMs.value / durationMs.value) || 0;
 	},
 	set: (to) => {
-		if (videoEl.value == null) return;
-		videoEl.value.currentTime = to * durationMs.value / 1000;
+		if (mediaEl.value == null) return;
+		mediaEl.value.currentTime = to * durationMs.value / 1000;
 	},
 });
 const volume = ref(.25);
@@ -127,18 +127,18 @@ const speed = ref(1);
 const loop = ref(false); // TODO: ドライブファイルのフラグに置き換える
 const bufferedEnd = ref(0);
 const bufferedDataRatio = computed(() => {
-	if (videoEl.value == null || videoEl.value.duration === 0) return 0;
-	return bufferedEnd.value / videoEl.value.duration;
+	if (mediaEl.value == null || mediaEl.value.duration === 0) return 0;
+	return bufferedEnd.value / mediaEl.value.duration;
 });
 
 function togglePlayPause() {
 	if (!isReady.value) return;
 
 	if (isPlaying.value) {
-		videoEl.value?.pause();
+		mediaEl.value?.pause();
 		isPlaying.value = false;
 	} else {
-		videoEl.value?.play();
+		mediaEl.value?.play();
 		isPlaying.value = true;
 		oncePlayed.value = true;
 	}
@@ -147,8 +147,8 @@ function togglePlayPause() {
 function togglePictureInPicture() {
 	if (window.document.pictureInPictureElement) {
 		window.document.exitPictureInPicture();
-	} else {
-		videoEl.value?.requestPictureInPicture();
+	} else if (mediaEl.value instanceof HTMLVideoElement) {
+		mediaEl.value?.requestPictureInPicture();
 	}
 }
 
@@ -164,28 +164,28 @@ let abortController: AbortController | null = null;
 let mediaTickFrameId: number | null = null;
 
 function init() {
-	if (videoEl.value == null) return;
+	if (mediaEl.value == null) return;
 
 	isReady.value = true;
 	abortController = new AbortController();
 
 	function updateMediaTick() {
-		if (videoEl.value == null) return;
+		if (mediaEl.value == null) return;
 
 		try {
-			bufferedEnd.value = videoEl.value.buffered.end(0);
+			bufferedEnd.value = mediaEl.value.buffered.end(0);
 		} catch (err) {
 			bufferedEnd.value = 0;
 		}
 
-		elapsedTimeMs.value = videoEl.value.currentTime * 1000;
+		elapsedTimeMs.value = mediaEl.value.currentTime * 1000;
 
-		if (videoEl.value.loop !== loop.value) {
-			loop.value = videoEl.value.loop;
+		if (mediaEl.value.loop !== loop.value) {
+			loop.value = mediaEl.value.loop;
 		}
 
-		if (videoEl.value.paused !== !isPlaying.value) {
-			isPlaying.value = !videoEl.value.paused;
+		if (mediaEl.value.paused !== !isPlaying.value) {
+			isPlaying.value = !mediaEl.value.paused;
 		}
 
 		mediaTickFrameId = window.requestAnimationFrame(updateMediaTick);
@@ -193,55 +193,55 @@ function init() {
 
 	updateMediaTick();
 
-	videoEl.value.addEventListener('waiting', () => {
+	mediaEl.value.addEventListener('waiting', () => {
 		isActuallyPlaying.value = false;
 	}, { signal: abortController.signal });
 
-	videoEl.value.addEventListener('playing', () => {
+	mediaEl.value.addEventListener('playing', () => {
 		isActuallyPlaying.value = true;
 	}, { signal: abortController.signal });
 
-	videoEl.value.addEventListener('pause', () => {
+	mediaEl.value.addEventListener('pause', () => {
 		isActuallyPlaying.value = false;
 		isPlaying.value = false;
 	}, { signal: abortController.signal });
 
-	videoEl.value.addEventListener('ended', () => {
+	mediaEl.value.addEventListener('ended', () => {
 		oncePlayed.value = false;
 		isActuallyPlaying.value = false;
 		isPlaying.value = false;
 	}, { signal: abortController.signal });
 
-	durationMs.value = videoEl.value.duration * 1000;
-	videoEl.value.addEventListener('durationchange', () => {
-		durationMs.value = videoEl.value!.duration * 1000;
+	durationMs.value = mediaEl.value.duration * 1000;
+	mediaEl.value.addEventListener('durationchange', () => {
+		durationMs.value = mediaEl.value!.duration * 1000;
 	}, { signal: abortController.signal });
 
-	videoEl.value.volume = volume.value;
-	hasAudio(videoEl.value).then(had => {
+	mediaEl.value.volume = volume.value;
+	hasAudio(mediaEl.value).then(had => {
 		if (!had) {
-			videoEl.value!.loop = videoEl.value!.muted = true;
-			videoEl.value!.play();
+			mediaEl.value!.loop = mediaEl.value!.muted = true;
+			mediaEl.value!.play();
 		}
 	});
 }
 
 watch(volume, (to) => {
-	if (videoEl.value == null) return;
-	videoEl.value.volume = to;
+	if (mediaEl.value == null) return;
+	mediaEl.value.volume = to;
 });
 
 watch(speed, (to) => {
-	if (videoEl.value == null) return;
-	videoEl.value.playbackRate = to;
+	if (mediaEl.value == null) return;
+	mediaEl.value.playbackRate = to;
 });
 
 watch(loop, (to) => {
-	if (videoEl.value == null) return;
-	videoEl.value.loop = to;
+	if (mediaEl.value == null) return;
+	mediaEl.value.loop = to;
 });
 
-watch(videoEl, () => {
+watch(mediaEl, () => {
 	if (abortController != null) {
 		abortController.abort();
 	}
