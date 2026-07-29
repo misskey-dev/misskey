@@ -97,15 +97,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<i class="ti ti-player-play"></i>
 							</div>
 						</div>
-						<audio
-							v-else-if="content.type === 'audio' && prefer.s.useNativeUiForVideoAudioPlayer"
-							ref="audioEl"
-							:class="$style.content"
-							:src="content.url"
-							:alt="content.file?.comment ?? undefined"
-							controls
-							@loadedmetadata="originalContentLoaded = true"
-						></audio>
+						<div v-else-if="content.type === 'audio' && prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.audioRoot">
+							<audio
+								ref="audioEl"
+								:src="content.url"
+								:alt="content.file?.comment ?? undefined"
+								:class="$style.audio"
+								controls
+								@loadedmetadata="originalContentLoaded = true"
+							></audio>
+						</div>
 						<XAudioVisualizer
 							v-else-if="content.type === 'audio' && !prefer.s.useNativeUiForVideoAudioPlayer"
 							ref="audioVisualizer"
@@ -1013,6 +1014,20 @@ defineExpose({
 	height: auto;
 	background-color: #000;
 	aspect-ratio: v-bind("videoAspectRatio ?? 16 / 9");
+}
+
+.audioRoot {
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	max-width: calc(100vw - 140px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.audio {
+	width: 100%;
 }
 
 .loading {
