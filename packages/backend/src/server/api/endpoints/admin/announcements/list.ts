@@ -49,6 +49,36 @@ export const meta = {
 					type: 'string',
 					optional: false, nullable: false,
 				},
+				icon: {
+					type: 'string',
+					optional: false, nullable: false,
+					enum: ['info', 'warning', 'error', 'success'],
+				},
+				display: {
+					type: 'string',
+					optional: false, nullable: false,
+					enum: ['normal', 'banner', 'dialog'],
+				},
+				isActive: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				forExistingUsers: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				silence: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				needConfirmationToRead: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				userId: {
+					type: 'string',
+					optional: false, nullable: true,
+				},
 				imageUrl: {
 					type: 'string',
 					optional: false, nullable: true,

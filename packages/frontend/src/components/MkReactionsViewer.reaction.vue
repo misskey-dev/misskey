@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, inject, onMounted, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { getUnicodeEmoji } from '@@/js/emojilist.js';
+import { getUnicodeEmojiOrNull } from '@@/js/emojilist.js';
 import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
 import type { MenuItem } from '@/types/menu';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
@@ -38,6 +38,8 @@ import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { noteEvents } from '@/composables/use-note-capture.js';
 import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as isEmojiMuted } from '@/utility/emoji-mute.js';
+import { addToEmojiPalette } from '@/utility/emoji-palette.js';
+import { haptic } from '@/utility/haptic.js';
 
 const props = defineProps<{
 	noteId: Misskey.entities.Note['id'];
@@ -57,18 +59,22 @@ const emit = defineEmits<{
 const buttonEl = useTemplateRef('buttonEl');
 
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
-const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
 
 const canToggle = computed(() => {
+	const emoji = customEmojisMap.get(emojiName.value) ?? getUnicodeEmojiOrNull(props.reaction);
+
 	// TODO
-	//return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
-	return !props.reaction.match(/@\w/) && $i && emoji.value;
+	//return !props.reaction.match(/@\w/) && $i && emoji && checkReactionPermissions($i, props.note, emoji);
+	return props.reaction.match(/@\w/) == null && $i != null && emoji != null;
 });
 const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
 const isLocalCustomEmoji = props.reaction[0] === ':' && props.reaction.includes('@.');
 
 async function toggleReaction() {
 	if (!canToggle.value) return;
+	if ($i == null) return;
+
+	const me = $i;
 
 	const oldReaction = props.myReaction;
 	if (oldReaction) {
@@ -80,6 +86,7 @@ async function toggleReaction() {
 
 		if (oldReaction !== props.reaction) {
 			sound.playMisskeySfx('reaction');
+			haptic();
 		}
 
 		if (mock) {
@@ -91,7 +98,7 @@ async function toggleReaction() {
 			noteId: props.noteId,
 		}).then(() => {
 			noteEvents.emit(`unreacted:${props.noteId}`, {
-				userId: $i!.id,
+				userId: me.id,
 				reaction: oldReaction,
 			});
 			if (oldReaction !== props.reaction) {
@@ -99,10 +106,14 @@ async function toggleReaction() {
 					noteId: props.noteId,
 					reaction: props.reaction,
 				}).then(() => {
+					const emoji = customEmojisMap.get(emojiName.value);
+					if (emoji == null && getUnicodeEmojiOrNull(props.reaction) == null) {
+						return;
+					}
 					noteEvents.emit(`reacted:${props.noteId}`, {
-						userId: $i!.id,
+						userId: me.id,
 						reaction: props.reaction,
-						emoji: emoji.value,
+						emoji: emoji,
 					});
 				});
 			}
@@ -118,6 +129,7 @@ async function toggleReaction() {
 		}
 
 		sound.playMisskeySfx('reaction');
+		haptic();
 
 		if (mock) {
 			emit('reactionToggled', props.reaction, (props.count + 1));
@@ -128,10 +140,15 @@ async function toggleReaction() {
 			noteId: props.noteId,
 			reaction: props.reaction,
 		}).then(() => {
+			const emoji = customEmojisMap.get(emojiName.value);
+			if (emoji == null && getUnicodeEmojiOrNull(props.reaction) == null) {
+				return;
+			}
+
 			noteEvents.emit(`reacted:${props.noteId}`, {
-				userId: $i!.id,
+				userId: me.id,
 				reaction: props.reaction,
-				emoji: emoji.value,
+				emoji: emoji,
 			});
 		});
 		// TODO: 上位コンポーネントでやる
@@ -141,7 +158,7 @@ async function toggleReaction() {
 	}
 }
 
-async function menu(ev) {
+async function menu(ev: PointerEvent) {
 	let menuItems: MenuItem[] = [];
 
 	if (canGetInfo.value) {
@@ -190,6 +207,16 @@ async function menu(ev) {
 		});
 	}
 
+	if (canToggle.value) {
+		menuItems.push({
+			text: i18n.ts.addToEmojiPalette,
+			icon: 'ti ti-palette',
+			action: () => {
+				addToEmojiPalette(isLocalCustomEmoji ? `:${emojiName.value}:` : props.reaction);
+			},
+		});
+	}
+
 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
@@ -214,6 +241,8 @@ onMounted(() => {
 
 if (!mock) {
 	useTooltip(buttonEl, async (showing) => {
+		if (buttonEl.value == null) return;
+
 		const reactions = await misskeyApiGet('notes/reactions', {
 			noteId: props.noteId,
 			type: props.reaction,
@@ -228,7 +257,7 @@ if (!mock) {
 			reaction: props.reaction,
 			users,
 			count: props.count,
-			targetElement: buttonEl.value,
+			anchorElement: buttonEl.value,
 		}, {
 			closed: () => dispose(),
 		});

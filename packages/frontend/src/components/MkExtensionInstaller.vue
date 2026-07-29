@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkInfo :warn="true">{{ i18n.ts._externalResourceInstaller.checkVendorBeforeInstall }}</MkInfo>
 
-	<div v-if="isPlugin" class="_gaps_s">
+	<div v-if="extension.type === 'plugin'" class="_gaps_s">
 		<MkFolder :defaultOpen="true">
 			<template #icon><i class="ti ti-info-circle"></i></template>
 			<template #label>{{ i18n.ts.metadata }}</template>
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #key>{{ i18n.ts.permission }}</template>
 					<template #value>
 						<ul v-if="extension.meta.permissions && extension.meta.permissions.length > 0" :class="$style.extInstallerKVList">
-							<li v-for="permission in extension.meta.permissions" :key="permission">{{ i18n.ts._permissions[permission] }}</li>
+							<li v-for="permission in extension.meta.permissions" :key="permission">{{ i18n.ts._permissions[permission] ?? permission }}</li>
 						</ul>
 						<template v-else>{{ i18n.ts.none }}</template>
 					</template>
@@ -60,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkCode :code="extension.raw"/>
 		</MkFolder>
 	</div>
-	<div v-else-if="isTheme" class="_gaps_s">
+	<div v-else-if="extension.type === 'theme'" class="_gaps_s">
 		<MkFolder :defaultOpen="true">
 			<template #icon><i class="ti ti-info-circle"></i></template>
 			<template #label>{{ i18n.ts.metadata }}</template>
@@ -78,7 +78,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</FormSplit>
 				<MkKeyValue>
 					<template #key>{{ i18n.ts._externalResourceInstaller._meta.base }}</template>
-					<template #value>{{ i18n.ts[extension.meta.base ?? 'none'] }}</template>
+					<template #value>{{ { light: i18n.ts.light, dark: i18n.ts.dark, none: i18n.ts.none }[extension.meta.base ?? 'none'] }}</template>
 				</MkKeyValue>
 			</div>
 		</MkFolder>
@@ -91,7 +91,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkFolder>
 	</div>
 
-	<slot name="additionalInfo"/>
+	<slot name="additionalInfo"></slot>
 
 	<div class="_buttonsCenter">
 		<MkButton danger rounded large @click="emits('cancel')"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
@@ -101,6 +101,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
+import * as Misskey from 'misskey-js';
+
 export type Extension = {
 	type: 'plugin';
 	raw: string;
@@ -109,7 +111,7 @@ export type Extension = {
 		version: string;
 		author: string;
 		description?: string;
-		permissions?: string[];
+		permissions?: (typeof Misskey.permissions)[number][];
 		config?: Record<string, unknown>;
 	};
 } | {
@@ -125,7 +127,6 @@ export type Extension = {
 <script lang="ts" setup>
 import { computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkInfo from '@/components/MkInfo.vue';

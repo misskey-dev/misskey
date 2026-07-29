@@ -9,7 +9,6 @@ import { type Preview, setup } from '@storybook/vue3';
 import isChromatic from 'chromatic/isChromatic';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { userDetailed } from './fakes.js';
-import locale from './locale.js';
 import { commonHandlers, onUnhandledRequest } from './mocks.js';
 import themes from './themes.js';
 import '../src/style.scss';
@@ -21,13 +20,13 @@ let moduleInitialized = false;
 let unobserve = () => {};
 let misskeyOS = null;
 
-function loadTheme(applyTheme: typeof import('../src/theme')['applyTheme']) {
+function loadTheme(themeMaganer: typeof import('../src/theme')['themeManager']) {
 	unobserve();
 	const theme = themes[window.document.documentElement.dataset.misskeyTheme];
 	if (theme) {
-		applyTheme(themes[window.document.documentElement.dataset.misskeyTheme]);
+		themeMaganer.updateTheme(themes[window.document.documentElement.dataset.misskeyTheme]);
 	} else {
-		applyTheme(themes['l-light']);
+		themeMaganer.updateTheme(themes['l-light']);
 	}
 	const observer = new MutationObserver((entries) => {
 		for (const entry of entries) {
@@ -35,7 +34,7 @@ function loadTheme(applyTheme: typeof import('../src/theme')['applyTheme']) {
 				const target = entry.target as HTMLElement;
 				const theme = themes[target.dataset.misskeyTheme];
 				if (theme) {
-					applyTheme(themes[target.dataset.misskeyTheme]);
+					themeMaganer.updateTheme(themes[target.dataset.misskeyTheme]);
 				} else {
 					target.removeAttribute('style');
 				}
@@ -55,7 +54,6 @@ function initLocalStorage() {
 		...userDetailed(),
 		policies: {},
 	}));
-	localStorage.setItem('locale', JSON.stringify(locale));
 }
 
 initialize({

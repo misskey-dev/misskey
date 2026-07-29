@@ -8,13 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="szkkfdyq _popup _shadow" :class="{ asDrawer: type === 'drawer' }" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : '' }">
 		<div class="main">
 			<template v-for="item in items" :key="item.text">
-				<button v-if="item.action" v-click-anime class="_button item" @click="$event => { item.action($event); close(); }">
+				<button v-if="item.action != null" v-click-anime class="_button item" @click="$event => { item.action!($event); close(); }">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate && item.indicateValue" class="_indicateCounter indicatorWithValue">{{ item.indicateValue }}</span>
 					<span v-else-if="item.indicate" class="indicator _blink"><i class="_indicatorCircle"></i></span>
 				</button>
-				<MkA v-else v-click-anime :to="item.to" class="item" @click.passive="close()">
+				<MkA v-else-if="item.to != null" v-click-anime :to="item.to" class="item" @click.passive="close()">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate && item.indicateValue" class="_indicateCounter indicatorWithValue">{{ item.indicateValue }}</span>
@@ -34,9 +34,10 @@ import { deviceKind } from '@/utility/device-kind.js';
 import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
-	anchorElement?: HTMLElement;
+	anchorElement?: HTMLElement | null;
 	anchor?: { x: string; y: string; };
 }>(), {
+	anchorElement: null,
 	anchor: () => ({ x: 'right', y: 'center' }),
 });
 

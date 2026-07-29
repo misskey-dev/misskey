@@ -1,3 +1,4 @@
+import { describe, test, beforeAll, afterAll } from 'vitest';
 import assert, { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
 import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
@@ -63,7 +64,6 @@ describe('Note', () => {
 			deepStrictEqualWithExcludedFields(note, resolvedNote, [
 				'id',
 				'emojis',
-				'reactionAcceptance',
 				'replyId',
 				'reply',
 				'userId',
@@ -105,7 +105,6 @@ describe('Note', () => {
 			deepStrictEqualWithExcludedFields(note, resolvedNote, [
 				'id',
 				'emojis',
-				'reactionAcceptance',
 				'renoteId',
 				'renote',
 				'userId',
@@ -216,7 +215,7 @@ describe('Note', () => {
 			 * @see https://github.com/misskey-dev/misskey/issues/15548
 			 */
 			describe('To only resolved and not followed user', () => {
-				test.failing('Check', async () => {
+				test.skip('Check', async () => {
 					const note = (await bob.client.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
 					const noteInA = await resolveRemoteNote('b.test', note.id, alice);
 					await sleep();
@@ -256,7 +255,7 @@ describe('Note', () => {
 			 * FIXME: implement soft deletion as well as user?
 			 *        @see https://github.com/misskey-dev/misskey/issues/11437
 			 */
-			test.failing('Not found even if resolve again', async () => {
+			test.skip('Not found even if resolve again', async () => {
 				const noteInB = await resolveRemoteNote('a.test', note.id, bob);
 				await rejects(
 					async () => await bob.client.request('notes/show', { noteId: noteInB.id }),

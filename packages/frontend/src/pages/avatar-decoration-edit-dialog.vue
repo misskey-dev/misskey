@@ -32,6 +32,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="url">
 					<template #label>{{ i18n.ts.imageUrl }}</template>
 				</MkInput>
+				<MkInput v-model="category" :datalist="props.categories || []">
+					<template #label>{{ i18n.ts.category }}</template>
+				</MkInput>
 				<MkTextarea v-model="description">
 					<template #label>{{ i18n.ts.description }}</template>
 				</MkTextarea>
@@ -78,7 +81,8 @@ import { ensureSignin } from '@/i.js';
 const $i = ensureSignin();
 
 const props = defineProps<{
-	avatarDecoration?: any,
+	avatarDecoration?: Misskey.entities.AdminAvatarDecorationsListResponse[number],
+	categories?: string[],
 }>();
 
 const emit = defineEmits<{
@@ -89,6 +93,7 @@ const emit = defineEmits<{
 const windowEl = useTemplateRef('windowEl');
 const url = ref<string>(props.avatarDecoration ? props.avatarDecoration.url : '');
 const name = ref<string>(props.avatarDecoration ? props.avatarDecoration.name : '');
+const category = ref<string>(props.avatarDecoration?.category ? props.avatarDecoration.category : '');
 const description = ref<string>(props.avatarDecoration ? props.avatarDecoration.description : '');
 const roleIdsThatCanBeUsedThisDecoration = ref(props.avatarDecoration ? props.avatarDecoration.roleIdsThatCanBeUsedThisDecoration : []);
 const rolesThatCanBeUsedThisDecoration = ref<Misskey.entities.Role[]>([]);
@@ -101,15 +106,15 @@ async function addRole() {
 	const roles = await misskeyApi('admin/roles/list');
 	const currentRoleIds = rolesThatCanBeUsedThisDecoration.value.map(x => x.id);
 
-	const { canceled, result: role } = await os.select({
-		items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ text: r.name, value: r })),
+	const { canceled, result: roleId } = await os.select({
+		items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ label: r.name, value: r.id })),
 	});
-	if (canceled || role == null) return;
+	if (canceled || roleId == null) return;
 
-	rolesThatCanBeUsedThisDecoration.value.push(role);
+	rolesThatCanBeUsedThisDecoration.value.push(roles.find(r => r.id === roleId)!);
 }
 
-async function removeRole(role, ev) {
+async function removeRole(role: Misskey.entities.Role, ev: PointerEvent) {
 	rolesThatCanBeUsedThisDecoration.value = rolesThatCanBeUsedThisDecoration.value.filter(x => x.id !== role.id);
 }
 
@@ -118,6 +123,7 @@ async function done() {
 		url: url.value,
 		name: name.value,
 		description: description.value,
+		category: category.value,
 		roleIdsThatCanBeUsedThisDecoration: rolesThatCanBeUsedThisDecoration.value.map(x => x.id),
 	};
 
@@ -147,6 +153,8 @@ async function done() {
 }
 
 async function del() {
+	if (props.avatarDecoration == null) return;
+
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.tsx.removeAreYouSure({ x: name.value }),

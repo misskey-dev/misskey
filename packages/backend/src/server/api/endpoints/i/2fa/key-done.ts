@@ -81,7 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				try {
 					await this.userAuthService.twoFactorAuthenticate(profile, token);
-				} catch (e) {
+				} catch (_) {
 					throw new Error('authentication failed');
 				}
 			}

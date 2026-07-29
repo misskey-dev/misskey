@@ -48,8 +48,6 @@ export class NodeinfoServerService {
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		const nodeinfo2 = async (version: number) => {
-			const now = Date.now();
-
 			const notesChart = await this.notesChart.getChart('hour', 1, null);
 			const localPosts = notesChart.local.total[0];
 

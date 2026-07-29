@@ -21,7 +21,7 @@ export class MiMeta {
 	})
 	public rootUserId: MiUser['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'SET NULL',
 		nullable: true,
 	})
@@ -291,6 +291,26 @@ export class MiMeta {
 		default: false,
 	})
 	public enableSensitiveMediaDetectionForVideos: boolean;
+
+	@Column('varchar', {
+		length: 1024, nullable: true,
+	})
+	public sensitiveMediaDetectionApiUrl: string | null;
+
+	@Column('varchar', {
+		length: 1024, nullable: true,
+	})
+	public sensitiveMediaDetectionApiKey: string | null;
+
+	@Column('integer', {
+		default: 60000,
+	})
+	public sensitiveMediaDetectionTimeout: number;
+
+	@Column('integer', {
+		default: 4,
+	})
+	public sensitiveMediaDetectionMaxImagesPerRequest: number;
 
 	@Column('boolean', {
 		default: false,
@@ -653,8 +673,13 @@ export class MiMeta {
 	public urlPreviewUserAgent: string | null;
 
 	@Column('varchar', {
+		length: 3072, array: true, default: '{}',
+	})
+	public urlPreviewSensitiveList: string[];
+
+	@Column('varchar', {
 		length: 128,
-		default: 'all',
+		default: 'none',
 	})
 	public federation: 'all' | 'specified' | 'none';
 
@@ -701,6 +726,35 @@ export class MiMeta {
 		default: true,
 	})
 	public allowExternalApRedirect: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableRemoteNotesCleaning: boolean;
+
+	@Column('integer', {
+		default: 60, // minutes
+	})
+	public remoteNotesCleaningMaxProcessingDurationInMinutes: number;
+
+	@Column('integer', {
+		default: 90, // days
+	})
+	public remoteNotesCleaningExpiryDaysForEachNotes: number;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public showRoleBadgesOfRemoteUsers: boolean;
+
+	@Column('jsonb', {
+		default: { },
+	})
+	public clientOptions: {
+		entrancePageStyle: 'classic' | 'simple';
+		showTimelineForVisitor: boolean;
+		showActivitiesForVisitor: boolean;
+	};
 }
 
 export type SoftwareSuspension = {

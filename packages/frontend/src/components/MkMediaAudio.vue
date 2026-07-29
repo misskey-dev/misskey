@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@contextmenu.stop
 	@keydown.stop
 >
-	<button v-if="hide" :class="$style.hidden" @click="show">
+	<button v-if="hide" :class="$style.hidden" @click="reveal">
 		<div :class="$style.hiddenTextWrapper">
 			<b v-if="audio.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ prefer.s.dataSaver.media ? ` (${i18n.ts.audio}${audio.size ? ' ' + bytes(audio.size) : ''})` : '' }}</b>
 			<b v-else style="display: block;"><i class="ti ti-music"></i> {{ prefer.s.dataSaver.media && audio.size ? bytes(audio.size) : i18n.ts.audio }}</b>
@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@keydown.prevent
 			@click.self="togglePlayPause"
 		></canvas>
-		<button v-if="isReady && !isPlaying" class="_button" :class="$style.audioOverlayPlayButton" @click="togglePlayPause"><i class="ti ti-player-play-filled"></i></button>
+		<button v-if="isReady && !isPlaying" class="_button" :class="$style.audioOverlayPlayButton" @click="togglePlayPause"><i class="ti ti-player-play"></i></button>
 		<div v-else-if="!isActuallyPlaying" :class="$style.audioLoading">
 			<MkLoading/>
 		</div>
@@ -116,6 +116,8 @@ import MkMediaRange from '@/components/MkMediaRange.vue';
 import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
 import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
+import { getFileMenu } from '@/utility/get-file-menu.js';
+import { canRevealFile, shouldHideFileByDefault } from '@/utility/sensitive-file.js';
 
 const props = defineProps<{
 	audio: Misskey.entities.DriveFile;
@@ -167,16 +169,11 @@ function hasFocus() {
 	return playerEl.value === window.document.activeElement || playerEl.value.contains(window.document.activeElement);
 }
 
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const hide = ref((prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.audio.isSensitive && prefer.s.nsfw !== 'ignore'));
+const hide = ref(shouldHideFileByDefault(props.audio));
 
-async function show() {
-	if (props.audio.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
-		const { canceled } = await os.confirm({
-			type: 'question',
-			text: i18n.ts.sensitiveMediaRevealConfirm,
-		});
-		if (canceled) return;
+async function reveal() {
+	if (!(await canRevealFile(props.audio))) {
+		return;
 	}
 
 	hide.value = false;
@@ -199,69 +196,37 @@ function showMenu(ev: MouseEvent) {
 			text: i18n.ts._mediaControls.playbackRate,
 			icon: 'ti ti-clock-play',
 			ref: speed,
-			options: {
-				'0.25x': 0.25,
-				'0.5x': 0.5,
-				'0.75x': 0.75,
-				'1.0x': 1,
-				'1.25x': 1.25,
-				'1.5x': 1.5,
-				'2.0x': 2,
-			},
+			options: [{
+				label: '0.25x',
+				value: 0.25,
+			}, {
+				label: '0.5x',
+				value: 0.5,
+			}, {
+				label: '0.75x',
+				value: 0.75,
+			}, {
+				label: '1.0x',
+				value: 1,
+			}, {
+				label: '1.25x',
+				value: 1.25,
+			}, {
+				label: '1.5x',
+				value: 1.5,
+			}, {
+				label: '2.0x',
+				value: 2,
+			}],
 		},
 		{
 			type: 'divider',
 		},
-		{
-			text: i18n.ts.hide,
-			icon: 'ti ti-eye-off',
-			action: () => {
-				hide.value = true;
-			},
-		},
 	];
 
-	if (iAmModerator) {
-		menu.push({
-			text: props.audio.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-			icon: props.audio.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',
-			danger: true,
-			action: () => toggleSensitive(props.audio),
-		});
-	}
-
-	const details: MenuItem[] = [];
-	if ($i?.id === props.audio.userId) {
-		details.push({
-			type: 'link',
-			text: i18n.ts._fileViewer.title,
-			icon: 'ti ti-info-circle',
-			to: `/my/drive/file/${props.audio.id}`,
-		});
-	}
-
-	if (iAmModerator) {
-		details.push({
-			type: 'link',
-			text: i18n.ts.moderation,
-			icon: 'ti ti-photo-exclamation',
-			to: `/admin/file/${props.audio.id}`,
-		});
-	}
-
-	if (details.length > 0) {
-		menu.push({ type: 'divider' }, ...details);
-	}
-
-	if (prefer.s.devMode) {
-		menu.push({ type: 'divider' }, {
-			icon: 'ti ti-hash',
-			text: i18n.ts.copyFileId,
-			action: () => {
-				copyToClipboard(props.audio.id);
-			},
-		});
-	}
+	menu.push(...getFileMenu(props.audio, (newState) => {
+		hide.value = newState;
+	}));
 
 	menuShowing.value = true;
 	os.popupMenu(menu, ev.currentTarget ?? ev.target, {
@@ -269,20 +234,6 @@ function showMenu(ev: MouseEvent) {
 		onClosing: () => {
 			menuShowing.value = false;
 		},
-	});
-}
-
-async function toggleSensitive(file: Misskey.entities.DriveFile) {
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		text: file.isSensitive ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
-	});
-
-	if (canceled) return;
-
-	os.apiWithDialog('drive/files/update', {
-		fileId: file.id,
-		isSensitive: !file.isSensitive,
 	});
 }
 

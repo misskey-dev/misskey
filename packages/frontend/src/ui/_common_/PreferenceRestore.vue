@@ -48,10 +48,6 @@ function skip() {
 .title {
 	padding: 0 10px;
 	font-weight: bold;
-
-	&:empty {
-		display: none;
-	}
 }
 
 .body {

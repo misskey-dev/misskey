@@ -1,0 +1,136 @@
+# this name is used in backend-diagnostics.comment.yml so be careful when change name
+name: Backend diagnostics (inspect)
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+    paths:
+      - packages/backend/**
+      - packages/misskey-js/**
+      - packages-private/diagnostics-shared/**
+      - packages-private/diagnostics-backend/**
+      - .github/workflows/backend-diagnostics.inspect.yml
+      - .github/workflows/backend-diagnostics.comment.yml
+
+jobs:
+  get-memory-usage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    services:
+      postgres:
+        image: postgres:18
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:8
+        ports:
+          - 56312:6379
+
+    steps:
+    - name: Checkout base
+      uses: actions/checkout@v7.0.0
+      with:
+        ref: ${{ github.base_ref }}
+        path: base
+        submodules: true
+    - name: Checkout head
+      uses: actions/checkout@v7.0.0
+      with:
+        ref: refs/pull/${{ github.event.number }}/merge
+        path: head
+        submodules: true
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v6.0.9
+      with:
+        package_json_file: head/package.json
+    - name: Use Node.js
+      uses: actions/setup-node@v7.0.0
+      with:
+        node-version-file: 'head/.node-version'
+        cache: 'pnpm'
+        cache-dependency-path: |
+          base/pnpm-lock.yaml
+          head/pnpm-lock.yaml
+    - name: Install base dependencies
+      working-directory: base
+      run: pnpm i --frozen-lockfile
+    - name: Check base pnpm-lock.yaml
+      working-directory: base
+      run: git diff --exit-code pnpm-lock.yaml
+    - name: Configure base
+      working-directory: base
+      run: |
+        cp .github/misskey/test.yml .config/default.yml
+        pnpm compile-config
+    - name: Build base
+      working-directory: base
+      run: pnpm build
+    - name: Install head dependencies
+      working-directory: head
+      run: pnpm i --frozen-lockfile
+    - name: Check head pnpm-lock.yaml
+      working-directory: head
+      run: git diff --exit-code pnpm-lock.yaml
+    - name: Configure head
+      working-directory: head
+      run: |
+        cp .github/misskey/test.yml .config/default.yml
+        pnpm compile-config
+    - name: Build head
+      working-directory: head
+      run: pnpm build
+    - name: Measure backend memory usage
+      working-directory: head
+      env:
+        MK_MEMORY_COMPARE_ROUNDS: 15
+        MK_MEMORY_COMPARE_WARMUP_ROUNDS: 1
+        MK_MEMORY_HEAP_SNAPSHOT: 1
+        MK_MEMORY_HEAP_SNAPSHOT_ROUNDS: 3
+        # 計測ハーネスはhead側のものを両方に使うが、成果物はrunnerのworkspace直下に出す
+        MK_MEMORY_HEAP_SNAPSHOT_OUTPUT_DIR: ${{ github.workspace }}
+      run: >-
+        pnpm --filter diagnostics-backend run inspect
+        "$GITHUB_WORKSPACE/base" "$GITHUB_WORKSPACE/head"
+        "$GITHUB_WORKSPACE/memory-base.json" "$GITHUB_WORKSPACE/memory-head.json"
+    - name: Upload base heap snapshot
+      uses: actions/upload-artifact@v7
+      with:
+        path: base-heap-snapshot.heapsnapshot
+        archive: false
+        if-no-files-found: error
+        retention-days: 7
+    - name: Upload head heap snapshot
+      uses: actions/upload-artifact@v7
+      with:
+        path: head-heap-snapshot.heapsnapshot
+        archive: false
+        if-no-files-found: error
+        retention-days: 7
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v7
+      with:
+        name: memory-artifact-results
+        path: |
+          memory-base.json
+          memory-head.json
+
+  save-pr-number:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Save PR number
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+        run: |
+          echo "$PR_NUMBER" > ./pr_number
+      - uses: actions/upload-artifact@v7
+        with:
+          name: memory-artifact-pr-number
+          path: pr_number

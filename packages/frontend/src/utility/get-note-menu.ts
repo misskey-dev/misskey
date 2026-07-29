@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import { claimAchievement } from './achievements.js';
@@ -27,9 +26,14 @@ import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
 import { globalEvents } from '@/events.js';
 
+const isInBrowserTranslationAvailable = (
+	'LanguageDetector' in window &&
+	'Translator' in window
+);
+
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
-	currentClip?: Misskey.entities.Clip;
+	currentClip?: Misskey.entities.Clip | null;
 }) {
 	function getClipName(clip: Misskey.entities.Clip) {
 		if ($i && clip.userId === $i.id && clip.notesCount != null) {
@@ -39,7 +43,7 @@ export async function getNoteClipMenu(props: {
 		}
 	}
 
-	const appearNote = getAppearNote(props.note);
+	const appearNote = getAppearNote(props.note) ?? props.note;
 
 	const clips = await clipsCache.fetch();
 	const menu: MenuItem[] = [...clips.map(clip => ({
@@ -177,9 +181,10 @@ export function getNoteMenu(props: {
 	note: Misskey.entities.Note;
 	translation: Ref<Misskey.entities.NotesTranslateResponse | null>;
 	translating: Ref<boolean>;
-	currentClip?: Misskey.entities.Clip;
+	currentClip?: Misskey.entities.Clip | null;
+	currentAntenna?: Misskey.entities.Antenna | null;
 }) {
-	const appearNote = getAppearNote(props.note);
+	const appearNote = getAppearNote(props.note) ?? props.note;
 	const link = appearNote.url ?? appearNote.uri;
 
 	const cleanups = [] as (() => void)[];
@@ -258,7 +263,20 @@ export function getNoteMenu(props: {
 		os.apiWithDialog('clips/remove-note', { clipId: props.currentClip.id, noteId: appearNote.id });
 	}
 
-	async function promote(): Promise<void> {
+	async function removeFromAntenna(): Promise<void> {
+		if (!props.currentAntenna) return;
+
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.tsx.removeNoteFromAntennaConfirm({ name: props.currentAntenna.name }),
+		});
+		if (canceled) return;
+
+		await os.apiWithDialog('antennas/remove-note', { antennaId: props.currentAntenna.id, noteId: appearNote.id });
+		globalEvents.emit('noteRemovedFromAntenna', props.currentAntenna.id, appearNote.id);
+	}
+
+	async function _promote(): Promise<void> {
 		const { canceled, result: days } = await os.inputNumber({
 			title: i18n.ts.numberOfDays,
 		});
@@ -285,13 +303,48 @@ export function getNoteMenu(props: {
 
 	async function translate(): Promise<void> {
 		if (props.translation.value != null) return;
-		props.translating.value = true;
-		const res = await misskeyApi('notes/translate', {
-			noteId: appearNote.id,
-			targetLang: miLocalStorage.getItem('lang') ?? navigator.language,
-		});
-		props.translating.value = false;
-		props.translation.value = res;
+		if (prefer.s['experimental.enableWebTranslatorApi'] && isInBrowserTranslationAvailable && appearNote.text != null) {
+			props.translating.value = true;
+			try {
+				// @ts-expect-error 実験的なAPIなので型定義がない
+				const detector = await LanguageDetector.create();
+				const langResult = await detector.detect(appearNote.text);
+				let localStorageLang = miLocalStorage.getItem('lang');
+				if (localStorageLang != null) {
+					localStorageLang = localStorageLang.split('-')[0];
+				}
+
+				// 翻訳元と翻訳先の言語が同じ場合はTranslatorがthrowするのでそのまま返す
+				if (langResult[0]?.detectedLanguage === localStorageLang || langResult[0]?.detectedLanguage === navigator.language) {
+					props.translation.value = {
+						sourceLang: langResult[0]?.detectedLanguage ?? 'unknown',
+						text: appearNote.text,
+					};
+					return;
+				}
+
+				// @ts-expect-error 実験的なAPIなので型定義がない
+				const translator = await Translator.create({
+					sourceLanguage: langResult[0]?.detectedLanguage,
+					targetLanguage: localStorageLang ?? navigator.language,
+				});
+				const translated = await translator.translate(appearNote.text);
+				props.translation.value = {
+					sourceLang: langResult[0]?.detectedLanguage ?? 'unknown',
+					text: translated,
+				};
+			} finally {
+				props.translating.value = false;
+			}
+		} else if ($i?.policies.canUseTranslator && instance.translatorAvailable) {
+			props.translating.value = true;
+			const res = await misskeyApi('notes/translate', {
+				noteId: appearNote.id,
+				targetLang: miLocalStorage.getItem('lang') ?? navigator.language,
+			});
+			props.translating.value = false;
+			props.translation.value = res;
+		}
 	}
 
 	const menuItems: MenuItem[] = [];
@@ -349,7 +402,7 @@ export function getNoteMenu(props: {
 			});
 		}
 
-		if ($i.policies.canUseTranslator && instance.translatorAvailable) {
+		if ((prefer.s['experimental.enableWebTranslatorApi'] && isInBrowserTranslationAvailable) || ($i.policies.canUseTranslator && instance.translatorAvailable)) {
 			menuItems.push({
 				icon: 'ti ti-language-hiragana',
 				text: i18n.ts.translate,
@@ -463,11 +516,27 @@ export function getNoteMenu(props: {
 					action: delEdit,
 				});
 			}
+			if (props.currentAntenna != null) {
+				menuItems.push({
+					icon: 'ti ti-trash',
+					text: i18n.ts.removeFromAntenna,
+					danger: true,
+					action: removeFromAntenna,
+				});
+			}
 			menuItems.push({
 				icon: 'ti ti-trash',
 				text: i18n.ts.delete,
 				danger: true,
 				action: del,
+			});
+		} else if (props.currentAntenna != null) {
+			menuItems.push({ type: 'divider' });
+			menuItems.push({
+				icon: 'ti ti-trash',
+				text: i18n.ts.removeFromAntenna,
+				danger: true,
+				action: removeFromAntenna,
 			});
 		}
 	} else {
@@ -554,7 +623,7 @@ export function getRenoteMenu(props: {
 	renoteButton: ShallowRef<HTMLElement | null | undefined>;
 	mock?: boolean;
 }) {
-	const appearNote = getAppearNote(props.note);
+	const appearNote = getAppearNote(props.note) ?? props.note;
 
 	const channelRenoteItems: MenuItem[] = [];
 	const normalRenoteItems: MenuItem[] = [];

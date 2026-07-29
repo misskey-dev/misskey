@@ -52,8 +52,8 @@ export const paramDef = {
 		},
 		secret: {
 			type: 'string',
-			minLength: 1,
 			maxLength: 1024,
+			default: '',
 		},
 	},
 	required: [
@@ -62,7 +62,6 @@ export const paramDef = {
 		'name',
 		'on',
 		'url',
-		'secret',
 	],
 } as const;
 

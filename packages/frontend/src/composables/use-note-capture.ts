@@ -6,7 +6,9 @@
 import { onUnmounted, reactive } from 'vue';
 import * as Misskey from 'misskey-js';
 import { EventEmitter } from 'eventemitter3';
+import { createVisibilityAwareInterval } from '@@/js/interval.js';
 import type { Reactive } from 'vue';
+import type { NoteUpdatedEvent } from 'misskey-js/streaming.types.js';
 import { useStream } from '@/stream.js';
 import { $i } from '@/i.js';
 import { store } from '@/store.js';
@@ -15,9 +17,9 @@ import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
 
 export const noteEvents = new EventEmitter<{
-	[ev: `reacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }) => void;
-	[ev: `unreacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }) => void;
-	[ev: `pollVoted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; choice: string; }) => void;
+	[ev: `reacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; } | null; }) => void;
+	[ev: `unreacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; } | null; }) => void;
+	[ev: `pollVoted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; choice: number; }) => void;
 }>();
 
 const fetchEvent = new EventEmitter<{
@@ -67,7 +69,8 @@ const POLLING_INTERVAL =
 	prefer.s.pollingInterval === 3 ? MIN_POLLING_INTERVAL :
 	MIN_POLLING_INTERVAL;
 
-window.setInterval(() => {
+// documentが非表示の間はポーリングを停止する
+createVisibilityAwareInterval(() => {
 	const ids = [...pollingQueue.entries()]
 		.filter(([k, v]) => Date.now() - v.lastAddedAt < 1000 * 60 * 5) // 追加されてから一定時間経過したものは省く
 		.map(([k, v]) => k)
@@ -75,7 +78,6 @@ window.setInterval(() => {
 		.slice(0, CAPTURE_MAX);
 
 	if (ids.length === 0) return;
-	if (window.document.hidden) return;
 
 	// まとめてリクエストするのではなく、個別にHTTPリクエスト投げてCDNにキャッシュさせた方がサーバーの負荷低減には良いかもしれない？
 	misskeyApi('notes/show-partial-bulk', {
@@ -117,7 +119,7 @@ function realtimeSubscribe(props: {
 	const note = props.note;
 	const connection = useStream();
 
-	function onStreamNoteUpdated(noteData): void {
+	function onStreamNoteUpdated(noteData: NoteUpdatedEvent): void {
 		const { type, id, body } = noteData;
 
 		if (id !== note.id) return;
@@ -136,7 +138,6 @@ function realtimeSubscribe(props: {
 				noteEvents.emit(`unreacted:${id}`, {
 					userId: body.userId,
 					reaction: body.reaction,
-					emoji: body.emoji,
 				});
 				break;
 			}
@@ -194,9 +195,9 @@ export function useNoteCapture(props: {
 	parentNote: Misskey.entities.Note | null;
 	mock?: boolean;
 }): {
-		$note: Reactive<ReactiveNoteData>;
-		subscribe: () => void;
-	} {
+	$note: Reactive<ReactiveNoteData>;
+	subscribe: () => void;
+} {
 	const { note, parentNote, mock } = props;
 
 	const $note = reactive<ReactiveNoteData>({
@@ -224,7 +225,7 @@ export function useNoteCapture(props: {
 	const reactionUserMap = new Map<Misskey.entities.User['id'], string | typeof noReaction>();
 	let latestPollVotedKey: string | null = null;
 
-	function onReacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
+	function onReacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; } | null; }): void {
 		let normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
 		normalizedName = normalizedName.match('\u200d') ? normalizedName : normalizedName.replace(/\ufe0f/g, '');
 		if (reactionUserMap.has(ctx.userId) && reactionUserMap.get(ctx.userId) === normalizedName) return;
@@ -244,7 +245,7 @@ export function useNoteCapture(props: {
 		}
 	}
 
-	function onUnreacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
+	function onUnreacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; } | null; }): void {
 		let normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
 		normalizedName = normalizedName.match('\u200d') ? normalizedName : normalizedName.replace(/\ufe0f/g, '');
 
@@ -263,7 +264,7 @@ export function useNoteCapture(props: {
 		}
 	}
 
-	function onPollVoted(ctx: { userId: Misskey.entities.User['id']; choice: string; }): void {
+	function onPollVoted(ctx: { userId: Misskey.entities.User['id']; choice: number; }): void {
 		const newPollVotedKey = `${ctx.userId}:${ctx.choice}`;
 		if (newPollVotedKey === latestPollVotedKey) return;
 		latestPollVotedKey = newPollVotedKey;

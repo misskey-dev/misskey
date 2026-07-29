@@ -43,7 +43,7 @@ export function swInject() {
 				if (mainRouter.currentRoute.value.path === ev.data.url) {
 					return window.scroll({ top: 0, behavior: 'smooth' });
 				}
-				return mainRouter.push(ev.data.url);
+				return mainRouter.pushByPath(ev.data.url);
 			default:
 				return;
 		}

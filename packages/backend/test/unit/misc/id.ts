@@ -4,7 +4,7 @@
  */
 
 import { ulid } from 'ulid';
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import { aidRegExp, genAid, parseAid } from '@/misc/id/aid.js';
 import { aidxRegExp, genAidx, parseAidx } from '@/misc/id/aidx.js';
 import { genMeid, meidRegExp, parseMeid } from '@/misc/id/meid.js';

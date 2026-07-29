@@ -26,19 +26,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 
 			<div :class="$style.inputs">
-				<MkSelect v-model="type" :class="$style.input">
+				<MkSelect v-model="type" :items="typeDef" :class="$style.input">
 					<template #label>{{ i18n.ts.state }}</template>
-					<option value="all">{{ i18n.ts.all }}</option>
-					<option value="unused">{{ i18n.ts.unused }}</option>
-					<option value="used">{{ i18n.ts.used }}</option>
-					<option value="expired">{{ i18n.ts.expired }}</option>
 				</MkSelect>
-				<MkSelect v-model="sort" :class="$style.input">
+				<MkSelect v-model="sort" :items="sortDef" :class="$style.input">
 					<template #label>{{ i18n.ts.sort }}</template>
-					<option value="+createdAt">{{ i18n.ts.createdAt }} ({{ i18n.ts.ascendingOrder }})</option>
-					<option value="-createdAt">{{ i18n.ts.createdAt }} ({{ i18n.ts.descendingOrder }})</option>
-					<option value="+usedAt">{{ i18n.ts.usedAt }} ({{ i18n.ts.ascendingOrder }})</option>
-					<option value="-usedAt">{{ i18n.ts.usedAt }} ({{ i18n.ts.descendingOrder }})</option>
 				</MkSelect>
 			</div>
 			<MkPagination :paginator="paginator">
@@ -67,10 +59,33 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
 import { definePage } from '@/page.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import { Paginator } from '@/utility/paginator.js';
 
-const type = ref<NonNullable<Misskey.entities.AdminInviteListRequest['type']>>('all');
-const sort = ref<NonNullable<Misskey.entities.AdminInviteListRequest['sort']>>('+createdAt');
+const {
+	model: type,
+	def: typeDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.all, value: 'all' },
+		{ label: i18n.ts.unused, value: 'unused' },
+		{ label: i18n.ts.used, value: 'used' },
+		{ label: i18n.ts.expired, value: 'expired' },
+	],
+	initialValue: 'all',
+});
+const {
+	model: sort,
+	def: sortDef,
+} = useMkSelect({
+	items: [
+		{ label: `${i18n.ts.createdAt} (${i18n.ts.ascendingOrder})`, value: '+createdAt' },
+		{ label: `${i18n.ts.createdAt} (${i18n.ts.descendingOrder})`, value: '-createdAt' },
+		{ label: `${i18n.ts.usedAt} (${i18n.ts.ascendingOrder})`, value: '+usedAt' },
+		{ label: `${i18n.ts.usedAt} (${i18n.ts.descendingOrder})`, value: '-usedAt' },
+	],
+	initialValue: '+createdAt',
+});
 
 const paginator = markRaw(new Paginator('admin/invite/list', {
 	limit: 10,

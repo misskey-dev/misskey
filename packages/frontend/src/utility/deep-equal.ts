@@ -10,8 +10,9 @@ export function deepEqual(a: JsonLike, b: JsonLike): boolean {
 	if (typeof a !== typeof b) return false;
 
 	if (a === null) return b === null;
-
 	if (a === undefined) return b === undefined;
+	if (b === null) return false;
+	if (b === undefined) return false;
 
 	if (Array.isArray(a) && Array.isArray(b)) {
 		if (a.length !== b.length) return false;
@@ -31,7 +32,7 @@ export function deepEqual(a: JsonLike, b: JsonLike): boolean {
 		if (aks.length !== bks.length) return false;
 		for (let i = 0; i < aks.length; i++) {
 			const k = aks[i];
-			if (!deepEqual(a[k], (b as { [key: string]: JsonLike })[k])) return false;
+			if (!deepEqual((a as { [key: string]: JsonLike })[k], (b as { [key: string]: JsonLike })[k])) return false;
 		}
 		return true;
 	}

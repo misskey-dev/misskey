@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef, ref } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import isChromatic from 'chromatic';
@@ -33,6 +33,10 @@ import { initChart } from '@/utility/init-chart.js';
 
 initChart();
 
+let chartInstance1: Chart | null = null;
+let chartInstance2: Chart | null = null;
+let disposed = false;
+
 const chartLimit = 50;
 const chartEl = useTemplateRef('chartEl');
 const chartEl2 = useTemplateRef('chartEl2');
@@ -42,6 +46,9 @@ const { handler: externalTooltipHandler } = useChartTooltip();
 const { handler: externalTooltipHandler2 } = useChartTooltip();
 
 onMounted(async () => {
+	if (chartEl.value == null) return;
+	if (chartEl2.value == null) return;
+
 	const now = isChromatic() ? new Date('2024-08-31T10:00:00Z') : new Date();
 
 	const getDate = (ago: number) => {
@@ -68,6 +75,8 @@ onMounted(async () => {
 
 	const raw = await misskeyApi('charts/ap-request', { limit: chartLimit, span: 'day' });
 
+	if (disposed || chartEl.value == null || chartEl2.value == null) return;
+
 	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 	const succColor = '#87e000';
 	const failColor = '#ff4400';
@@ -75,7 +84,7 @@ onMounted(async () => {
 	const succMax = Math.max(...raw.deliverSucceeded);
 	const failMax = Math.max(...raw.deliverFailed);
 
-	new Chart(chartEl.value, {
+	chartInstance1 = new Chart(chartEl.value, {
 		type: 'line',
 		data: {
 			datasets: [{
@@ -122,7 +131,6 @@ onMounted(async () => {
 					stacked: true,
 					offset: false,
 					time: {
-						stepSize: 1,
 						unit: 'day',
 					},
 					grid: {
@@ -144,7 +152,7 @@ onMounted(async () => {
 					ticks: {
 						display: true,
 						//mirror: true,
-						callback: (value, index, values) => value < 0 ? -value : value,
+						callback: (value, index, values) => (value as number) < 0 ? -value : value,
 					},
 				},
 			},
@@ -173,13 +181,15 @@ onMounted(async () => {
 						label: context => `${context.dataset.label}: ${Math.abs(context.parsed.y)}`,
 					},
 				},
-				gradient,
+				...({ // TSを黙らすため
+					gradient,
+				}),
 			},
 		},
 		plugins: [chartVLine(vLineColor)],
 	});
 
-	new Chart(chartEl2.value, {
+	chartInstance2 = new Chart(chartEl2.value, {
 		type: 'bar',
 		data: {
 			datasets: [{
@@ -213,7 +223,6 @@ onMounted(async () => {
 					type: 'time',
 					offset: false,
 					time: {
-						stepSize: 1,
 						unit: 'day',
 						displayFormats: {
 							day: 'M/d',
@@ -260,13 +269,21 @@ onMounted(async () => {
 					},
 					external: externalTooltipHandler2,
 				},
-				gradient,
+				...({ // TSを黙らすため
+					gradient,
+				}),
 			},
 		},
 		plugins: [chartVLine(vLineColor)],
 	});
 
 	fetching.value = false;
+});
+
+onUnmounted(() => {
+	disposed = true;
+	chartInstance1?.destroy();
+	chartInstance2?.destroy();
 });
 </script>
 

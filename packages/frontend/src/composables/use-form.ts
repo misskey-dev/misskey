@@ -19,16 +19,19 @@ export function useForm<T extends Record<string, any>>(initialState: T, save: (n
 	const currentState = reactive<T>(copy(initialState));
 	const previousState = reactive<T>(copy(initialState));
 
-	const modifiedStates = reactive<Record<keyof T, boolean>>({} as any);
-	for (const key in currentState) {
-		modifiedStates[key] = false;
-	}
+	const modifiedStates = reactive<Record<keyof T, boolean>>((() => {
+		const obj: Record<keyof T, boolean> = {} as Record<keyof T, boolean>;
+		for (const key in initialState) {
+			obj[key] = false;
+		}
+		return obj;
+	})());
 	const modified = computed(() => Object.values(modifiedStates).some(v => v));
 	const modifiedCount = computed(() => Object.values(modifiedStates).filter(v => v).length);
 
 	watch([currentState, previousState], () => {
 		for (const key in modifiedStates) {
-			modifiedStates[key] = !deepEqual(currentState[key], previousState[key]);
+			(modifiedStates as any)[key] = !deepEqual(currentState[key], previousState[key]);
 		}
 	}, { deep: true });
 

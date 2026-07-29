@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:forceBlurhash="forceBlurhash"
 	/>
 	<img
-		v-else-if="isThumbnailAvailable"
+		v-else-if="isThumbnailAvailable && file.thumbnailUrl != null"
 		:src="file.thumbnailUrl"
 		:alt="file.name"
 		:title="file.name"

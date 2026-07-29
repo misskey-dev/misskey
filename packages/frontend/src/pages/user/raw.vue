@@ -48,7 +48,7 @@ import FormSection from '@/components/form/section.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 
 const props = defineProps<{
-	user: Misskey.entities.User;
+	user: Misskey.entities.UserDetailed & { isModerator?: boolean; };
 }>();
 
 const moderator = computed(() => props.user.isModerator ?? false);

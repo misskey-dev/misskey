@@ -14,96 +14,124 @@ import { popup, alert } from '@/os.js';
 const start = isTouchUsing ? 'touchstart' : 'mouseenter';
 const end = isTouchUsing ? 'touchend' : 'mouseleave';
 
-export default {
-	mounted(el: HTMLElement, binding, vn) {
+type TooltipDirectiveState = {
+	text: string | null | undefined;
+	_close: null | (() => void);
+	show: () => void;
+	close: () => void;
+
+	abortController: AbortController;
+	showTimer: number | null;
+	hideTimer: number | null;
+};
+
+const states = new WeakMap<HTMLElement, TooltipDirectiveState>();
+
+type TooltipDirectiveModifiers = 'left' | 'right' | 'top' | 'bottom' | 'mfm' | 'noDelay';
+type TooltipDirectiveArg = 'dialog';
+
+export const tooltipDirective = {
+	mounted(el, binding) {
 		const delay = binding.modifiers.noDelay ? 0 : 100;
 
-		const self = (el as any)._tooltipDirective_ = {} as any;
+		const state = {
+			text: binding.value,
+			_close: null,
+			abortController: new AbortController(),
+			showTimer: null,
+			hideTimer: null,
+		} as TooltipDirectiveState;
 
-		self.text = binding.value as string;
-		self._close = null;
-		self.showTimer = null;
-		self.hideTimer = null;
-		self.checkTimer = null;
-
-		self.close = () => {
-			if (self._close) {
-				window.clearInterval(self.checkTimer);
-				self._close();
-				self._close = null;
+		state.close = () => {
+			if (state._close) {
+				state._close();
+				state._close = null;
 			}
 		};
 
 		if (binding.arg === 'dialog') {
 			el.addEventListener('click', (ev) => {
+				const text = state.text ?? undefined;
+				if (text == null) return;
 				ev.preventDefault();
 				ev.stopPropagation();
 				alert({
 					type: 'info',
-					text: binding.value,
+					text,
 				});
 				return false;
-			});
+			}, { signal: state.abortController.signal });
 		}
 
-		self.show = () => {
+		state.show = () => {
 			if (!window.document.body.contains(el)) return;
-			if (self._close) return;
-			if (self.text == null) return;
+			if (state._close) return;
+			if (state.text == null) return;
 
 			const showing = ref(true);
 			const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
 				showing,
-				text: self.text,
+				text: state.text,
 				asMfm: binding.modifiers.mfm,
 				direction: binding.modifiers.left ? 'left' : binding.modifiers.right ? 'right' : binding.modifiers.top ? 'top' : binding.modifiers.bottom ? 'bottom' : 'top',
-				targetElement: el,
+				anchorElement: el,
 			}, {
 				closed: () => dispose(),
 			});
 
-			self._close = () => {
+			state._close = () => {
 				showing.value = false;
 			};
 		};
 
-		el.addEventListener('selectstart', ev => {
+		el.addEventListener('selectstart', (ev) => {
 			ev.preventDefault();
-		});
+		}, { signal: state.abortController.signal });
 
-		el.addEventListener(start, (ev) => {
-			window.clearTimeout(self.showTimer);
-			window.clearTimeout(self.hideTimer);
+		el.addEventListener(start, () => {
+			if (state.showTimer) window.clearTimeout(state.showTimer);
+			if (state.hideTimer) window.clearTimeout(state.hideTimer);
 			if (delay === 0) {
-				self.show();
+				state.show();
 			} else {
-				self.showTimer = window.setTimeout(self.show, delay);
+				state.showTimer = window.setTimeout(state.show, delay);
 			}
-		}, { passive: true });
+		}, { passive: true, signal: state.abortController.signal });
 
 		el.addEventListener(end, () => {
-			window.clearTimeout(self.showTimer);
-			window.clearTimeout(self.hideTimer);
+			if (state.showTimer) window.clearTimeout(state.showTimer);
+			if (state.hideTimer) window.clearTimeout(state.hideTimer);
 			if (delay === 0) {
-				self.close();
+				state.close();
 			} else {
-				self.hideTimer = window.setTimeout(self.close, delay);
+				state.hideTimer = window.setTimeout(state.close, delay);
 			}
-		}, { passive: true });
+		}, { passive: true, signal: state.abortController.signal });
 
 		el.addEventListener('click', () => {
-			window.clearTimeout(self.showTimer);
-			self.close();
-		});
+			if (state.showTimer) window.clearTimeout(state.showTimer);
+			state.close();
+		}, { passive: true, signal: state.abortController.signal });
+
+		states.set(el, state);
 	},
 
 	updated(el, binding) {
-		const self = el._tooltipDirective_;
-		self.text = binding.value as string;
+		const state = states.get(el);
+		if (!state) return;
+		state.text = binding.value;
 	},
 
-	unmounted(el, binding, vn) {
-		const self = el._tooltipDirective_;
-		window.clearInterval(self.checkTimer);
+	beforeUnmount(el) {
+		const state = states.get(el);
+		if (!state) return;
+
+		if (state.showTimer) window.clearTimeout(state.showTimer);
+		if (state.hideTimer) window.clearTimeout(state.hideTimer);
+
+		state.close();
+		state.abortController.abort();
+
+		states.delete(el);
 	},
-} as Directive;
+} as Directive<HTMLElement, string | null | undefined, TooltipDirectiveModifiers, TooltipDirectiveArg>;

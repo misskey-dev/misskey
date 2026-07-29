@@ -9,7 +9,7 @@ export default [
 			'**/node_modules',
 			'built',
 			'coverage',
-			'jest.config.ts',
+			'vitest.config.ts',
 			'test',
 			'test-d',
 			'generator',

@@ -5,21 +5,20 @@
 
 import * as fs from 'node:fs';
 import { Writable } from 'node:stream';
-import { Inject, Injectable, StreamableFile } from '@nestjs/common';
-import { MoreThan } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { ClipNotesRepository, ClipsRepository, MiClip, MiClipNote, MiUser, NotesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
+import type { ClipNotesRepository, ClipsRepository, MiClip, MiClipNote, MiUser, PollsRepository, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import type { MiPoll } from '@/models/Poll.js';
 import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import { Packed } from '@/misc/json-schema.js';
 import { IdService } from '@/core/IdService.js';
 import { NotificationService } from '@/core/NotificationService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { DbJobDataWithUser } from '../types.js';
@@ -43,6 +42,7 @@ export class ExportClipsProcessorService {
 
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
+		private queryService: QueryService,
 		private idService: IdService,
 		private notificationService: NotificationService,
 	) {
@@ -100,16 +100,16 @@ export class ExportClipsProcessorService {
 		});
 
 		while (true) {
-			const clips = await this.clipsRepository.find({
-				where: {
-					userId: user.id,
-					...(cursor ? { id: MoreThan(cursor) } : {}),
-				},
-				take: 100,
-				order: {
-					id: 1,
-				},
-			});
+			const query = this.clipsRepository.createQueryBuilder('clip')
+				.where('clip.userId = :userId', { userId: user.id })
+				.orderBy('clip.id', 'ASC')
+				.take(100);
+
+			if (cursor) {
+				query.andWhere('clip.id > :cursor', { cursor });
+			}
+
+			const clips = await query.getMany();
 
 			if (clips.length === 0) {
 				job.updateProgress(100);
@@ -124,7 +124,7 @@ export class ExportClipsProcessorService {
 				const isFirst = exportedClipsCount === 0;
 				await writer.write(isFirst ? content : ',\n' + content);
 
-				await this.processClipNotes(writer, clip.id);
+				await this.processClipNotes(writer, clip.id, user.id);
 
 				await writer.write(']}');
 				exportedClipsCount++;
@@ -134,22 +134,25 @@ export class ExportClipsProcessorService {
 		}
 	}
 
-	async processClipNotes(writer: WritableStreamDefaultWriter, clipId: string): Promise<void> {
+	async processClipNotes(writer: WritableStreamDefaultWriter, clipId: string, userId: string): Promise<void> {
 		let exportedClipNotesCount = 0;
 		let cursor: MiClipNote['id'] | null = null;
 
 		while (true) {
-			const clipNotes = await this.clipNotesRepository.find({
-				where: {
-					clipId,
-					...(cursor ? { id: MoreThan(cursor) } : {}),
-				},
-				take: 100,
-				order: {
-					id: 1,
-				},
-				relations: ['note', 'note.user'],
-			}) as (MiClipNote & { note: MiNote & { user: MiUser } })[];
+			const query = this.clipNotesRepository.createQueryBuilder('clipNote')
+				.leftJoinAndSelect('clipNote.note', 'note')
+				.leftJoinAndSelect('note.user', 'user')
+				.where('clipNote.clipId = :clipId', { clipId })
+				.orderBy('clipNote.id', 'ASC')
+				.take(100);
+
+			if (cursor) {
+				query.andWhere('clipNote.id > :cursor', { cursor });
+			}
+
+			this.queryService.generateVisibilityQuery(query, { id: userId });
+
+			const clipNotes = await query.getMany() as (MiClipNote & { note: MiNote & { user: MiUser } })[];
 
 			if (clipNotes.length === 0) {
 				break;
@@ -158,6 +161,11 @@ export class ExportClipsProcessorService {
 			cursor = clipNotes.at(-1)?.id ?? null;
 
 			for (const clipNote of clipNotes) {
+				const noteCreatedAt = this.idService.parse(clipNote.note.id).date;
+				if (shouldHideNoteByTime(clipNote.note.user.makeNotesHiddenBefore, noteCreatedAt)) {
+					continue;
+				}
+
 				let poll: MiPoll | undefined;
 				if (clipNote.note.hasPoll) {
 					poll = await this.pollsRepository.findOneByOrFail({ noteId: clipNote.note.id });

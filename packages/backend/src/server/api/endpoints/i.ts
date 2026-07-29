@@ -57,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				where: {
 					userId: user.id,
 				},
-				relations: ['user'],
+				relations: { user: true },
 			});
 
 			if (userProfile == null) {

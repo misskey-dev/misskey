@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef, ref } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -26,7 +26,8 @@ initChart();
 
 const chartEl = useTemplateRef('chartEl');
 const now = new Date();
-let chartInstance: Chart = null;
+let chartInstance: Chart | null = null;
+let disposed = false;
 const chartLimit = 7;
 const fetching = ref(true);
 
@@ -37,6 +38,8 @@ async function renderChart() {
 		chartInstance.destroy();
 	}
 
+	if (chartEl.value == null) return;
+
 	const getDate = (ago: number) => {
 		const y = now.getFullYear();
 		const m = now.getMonth();
@@ -45,7 +48,7 @@ async function renderChart() {
 		return new Date(y, m, d - ago);
 	};
 
-	const format = (arr) => {
+	const format = (arr: number[]) => {
 		return arr.map((v, i) => ({
 			x: getDate(i).getTime(),
 			y: v,
@@ -53,6 +56,8 @@ async function renderChart() {
 	};
 
 	const raw = await misskeyApi('charts/active-users', { limit: chartLimit, span: 'day' });
+
+	if (disposed || chartEl.value == null) return;
 
 	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
@@ -105,7 +110,6 @@ async function renderChart() {
 					type: 'time',
 					offset: true,
 					time: {
-						stepSize: 1,
 						unit: 'day',
 						displayFormats: {
 							day: 'M/d',
@@ -149,7 +153,9 @@ async function renderChart() {
 					},
 					external: externalTooltipHandler,
 				},
-				gradient,
+				...({ // TSを黙らすため
+					gradient,
+				}),
 			},
 		},
 		plugins: [chartVLine(vLineColor)],
@@ -158,8 +164,13 @@ async function renderChart() {
 	fetching.value = false;
 }
 
-onMounted(async () => {
+onMounted(() => {
 	renderChart();
+});
+
+onUnmounted(() => {
+	disposed = true;
+	chartInstance?.destroy();
 });
 </script>
 

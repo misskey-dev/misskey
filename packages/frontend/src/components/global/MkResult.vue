@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <Transition :name="prefer.s.animation ? '_transition_zoom' : ''" appear>
-	<div :class="[$style.root, { [$style.warn]: type === 'notFound', [$style.error]: type === 'error' }]" class="_gaps">
+	<div :class="$style.root" class="_gaps">
 		<img v-if="type === 'empty' && instance.infoImageUrl" :src="instance.infoImageUrl" draggable="false" :class="$style.img"/>
 		<MkSystemIcon v-else-if="type === 'empty'" type="info" :class="$style.icon"/>
 		<img v-if="type === 'notFound' && instance.notFoundImageUrl" :src="instance.notFoundImageUrl" draggable="false" :class="$style.img"/>
@@ -41,8 +41,7 @@ const props = defineProps<{
 .img {
 	vertical-align: bottom;
 	height: 128px;
-	aspect-ratio: 1;
-	margin-bottom: 16px;
+	margin: auto auto 16px;
 	border-radius: 16px;
 }
 

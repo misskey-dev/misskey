@@ -19,6 +19,10 @@ import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { isChannelRelated } from '@/misc/is-channel-related.js';
+
+type NoteFilter = (note: MiNote) => boolean;
 
 type TimelineOptions = {
 	untilId: string | null,
@@ -28,11 +32,12 @@ type TimelineOptions = {
 	me?: { id: MiUser['id'] } | undefined | null,
 	useDbFallback: boolean,
 	redisTimelines: FanoutTimelineName[],
-	noteFilter?: (note: MiNote) => boolean,
+	noteFilter?: NoteFilter,
 	alwaysIncludeMyNotes?: boolean;
 	ignoreAuthorFromBlock?: boolean;
 	ignoreAuthorFromMute?: boolean;
 	ignoreAuthorFromInstanceBlock?: boolean;
+	ignoreAuthorChannelFromMute?: boolean;
 	excludeNoFiles?: boolean;
 	excludeReplies?: boolean;
 	excludePureRenotes: boolean;
@@ -53,6 +58,7 @@ export class FanoutTimelineEndpointService {
 		private cacheService: CacheService,
 		private fanoutTimelineService: FanoutTimelineService,
 		private utilityService: UtilityService,
+		private channelMutingService: ChannelMutingService,
 	) {
 	}
 
@@ -79,7 +85,7 @@ export class FanoutTimelineEndpointService {
 		const shouldFallbackToDb = noteIds.length === 0 || ps.sinceId != null && ps.sinceId < oldestNoteId;
 
 		if (!shouldFallbackToDb) {
-			let filter = ps.noteFilter ?? (_note => true);
+			let filter = ps.noteFilter ?? (_note => true) as NoteFilter;
 
 			if (ps.alwaysIncludeMyNotes && ps.me) {
 				const me = ps.me;
@@ -109,11 +115,13 @@ export class FanoutTimelineEndpointService {
 					userIdsWhoMeMutingRenotes,
 					userIdsWhoBlockingMe,
 					userMutedInstances,
+					userMutedChannels,
 				] = await Promise.all([
 					this.cacheService.userMutingsCache.fetch(ps.me.id),
 					this.cacheService.renoteMutingsCache.fetch(ps.me.id),
 					this.cacheService.userBlockedCache.fetch(ps.me.id),
 					this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
+					this.channelMutingService.mutingChannelsCache.fetch(me.id),
 				]);
 
 				const parentFilter = filter;
@@ -124,6 +132,7 @@ export class FanoutTimelineEndpointService {
 					if (isUserRelated(note.renote, userIdsWhoMeMuting, ps.ignoreAuthorFromMute)) return false;
 					if (!ps.ignoreAuthorFromMute && isRenote(note) && !isQuote(note) && userIdsWhoMeMutingRenotes.has(note.userId)) return false;
 					if (isInstanceMuted(note, userMutedInstances)) return false;
+					if (isChannelRelated(note, userMutedChannels, ps.ignoreAuthorChannelFromMute)) return false;
 
 					return parentFilter(note);
 				};
@@ -145,15 +154,11 @@ export class FanoutTimelineEndpointService {
 			{
 				const parentFilter = filter;
 				filter = (note) => {
-					const noteJoined = note as MiNote & {
-						renoteUser: MiUser | null;
-						replyUser: MiUser | null;
-					};
 					if (!ps.ignoreAuthorFromUserSuspension) {
 						if (note.user!.isSuspended) return false;
 					}
-					if (note.userId !== note.renoteUserId && noteJoined.renoteUser?.isSuspended) return false;
-					if (note.userId !== note.replyUserId && noteJoined.replyUser?.isSuspended) return false;
+					if (note.userId !== note.renoteUserId && note.renote?.user?.isSuspended) return false;
+					if (note.userId !== note.replyUserId && note.reply?.user?.isSuspended) return false;
 
 					return parentFilter(note);
 				};
@@ -200,7 +205,7 @@ export class FanoutTimelineEndpointService {
 		return await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
 	}
 
-	private async getAndFilterFromDb(noteIds: string[], noteFilter: (note: MiNote) => boolean, idCompare: (a: string, b: string) => number): Promise<MiNote[]> {
+	private async getAndFilterFromDb(noteIds: string[], noteFilter: NoteFilter, idCompare: (a: string, b: string) => number): Promise<MiNote[]> {
 		const query = this.notesRepository.createQueryBuilder('note')
 			.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 			.innerJoinAndSelect('note.user', 'user')

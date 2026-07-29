@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div>
 	<div :class="$style.contents">
 		<!--
 			デッキUIが設定されている場合はデッキUIに戻れるようにする (ただし?zenが明示された場合は表示しない)
@@ -57,9 +57,6 @@ function goToDeck() {
 </script>
 
 <style lang="scss" module>
-.root {
-}
-
 .contents {
 	display: flex;
 	flex-direction: column;

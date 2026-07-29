@@ -117,7 +117,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				case 'SAME_NAME_EMOJI_EXISTS': throw new ApiError(meta.errors.sameNameEmojiExists);
 			}
 			// 網羅性チェック
-			const mustBeNever: never = error;
+			const _mustBeNever: never = error;
 		});
 	}
 }

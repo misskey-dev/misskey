@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:duration="transitionDuration" appear @afterLeave="onClosed" @enter="emit('opening')" @afterEnter="onOpened"
 >
 	<div v-show="manualShowing != null ? manualShowing : showing" ref="modalRootEl" v-hotkey.global="keymap" :class="[$style.root, { [$style.drawer]: type === 'drawer', [$style.dialog]: type === 'dialog', [$style.popup]: type === 'popup' }]" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
-		<div data-cy-bg :data-cy-transparent="isEnableBgTransparent" class="_modalBg" :class="[$style.bg, { [$style.bgTransparent]: isEnableBgTransparent }]" :style="{ zIndex }" @click="onBgClick" @mousedown="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
+		<div data-testid="bg" :data-test-is-transparent="isEnableBgTransparent" class="_modalBg" :class="[$style.bg, { [$style.bgTransparent]: isEnableBgTransparent }]" :style="{ zIndex }" @click="onBgClick" @mousedown="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
 		<div ref="content" :class="[$style.content, { [$style.fixed]: fixed }]" :style="{ zIndex }" @click.self="onBgClick">
 			<slot :max-height="maxHeight" :type="type"></slot>
 		</div>
@@ -91,7 +91,7 @@ const emit = defineEmits<{
 	(ev: 'opened'): void;
 	(ev: 'click'): void;
 	(ev: 'esc'): void;
-	(ev: 'close'): void;
+	(ev: 'close'): void; // TODO: (refactor) closing に改名する
 	(ev: 'closed'): void;
 }>();
 
@@ -148,7 +148,6 @@ function close(opts: { useSendAnimation?: boolean } = {}) {
 		useSendAnime.value = true;
 	}
 
-	// eslint-disable-next-line vue/no-mutating-props
 	if (props.anchorElement) props.anchorElement.style.pointerEvents = 'auto';
 	showing.value = false;
 	emit('close');
@@ -185,8 +184,8 @@ const align = () => {
 	const width = content.value!.offsetWidth;
 	const height = content.value!.offsetHeight;
 
-	let left;
-	let top;
+	let left = 0;
+	let top = 0;
 
 	const x = anchorRect.left + (fixed.value ? 0 : window.scrollX);
 	const y = anchorRect.top + (fixed.value ? 0 : window.scrollY);
@@ -319,7 +318,6 @@ const alignObserver = new ResizeObserver((entries, observer) => {
 onMounted(() => {
 	watch(() => props.anchorElement, async () => {
 		if (props.anchorElement) {
-			// eslint-disable-next-line vue/no-mutating-props
 			props.anchorElement.style.pointerEvents = 'none';
 		}
 		fixed.value = (type.value === 'drawer') || (getFixedContainer(props.anchorElement) != null);

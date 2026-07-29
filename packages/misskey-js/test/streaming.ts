@@ -1,4 +1,5 @@
-import WS from 'jest-websocket-mock';
+import { describe, test, expect } from 'vitest';
+import WS from 'vitest-websocket-mock';
 import Stream from '../src/streaming.js';
 
 describe('Streaming', () => {

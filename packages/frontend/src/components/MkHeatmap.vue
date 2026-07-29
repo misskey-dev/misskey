@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, watch, useTemplateRef, ref } from 'vue';
+import { onMounted, onUnmounted, nextTick, watch, useTemplateRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -125,8 +125,7 @@ async function renderChart() {
 				data: format(values) as any,
 				borderWidth: 0,
 				borderRadius: 3,
-				backgroundColor(c) {
-					// @ts-expect-error TS(2339)
+				backgroundColor(c: any) {
 					const value = c.dataset.data[c.dataIndex].v as number;
 					let a = (value - min) / max;
 					if (value !== 0) { // 0でない限りは完全に不可視にはしない
@@ -195,7 +194,7 @@ async function renderChart() {
 						font: {
 							size: 9,
 						},
-						callback: (value, index, values) => ['', 'Mon', '', 'Wed', '', 'Fri', ''][value],
+						callback: (value, index, values) => ['', 'Mon', '', 'Wed', '', 'Fri', ''][value as any],
 					},
 				},
 			},
@@ -233,7 +232,11 @@ watch(() => props.src, () => {
 	renderChart();
 });
 
-onMounted(async () => {
+onMounted(() => {
 	renderChart();
+});
+
+onUnmounted(() => {
+	chartInstance?.destroy();
 });
 </script>

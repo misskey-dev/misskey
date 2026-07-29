@@ -44,11 +44,11 @@ import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
-	anchorElement?: HTMLElement;
+	anchorElement?: HTMLElement | null;
 	showPinned?: boolean;
 	pinnedEmojis?: string[],
 	asReactionPicker?: boolean;
-	targetNote?: Misskey.entities.Note;
+	targetNote?: Misskey.entities.Note | null;
 	choseAndClose?: boolean;
 }>(), {
 	manualShowing: null,

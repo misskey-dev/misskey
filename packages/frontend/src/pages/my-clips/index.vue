@@ -43,6 +43,8 @@ const paginator = markRaw(new Paginator('clips/list', {
 }));
 
 const favoritesPaginator = markRaw(new Paginator('clips/my-favorites', {
+	// ページネーションに対応していない
+	noPaging: true,
 }));
 
 async function create() {

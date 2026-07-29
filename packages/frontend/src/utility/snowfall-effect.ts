@@ -3,59 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import vertexSource from './snowfall-effect.vertex.glsl';
+import fragmentSource from './snowfall-effect.fragment.glsl';
+
 export class SnowfallEffect {
-	private VERTEX_SOURCE = `#version 300 es
-		in vec4 a_position;
-		in vec4 a_color;
-		in vec3 a_rotation;
-		in vec3 a_speed;
-		in float a_size;
-		out vec4 v_color;
-		out float v_rotation;
-		uniform float u_time;
-		uniform mat4 u_projection;
-		uniform vec3 u_worldSize;
-		uniform float u_gravity;
-		uniform float u_wind;
-		uniform float u_spin_factor;
-		uniform float u_turbulence;
-
-		void main() {
-			v_color = a_color;
-			v_rotation = a_rotation.x + (u_time * u_spin_factor) * a_rotation.y;
-
-			vec3 pos = a_position.xyz;
-
-			pos.x = mod(pos.x + u_time + u_wind * a_speed.x, u_worldSize.x * 2.0) - u_worldSize.x;
-			pos.y = mod(pos.y - u_time * a_speed.y * u_gravity, u_worldSize.y * 2.0) - u_worldSize.y;
-
-			pos.x += sin(u_time * a_speed.z * u_turbulence) * a_rotation.z;
-			pos.z += cos(u_time * a_speed.z * u_turbulence) * a_rotation.z;
-
-			gl_Position = u_projection * vec4(pos.xyz, a_position.w);
-			gl_PointSize = (a_size / gl_Position.w) * 100.0;
-		}
-	`;
-
-	private FRAGMENT_SOURCE = `#version 300 es
-		precision mediump float;
-
-		in vec4 v_color;
-		in float v_rotation;
-		uniform sampler2D u_texture;
-		out vec4 out_color;
-
-		void main() {
-			vec2 rotated = vec2(
-				cos(v_rotation) * (gl_PointCoord.x - 0.5) + sin(v_rotation) * (gl_PointCoord.y - 0.5) + 0.5,
-				cos(v_rotation) * (gl_PointCoord.y - 0.5) - sin(v_rotation) * (gl_PointCoord.x - 0.5) + 0.5
-			);
-
-			vec4 snowflake = texture(u_texture, rotated);
-
-			out_color = vec4(snowflake.rgb * v_color.xyz, snowflake.a * v_color.a);
-		}
-	`;
+	private VERTEX_SOURCE = vertexSource;
+	private FRAGMENT_SOURCE = fragmentSource;
 
 	private gl: WebGLRenderingContext;
 	private program: WebGLProgram;
@@ -68,7 +21,7 @@ export class SnowfallEffect {
 	}>;
 	private uniforms: Record<string, {
 		type: string;
-		value: number[] | Float32Array;
+		value: number | number[] | Float32Array;
 		location: WebGLUniformLocation;
 	}>;
 	private texture: WebGLTexture;
@@ -91,9 +44,9 @@ export class SnowfallEffect {
 		start: number;
 		previous: number;
 	} = {
-			start: 0,
-			previous: 0,
-		};
+		start: 0,
+		previous: 0,
+	};
 	private raf = 0;
 
 	private density: number = 1 / 90;
@@ -137,7 +90,7 @@ export class SnowfallEffect {
 		mat2: 'uniformMatrix2fv',
 		mat3: 'uniformMatrix3fv',
 		mat4: 'uniformMatrix4fv',
-	};
+	} as const;
 
 	private CAMERA = {
 		fov: 60,
@@ -214,7 +167,7 @@ export class SnowfallEffect {
 		return { ...this.WIND };
 	}
 
-	private initShader(type, source): WebGLShader {
+	private initShader(type: number, source: string): WebGLShader {
 		const { gl } = this;
 		const shader = gl.createShader(type);
 		if (shader == null) throw new Error('Failed to create shader');
@@ -271,7 +224,7 @@ export class SnowfallEffect {
 		}
 	}
 
-	private setBuffer(name: string, value?) {
+	private setBuffer(name: string, value?: number[] | undefined) {
 		const { gl, buffers } = this;
 		const buffer = buffers[name];
 
@@ -300,18 +253,18 @@ export class SnowfallEffect {
 		}
 	}
 
-	private setUniform(name: string, value?) {
+	private setUniform(name: string, value?: number | number[] | Float32Array<ArrayBufferLike> | undefined) {
 		const { gl, uniforms } = this;
 		const uniform = uniforms[name];
-		const setter = this.UNIFORM_SETTERS[uniform.type];
+		const setter = this.UNIFORM_SETTERS[uniform.type as keyof typeof this.UNIFORM_SETTERS];
 		const isMatrix = /^mat[2-4]$/i.test(uniform.type);
 
 		uniform.value = value ?? uniform.value;
 
 		if (isMatrix) {
-			gl[setter](uniform.location, false, uniform.value);
+			(gl as any)[setter](uniform.location, false, uniform.value);
 		} else {
-			gl[setter](uniform.location, uniform.value);
+			(gl as any)[setter](uniform.location, uniform.value);
 		}
 	}
 
