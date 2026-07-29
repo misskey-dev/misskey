@@ -7,7 +7,8 @@ import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
 export function isPreviewable(mime: string): boolean {
 	if (mime === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
 	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
-	return (mime.startsWith('image') || mime.startsWith('video') || mime.startsWith('audio')) && !FILE_TYPE_BROWSERSAFE.includes(mime);
+	const strippedMime = mime.split(';')[0].trim();
+	return (strippedMime.startsWith('image') || strippedMime.startsWith('video') || strippedMime.startsWith('audio')) && FILE_TYPE_BROWSERSAFE.includes(strippedMime);
 }
 
 export function getType(mime: string): 'image' | 'video' | 'audio' {

@@ -21,8 +21,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</button>
 
-	<div v-else :class="$style.audioRoot" @click="emit('mediaClick', $event)">
-
+	<div v-else v-panel :class="$style.audioRoot" @click="emit('mediaClick', $event)">
+		<div :class="$style.audioRootSkelton"></div>
 		<div :class="$style.playIconWrapper">
 			<div :class="$style.playIcon">
 				<i class="ti ti-player-play"></i>
@@ -127,11 +127,18 @@ function onContextmenu(ev: PointerEvent) {
 }
 
 .audioRoot {
-	background: var(--MI_THEME-panel);
 	position: relative;
 	width: 100%;
 	height: 100%;
 	object-fit: contain;
+}
+
+.audioRootSkelton {
+	position: relative;
+	width: min(100cqw, calc(100cqh * 16 / 9));
+	height: auto;
+	aspect-ratio: 16 / 9;
+	pointer-events: none;
 }
 
 .playIconWrapper {

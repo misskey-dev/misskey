@@ -18,11 +18,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		data-gallery-click-action="media"
 		:class="$style.visualizer"
 	></canvas>
+	<div v-if="!isActuallyPlaying" :class="$style.playIconWrapper">
+		<div :class="$style.playIcon">
+			<i class="ti ti-player-play"></i>
+		</div>
+	</div>
 </div>
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef, shallowRef, computed, watch, onBeforeUnmount } from 'vue';
+import { useTemplateRef, shallowRef, ref, computed, watch, onBeforeUnmount } from 'vue';
 import tinycolor from 'tinycolor2';
 import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
 import type { Content } from '@/components/MkLightbox.item.vue';
@@ -39,6 +44,8 @@ const emit = defineEmits<{
 const audioEl = useTemplateRef('audioEl');
 const canvasEl = useTemplateRef('canvasEl');
 const canvasCtx = computed(() => canvasEl.value?.getContext('2d') ?? null);
+
+const isActuallyPlaying = ref(false);
 
 const FFT_SIZE = 2048;
 const WAVE_THRESHOLD = 50; // 波形の閾値
@@ -138,6 +145,14 @@ function init() {
 	on('pause', stopVisualizerTick);
 	on('ended', stopVisualizerTick);
 	on('emptied', stopVisualizerTick);
+
+	// 再生状態の監視: メディア要素のイベントを唯一の情報源にすることで、このコンポーネント経由でない
+	// 操作 (コントロール・キーボード・OSのメディアキー等) でも同期がとれる
+	on('playing', () => { isActuallyPlaying.value = true; });
+	on('waiting', () => { isActuallyPlaying.value = false; });
+	on('pause', () => { isActuallyPlaying.value = false; });
+	on('ended', () => { isActuallyPlaying.value = false; });
+	on('emptied', () => { isActuallyPlaying.value = false; });
 
 	// 現在の要素の状態を取り込む (コンポーネントの準備前に再生が始まっている場合等)
 	if (el.paused) {
@@ -286,5 +301,34 @@ defineExpose({
 	width: min(100cqw, calc(100cqh * 16 / 9));
 	height: auto;
 	aspect-ratio: 16 / 9;
+}
+
+.playIconWrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: grid;
+	place-items: center;
+	pointer-events: none;
+}
+
+.playIcon {
+	display: grid;
+	place-items: center;
+	width: 50px;
+	height: 50px;
+	border-radius: 100%;
+	font-size: 120%;
+	background: var(--MI_THEME-accent);
+	color: var(--MI_THEME-fgOnAccent);
+	scale: 1;
+	transition: scale 100ms ease;
+}
+
+// アイコン自体はクリックを受け取らないので、hoverは下のcanvas要素を経由して拾う
+.visualizer:hover ~ .playIconWrapper .playIcon {
+	scale: 1.2;
 }
 </style>

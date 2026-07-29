@@ -23,7 +23,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XAudio
 					v-if="media.type.startsWith('audio')"
 					:key="`audio:${media.id}`"
-					:data-marker="`${markerId}:${media.id}`"
 					:class="$style.media"
 					:audio="media"
 					@mediaClick="onMediaClick(media)"
