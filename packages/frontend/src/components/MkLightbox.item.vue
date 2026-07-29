@@ -82,7 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<video
 							v-else-if="content.type === 'video'"
 							ref="videoEl"
-							data-gallery-click-action="video"
+							data-gallery-click-action="media"
 							:class="[$style.video, { [$style.videoSized]: videoAspectRatio != null }]"
 							:src="content.url"
 							:alt="content.file?.comment ?? undefined"
@@ -90,16 +90,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:controls="prefer.s.useNativeUiForVideoAudioPlayer"
 							playsinline
 							@loadedmetadata="onVideoLoadedMetadata"
-							@click.stop="onVideoClick"
+							@click.stop="onMediaClick"
 						></video>
-						<div v-if="content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer && !isVideoPlaying" :class="$style.playIconWrapper">
+						<div v-if="content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer && !isMediaPlaying" :class="$style.playIconWrapper">
 							<div :class="$style.playIcon">
 								<i class="ti ti-player-play"></i>
 							</div>
 						</div>
+						<audio
+							v-else-if="content.type === 'audio' && prefer.s.useNativeUiForVideoAudioPlayer"
+							ref="audioEl"
+							:class="$style.content"
+							:src="content.url"
+							:alt="content.file?.comment ?? undefined"
+							controls
+							@loadedmetadata="originalContentLoaded = true"
+						></audio>
+						<XAudioVisualizer
+							v-else-if="content.type === 'audio' && !prefer.s.useNativeUiForVideoAudioPlayer"
+							ref="audioVisualizer"
+							:content="content"
+							:volume="volume"
+							@click.stop="onMediaClick"
+							@loadedmetadata="originalContentLoaded = true"
+						/>
 					</template>
 
-					<div v-if="activated && (!originalContentLoaded || (content.type === 'video' && isVideoPlaying && !isVideoActuallyPlaying))" :class="$style.loading">
+					<div v-if="activated && (!originalContentLoaded || (isMediaControlledByMisskey && isMediaPlaying && !isMediaActuallyPlaying))" :class="$style.loading">
 						<MkLoading/>
 					</div>
 				</template>
@@ -118,8 +135,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div :class="[$style.footer, { [$style.infoShowing]: infoShowing && !isZooming }]">
-		<div v-if="content.type === 'video' && !hide && !prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.mediaControl">
-			<XControl v-if="videoEl != null" ref="mediaControl"/>
+		<div v-if="isMediaControlledByMisskey && !hide" :class="$style.mediaControl">
+			<XControl v-if="mediaEl != null" ref="mediaControl" v-model:volume="volume" :externalVolumeControl="isVolumeHandledByVisualizer"/>
 		</div>
 	</div>
 </div>
@@ -140,7 +157,7 @@ type Rect = Size & {
 
 export type Content = {
 	id: string;
-	type: 'image' | 'video';
+	type: 'image' | 'video' | 'audio';
 	url: string;
 	thumbnailUrl?: string | null;
 	width?: number | null;
@@ -177,9 +194,10 @@ export function calculateSourceTransform({
 </script>
 
 <script lang="ts" setup>
-import { computed, nextTick, ref, useTemplateRef, markRaw, watch, provide, onBeforeUnmount } from 'vue';
+import { computed, nextTick, ref, useTemplateRef, markRaw, watch, provide, onBeforeUnmount, defineAsyncComponent } from 'vue';
 import MkBlurhash from '@/components/MkBlurhash.vue';
 import XControl from './MkLightbox.item.controls.vue';
+import type XAudioVisualizer__TypeReferenceOnly from './MkLightbox.item.audio-visualizer.vue';
 import XFileInfo from './MkLightbox.item.fileinfo.vue';
 import type { MenuItem } from '@/types/menu.js';
 import { DI } from '@/di.js';
@@ -208,20 +226,42 @@ const emit = defineEmits<{
 	(ev: 'cancelHorizontalSwipe'): void;
 }>();
 
+const XAudioVisualizer = defineAsyncComponent(() => import('./MkLightbox.item.audio-visualizer.vue'));
+
 const rootEl = useTemplateRef('rootEl');
 const mainEl = useTemplateRef('mainEl');
 const videoEl = useTemplateRef('videoEl');
-const mediaControl = useTemplateRef('mediaControl');
+const audioEl = useTemplateRef('audioEl'); // ネイティブUI時
+const audioVisualizer = useTemplateRef<InstanceType<typeof XAudioVisualizer__TypeReferenceOnly>>('audioVisualizer'); // ネイティブUIじゃない場合
+const mediaControl = useTemplateRef<InstanceType<typeof XControl>>('mediaControl');
 
-provide(DI.mkLightboxItemMediaEl, videoEl);
+const mediaEl = computed<HTMLVideoElement | HTMLAudioElement | null>(() => {
+	if (props.content.type === 'video') {
+		return videoEl.value;
+	} else if (props.content.type === 'audio') {
+		if (prefer.s.useNativeUiForVideoAudioPlayer) {
+			return audioEl.value;
+		} else {
+			return audioVisualizer.value?.audioEl ?? null;
+		}
+	} else {
+		return null;
+	}
+});
+
+provide(DI.mkLightboxItemMediaEl, mediaEl);
 
 const originalContentLoaded = ref(false);
 const thumbnailContentLoaded = ref(false);
 const enableTransition = ref(false);
 const infoShowing = ref(false);
 const hide = ref(true);
-const isVideoPlaying = computed(() => mediaControl.value?.isPlaying ?? false);
-const isVideoActuallyPlaying = computed(() => mediaControl.value?.isActuallyPlaying ?? false);
+const isMediaControlledByMisskey = computed(() => ['video', 'audio'].includes(props.content.type) && !prefer.s.useNativeUiForVideoAudioPlayer);
+// ビジュアライザー使用時は音量の適用をGainNode側が担当する (メディア要素は100%固定にして、波形が音量レベルに依存しないようにするため)
+const isVolumeHandledByVisualizer = computed(() => props.content.type === 'audio' && !prefer.s.useNativeUiForVideoAudioPlayer);
+const volume = ref(0.25);
+const isMediaPlaying = computed(() => mediaControl.value?.isPlaying ?? false);
+const isMediaActuallyPlaying = computed(() => mediaControl.value?.isActuallyPlaying ?? false);
 let canOpenAnimation = false;
 
 const videoAspectRatio = ref<number | null>(
@@ -240,7 +280,7 @@ function onVideoLoadedMetadata() {
 }
 
 const headerSize = 30;
-const footerSize = props.content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer ? 80 : 0;
+const footerSize = isMediaControlledByMisskey.value && !prefer.s.useNativeUiForVideoAudioPlayer ? 80 : 0;
 
 const padding = deviceKind === 'smartphone' ? {
 	top: Math.max(0, headerSize + 10),
@@ -479,7 +519,7 @@ const VELOCITY_WINDOW = 100;
 
 let isDragging = false;
 let isClick = false;
-let clickAction: 'hidden' | 'video' | null = null;
+let clickAction: 'hidden' | 'media' | null = null;
 let lastX = 0;
 let lastY = 0;
 let currentPointerId: number | null = null;
@@ -523,11 +563,11 @@ function getVelocity(now: number): { x: number; y: number } {
 	};
 }
 
-function resolveClickAction(target: EventTarget | null): 'hidden' | 'video' | null {
+function resolveClickAction(target: EventTarget | null): 'hidden' | 'media' | null {
 	if (!(target instanceof Element)) return null;
 
 	const action = target.closest('[data-gallery-click-action]')?.getAttribute('data-gallery-click-action');
-	if (action === 'hidden' || action === 'video') {
+	if (action === 'hidden' || action === 'media') {
 		return action;
 	}
 
@@ -827,8 +867,8 @@ function onClick(ev: MouseEvent) {
 		return;
 	}
 
-	if (action === 'video') {
-		onVideoClick();
+	if (action === 'media') {
+		onMediaClick();
 		return;
 	}
 
@@ -846,21 +886,21 @@ async function onHiddenClick() {
 	if (hide.value) {
 		if (props.content.file == null || await canRevealFile(props.content.file)) {
 			hide.value = false;
-			if (props.content.type === 'video' && videoEl.value != null) {
-				videoEl.value.play();
+			if (props.content.type === 'video' && mediaEl.value != null) {
+				mediaEl.value.play();
 			}
 		}
 	}
 }
 
-function onVideoClick() {
+function onMediaClick() {
 	if (!prefer.s.useNativeUiForVideoAudioPlayer) {
-		if (videoEl.value == null) return;
+		if (mediaEl.value == null) return;
 
-		if (videoEl.value.paused) {
-			videoEl.value.play();
+		if (mediaEl.value.paused) {
+			mediaEl.value.play();
 		} else {
-			videoEl.value.pause();
+			mediaEl.value.pause();
 		}
 	}
 }
@@ -899,8 +939,8 @@ function openMenu(ev: PointerEvent) {
 }
 
 function onActive() {
-	if (videoEl.value != null) {
-		videoEl.value.play();
+	if (mediaEl.value != null) {
+		mediaEl.value.play();
 	}
 }
 
@@ -909,8 +949,8 @@ function onDeactive() {
 		isZooming.value = false;
 		resetToNeutral();
 	}
-	if (videoEl.value != null && props.activated) {
-		videoEl.value.pause();
+	if (mediaEl.value != null && props.activated) {
+		mediaEl.value.pause();
 	}
 }
 

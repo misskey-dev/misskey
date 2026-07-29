@@ -48,7 +48,17 @@ import * as os from '@/os.js';
 import hasAudio from '@/utility/media-has-audio.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 
+const props = withDefaults(defineProps<{
+	/** 音量をメディア要素に適用しない（ビジュアライザー用） */
+	externalVolumeControl?: boolean;
+}>(), {
+	externalVolumeControl: false,
+});
+
+const volume = defineModel<number>('volume', { required: true });
+
 const mediaEl = inject(DI.mkLightboxItemMediaEl, shallowRef<HTMLVideoElement | HTMLAudioElement | null>(null));
+const isVideo = computed(() => mediaEl.value instanceof HTMLVideoElement);
 
 // Menu
 const menuShowing = ref(false);
@@ -90,7 +100,7 @@ function showMenu(ev: PointerEvent) {
 				value: 2,
 			}],
 		},
-		...(window.document.pictureInPictureEnabled ? [{
+		...(window.document.pictureInPictureEnabled && isVideo.value ? [{
 			text: i18n.ts._mediaControls.pip,
 			icon: 'ti ti-picture-in-picture',
 			action: togglePictureInPicture,
@@ -122,7 +132,6 @@ const rangePercent = computed({
 		mediaEl.value.currentTime = to * durationMs.value / 1000;
 	},
 });
-const volume = ref(.25);
 const speed = ref(1);
 const loop = ref(false); // TODO: ドライブファイルのフラグに置き換える
 const bufferedEnd = ref(0);
@@ -145,8 +154,8 @@ function togglePlayPause() {
 function togglePictureInPicture() {
 	if (window.document.pictureInPictureElement) {
 		window.document.exitPictureInPicture();
-	} else if (mediaEl.value instanceof HTMLVideoElement) {
-		mediaEl.value?.requestPictureInPicture();
+	} else if (isVideo.value) {
+		(mediaEl.value as HTMLVideoElement).requestPictureInPicture();
 	}
 }
 
@@ -266,10 +275,13 @@ function init() {
 	});
 
 	// ネイティブUIやブラウザのコンテキストメニューから変更されうるもの
-	on('volumechange', () => {
-		const to = el.muted ? 0 : el.volume;
-		if (volume.value !== to) volume.value = to;
-	});
+	// (externalVolumeControl時は要素の音量を100%に固定しているので、取り込むと表示が壊れる)
+	if (!props.externalVolumeControl) {
+		on('volumechange', () => {
+			const to = el.muted ? 0 : el.volume;
+			if (volume.value !== to) volume.value = to;
+		});
+	}
 
 	on('ratechange', () => {
 		if (speed.value !== el.playbackRate) speed.value = el.playbackRate;
@@ -294,13 +306,19 @@ function init() {
 		startElapsedTick();
 	}
 
-	el.volume = volume.value;
-	hasAudio(el).then(had => {
-		if (!had) {
-			el.loop = el.muted = true;
-			el.play();
-		}
-	});
+	if (!props.externalVolumeControl) {
+		el.volume = volume.value;
+	}
+
+	// 音声トラックを持たない動画はGIFのように扱う
+	if (isVideo.value) {
+		hasAudio(el).then(had => {
+			if (!had) {
+				el.loop = el.muted = true;
+				el.play();
+			}
+		});
+	}
 }
 
 function teardown() {
@@ -313,6 +331,7 @@ function teardown() {
 }
 
 watch(volume, (to) => {
+	if (props.externalVolumeControl) return; // 適用は音量を受け取った側 (Web Audio経路) が行う
 	if (mediaEl.value == null) return;
 	mediaEl.value.volume = to;
 	mediaEl.value.muted = to === 0;
