@@ -92,7 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							@loadedmetadata="onVideoLoadedMetadata"
 							@click.stop="onVideoClick"
 						></video>
-						<div v-if="content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer && !isVideoPlaying" data-gallery-click-action="video" :class="$style.playIconWrapper">
+						<div v-if="content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer && !isVideoPlaying" :class="$style.playIconWrapper">
 							<div :class="$style.playIcon">
 								<i class="ti ti-player-play"></i>
 							</div>
@@ -1021,6 +1021,7 @@ defineExpose({
 	height: 100%;
 	display: grid;
 	place-items: center;
+	pointer-events: none;
 }
 
 .playIcon {
@@ -1036,8 +1037,8 @@ defineExpose({
 	transition: scale 100ms ease;
 }
 
-.playIconWrapper:hover .playIcon,
-.playIcon:hover {
+// アイコン自体はクリックを受け取らないので、hoverは下のvideo要素を経由して拾う
+.video:hover ~ .playIconWrapper .playIcon {
 	scale: 1.2;
 }
 
