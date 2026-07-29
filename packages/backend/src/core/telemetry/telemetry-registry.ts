@@ -5,10 +5,8 @@
 
 import type { Config } from '@/config.js';
 import { setLogTraceContextProvider } from '@/logging/logging-runtime.js';
-import { OpenTelemetryAdapter } from './adapters/OpenTelemetryAdapter.js';
 import { SentryTelemetryAdapter } from './adapters/SentryTelemetryAdapter.js';
-import type { OtelBackendRuntimeConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './adapters/TelemetryAdapter.js';
-import type { QueueTraceContextCarrier } from './queue-trace-context.js';
+import type { TelemetryAdapter, TelemetryCaptureMessageOptions } from './adapters/TelemetryAdapter.js';
 
 /**
  * NestのDIコンテナが構築される前(boot処理内)で初期化する必要があるため、
@@ -18,24 +16,8 @@ import type { QueueTraceContextCarrier } from './queue-trace-context.js';
 const adapters: TelemetryAdapter[] = [];
 
 export async function initTelemetry(config: Config): Promise<void> {
-	const otelForBackend: OtelBackendRuntimeConfig | undefined = config.otelForBackend == null ? undefined : {
-		...config.otelForBackend,
-		serviceVersion: config.version,
-	};
-
-	// SentryとOTelを同時に使う場合はproviderを分けず、Sentry側へOTLP processorを追加する。
-	let adapter: TelemetryAdapter | undefined;
-	if (config.sentryForBackend && otelForBackend) {
-		adapter = await SentryTelemetryAdapter.createWithOtlpExport(config.sentryForBackend, otelForBackend);
-	} else if (config.sentryForBackend) {
-		// Sentry単体時は既存のSentry adapterだけを登録する。
-		adapter = await SentryTelemetryAdapter.create(config.sentryForBackend);
-	} else if (otelForBackend) {
-		// OTel単体時だけMisskey自身でNodeTracerProviderを立てる。
-		adapter = await OpenTelemetryAdapter.create(otelForBackend);
-	}
-
-	if (adapter != null) {
+	if (config.sentryForBackend) {
+		const adapter = await SentryTelemetryAdapter.create(config.sentryForBackend);
 		adapters.push(adapter);
 		// Telemetryの初期化後に登録し、初期化前のBootstrapログは従来どおり出力する。
 		setLogTraceContextProvider(() => adapter.getActiveTraceContext?.());
@@ -61,19 +43,6 @@ export function startSpan<T>(name: string, fn: () => T): T {
 		fn,
 	);
 	return wrapped();
-}
-
-export function injectTraceContext(carrier: QueueTraceContextCarrier): void {
-	// Queue の carrier は共有データなので、通知と異なり全 adapter にブロードキャストしない。
-	// OTel provider は現在 1 つだけなので、同じ header を上書きしないよう最初の対応 adapter だけを使う。
-	adapters.find(adapter => adapter.injectTraceContext != null)?.injectTraceContext?.(carrier);
-}
-
-export function startSpanWithTraceContext<T>(name: string, jobData: object, fn: () => T): T {
-	// Queue context を解釈できる adapter に span 作成を任せる。
-	// 対応 adapter が無い構成では通常の startSpan へフォールバックする。
-	const adapter = adapters.find(adapter => adapter.startSpanWithTraceContext != null);
-	return adapter?.startSpanWithTraceContext?.(name, jobData, fn) ?? startSpan(name, fn);
 }
 
 export async function shutdownTelemetry(): Promise<void> {
