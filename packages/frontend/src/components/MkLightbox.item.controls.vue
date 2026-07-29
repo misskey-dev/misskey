@@ -127,20 +127,18 @@ const speed = ref(1);
 const loop = ref(false); // TODO: ドライブファイルのフラグに置き換える
 const bufferedEnd = ref(0);
 const bufferedDataRatio = computed(() => {
-	if (mediaEl.value == null || mediaEl.value.duration === 0) return 0;
-	return bufferedEnd.value / mediaEl.value.duration;
+	if (durationMs.value === 0) return 0;
+	return bufferedEnd.value / (durationMs.value / 1000);
 });
 
+// state の更新はすべてメディア要素のイベント側に任せる
 function togglePlayPause() {
 	if (!isReady.value) return;
 
 	if (isPlaying.value) {
 		mediaEl.value?.pause();
-		isPlaying.value = false;
 	} else {
 		mediaEl.value?.play();
-		isPlaying.value = true;
-		oncePlayed.value = true;
 	}
 }
 
@@ -161,74 +159,163 @@ function toggleMute() {
 }
 
 let abortController: AbortController | null = null;
-let mediaTickFrameId: number | null = null;
+let loopObserver: MutationObserver | null = null;
+
+// currentTime だけは進捗を通知するイベントが timeupdate しかなく、
+// これは 4Hz 程度でしか発火しないためシークバーがカクつく。
+// そのため再生中に限り requestAnimationFrame で補間する
+let elapsedTickFrameId: number | null = null;
+
+function syncElapsedTime() {
+	if (mediaEl.value == null) return;
+	elapsedTimeMs.value = mediaEl.value.currentTime * 1000;
+}
+
+function elapsedTick() {
+	syncElapsedTime();
+	elapsedTickFrameId = window.requestAnimationFrame(elapsedTick);
+}
+
+function startElapsedTick() {
+	if (elapsedTickFrameId != null) return;
+	elapsedTickFrameId = window.requestAnimationFrame(elapsedTick);
+}
+
+function stopElapsedTick() {
+	if (elapsedTickFrameId == null) return;
+	window.cancelAnimationFrame(elapsedTickFrameId);
+	elapsedTickFrameId = null;
+}
+
+function syncDuration() {
+	const duration = mediaEl.value?.duration;
+	// メタデータ読み込み前は NaN、ライブストリームでは Infinity になりうる
+	durationMs.value = duration != null && Number.isFinite(duration) ? duration * 1000 : 0;
+}
+
+function syncBuffered() {
+	const buffered = mediaEl.value?.buffered;
+	bufferedEnd.value = buffered != null && buffered.length > 0 ? buffered.end(0) : 0;
+}
 
 function init() {
-	if (mediaEl.value == null) return;
+	const el: HTMLMediaElement | null = mediaEl.value;
+	if (el == null) return;
 
 	isReady.value = true;
 	abortController = new AbortController();
+	const signal = abortController.signal;
 
-	function updateMediaTick() {
-		if (mediaEl.value == null) return;
+	const on = (type: keyof HTMLMediaElementEventMap, listener: () => void) => {
+		el.addEventListener(type, listener, { signal });
+	};
 
-		try {
-			bufferedEnd.value = mediaEl.value.buffered.end(0);
-		} catch (err) {
-			bufferedEnd.value = 0;
-		}
+	// 再生状態: このコンポーネント経由の操作でもネイティブUI経由の操作でも同じイベントが飛ぶので、
+	// これらを唯一の情報源にすることでどちらの経路でも同期がとれる
+	on('play', () => {
+		isPlaying.value = true;
+		oncePlayed.value = true;
+		startElapsedTick();
+	});
 
-		elapsedTimeMs.value = mediaEl.value.currentTime * 1000;
+	on('playing', () => {
+		isActuallyPlaying.value = true;
+		startElapsedTick();
+	});
 
-		if (mediaEl.value.loop !== loop.value) {
-			loop.value = mediaEl.value.loop;
-		}
+	on('waiting', () => {
+		isActuallyPlaying.value = false;
+		stopElapsedTick();
+	});
 
-		if (mediaEl.value.paused !== !isPlaying.value) {
-			isPlaying.value = !mediaEl.value.paused;
-		}
+	on('pause', () => {
+		isPlaying.value = false;
+		isActuallyPlaying.value = false;
+		stopElapsedTick();
+	});
 
-		mediaTickFrameId = window.requestAnimationFrame(updateMediaTick);
+	on('ended', () => {
+		oncePlayed.value = false;
+		isPlaying.value = false;
+		isActuallyPlaying.value = false;
+		stopElapsedTick();
+		syncElapsedTime();
+	});
+
+	on('timeupdate', syncElapsedTime);
+	on('seeking', syncElapsedTime);
+	on('seeked', () => {
+		syncElapsedTime();
+		syncBuffered();
+	});
+
+	on('durationchange', syncDuration);
+	on('loadedmetadata', () => {
+		syncDuration();
+		syncBuffered();
+	});
+	on('progress', syncBuffered);
+	on('emptied', () => {
+		isPlaying.value = false;
+		isActuallyPlaying.value = false;
+		oncePlayed.value = false;
+		stopElapsedTick();
+		syncDuration();
+		syncBuffered();
+		syncElapsedTime();
+	});
+
+	// ネイティブUIやブラウザのコンテキストメニューから変更されうるもの
+	on('volumechange', () => {
+		const to = el.muted ? 0 : el.volume;
+		if (volume.value !== to) volume.value = to;
+	});
+
+	on('ratechange', () => {
+		if (speed.value !== el.playbackRate) speed.value = el.playbackRate;
+	});
+
+	// loop には変更イベントが無いが、属性の変化を監視すればネイティブUI経由の変更も拾える
+	loopObserver = new MutationObserver(() => {
+		if (loop.value !== el.loop) loop.value = el.loop;
+	});
+	loopObserver.observe(el, { attributes: true, attributeFilter: ['loop'] });
+
+	// 現在の要素の状態を state に取り込む
+	// (コントロール表示前に再生が始まっている場合等)
+	syncDuration();
+	syncBuffered();
+	syncElapsedTime();
+	loop.value = el.loop;
+	speed.value = el.playbackRate;
+	isPlaying.value = !el.paused;
+	if (!el.paused) {
+		oncePlayed.value = true;
+		startElapsedTick();
 	}
 
-	updateMediaTick();
-
-	mediaEl.value.addEventListener('waiting', () => {
-		isActuallyPlaying.value = false;
-	}, { signal: abortController.signal });
-
-	mediaEl.value.addEventListener('playing', () => {
-		isActuallyPlaying.value = true;
-	}, { signal: abortController.signal });
-
-	mediaEl.value.addEventListener('pause', () => {
-		isActuallyPlaying.value = false;
-		isPlaying.value = false;
-	}, { signal: abortController.signal });
-
-	mediaEl.value.addEventListener('ended', () => {
-		oncePlayed.value = false;
-		isActuallyPlaying.value = false;
-		isPlaying.value = false;
-	}, { signal: abortController.signal });
-
-	durationMs.value = mediaEl.value.duration * 1000;
-	mediaEl.value.addEventListener('durationchange', () => {
-		durationMs.value = mediaEl.value!.duration * 1000;
-	}, { signal: abortController.signal });
-
-	mediaEl.value.volume = volume.value;
-	hasAudio(mediaEl.value).then(had => {
+	el.volume = volume.value;
+	hasAudio(el).then(had => {
 		if (!had) {
-			mediaEl.value!.loop = mediaEl.value!.muted = true;
-			mediaEl.value!.play();
+			el.loop = el.muted = true;
+			el.play();
 		}
 	});
+}
+
+function teardown() {
+	abortController?.abort();
+	abortController = null;
+	loopObserver?.disconnect();
+	loopObserver = null;
+	stopElapsedTick();
+	isReady.value = false;
 }
 
 watch(volume, (to) => {
 	if (mediaEl.value == null) return;
 	mediaEl.value.volume = to;
+	mediaEl.value.muted = to === 0;
 });
 
 watch(speed, (to) => {
@@ -242,20 +329,11 @@ watch(loop, (to) => {
 });
 
 watch(mediaEl, () => {
-	if (abortController != null) {
-		abortController.abort();
-	}
-	if (mediaTickFrameId != null) {
-		window.cancelAnimationFrame(mediaTickFrameId);
-	}
+	teardown();
 	init();
 }, { immediate: true });
 
-onBeforeUnmount(() => {
-	if (mediaTickFrameId != null) {
-		window.cancelAnimationFrame(mediaTickFrameId);
-	}
-});
+onBeforeUnmount(teardown);
 
 defineExpose({
 	isPlaying,
