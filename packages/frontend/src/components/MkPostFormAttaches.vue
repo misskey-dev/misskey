@@ -52,6 +52,8 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
+import type { Content } from '@/components/MkLightbox.item.vue';
+import { isPreviewable, getType } from '@/utility/lightbox.js';
 
 const props = defineProps<{
 	modelValue: Misskey.entities.DriveFile[];
@@ -176,9 +178,9 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | Keybo
 			text: i18n.ts.preview,
 			icon: 'ti ti-photo-search',
 			action: async () => {
-				const constents = props.modelValue.filter(item => item.type.startsWith('image') || item.type.startsWith('video')).map(item => ({
+				const constents = props.modelValue.filter(item => isPreviewable(item.type)).map<Content>(item => ({
 					id: item.id,
-					type: item.type.startsWith('video') ? 'video' as const : 'image' as const,
+					type: getType(item.type),
 					url: item.url,
 					thumbnailUrl: item.thumbnailUrl,
 					width: item.properties.width,
