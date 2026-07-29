@@ -83,16 +83,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 							v-else-if="content.type === 'video'"
 							ref="videoEl"
 							data-gallery-click-action="video"
-							:class="$style.content"
+							:class="[$style.video, { [$style.videoSized]: videoAspectRatio != null }]"
 							:src="content.url"
 							:alt="content.file?.comment ?? undefined"
 							draggable="false"
 							:controls="prefer.s.useNativeUiForVideoAudioPlayer"
 							playsinline
-							@loadedmetadata="originalContentLoaded = true"
+							@loadedmetadata="onVideoLoadedMetadata"
 							@click.stop="onVideoClick"
 						></video>
-						<div v-if="content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer && !isVideoPlaying" data-gallery-click-action="video" :class="$style.playIconWrapper">
+						<div v-if="content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer && !isVideoPlaying" :class="$style.playIconWrapper">
 							<div :class="$style.playIcon">
 								<i class="ti ti-player-play"></i>
 							</div>
@@ -223,6 +223,21 @@ const hide = ref(true);
 const isVideoPlaying = computed(() => mediaControl.value?.isPlaying ?? false);
 const isVideoActuallyPlaying = computed(() => mediaControl.value?.isActuallyPlaying ?? false);
 let canOpenAnimation = false;
+
+const videoAspectRatio = ref<number | null>(
+	props.content.width != null && props.content.height != null && props.content.width > 0 && props.content.height > 0
+		? props.content.width / props.content.height
+		: null
+);
+
+function onVideoLoadedMetadata() {
+	originalContentLoaded.value = true;
+
+	// ドライブ上のメタデータが無い場合に限り、動画自体の初期サイズから縦横比を確定させる
+	if (videoAspectRatio.value != null) return;
+	if (videoEl.value == null || videoEl.value.videoWidth === 0 || videoEl.value.videoHeight === 0) return;
+	videoAspectRatio.value = videoEl.value.videoWidth / videoEl.value.videoHeight;
+}
 
 const headerSize = 30;
 const footerSize = props.content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer ? 80 : 0;
@@ -941,6 +956,25 @@ defineExpose({
 	object-fit: contain;
 }
 
+.video {
+	display: block;
+	user-select: none;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.videoSized {
+	width: min(100cqw, calc(100cqh * v-bind("videoAspectRatio ?? 16 / 9")));
+	height: auto;
+	background-color: #000;
+	aspect-ratio: v-bind("videoAspectRatio ?? 16 / 9");
+}
+
 .loading {
 	position: absolute;
 	top: 0;
@@ -969,6 +1003,8 @@ defineExpose({
 	position: relative;
 	width: 100%;
 	height: 100%;
+	// .videoSizedが使う100cqw / 100cqhの基準 (= paddingを除いた実際の表示領域)
+	container-type: size;
 	transition: scale 200ms ease, opacity 200ms ease !important;
 }
 
@@ -985,6 +1021,7 @@ defineExpose({
 	height: 100%;
 	display: grid;
 	place-items: center;
+	pointer-events: none;
 }
 
 .playIcon {
@@ -1000,8 +1037,8 @@ defineExpose({
 	transition: scale 100ms ease;
 }
 
-.playIconWrapper:hover .playIcon,
-.playIcon:hover {
+// アイコン自体はクリックを受け取らないので、hoverは下のvideo要素を経由して拾う
+.video:hover ~ .playIconWrapper .playIcon {
 	scale: 1.2;
 }
 
