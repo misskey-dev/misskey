@@ -57,6 +57,7 @@ import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
+import { getLightboxType, isPreviewable } from '@/utility/lightbox.js';
 import type { Content } from '@/components/MkLightbox.item.vue';
 
 const props = defineProps<{
@@ -101,12 +102,12 @@ function onContextmenu(item: UploaderItem, ev: PointerEvent) {
 }
 
 async function onThumbnailClick(item: UploaderItem, ev: PointerEvent) {
-	if (item.file.type.startsWith('image') || item.file.type.startsWith('video')) {
+	if (isPreviewable(item.file.type)) {
 		const contents = props.items
-			.filter(item => item.file.type.startsWith('image') || item.file.type.startsWith('video'))
+			.filter(item => isPreviewable(item.file.type))
 			.map<Content>(item => ({
 				id: item.id,
-				type: (item.file.type.startsWith('video') ? 'video' : 'image'),
+				type: getLightboxType(item.file.type),
 				url: item.objectUrl,
 				thumbnailUrl: item.thumbnail,
 				filename: getUploadName(item),

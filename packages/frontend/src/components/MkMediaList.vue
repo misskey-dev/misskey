@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media"/>
-	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
+	<XBanner v-for="media in medias.nonPreviewable" :key="media.id" :media="media"/>
+	<div v-if="medias.previewable.length > 0" :class="$style.container">
 		<div
 			ref="gallery"
 			:class="[
@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				}] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
 			]"
 		>
-			<template v-for="media in mediaList.filter(media => previewable(media))">
+			<template v-for="media in medias.previewable">
 				<XVideo
 					v-if="media.type.startsWith('video')"
 					:key="`video:${media.id}`"
@@ -46,13 +46,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, markRaw, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
 import type { Content } from '@/components/MkLightbox.item.vue';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
+import { isPreviewable, getLightboxType } from '@/utility/lightbox.js';
 import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
@@ -60,8 +60,26 @@ const props = defineProps<{
 	raw?: boolean;
 }>();
 
+const medias = computed(() => {
+	const previewable: Misskey.entities.DriveFile[] = [];
+	const nonPreviewable: Misskey.entities.DriveFile[] = [];
+
+	for (const media of props.mediaList) {
+		if (isPreviewable(media.type)) {
+			previewable.push(media);
+		} else {
+			nonPreviewable.push(media);
+		}
+	}
+
+	return {
+		previewable,
+		nonPreviewable,
+	};
+});
+
 const gallery = useTemplateRef('gallery');
-const count = computed(() => props.mediaList.filter(media => previewable(media)).length);
+const count = computed(() => medias.value.previewable.length);
 const markerId = genId();
 
 async function calcAspectRatio() {
@@ -104,12 +122,6 @@ onMounted(() => {
 onUnmounted(() => {
 });
 
-const previewable = (file: Misskey.entities.DriveFile): boolean => {
-	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
-	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
-	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
-};
-
 function onMediaClick(file: Misskey.entities.DriveFile) {
 	if (prefer.s.imageNewTab) {
 		window.open(file.url, '_blank');
@@ -120,7 +132,7 @@ function onMediaClick(file: Misskey.entities.DriveFile) {
 
 async function openGallery(id?: string) {
 	if (id == null) {
-		const firstImage = props.mediaList.find(media => previewable(media));
+		const firstImage = medias.value.previewable[0];
 		if (firstImage == null) return;
 		id = firstImage.id;
 	}
@@ -132,9 +144,9 @@ async function openGallery(id?: string) {
 		return markRaw(found);
 	};
 
-	const contents = props.mediaList.filter(media => previewable(media)).map<Content>(media => ({
+	const contents = medias.value.previewable.map<Content>(media => ({
 		id: media.id,
-		type: media.type.startsWith('video') ? 'video' : 'image',
+		type: getLightboxType(media.type),
 		url: media.url,
 		thumbnailUrl: media.thumbnailUrl,
 		width: media.properties.width,

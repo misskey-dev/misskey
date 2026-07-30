@@ -51,6 +51,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
+import { isPreviewable, getLightboxType } from '@/utility/lightbox.js';
 import { globalEvents } from '@/events.js';
 
 const props = defineProps<{
@@ -176,9 +177,9 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | Keybo
 			text: i18n.ts.preview,
 			icon: 'ti ti-photo-search',
 			action: async () => {
-				const constents = props.modelValue.filter(item => item.type.startsWith('image') || item.type.startsWith('video')).map(item => ({
+				const constents = props.modelValue.filter(item => isPreviewable(item.type)).map(item => ({
 					id: item.id,
-					type: item.type.startsWith('video') ? 'video' as const : 'image' as const,
+					type: getLightboxType(item.type),
 					url: item.url,
 					thumbnailUrl: item.thumbnailUrl,
 					width: item.properties.width,
