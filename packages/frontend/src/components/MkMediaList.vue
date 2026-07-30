@@ -85,9 +85,9 @@ const markerId = genId();
 async function calcAspectRatio() {
 	if (!gallery.value) return;
 
-	const img = props.mediaList[0];
+	const img = medias.value.previewable[0];
 
-	if (props.mediaList.length !== 1 || !(img.properties.width && img.properties.height)) {
+	if (medias.value.previewable.length !== 1 || !(img.properties.width && img.properties.height)) {
 		gallery.value.style.aspectRatio = '';
 		return;
 	}
