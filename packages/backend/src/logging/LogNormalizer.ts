@@ -134,7 +134,7 @@ function normalizeString(value: string, maxBytes: number): string {
 
 /**
  * 指定した後置文字列を含めて上限に収まる接頭辞の長さ (UTF-16のコードユニット数) を求めます。
- * コードポイント単位で先頭から積み上げるので、UTF-16のサロゲート対を途中で切ることはありません。
+ * コードポイント単位で先頭から積み上げるので、UTF-16のサロゲートペアを途中で切ることはありません。
  */
 function findMaxPrefixLength(value: string, suffix: string, maxBytes: number): number {
 	let usedBytes = byteLength(suffix);
@@ -143,7 +143,7 @@ function findMaxPrefixLength(value: string, suffix: string, maxBytes: number): n
 		const charBytes = byteLength(char);
 		if (usedBytes + charBytes > maxBytes) break;
 		usedBytes += charBytes;
-		prefixLength += char.length; // サロゲート対なら2
+		prefixLength += char.length; // サロゲートペアなら2
 	}
 	return prefixLength;
 }

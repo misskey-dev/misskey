@@ -123,7 +123,7 @@ describe('LogNormalizer', () => {
 		const cases = [
 			['é', 2], // é
 			['あ', 3], // あ
-			['\u{1f600}', 4], // 😀 (サロゲート対)
+			['\u{1f600}', 4], // 😀 (サロゲートペア)
 		] as const;
 
 		for (const [char, charBytes] of cases) {
@@ -136,7 +136,7 @@ describe('LogNormalizer', () => {
 
 				expect(Buffer.byteLength(normalized, 'utf8')).toBeLessThanOrEqual(maxStringBytes);
 				expect(normalized).toBe(char + suffix);
-				// サロゲート対の分割などで不正なUTF-8になっていないこと
+				// サロゲートペアの分割などで不正なUTF-8になっていないこと
 				expect(Buffer.from(normalized, 'utf8').toString('utf8')).toBe(normalized);
 			}
 		}
