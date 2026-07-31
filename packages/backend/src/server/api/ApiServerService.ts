@@ -7,10 +7,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import { ModuleRef } from '@nestjs/core';
-import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import type { Config } from '@/config.js';
 import type { InstancesRepository, AccessTokensRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { OperationContextService } from '@/core/OperationContextService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import endpoints from './endpoints.js';
@@ -18,6 +18,7 @@ import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';
 import { SigninWithPasskeyApiService } from './SigninWithPasskeyApiService.js';
+import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 @Injectable()
@@ -35,6 +36,7 @@ export class ApiServerService {
 		private accessTokensRepository: AccessTokensRepository,
 
 		private userEntityService: UserEntityService,
+		private operationContextService: OperationContextService,
 		private apiCallService: ApiCallService,
 		private signupApiService: SignupApiService,
 		private signinApiService: SigninApiService,
@@ -62,6 +64,7 @@ export class ApiServerService {
 			done();
 		});
 
+		// OperationContextの初期導入範囲は、ロール計算を行う通常API endpointに限定する。
 		for (const endpoint of endpoints) {
 			const ep = {
 				name: endpoint.name,
@@ -83,7 +86,9 @@ export class ApiServerService {
 					}
 
 					// Await so that any error can automatically be translated to HTTP 500
-					await this.apiCallService.handleMultipartRequest(ep, request, reply);
+					await this.operationContextService.runRoot(
+						() => this.apiCallService.handleMultipartRequest(ep, request, reply),
+					);
 					return reply;
 				});
 			} else {
@@ -99,7 +104,9 @@ export class ApiServerService {
 					}
 
 					// Await so that any error can automatically be translated to HTTP 500
-					await this.apiCallService.handleRequest(ep, request, reply);
+					await this.operationContextService.runRoot(
+						() => this.apiCallService.handleRequest(ep, request, reply),
+					);
 					return reply;
 				});
 			}

@@ -7,11 +7,9 @@ process.env.NODE_ENV = 'test';
 
 import { setTimeout } from 'node:timers/promises';
 import { describe, beforeEach, afterEach, test, expect, vi } from 'vitest';
-import type { Mocked } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
 import { Test } from '@nestjs/testing';
 import * as lolex from '@sinonjs/fake-timers';
-import type { TestingModule } from '@nestjs/testing';
 import { GlobalModule } from '@/GlobalModule.js';
 import { RoleService } from '@/core/RoleService.js';
 import {
@@ -29,10 +27,13 @@ import { genAidx } from '@/misc/id/aidx.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { OperationContextService } from '@/core/OperationContextService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { RoleCondFormulaValue } from '@/models/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { TestingModule } from '@nestjs/testing';
+import type { Mocked } from 'vitest';
 
 describe('RoleService', () => {
 	let app: TestingModule;
@@ -40,6 +41,7 @@ describe('RoleService', () => {
 	let usersRepository: UsersRepository;
 	let rolesRepository: RolesRepository;
 	let roleAssignmentsRepository: RoleAssignmentsRepository;
+	let operationContextService: OperationContextService;
 	let meta: Mocked<MiMeta>;
 	let notificationService: Mocked<NotificationService>;
 	let clock: lolex.Clock;
@@ -146,6 +148,7 @@ describe('RoleService', () => {
 		usersRepository = app.get<UsersRepository>(DI.usersRepository);
 		rolesRepository = app.get<RolesRepository>(DI.rolesRepository);
 		roleAssignmentsRepository = app.get<RoleAssignmentsRepository>(DI.roleAssignmentsRepository);
+		operationContextService = app.get<OperationContextService>(OperationContextService);
 
 		meta = app.get<MiMeta>(DI.meta) as Mocked<MiMeta>;
 		notificationService = app.get<NotificationService>(NotificationService) as Mocked<NotificationService>;
@@ -206,6 +209,68 @@ describe('RoleService', () => {
 			expect(assigns.some(a => a.roleId === roleNotExpired.id)).toBe(true);
 			expect(assigns.some(a => a.roleId === roleExpired.id)).toBe(false);
 		});
+
+		test('userRoleAssignedイベントを重複適用してもアサインが重複しない', async () => {
+			const user = await createUser();
+			const role = await createRole({ name: 'role' });
+			const assignment = await assignRole({ userId: user.id, roleId: role.id });
+			await roleService.getUserAssigns(user.id);
+
+			await roleService['onMessage']('', JSON.stringify({
+				channel: 'internal',
+				message: {
+					type: 'userRoleAssigned',
+					body: assignment,
+				},
+			}));
+
+			const assigns = await roleService.getUserAssigns(user.id);
+			expect(assigns.filter(candidate => candidate.id === assignment.id)).toHaveLength(1);
+		});
+	});
+
+	describe('getRoles', () => {
+		test('roleCreatedイベントを重複適用してもロールが重複しない', async () => {
+			const role = await createRole({ name: 'role' });
+			await roleService.getRoles();
+
+			await roleService['onMessage']('', JSON.stringify({
+				channel: 'internal',
+				message: {
+					type: 'roleCreated',
+					body: role,
+				},
+			}));
+
+			const roles = await roleService.getRoles();
+			expect(roles.filter(candidate => candidate.id === role.id)).toHaveLength(1);
+		});
+
+		test('削除後に遅れて届いたroleUpdatedイベントでロールが復活しない', async () => {
+			const role = await createRole({ name: 'role' });
+			await roleService.getRoles();
+
+			await roleService['onMessage']('', JSON.stringify({
+				channel: 'internal',
+				message: {
+					type: 'roleDeleted',
+					body: role,
+				},
+			}));
+			await roleService['onMessage']('', JSON.stringify({
+				channel: 'internal',
+				message: {
+					type: 'roleUpdated',
+					body: {
+						...role,
+						name: 'updated role',
+					},
+				},
+			}));
+
+			const roles = await roleService.getRoles();
+			expect(roles.some(candidate => candidate.id === role.id)).toBe(false);
+		});
 	});
 
 	describe('getUserRoles', () => {
@@ -222,6 +287,37 @@ describe('RoleService', () => {
 			const roles = await roleService.getUserRoles(user.id);
 			expect(roles.some(r => r.id === manualRole.id)).toBe(true);
 			expect(roles.some(r => r.id === conditionalRole.id)).toBe(true);
+		});
+
+		test('Operation内で共有した配列を呼び出し元から変更できない', async () => {
+			const user = await createUser();
+			const role = await createRole({ name: 'manual role' });
+			await roleService.assign(user.id, role.id);
+
+			await operationContextService.runRoot(async () => {
+				const first = await roleService.getUserRoles(user.id);
+				first.splice(0);
+
+				const second = await roleService.getUserRoles(user.id);
+				expect(second.some(candidate => candidate.id === role.id)).toBe(true);
+			});
+		});
+
+		test('Operation内のassign/unassign後は再計算する', async () => {
+			const user = await createUser();
+			const role = await createRole({ name: 'manual role' });
+
+			await operationContextService.runRoot(async () => {
+				await expect(roleService.getUserRoles(user.id)).resolves.toEqual([]);
+
+				await roleService.assign(user.id, role.id);
+				const assigned = await roleService.getUserRoles(user.id);
+				expect(assigned.some(candidate => candidate.id === role.id)).toBe(true);
+
+				await roleService.unassign(user.id, role.id);
+				const unassigned = await roleService.getUserRoles(user.id);
+				expect(unassigned.some(candidate => candidate.id === role.id)).toBe(false);
+			});
 		});
 	});
 
@@ -364,6 +460,69 @@ describe('RoleService', () => {
 
 			// roleWithoutPolicy は default 値 (5) を使い、roleWithPolicy の 10 と比較して大きい方が採用される
 			expect(result.pinLimit).toBe(10);
+		});
+
+		test('Operation内では同じポリシースナップショットを返す', async () => {
+			const user = await createUser();
+			meta.policies = {
+				pinLimit: 5,
+				uploadableFileTypes: ['image/*'],
+			};
+
+			await operationContextService.runRoot(async () => {
+				const first = await roleService.getUserPolicies(user.id);
+				meta.policies = {
+					pinLimit: 10,
+					uploadableFileTypes: ['video/*'],
+				};
+				first.pinLimit = 100;
+				first.uploadableFileTypes.push('application/json');
+
+				const second = await roleService.getUserPolicies(user.id);
+				expect(second.pinLimit).toBe(5);
+				expect(second.uploadableFileTypes).toEqual(['image/*']);
+			});
+
+			const nextOperation = await operationContextService.runRoot(
+				() => roleService.getUserPolicies(user.id),
+			);
+			expect(nextOperation.pinLimit).toBe(10);
+			expect(nextOperation.uploadableFileTypes).toEqual(['video/*']);
+		});
+
+		test('Operation内のrole更新後はポリシーを再計算する', async () => {
+			const user = await createUser();
+			const role = await createRole({
+				name: 'role',
+				policies: {
+					pinLimit: {
+						useDefault: false,
+						priority: 0,
+						value: 10,
+					},
+				},
+			});
+			await roleService.assign(user.id, role.id);
+
+			await operationContextService.runRoot(async () => {
+				await expect(roleService.getUserPolicies(user.id)).resolves.toMatchObject({
+					pinLimit: 10,
+				});
+
+				await roleService.update(role, {
+					policies: {
+						pinLimit: {
+							useDefault: false,
+							priority: 0,
+							value: 20,
+						},
+					},
+				});
+
+				await expect(roleService.getUserPolicies(user.id)).resolves.toMatchObject({
+					pinLimit: 20,
+				});
+			});
 		});
 	});
 
