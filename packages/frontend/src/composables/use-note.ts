@@ -244,7 +244,7 @@ export function useNote(
 		});
 	}
 
-	async function react(customCallback?: (reaction: string) => void) {
+	async function react(createReactionMock?: (reaction: string) => void) {
 		const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 		if (!isLoggedIn) return;
 		showMovedDialog();
@@ -279,7 +279,7 @@ export function useNote(
 				}
 				sound.playMisskeySfx('reaction');
 				if (props.mock) {
-					if (customCallback) customCallback(reaction);
+					if (createReactionMock) createReactionMock(reaction);
 					return;
 				}
 				misskeyApi('notes/reactions/create', {
