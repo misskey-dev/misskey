@@ -196,7 +196,6 @@ test.describe('After user setup', () => {
 		await registerUser('alice', 'alice1234');
 		await signIn(page, 'alice', 'alice1234');
 
-		// 表示に時間がかかるのでデフォルト秒数だとタイムアウトする
 		await closeUserSetupDialog(page);
 	});
 
