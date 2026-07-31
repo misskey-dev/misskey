@@ -131,7 +131,7 @@ export function chunkMarkdownTable(
 	if (rows.length === 0 && total == null && !hasGenerated && !hasOther) return '_No data_';
 
 	const lines = [
-		'| Chunk | Base | Head | Δ | Δ (%) |', // nbspにすること
+		'| Chunk | Base | Head | Δ | Δ\u00A0(%) |', // nbspにすること
 		'| --- | ---: | ---: | ---: | ---: |',
 	];
 	if (total != null) {
@@ -151,7 +151,7 @@ export function chunkMarkdownTable(
 	}
 	if (hasGenerated) {
 		// eslint-disable-next-line no-irregular-whitespace
-		lines.push(`| (other generated chunks) | ${formatBytes(generated.baseSize)} | ${formatBytes(generated.headSize)} | ${calcAndFormatDeltaBytes(generated.baseSize, generated.headSize, 1000)} | ${calcAndFormatDeltaPercentInMdTable(generated.baseSize, generated.headSize, 0.1)} |`); // nbspにすること
+		lines.push(`| (other\u00A0generated\u00A0chunks) | ${formatBytes(generated.baseSize)} | ${formatBytes(generated.headSize)} | ${calcAndFormatDeltaBytes(generated.baseSize, generated.headSize, 1000)} | ${calcAndFormatDeltaPercentInMdTable(generated.baseSize, generated.headSize, 0.1)} |`); // nbspにすること
 	}
 	if (hasOther) {
 		lines.push(`| (other) | ${formatBytes(other.baseSize)} | ${formatBytes(other.headSize)} | ${calcAndFormatDeltaBytes(other.baseSize, other.headSize, 1000)} | ${calcAndFormatDeltaPercentInMdTable(other.baseSize, other.headSize, 0.1)} |`);
