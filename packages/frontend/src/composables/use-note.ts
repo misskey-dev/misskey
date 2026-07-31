@@ -149,16 +149,14 @@ export function useNote(
 	const hardMuted = ref(props.withHardMute && $i ? calculateMuteStatus(appearNote, $i, $i.hardMutedWords, inTimeline && !tl_withSensitive.value, true) : false);
 
 	// 導出値
-	// rawNote / appearNote / $i.id は変化しないので一度だけ計算する
+	// rawNote / appearNote / $i.id / prefer.s は変化しないので一度だけ計算する
 	const isMyRenote = $i != null && ($i.id === rawNote.userId);
 	const parsed = appearNote.text ? mfm.parse(appearNote.text) : null;
 	const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.renote?.url !== url && appearNote.renote?.uri !== url) : null;
 	const isLong = shouldCollapsed(appearNote, urls ?? []);
 	const collapsed = ref(appearNote.cw == null && isLong);
 	const canRenote = ['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i?.id);
-
-	// 計算プロパティ (Computed) : 変更に追従する
-	const showTicker = computed(() => (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance));
+	const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance);
 	const renoteCollapsed = ref(prefer.s.collapseRenotes && isRenote && (($i && ($i.id === rawNote.userId || $i.id === appearNote.userId)) || ($appearNote.myReaction != null)));
 
 	const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
