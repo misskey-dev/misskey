@@ -65,7 +65,7 @@ export interface UseNoteOptions {
 export function calculateMuteStatus<
 	CheckOnly extends boolean,
 	CheckForSensitiveMedia extends boolean,
-	ReturnTypeA = CheckOnly extends true ? boolean : Array<string | string[]> | false | 'sensitiveMute',
+	ReturnTypeA = CheckOnly extends true ? Array<string | string[]> | false : Array<string | string[]> | false | 'sensitiveMute',
 	ReturnTypeB = CheckForSensitiveMedia extends true ? ReturnTypeA : Exclude<ReturnTypeA, 'sensitiveMute'>,
 >(
 	noteToCheck: Misskey.entities.Note,
@@ -76,13 +76,13 @@ export function calculateMuteStatus<
 ): ReturnTypeB {
 	if (mutedWords != null) {
 		const result = checkWordMute(noteToCheck, user, mutedWords);
-		if (Array.isArray(result)) return checkOnly ? (result.length > 0) as ReturnTypeB : result as ReturnTypeB;
+		if (Array.isArray(result)) return result as ReturnTypeB;
 
 		const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, user, mutedWords);
-		if (Array.isArray(replyResult)) return checkOnly ? (replyResult.length > 0) as ReturnTypeB : replyResult as ReturnTypeB;
+		if (Array.isArray(replyResult)) return replyResult as ReturnTypeB;
 
 		const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, user, mutedWords);
-		if (Array.isArray(renoteResult)) return checkOnly ? (renoteResult.length > 0) as ReturnTypeB : renoteResult as ReturnTypeB;
+		if (Array.isArray(renoteResult)) return renoteResult as ReturnTypeB;
 	}
 
 	if (checkOnly) return false as ReturnTypeB;
@@ -145,7 +145,7 @@ export function useNote(
 	const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 
 	// ミュート判定
-	const muted = ref($i ? calculateMuteStatus(appearNote, $i, $i.mutedWords, inTimeline && !tl_withSensitive.value) : false);
+	const muted = ref($i ? calculateMuteStatus(appearNote, $i, $i.mutedWords, inTimeline && !tl_withSensitive.value, false) : false);
 	const hardMuted = ref(props.withHardMute && $i ? calculateMuteStatus(appearNote, $i, $i.hardMutedWords, inTimeline && !tl_withSensitive.value, true) : false);
 
 	// 計算プロパティ (Computed)
