@@ -148,14 +148,17 @@ export function useNote(
 	const muted = ref($i ? calculateMuteStatus(appearNote, $i, $i.mutedWords, inTimeline && !tl_withSensitive.value) : false);
 	const hardMuted = ref(props.withHardMute && $i ? calculateMuteStatus(appearNote, $i, $i.hardMutedWords, inTimeline && !tl_withSensitive.value, true) : false);
 
-	// 計算プロパティ (Computed)
-	const isMyRenote = computed(() => $i && ($i.id === rawNote.userId));
-	const parsed = computed(() => appearNote.text ? mfm.parse(appearNote.text) : null);
-	const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.renote?.url !== url && appearNote.renote?.uri !== url) : null);
-	const isLong = computed(() => shouldCollapsed(appearNote, urls.value ?? []));
-	const collapsed = ref(appearNote.cw == null && isLong.value);
+	// 導出値
+	// rawNote / appearNote / $i.id は変化しないので一度だけ計算する
+	const isMyRenote = $i != null && ($i.id === rawNote.userId);
+	const parsed = appearNote.text ? mfm.parse(appearNote.text) : null;
+	const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.renote?.url !== url && appearNote.renote?.uri !== url) : null;
+	const isLong = shouldCollapsed(appearNote, urls ?? []);
+	const collapsed = ref(appearNote.cw == null && isLong);
+	const canRenote = ['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i?.id);
+
+	// 計算プロパティ (Computed) : 変更に追従する
 	const showTicker = computed(() => (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance));
-	const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i?.id));
 	const renoteCollapsed = ref(prefer.s.collapseRenotes && isRenote && (($i && ($i.id === rawNote.userId || $i.id === appearNote.userId)) || ($appearNote.myReaction != null)));
 
 	const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
@@ -403,7 +406,7 @@ export function useNote(
 		menuItems.push(getCopyNoteLinkMenu(rawNote, i18n.ts.copyLinkRenote));
 		menuItems.push({ type: 'divider' });
 
-		if (isMyRenote.value) {
+		if (isMyRenote) {
 			menuItems.push(getUnrenote());
 			os.popupMenu(menuItems, els.renoteTime?.value);
 		} else {
