@@ -68,8 +68,11 @@ function isDetectImagesResponse(v: unknown): v is DetectImagesResponse {
 // サイドカーの判定エンドポイント。baseUrl にパスプレフィックスがあっても連結できるよう先頭スラッシュは付けない。
 const DETECT_IMAGES_PATH = 'v1/detect-images';
 
+/**
+ * センシティブメディア判定 (NSFW検出) を行う外部サービス (sensitive-detector) へのアダプタ。
+ */
 @Injectable()
-export class AiService {
+export class SensitiveMediaDetectionService {
 	private logger: Logger;
 
 	constructor(
@@ -79,7 +82,7 @@ export class AiService {
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
 	) {
-		this.logger = this.loggerService.getLogger('ai');
+		this.logger = this.loggerService.getLogger('sensitive-media-detection');
 	}
 
 	/**

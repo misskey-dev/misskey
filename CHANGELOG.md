@@ -7,7 +7,8 @@
 -
 
 ### Server
--
+- Enhance: センシティブメディア判定のログドメイン名を `ai` から `sensitive-media-detection` に変更
+  - `logging.domains` で `ai` を指定していた場合は設定の更新が必要です
 
 
 ## 2026.7.0
