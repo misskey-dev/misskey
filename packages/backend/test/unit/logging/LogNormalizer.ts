@@ -115,6 +115,44 @@ describe('LogNormalizer', () => {
 		expect(JSON.stringify(normalized.value)).not.toContain('�');
 	});
 
+	test('truncates at UTF-8 character boundaries for every character width', () => {
+		const suffix = '…[Truncated]';
+		const suffixBytes = Buffer.byteLength(suffix, 'utf8');
+
+		// 2 / 3 / 4バイト文字それぞれについて、切り詰め位置が文字の途中に落ちる場合を網羅する
+		const cases = [
+			['é', 2], // é
+			['あ', 3], // あ
+			['\u{1f600}', 4], // 😀 (サロゲート対)
+		] as const;
+
+		for (const [char, charBytes] of cases) {
+			for (let slack = 0; slack < charBytes; slack++) {
+				const maxStringBytes = suffixBytes + charBytes + slack;
+				const normalized = normalizeLogAttributes(
+					{ value: char.repeat(20) },
+					{ limits: { maxStringBytes, maxBytes: 4096 } },
+				).value as string;
+
+				expect(Buffer.byteLength(normalized, 'utf8')).toBeLessThanOrEqual(maxStringBytes);
+				expect(normalized).toBe(char + suffix);
+				// サロゲート対の分割などで不正なUTF-8になっていないこと
+				expect(Buffer.from(normalized, 'utf8').toString('utf8')).toBe(normalized);
+			}
+		}
+	});
+
+	test('drops the truncation suffix when it does not fit within the byte limit', () => {
+		const normalized = normalizeLogAttributes(
+			{ value: 'あ'.repeat(20) },
+			{ limits: { maxStringBytes: 10, maxBytes: 4096 } },
+		).value as string;
+
+		// 接尾辞(14バイト)が上限に収まらないので、接尾辞なしで文字境界まで切り詰める
+		expect(normalized).toBe('あ'.repeat(3));
+		expect(Buffer.byteLength(normalized, 'utf8')).toBeLessThanOrEqual(10);
+	});
+
 	test('serializes Error and its cause consistently', () => {
 		const cause = new Error('root cause');
 		const error = new TypeError('outer error', { cause });
