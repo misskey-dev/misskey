@@ -42,6 +42,22 @@ describe('OperationContextService', () => {
 		expect(loader).toHaveBeenCalledTimes(2);
 	});
 
+	test('nested root operations restore the parent context', async () => {
+		const service = new OperationContextService();
+		const token = defineOperationMemo<string, object>('test', key => key);
+		const loader = vi.fn(() => ({}));
+
+		await service.runRoot(async () => {
+			const outer = await service.memoizeIfActive(token, 'key', loader);
+			const inner = await service.runRoot(() => service.memoizeIfActive(token, 'key', loader));
+
+			expect(inner).not.toBe(outer);
+			await expect(service.memoizeIfActive(token, 'key', loader)).resolves.toBe(outer);
+		});
+
+		expect(loader).toHaveBeenCalledTimes(2);
+	});
+
 	test('falls back to loading every time outside an operation context', async () => {
 		const service = new OperationContextService();
 		const token = defineOperationMemo<string, object>('test', key => key);

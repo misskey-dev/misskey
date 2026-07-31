@@ -573,6 +573,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	private invalidateAllRoleCalculations(): void {
+		// ロール定義の変更はロールアサイン自体には影響しないため、userAssignsMemoは保持する。
 		this.operationContextService.invalidateAllIfActive(rolesMemo);
 		this.operationContextService.invalidateAllIfActive(userRolesMemo);
 		this.operationContextService.invalidateAllIfActive(userBadgeRolesMemo);
