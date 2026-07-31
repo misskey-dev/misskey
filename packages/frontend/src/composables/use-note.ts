@@ -62,16 +62,11 @@ export interface UseNoteOptions {
 	currentAntenna?: Ref<Misskey.entities.Antenna | null> | null;
 }
 
-export function calculateMuteStatus<
-	CheckOnly extends boolean,
-	CheckForSensitiveMedia extends boolean,
->(
+export function checkNoteWordMute(
 	noteToCheck: Misskey.entities.Note,
 	user: typeof $i,
 	mutedWords: Array<string | string[]> | null,
-	checkForSensitiveMedia: CheckForSensitiveMedia,
-	checkOnly: CheckOnly = false as CheckOnly,
-): Array<string | string[]> | false | (CheckOnly extends false ? CheckForSensitiveMedia extends true ? 'sensitiveMute' : never : never) {
+): Array<string | string[]> | false {
 	if (mutedWords != null) {
 		const result = checkWordMute(noteToCheck, user, mutedWords);
 		if (Array.isArray(result)) return result;
@@ -83,8 +78,13 @@ export function calculateMuteStatus<
 		if (Array.isArray(renoteResult)) return renoteResult;
 	}
 
-	if (checkOnly) return false;
+	return false;
+}
 
+export function checkBuiltinSoftMute(
+	noteToCheck: Misskey.entities.Note,
+	checkForSensitiveMedia: boolean,
+): 'sensitiveMute' | false {
 	if (checkForSensitiveMedia && noteToCheck.files?.some((v) => v.isSensitive)) {
 		return 'sensitiveMute' as never;
 	}
@@ -143,8 +143,8 @@ export function useNote(
 	const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 
 	// ミュート判定
-	const muted = ref($i ? calculateMuteStatus(appearNote, $i, $i.mutedWords, inTimeline && !tl_withSensitive.value, false) : false);
-	const hardMuted = ref(props.withHardMute && $i ? calculateMuteStatus(appearNote, $i, $i.hardMutedWords, inTimeline && !tl_withSensitive.value, true) : false);
+	const muted = ref($i ? checkNoteWordMute(appearNote, $i, $i.mutedWords) || checkBuiltinSoftMute(appearNote, inTimeline && !tl_withSensitive.value) : false);
+	const hardMuted = ref(props.withHardMute && $i ? checkNoteWordMute(appearNote, $i, $i.hardMutedWords) : false);
 
 	// 計算プロパティ (Computed)
 	const isMyRenote = computed(() => $i && ($i.id === rawNote.userId));
