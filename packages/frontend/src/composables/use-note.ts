@@ -65,33 +65,31 @@ export interface UseNoteOptions {
 export function calculateMuteStatus<
 	CheckOnly extends boolean,
 	CheckForSensitiveMedia extends boolean,
-	ReturnTypeA = CheckOnly extends true ? Array<string | string[]> | false : Array<string | string[]> | false | 'sensitiveMute',
-	ReturnTypeB = CheckForSensitiveMedia extends true ? ReturnTypeA : Exclude<ReturnTypeA, 'sensitiveMute'>,
 >(
 	noteToCheck: Misskey.entities.Note,
 	user: typeof $i,
 	mutedWords: Array<string | string[]> | null,
 	checkForSensitiveMedia: CheckForSensitiveMedia,
 	checkOnly: CheckOnly = false as CheckOnly,
-): ReturnTypeB {
+): Array<string | string[]> | false | (CheckOnly extends false ? CheckForSensitiveMedia extends true ? 'sensitiveMute' : never : never) {
 	if (mutedWords != null) {
 		const result = checkWordMute(noteToCheck, user, mutedWords);
-		if (Array.isArray(result)) return result as ReturnTypeB;
+		if (Array.isArray(result)) return result;
 
 		const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, user, mutedWords);
-		if (Array.isArray(replyResult)) return replyResult as ReturnTypeB;
+		if (Array.isArray(replyResult)) return replyResult;
 
 		const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, user, mutedWords);
-		if (Array.isArray(renoteResult)) return renoteResult as ReturnTypeB;
+		if (Array.isArray(renoteResult)) return renoteResult;
 	}
 
-	if (checkOnly) return false as ReturnTypeB;
+	if (checkOnly) return false;
 
 	if (checkForSensitiveMedia && noteToCheck.files?.some((v) => v.isSensitive)) {
-		return 'sensitiveMute' as ReturnTypeB;
+		return 'sensitiveMute' as never;
 	}
 
-	return false as ReturnTypeB;
+	return false;
 }
 
 /** MkNote, MkNoteDetailedの共通ロジック */
