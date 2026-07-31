@@ -85,6 +85,9 @@ test.describe('After setup instance', () => {
 		await visitHome(page);
 
 		await page.getByTestId('signup').click();
+		await page.getByTestId('signup-rules-continue').waitFor({ state: 'visible' });
+		test.expect(await page.getByTestId('signup-rules-continue').isDisabled()).toBeTruthy();
+
 		await locateMkSwitch(page, 'signup-rules-notes-agree').click();
 		await page.getByTestId('modal-dialog-ok').click();
 		test.expect(await page.getByTestId('signup-rules-continue').isDisabled()).toBeFalsy();
