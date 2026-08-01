@@ -55,6 +55,32 @@ delete: "حذف"
 deleteAndEdit: "حذف و ویرایش"
 deleteAndEditConfirm: "آیا می خواهید که این یادداشت را حذف و دوباره ویرایش کنید؟ در این صورت همچنین تمام واکنش ها، بازنشر ها و پاسخ ها به این یادداشت پاک خواهد شد."
 addToList: "افزودن به فهرست"
+addToAntenna: "افزودن به آنتن"
+sendMessage: "ارسال پیام"
+copyRSS: "رونوشت RSS"
+copyUsername: "رونوشت نام کاربری"
+copyUserId: "رونوشت شناسه کاربری"
+copyNoteId: "رونوشت شناسه یادداشت"
+copyFileId: "رونوشت شناسه پرونده"
+copyFolderId: "رونوشت شناسه پوشه"
+copyProfileUrl: "رونوشت ادرس نمایه"
+searchUser: "جستجوی کاربران"
+searchThisUsersNotes: "جستجو در یادداشت های این کاربر"
+reply: "پاسخ"
+loadMore: "بارگیری بیشتر"
+showMore: "نمایش بیشتر"
+showLess: "بستن"
+youGotNewFollower: "شما دنبال شده اید"
+receiveFollowRequest: "درخواست دنبال کردن دریافت شد"
+followRequestAccepted: "درخواست دنبال کردن قبول شد"
+mention: "اشاره"
+mentions: "اشاره کردن"
+directNotes: "یادداشت مستقیم"
+importAndExport: "واردکردن و خارج‌کردن"
+import: "واردکردن"
+export: "خارج‌کردن"
+files: "پرونده ها"
+download: "بارگیری"
 pinned: "سنجاق کردن"
 instances: "سرور"
 remove: "حذف"
@@ -62,6 +88,14 @@ smtpUser: "نام کاربری"
 smtpPass: "گذرواژه"
 user: "کاربران"
 searchByGoogle: "جستجو"
+file: "پرونده ها"
+replies: "پاسخ"
+_email:
+  _follow:
+    title: "شما دنبال شده اید"
+_theme:
+  keys:
+    mention: "اشاره کردن"
 _sfx:
   notification: "اعلان ها"
 _2fa:
@@ -70,12 +104,22 @@ _widgets:
   profile: "نمایه"
   notifications: "اعلان ها"
   timeline: "نوار زمانی"
+_cw:
+  show: "بارگیری بیشتر"
+_visibility:
+  specified: "یادداشت مستقیم"
 _profile:
   username: "نام کاربری"
 _notification:
+  youWereFollowed: "شما دنبال شده اید"
   _types:
+    mention: "اشاره کردن"
     login: "ورود"
+  _actions:
+    reply: "پاسخ"
 _deck:
   _columns:
     notifications: "اعلان ها"
     tl: "نوار زمانی"
+    mentions: "اشاره کردن"
+    direct: "یادداشت مستقیم"
