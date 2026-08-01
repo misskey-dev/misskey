@@ -186,6 +186,10 @@ youHaveNoLists: "شما فهرستی ندارید"
 followConfirm: "آیا می خواهید {name} را دنبال کنید؟"
 proxyAccount: "حساب وکیل"
 instances: "سرور"
+cpuAndMemory: "پردازنده و حافظه رم"
+network: "شبکه"
+disk: "حافظه ذخیره"
+instanceInfo: "اطلاعات سرور"
 remove: "حذف"
 pinnedNotes: "یادداشت سنجاق شده"
 userList: "فهرست ها"
@@ -210,6 +214,7 @@ _2fa:
   renewTOTPCancel: "الان نه"
 _widgets:
   profile: "نمایه"
+  instanceInfo: "اطلاعات سرور"
   notifications: "اعلان ها"
   timeline: "نوار زمانی"
   _userList:
