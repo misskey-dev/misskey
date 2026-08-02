@@ -4,7 +4,6 @@
  */
 
 import { Injectable, Inject } from '@nestjs/common';
-import fetch from 'node-fetch';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -131,9 +130,6 @@ export class AiService {
 
 	@bindThis
 	private async detectChunk(url: string, apiKey: string | null, timeout: number, chunk: Buffer[]): Promise<(Prediction[] | null)[]> {
-		const controller = new AbortController();
-		const timer = setTimeout(() => controller.abort(), timeout);
-
 		try {
 			const form = new FormData();
 			for (let i = 0; i < chunk.length; i++) {
@@ -148,14 +144,13 @@ export class AiService {
 				headers['Authorization'] = `Bearer ${apiKey}`;
 			}
 
-			const res = await fetch(url, {
+			const res = await this.httpRequestService.send(url, {
 				method: 'POST',
 				headers,
 				body: form,
-				// 外部サービスとして通常の proxy / private address 制限を適用する。
-				// サイドカーへの private network 接続は allowedPrivateNetworks 等で明示的に許可する。
-				agent: (u) => this.httpRequestService.getAgentByUrl(u),
-				signal: controller.signal,
+				timeout,
+			}, {
+				throwErrorWhenResponseNotOk: false,
 			});
 
 			if (!res.ok) {
@@ -181,8 +176,6 @@ export class AiService {
 		} catch (err) {
 			this.logger.warn(`sensitive detection error: ${err instanceof Error ? err.message : String(err)}`);
 			return chunk.map(() => null);
-		} finally {
-			clearTimeout(timer);
 		}
 	}
 }
