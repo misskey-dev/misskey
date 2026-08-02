@@ -155,10 +155,15 @@ function togglePlayPause() {
 }
 
 function togglePictureInPicture() {
+	// ブラウザ側で許可されていない場合等にrejectしうるが、表示が変わらないだけなので握りつぶす
 	if (window.document.pictureInPictureElement) {
-		window.document.exitPictureInPicture();
+		window.document.exitPictureInPicture().catch(err => {
+			if (_DEV_) console.warn('Failed to exit picture-in-picture:', err);
+		});
 	} else if (isVideo.value) {
-		(mediaEl.value as HTMLVideoElement).requestPictureInPicture();
+		(mediaEl.value as HTMLVideoElement).requestPictureInPicture().catch(err => {
+			if (_DEV_) console.warn('Failed to enter picture-in-picture:', err);
+		});
 	}
 }
 
@@ -207,7 +212,17 @@ function syncDuration() {
 
 function syncBuffered() {
 	const buffered = mediaEl.value?.buffered;
-	bufferedEnd.value = buffered != null && buffered.length > 0 ? buffered.end(0) : 0;
+	if (buffered == null || buffered.length === 0) {
+		bufferedEnd.value = 0;
+		return;
+	}
+
+	// シークすると読み込み済みの範囲が複数に分かれるため、最も先まで到達している位置を採用する
+	let end = 0;
+	for (let i = 0; i < buffered.length; i++) {
+		if (buffered.end(i) > end) end = buffered.end(i);
+	}
+	bufferedEnd.value = end;
 }
 
 function init() {
@@ -335,6 +350,10 @@ function teardown() {
 	loopObserver = null;
 	stopElapsedTick();
 	isReady.value = false;
+	// メディア要素を差し替えた場合、古い要素のイベントはもう届かないのでここで戻しておく
+	// (isPlaying / loop / speed 等は init() が新しい要素から取り込み直す)
+	isActuallyPlaying.value = false;
+	oncePlayed.value = false;
 }
 
 watch(volume, (to) => {

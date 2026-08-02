@@ -6,7 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	ref="playerEl"
-	tabindex="0"
 	:class="[
 		$style.root,
 		(audio.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive,
@@ -20,8 +19,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 		</div>
 	</button>
-
-	<div v-else v-panel tabindex="0" :class="$style.audioRoot" @click="emit('mediaClick', $event)" @keydown.enter="emit('mediaClick', $event)">
+	<div
+		v-else
+		v-panel
+		role="button"
+		tabindex="0"
+		:class="$style.audioRoot"
+		@click="emit('mediaClick', $event)"
+		@keydown.enter.prevent="emit('mediaClick', $event)"
+		@keydown.space.prevent="emit('mediaClick', $event)"
+	>
 		<div :class="$style.audioRootSkelton"></div>
 		<svg version="1.1" viewBox="0 0 2911.5 735.42" xmlns="http://www.w3.org/2000/svg" :class="$style.audioWave">
 			<path d="m2852.4 363.63h-21.65v8.17h21.65zm29.53 0h-21.65v8.17h21.65zm29.53 0h-21.65v8.17h21.65z"/>
