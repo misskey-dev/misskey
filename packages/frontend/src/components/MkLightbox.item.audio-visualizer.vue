@@ -197,7 +197,7 @@ const messageColor = computed(() => {
 		targetLightness = 0.25;
 		targetSaturation = 0.4;
 	}
-	return `hsl(${accentColorHue.value}, ${targetSaturation * 100}%, ${targetLightness * 100}%)`
+	return `hsl(${accentColorHue.value}, ${targetSaturation * 100}%, ${targetLightness * 100}%)`;
 });
 
 // 読み込みが終わるまでは描画しない (読み込み完了時の描き直しは下のwatchで行う)
