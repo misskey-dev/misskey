@@ -102,7 +102,7 @@ function onContextmenu(item: UploaderItem, ev: PointerEvent) {
 }
 
 async function onThumbnailClick(item: UploaderItem, ev: PointerEvent) {
-	if (item.file.type.startsWith('image') || item.file.type.startsWith('video')) {
+	if (isPreviewable(item.file.type)) {
 		const contents = props.items
 			.filter(item => isPreviewable(item.file.type))
 			.map<Content>(item => ({

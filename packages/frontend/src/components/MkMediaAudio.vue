@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</button>
 
-	<div v-else v-panel :class="$style.audioRoot" @click="emit('mediaClick', $event)">
+	<div v-else v-panel tabindex="0" :class="$style.audioRoot" @click="emit('mediaClick', $event)" @keydown.enter="emit('mediaClick', $event)">
 		<div :class="$style.audioRootSkelton"></div>
 		<svg version="1.1" viewBox="0 0 2911.5 735.42" xmlns="http://www.w3.org/2000/svg" :class="$style.audioWave">
 			<path d="m2852.4 363.63h-21.65v8.17h21.65zm29.53 0h-21.65v8.17h21.65zm29.53 0h-21.65v8.17h21.65z"/>
@@ -65,8 +65,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-player-play"></i>
 			</div>
 		</div>
-		<button :class="[$style.menu, $style.menuBottom]" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;" aria-hidden="true"></i></button>
-		<button :class="[$style.menu, $style.menuTop]" class="_button" @click.stop="hide = true"><i class="ti ti-eye-off" style="vertical-align: middle;" aria-hidden="true"></i></button>
+		<button :class="[$style.menu, $style.menuBottom]" class="_button" @click.stop="showMenu" @keydown.stop><i class="ti ti-dots" style="vertical-align: middle;" aria-hidden="true"></i></button>
+		<button :class="[$style.menu, $style.menuTop]" class="_button" @click.stop="hide = true" @keydown.stop><i class="ti ti-eye-off" style="vertical-align: middle;" aria-hidden="true"></i></button>
 	</div>
 </div>
 </template>
@@ -86,7 +86,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(event: 'mediaClick', ev: PointerEvent): void;
+	(event: 'mediaClick', ev: PointerEvent | KeyboardEvent): void;
 }>();
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss

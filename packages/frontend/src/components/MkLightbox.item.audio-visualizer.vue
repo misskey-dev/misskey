@@ -17,6 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		height="900"
 		data-gallery-click-action="media"
 		:class="$style.visualizer"
+		v-bind="$attrs"
 	></canvas>
 	<div v-if="!isActuallyPlaying" :class="$style.playIconWrapper">
 		<div :class="$style.playIcon">
@@ -35,6 +36,11 @@ import { store } from '@/store.js';
 import tinycolor from 'tinycolor2';
 import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
 import type { Content } from '@/components/MkLightbox.item.vue';
+
+// クリック等のフォールスルーはルート (全面を覆う) ではなくキャンバスに渡す
+defineOptions({
+	inheritAttrs: false,
+});
 
 const props = defineProps<{
 	content: Content;

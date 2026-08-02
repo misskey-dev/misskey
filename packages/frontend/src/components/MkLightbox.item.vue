@@ -97,7 +97,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<i class="ti ti-player-play"></i>
 							</div>
 						</div>
-						<div v-else-if="content.type === 'audio' && prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.audioRoot">
+						<div v-if="content.type === 'audio' && prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.audioRoot">
 							<audio
 								ref="audioEl"
 								:src="content.url"
@@ -306,7 +306,7 @@ function onVideoLoadedMetadata() {
 }
 
 const headerSize = 30;
-const footerSize = isMediaControlledByMisskey.value && !prefer.s.useNativeUiForVideoAudioPlayer ? 80 : 0;
+const footerSize = isMediaControlledByMisskey.value ? 80 : 0;
 
 const padding = deviceKind === 'smartphone' ? {
 	top: Math.max(0, headerSize + 10),
@@ -908,12 +908,36 @@ function onClick(ev: MouseEvent) {
 	}
 }
 
+/**
+ * play() は自動再生のブロックや、再生が始まる前の pause() によって reject することがある。
+ * いずれも再生ボタンが出たままになるだけで復帰不能ではないので、握りつぶす
+ */
+function safePlay(el: HTMLMediaElement) {
+	el.play().catch(err => {
+		if (_DEV_) console.warn('Failed to play media:', err);
+	});
+}
+
+function playWhenAvailable() {
+	if (mediaEl.value != null) {
+		safePlay(mediaEl.value);
+		return;
+	}
+
+	// オーディオビジュアライザはlazy-loadのため、この時点ではまだ要素が無い可能性がある
+	const watchStop = watch(mediaEl, (newMediaEl) => {
+		if (newMediaEl == null) return;
+		safePlay(newMediaEl);
+		watchStop();
+	});
+}
+
 async function onHiddenClick() {
 	if (hide.value) {
 		if (props.content.file == null || await canRevealFile(props.content.file)) {
 			hide.value = false;
-			if (['audio', 'video'].includes(props.content.type) && mediaEl.value != null) {
-				mediaEl.value.play();
+			if (['audio', 'video'].includes(props.content.type)) {
+				playWhenAvailable();
 			}
 		}
 	}
@@ -924,7 +948,7 @@ function onMediaClick() {
 		if (mediaEl.value == null) return;
 
 		if (mediaEl.value.paused) {
-			mediaEl.value.play();
+			safePlay(mediaEl.value);
 		} else {
 			mediaEl.value.pause();
 		}
@@ -965,13 +989,7 @@ function openMenu(ev: PointerEvent) {
 }
 
 function onActive() {
-	// オーディオビジュアライザはlazy-loadのため、この時点ではまだ要素が無い可能性がある
-	const watchStop = watch(mediaEl, (newMediaEl) => {
-		if (newMediaEl != null) {
-			newMediaEl.play();
-			watchStop();
-		}
-	}, { immediate: true });
+	playWhenAvailable();
 }
 
 function onDeactive() {

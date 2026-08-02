@@ -147,7 +147,10 @@ function togglePlayPause() {
 	if (isPlaying.value) {
 		mediaEl.value?.pause();
 	} else {
-		mediaEl.value?.play();
+		// 自動再生のブロック等で reject しうるが、再生ボタンが出たままになるだけなので握りつぶす
+		mediaEl.value?.play().catch(err => {
+			if (_DEV_) console.warn('Failed to play media:', err);
+		});
 	}
 }
 
@@ -313,9 +316,13 @@ function init() {
 	// 音声トラックを持たない動画はGIFのように扱う
 	if (isVideo.value) {
 		hasAudio(el).then(had => {
+			// 判定を待っている間に teardown / 再 init されている可能性があるので、世代が変わっていたら何もしない
+			if (signal.aborted) return;
 			if (!had) {
 				el.loop = el.muted = true;
-				el.play();
+				el.play().catch(err => {
+					if (_DEV_) console.warn('Failed to play media:', err);
+				});
 			}
 		});
 	}

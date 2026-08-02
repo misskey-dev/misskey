@@ -154,9 +154,6 @@ async function describe(file: Misskey.entities.DriveFile) {
 function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | KeyboardEvent): void {
 	if (menuShowing) return;
 
-	const isImage = file.type.startsWith('image/');
-	const isVideo = file.type.startsWith('video/');
-
 	const menuItems: MenuItem[] = [];
 
 	menuItems.push({
@@ -173,7 +170,7 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | Keybo
 		action: () => { describe(file); },
 	});
 
-	if (isImage || isVideo) {
+	if (isPreviewable(file.type)) {
 		menuItems.push({
 			text: i18n.ts.preview,
 			icon: 'ti ti-photo-search',
