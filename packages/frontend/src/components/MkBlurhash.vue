@@ -79,7 +79,7 @@ const canvasHeight = ref(64);
 const viewId = genId();
 const bitmapTmp = shallowRef<CanvasImageSource | undefined>();
 
-watch([() => props.width, () => props.height], () => {
+watch([() => props.width, () => props.height, canvas], () => {
 	const ratio = props.width / props.height;
 	if (!Number.isFinite(ratio) || ratio <= 0) {
 		canvasWidth.value = 64;
@@ -93,6 +93,10 @@ watch([() => props.width, () => props.height], () => {
 	}
 }, {
 	immediate: true,
+});
+
+watch(() => props.blurhash, () => {
+	draw();
 });
 
 function drawImage(bitmap: CanvasImageSource) {
@@ -161,23 +165,14 @@ canvasPromise.then(work => {
 	if (work instanceof WorkerMultiDispatch) {
 		work.addListener(workerOnMessage);
 	}
-});
 
-watch(() => props.blurhash, () => {
 	draw();
 });
-
-// canvasのwidth/height属性が変わるとcanvasの内容はクリアされてしまうため、描画し直す
-watch([canvasWidth, canvasHeight], () => {
-	draw();
-}, { flush: 'post' });
 
 onMounted(() => {
 	// drawImageがmountedより先に呼ばれている場合はここで描画する
 	if (bitmapTmp.value) {
 		drawImage(bitmapTmp.value);
-	} else {
-		draw();
 	}
 });
 
