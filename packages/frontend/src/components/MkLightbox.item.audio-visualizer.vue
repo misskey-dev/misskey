@@ -41,7 +41,7 @@ import tinycolor from 'tinycolor2';
 import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
 import type { Content } from '@/components/MkLightbox.item.vue';
 
-// クリック等のフォールスルーはルート (全面を覆う) ではなくキャンバスに渡す
+// クリック等のフォールスルーはキャンバスに渡す (ルートは全面を覆うので、その外側は背景として扱わせる)
 defineOptions({
 	inheritAttrs: false,
 });
@@ -236,9 +236,6 @@ function isSameOrigin(url: string) {
 
 /** 同一オリジンの音源はCORS属性なしでも解析できる */
 const isSameOriginContent = computed(() => isSameOrigin(props.content.url));
-
-// 音源に紐付く状態はフラグではなく対象のURLを持たせる。音源が差し替われば一致しなくなって
-// 自動的に失効するので、リセット漏れによる前の音源の状態の持ち越しが起こらない
 /** CORS付きでの読み込みに失敗した音源 */
 const corsFailedUrl = ref<string | null>(null);
 /** フォールバックで要素を作り直した後、再生を再開すべき音源 */
@@ -355,7 +352,7 @@ function init() {
 	const el = audioEl.value;
 	if (el == null) return;
 
-	// 前の音源の波形を持ち越さない (グラフを組めるかどうかに関わらず捨てる)
+	// 前の音源の波形を持ち越さない
 	resetAnalysis();
 
 	// CORS的に読めない音源をグラフに繋ぐと再生まで無音になるため、その場合は繋がずに素の再生に任せる
