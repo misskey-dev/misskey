@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.root">
 	<!-- keyを変えて要素ごと作り直すことで、AudioContextに繋いだ要素を確実に切り離す (onLoadErrorを参照) -->
 	<audio
-		:key="crossOriginMode"
+		:key="audioElKey"
 		ref="audioEl"
 		preload="metadata"
 		:crossorigin="crossOriginMode === 'anonymous' ? 'anonymous' : undefined"
@@ -237,16 +237,26 @@ function isSameOrigin(url: string) {
 /** 同一オリジンの音源はCORS属性なしでも解析できる */
 const isSameOriginContent = computed(() => isSameOrigin(props.content.url));
 
+// 音源に紐付く状態はフラグではなく対象のURLを持たせる。音源が差し替われば一致しなくなって
+// 自動的に失効するので、リセット漏れによる前の音源の状態の持ち越しが起こらない
+/** CORS付きでの読み込みに失敗した音源 */
+const corsFailedUrl = ref<string | null>(null);
+/** フォールバックで要素を作り直した後、再生を再開すべき音源 */
+let resumeAfterReloadUrl: string | null = null;
+
 /** `anonymous`: CORS付きで読み込む (解析できる) / `none`: CORS無しで読み込む (同一オリジンでない場合は再生のみ) */
-const crossOriginMode = ref<'anonymous' | 'none'>(isSameOriginContent.value ? 'none' : 'anonymous');
+const crossOriginMode = computed<'anonymous' | 'none'>(() => (isSameOriginContent.value || corsFailedUrl.value === props.content.url) ? 'none' : 'anonymous');
 const canUseAudioGraph = computed(() => isSameOriginContent.value || crossOriginMode.value === 'anonymous');
+
+// 読み込み方が変わったときと音源が差し替わったときに<audio>を作り直す。
+// 同じ要素を2度 createMediaElementSource() に渡すことはできないので、
+// グラフの組み直しが要る場面では必ず新しい要素を用意する必要がある
+const audioElKey = computed(() => `${crossOriginMode.value}\n${props.content.url}`);
 
 /** 現在の要素でメタデータまで到達できたか。到達していればCORSのチェックは通過している */
 let hasLoadedMetadata = false;
 /** 現在の要素に対して再生が要求されたか */
 let isPlayRequested = false;
-/** フォールバックで要素を作り直した後、再生を再開するか */
-let shouldResumeAfterReload = false;
 
 function onLoadedMetadata() {
 	hasLoadedMetadata = true;
@@ -262,8 +272,8 @@ function onLoadError() {
 	if (crossOriginMode.value !== 'anonymous' || hasLoadedMetadata) return;
 
 	// 読み込み前に失敗しているので再生位置は0のまま。再生の要求だけ引き継げばよい
-	shouldResumeAfterReload = isPlayRequested;
-	crossOriginMode.value = 'none';
+	resumeAfterReloadUrl = isPlayRequested ? props.content.url : null;
+	corsFailedUrl.value = props.content.url;
 }
 
 let visualizerTickFrameId: number | null = null;
@@ -333,7 +343,6 @@ function setupAudioGraph(el: HTMLAudioElement) {
 		audioSource.connect(gainNode).connect(audioCtx.destination);
 
 		setupBands(audioCtx.sampleRate);
-		resetAnalysis();
 		return true;
 	} catch (err) {
 		console.error('Failed to set up the audio graph for the visualizer:', err);
@@ -345,6 +354,9 @@ function setupAudioGraph(el: HTMLAudioElement) {
 function init() {
 	const el = audioEl.value;
 	if (el == null) return;
+
+	// 前の音源の波形を持ち越さない (グラフを組めるかどうかに関わらず捨てる)
+	resetAnalysis();
 
 	// CORS的に読めない音源をグラフに繋ぐと再生まで無音になるため、その場合は繋がずに素の再生に任せる
 	isVisualizerAvailable = canUseAudioGraph.value && setupAudioGraph(el);
@@ -383,8 +395,8 @@ function init() {
 	setPlaying(!el.paused);
 
 	// フォールバックでaudio要素を作り直す前に再生が要求されていたなら、新しい要素で再生し直す
-	if (shouldResumeAfterReload) {
-		shouldResumeAfterReload = false;
+	if (resumeAfterReloadUrl === props.content.url) {
+		resumeAfterReloadUrl = null;
 		el.play().catch(err => {
 			if (_DEV_) console.warn('Failed to play media:', err);
 		});
@@ -603,18 +615,6 @@ watch(() => props.content.file?.user?.avatarUrl, (avatarUrl) => {
 	}, { once: true });
 	img.src = avatarUrl ?? '/static-assets/avatar.png';
 }, { immediate: true });
-
-watch(() => props.content.url, () => {
-	// 音源が変わったら読み込み方の判定もやり直す (前の音源での再試行結果を引きずらないように)
-	crossOriginMode.value = isSameOriginContent.value ? 'none' : 'anonymous';
-	// 前の音源に対する再生要求を、別の音源で勝手に再開してしまわないようにする
-	shouldResumeAfterReload = false;
-
-	// モードが変わらなかった場合は要素が作り直されず init() も走らないので、ここで捨てる
-	// (そうしないと前の音源の波形が残ったままになる)
-	resetAnalysis();
-	redrawIfStopped();
-});
 
 watch(audioEl, () => {
 	teardown();
