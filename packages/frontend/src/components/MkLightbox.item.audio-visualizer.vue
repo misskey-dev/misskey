@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		preload="metadata"
 		:crossorigin="crossOriginMode === 'anonymous' ? 'anonymous' : undefined"
 		:src="content.url"
-		@loadedmetadata="emit('loadedmetadata')"
+		@loadedmetadata="onLoadedMetadata"
 		@error="onLoadError"
 	></audio>
 	<canvas
@@ -239,14 +239,30 @@ const isSameOriginContent = computed(() => isSameOrigin(props.content.url));
 
 /** `anonymous`: CORS付きで読み込む (解析できる) / `none`: CORS無しで読み込む (同一オリジンでない場合は再生のみ) */
 const crossOriginMode = ref<'anonymous' | 'none'>(isSameOriginContent.value ? 'none' : 'anonymous');
-
 const canUseAudioGraph = computed(() => isSameOriginContent.value || crossOriginMode.value === 'anonymous');
 
+/** 現在の要素でメタデータまで到達できたか。到達していればCORSのチェックは通過している */
+let hasLoadedMetadata = false;
+/** 現在の要素に対して再生が要求されたか */
+let isPlayRequested = false;
+/** フォールバックで要素を作り直した後、再生を再開するか */
+let shouldResumeAfterReload = false;
+
+function onLoadedMetadata() {
+	hasLoadedMetadata = true;
+	emit('loadedmetadata');
+}
+
 function onLoadError() {
-	// CORSヘッダを返さないサーバーでは crossorigin 付きの読み込みが失敗する。
+	// CORSヘッダを返さないサーバーでは crossorigin 付きの読み込みが失敗するが、
 	// MediaErrorからは原因を判別できないので、理由を問わず一度だけCORS無しで読み直す
-	// (本当に壊れているファイルなら再試行も失敗し、同じエラー状態に落ち着く)
-	if (crossOriginMode.value !== 'anonymous') return;
+	// (本当に壊れているファイルなら再試行も失敗し、同じエラー状態に落ち着く)。
+	// ただしメタデータまで読めていたならCORSは通過済みなので、再生中のネットワーク断や
+	// デコード失敗を拾ってフォールバックしてしまわないようにする
+	if (crossOriginMode.value !== 'anonymous' || hasLoadedMetadata) return;
+
+	// 読み込み前に失敗しているので再生位置は0のまま。再生の要求だけ引き継げばよい
+	shouldResumeAfterReload = isPlayRequested;
 	crossOriginMode.value = 'none';
 }
 
@@ -352,17 +368,26 @@ function init() {
 
 	// 再生状態: メディア要素のイベントを唯一の情報源にすることで、このコンポーネント経由でない
 	// 操作 (コントロール・キーボード・OSのメディアキー等) でも波形の描画と同期がとれる
-	on('play', resumeAudioCtx);
+	on('play', () => {
+		isPlayRequested = true;
+		resumeAudioCtx();
+	});
 	on('playing', () => setPlaying(true));
 	on('waiting', () => setPlaying(false));
 	on('pause', () => setPlaying(false));
 	on('ended', () => setPlaying(false));
 	on('emptied', () => setPlaying(false));
 
-	// 現在の要素の状態を取り込む (コンポーネントの準備前に再生が始まっている場合等)
-	if (!el.paused) {
-		resumeAudioCtx();
-		setPlaying(true);
+	// 現在の要素の状態を取り込む (コンポーネントの準備前に再生が始まっている場合等)。
+	if (!el.paused) resumeAudioCtx();
+	setPlaying(!el.paused);
+
+	// フォールバックでaudio要素を作り直す前に再生が要求されていたなら、新しい要素で再生し直す
+	if (shouldResumeAfterReload) {
+		shouldResumeAfterReload = false;
+		el.play().catch(err => {
+			if (_DEV_) console.warn('Failed to play media:', err);
+		});
 	}
 
 	// 波形が回らないケース (停止中、またはビジュアライザを描画できない場合) はここで一度だけ描く
@@ -390,6 +415,8 @@ function teardown() {
 	stopVisualizerTick();
 	teardownAudioGraph();
 	isVisualizerAvailable = true;
+	hasLoadedMetadata = false;
+	isPlayRequested = false;
 }
 //#endregion
 
@@ -580,6 +607,13 @@ watch(() => props.content.file?.user?.avatarUrl, (avatarUrl) => {
 watch(() => props.content.url, () => {
 	// 音源が変わったら読み込み方の判定もやり直す (前の音源での再試行結果を引きずらないように)
 	crossOriginMode.value = isSameOriginContent.value ? 'none' : 'anonymous';
+	// 前の音源に対する再生要求を、別の音源で勝手に再開してしまわないようにする
+	shouldResumeAfterReload = false;
+
+	// モードが変わらなかった場合は要素が作り直されず init() も走らないので、ここで捨てる
+	// (そうしないと前の音源の波形が残ったままになる)
+	resetAnalysis();
+	redrawIfStopped();
 });
 
 watch(audioEl, () => {
