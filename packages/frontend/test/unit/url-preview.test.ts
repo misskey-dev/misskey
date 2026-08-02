@@ -70,7 +70,7 @@ describe('MkUrlPreview', () => {
 		mkUrlPreview.getByText('Mocked description');
 	});
 
-	test('Having a player should render a button', async () => {
+	test('Having a player should render buttons', async () => {
 		const mkUrlPreview = await renderPreviewBy({
 			url: 'https://example.local',
 			player: {
@@ -81,7 +81,7 @@ describe('MkUrlPreview', () => {
 			},
 		});
 		const buttons = mkUrlPreview.getAllByRole('button');
-		assert.strictEqual(buttons.length, 2, 'two buttons');
+		assert.strictEqual(buttons.length, 3, 'three buttons');
 	});
 
 	test('Having a player should setup the iframe', async () => {

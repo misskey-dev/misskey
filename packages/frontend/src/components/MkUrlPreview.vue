@@ -5,21 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <template v-if="player.url && playerEnabled">
-	<div
+	<MkExternalPlayer
 		:class="$style.player"
+		:player="player"
+		:title="title"
 		:style="player.width ? `padding: ${(player.height || 0) / player.width * 100}% 0 0` : `padding: ${(player.height || 0)}px 0 0`"
-	>
-		<iframe
-			v-if="player.url.startsWith('http://') || player.url.startsWith('https://')"
-			sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-storage-access-by-user-activation allow-same-origin"
-			scrolling="no"
-			:allow="player.allow == null ? 'autoplay;encrypted-media;fullscreen' : player.allow.filter(x => ['autoplay', 'clipboard-write', 'fullscreen', 'encrypted-media', 'picture-in-picture', 'web-share'].includes(x)).join(';')"
-			:class="$style.playerIframe"
-			:src="transformPlayerUrl(player.url)"
-			:style="{ border: 0 }"
-		></iframe>
-		<span v-else>invalid url</span>
-	</div>
+	/>
 	<div :class="$style.action">
 		<MkButton :small="true" inline @click="playerEnabled = false">
 			<i class="ti ti-x"></i> {{ i18n.ts.disablePlayer }}
@@ -74,6 +65,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton :small="true" inline @click="playerEnabled = true">
 				<i class="ti ti-player-play"></i> {{ i18n.ts.enablePlayer }}
 			</MkButton>
+			<MkButton :small="true" inline @click="openPlayerViewer">
+				<i class="ti ti-maximize"></i> {{ i18n.ts.openInViewer }}
+			</MkButton>
 			<MkButton v-if="!isMobile" :small="true" inline @click="openPlayer()">
 				<i class="ti ti-picture-in-picture"></i> {{ i18n.ts.openInWindow }}
 			</MkButton>
@@ -86,15 +80,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, onDeactivated, onUnmounted, ref } from 'vue';
 import { url as local } from '@@/js/config.js';
 import { versatileLang } from '@@/js/intl-const.js';
+import { maybeMakeRelative } from '@@/js/url.js';
 import type { SummalyResult } from '@misskey-dev/summaly';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import MkButton from '@/components/MkButton.vue';
-import { transformPlayerUrl } from '@/utility/url-preview.js';
+import MkExternalPlayer from '@/components/MkExternalPlayer.vue';
 import { store } from '@/store.js';
 import { prefer } from '@/preferences.js';
-import { maybeMakeRelative } from '@@/js/url.js';
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -193,6 +187,22 @@ function openPlayer(): void {
 	});
 }
 
+async function openPlayerViewer(ev: PointerEvent): Promise<void> {
+	if (!summalyResult.value || summalyResult.value.player.url == null) return;
+	const returnFocusTo = ev.currentTarget instanceof HTMLElement ? ev.currentTarget : null;
+
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkExternalPlayerViewer.vue').then(x => x.default), {
+		player: summalyResult.value.player,
+		title: summalyResult.value.title,
+		url: summalyResult.value.url,
+		returnFocusTo,
+	}, {
+		closed: () => {
+			dispose();
+		},
+	});
+}
+
 window.addEventListener('message', adjustTweetHeight);
 
 onUnmounted(() => {
@@ -222,14 +232,6 @@ onUnmounted(() => {
 	&:hover {
 		opacity: 0.9;
 	}
-}
-
-.playerIframe {
-	height: 100%;
-	left: 0;
-	position: absolute;
-	top: 0;
-	width: 100%;
 }
 
 .link {

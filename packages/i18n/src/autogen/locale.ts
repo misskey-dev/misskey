@@ -125,6 +125,10 @@ export interface Locale extends ILocale {
      */
     "openInWindow": string;
     /**
+     * ビューアで開く
+     */
+    "openInViewer": string;
+    /**
      * プロフィール
      */
     "profile": string;

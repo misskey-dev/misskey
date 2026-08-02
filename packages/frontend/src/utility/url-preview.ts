@@ -9,6 +9,27 @@ import { prefer } from '@/preferences.js';
 
 export const isEnabledUrlPreview = computed(() => (instance.enableUrlPreview && !prefer.r.dataSaver.value.disableUrlPreview));
 
+const externalPlayerAllowedPermissions = [
+	'autoplay',
+	'clipboard-write',
+	'fullscreen',
+	'encrypted-media',
+	'picture-in-picture',
+	'web-share',
+] as const;
+
+const externalPlayerDefaultPermissions = [
+	'autoplay',
+	'encrypted-media',
+	'fullscreen',
+] as const;
+
+export function getExternalPlayerAllow(permissions: readonly string[] | null | undefined): string {
+	return (permissions ?? externalPlayerDefaultPermissions)
+		.filter(permission => externalPlayerAllowedPermissions.includes(permission as typeof externalPlayerAllowedPermissions[number]))
+		.join(';');
+}
+
 export function transformPlayerUrl(url: string): string {
 	const urlObj = new URL(url);
 	if (!['https:', 'http:'].includes(urlObj.protocol)) throw new Error('Invalid protocol');
