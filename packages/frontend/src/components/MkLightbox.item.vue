@@ -969,12 +969,6 @@ defineExpose({
 	image-rendering: pixelated;
 }
 
-@supports (image-rendering: crisp-edges) {
-	.pixelatedZoom {
-		image-rendering: crisp-edges;
-	}
-}
-
 .video {
 	display: block;
 	user-select: none;
