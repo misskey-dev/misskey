@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="[$style.hiddenText, { [$style.withBlur]: content.type === 'video' && content.thumbnailUrl != null }]">
 							<div :class="$style.hiddenTextWrapper">
 								<b v-if="content.file?.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</b>
-								<b v-else style="display: block;"><i class="ti" :class="content.type === 'image' ? 'ti-photo' : 'ti-movie'"></i> {{ content.type === 'image' ? i18n.ts.image : i18n.ts.video }}</b>
+								<b v-else style="display: block;"><i class="ti" :class="contentHideFileIcon"></i> {{ contentHideFileText }}</b>
 								<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 							</div>
 						</div>
@@ -264,6 +264,31 @@ const volume = ref(0.25);
 const isMediaPlaying = computed(() => mediaControl.value?.isPlaying ?? false);
 const isMediaActuallyPlaying = computed(() => mediaControl.value?.isActuallyPlaying ?? false);
 let canOpenAnimation = false;
+
+const contentHideFileIcon = computed(() => {
+	switch (props.content.type) {
+		case 'image':
+			return 'ti-photo';
+		case 'video':
+			return 'ti-movie';
+		case 'audio':
+			return 'ti-music';
+		default:
+			return '';
+	}
+});
+const contentHideFileText = computed(() => {
+	switch (props.content.type) {
+		case 'image':
+			return i18n.ts.image;
+		case 'video':
+			return i18n.ts.video;
+		case 'audio':
+			return i18n.ts.audio;
+		default:
+			return '';
+	}
+});
 
 const videoAspectRatio = ref<number | null>(
 	props.content.width != null && props.content.height != null && props.content.width > 0 && props.content.height > 0
