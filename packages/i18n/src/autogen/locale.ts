@@ -5702,7 +5702,7 @@ export interface Locale extends ILocale {
     /**
      * ピクセルアート拡大モード
      */
-    "pixalatedZoom": string;
+    "pixelatedZoom": string;
     "_imageEditing": {
         "_vars": {
             /**

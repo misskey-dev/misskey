@@ -73,7 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template v-if="activated">
 						<img
 							v-if="content.type === 'image'"
-							:class="[$style.content, { [$style.pixalatedZoom]: pixalatedZoom }]"
+							:class="[$style.content, { [$style.pixelatedZoom]: pixelatedZoom }]"
 							:src="content.url"
 							:alt="content.file?.comment ?? undefined"
 							draggable="false"
@@ -210,7 +210,7 @@ const emit = defineEmits<{
 
 // 一回のビューワー操作内では状態を維持するためにmodelで親に伝えて親で状態を保持する
 // TODO: drivefileのproperties側にピクセルアートかどうかのフラグを立ててそちらを元にデフォルトの挙動を決めるようにする
-const pixalatedZoom = defineModel<boolean>('pixalatedZoom', { required: true });
+const pixelatedZoom = defineModel<boolean>('pixelatedZoom', { required: true });
 
 const rootEl = useTemplateRef('rootEl');
 const mainEl = useTemplateRef('mainEl');
@@ -885,9 +885,9 @@ function openMenu(ev: PointerEvent) {
 
 	menu.push({
 		type: 'switch',
-		text: i18n.ts.pixalatedZoom,
+		text: i18n.ts.pixelatedZoom,
 		icon: 'ti ti-grain',
-		ref: pixalatedZoom,
+		ref: pixelatedZoom,
 	}, {
 		text: i18n.ts.hide,
 		icon: 'ti ti-eye-off',
@@ -965,12 +965,12 @@ defineExpose({
 	object-fit: contain;
 }
 
-.pixalatedZoom {
+.pixelatedZoom {
 	image-rendering: pixelated;
 }
 
 @supports (image-rendering: crisp-edges) {
-	.pixalatedZoom {
+	.pixelatedZoom {
 		image-rendering: crisp-edges;
 	}
 }
