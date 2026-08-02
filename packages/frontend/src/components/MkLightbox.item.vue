@@ -912,7 +912,7 @@ async function onHiddenClick() {
 	if (hide.value) {
 		if (props.content.file == null || await canRevealFile(props.content.file)) {
 			hide.value = false;
-			if (props.content.type === 'video' && mediaEl.value != null) {
+			if (['audio', 'video'].includes(props.content.type) && mediaEl.value != null) {
 				mediaEl.value.play();
 			}
 		}
@@ -965,9 +965,13 @@ function openMenu(ev: PointerEvent) {
 }
 
 function onActive() {
-	if (mediaEl.value != null) {
-		mediaEl.value.play();
-	}
+	// オーディオビジュアライザはlazy-loadのため、この時点ではまだ要素が無い可能性がある
+	const watchStop = watch(mediaEl, (newMediaEl) => {
+		if (newMediaEl != null) {
+			newMediaEl.play();
+			watchStop();
+		}
+	}, { immediate: true });
 }
 
 function onDeactive() {
