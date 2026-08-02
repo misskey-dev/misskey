@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { useTemplateRef, shallowRef, ref, computed, watch, onBeforeUnmount } from 'vue';
+import { i18n } from '@/i18n.js';
 import { themeManager } from '@/theme.js';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
@@ -164,8 +165,8 @@ function updateRange(frameMin: number, framePeak: number, dt: number) {
 //#endregion
 
 const defaultBgColor = themeManager.currentCompiledTheme?.accent ?? '#aaa';
+const accentColorHue = computed(() => tinycolor(props.content.file?.user?.avatarBlurhash ? extractAvgColorFromBlurhash(props.content.file.user.avatarBlurhash) ?? defaultBgColor : defaultBgColor).toHsl().h);
 const bgColor = computed(() => {
-	const tcInstance = tinycolor(props.content.file?.user?.avatarBlurhash ? extractAvgColorFromBlurhash(props.content.file.user.avatarBlurhash) ?? defaultBgColor : defaultBgColor);
 	let targetLightness, targetSaturation;
 	if (store.r.darkMode.value) {
 		targetLightness = 0.1;
@@ -174,10 +175,9 @@ const bgColor = computed(() => {
 		targetLightness = 0.9;
 		targetSaturation = 0.9;
 	}
-	return `hsl(${tcInstance.toHsl().h}, ${targetSaturation * 100}%, ${targetLightness * 100}%)`;
+	return `hsl(${accentColorHue.value}, ${targetSaturation * 100}%, ${targetLightness * 100}%)`;
 });
 const fgColor = computed(() => {
-	const tcInstance = tinycolor(bgColor.value);
 	let targetLightness, targetSaturation;
 	if (store.r.darkMode.value) {
 		targetLightness = 0.25;
@@ -186,7 +186,18 @@ const fgColor = computed(() => {
 		targetLightness = 0.7;
 		targetSaturation = 0.7;
 	}
-	return `hsl(${tcInstance.toHsl().h}, ${targetSaturation * 100}%, ${targetLightness * 100}%)`;
+	return `hsl(${accentColorHue.value}, ${targetSaturation * 100}%, ${targetLightness * 100}%)`;
+});
+const messageColor = computed(() => {
+	let targetLightness, targetSaturation;
+	if (store.r.darkMode.value) {
+		targetLightness = 0.75;
+		targetSaturation = 0.4;
+	} else {
+		targetLightness = 0.25;
+		targetSaturation = 0.4;
+	}
+	return `hsl(${accentColorHue.value}, ${targetSaturation * 100}%, ${targetLightness * 100}%)`
 });
 
 // 読み込みが終わるまでは描画しない (読み込み完了時の描き直しは下のwatchで行う)
@@ -198,6 +209,9 @@ let audioSource: MediaElementAudioSourceNode | null = null;
 let analyserNode: AnalyserNode | null = null;
 let gainNode: GainNode | null = null;
 let abortController: AbortController | null = null;
+
+/** 解析用のオーディオグラフを組めたかどうか。組めなかった場合は波形の代わりに文言を出す */
+let isVisualizerAvailable = true;
 
 let visualizerTickFrameId: number | null = null;
 let lastTickTimestamp = 0;
@@ -234,7 +248,7 @@ function stopVisualizerTick() {
 
 function setPlaying(playing: boolean) {
 	isActuallyPlaying.value = playing;
-	if (playing) {
+	if (playing && isVisualizerAvailable) {
 		startVisualizerTick();
 	} else {
 		// 一時停止中はその時点の波形・スケールをそのまま保つ (キャンバスは最後に描いたフレームを保持する)
@@ -242,33 +256,53 @@ function setPlaying(playing: boolean) {
 	}
 }
 
+/**
+ * 解析用のオーディオグラフを組む。組めなかった場合は false を返す
+ * (AudioContext を作れない環境や、要素が既に別の AudioContext に接続済みの場合など)
+ */
+function setupAudioGraph(el: HTMLAudioElement) {
+	try {
+		audioCtx = new AudioContext();
+		analyserNode = audioCtx.createAnalyser();
+		analyserNode.fftSize = FFT_SIZE;
+		// FFT の窓自体が長く (≒ 170ms) 平滑がかかるうえ、時間ベースの平滑は analyse() 側で行うので弱めにする
+		analyserNode.smoothingTimeConstant = 0.3;
+		// 既定の -100〜-30dB は音楽素材に対して下が広すぎるので、実用レンジに寄せて 0-255 を使い切る
+		analyserNode.minDecibels = -90;
+		analyserNode.maxDecibels = -25;
+		gainNode = audioCtx.createGain();
+		gainNode.gain.value = props.volume;
+		audioSource = audioCtx.createMediaElementSource(el);
+
+		// ビジュアライザー用 (解析するだけなので destination には繋がない)
+		audioSource.connect(analyserNode);
+		// 再生用
+		audioSource.connect(gainNode).connect(audioCtx.destination);
+
+		setupBands(audioCtx.sampleRate);
+		resetAnalysis();
+		return true;
+	} catch (err) {
+		console.error('Failed to set up the audio graph for the visualizer:', err);
+		teardownAudioGraph();
+		return false;
+	}
+}
+
 function init() {
 	const el = audioEl.value;
 	if (el == null) return;
 
-	audioCtx = new AudioContext();
-	analyserNode = audioCtx.createAnalyser();
-	analyserNode.fftSize = FFT_SIZE;
-	// FFT の窓自体が長く (≒ 170ms) 平滑がかかるうえ、時間ベースの平滑は analyse() 側で行うので弱めにする
-	analyserNode.smoothingTimeConstant = 0.3;
-	// 既定の -100〜-30dB は音楽素材に対して下が広すぎるので、実用レンジに寄せて 0-255 を使い切る
-	analyserNode.minDecibels = -90;
-	analyserNode.maxDecibels = -25;
-	gainNode = audioCtx.createGain();
-	gainNode.gain.value = props.volume;
-	audioSource = audioCtx.createMediaElementSource(el);
+	isVisualizerAvailable = setupAudioGraph(el);
 
-	// ビジュアライザー用
-	audioSource.connect(analyserNode);
-	// 再生用
-	audioSource.connect(gainNode).connect(audioCtx.destination);
-
-	setupBands(audioCtx.sampleRate);
-	resetAnalysis();
-
-	// 音量制御はGainNodeが担当するため、要素側は常に100%
-	// (ミュートは音量0として表現する。要素をmutedにするとタップまで無音になり波形が消える)
-	el.volume = 1;
+	if (isVisualizerAvailable) {
+		// 音量制御はGainNodeが担当するため、要素側は常に100%
+		// (ミュートは音量0として表現する。要素をmutedにするとタップまで無音になり波形が消える)
+		el.volume = 1;
+	} else {
+		// グラフを組めなかったときは要素側で音量を制御する (ビジュアライザは諦めるが再生はできる)
+		el.volume = props.volume;
+	}
 	el.muted = false;
 
 	abortController = new AbortController();
@@ -288,18 +322,16 @@ function init() {
 	on('emptied', () => setPlaying(false));
 
 	// 現在の要素の状態を取り込む (コンポーネントの準備前に再生が始まっている場合等)
-	if (el.paused) {
-		redrawIfStopped();
-	} else {
+	if (!el.paused) {
 		resumeAudioCtx();
 		setPlaying(true);
 	}
+
+	// 波形が回らないケース (停止中、またはビジュアライザを描画できない場合) はここで一度だけ描く
+	redrawIfStopped();
 }
 
-function teardown() {
-	abortController?.abort();
-	abortController = null;
-	stopVisualizerTick();
+function teardownAudioGraph() {
 	audioSource?.disconnect();
 	audioSource = null;
 	analyserNode?.disconnect();
@@ -312,6 +344,14 @@ function teardown() {
 		});
 	}
 	audioCtx = null;
+}
+
+function teardown() {
+	abortController?.abort();
+	abortController = null;
+	stopVisualizerTick();
+	teardownAudioGraph();
+	isVisualizerAvailable = true;
 }
 //#endregion
 
@@ -341,7 +381,7 @@ function analyse(dt: number) {
 		rawLevels[i] = (max * 0.7 + (total / binCount) * 0.3) / 255;
 	}
 
-	// 隣接帯域どうしをならして山をなだらかにする (潰れた分のメリハリは CONTRAST_EXPONENT 側で戻す)
+	// 隣接帯域どうしをならして山をなだらかにする
 	let prev = rawLevels[0];
 	let sum = 0;
 	let frameMin = 1;
@@ -438,26 +478,39 @@ function draw(dt: number) {
 
 	const centerX = canvas.width / 2;
 	const centerY = canvas.height / 2;
-	// 音圧でじわっと、ビートでコツンと全体が拡大縮小する
+
+	// 全体が拡大縮小する
+	// (ビジュアライザを描画できない場合は解析が走らずエンベロープが 0 のままなので、自然に等倍になる)
 	const scale = 1 + (levelEnv * LEVEL_SCALE + beatEnv * BEAT_SCALE) * motionDamp;
 	const baseRadius = Math.min(centerX, centerY) * BASE_RADIUS_RATIO * scale;
 
-	ctx.fillStyle = fgColor.value;
-	fillWave(ctx, centerX, centerY, baseRadius);
+	if (isVisualizerAvailable) {
+		ctx.fillStyle = fgColor.value;
+		fillWave(ctx, centerX, centerY, baseRadius);
+	}
 
+	// 波形の中心にアバターを円形にくりぬいて描画 (波形が出せない場合もアバターは出す)
 	const avatar = avatarImage.value;
-	if (avatar == null) return;
+	if (avatar != null) {
+		const avatarSize = baseRadius * 2;
+		const avatarHeight = Math.max(avatar.height * (avatarSize / avatar.width), avatarSize);
+		const avatarWidth = Math.max(avatar.width * (avatarSize / avatar.height), avatarSize);
+		ctx.save();
+		ctx.beginPath();
+		ctx.arc(centerX, centerY, avatarSize / 2, 0, Math.PI * 2);
+		ctx.clip();
+		ctx.drawImage(avatar, centerX - avatarWidth / 2, centerY - avatarHeight / 2, avatarWidth, avatarHeight);
+		ctx.restore();
+	}
 
-	// 波形の中心にアバターを円形にくりぬいて描画
-	const avatarSize = baseRadius * 2;
-	const avatarHeight = Math.max(avatar.height * (avatarSize / avatar.width), avatarSize);
-	const avatarWidth = Math.max(avatar.width * (avatarSize / avatar.height), avatarSize);
-	ctx.save();
-	ctx.beginPath();
-	ctx.arc(centerX, centerY, avatarSize / 2, 0, Math.PI * 2);
-	ctx.clip();
-	ctx.drawImage(avatar, centerX - avatarWidth / 2, centerY - avatarHeight / 2, avatarWidth, avatarHeight);
-	ctx.restore();
+	if (!isVisualizerAvailable) {
+		// 再生自体はできるので、アバターの下に文言を添えるだけに留める
+		ctx.fillStyle = messageColor.value;
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		ctx.font = `${Math.round(canvas.height * 0.055)}px ${window.getComputedStyle(canvas).fontFamily}`;
+		ctx.fillText(i18n.ts.cannotPreview, centerX, centerY + baseRadius + canvas.height * 0.09);
+	}
 }
 
 /** 停止中は描画の機会が無いので、表示内容が変わったときに自前で描き直す */
@@ -467,8 +520,12 @@ function redrawIfStopped() {
 //#endregion
 
 watch(() => props.volume, (to) => {
-	if (gainNode == null) return;
-	gainNode.gain.value = to;
+	if (gainNode != null) {
+		gainNode.gain.value = to;
+	} else if (audioEl.value != null) {
+		// グラフを組めなかったときの音量制御は要素側が担当する
+		audioEl.value.volume = to;
+	}
 });
 
 watch([bgColor, fgColor], redrawIfStopped);
