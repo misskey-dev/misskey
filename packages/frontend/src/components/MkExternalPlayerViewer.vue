@@ -58,6 +58,9 @@ const emit = defineEmits<{
 
 const modal = useTemplateRef('modal');
 const playerShowing = ref(true);
+const historyEntryId = `${Date.now()}-${Math.random()}`;
+const historyStateKey = 'mkExternalPlayerViewerId';
+let historyEntryActive = false;
 const aspectRatio = computed(() => {
 	if (props.player.width == null || props.player.height == null || props.player.width <= 0 || props.player.height <= 0) {
 		return 16 / 9;
@@ -66,17 +69,38 @@ const aspectRatio = computed(() => {
 	return props.player.width / props.player.height;
 });
 
+function isHistoryEntryOwned(state: unknown): boolean {
+	return typeof state === 'object' && state != null && (state as Record<string, unknown>)[historyStateKey] === historyEntryId;
+}
+
+function isCurrentHistoryEntryOwned(): boolean {
+	return isHistoryEntryOwned(window.history.state);
+}
+
+function closeHistoryEntry(): void {
+	if (!historyEntryActive) return;
+
+	historyEntryActive = false;
+	if (isCurrentHistoryEntryOwned()) {
+		window.history.back();
+	}
+}
+
 function closeViewer() {
 	if (!playerShowing.value) return;
 
 	playerShowing.value = false;
 	modal.value?.close();
-	if (window.location.hash === '#external-player') {
-		window.history.back();
-	}
+	closeHistoryEntry();
 }
 
-function onPopState() {
+function onPopState(ev: PopStateEvent) {
+	if (isHistoryEntryOwned(ev.state)) {
+		historyEntryActive = true;
+		return;
+	}
+
+	historyEntryActive = false;
 	if (!playerShowing.value) return;
 
 	playerShowing.value = false;
@@ -84,12 +108,19 @@ function onPopState() {
 }
 
 onMounted(() => {
-	window.history.pushState(null, '', '#external-player');
+	const currentState: unknown = window.history.state;
+	const nextState = typeof currentState === 'object' && currentState != null
+		? { ...currentState, [historyStateKey]: historyEntryId }
+		: { [historyStateKey]: historyEntryId };
+	window.history.pushState(nextState, '', '#external-player');
+	historyEntryActive = true;
 	window.addEventListener('popstate', onPopState);
 });
 
 onBeforeUnmount(() => {
 	window.removeEventListener('popstate', onPopState);
+	playerShowing.value = false;
+	closeHistoryEntry();
 });
 </script>
 
