@@ -5,11 +5,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
+	<!-- keyを変えて要素ごと作り直すことで、AudioContextに繋いだ要素を確実に切り離す (onLoadErrorを参照) -->
 	<audio
+		:key="crossOriginMode"
 		ref="audioEl"
 		preload="metadata"
+		:crossorigin="crossOriginMode === 'anonymous' ? 'anonymous' : undefined"
 		:src="content.url"
 		@loadedmetadata="emit('loadedmetadata')"
+		@error="onLoadError"
 	></audio>
 	<canvas
 		ref="canvasEl"
@@ -219,6 +223,33 @@ let abortController: AbortController | null = null;
 /** 解析用のオーディオグラフを組めたかどうか。組めなかった場合は波形の代わりに文言を出す */
 let isVisualizerAvailable = true;
 
+// AnalyserNodeはCORS的に読めない音源に対して無音を返すが、その際に例外もイベントも発生しない。
+// しかも一度 createMediaElementSource() に渡した要素は元の出力に戻せないため、
+// 「読み込み方を先に決める」「駄目なら要素ごと作り直す」の二段構えにする
+function isSameOrigin(url: string) {
+	try {
+		return new URL(url, window.location.href).origin === window.location.origin;
+	} catch {
+		return false;
+	}
+}
+
+/** 同一オリジンの音源はCORS属性なしでも解析できる */
+const isSameOriginContent = computed(() => isSameOrigin(props.content.url));
+
+/** `anonymous`: CORS付きで読み込む (解析できる) / `none`: CORS無しで読み込む (同一オリジンでない場合は再生のみ) */
+const crossOriginMode = ref<'anonymous' | 'none'>(isSameOriginContent.value ? 'none' : 'anonymous');
+
+const canUseAudioGraph = computed(() => isSameOriginContent.value || crossOriginMode.value === 'anonymous');
+
+function onLoadError() {
+	// CORSヘッダを返さないサーバーでは crossorigin 付きの読み込みが失敗する。
+	// MediaErrorからは原因を判別できないので、理由を問わず一度だけCORS無しで読み直す
+	// (本当に壊れているファイルなら再試行も失敗し、同じエラー状態に落ち着く)
+	if (crossOriginMode.value !== 'anonymous') return;
+	crossOriginMode.value = 'none';
+}
+
 let visualizerTickFrameId: number | null = null;
 let lastTickTimestamp = 0;
 
@@ -299,7 +330,8 @@ function init() {
 	const el = audioEl.value;
 	if (el == null) return;
 
-	isVisualizerAvailable = setupAudioGraph(el);
+	// CORS的に読めない音源をグラフに繋ぐと再生まで無音になるため、その場合は繋がずに素の再生に任せる
+	isVisualizerAvailable = canUseAudioGraph.value && setupAudioGraph(el);
 
 	if (isVisualizerAvailable) {
 		// 音量制御はGainNodeが担当するため、要素側は常に100%
@@ -544,6 +576,11 @@ watch(() => props.content.file?.user?.avatarUrl, (avatarUrl) => {
 	}, { once: true });
 	img.src = avatarUrl ?? '/static-assets/avatar.png';
 }, { immediate: true });
+
+watch(() => props.content.url, () => {
+	// 音源が変わったら読み込み方の判定もやり直す (前の音源での再試行結果を引きずらないように)
+	crossOriginMode.value = isSameOriginContent.value ? 'none' : 'anonymous';
+});
 
 watch(audioEl, () => {
 	teardown();
