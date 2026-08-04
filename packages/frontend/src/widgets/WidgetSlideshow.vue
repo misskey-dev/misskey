@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div data-cy-mkw-slideshow class="kvausudm _panel mkw-slideshow" :style="{ height: widgetProps.height + 'px' }">
+<div data-testid="mkw-slideshow" class="kvausudm _panel mkw-slideshow" :style="{ height: widgetProps.height + 'px' }">
 	<div @click="choose">
 		<p v-if="widgetProps.folderId == null">
 			{{ i18n.ts.folder }}

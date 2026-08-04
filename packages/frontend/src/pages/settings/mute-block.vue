@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/mute-block" :label="i18n.ts.muteAndBlock" icon="ti ti-ban" :keywords="['mute', 'block']">
 	<div class="_gaps_m">
-		<MkFeatureBanner icon="/client-assets/prohibited_3d.png" color="#ff2600">
+		<MkFeatureBanner icon="/fluent-emoji/1f6ab.png" color="#ff2600">
 			<SearchText>{{ i18n.ts._settings.muteAndBlockBanner }}</SearchText>
 		</MkFeatureBanner>
 

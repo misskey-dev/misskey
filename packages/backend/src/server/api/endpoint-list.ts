@@ -104,6 +104,7 @@ export * as 'admin/system-webhook/list' from './endpoints/admin/system-webhook/l
 export * as 'admin/system-webhook/show' from './endpoints/admin/system-webhook/show.js';
 export * as 'admin/system-webhook/test' from './endpoints/admin/system-webhook/test.js';
 export * as 'admin/system-webhook/update' from './endpoints/admin/system-webhook/update.js';
+export * as 'admin/unset-mfa' from './endpoints/admin/unset-mfa.js';
 export * as 'admin/unset-user-avatar' from './endpoints/admin/unset-user-avatar.js';
 export * as 'admin/unset-user-banner' from './endpoints/admin/unset-user-banner.js';
 export * as 'admin/unsuspend-user' from './endpoints/admin/unsuspend-user.js';

@@ -173,8 +173,31 @@ id: 'aidx'
 
 #sentryForBackend:
 #  enableNodeProfiling: true
+#  # Specify Sentry integration names to disable individual auto-instrumentation.
+#  # The names are integration .name values, not factory function names.
+#  # To check enabled names, set `options.debug: true` and see
+#  # "Integration installed: <name>" in the Sentry logs.
+#  #
+#  # As of 2026-07-07 / @sentry/node 10.62.0, useful names for Misskey include:
+#  #   Postgres  ... DB queries (when pg is externalized)
+#  #   Redis     ... ioredis commands
+#  #   Fastify   ... inbound HTTP routes
+#  #   Http      ... inbound/outbound HTTP; disabling this can also affect request isolation
+#  #   NodeFetch ... fetch/undici requests
+#  disabledIntegrations: ['Postgres']
 #  options:
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
+#    # By default, Misskey prevents Sentry trace headers (`sentry-trace` and
+#    # `baggage`) from being sent to remote ActivityPub/Webhook/etc. hosts.
+#    # To intentionally propagate distributed traces to trusted internal services,
+#    # list only those internal URL patterns here.
+#    # Avoid broad patterns that match remote servers unless you intentionally
+#    # want to restore Sentry's legacy behavior of propagating traces to all
+#    # outbound HTTP requests.
+#    #tracePropagationTargets: []
+#    # Internal allowlist example:
+#    #tracePropagationTargets:
+#    #  - 'internal-service.example'
 
 #sentryForFrontend:
 #  vueIntegration:
@@ -233,15 +256,37 @@ proxyBypassHosts:
 # For security reasons, uploading attachments from the intranet is prohibited,
 # but exceptions can be made from the following settings. Default value is "undefined".
 # Read changelog to learn more (Improvements of 12.90.0 (2021/09/04)).
-#allowedPrivateNetworks: [
-#  '127.0.0.1/32'
-#]
+#allowedPrivateNetworks:
+#  - '127.0.0.1/32'
 
 # Upload or download file size limits (bytes)
 #maxFileSize: 262144000
 
 # Log settings
 # logging:
+#   # Log output format. "json" outputs one-line JSON; defaults to "pretty".
+#   format: pretty
+#   # Minimum level for all loggers. Defaults to info in production and debug otherwise.
+#   level: info
+#   # The longest matching logger domain takes precedence over the global level.
+#   domains:
+#     core.boot: info
+#     queue: error
+#     queue.deliver: debug
+#     db.sql: off
+#   # HTTP status classes to record in the access log. No output when unspecified.
+#   access:
+#     statusClasses:
+#       - '2xx'
+#       - '3xx'
+#       - '4xx'
+#       - '5xx'
+#     # Enable body logging explicitly only during development.
+#     bodies:
+#       request: false
+#       response: false
+#       # 16 KiB by default, up to 128 KiB.
+#       maxBytes: 16384
 #   sql:
 #     # Outputs query parameters during SQL execution to the log.
 #     # default: false

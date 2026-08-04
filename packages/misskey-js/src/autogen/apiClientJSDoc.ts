@@ -749,7 +749,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes* / **Permission**: *read:admin:emoji*
+     * **Credential required**: *Yes* / **Permission**: *read:admin:queue*
      */
     request<E extends 'admin/queue/stats', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -1044,6 +1044,17 @@ declare module '../api.js' {
      * **Credential required**: *Yes* / **Permission**: *write:admin:system-webhook*
      */
     request<E extends 'admin/system-webhook/update', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:admin:unset-mfa*
+     */
+    request<E extends 'admin/unset-mfa', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

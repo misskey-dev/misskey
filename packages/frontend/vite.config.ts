@@ -5,7 +5,7 @@ import { replacePlugin } from 'rolldown/plugins';
 import { visualizer } from 'rollup-plugin-visualizer';
 import type { PluginOption, UserConfig } from 'vite';
 import { defineConfig } from 'vite';
-import * as yaml from 'js-yaml';
+import { load as loadYaml } from 'js-yaml';
 import { promises as fsp } from 'fs';
 
 import locales from 'i18n';
@@ -19,7 +19,7 @@ import pluginWatchLocales from './lib/vite-plugin-watch-locales.js';
 import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n.js';
 import { Features } from 'lightningcss';
 
-const url = process.env.NODE_ENV === 'development' ? (yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')) as any).url : null;
+const url = process.env.NODE_ENV === 'development' ? (loadYaml(await fsp.readFile('../../.config/default.yml', 'utf-8')) as any).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
@@ -27,27 +27,29 @@ const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.s
 function getBundleVisualizerPlugin(): PluginOption[] {
 	if (process.env.FRONTEND_BUNDLE_VISUALIZER !== 'true') return [];
 
-	const template = process.env.FRONTEND_BUNDLE_VISUALIZER_TEMPLATE === 'markdown'
-		? 'markdown'
-		: process.env.FRONTEND_BUNDLE_VISUALIZER_TEMPLATE === 'raw-data'
-			? 'raw-data'
-			: 'treemap';
-	const defaultFilename = template === 'markdown'
-		? path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/report.md')
-		: template === 'raw-data'
-			? path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/stats.json')
-			: path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/stats.html');
-
-	return [
+	const visualizerOptions = {
+		title: 'Misskey frontend bundle visualizer',
+		gzipSize: true,
+		brotliSize: true,
+		projectRoot: path.resolve(__dirname, '../..'),
+	};
+	const plugins = [
 		visualizer({
-			filename: process.env.FRONTEND_BUNDLE_VISUALIZER_FILE ?? defaultFilename,
-			title: 'Misskey frontend bundle visualizer',
-			template,
-			gzipSize: true,
-			brotliSize: true,
-			projectRoot: path.resolve(__dirname, '../..'),
+			...visualizerOptions,
+			filename: process.env.FRONTEND_BUNDLE_VISUALIZER_FILE,
+			template: 'raw-data',
 		}) as PluginOption,
 	];
+
+	if (process.env.FRONTEND_BUNDLE_VISUALIZER_HTML_FILE != null) {
+		plugins.push(visualizer({
+			...visualizerOptions,
+			filename: process.env.FRONTEND_BUNDLE_VISUALIZER_HTML_FILE,
+			template: 'treemap',
+		}) as PluginOption);
+	}
+
+	return plugins;
 }
 
 /**
@@ -219,9 +221,6 @@ export function getConfig(): UserConfig {
 							name: 'vue',
 							test: /node_modules[\\/]vue/,
 						}, {
-							name: 'photoswipe',
-							test: /node_modules[\\/]photoswipe/,
-						}, {
 							// split i18n related module to distinct module
 							name: 'i18n',
 							includeDependenciesRecursively: false,
@@ -257,21 +256,6 @@ export function getConfig(): UserConfig {
 
 		worker: {
 			format: 'es',
-		},
-
-		test: {
-			environment: 'happy-dom',
-			deps: {
-				optimizer: {
-					web: {
-						include: [
-							// XXX: misskey-dev/browser-image-resizer has no "type": "module"
-							'browser-image-resizer',
-						],
-					},
-				},
-			},
-			includeSource: ['src/**/*.ts'],
 		},
 	};
 }
