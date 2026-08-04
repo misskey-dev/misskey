@@ -66,9 +66,11 @@ export class SystemAccountService implements OnApplicationShutdown {
 				case 'metaUpdated': {
 					if (body.before != null && body.before.name !== body.after.name) {
 						for (const account of SYSTEM_ACCOUNT_TYPES) {
-							await this.updateCorrespondingUserProfile(account, {
-								name: body.after.name,
-							});
+							if (systemAccountName[account] == null) {
+								await this.updateCorrespondingUserProfile(account, {
+									name: body.after.name,
+								});
+							}
 						}
 					}
 					break;
