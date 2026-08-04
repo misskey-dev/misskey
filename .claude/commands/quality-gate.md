@@ -36,13 +36,13 @@ package または repo 全体の状態が必要なときに任意で使う。
 
 ### Repo scope
 
-各パッケージの `lint` スクリプト実体は `pnpm typecheck && pnpm eslint` ([packages/backend/package.json](../../packages/backend/package.json), [packages/frontend/package.json](../../packages/frontend/package.json)) で、ルートの `pnpm lint` は `pnpm --no-bail -r lint` (= 全パッケージで lint を `--no-bail` で実行)。**typecheck は lint に含まれている**ため、通常はこの 2 コマンドで十分:
+各パッケージの `lint` スクリプト実体は `pnpm typecheck && pnpm eslint` ([packages/backend/package.json](../../packages/backend/package.json), [packages/frontend/package.json](../../packages/frontend/package.json))。
+ルートの `pnpm lint` は `pnpm --no-bail -r lint && pnpm check-dts` なので、そのまま実行すると workspace lint の失敗時に `check-dts` が実行されない。
+次の 4 コマンドをそれぞれ独立した Bash 呼び出しとして実行し、先の失敗にかかわらず全結果を収集する:
 
 ```bash
-# 1. Lint (= typecheck + ESLint、全パッケージ。--no-bail で最初の失敗で止まらず全結果を集める)
-pnpm lint
-
-# 2. Backend / frontend unit test (高速、e2e は含まない)
+pnpm --no-bail -r lint
+pnpm check-dts
 pnpm --filter backend test
 pnpm --filter frontend test
 ```
@@ -90,7 +90,7 @@ repo-relative path を package-relative path に変換し、該当 package root 
 
 ## Output
 
-実行項目を `PASS / FAIL / BASELINE / SKIPPED` で集計する。
+各コマンドの終了コードを保持し、実行項目を `PASS / FAIL / BASELINE / SKIPPED` で集計する。
 `BASELINE` は同じ失敗が base 側でも再現し、今回の変更と無関係と確認できた場合だけ使う。
 
 ```text

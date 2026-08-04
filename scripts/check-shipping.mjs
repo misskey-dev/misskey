@@ -15,7 +15,7 @@
  *   node scripts/check-shipping.mjs --base <ref>
  *
  * 終了コード:
- *   0 = 全検査に合格、または lint 対象なし
+ *   0 = 全検査に合格 (lint 対象なしの SKIPPED を含む)
  *   1 = lint / SPDX / locale の違反
  *   2 = 引数、Git ref、コマンド起動などの理由で検査不能
  */
@@ -55,11 +55,12 @@ class OperationalError extends Error {}
 function resolveMergeBase(explicitRef) {
 	if (explicitRef !== null) return gitMergeBase(explicitRef);
 
-	const base = findClosestMergeBase(DEFAULT_INTEGRATION_REFS);
-	if (base === null) {
-		throw new OperationalError('統合先の merge-base を解決できない。--base <ref> または MISSKEY_BASE_REF を指定すること');
+	try {
+		return findClosestMergeBase(DEFAULT_INTEGRATION_REFS);
+	} catch (error) {
+		const detail = error instanceof Error ? ` — ${error.message}` : '';
+		throw new OperationalError(`統合先の merge-base を解決できない。--base <ref> または MISSKEY_BASE_REF を指定すること${detail}`);
 	}
-	return base;
 }
 
 /**

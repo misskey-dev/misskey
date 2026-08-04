@@ -124,11 +124,12 @@ function listTargetFiles(includeUntracked) {
 function resolveMergeBase(explicitRef) {
 	if (explicitRef !== null) return gitMergeBase(explicitRef);
 
-	const base = findClosestMergeBase(DEFAULT_INTEGRATION_REFS);
-	if (base === null) {
-		throw new OperationalError('統合先の merge-base を解決できない。--base <ref> を指定すること');
+	try {
+		return findClosestMergeBase(DEFAULT_INTEGRATION_REFS);
+	} catch (error) {
+		const detail = error instanceof Error ? ` — ${error.message}` : '';
+		throw new OperationalError(`統合先の merge-base を解決できない。--base <ref> を指定すること${detail}`);
 	}
-	return base;
 }
 
 /**

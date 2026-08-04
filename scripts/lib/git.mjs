@@ -15,6 +15,24 @@ export const DEFAULT_INTEGRATION_REFS = ['origin/develop', 'develop', 'origin/ma
 class GitOperationError extends Error {}
 
 /**
+ * Git 子プロセスの終了状態と stderr を1行の診断情報にする。
+ *
+ * @param {unknown} error
+ * @returns {string}
+ */
+function describeGitFailure(error) {
+	if (error === null || typeof error !== 'object') return '';
+	const failure = /** @type {{ status?: number | null, stderr?: Buffer | null }} */ (error);
+	const details = [];
+	if (typeof failure.status === 'number') details.push(`exit ${failure.status}`);
+	if (Buffer.isBuffer(failure.stderr)) {
+		const stderr = failure.stderr.toString('utf8').replace(/\s+/g, ' ').trim();
+		if (stderr !== '') details.push(stderr);
+	}
+	return details.join(': ');
+}
+
+/**
  * Git コマンドを実行し、標準出力を Buffer で返す。
  *
  * @param {string[]} args
@@ -25,10 +43,11 @@ function gitBuffer(args, options = {}) {
 	try {
 		return execFileSync('git', args, {
 			maxBuffer: 64 * 1024 * 1024,
-			stdio: ['ignore', 'pipe', options.quiet === true ? 'ignore' : 'inherit'],
+			stdio: ['ignore', 'pipe', options.quiet === true ? 'pipe' : 'inherit'],
 		});
-	} catch {
-		throw new GitOperationError(`git ${args[0]} を実行できない`);
+	} catch (error) {
+		const detail = describeGitFailure(error);
+		throw new GitOperationError(`git ${args[0]} を実行できない${detail === '' ? '' : ` — ${detail}`}`);
 	}
 }
 
@@ -84,8 +103,9 @@ export function gitMergeBase(ref) {
 		const base = gitLines(['merge-base', ref, 'HEAD'], { quiet: true })[0];
 		if (base === undefined) throw new Error('empty merge-base');
 		return base;
-	} catch {
-		throw new GitOperationError(`merge-base を解決できない: ${ref}`);
+	} catch (error) {
+		const detail = error instanceof Error ? ` — ${error.message}` : '';
+		throw new GitOperationError(`merge-base を解決できない: ${ref}${detail}`);
 	}
 }
 
@@ -93,22 +113,27 @@ export function gitMergeBase(ref) {
  * 利用可能な ref のうち、HEAD に最も近い merge-base を返す。
  *
  * @param {string[]} refs
- * @returns {string | null}
+ * @returns {string}
  */
 export function findClosestMergeBase(refs) {
 	/** @type {{ base: string, distance: number }[]} */
 	const candidates = [];
+	/** @type {string[]} */
+	const failures = [];
 	for (const ref of refs) {
 		try {
 			const base = gitMergeBase(ref);
 			const distanceText = gitLines(['rev-list', '--count', `${base}..HEAD`], { quiet: true })[0];
 			const distance = Number(distanceText);
-			if (Number.isInteger(distance)) candidates.push({ base, distance });
-		} catch {
-			// この環境に無い統合先 ref は候補から外す。
+			if (!Number.isInteger(distance)) throw new GitOperationError(`HEAD までの距離を解釈できない: ${ref}`);
+			candidates.push({ base, distance });
+		} catch (error) {
+			const detail = error instanceof Error ? error.message : String(error);
+			failures.push(detail.includes(ref) ? detail : `${ref}: ${detail}`);
 		}
 	}
 
 	candidates.sort((a, b) => a.distance - b.distance);
-	return candidates[0]?.base ?? null;
+	if (candidates[0] !== undefined) return candidates[0].base;
+	throw new GitOperationError(`利用可能な統合先 ref がない (${failures.join('; ')})`);
 }
