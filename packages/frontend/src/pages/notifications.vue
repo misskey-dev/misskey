@@ -29,7 +29,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { Paginator } from '@/utility/paginator.js';
-import { DI } from '@/di';
+import { DI } from "@/di.js";
 
 const tab = ref('all');
 const includeTypes = ref<string[] | null>(null);
