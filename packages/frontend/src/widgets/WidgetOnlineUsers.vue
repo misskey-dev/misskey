@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div data-cy-mkw-onlineUsers :class="[$style.root, { _panel: !widgetProps.transparent, [$style.pad]: !widgetProps.transparent }]">
+<div data-testid="mkw-onlineUsers" :class="[$style.root, { _panel: !widgetProps.transparent, [$style.pad]: !widgetProps.transparent }]">
 	<span :class="$style.text">
 		<I18n v-if="onlineUsersCount" :src="i18n.ts.onlineUsersCount" textTag="span">
 			<template #n><b style="color: #41b781;">{{ number(onlineUsersCount) }}</b></template>

@@ -49,8 +49,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				tabindex="-1"
 				@click.stop="togglePlayPause"
 			>
-				<i v-if="isPlaying" class="ti ti-player-pause-filled"></i>
-				<i v-else class="ti ti-player-play-filled"></i>
+				<i v-if="isPlaying" class="ti ti-player-pause"></i>
+				<i v-else class="ti ti-player-play"></i>
 			</button>
 		</div>
 		<div :class="[$style.controlsChild, $style.controlsRight]">
@@ -100,6 +100,7 @@ import { hms } from '@/filters/hms.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { getFileMenu } from '@/utility/get-file-menu.js';
 import { canRevealFile, shouldHideFileByDefault } from '@/utility/sensitive-file.js';
 
 const props = defineProps<{
@@ -208,56 +209,11 @@ function showMenu(ev: MouseEvent) {
 		{
 			type: 'divider',
 		},
-		{
-			text: i18n.ts.hide,
-			icon: 'ti ti-eye-off',
-			action: () => {
-				hide.value = true;
-			},
-		},
 	];
 
-	if (iAmModerator) {
-		menu.push({
-			text: props.audio.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-			icon: props.audio.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',
-			danger: true,
-			action: () => toggleSensitive(props.audio),
-		});
-	}
-
-	const details: MenuItem[] = [];
-	if ($i?.id === props.audio.userId) {
-		details.push({
-			type: 'link',
-			text: i18n.ts._fileViewer.title,
-			icon: 'ti ti-info-circle',
-			to: `/my/drive/file/${props.audio.id}`,
-		});
-	}
-
-	if (iAmModerator) {
-		details.push({
-			type: 'link',
-			text: i18n.ts.moderation,
-			icon: 'ti ti-photo-exclamation',
-			to: `/admin/file/${props.audio.id}`,
-		});
-	}
-
-	if (details.length > 0) {
-		menu.push({ type: 'divider' }, ...details);
-	}
-
-	if (prefer.s.devMode) {
-		menu.push({ type: 'divider' }, {
-			icon: 'ti ti-hash',
-			text: i18n.ts.copyFileId,
-			action: () => {
-				copyToClipboard(props.audio.id);
-			},
-		});
-	}
+	menu.push(...getFileMenu(props.audio, (newState) => {
+		hide.value = newState;
+	}));
 
 	menuShowing.value = true;
 	os.popupMenu(menu, ev.currentTarget ?? ev.target, {
@@ -265,20 +221,6 @@ function showMenu(ev: MouseEvent) {
 		onClosing: () => {
 			menuShowing.value = false;
 		},
-	});
-}
-
-async function toggleSensitive(file: Misskey.entities.DriveFile) {
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		text: file.isSensitive ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
-	});
-
-	if (canceled) return;
-
-	os.apiWithDialog('drive/files/update', {
-		fileId: file.id,
-		isSensitive: !file.isSensitive,
 	});
 }
 

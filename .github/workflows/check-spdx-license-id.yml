@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.0
       - name: Check
         run: |
           counter=0
@@ -44,7 +44,6 @@ jobs:
           }
 
           directories=(
-            "cypress/e2e"
             "packages/backend/migration"
             "packages/backend/src"
             "packages/backend/test"

@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, useTemplateRef, ref } from 'vue';
+import { onMounted, onUnmounted, nextTick, useTemplateRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { store } from '@/store.js';
@@ -203,7 +203,11 @@ async function renderChart() {
 	});
 }
 
-onMounted(async () => {
+onMounted(() => {
 	renderChart();
+});
+
+onUnmounted(() => {
+	chartInstance?.destroy();
 });
 </script>
