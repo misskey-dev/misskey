@@ -22,31 +22,22 @@ on:
       - packages/backend/**
       - .github/workflows/test-frontend.yml
       - .github/misskey/test.yml
-
-env:
-  COREPACK_DEFAULT_TO_LATEST: 0
-
 jobs:
   vitest:
     name: Unit tests (frontend)
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [22.11.0]
-
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v7.0.0
       with:
         submodules: true
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.1.0
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v6.0.9
+    - name: Use Node.js
+      uses: actions/setup-node@v7.0.0
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version-file: '.node-version'
         cache: 'pnpm'
-    - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - name: Check pnpm-lock.yaml
       run: git diff --exit-code pnpm-lock.yaml
@@ -57,7 +48,7 @@ jobs:
     - name: Test
       run: pnpm --filter frontend test-and-coverage
     - name: Upload Coverage
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@v7
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./packages/frontend/coverage/coverage-final.json
@@ -66,71 +57,43 @@ jobs:
     name: E2E tests (frontend)
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [22.11.0]
-        browser: [chrome]
-
     services:
       postgres:
-        image: postgres:15
+        image: postgres:18
         ports:
           - 54312:5432
         env:
           POSTGRES_DB: test-misskey
           POSTGRES_HOST_AUTH_METHOD: trust
       redis:
-        image: redis:7
+        image: redis:8
         ports:
           - 56312:6379
 
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v7.0.0
       with:
         submodules: true
-    # https://github.com/cypress-io/cypress-docker-images/issues/150
-    #- name: Install mplayer for FireFox
-    #  run: sudo apt install mplayer -y
-    #  if: ${{ matrix.browser == 'firefox' }}
-    #- uses: browser-actions/setup-firefox@latest
-    #  if: ${{ matrix.browser == 'firefox' }}
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.1.0
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v6.0.9
+    - name: Use Node.js
+      uses: actions/setup-node@v7.0.0
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version-file: '.node-version'
         cache: 'pnpm'
-    - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - name: Copy Configure
       run: cp .github/misskey/test.yml .config
     - name: Build
       run: pnpm build
-    # https://github.com/cypress-io/cypress/issues/4351#issuecomment-559489091
-    - name: ALSA Env
-      run: echo -e 'pcm.!default {\n type hw\n card 0\n}\n\nctl.!default {\n type hw\n card 0\n}' > ~/.asoundrc
-    # XXX: This tries reinstalling Cypress if the binary is not cached
-    # Remove this when the cache issue is fixed
-    - name: Cypress install
-      run: pnpm exec cypress install
-    - name: Cypress run
-      uses: cypress-io/github-action@v6
+    - name: Playwright install
+      working-directory: packages/frontend
+      run: pnpm exec playwright install --with-deps chromium
+    - name: Test
+      run: pnpm start-server-and-test start:test http://localhost:61812 "pnpm --filter frontend test:e2e"
       timeout-minutes: 15
-      with:
-        install: false
-        start: pnpm start:test
-        wait-on: 'http://localhost:61812'
-        headed: true
-        browser: ${{ matrix.browser }}
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       if: failure()
       with:
-        name: ${{ matrix.browser }}-cypress-screenshots
-        path: cypress/screenshots
-    - uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: ${{ matrix.browser }}-cypress-videos
-        path: cypress/videos
+        name: playwright-e2e-artifacts
+        path: packages/frontend/test/e2e/artifacts

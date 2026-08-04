@@ -3,11 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { URLSearchParams } from 'node:url';
 import * as nodemailer from 'nodemailer';
 import juice from 'juice';
 import { Inject, Injectable } from '@nestjs/common';
-import { validate as validateEmail } from 'deep-email-validator';
 import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -145,7 +143,10 @@ export class EmailService {
 		try {
 			// TODO: htmlサニタイズ
 			const info = await transporter.sendMail({
-				from: this.meta.email!,
+				from: this.meta.name ? {
+					name: this.meta.name,
+					address: this.meta.email!,
+				} : this.meta.email!,
 				to: to,
 				subject: subject,
 				text: text,
@@ -164,6 +165,13 @@ export class EmailService {
 		available: boolean;
 		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | 'banned' | 'network' | 'blacklist';
 	}> {
+		if (!this.utilityService.validateEmailFormat(emailAddress)) {
+			return {
+				available: false,
+				reason: 'format',
+			};
+		}
+
 		const exist = await this.userProfilesRepository.countBy({
 			emailVerified: true,
 			email: emailAddress,
@@ -187,6 +195,7 @@ export class EmailService {
 			} else if (this.meta.enableTruemailApi && this.meta.truemailInstance && this.meta.truemailAuthKey != null) {
 				validated = await this.trueMail(this.meta.truemailInstance, emailAddress, this.meta.truemailAuthKey);
 			} else {
+				const { validate: validateEmail } = await import('deep-email-validator');
 				validated = await validateEmail({
 					email: emailAddress,
 					validateRegex: true,
@@ -356,7 +365,7 @@ export class EmailService {
 				valid: true,
 				reason: null,
 			};
-		} catch (error) {
+		} catch (_) {
 			return {
 				valid: false,
 				reason: 'network',

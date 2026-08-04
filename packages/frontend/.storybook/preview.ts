@@ -9,7 +9,6 @@ import { type Preview, setup } from '@storybook/vue3';
 import isChromatic from 'chromatic/isChromatic';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { userDetailed } from './fakes.js';
-import locale from './locale.js';
 import { commonHandlers, onUnhandledRequest } from './mocks.js';
 import themes from './themes.js';
 import '../src/style.scss';
@@ -21,13 +20,13 @@ let moduleInitialized = false;
 let unobserve = () => {};
 let misskeyOS = null;
 
-function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme']) {
+function loadTheme(themeMaganer: typeof import('../src/theme')['themeManager']) {
 	unobserve();
-	const theme = themes[document.documentElement.dataset.misskeyTheme];
+	const theme = themes[window.document.documentElement.dataset.misskeyTheme];
 	if (theme) {
-		applyTheme(themes[document.documentElement.dataset.misskeyTheme]);
+		themeMaganer.updateTheme(themes[window.document.documentElement.dataset.misskeyTheme]);
 	} else {
-		applyTheme(themes['l-light']);
+		themeMaganer.updateTheme(themes['l-light']);
 	}
 	const observer = new MutationObserver((entries) => {
 		for (const entry of entries) {
@@ -35,14 +34,14 @@ function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme
 				const target = entry.target as HTMLElement;
 				const theme = themes[target.dataset.misskeyTheme];
 				if (theme) {
-					applyTheme(themes[target.dataset.misskeyTheme]);
+					themeMaganer.updateTheme(themes[target.dataset.misskeyTheme]);
 				} else {
 					target.removeAttribute('style');
 				}
 			}
 		}
 	});
-	observer.observe(document.documentElement, {
+	observer.observe(window.document.documentElement, {
 		attributes: true,
 		attributeFilter: ['data-misskey-theme'],
 	});
@@ -55,7 +54,6 @@ function initLocalStorage() {
 		...userDetailed(),
 		policies: {},
 	}));
-	localStorage.setItem('locale', JSON.stringify(locale));
 }
 
 initialize({
@@ -64,13 +62,13 @@ initialize({
 initLocalStorage();
 queueMicrotask(() => {
 	Promise.all([
-		import('../src/components'),
-		import('../src/directives'),
-		import('../src/widgets'),
-		import('../src/scripts/theme'),
-		import('../src/store'),
-		import('../src/os'),
-	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, { defaultStore }, os]) => {
+		import('../src/components/index.js'),
+		import('../src/directives/index.js'),
+		import('../src/widgets/index.js'),
+		import('../src/theme.js'),
+		import('../src/preferences.js'),
+		import('../src/os.js'),
+	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, { prefer }, os]) => {
 		setup((app) => {
 			moduleInitialized = true;
 			if (app[appInitialized]) {
@@ -83,7 +81,7 @@ queueMicrotask(() => {
 			widgets(app);
 			misskeyOS = os;
 			if (isChromatic()) {
-				defaultStore.set('animation', false);
+				prefer.commit('animation', false);
 			}
 		});
 	});
@@ -104,9 +102,9 @@ const preview = {
 							}
 						}).catch(() => {})
 					: Promise.resolve();
-				const resetDefaultStorePromise = import('../src/store').then(({ defaultStore }) => {
+				const resetDefaultStorePromise = import('../src/store').then(({ store }) => {
 					// @ts-expect-error
-					defaultStore.init();
+					store.init();
 				}).catch(() => {});
 				Promise.all([resetIndexedDBPromise, resetDefaultStorePromise]).then(() => {
 					initLocalStorage();

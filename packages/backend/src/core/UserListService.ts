@@ -15,11 +15,11 @@ import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ProxyAccountService } from '@/core/ProxyAccountService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueService } from '@/core/QueueService.js';
 import { RedisKVCache } from '@/misc/cache.js';
 import { RoleService } from '@/core/RoleService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 
 @Injectable()
 export class UserListService implements OnApplicationShutdown, OnModuleInit {
@@ -43,13 +43,16 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
-		private proxyAccountService: ProxyAccountService,
 		private queueService: QueueService,
+		private systemAccountService: SystemAccountService,
 	) {
 		this.membersCache = new RedisKVCache<Set<string>>(this.redisClient, 'userListMembers', {
 			lifetime: 1000 * 60 * 30, // 30m
 			memoryCacheLifetime: 1000 * 60, // 1m
-			fetcher: (key) => this.userListMembershipsRepository.find({ where: { userListId: key }, select: ['userId'] }).then(xs => new Set(xs.map(x => x.userId))),
+			fetcher: (key) => this.userListMembershipsRepository.find({
+				where: { userListId: key },
+				select: { userId: true },
+			}).then(xs => new Set(xs.map(x => x.userId))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
@@ -91,7 +94,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async addMember(target: MiUser, list: MiUserList, me: MiUser) {
+	public async addMember(target: MiUser, list: MiUserList, me: MiUser, options: { withReplies?: boolean } = {}) {
 		const currentCount = await this.userListMembershipsRepository.countBy({
 			userListId: list.id,
 		});
@@ -104,6 +107,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 			userId: target.id,
 			userListId: list.id,
 			userListUserId: list.userId,
+			withReplies: options.withReplies ?? false,
 		} as MiUserListMembership);
 
 		this.globalEventService.publishInternalEvent('userListMemberAdded', { userListId: list.id, memberId: target.id });
@@ -111,10 +115,8 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 
 		// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
 		if (this.userEntityService.isRemoteUser(target)) {
-			const proxy = await this.proxyAccountService.fetch();
-			if (proxy) {
-				this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: target.id } }]);
-			}
+			const proxy = await this.systemAccountService.fetch('proxy');
+			this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: target.id } }]);
 		}
 	}
 

@@ -39,7 +39,7 @@ export const paramDef = {
 	properties: {
 		name: { type: 'string', minLength: 1, maxLength: 100 },
 		isPublic: { type: 'boolean', default: false },
-		description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048 },
+		description: { type: 'string', nullable: true, maxLength: 2048 },
 	},
 	required: ['name'],
 } as const;
@@ -53,7 +53,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			let clip: MiClip;
 			try {
-				clip = await this.clipService.create(me, ps.name, ps.isPublic, ps.description ?? null);
+				// 空文字列をnullにしたいので??は使わない
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+				clip = await this.clipService.create(me, ps.name, ps.isPublic, ps.description || null);
 			} catch (e) {
 				if (e instanceof ClipService.TooManyClipsError) {
 					throw new ApiError(meta.errors.tooManyClips);

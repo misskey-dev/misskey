@@ -1,0 +1,246 @@
+name: Frontend diagnostics (inspect)
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+    paths:
+      - packages/frontend/**
+      - packages/frontend-shared/**
+      - packages/frontend-builder/**
+      - packages/backend/**
+      - packages/i18n/**
+      - packages/icons-subsetter/**
+      - packages/misskey-js/**
+      - packages/misskey-reversi/**
+      - packages/misskey-bubble-game/**
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - .node-version
+      - .github/misskey/test.yml
+      - packages-private/diagnostics-shared/**
+      - packages-private/diagnostics-frontend/**
+      - .github/workflows/frontend-diagnostics.inspect.yml
+      - .github/workflows/frontend-diagnostics.comment.yml
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: frontend-diagnostics-inspect-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  report:
+    name: Measure frontend diagnostics
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    services:
+      postgres:
+        image: postgres:18
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:8
+        ports:
+          - 56312:6379
+
+    steps:
+      - name: Checkout base
+        uses: actions/checkout@v7.0.0
+        with:
+          persist-credentials: false
+          repository: ${{ github.event.pull_request.base.repo.full_name }}
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+          submodules: true
+
+      - name: Checkout head
+        uses: actions/checkout@v7.0.0
+        with:
+          persist-credentials: false
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: head
+          submodules: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.9
+        with:
+          package_json_file: head/package.json
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: head/.node-version
+          cache: pnpm
+          cache-dependency-path: |
+            base/pnpm-lock.yaml
+            head/pnpm-lock.yaml
+
+      - name: Prepare report output
+        shell: bash
+        run: mkdir -p "$RUNNER_TEMP/frontend-diagnostics"
+
+      - name: Install dependencies for base
+        working-directory: base
+        run: pnpm i --frozen-lockfile
+
+      - name: Configure base
+        working-directory: base
+        run: cp .github/misskey/test.yml .config
+
+      - name: Build base
+        working-directory: base
+        env:
+          FRONTEND_BUNDLE_VISUALIZER: 'true'
+          FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-diagnostics/base-bundle-stats.json
+        run: pnpm build
+
+      - name: Install dependencies for head
+        working-directory: head
+        run: pnpm i --frozen-lockfile
+
+      - name: Configure head
+        working-directory: head
+        run: cp .github/misskey/test.yml .config
+
+      - name: Build head
+        working-directory: head
+        env:
+          FRONTEND_BUNDLE_VISUALIZER: 'true'
+          FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-diagnostics/head-bundle-stats.json
+          FRONTEND_BUNDLE_VISUALIZER_HTML_FILE: ${{ runner.temp }}/frontend-diagnostics/frontend-bundle-visualizer.html
+        run: pnpm build
+
+      - name: Upload bundle visualizer
+        id: upload-bundle-visualizer
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-bundle-visualizer
+          path: ${{ runner.temp }}/frontend-diagnostics/frontend-bundle-visualizer.html
+          if-no-files-found: error
+          archive: false
+          retention-days: 7
+
+      - name: Install Playwright browsers
+        working-directory: head/packages-private/diagnostics-frontend
+        run: pnpm exec playwright install --with-deps --no-shell chromium
+
+      - name: Measure frontend browser metrics
+        shell: bash
+        working-directory: head
+        env:
+          FRONTEND_BROWSER_METRICS_SAMPLE_COUNT: 5
+          MK_ENABLE_CROSS_ORIGIN_ISOLATION: "true"
+          # 計測ハーネスはhead側のものを両方に使うが、成果物はrunnerのworkspace直下に出す
+          FRONTEND_BROWSER_HEAP_SNAPSHOT_OUTPUT_DIR: ${{ github.workspace }}
+        run: |
+          REPORT_DIR="$RUNNER_TEMP/frontend-diagnostics"
+          pnpm --filter diagnostics-frontend run inspect-browser \
+            "$GITHUB_WORKSPACE/base" "$GITHUB_WORKSPACE/head" \
+            "$REPORT_DIR/base-browser.json" "$REPORT_DIR/head-browser.json"
+
+      - name: Upload browser base heap snapshot
+        id: upload-browser-base-heap-snapshot
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-browser-base-heap-snapshot
+          path: base-heap-snapshot.heapsnapshot
+          archive: false
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload browser head heap snapshot
+        id: upload-browser-head-heap-snapshot
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-browser-head-heap-snapshot
+          path: head-heap-snapshot.heapsnapshot
+          archive: false
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Generate browser detailed html
+        shell: bash
+        working-directory: head
+        run: |
+          REPORT_DIR="$RUNNER_TEMP/frontend-diagnostics"
+          test -s "$REPORT_DIR/base-browser.json"
+          test -s "$REPORT_DIR/head-browser.json"
+          pnpm --filter diagnostics-frontend run render-browser-html \
+            "$REPORT_DIR/base-browser.json" "$REPORT_DIR/head-browser.json" \
+            "$REPORT_DIR/frontend-browser-detailed-html.html"
+
+      - name: Upload browser detailed html
+        id: upload-browser-detailed-html
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-browser-metrics-detailed-html
+          path: ${{ runner.temp }}/frontend-diagnostics/frontend-browser-detailed-html.html
+          if-no-files-found: error
+          archive: false
+          retention-days: 7
+
+      - name: Generate frontend diagnostics report
+        shell: bash
+        working-directory: head
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          FRONTEND_BUNDLE_REPORT_ARTIFACT_URL: ${{ steps.upload-bundle-visualizer.outputs.artifact-url }}
+          FRONTEND_BROWSER_BASE_HEAP_SNAPSHOT_ARTIFACT_URL: ${{ steps.upload-browser-base-heap-snapshot.outputs.artifact-url }}
+          FRONTEND_BROWSER_HEAD_HEAP_SNAPSHOT_ARTIFACT_URL: ${{ steps.upload-browser-head-heap-snapshot.outputs.artifact-url }}
+          FRONTEND_BROWSER_DETAILED_HTML_ARTIFACT_URL: ${{ steps.upload-browser-detailed-html.outputs.artifact-url }}
+        run: |
+          REPORT_DIR="$RUNNER_TEMP/frontend-diagnostics"
+          test -s "$REPORT_DIR/base-bundle-stats.json"
+          test -s "$REPORT_DIR/head-bundle-stats.json"
+          test -s "$REPORT_DIR/base-browser.json"
+          test -s "$REPORT_DIR/head-browser.json"
+          pnpm --filter diagnostics-frontend run render-md \
+            "$GITHUB_WORKSPACE/base" "$GITHUB_WORKSPACE/head" \
+            "$REPORT_DIR/base-bundle-stats.json" "$REPORT_DIR/head-bundle-stats.json" \
+            "$REPORT_DIR/base-browser.json" "$REPORT_DIR/head-browser.json" \
+            "$REPORT_DIR/frontend-diagnostics.md"
+          printf '%s\n' "$PR_NUMBER" > "$REPORT_DIR/pr-number.txt"
+          printf '%s\n' "$BASE_SHA" > "$REPORT_DIR/base-sha.txt"
+          printf '%s\n' "$HEAD_SHA" > "$REPORT_DIR/head-sha.txt"
+          printf '%s\n' "${{ github.event.pull_request.html_url }}" > "$REPORT_DIR/pr-url.txt"
+
+      - name: Check frontend diagnostics report
+        shell: bash
+        run: |
+          REPORT_DIR="$RUNNER_TEMP/frontend-diagnostics"
+          test -s "$REPORT_DIR/frontend-diagnostics.md"
+          test -s "$REPORT_DIR/frontend-browser-detailed-html.html"
+          test -s "$REPORT_DIR/pr-number.txt"
+          test -s "$REPORT_DIR/head-sha.txt"
+          cat "$REPORT_DIR/frontend-diagnostics.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload frontend diagnostics report
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-diagnostics
+          path: |
+            ${{ runner.temp }}/frontend-diagnostics/base-bundle-stats.json
+            ${{ runner.temp }}/frontend-diagnostics/head-bundle-stats.json
+            ${{ runner.temp }}/frontend-diagnostics/base-browser.json
+            ${{ runner.temp }}/frontend-diagnostics/head-browser.json
+            ${{ runner.temp }}/frontend-diagnostics/frontend-diagnostics.md
+            ${{ runner.temp }}/frontend-diagnostics/pr-number.txt
+            ${{ runner.temp }}/frontend-diagnostics/base-sha.txt
+            ${{ runner.temp }}/frontend-diagnostics/head-sha.txt
+            ${{ runner.temp }}/frontend-diagnostics/pr-url.txt
+          if-no-files-found: error
+          retention-days: 7

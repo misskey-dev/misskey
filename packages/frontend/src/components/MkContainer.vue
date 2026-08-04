@@ -19,10 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</header>
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
-		:enterFromClass="defaultStore.state.animation ? $style.transition_toggle_enterFrom : ''"
-		:leaveToClass="defaultStore.state.animation ? $style.transition_toggle_leaveTo : ''"
+		:enterActiveClass="prefer.s.animation ? $style.transition_toggle_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_toggle_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_toggle_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_toggle_leaveTo : ''"
 		@enter="enter"
 		@afterEnter="afterEnter"
 		@leave="leave"
@@ -39,8 +39,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
-import { defaultStore } from '@/store.js';
+import { onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
@@ -48,7 +48,6 @@ const props = withDefaults(defineProps<{
 	thin?: boolean;
 	naked?: boolean;
 	foldable?: boolean;
-	onUnfold?: () => boolean; // return false to prevent unfolding
 	scrollable?: boolean;
 	expanded?: boolean;
 	maxHeight?: number | null;
@@ -58,9 +57,9 @@ const props = withDefaults(defineProps<{
 	maxHeight: null,
 });
 
-const rootEl = shallowRef<HTMLElement>();
-const contentEl = shallowRef<HTMLElement>();
-const headerEl = shallowRef<HTMLElement>();
+const rootEl = useTemplateRef('rootEl');
+const contentEl = useTemplateRef('contentEl');
+const headerEl = useTemplateRef('headerEl');
 const showBody = ref(props.expanded);
 const ignoreOmit = ref(false);
 const omitted = ref(false);
@@ -103,8 +102,6 @@ const omitObserver = new ResizeObserver((entries, observer) => {
 });
 
 function showMore() {
-	if (props.onUnfold && !props.onUnfold()) return;
-
 	ignoreOmit.value = true;
 	omitted.value = false;
 }
@@ -154,6 +151,10 @@ onUnmounted(() => {
 	&.naked {
 		background: transparent !important;
 		box-shadow: none !important;
+
+		> .content {
+			background: transparent !important;
+		}
 	}
 
 	&.scrollable {
@@ -181,9 +182,14 @@ onUnmounted(() => {
 	left: 0;
 	color: var(--MI_THEME-panelHeaderFg);
 	background: var(--MI_THEME-panelHeaderBg);
-	border-bottom: solid 0.5px var(--MI_THEME-panelHeaderDivider);
 	z-index: 2;
 	line-height: 1.4em;
+}
+
+@container style(--MI_THEME-panelHeaderBg: var(--MI_THEME-panel)) {
+	.header {
+		box-shadow: 0 0.5px 0 0 light-dark(#0002, #fff2);
+	}
 }
 
 .title {
@@ -214,6 +220,14 @@ onUnmounted(() => {
 
 .content {
 	--MI-stickyTop: 0px;
+
+	/*
+	理屈は知らないけど、ここでbackgroundを設定しておかないと
+	スクロールコンテナーが少なくともChromeにおいて
+	main thread scrolling になってしまい、パフォーマンスが(多分)落ちる。
+	backgroundが透明だと裏側を描画しないといけなくなるとかそういう理由かもしれない
+	*/
+	background: var(--MI_THEME-panel);
 
 	&.omitted {
 		position: relative;

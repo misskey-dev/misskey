@@ -215,7 +215,6 @@ noUsers: "কোন ব্যাবহারকারী নেই"
 editProfile: "প্রোফাইল সম্পাদনা করুন"
 noteDeleteConfirm: "আপনি কি নোট ডিলিট করার ব্যাপারে নিশ্চিত?"
 pinLimitExceeded: "আপনি আর কোন নোট পিন করতে পারবেন না"
-intro: "Misskey এর ইন্সটলেশন সম্পন্ন হয়েছে！দয়া করে অ্যাডমিন ইউজার তৈরি করুন।"
 done: "সম্পন্ন"
 processing: "প্রক্রিয়াধীন..."
 preview: "পূর্বরূপ দেখুন"
@@ -252,7 +251,6 @@ removeAreYouSure: "আপনি কি \"{x}\" সরানোর ব্যা�
 deleteAreYouSure: "আপনি কি \"{x}\" সরানোর ব্যাপারে নিশ্চিত?"
 resetAreYouSure: "রিসেট করার ব্যাপারে নিশ্চিত?"
 saved: "সংরক্ষিত হয়েছে"
-messaging: "চ্যাট"
 upload: "আপলোড"
 keepOriginalUploading: "আসল ছবি রাখুন"
 keepOriginalUploadingDescription: "ছবিটি আপলোড করার সময় আসল সংস্করণটি রাখুন। অপশনটি বন্ধ থাকলে, আপলোডের সময় ওয়েব প্রকাশনার জন্য ছবি ব্রাউজারে তৈরি করা হবে।"
@@ -265,7 +263,6 @@ uploadFromUrlMayTakeTime: "URL হতে আপলোড হতে কিছু 
 explore: "ঘুরে দেখুন"
 messageRead: "পড়া"
 noMoreHistory: "আর কোন ইতিহাস নেই"
-startMessaging: "চ্যাট শুরু করুন"
 nUsersRead: "{n} জন পড়েছেন"
 agreeTo: "{0} এর প্রতি আমি সম্মত"
 start: "শুরু করুন"
@@ -427,8 +424,6 @@ retype: "পুনঃ প্রবেশ"
 noteOf: "{user} এর নোট"
 quoteAttached: "উদ্ধৃত"
 quoteQuestion: "উদ্ধৃতি হিসাবে সংযুক্ত করবেন?"
-noMessagesYet: "কোন মেসেজ নেই"
-newMessageExists: "নতুন মেসেজ পেয়েছেন"
 onlyOneFileCanBeAttached: "আপনি মেসেজের সাথে সর্বোচ্চ একটি ফাইল যুক্ত করতে পারবেন"
 signinRequired: "দয়া করে লগ ইন করুন"
 invitations: "আমন্ত্রণ"
@@ -677,7 +672,6 @@ experimentalFeatures: "পরীক্ষামূলক বৈশিষ্ট�
 developer: "ডেভেলপার"
 makeExplorable: "অ্যাকাউন্ট \"ঘুরে দেখুন\" পৃষ্ঠায় দেখান"
 makeExplorableDescription: "আপনি এটি বন্ধ করলে, আপনার অ্যাকাউন্ট \"ঘুরে দেখুন\" পৃষ্ঠায় প্রদর্শিত হবে না।"
-showGapBetweenNotesInTimeline: "টাইমলাইন এবং নোটের মাঝে ফাকা জায়গা রাখুন"
 duplicate: "প্রতিরূপ"
 left: "বাম"
 center: "মাঝখান"
@@ -852,6 +846,25 @@ replies: "জবাব"
 renotes: "রিনোট"
 sourceCode: "সোর্স কোড"
 flip: "উল্টান"
+postForm: "নোট লিখুন"
+information: "আপনার সম্পর্কে"
+inMinutes: "মিনিট"
+inDays: "দিন"
+widgets: "উইজেটগুলি"
+_imageEditing:
+  _vars:
+    filename: "ফাইলের নাম"
+_imageFrameEditor:
+  header: "হেডার"
+  font: "ফন্ট"
+  fontSerif: "সেরিফ"
+  fontSansSerif: "স্যান্স সেরিফ"
+_chat:
+  invitations: "আমন্ত্রণ"
+  noHistory: "কোনো ইতিহাস নেই"
+  members: "সদস্যবৃন্দ"
+  home: "মূল পাতা"
+  send: "পাঠান"
 _delivery:
   stop: "স্থগিত করা হয়েছে"
   _type:
@@ -994,7 +1007,6 @@ _theme:
     header: "হেডার"
     navBg: "সাইডবারের পটভূমি"
     navFg: "সাইডবারের পাঠ্য"
-    navHoverFg: "সাইডবারের পাঠ্য (হভার)"
     navActive: "সাইডবারের পাঠ্য (অ্যাকটিভ)"
     navIndicator: "সাইডবারের ইনডিকেটর"
     link: "লিংক"
@@ -1016,12 +1028,8 @@ _theme:
     buttonBg: "বাটনের পটভূমি"
     buttonHoverBg: "বাটনের পটভূমি (হভার)"
     inputBorder: "ইনপুট ফিল্ডের বর্ডার"
-    driveFolderBg: "ড্রাইভ ফোল্ডারের পটভূমি"
-    wallpaperOverlay: "ওয়ালপেপার ওভারলে"
     badge: "ব্যাজ"
     messageBg: "চ্যাটের পটভূমি"
-    accentDarken: "অ্যাকসেন্ট (গাঢ়)"
-    accentLighten: "অ্যাকসেন্ট (হাল্কা)"
     fgHighlighted: "হাইলাইট করা পাঠ্য"
 _sfx:
   note: "নোটগুলি"
@@ -1084,6 +1092,7 @@ _permissions:
   "write:gallery": "গ্যালারী সম্পাদনা করুন"
   "read:gallery-likes": "গ্যালারীর পছন্দগুলি দেখুন"
   "write:gallery-likes": "গ্যালারীর পছন্দগুলি সম্পাদনা করুন"
+  "write:chat": "চ্যাটগুলি সম্পাদনা করুন"
 _auth:
   shareAccess: "\"{name}\" কে অ্যাকাউন্টের অ্যাক্সেস দিবেন?"
   shareAccessAsk: "অ্যাপ্লিকেশনটিকে অ্যাকাউন্টের অ্যাক্সেস দিবেন?"
@@ -1128,6 +1137,14 @@ _widgets:
   aichan: "আই চান"
   _userList:
     chooseList: "লিস্ট নির্বাচন করুন"
+_widgetOptions:
+  height: "উচ্চতা"
+  _button:
+    colored: "রঙ্গিন"
+  _clock:
+    size: "আকার"
+  _birthdayFollowings:
+    period: "ব্যাপ্তিকাল"
 _cw:
   hide: "লুকান"
   show: "আরও দেখুন"
@@ -1168,6 +1185,9 @@ _postForm:
   replyPlaceholder: "নোটটির জবাব দিন..."
   quotePlaceholder: "নোটটিকে উদ্ধৃত করুন..."
   channelPlaceholder: "চ্যানেলে পোস্ট করুন..."
+  _howToUse:
+    visibility_title: "দৃশ্যমানতা"
+    menu_title: "মেনু"
   _placeholders:
     a: "আপনি এখন কি করছেন?"
     b: "আপনার আশে পাশে কি হচ্ছে?"
@@ -1237,9 +1257,6 @@ _pages:
   newPage: "নতুন পৃষ্ঠা বানান"
   editPage: "পৃষ্ঠাটি সম্পাদনা করুন"
   readPage: "উৎস দেখছেন"
-  created: "পৃষ্ঠা তৈরি করা হয়েছে"
-  updated: "পৃষ্ঠা সম্পাদনা করা হয়েছে"
-  deleted: "পৃষ্ঠা মুছে ফেলা হয়েছে"
   pageSetting: "পৃষ্ঠার সেটিংস"
   nameAlreadyExists: "পৃষ্ঠার URLটি ইতিমধ্যেই ব্যাবহার করা হয়েছে"
   invalidNameTitle: "পৃষ্ঠার URL অবৈধ"
@@ -1351,3 +1368,22 @@ _reversi:
 _remoteLookupErrors:
   _noSuchObject:
     title: "পাওয়া যায়নি"
+_search:
+  searchScopeAll: "সবগুলো"
+  searchScopeLocal: "স্থানীয়"
+_watermarkEditor:
+  opacity: "অস্বচ্ছতা"
+  scale: "আকার"
+  text: "লেখা"
+  image: "ছবি"
+  advanced: "উন্নত"
+_imageEffector:
+  _fxProps:
+    scale: "আকার"
+    size: "আকার"
+    color: "রং"
+    opacity: "অস্বচ্ছতা"
+    lightness: "উজ্জ্বল করুন"
+_qr:
+  showTabTitle: "প্রদর্শন"
+  raw: "লেখা"

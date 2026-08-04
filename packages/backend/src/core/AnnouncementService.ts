@@ -182,11 +182,12 @@ export class AnnouncementService {
 	@bindThis
 	public async getAnnouncement(announcementId: MiAnnouncement['id'], me: MiUser | null): Promise<Packed<'Announcement'>> {
 		const announcement = await this.announcementsRepository.findOneByOrFail({ id: announcementId });
-		if (me) {
-			if (announcement.userId && announcement.userId !== me.id) {
-				throw new EntityNotFoundError(this.announcementsRepository.metadata.target, { id: announcementId });
-			}
 
+		if (announcement.userId && (me == null || announcement.userId !== me.id)) {
+			throw new EntityNotFoundError(this.announcementsRepository.metadata.target, { id: announcementId });
+		}
+
+		if (me) {
 			const read = await this.announcementReadsRepository.findOneBy({
 				announcementId: announcement.id,
 				userId: me.id,
@@ -205,7 +206,7 @@ export class AnnouncementService {
 				announcementId: announcementId,
 				userId: user.id,
 			});
-		} catch (e) {
+		} catch (_) {
 			return;
 		}
 

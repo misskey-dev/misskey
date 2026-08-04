@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { action } from '@storybook/addon-actions';
-import { StoryObj } from '@storybook/vue3';
+import { action } from 'storybook/actions';
+import type { StoryObj } from '@storybook/vue3';
 import { onBeforeUnmount } from 'vue';
 import MkDonation from './MkDonation.vue';
 import { instance } from '@/instance.js';

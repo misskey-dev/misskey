@@ -5,53 +5,66 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-show="props.modelValue.length != 0" :class="$style.root">
-	<Sortable :modelValue="props.modelValue" :class="$style.files" itemKey="id" :animation="150" :delay="100" :delayOnTouchOnly="true" @update:modelValue="v => emit('update:modelValue', v)">
-		<template #item="{ element }">
+	<MkDraggable
+		:modelValue="props.modelValue"
+		:class="$style.files"
+		direction="horizontal"
+		withGaps
+		@update:modelValue="v => emit('update:modelValue', v)"
+	>
+		<template #default="{ item }">
 			<div
 				:class="$style.file"
 				role="button"
 				tabindex="0"
-				@click="showFileMenu(element, $event)"
-				@keydown.space.enter="showFileMenu(element, $event)"
-				@contextmenu.prevent="showFileMenu(element, $event)"
+				@click="showFileMenu(item, $event)"
+				@keydown.space.enter="showFileMenu(item, $event)"
+				@contextmenu.prevent.stop="showFileMenu(item, $event)"
 			>
-				<MkDriveFileThumbnail :data-id="element.id" :class="$style.thumbnail" :file="element" fit="cover"/>
-				<div v-if="element.isSensitive" :class="$style.sensitive">
+				<!-- pointer-eventsをnoneにしておかないとiOSなどでドラッグしたときに画像の方に判定が持ってかれる -->
+				<MkDriveFileThumbnail style="pointer-events: none;" :data-id="item.id" :class="$style.thumbnail" :file="item" fit="cover"/>
+				<div v-if="item.isSensitive" :class="$style.sensitive" style="pointer-events: none;">
 					<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
 				</div>
 			</div>
 		</template>
-	</Sortable>
-	<p :class="[$style.remain, {
-		[$style.exceeded]: props.modelValue.length > 16,
-	}]">{{ 16 - props.modelValue.length }}/16</p>
+	</MkDraggable>
+	<p
+		:class="[$style.remain, {
+			[$style.exceeded]: props.modelValue.length > 16,
+		}]"
+	>
+		{{ props.modelValue.length }}/16
+	</p>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, inject } from 'vue';
+import { inject } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { MenuItem } from '@/types/menu';
+import { copyToClipboard } from '@/utility/copy-to-clipboard';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import type { MenuItem } from '@/types/menu.js';
-
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
+import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
+import { globalEvents } from '@/events.js';
 
 const props = defineProps<{
 	modelValue: Misskey.entities.DriveFile[];
 	detachMediaFn?: (id: string) => void;
 }>();
 
-const mock = inject<boolean>('mock', false);
+const mock = inject(DI.mock, false);
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: Misskey.entities.DriveFile[]): void;
 	(ev: 'detach', id: string): void;
 	(ev: 'changeSensitive', file: Misskey.entities.DriveFile, isSensitive: boolean): void;
 	(ev: 'changeName', file: Misskey.entities.DriveFile, newName: string): void;
-	(ev: 'replaceFile', file: Misskey.entities.DriveFile, newFile: Misskey.entities.DriveFile): void;
 }>();
 
 let menuShowing = false;
@@ -75,15 +88,16 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 		type: 'warning',
 		text: i18n.tsx.driveFileDeleteConfirm({ name: file.name }),
 	});
-
 	if (canceled) return;
 
-	os.apiWithDialog('drive/files/delete', {
+	await os.apiWithDialog('drive/files/delete', {
 		fileId: file.id,
 	});
+
+	globalEvents.emit('driveFilesDeleted', [file]);
 }
 
-function toggleSensitive(file) {
+function toggleSensitive(file: Misskey.entities.DriveFile) {
 	if (mock) {
 		emit('changeSensitive', file, !file.isSensitive);
 		return;
@@ -97,7 +111,7 @@ function toggleSensitive(file) {
 	});
 }
 
-async function rename(file) {
+async function rename(file: Misskey.entities.DriveFile) {
 	if (mock) return;
 
 	const { canceled, result } = await os.inputText({
@@ -118,7 +132,7 @@ async function rename(file) {
 async function describe(file: Misskey.entities.DriveFile) {
 	if (mock) return;
 
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkFileCaptionEditWindow.vue').then(x => x.default), {
 		default: file.comment !== null ? file.comment : '',
 		file: file,
 	}, {
@@ -135,17 +149,11 @@ async function describe(file: Misskey.entities.DriveFile) {
 	});
 }
 
-async function crop(file: Misskey.entities.DriveFile): Promise<void> {
-	if (mock) return;
-
-	const newFile = await os.cropImage(file, { aspectRatio: NaN });
-	emit('replaceFile', file, newFile);
-}
-
-function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | KeyboardEvent): void {
+function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | KeyboardEvent): void {
 	if (menuShowing) return;
 
 	const isImage = file.type.startsWith('image/');
+	const isVideo = file.type.startsWith('video/');
 
 	const menuItems: MenuItem[] = [];
 
@@ -163,11 +171,29 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 		action: () => { describe(file); },
 	});
 
-	if (isImage) {
+	if (isImage || isVideo) {
 		menuItems.push({
-			text: i18n.ts.cropImage,
-			icon: 'ti ti-crop',
-			action: () : void => { crop(file); },
+			text: i18n.ts.preview,
+			icon: 'ti ti-photo-search',
+			action: async () => {
+				const constents = props.modelValue.filter(item => item.type.startsWith('image') || item.type.startsWith('video')).map(item => ({
+					id: item.id,
+					type: item.type.startsWith('video') ? 'video' as const : 'image' as const,
+					url: item.url,
+					thumbnailUrl: item.thumbnailUrl,
+					width: item.properties.width,
+					height: item.properties.height,
+					filename: item.name,
+					file: item,
+					//sourceElement: TODO
+				}));
+				const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
+					defaultIndex: constents.findIndex(content => content.id === file.id),
+					contents: constents,
+				}, {
+					closed: () => dispose(),
+				});
+			},
 		});
 	}
 
@@ -183,6 +209,16 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 		danger: true,
 		action: () => { detachAndDeleteMedia(file); },
 	});
+
+	if (prefer.s.devMode) {
+		menuItems.push({ type: 'divider' }, {
+			icon: 'ti ti-hash',
+			text: i18n.ts.copyFileId,
+			action: () => {
+				copyToClipboard(file.id);
+			},
+		});
+	}
 
 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target).then(() => menuShowing = false);
 	menuShowing = true;
@@ -204,7 +240,6 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 	position: relative;
 	width: 64px;
 	height: 64px;
-	margin-right: 4px;
 	border-radius: 4px;
 	overflow: hidden;
 	cursor: move;

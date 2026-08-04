@@ -5,6 +5,7 @@ introMisskey: "ຍິນດີຕ້ອນຮັບ! Misskey ເປັນຊອ�
 poweredByMisskeyDescription: "{name} ແມ່ນສ່ວນໜຶ່ງຂອງການບໍລິການທີ່ຂັບເຄື່ອນໂດຍແພລດຟອມ open source. <b>Misskey</b> (ເອີ້ນວ່າ \"Misskey instance\")"
 monthAndDay: "ເດືອນ{month} / ວັນ{day}"
 search: "ຄົ້ນຫາ"
+reset: "ຣີເຊັດ"
 notifications: "ການແຈ້ງເຕືອນ"
 username: "ຊື່ຜູ້ໃຊ້"
 password: "ລະຫັດຜ່ານ"
@@ -223,7 +224,6 @@ remove: "ລຶບ"
 removed: "ລຶບແລ້ວ"
 resetAreYouSure: "ຣີ​ເຊັດບໍ?"
 saved: "ບັນທຶກແລ້ວ"
-messaging: "ແຊັຕ"
 upload: "ອັບໂຫຼດ"
 keepOriginalUploading: "ຮັກສາຮູບພາບຕົ້ນສະບັບ"
 fromDrive: "ຈາກ Drive"
@@ -233,7 +233,6 @@ uploadFromUrlDescription: "URL ຂອງໄຟລ໌ທີ່ທ່ານຕ້�
 uploadFromUrlRequested: "ຮ້ອງຂໍການອັບໂຫລດແລ້ວ"
 explore: "ສຳຫຼວດ"
 messageRead: "ອ່ານແລ້ວ"
-startMessaging: "ເລີ່ມການສົນທະນາໃໝ່"
 nUsersRead: "ອ່ານໂດຍ {n}"
 agree: "ຍອມຮັບ"
 termsOfService: "ເງື່ອນໄຂການບໍລິການ"
@@ -394,6 +393,15 @@ searchByGoogle: "ຄົ້ນຫາ"
 file: "ໄຟລ໌"
 replies: "ຕອບ​ກັບ"
 renotes: "Renote"
+information: "ກ່ຽວກັບ"
+_imageEditing:
+  _vars:
+    filename: "ຊື່ໄຟລ໌"
+_chat:
+  invitations: "ເຊີນ"
+  noHistory: "​ບໍ່​ມີປະຫວັດ"
+  members: "ສະມາຊິກ"
+  home: "ໜ້າຫຼັກ"
 _delivery:
   stop: "ໂຈະ"
   _type:
@@ -424,11 +432,17 @@ _widgets:
   jobQueue: "ຄິວວຽກ"
   _userList:
     chooseList: "ເລືອກບັນຊີລາຍການ"
+_widgetOptions:
+  height: "ຄວາມສູງ"
 _cw:
   show: "ໂຫຼດເພີ່ມເຕີມ"
 _visibility:
   home: "ໜ້າຫຼັກ"
   followers: "ຜູ້ຕິດຕາມ"
+  specified: "ໂພສ Direct note"
+_postForm:
+  _howToUse:
+    menu_title: "ເມນູ"
 _profile:
   name: "ຊື່"
   username: "ຊື່ຜູ້ໃຊ້"
@@ -466,6 +480,7 @@ _deck:
     list: "ລາຍການ"
     channel: "ຊ່ອງ"
     mentions: "ກ່າວເຖິງເຈົ້າ"
+    direct: "ໂພສ Direct note"
 _webhookSettings:
   name: "ຊື່"
 _abuseReport:
@@ -477,3 +492,7 @@ _moderationLogTypes:
 _remoteLookupErrors:
   _noSuchObject:
     title: "ບໍ່ພົບ"
+_search:
+  searchScopeAll: "ທັງໝົດ"
+_watermarkEditor:
+  image: "ຮູບພາບ"

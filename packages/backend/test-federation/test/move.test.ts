@@ -1,3 +1,4 @@
+import { describe, test, beforeAll } from 'vitest';
 import assert, { strictEqual } from 'node:assert';
 import { createAccount, type LoginUser, sleep } from './utils.js';
 

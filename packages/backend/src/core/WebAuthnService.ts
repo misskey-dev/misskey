@@ -24,7 +24,7 @@ import type {
 	PublicKeyCredentialCreationOptionsJSON,
 	PublicKeyCredentialRequestOptionsJSON,
 	RegistrationResponseJSON,
-} from '@simplewebauthn/types';
+} from '@simplewebauthn/server';
 
 @Injectable()
 export class WebAuthnService {
@@ -66,7 +66,6 @@ export class WebAuthnService {
 			userID: isoUint8Array.fromUTF8String(userId),
 			userName: userName,
 			userDisplayName: userDisplayName,
-			attestationType: 'indirect',
 			excludeCredentials: keys.map(key => (<{ id: string; transports?: AuthenticatorTransportFuture[]; }>{
 				id: key.id,
 				transports: key.transports ?? undefined,
@@ -127,11 +126,11 @@ export class WebAuthnService {
 		const { registrationInfo } = verification;
 
 		return {
-			credentialID: registrationInfo.credentialID,
-			credentialPublicKey: registrationInfo.credentialPublicKey,
+			credentialID: registrationInfo.credential.id,
+			credentialPublicKey: registrationInfo.credential.publicKey,
 			attestationObject: registrationInfo.attestationObject,
 			fmt: registrationInfo.fmt,
-			counter: registrationInfo.counter,
+			counter: registrationInfo.credential.counter,
 			userVerified: registrationInfo.userVerified,
 			credentialDeviceType: registrationInfo.credentialDeviceType,
 			credentialBackedUp: registrationInfo.credentialBackedUp,
@@ -212,9 +211,9 @@ export class WebAuthnService {
 				expectedChallenge: challenge,
 				expectedOrigin: relyingParty.origin,
 				expectedRPID: relyingParty.rpId,
-				authenticator: {
-					credentialID: key.id,
-					credentialPublicKey: Buffer.from(key.publicKey, 'base64url'),
+				credential: {
+					id: key.id,
+					publicKey: Buffer.from(key.publicKey, 'base64url'),
 					counter: key.counter,
 					transports: key.transports ? key.transports as AuthenticatorTransportFuture[] : undefined,
 				},
@@ -292,9 +291,9 @@ export class WebAuthnService {
 				expectedChallenge: challenge,
 				expectedOrigin: relyingParty.origin,
 				expectedRPID: relyingParty.rpId,
-				authenticator: {
-					credentialID: key.id,
-					credentialPublicKey: Buffer.from(key.publicKey, 'base64url'),
+				credential: {
+					id: key.id,
+					publicKey: Buffer.from(key.publicKey, 'base64url'),
 					counter: key.counter,
 					transports: key.transports ? key.transports as AuthenticatorTransportFuture[] : undefined,
 				},

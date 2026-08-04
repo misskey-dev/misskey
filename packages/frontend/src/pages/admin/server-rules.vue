@@ -4,73 +4,66 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<MkStickyContainer>
-		<template #header><XHeader :tabs="headerTabs"/></template>
-		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
-			<div class="_gaps_m">
-				<div>{{ i18n.ts._serverRules.description }}</div>
-				<Sortable
-					v-model="serverRules"
-					class="_gaps_m"
-					:itemKey="(_, i) => i"
-					:animation="150"
-					:handle="'.' + $style.itemHandle"
-					@start="e => e.item.classList.add('active')"
-					@end="e => e.item.classList.remove('active')"
-				>
-					<template #item="{element,index}">
-						<div :class="$style.item">
-							<div :class="$style.itemHeader">
-								<div :class="$style.itemNumber" v-text="String(index + 1)"/>
-								<span :class="$style.itemHandle"><i class="ti ti-menu"/></span>
-								<button class="_button" :class="$style.itemRemove" @click="remove(index)"><i class="ti ti-x"></i></button>
-							</div>
-							<MkInput v-model="serverRules[index]"/>
+<SearchMarker markerId="serverRules" :keywords="['rules']">
+	<MkFolder>
+		<template #icon><SearchIcon><i class="ti ti-checkbox"></i></SearchIcon></template>
+		<template #label><SearchLabel>{{ i18n.ts.serverRules }}</SearchLabel></template>
+
+		<div class="_gaps_m">
+			<div><SearchText>{{ i18n.ts._serverRules.description }}</SearchText></div>
+
+			<MkDraggable
+				v-model="serverRules"
+				direction="vertical"
+				withGaps
+				manualDragStart
+			>
+				<template #default="{ item, index, dragStart }">
+					<div :class="$style.item">
+						<div :class="$style.itemHeader">
+							<div :class="$style.itemNumber">{{ index + 1 }}</div>
+							<span :class="$style.itemHandle" :draggable="true" @dragstart.stop="dragStart"><i class="ti ti-menu"></i></span>
+							<button class="_button" :class="$style.itemRemove" @click="remove(item.id)"><i class="ti ti-x"></i></button>
 						</div>
-					</template>
-				</Sortable>
-				<div :class="$style.commands">
-					<MkButton rounded @click="serverRules.push('')"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-				</div>
+						<MkInput :modelValue="item.text" @update:modelValue="serverRules[index].text = $event"/>
+					</div>
+				</template>
+			</MkDraggable>
+			<div :class="$style.commands">
+				<MkButton rounded @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 			</div>
-		</MkSpacer>
-	</MkStickyContainer>
-</div>
+		</div>
+	</MkFolder>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref, computed } from 'vue';
-import XHeader from './_header_.vue';
+import { ref } from 'vue';
 import * as os from '@/os.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
+const serverRules = ref<{ text: string; id: string; }[]>(instance.serverRules.map(text => ({ text, id: Math.random().toString() })));
 
-const serverRules = ref<string[]>(instance.serverRules);
-
-const save = async () => {
+async function save() {
 	await os.apiWithDialog('admin/update-meta', {
-		serverRules: serverRules.value,
+		serverRules: serverRules.value.map(r => r.text),
 	});
 	fetchInstance(true);
-};
+}
 
-const remove = (index: number): void => {
-	serverRules.value.splice(index, 1);
-};
+function add(): void {
+	serverRules.value.push({ text: '', id: Math.random().toString() });
+}
 
-const headerTabs = computed(() => []);
-
-definePageMetadata(() => ({
-	title: i18n.ts.serverRules,
-	icon: 'ti ti-checkbox',
-}));
+function remove(id: string): void {
+	serverRules.value = serverRules.value.filter(r => r.id !== id);
+}
 </script>
 
 <style lang="scss" module>
@@ -122,7 +115,7 @@ definePageMetadata(() => ({
 	border-radius: 6px;
 
 	&:hover {
-		background: var(--MI_THEME-X5);
+		background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 	}
 }
 
