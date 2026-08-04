@@ -28,7 +28,7 @@
   -->
   ```
 
-  `packages/misskey-js` は MIT ライセンスのサブパッケージなので、この AGPL ヘッダーを一律に付けない (サブパッケージ固有の `package.json` / `LICENSE` / 既存ファイルのヘッダーに従う)。SPDX の合否は CI と skill が同じ `scripts/check-spdx.mjs` で判定するため、code review で目視チェックを重ねない。
+  `packages/misskey-js` は MIT ライセンスのサブパッケージなので、この AGPL ヘッダーを一律に付けない (サブパッケージ固有の `package.json` / `LICENSE` / 既存ファイルのヘッダーに従う)。SPDX の合否は CI と skill が同じ `scripts/check-spdx.mjs` で判定するため、code review で目視チェックを重ねない。CI は `--ci` で SPDX 行の有無を検査し、既定モードは加えて `.vue` / `.html` のコメント形式を検査する。
 
 - **`locales/ja-JP.yml` 以外の locale YAML を編集しない**。他言語ファイル (`en-US.yml` など `ja-JP.yml` 以外すべて) は Crowdin の自動配信先で、手動編集すると次の同期で上書き喪失する。
 - **マージ済 migration を編集しない**。`packages/backend/migration/{timestamp}-*.js` のうち既に `develop` / `master` に入ったものは絶対に変更しない。スキーマ変更が必要なら新しい timestamp で新規ファイルを追加し、`up()` と `down()` の両方を実装する。
