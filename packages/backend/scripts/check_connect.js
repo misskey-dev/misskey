@@ -4,8 +4,8 @@
  */
 
 import Redis from 'ioredis';
-import { loadConfig } from '../src-js/config.js';
-import { createPostgresDataSource } from '../src-js/postgres.js';
+import { loadConfig } from '../built/config.js';
+import { createPostgresDataSource } from '../built/postgres.js';
 
 const config = loadConfig();
 

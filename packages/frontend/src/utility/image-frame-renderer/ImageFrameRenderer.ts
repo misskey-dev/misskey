@@ -83,7 +83,17 @@ export class ImageFrameRenderer {
 		const GPSLatitude = this.exif == null ? '123.000000000000123' : this.exif.GPSLatitude?.description;
 		const GPSLongitude = this.exif == null ? '456.000000000000123' : this.exif.GPSLongitude?.description;
 		return text.replaceAll(/\{(\w+)\}/g, (_: string, key: string) => {
-			const meta_date = DateTimeOriginal ?? '????:??:?? ??:??:??';
+			let meta_date = DateTimeOriginal ?? '????:??:?? ??:??:??';
+			if (meta_date.includes('T') || meta_date.includes('Z')) { // ISO 8601
+				const parsed = new Date(meta_date);
+				const yyyy = parsed.getFullYear().toString().padStart(4, '0');
+				const mm = (parsed.getMonth() + 1).toString().padStart(2, '0');
+				const dd = parsed.getDate().toString().padStart(2, '0');
+				const hh = parsed.getHours().toString().padStart(2, '0');
+				const min = parsed.getMinutes().toString().padStart(2, '0');
+				const ss = parsed.getSeconds().toString().padStart(2, '0');
+				meta_date = `${yyyy}:${mm}:${dd} ${hh}:${min}:${ss}`;
+			}
 			const date = meta_date.split(' ')[0].replaceAll(':', '/');
 			switch (key) {
 				case 'caption': return this.caption ?? '?';

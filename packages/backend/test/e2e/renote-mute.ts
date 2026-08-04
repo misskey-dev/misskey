@@ -6,9 +6,11 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { setTimeout } from 'node:timers/promises';
+import { beforeAll, describe, test, vi } from 'vitest';
 import { api, post, signup, waitFire } from '../utils.js';
 import type * as misskey from 'misskey-js';
+
+const waitForPushToTlOptions = { timeout: 3000, interval: 25 };
 
 describe('Renote Mute', () => {
 	// alice mutes carol
@@ -35,16 +37,15 @@ describe('Renote Mute', () => {
 		const carolRenote = await post(carol, { renoteId: bobNote.id });
 		const carolNote = await post(carol, { text: 'hi' });
 
-		// redisに追加されるのを待つ
-		await setTimeout(100);
+		await vi.waitFor(async () => {
+			const res = await api('notes/local-timeline', {}, alice);
 
-		const res = await api('notes/local-timeline', {}, alice);
-
-		assert.strictEqual(res.status, 200);
-		assert.strictEqual(Array.isArray(res.body), true);
-		assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
-		assert.strictEqual(res.body.some(note => note.id === carolRenote.id), false);
-		assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(Array.isArray(res.body), true);
+			assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+			assert.strictEqual(res.body.some(note => note.id === carolRenote.id), false);
+			assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
+		}, waitForPushToTlOptions);
 	});
 
 	test('タイムラインにリノートミュートしているユーザーの引用が含まれる', async () => {
@@ -52,16 +53,15 @@ describe('Renote Mute', () => {
 		const carolRenote = await post(carol, { renoteId: bobNote.id, text: 'kore' });
 		const carolNote = await post(carol, { text: 'hi' });
 
-		// redisに追加されるのを待つ
-		await setTimeout(100);
+		await vi.waitFor(async () => {
+			const res = await api('notes/local-timeline', {}, alice);
 
-		const res = await api('notes/local-timeline', {}, alice);
-
-		assert.strictEqual(res.status, 200);
-		assert.strictEqual(Array.isArray(res.body), true);
-		assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
-		assert.strictEqual(res.body.some(note => note.id === carolRenote.id), true);
-		assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(Array.isArray(res.body), true);
+			assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+			assert.strictEqual(res.body.some(note => note.id === carolRenote.id), true);
+			assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
+		}, waitForPushToTlOptions);
 	});
 
 	// #12956
@@ -69,15 +69,14 @@ describe('Renote Mute', () => {
 		const carolNote = await post(carol, { text: 'hi' });
 		const bobRenote = await post(bob, { renoteId: carolNote.id });
 
-		// redisに追加されるのを待つ
-		await setTimeout(100);
+		await vi.waitFor(async () => {
+			const res = await api('notes/local-timeline', {}, alice);
 
-		const res = await api('notes/local-timeline', {}, alice);
-
-		assert.strictEqual(res.status, 200);
-		assert.strictEqual(Array.isArray(res.body), true);
-		assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
-		assert.strictEqual(res.body.some(note => note.id === bobRenote.id), true);
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(Array.isArray(res.body), true);
+			assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
+			assert.strictEqual(res.body.some(note => note.id === bobRenote.id), true);
+		}, waitForPushToTlOptions);
 	});
 
 	test('ストリームにリノートミュートしているユーザーのリノートが流れない', async () => {

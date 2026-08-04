@@ -227,10 +227,16 @@ export class CleanRemoteNotesProcessorService {
 					if (currentLimit <= minimumLimit) {
 						job.log('Local note tree complexity is too high, finding next root note...');
 
+						// This query is only used to advance the cursor past the offending range;
+						// it intentionally omits the heavy NOT EXISTS subqueries in `removalCriteria`
+						// (user_note_pining / note_favorite / note_reaction) which would otherwise
+						// hit the same statement_timeout that triggered this fallback path (#17057).
+						// Strict removability is re-evaluated by the next iteration's CTE query.
 						const idWindow = await this.notesRepository.createQueryBuilder('note')
 							.select('id')
 							.where('note.id > :cursorLeft')
-							.andWhere(removalCriteria)
+							.andWhere('note."id" < :newestLimit')
+							.andWhere('note."userHost" IS NOT NULL')
 							.andWhere({ replyId: IsNull(), renoteId: IsNull() })
 							.orderBy('note.id', 'ASC')
 							.limit(minimumLimit + 1)

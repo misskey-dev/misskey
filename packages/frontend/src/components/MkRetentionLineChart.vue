@@ -8,11 +8,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
 import type { ScatterDataPoint } from 'chart.js';
 import tinycolor from 'tinycolor2';
 import { store } from '@/store.js';
+import { themeManager } from '@/theme.js';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 import { chartVLine } from '@/utility/chart-vline.js';
 import { alpha } from '@/utility/color.js';
@@ -51,7 +52,7 @@ onMounted(async () => {
 
 	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
-	const accent = tinycolor(getComputedStyle(window.document.documentElement).getPropertyValue('--MI_THEME-accent'));
+	const accent = tinycolor(themeManager.currentCompiledTheme!.accent);
 	const color = accent.toHex();
 
 	if (chartEl.value == null) return;
@@ -137,5 +138,9 @@ onMounted(async () => {
 		},
 		plugins: [chartVLine(vLineColor)],
 	});
+});
+
+onUnmounted(() => {
+	chartInstance?.destroy();
 });
 </script>

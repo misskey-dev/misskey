@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 										</MkInput>
 									</SearchMarker>
 									<SearchMarker>
-										<MkInput v-model="smtpPass" type="password">
+										<MkInput v-model="smtpPass" type="password" autocomplete="new-password">
 											<template #label><SearchLabel>{{ i18n.ts.smtpPass }}</SearchLabel></template>
 										</MkInput>
 									</SearchMarker>

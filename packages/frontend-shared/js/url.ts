@@ -27,6 +27,14 @@ export function extractDomain(url: string) {
 	return match ? match[1] : null;
 }
 
+export function tryParseUrl(url: string | URL, base?: string | URL): URL | null {
+	try {
+		return new URL(url, base);
+	} catch {
+		return null;
+	}
+}
+
 export function maybeMakeRelative(urlStr: string, baseStr: string): string {
 	try {
 		const baseObj = new URL(baseStr);

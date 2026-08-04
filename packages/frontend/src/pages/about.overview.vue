@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
+	<div :class="$style.banner" :style="{ backgroundImage: instance.bannerUrl ? `url(${ instance.bannerUrl })` : undefined }">
 		<div style="overflow: clip;">
 			<img :src="instance.iconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
 			<div :class="$style.bannerName">

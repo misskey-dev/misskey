@@ -5,7 +5,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="el" :class="$style.root">
-	<MkMenu :items="items" :align="align" :width="width" :asDrawer="false" @close="onChildClosed"/>
+	<MkMenu
+		:items="items"
+		:align="align"
+		:width="width"
+		:asDrawer="false"
+		:debugDisablePredictionCone="debugDisablePredictionCone"
+		:debugShowPredictionCone="debugShowPredictionCone"
+		@close="onChildClosed"
+	/>
 </div>
 </template>
 
@@ -19,6 +27,8 @@ const props = defineProps<{
 	anchorElement: HTMLElement;
 	rootElement: HTMLElement;
 	width?: number;
+	debugDisablePredictionCone?: boolean;
+	debugShowPredictionCone?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -80,6 +90,7 @@ onUnmounted(() => {
 });
 
 defineExpose({
+	rootElement: el,
 	checkHit: (ev: MouseEvent) => {
 		return (ev.target === el.value || el.value?.contains(ev.target as Node));
 	},

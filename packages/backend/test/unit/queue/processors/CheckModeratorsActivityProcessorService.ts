@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { jest } from '@jest/globals';
+import { describe, expect, test, beforeAll, beforeEach, afterEach, afterAll, vi } from 'vitest';
+import type { Mocked } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as lolex from '@sinonjs/fake-timers';
 import { addHours, addSeconds, subDays, subHours, subSeconds } from 'date-fns';
@@ -24,7 +25,7 @@ const baseDate = new Date(Date.UTC(2000, 11, 15, 12, 0, 0));
 
 describe('CheckModeratorsActivityProcessorService', () => {
 	let app: TestingModule;
-	let clock: lolex.InstalledClock;
+	let clock: lolex.Clock;
 	let service: CheckModeratorsActivityProcessorService;
 
 	// --------------------------------------------------------------------------------------
@@ -32,10 +33,10 @@ describe('CheckModeratorsActivityProcessorService', () => {
 	let usersRepository: UsersRepository;
 	let userProfilesRepository: UserProfilesRepository;
 	let idService: IdService;
-	let roleService: jest.Mocked<RoleService>;
-	let announcementService: jest.Mocked<AnnouncementService>;
-	let emailService: jest.Mocked<EmailService>;
-	let systemWebhookService: jest.Mocked<SystemWebhookService>;
+	let roleService: Mocked<RoleService>;
+	let announcementService: Mocked<AnnouncementService>;
+	let emailService: Mocked<EmailService>;
+	let systemWebhookService: Mocked<SystemWebhookService>;
 
 	let systemWebhook1: MiSystemWebhook;
 	let systemWebhook2: MiSystemWebhook;
@@ -94,30 +95,30 @@ describe('CheckModeratorsActivityProcessorService', () => {
 					CheckModeratorsActivityProcessorService,
 					IdService,
 					{
-						provide: RoleService, useFactory: () => ({ getModerators: jest.fn() }),
+						provide: RoleService, useFactory: () => ({ getModerators: vi.fn() }),
 					},
 					{
-						provide: MetaService, useFactory: () => ({ fetch: jest.fn() }),
+						provide: MetaService, useFactory: () => ({ fetch: vi.fn() }),
 					},
 					{
-						provide: AnnouncementService, useFactory: () => ({ create: jest.fn() }),
+						provide: AnnouncementService, useFactory: () => ({ create: vi.fn() }),
 					},
 					{
-						provide: EmailService, useFactory: () => ({ sendEmail: jest.fn() }),
+						provide: EmailService, useFactory: () => ({ sendEmail: vi.fn() }),
 					},
 					{
 						provide: SystemWebhookService, useFactory: () => ({
-							fetchActiveSystemWebhooks: jest.fn(),
-							enqueueSystemWebhook: jest.fn(),
+							fetchActiveSystemWebhooks: vi.fn(),
+							enqueueSystemWebhook: vi.fn(),
 						}),
 					},
 					{
 						provide: QueueLoggerService, useFactory: () => ({
 							logger: ({
 								createSubLogger: () => ({
-									info: jest.fn(),
-									warn: jest.fn(),
-									succ: jest.fn(),
+									info: vi.fn(),
+									warn: vi.fn(),
+									succ: vi.fn(),
 								}),
 							}),
 						}),
@@ -131,10 +132,10 @@ describe('CheckModeratorsActivityProcessorService', () => {
 
 		service = app.get(CheckModeratorsActivityProcessorService);
 		idService = app.get(IdService);
-		roleService = app.get(RoleService) as jest.Mocked<RoleService>;
-		announcementService = app.get(AnnouncementService) as jest.Mocked<AnnouncementService>;
-		emailService = app.get(EmailService) as jest.Mocked<EmailService>;
-		systemWebhookService = app.get(SystemWebhookService) as jest.Mocked<SystemWebhookService>;
+		roleService = app.get(RoleService) as Mocked<RoleService>;
+		announcementService = app.get(AnnouncementService) as Mocked<AnnouncementService>;
+		emailService = app.get(EmailService) as Mocked<EmailService>;
+		systemWebhookService = app.get(SystemWebhookService) as Mocked<SystemWebhookService>;
 
 		app.enableShutdownHooks();
 	});

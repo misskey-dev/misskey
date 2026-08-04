@@ -46,20 +46,34 @@ type ParsedPath = (string | {
 })[];
 
 export type RouterEvents = {
+	/** ページ内遷移を検知した場合（analytics用） */
 	change: (ctx: {
 		beforeFullPath: string;
 		fullPath: string;
 		resolved: PathResolvedResult;
 	}) => void;
+	/** history stateのreplaceを行う場合 */
 	replace: (ctx: {
 		fullPath: string;
 	}) => void;
+	/** location.replace相当の処理が必要な場合 */
+	forceReplace: (ctx: {
+		onInit: boolean;
+		fullPath: string;
+	}) => void;
+	/** history stateのpushを行う場合 */
 	push: (ctx: {
 		beforeFullPath: string;
 		fullPath: string;
 		route: RouteDef | null;
 		props: Map<string, string | boolean> | null;
 	}) => void;
+	/** location.hrefへの代入相当の処理が必要な場合 */
+	forcePush: (ctx: {
+		onInit: boolean;
+		fullPath: string;
+	}) => void;
+	/** 遷移先が現在のページと同じだった場合 */
 	same: () => void;
 };
 
@@ -216,7 +230,6 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 	private currentFullPath: string; // /foo/bar?baz=qux#hash
 	private isLoggedIn: boolean;
 	private notFoundPageComponent: Component;
-	private redirectCount = 0;
 
 	public navHook: ((fullPath: string, flag?: RouterFlag) => boolean) | null = null;
 
@@ -232,8 +245,17 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		this.notFoundPageComponent = notFoundPageComponent;
 	}
 
-	public init() {
-		const res = this.navigate(this.currentFullPath, false);
+	public init(triggerForceReplace = false) {
+		const res = this.resolveForNavigation(this.currentFullPath);
+
+		if (triggerForceReplace && res.route.path === '/:(*)') {
+			this.emit('forceReplace', {
+				onInit: true,
+				fullPath: res._parsedRoute.fullPath,
+			});
+		}
+
+		this.navigate(res, false);
 		this.emit('replace', {
 			fullPath: res._parsedRoute.fullPath,
 		});
@@ -362,17 +384,15 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		return check(this.routes, _parts);
 	}
 
-	private navigate(fullPath: string, emitChange = true, _redirected = false): PathResolvedResult {
-		const beforeFullPath = this.currentFullPath;
-		this.currentFullPath = fullPath;
-
-		const res = this.resolve(this.currentFullPath);
+	/** 通常のresolve + リダイレクト解決 */
+	private resolveForNavigation(fullPath: string, _redirectCount = 0): PathResolvedResult {
+		const res = this.resolve(fullPath);
 
 		if (res == null) {
 			throw new Error('no route found for: ' + fullPath);
 		}
 
-		for (let current: PathResolvedResult | undefined = res; current; current = current.child) {
+		for (let current: PathResolvedResult | undefined = res; current != null; current = current.child) {
 			if ('redirect' in current.route) {
 				let redirectPath: string;
 				if (typeof current.route.redirect === 'function') {
@@ -380,13 +400,24 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 				} else {
 					redirectPath = current.route.redirect + (current._parsedRoute.queryString ? '?' + current._parsedRoute.queryString : '') + (current._parsedRoute.hash ? '#' + current._parsedRoute.hash : '');
 				}
-				if (_DEV_) console.log('Redirecting to: ', redirectPath);
-				if (_redirected && this.redirectCount++ > 10) {
+				if (_DEV_) console.log('Redirecting from', current._parsedRoute.fullPath, 'to', redirectPath);
+				if (_redirectCount > 10) {
 					throw new Error('redirect loop detected');
 				}
-				return this.navigate(redirectPath, emitChange, true);
+				return this.resolveForNavigation(redirectPath, _redirectCount + 1);
 			}
 		}
+
+		return {
+			...res,
+			redirected: _redirectCount > 0,
+		};
+	}
+
+	/** 解決された`res`に応じてrouterの状態を更新する。 */
+	private navigate(res: PathResolvedResult, emitChange = true) {
+		const beforeFullPath = this.currentFullPath;
+		this.currentFullPath = res._parsedRoute.fullPath;
 
 		if (res.route.loginRequired && !this.isLoggedIn && 'component' in res.route) {
 			res.route.component = this.notFoundPageComponent;
@@ -400,16 +431,12 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		if (emitChange && res.route.path !== '/:(*)') {
 			this.emit('change', {
 				beforeFullPath,
-				fullPath,
+				fullPath: res._parsedRoute.fullPath,
 				resolved: res,
 			});
 		}
 
-		this.redirectCount = 0;
-		return {
-			...res,
-			redirected: _redirected,
-		};
+		return res;
 	}
 
 	public getCurrentFullPath() {
@@ -447,10 +474,14 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 			const cancel = this.navHook(fullPath, flag ?? undefined);
 			if (cancel) return;
 		}
-		const res = this.navigate(fullPath);
+		const res = this.resolveForNavigation(fullPath);
 		if (res.route.path === '/:(*)') {
-			window.location.href = fullPath;
+			this.emit('forcePush', {
+				fullPath: res._parsedRoute.fullPath,
+				onInit: false,
+			});
 		} else {
+			this.navigate(res);
 			this.emit('push', {
 				beforeFullPath,
 				fullPath: res._parsedRoute.fullPath,
@@ -462,10 +493,18 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 
 	/** どうしても必要な場合に使用（パスが確定している場合は `Nirax.replace` を使用すること） */
 	public replaceByPath(fullPath: string) {
-		const res = this.navigate(fullPath);
-		this.emit('replace', {
-			fullPath: res._parsedRoute.fullPath,
-		});
+		const res = this.resolveForNavigation(fullPath);
+		if (res.route.path === '/:(*)') {
+			this.emit('forceReplace', {
+				fullPath: res._parsedRoute.fullPath,
+				onInit: false,
+			});
+		} else {
+			this.navigate(res);
+			this.emit('replace', {
+				fullPath: res._parsedRoute.fullPath,
+			});
+		}
 	}
 
 	public useListener<E extends keyof RouterEvents>(event: E, listener: EventEmitter.EventListener<RouterEvents, E>) {

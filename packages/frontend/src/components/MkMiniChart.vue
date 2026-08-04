@@ -33,6 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, ref } from 'vue';
 import { genId } from '@/utility/id.js';
+import { themeManager } from '@/theme.js';
 import tinycolor from 'tinycolor2';
 import { useInterval } from '@@/js/use-interval.js';
 
@@ -47,8 +48,7 @@ const polylinePoints = ref('');
 const polygonPoints = ref('');
 const headX = ref<number | null>(null);
 const headY = ref<number | null>(null);
-const clock = ref<number | null>(null);
-const accent = tinycolor(getComputedStyle(window.document.documentElement).getPropertyValue('--MI_THEME-accent'));
+const accent = tinycolor(themeManager.currentCompiledTheme!.accent);
 const color = accent.toRgbString();
 
 function draw(): void {

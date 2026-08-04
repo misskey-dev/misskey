@@ -38,6 +38,7 @@ import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { noteEvents } from '@/composables/use-note-capture.js';
 import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as isEmojiMuted } from '@/utility/emoji-mute.js';
+import { addToEmojiPalette } from '@/utility/emoji-palette.js';
 import { haptic } from '@/utility/haptic.js';
 
 const props = defineProps<{
@@ -106,7 +107,9 @@ async function toggleReaction() {
 					reaction: props.reaction,
 				}).then(() => {
 					const emoji = customEmojisMap.get(emojiName.value);
-					if (emoji == null) return;
+					if (emoji == null && getUnicodeEmojiOrNull(props.reaction) == null) {
+						return;
+					}
 					noteEvents.emit(`reacted:${props.noteId}`, {
 						userId: me.id,
 						reaction: props.reaction,
@@ -138,7 +141,9 @@ async function toggleReaction() {
 			reaction: props.reaction,
 		}).then(() => {
 			const emoji = customEmojisMap.get(emojiName.value);
-			if (emoji == null) return;
+			if (emoji == null && getUnicodeEmojiOrNull(props.reaction) == null) {
+				return;
+			}
 
 			noteEvents.emit(`reacted:${props.noteId}`, {
 				userId: me.id,
@@ -198,6 +203,16 @@ async function menu(ev: PointerEvent) {
 					if (canceled) return;
 					muteEmoji(props.reaction);
 				});
+			},
+		});
+	}
+
+	if (canToggle.value) {
+		menuItems.push({
+			text: i18n.ts.addToEmojiPalette,
+			icon: 'ti ti-palette',
+			action: () => {
+				addToEmojiPalette(isLocalCustomEmoji ? `:${emojiName.value}:` : props.reaction);
 			},
 		});
 	}

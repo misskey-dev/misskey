@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: isGameOver && !replaying }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
 				<img v-if="store.s.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
 				<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
-				<canvas ref="canvasEl" :class="$style.canvas"/>
+				<canvas ref="canvasEl" :class="$style.canvas"></canvas>
 				<Transition
 					:enterActiveClass="$style.transition_combo_enterActive"
 					:leaveActiveClass="$style.transition_combo_leaveActive"
@@ -82,7 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</Transition>
 					<template v-if="dropReady && currentPick">
 						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow"/>
-						<div :class="$style.dropGuide"/>
+						<div :class="$style.dropGuide"></div>
 					</template>
 				</div>
 				<div v-if="isGameOver && !replaying" :class="$style.gameOverLabel">

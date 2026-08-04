@@ -106,7 +106,7 @@ const end = computed(() => {
 	}
 });
 
-const birthdayUsersPaginator = markRaw(new Paginator('users/get-following-birthday-users', {
+const birthdayUsersPaginator = markRaw(new Paginator('users/get-following-users-by-birthday', {
 	limit: 18,
 	offsetMode: true,
 	computedParams: computed(() => {

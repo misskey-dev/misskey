@@ -6,7 +6,6 @@
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { MetricsTime, type JobType } from 'bullmq';
-import { parse as parseRedisInfo } from 'redis-info';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
@@ -85,6 +84,19 @@ const REPEATABLE_SYSTEM_JOB_DEF = [{
 	// 毎日午前4時に起動(最も人の少ない時間帯)
 	pattern: '0 4 * * *',
 }];
+
+function parseRedisInfo(infoText: string): Record<string, string> {
+	const fields = infoText
+		.split('\n')
+		.filter(line => line.length > 0 && !line.startsWith('#'))
+		.map(line => line.trim().split(':'));
+
+	const result: Record<string, string> = {};
+	for (const [key, value] of fields) {
+		result[key] = value;
+	}
+	return result;
+}
 
 @Injectable()
 export class QueueService {
@@ -758,6 +770,18 @@ export class QueueService {
 	}
 
 	@bindThis
+	public async queuePause(queueType: typeof QUEUE_TYPES[number]) {
+		const queue = this.getQueue(queueType);
+		await queue.pause();
+	}
+
+	@bindThis
+	public async queueResume(queueType: typeof QUEUE_TYPES[number]) {
+		const queue = this.getQueue(queueType);
+		await queue.resume();
+	}
+
+	@bindThis
 	public async queueRetryJob(queueType: typeof QUEUE_TYPES[number], jobId: string) {
 		const queue = this.getQueue(queueType);
 		const job = await queue.getJob(jobId);
@@ -890,7 +914,7 @@ export class QueueService {
 			},
 			db: {
 				version: db.redis_version,
-				mode: db.redis_mode,
+				mode: db.redis_mode as 'cluster' | 'standalone' | 'sentinel',
 				runId: db.run_id,
 				processId: db.process_id,
 				port: parseInt(db.tcp_port),

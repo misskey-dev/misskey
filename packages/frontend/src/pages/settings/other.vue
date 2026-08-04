@@ -142,14 +142,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<hr>
 		</template>
 
-		<MkButton v-if="!storagePersisted" @click="enableStoragePersistence">{{ i18n.ts._settings.settingsPersistence_title }}</MkButton>
+		<MkButton v-if="storagePersistenceSupported && !storagePersisted" @click="enableStoragePersistence">{{ i18n.ts._settings.settingsPersistence_title }}</MkButton>
 
 		<MkButton @click="forceCloudBackup">{{ i18n.ts._preferencesBackup.forceBackup }}</MkButton>
-
-		<FormSlot>
-			<MkButton danger @click="migrate"><i class="ti ti-refresh"></i> {{ i18n.ts.migrateOldSettings }}</MkButton>
-			<template #caption>{{ i18n.ts.migrateOldSettings_description }}</template>
-		</FormSlot>
 	</div>
 </SearchMarker>
 </template>
@@ -165,7 +160,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os.js';
-import { enableStoragePersistence, storagePersisted, skipStoragePersistence } from '@/utility/storage.js';
+import { enableStoragePersistence, getStoragePersistenceStatusRef, storagePersistenceSupported } from '@/utility/storage.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
@@ -173,12 +168,13 @@ import FormSection from '@/components/form/section.vue';
 import { prefer } from '@/preferences.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import { signout } from '@/signout.js';
-import { migrateOldSettings } from '@/pref-migrate.js';
 import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
 import { cloudBackup } from '@/preferences/utility.js';
 
 const $i = ensureSignin();
+
+const storagePersisted = await getStoragePersistenceStatusRef();
 
 const reportError = prefer.model('reportError');
 const enableCondensedLine = prefer.model('enableCondensedLine');
@@ -215,10 +211,6 @@ async function deleteAccount() {
 	});
 
 	await signout();
-}
-
-function migrate() {
-	migrateOldSettings();
 }
 
 function resetAllTips() {

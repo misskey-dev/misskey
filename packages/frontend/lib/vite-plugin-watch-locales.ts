@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import path from 'node:path'
+import path from 'node:path';
 import locales from 'i18n';
+import type { Plugin } from 'vite';
 
 const localesDir = path.resolve(__dirname, '../../../locales')
 
 /**
  * 外部ファイルを監視し、必要に応じてwebSocketでメッセージを送るViteプラグイン
- * @returns {import('vite').Plugin}
  */
-export default function pluginWatchLocales() {
+export default function pluginWatchLocales(): Plugin {
 	return {
 		name: 'watch-locales',
 

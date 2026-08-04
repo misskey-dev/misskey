@@ -123,6 +123,7 @@ function postThis() {
 
 	os.post({
 		initialFiles: [file.value],
+		instant: true,
 	});
 }
 
@@ -215,7 +216,7 @@ async function deleteFile() {
 
 	globalEvents.emit('driveFilesDeleted', [file.value]);
 
-	router.push('/my/drive');
+	router.replace('/my/drive');
 }
 
 onMounted(async () => {

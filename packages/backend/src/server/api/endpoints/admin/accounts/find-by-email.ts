@@ -50,7 +50,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const profile = await this.userProfilesRepository.findOne({
 				where: { email: ps.email },
-				relations: ['user'],
+				relations: { user: true },
 			});
 
 			if (profile == null) {

@@ -21,8 +21,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #default="{ item, index, dragStart }">
 					<div :class="$style.item">
 						<div :class="$style.itemHeader">
-							<div :class="$style.itemNumber" v-text="String(index + 1)"/>
-							<span :class="$style.itemHandle" :draggable="true" @dragstart.stop="dragStart"><i class="ti ti-menu"/></span>
+							<div :class="$style.itemNumber">{{ index + 1 }}</div>
+							<span :class="$style.itemHandle" :draggable="true" @dragstart.stop="dragStart"><i class="ti ti-menu"></i></span>
 							<button class="_button" :class="$style.itemRemove" @click="remove(item.id)"><i class="ti ti-x"></i></button>
 						</div>
 						<MkInput :modelValue="item.text" @update:modelValue="serverRules[index].text = $event"/>

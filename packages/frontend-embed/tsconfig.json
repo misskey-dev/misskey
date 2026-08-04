@@ -13,6 +13,7 @@
 		"module": "ES2022",
 		"moduleResolution": "Bundler",
 		"removeComments": false,
+		"skipLibCheck": true,
 		"noLib": false,
 		"strict": true,
 		"strictNullChecks": true,
