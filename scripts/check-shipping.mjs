@@ -20,13 +20,12 @@
  *   2 = 引数、Git ref、コマンド起動などの理由で検査不能
  */
 
-import { execFileSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { statSync } from 'node:fs';
 import { join } from 'node:path';
-import { TextDecoder } from 'node:util';
 
-const UTF8_DECODER = new TextDecoder('utf-8', { fatal: true });
-const INTEGRATION_REFS = ['origin/develop', 'develop', 'origin/master', 'master'];
+import { DEFAULT_INTEGRATION_REFS, findClosestMergeBase, gitLines, gitMergeBase, gitPaths } from './lib/git.mjs';
+
 const PNPM_COMMAND = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
 
 const LINT_TARGETS = [
@@ -48,95 +47,24 @@ const LINT_TARGETS = [
 class OperationalError extends Error {}
 
 /**
- * @param {string[]} args
- * @param {{ quiet?: boolean }} [options]
- * @returns {Buffer}
- */
-function gitBuffer(args, options = {}) {
-	try {
-		return execFileSync('git', args, {
-			maxBuffer: 64 * 1024 * 1024,
-			stdio: ['ignore', 'pipe', options.quiet === true ? 'ignore' : 'inherit'],
-		});
-	} catch {
-		throw new OperationalError(`git ${args[0]} を実行できない`);
-	}
-}
-
-/**
- * @param {Buffer} buffer
- * @param {string} context
- * @returns {string}
- */
-function decodeGitOutput(buffer, context) {
-	try {
-		return UTF8_DECODER.decode(buffer);
-	} catch {
-		throw new OperationalError(`${context}: Git 出力に UTF-8 でないファイル名が含まれる`);
-	}
-}
-
-/**
- * @param {string[]} args
- * @param {{ quiet?: boolean }} [options]
- * @returns {string[]}
- */
-function gitLines(args, options = {}) {
-	return decodeGitOutput(gitBuffer(args, options), `git ${args[0]}`)
-		.split('\n')
-		.filter((line) => line !== '');
-}
-
-/**
- * @param {string[]} args
- * @returns {string[]}
- */
-function gitPaths(args) {
-	return decodeGitOutput(gitBuffer(args), `git ${args[0]}`)
-		.split('\0')
-		.filter((path) => path !== '');
-}
-
-/**
- * @param {string} ref
- * @returns {{ base: string, distance: number }}
- */
-function mergeBaseCandidate(ref) {
-	try {
-		const base = gitLines(['merge-base', ref, 'HEAD'], { quiet: true })[0];
-		if (base === undefined) throw new Error('empty merge-base');
-		const distanceText = gitLines(['rev-list', '--count', `${base}..HEAD`], { quiet: true })[0];
-		const distance = Number(distanceText);
-		if (!Number.isInteger(distance)) throw new Error('invalid distance');
-		return { base, distance };
-	} catch {
-		throw new OperationalError(`merge-base を解決できない: ${ref}`);
-	}
-}
-
-/**
+ * 明示 ref または最も近い統合先から merge-base を選ぶ。
+ *
  * @param {string | null} explicitRef
  * @returns {string}
  */
 function resolveMergeBase(explicitRef) {
-	if (explicitRef !== null) return mergeBaseCandidate(explicitRef).base;
+	if (explicitRef !== null) return gitMergeBase(explicitRef);
 
-	const candidates = [];
-	for (const ref of INTEGRATION_REFS) {
-		try {
-			candidates.push(mergeBaseCandidate(ref));
-		} catch {
-			// この環境に無い統合先 ref は候補から外す。
-		}
-	}
-	if (candidates.length === 0) {
+	const base = findClosestMergeBase(DEFAULT_INTEGRATION_REFS);
+	if (base === null) {
 		throw new OperationalError('統合先の merge-base を解決できない。--base <ref> または MISSKEY_BASE_REF を指定すること');
 	}
-	candidates.sort((a, b) => a.distance - b.distance);
-	return candidates[0].base;
+	return base;
 }
 
 /**
+ * commit 済み・未commit・untracked を含む変更ファイルを列挙する。
+ *
  * @param {string} base
  * @returns {string[]}
  */
@@ -149,6 +77,8 @@ function listChangedFiles(base) {
 }
 
 /**
+ * パスが存在する通常ファイルかを判定する。
+ *
  * @param {string} file
  * @returns {boolean}
  */
@@ -162,6 +92,8 @@ function isRegularFile(file) {
 }
 
 /**
+ * 指定ディレクトリでコマンドを実行し、終了コードを返す。
+ *
  * @param {string} command
  * @param {string[]} args
  * @param {string} cwd
@@ -182,6 +114,8 @@ function runCommand(command, args, cwd) {
 }
 
 /**
+ * 子プロセスの終了コードを検査結果の 0・1・2 に正規化する。
+ *
  * @param {number} status
  * @returns {0 | 1 | 2}
  */
@@ -192,6 +126,8 @@ function normalizeStatus(status) {
 }
 
 /**
+ * 変更ファイルを package ごとに分け、対象限定 ESLint を実行する。
+ *
  * @param {string[]} changedFiles
  * @param {string} repoRoot
  * @returns {{ status: 0 | 1 | 2, summary: 'PASS' | 'FAIL' | 'ERROR' | 'SKIPPED' }}
@@ -226,6 +162,8 @@ function runChangedFileLint(changedFiles, repoRoot) {
 }
 
 /**
+ * SPDX 検査を実行し、違反時は対象内を修正して再検査する。
+ *
  * @param {string} base
  * @param {string} repoRoot
  * @returns {0 | 1 | 2}
@@ -249,6 +187,8 @@ function runSpdx(base, repoRoot) {
 }
 
 /**
+ * ja-JP.yml 以外の locale YAML 変更がないかを検査する。
+ *
  * @param {string[]} changedFiles
  * @returns {0 | 1}
  */
@@ -267,6 +207,8 @@ function runLocaleSafety(changedFiles) {
 }
 
 /**
+ * CLI 引数または環境変数から基準 ref を取り出す。
+ *
  * @param {string[]} args
  * @returns {string | null | undefined}
  */
@@ -277,6 +219,8 @@ function parseBaseRef(args) {
 }
 
 /**
+ * lint・SPDX・locale safety を実行し、終了コードを集約する。
+ *
  * @returns {number}
  */
 function main() {

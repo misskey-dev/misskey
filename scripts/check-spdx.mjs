@@ -26,10 +26,10 @@
  * 使い、自分の変更に含まれる欠落へ修正対象を限定する。修正後は必ず全体を再検査する。
  */
 
-import { execFileSync } from 'node:child_process';
 import { lstatSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, extname } from 'node:path';
-import { TextDecoder } from 'node:util';
+
+import { DEFAULT_INTEGRATION_REFS, findClosestMergeBase, gitLines, gitMergeBase, gitPaths } from './lib/git.mjs';
 
 /** CI の対象ディレクトリ。この配列を CI とローカル検査の両方が使う。 */
 const TARGET_DIRECTORIES = [
@@ -64,64 +64,14 @@ const LICENSE_LINE = 'SPDX-License-Identifier: AGPL-3.0-only';
 const HTML_HEADER = `<!--\n${COPYRIGHT_LINE}\n${LICENSE_LINE}\n-->\n\n`;
 const BLOCK_HEADER = `/*\n * ${COPYRIGHT_LINE}\n * ${LICENSE_LINE}\n */\n\n`;
 
-const UTF8_DECODER = new TextDecoder('utf-8', { fatal: true });
-const INTEGRATION_REFS = ['origin/develop', 'develop', 'origin/master', 'master'];
-
 /** @typedef {'check' | 'fix' | 'ci'} Mode */
 /** @typedef {'missing' | 'wrong-form' | 'ok'} Verdict */
 
 class OperationalError extends Error {}
 
 /**
- * @param {string[]} args
- * @param {{ quiet?: boolean }} [options]
- * @returns {Buffer}
- */
-function gitBuffer(args, options = {}) {
-	return execFileSync('git', args, {
-		maxBuffer: 64 * 1024 * 1024,
-		stdio: ['ignore', 'pipe', options.quiet === true ? 'ignore' : 'inherit'],
-	});
-}
-
-/**
- * @param {Buffer} buffer
- * @param {string} context
- * @returns {string}
- */
-function decodeGitOutput(buffer, context) {
-	try {
-		return UTF8_DECODER.decode(buffer);
-	} catch {
-		throw new OperationalError(`${context}: Git 出力に UTF-8 でないファイル名が含まれる`);
-	}
-}
-
-/**
- * @param {string[]} args
- * @param {{ quiet?: boolean }} [options]
- * @returns {string[]}
- */
-function gitLines(args, options = {}) {
-	return decodeGitOutput(gitBuffer(args, options), `git ${args[0]}`)
-		.split('\n')
-		.filter((line) => line !== '');
-}
-
-/**
- * NUL 区切りの Git パス出力を、空白・改行を壊さず配列化する。
+ * パスが存在する通常ファイルかを判定する。
  *
- * @param {string[]} args
- * @param {{ quiet?: boolean }} [options]
- * @returns {string[]}
- */
-function gitPaths(args, options = {}) {
-	return decodeGitOutput(gitBuffer(args, options), `git ${args[0]}`)
-		.split('\0')
-		.filter((path) => path !== '');
-}
-
-/**
  * @param {string} file
  * @returns {boolean}
  */
@@ -135,6 +85,8 @@ function isRegularFile(file) {
 }
 
 /**
+ * パスが SPDX 検査の対象条件を満たすかを判定する。
+ *
  * @param {string} file
  * @returns {boolean}
  */
@@ -150,6 +102,8 @@ function isTargetPath(file) {
 }
 
 /**
+ * Git の index と必要に応じて untracked から SPDX 対象ファイルを列挙する。
+ *
  * @param {boolean} includeUntracked
  * @returns {string[]}
  */
@@ -162,48 +116,24 @@ function listTargetFiles(includeUntracked) {
 }
 
 /**
- * @param {string} ref
- * @returns {string}
- */
-function mergeBaseFor(ref) {
-	try {
-		const base = gitLines(['merge-base', ref, 'HEAD'], { quiet: true })[0];
-		if (base === undefined) throw new Error('empty merge-base');
-		return base;
-	} catch {
-		throw new OperationalError(`merge-base を解決できない: ${ref}`);
-	}
-}
-
-/**
+ * 明示 ref または利用可能な統合先から merge-base を選ぶ。
+ *
  * @param {string | null} explicitRef
  * @returns {string}
  */
 function resolveMergeBase(explicitRef) {
-	if (explicitRef !== null) return mergeBaseFor(explicitRef);
+	if (explicitRef !== null) return gitMergeBase(explicitRef);
 
-	/** @type {{ base: string, distance: number }[]} */
-	const candidates = [];
-	for (const ref of INTEGRATION_REFS) {
-		try {
-			const base = mergeBaseFor(ref);
-			const distanceText = gitLines(['rev-list', '--count', `${base}..HEAD`], { quiet: true })[0];
-			const distance = Number(distanceText);
-			if (Number.isInteger(distance)) candidates.push({ base, distance });
-		} catch {
-			// この環境に無い統合先 ref は候補から外す。
-		}
-	}
-
-	if (candidates.length === 0) {
+	const base = findClosestMergeBase(DEFAULT_INTEGRATION_REFS);
+	if (base === null) {
 		throw new OperationalError('統合先の merge-base を解決できない。--base <ref> を指定すること');
 	}
-
-	candidates.sort((a, b) => a.distance - b.distance);
-	return candidates[0].base;
+	return base;
 }
 
 /**
+ * merge-base 以降の commit 済み・未commit・untracked の変更を集める。
+ *
  * @param {string | null} explicitRef
  * @returns {Set<string>}
  */
@@ -217,6 +147,8 @@ function listLocalChanges(explicitRef) {
 }
 
 /**
+ * 指定位置が閉じた HTML コメントの内側かを判定する。
+ *
  * @param {string} text
  * @param {number} index
  * @returns {boolean}
@@ -230,6 +162,8 @@ function isInsideHtmlComment(text, index) {
 }
 
 /**
+ * ファイルの SPDX 行と HTML コメント形式を判定する。
+ *
  * @param {string} file
  * @returns {Verdict}
  */
@@ -249,6 +183,8 @@ function judge(file) {
 }
 
 /**
+ * ファイル種別と先頭指示行に合わせ、SPDX ヘッダーを適切な位置へ挿入する。
+ *
  * @param {string} file
  * @returns {void}
  */
@@ -258,7 +194,7 @@ function insertHeader(file) {
 	const body = bom === '' ? original : original.slice(1);
 	const eol = body.includes('\r\n') ? '\r\n' : '\n';
 
-	/** @param {string} header */
+	/** ファイルの改行コードに合わせてヘッダーを変換する。 @param {string} header */
 	const withEol = (header) => (eol === '\n' ? header : header.replaceAll('\n', eol));
 
 	if (HTML_COMMENT_EXTENSIONS.has(extname(file))) {
@@ -279,6 +215,8 @@ function insertHeader(file) {
 }
 
 /**
+ * CLI 引数を検証し、実行モードと基準 ref を取り出す。
+ *
  * @param {string[]} args
  * @returns {{ mode: Mode, baseRef: string | null } | null}
  */
@@ -308,6 +246,8 @@ function parseArgs(args) {
 }
 
 /**
+ * 対象ファイルを検査し、違反種別ごとの一覧にまとめる。
+ *
  * @param {string[]} targets
  * @returns {{ missing: string[], wrongForm: string[] }}
  */
@@ -325,6 +265,8 @@ function inspectTargets(targets) {
 }
 
 /**
+ * SPDX の検査・修正を実行し、集約した終了コードを返す。
+ *
  * @returns {number}
  */
 function main() {
