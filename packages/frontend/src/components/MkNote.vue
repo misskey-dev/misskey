@@ -159,7 +159,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-if="!appearNote.deletedAt" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown.prevent="clip()">
 						<i class="ti ti-paperclip"></i>
 					</button>
-					<button v-else :class="$style.noteFooterButton" class="_button" disabled>
+					<button v-else :class="$style.footerButton" class="_button" disabled>
 						<i class="ti ti-ban"></i>
 					</button>
 				</template>
