@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import type { Ref } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
@@ -106,7 +106,7 @@ export function useNote(
 
 	// プラグインの割り込み処理
 	let rawNote = deepClone(props.note);
-	const hideByPlugin = ref(false);
+	let hideByPlugin = false;
 	const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
 
 	if (noteViewInterruptors.length > 0) {
@@ -119,7 +119,7 @@ export function useNote(
 			}
 		}
 		if (result == null) {
-			hideByPlugin.value = true;
+			hideByPlugin = true;
 		} else {
 			rawNote = result as Misskey.entities.Note;
 		}
@@ -143,23 +143,25 @@ export function useNote(
 	const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 
 	// ミュート判定
+	// mutedはミュート解除の操作で書き換わるのでrefだが、hardMutedは解除できないのでリアクティブにしない
 	const muted = ref($i ? checkNoteWordMute(appearNote, $i, $i.mutedWords) || checkBuiltinSoftMute(appearNote, inTimeline && !tl_withSensitive.value) : false);
-	const hardMuted = ref(props.withHardMute && $i ? checkNoteWordMute(appearNote, $i, $i.hardMutedWords) : false);
+	const hardMuted = props.withHardMute && $i ? checkNoteWordMute(appearNote, $i, $i.hardMutedWords) : false;
 
-	// 計算プロパティ (Computed)
-	const isMyRenote = computed(() => $i && ($i.id === rawNote.userId));
-	const parsed = computed(() => appearNote.text ? mfm.parse(appearNote.text) : null);
-	const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.renote?.url !== url && appearNote.renote?.uri !== url) : null);
-	const isLong = computed(() => shouldCollapsed(appearNote, urls.value ?? []));
-	const collapsed = ref(appearNote.cw == null && isLong.value);
-	const showTicker = computed(() => (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance));
-	const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i?.id));
+	// 導出値
+	// rawNote / appearNote / $i.id / prefer.s は変化しないので一度だけ計算する
+	const isMyRenote = $i != null && ($i.id === rawNote.userId);
+	const parsed = appearNote.text ? mfm.parse(appearNote.text) : null;
+	const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.renote?.url !== url && appearNote.renote?.uri !== url) : null;
+	const isLong = shouldCollapsed(appearNote, urls ?? []);
+	const collapsed = ref(appearNote.cw == null && isLong);
+	const canRenote = ['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i?.id);
+	const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance);
 	const renoteCollapsed = ref(prefer.s.collapseRenotes && isRenote && (($i && ($i.id === rawNote.userId || $i.id === appearNote.userId)) || ($appearNote.myReaction != null)));
 
-	const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
+	const pleaseLoginContext: OpenOnRemoteOptions = {
 		type: 'lookup',
 		url: `https://${host}/notes/${appearNote.id}`,
-	}));
+	};
 
 	// グローバルイベントの監視
 	useGlobalEvent('noteDeleted', (noteId) => {
@@ -214,7 +216,7 @@ export function useNote(
 	// 共通アクション関数群
 	async function renote() {
 		if (props.mock) return;
-		const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+		const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext });
 		if (!isLoggedIn) return;
 		showMovedDialog();
 		if (els.renoteButton == null) return;
@@ -229,7 +231,7 @@ export function useNote(
 
 	async function reply() {
 		if (props.mock) return;
-		const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+		const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext });
 		if (!isLoggedIn) return;
 		os.post({
 			reply: appearNote,
@@ -239,8 +241,8 @@ export function useNote(
 		});
 	}
 
-	async function react(customCallback?: (reaction: string) => void) {
-		const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+	async function react(createReactionMock?: (reaction: string) => void) {
+		const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext });
 		if (!isLoggedIn) return;
 		showMovedDialog();
 
@@ -274,7 +276,7 @@ export function useNote(
 				}
 				sound.playMisskeySfx('reaction');
 				if (props.mock) {
-					if (customCallback) customCallback(reaction);
+					if (createReactionMock) createReactionMock(reaction);
 					return;
 				}
 				misskeyApi('notes/reactions/create', {
@@ -292,7 +294,7 @@ export function useNote(
 
 	async function reactViaMfmEmoji(reaction: string) {
 		if (props.mock) return;
-		const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+		const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext });
 		if (!isLoggedIn) return;
 		showMovedDialog();
 		sound.playMisskeySfx('reaction');
@@ -370,7 +372,7 @@ export function useNote(
 
 	async function showRenoteMenu() {
 		if (props.mock) return;
-		const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+		const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext });
 		if (!isLoggedIn) return;
 
 		const getUnrenote = () => ({
@@ -401,7 +403,7 @@ export function useNote(
 		menuItems.push(getCopyNoteLinkMenu(rawNote, i18n.ts.copyLinkRenote));
 		menuItems.push({ type: 'divider' });
 
-		if (isMyRenote.value) {
+		if (isMyRenote) {
 			menuItems.push(getUnrenote());
 			os.popupMenu(menuItems, els.renoteTime?.value);
 		} else {
@@ -435,7 +437,7 @@ export function useNote(
 		collapsed,
 		renoteCollapsed,
 
-		// 計算プロパティ
+		// 導出値
 		isMyRenote,
 		parsed,
 		urls,
