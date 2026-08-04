@@ -215,6 +215,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		if (!this.utilityService.isUriLocal(url)) {
 			return null;
 		}
+		// We do not check for allowExternalApRedirect since the flag is to prevent impersonation (ref: 2025.2.1 changelog)
+		// and we always can trust local user id
 
 		const uri = new URL(url);
 		const pathComponents = uri.pathname.split('/').filter(Boolean);
