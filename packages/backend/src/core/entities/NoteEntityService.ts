@@ -568,19 +568,19 @@ export class NoteEntityService implements OnModuleInit {
 			...(opts.detail ? {
 				clippedCount: 0,
 
-				reply: deletedNote.replyId ? this.pack(deletedNote.reply ?? deletedNote.replyId, me, {
+				reply: deletedNote.replyId ? nullIfEntityNotFound(this.pack(deletedNote.reply ?? deletedNote.replyId, me, {
 					detail: false,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
-				}) : undefined,
+				})) : undefined,
 
-				renote: deletedNote.renoteId ? this.pack(deletedNote.renote ?? deletedNote.renoteId, me, {
+				renote: deletedNote.renoteId ? nullIfEntityNotFound(this.pack(deletedNote.renote ?? deletedNote.renoteId, me, {
 					detail: true,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
-				}) : undefined,
+				})) : undefined,
 
 				poll: undefined,
 			} : {}),
