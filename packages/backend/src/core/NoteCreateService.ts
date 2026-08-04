@@ -706,6 +706,27 @@ export class NoteCreateService implements OnApplicationShutdown {
 		try {
 			await this.db.transaction(async transactionalEntityManager => {
 				if (data.uri) {
+					// This query acquires FOR KEY SHARE lock for note with same uri row.
+					// It's unlikely to success this query since we have checked if note with the uri exists before
+					// creating remote note, but for some cases for replication delay, this query can lock row.
+					//
+					// This lock is necessary to prevent conflicting delete transaction and this transaction.
+					// Without this lock, `MiDeletedNote` and `MiNote` will have row with same `uri` as shown below:
+					// 1. The delete transaction executes `DELETE FROM note`.
+					// 2. The delete transaction has not yet saved or committed `MiDeletedNote`.
+					// 3. The creation transaction runs `findOneBy(MiDeletedNote, { uri })` and finds no tombstone.
+					// 4. The creation transaction attempts to insert `MiNote` with the same URI on inserting new note.
+					// 5. PostgreSQL waits for the uncommitted deletion of the old `MiNote`.
+					// 6. The delete transaction saves `MiDeletedNote` and commits.
+					// 7. The waiting create insert succeeds because the old `MiNote` row is now deleted.
+					// 8. Both `MiNote` and `MiDeletedNote` will have row with same URI.
+					//
+					// `SELECT FOR KEY SHARE` waits for delete transaction to complete so the problem would not happen.
+					await transactionalEntityManager.createQueryBuilder(MiNote, 'note')
+						.setLock('for_key_share')
+						.where('note.uri = :uri', { uri: data.uri })
+						.getRawOne();
+
 					// もし URI が指定されている場合は、MiDeletedNote から id を引き継ぐ。
 					const deletedOne = await transactionalEntityManager.findOneBy(MiDeletedNote, { uri: data.uri });
 					if (deletedOne != null) {
