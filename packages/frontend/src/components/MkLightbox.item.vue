@@ -73,7 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template v-if="activated">
 						<img
 							v-if="content.type === 'image'"
-							:class="$style.content"
+							:class="[$style.content, { [$style.pixelatedZoom]: pixelatedZoom }]"
 							:src="content.url"
 							:alt="content.file?.comment ?? undefined"
 							draggable="false"
@@ -228,6 +228,10 @@ const emit = defineEmits<{
 }>();
 
 const XAudioVisualizer = defineAsyncComponent(() => import('./MkLightbox.item.audio-visualizer.vue'));
+
+// 一回のビューワー操作内では状態を維持するためにmodelで親に伝えて親で状態を保持する
+// TODO: drivefileのproperties側にピクセルアートかどうかのフラグを立ててそちらを元にデフォルトの挙動を決めるようにする
+const pixelatedZoom = defineModel<boolean>('pixelatedZoom', { required: true });
 
 const rootEl = useTemplateRef('rootEl');
 const mainEl = useTemplateRef('mainEl');
@@ -970,6 +974,11 @@ function openMenu(ev: PointerEvent) {
 	});
 
 	menu.push({
+		type: 'switch',
+		text: i18n.ts.pixelatedZoom,
+		icon: 'ti ti-grain',
+		ref: pixelatedZoom,
+	}, {
 		text: i18n.ts.hide,
 		icon: 'ti ti-eye-off',
 		action: () => {
@@ -1042,6 +1051,10 @@ defineExpose({
 	width: 100%;
 	height: 100%;
 	object-fit: contain;
+}
+
+.pixelatedZoom {
+	image-rendering: pixelated;
 }
 
 .video {
