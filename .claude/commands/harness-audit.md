@@ -12,7 +12,9 @@ upstream path: commands/harness-audit.md
 upstream license: MIT — https://github.com/affaan-m/everything-claude-code/blob/main/LICENSE
 project-level notice: see .claude/THIRD_PARTY_LICENSES.md (Misskey 内サードパーティ一覧 + MIT 全文)
 
-Imported into Misskey .claude/ on 2026-05-10. The 7-category rubric and output contract are derived from the upstream ECC version (MIT). The runtime layer was substantially reimplemented for Misskey: the upstream relies on scripts/harness-audit.js to mechanically score, while this version uses repository-native commands and the SPDX checker, and adds Misskey-specific evaluation axes (SPDX coverage / endpoint-list 登録漏れ / migration 順序 / ja-JP.yml 整合).
+Imported into Misskey .claude/ on 2026-05-10.
+The 7-category rubric and output contract are derived from the upstream ECC version (MIT).
+The runtime layer was substantially reimplemented for Misskey: the upstream relies on scripts/harness-audit.js to mechanically score, while this version uses repository-native commands and the SPDX checker, and adds Misskey-specific evaluation axes (SPDX coverage / endpoint-list 登録漏れ / migration 順序 / ja-JP.yml 整合).
 
 note: 元 ECC 版は scripts/harness-audit.js (専用 Node スクリプト) で機械採点していたが、Misskey は ECC plugin runtime に依存しない方針なので、Claude が直接ファイルを読んで採点する手動運用版に書き換えた。Misskey 固有の重要観点 (SPDX 適用率 / endpoint-list 登録漏れ / migration 順序 / ja-JP.yml 整合) を評価軸として明示的に組み込んでいる。
 -->

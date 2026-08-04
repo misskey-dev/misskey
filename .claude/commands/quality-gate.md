@@ -14,14 +14,16 @@ project-level notice: see .claude/THIRD_PARTY_LICENSES.md (Misskey 内サード�
 
 Imported into Misskey .claude/ on 2026-05-10. Pipeline 概念 (lint → typecheck → test) は upstream ECC 版から借用 (MIT)。実コマンド層は Misskey の pnpm + tsc + ESLint + Vitest に固定し、formatter (Prettier/Biome) フェーズは削除した。
 
-note: 元 ECC 版は言語自動判定 + format/lint/type のジェネリック版だったが、Misskey 専用に pnpm + tsc + ESLint + Vitest の組み合わせに固定。重い test:e2e / test:fed は含めず、変更内容または明示依頼に応じて個別実行する。
+note: 元 ECC 版は言語自動判定 + format/lint/type のジェネリック版だったが、Misskey 専用に pnpm + tsc + ESLint + Vitest の組み合わせに固定。
+重い test:e2e / test:fed は含めず、変更内容または明示依頼に応じて個別実行する。
 -->
 
 # /quality-gate — Misskey 広域品質検証
 
 `/quality-gate [scope]`
 
-package または repo 全体の状態が必要なときに任意で使う。完了時に必須の変更ファイル lint は [shipping-misskey-change](../skills/shipping-misskey-change/SKILL.md) が担当する。
+package または repo 全体の状態が必要なときに任意で使う。
+完了時に必須の変更ファイル lint は [shipping-misskey-change](../skills/shipping-misskey-change/SKILL.md) が担当する。
 
 ## Scope
 
@@ -56,7 +58,8 @@ pnpm --filter frontend typecheck   # vue-tsc 単体 (Vue SFC の型を見るた�
 
 ### Backend scope
 
-`pnpm --filter backend lint` は内部で `pnpm typecheck && pnpm eslint` を実行する ([packages/backend/package.json](../../packages/backend/package.json)) ので、`lint` を回せば typecheck も終わる。広域検証では typecheck の二重実行を避けるため `lint` + `test` のみ:
+`pnpm --filter backend lint` は内部で `pnpm typecheck && pnpm eslint` を実行する ([packages/backend/package.json](../../packages/backend/package.json)) ので、`lint` を回せば typecheck も終わる。
+広域検証では typecheck の二重実行を避けるため `lint` + `test` のみ:
 
 ```bash
 pnpm --filter backend lint
@@ -87,7 +90,8 @@ repo-relative path を package-relative path に変換し、該当 package root 
 
 ## Output
 
-実行項目を `PASS / FAIL / BASELINE / SKIPPED` で集計する。`BASELINE` は同じ失敗が base 側でも再現し、今回の変更と無関係と確認できた場合だけ使う。
+実行項目を `PASS / FAIL / BASELINE / SKIPPED` で集計する。
+`BASELINE` は同じ失敗が base 側でも再現し、今回の変更と無関係と確認できた場合だけ使う。
 
 ```text
 Quality Gate (repo):
@@ -98,7 +102,8 @@ Frontend ut: PASS
 Other tests: SKIPPED (repo scope の対象外)
 ```
 
-一つが失敗しても独立した残りの検証は続ける。`BASELINE` を `PASS` と表示せず、未実行の項目は理由とともに `SKIPPED` とする。
+一つが失敗しても独立した残りの検証は続ける。
+`BASELINE` を `PASS` と表示せず、未実行の項目は理由とともに `SKIPPED` とする。
 
 ## 関連 skill / コマンド
 
