@@ -1421,6 +1421,7 @@ append: "末尾に追加"
 prepend: "先頭に追加"
 urlPreviewSensitiveList: "サムネイルの表示を制限するURL"
 urlPreviewSensitiveListDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、サムネイルが表示されなくなります。"
+pixelatedZoom: "ピクセルアート拡大モード"
 
 _imageEditing:
   _vars:

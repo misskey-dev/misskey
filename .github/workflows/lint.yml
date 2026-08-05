@@ -18,9 +18,6 @@ on:
       - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
       - scripts/check-dts*.mjs
-      - .github/scripts/frontend-js-size*.mts
-      - .github/scripts/memory-stability-util*.mts
-      - .github/scripts/utility.mts
       - .github/workflows/lint.yml
       - package.json
   pull_request:
@@ -37,22 +34,19 @@ on:
       - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
       - scripts/check-dts*.mjs
-      - .github/scripts/frontend-js-size*.mts
-      - .github/scripts/memory-stability-util*.mts
-      - .github/scripts/utility.mts
       - .github/workflows/lint.yml
       - package.json
 jobs:
   pnpm_install:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6.0.3
+    - uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
       uses: pnpm/action-setup@v6.0.9
-    - uses: actions/setup-node@v6.4.0
+    - uses: actions/setup-node@v7.0.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -79,19 +73,19 @@ jobs:
       eslint-cache-version: v1
       eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.workspace }}
     steps:
-    - uses: actions/checkout@v6.0.3
+    - uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
       uses: pnpm/action-setup@v6.0.9
-    - uses: actions/setup-node@v6.4.0
+    - uses: actions/setup-node@v7.0.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
     - run: pnpm i --frozen-lockfile
     - name: Restore eslint cache
-      uses: actions/cache@v5.0.5
+      uses: actions/cache@v6.1.0
       with:
         path: ${{ env.eslint-cache-path }}
         key: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ github.ref_name }}-${{ github.sha }}
@@ -110,13 +104,13 @@ jobs:
         - sw
         - misskey-js
     steps:
-    - uses: actions/checkout@v6.0.3
+    - uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
       uses: pnpm/action-setup@v6.0.9
-    - uses: actions/setup-node@v6.4.0
+    - uses: actions/setup-node@v7.0.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -129,26 +123,16 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-    - uses: actions/checkout@v6.0.2
+    - uses: actions/checkout@v7.0.0
       with:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.3
-    - uses: actions/setup-node@v6.4.0
+      uses: pnpm/action-setup@v6.0.9
+    - uses: actions/setup-node@v7.0.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
     - run: pnpm i --frozen-lockfile
     - run: node --test scripts/check-dts.test.mjs
     - run: pnpm check-dts
-
-  frontend-bundle-report-test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v6.0.3
-    - uses: actions/setup-node@v6.4.0
-      with:
-        node-version-file: '.node-version'
-    - run: node --test .github/scripts/frontend-js-size.test.mts
-    - run: node --test .github/scripts/memory-stability-util.test.mts

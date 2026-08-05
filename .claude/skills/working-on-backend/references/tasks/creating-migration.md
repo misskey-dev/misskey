@@ -161,12 +161,6 @@ pnpm migrate
 
 ---
 
-## CHANGELOG (ユーザー影響がある場合)
-
-スキーマ変更がユーザーに見える挙動を生む場合のみ、`CHANGELOG.md` に追記する。内部リファクタや純粋なインデックス追加は不要。詳細は [shipping-misskey-change スキル](../../../shipping-misskey-change/SKILL.md) で確認。
-
----
-
 ## 提出前セルフレビューチェックリスト
 
 完了前に以下を上から確認する (各項目を TodoWrite 化してよい):
@@ -177,4 +171,3 @@ pnpm migrate
 - [ ] `up()` の各文に対応する巻き戻しが `down()` にあり、**`down()` が空でない** (難ケースは [knowledge/typeorm-patterns.md](../knowledge/typeorm-patterns.md) を確認済み)
 - [ ] `pnpm --filter backend check-migrations` が **0 件 (pending DDL なし)** で通る
 - [ ] (可能なら) `pnpm migrate` → `pnpm revert` → `pnpm migrate` が通る
-- [ ] ユーザーに見える変更なら CHANGELOG 追記 → [shipping-misskey-change](../../../shipping-misskey-change/SKILL.md)

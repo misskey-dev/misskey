@@ -357,7 +357,7 @@ const keymap = {
 			renoteCollapsed.value = false;
 		} else if (appearNote.cw != null) {
 			showContent.value = !showContent.value;
-		} else if (isLong.value) {
+		} else if (isLong) {
 			collapsed.value = !collapsed.value;
 		}
 	},

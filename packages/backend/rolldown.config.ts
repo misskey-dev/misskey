@@ -87,7 +87,6 @@ export default defineConfig((args) => {
 		'class-validator',
 		/^@sentry\/.*/,
 		/^@sentry-internal\/.*/,
-		/^@opentelemetry\/.*/,
 		'@nestjs/websockets/socket-module',
 		'@nestjs/microservices/microservices-module',
 		'@nestjs/microservices',
@@ -160,7 +159,7 @@ export default defineConfig((args) => {
 				clearScreen: false,
 			},
 			// ビルドの高速化のために、watchモードのときは外部モジュールは全てバンドルしないようにする
-			external: isWatchMode ? /^(?!@\/)[^.\/](?!:[\/\\])/ : externalModules,
+			external: isWatchMode ? /^(?!@\/|\0)[^.\/](?!:[\/\\])/ : externalModules,
 		};
 	}
 });

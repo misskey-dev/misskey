@@ -16,6 +16,7 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
+import type { Content } from '@/components/MkLightbox.item.vue';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 
@@ -74,6 +75,7 @@ export type UploaderItem = {
 	compressedSize?: number | null;
 	preprocessedFile?: Blob | null;
 	file: File;
+	objectUrl: string;
 	watermarkPreset: WatermarkPreset | null;
 	watermarkLayers: WatermarkLayers | null;
 	imageFrameParams: ImageFrameParams | null;
@@ -133,12 +135,13 @@ export function useUploader(options: {
 		const filename = file.name ?? 'untitled';
 		const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
 		const watermarkPreset = uploaderFeatures.value.watermark && $i.policies.watermarkAvailable ? (prefer.s.watermarkPresets.find(p => p.id === prefer.s.defaultWatermarkPresetId) ?? null) : null;
+		const objectUrl = window.URL.createObjectURL(file);
 		items.value.push({
 			id,
 			name: prefer.s.keepOriginalFilename ? filename : id + extension,
 			suffix: '',
 			progress: null,
-			thumbnail: THUMBNAIL_SUPPORTED_TYPES.includes(file.type) ? window.URL.createObjectURL(file) : null,
+			thumbnail: THUMBNAIL_SUPPORTED_TYPES.includes(file.type) ? objectUrl : null,
 			preprocessing: false,
 			preprocessProgress: null,
 			uploading: false,
@@ -150,6 +153,7 @@ export function useUploader(options: {
 			watermarkLayers: watermarkPreset?.layers ?? null,
 			imageFrameParams: null,
 			file: markRaw(file),
+			objectUrl,
 		});
 		const reactiveItem = items.value.at(-1)!;
 		preprocess(reactiveItem).then(() => {
@@ -163,8 +167,24 @@ export function useUploader(options: {
 		}
 	}
 
-	function removeItem(item: UploaderItem) {
+	function revokeItemObjectUrls(item: UploaderItem) {
 		if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
+		URL.revokeObjectURL(item.objectUrl);
+	}
+
+	function createItemObjectUrl(item: UploaderItem, file: Blob | File): string {
+		revokeItemObjectUrls(item);
+		return window.URL.createObjectURL(file);
+	}
+
+	function updateItemObjectUrls(item: UploaderItem, file: Blob | File) {
+		const newObjectUrl = createItemObjectUrl(item, file);
+		item.objectUrl = newObjectUrl;
+		item.thumbnail = THUMBNAIL_SUPPORTED_TYPES.includes(file.type) ? newObjectUrl : null;
+	}
+
+	function removeItem(item: UploaderItem) {
+		revokeItemObjectUrls(item);
 		items.value.splice(items.value.indexOf(item), 1);
 	}
 
@@ -214,7 +234,35 @@ export function useUploader(options: {
 						closed: () => dispose(),
 					});
 				},
-			}, {
+			});
+
+			if (item.file.type.startsWith('image/') || item.file.type.startsWith('video/')) {
+				menu.push({
+					text: i18n.ts.preview,
+					icon: 'ti ti-photo-search',
+					action: async () => {
+						const contents = items.value
+							.filter(item => item.file.type.startsWith('image/') || item.file.type.startsWith('video/'))
+							.map<Content>(item => ({
+								id: item.id,
+								type: item.file.type.startsWith('video/') ? 'video' : 'image',
+								url: item.objectUrl,
+								thumbnail: item.thumbnail,
+								filename: getUploadName(item),
+								caption: item.caption ?? null,
+							}));
+
+						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
+							defaultIndex: contents.findIndex(x => x.id === item.id),
+							contents,
+						}, {
+							closed: () => dispose(),
+						});
+					},
+				});
+			}
+
+			menu.push({
 				type: 'divider',
 			});
 		}
@@ -235,11 +283,12 @@ export function useUploader(options: {
 					text: i18n.ts.cropImage,
 					action: async () => {
 						const cropped = await os.cropImageFile(item.file, { aspectRatio: null });
-						if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
+						const newObjectUrl = createItemObjectUrl(item, cropped);
 						items.value.splice(items.value.indexOf(item), 1, {
 							...item,
 							file: markRaw(cropped),
-							thumbnail: window.URL.createObjectURL(cropped),
+							thumbnail: THUMBNAIL_SUPPORTED_TYPES.includes(cropped.type) ? newObjectUrl : null,
+							objectUrl: newObjectUrl,
 						});
 						const reactiveItem = items.value.find(x => x.id === item.id)!;
 						preprocess(reactiveItem).then(() => {
@@ -260,11 +309,12 @@ export function useUploader(options: {
 							image: item.file,
 						}, {
 							ok: (file) => {
-								if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
+									const newObjectUrl = createItemObjectUrl(item, file);
 								items.value.splice(items.value.indexOf(item), 1, {
 									...item,
 									file: markRaw(file),
-									thumbnail: window.URL.createObjectURL(file),
+									thumbnail: THUMBNAIL_SUPPORTED_TYPES.includes(file.type) ? newObjectUrl : null,
+									objectUrl: newObjectUrl,
 								});
 								const reactiveItem = items.value.find(x => x.id === item.id)!;
 								preprocess(reactiveItem).then(() => {
@@ -694,8 +744,7 @@ export function useUploader(options: {
 
 		imageBitmap.close();
 
-		if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
-		item.thumbnail = THUMBNAIL_SUPPORTED_TYPES.includes(preprocessedFile.type) ? window.URL.createObjectURL(preprocessedFile) : null;
+		updateItemObjectUrls(item, preprocessedFile);
 		item.preprocessedFile = markRaw(preprocessedFile);
 	}
 
@@ -754,14 +803,13 @@ export function useUploader(options: {
 			item.suffix = '';
 		}
 
-		if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
-		item.thumbnail = THUMBNAIL_SUPPORTED_TYPES.includes(preprocessedFile.type) ? window.URL.createObjectURL(preprocessedFile) : null;
+		updateItemObjectUrls(item, preprocessedFile);
 		item.preprocessedFile = markRaw(preprocessedFile);
 	}
 
 	function reset() {
 		for (const item of items.value) {
-			if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
+			revokeItemObjectUrls(item);
 		}
 
 		abortAll();
