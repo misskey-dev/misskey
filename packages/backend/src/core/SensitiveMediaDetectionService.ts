@@ -69,7 +69,7 @@ function isDetectImagesResponse(v: unknown): v is DetectImagesResponse {
 const DETECT_IMAGES_PATH = 'v1/detect-images';
 
 @Injectable()
-export class AiService {
+export class SensitiveMediaDetectionService {
 	private logger: Logger;
 
 	constructor(
@@ -79,7 +79,7 @@ export class AiService {
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
 	) {
-		this.logger = this.loggerService.getLogger('ai');
+		this.logger = this.loggerService.getLogger('sensitive-media-detection');
 	}
 
 	/**

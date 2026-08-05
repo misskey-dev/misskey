@@ -109,7 +109,7 @@ const height =
 const focus = () => container.value?.focus();
 
 // このコンポーネントが作成された時、非表示状態である場合がある
-// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
+// 非表示状態だと要素の幅などは0になってしまうので、ResizeObserverでサイズの変化を監視して計算する
 const updatePadding = (entries: ResizeObserverEntry[]) => {
 	if (inputEl.value == null) return;
 
