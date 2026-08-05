@@ -26,7 +26,7 @@ jobs:
           - .node-version
           - .github/min.node-version
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
       - name: Setup pnpm
@@ -35,7 +35,7 @@ jobs:
         run: |
           sudo apt install -y ffmpeg
       - name: Use Node.js
-        uses: actions/setup-node@v6.4.0
+        uses: actions/setup-node@v7.0.0
         with:
           node-version-file: ${{ matrix.node-version-file }}
           cache: 'pnpm'
@@ -55,6 +55,7 @@ jobs:
         # https://github.com/docker/compose/issues/1294#issuecomment-374847206
         run: |
           cd packages/backend/test-federation
+          touch ../../../built/._config_.json
           docker compose up -d --scale tester=0
       - name: Print start_servers error
         if: ${{ steps.start_servers.outcome == 'failure' }}
