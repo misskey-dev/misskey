@@ -12,7 +12,9 @@ upstream path: commands/harness-audit.md
 upstream license: MIT — https://github.com/affaan-m/everything-claude-code/blob/main/LICENSE
 project-level notice: see .claude/THIRD_PARTY_LICENSES.md (Misskey 内サードパーティ一覧 + MIT 全文)
 
-Imported into Misskey .claude/ on 2026-05-10. The 7-category rubric and output contract are derived from the upstream ECC version (MIT). The runtime layer was substantially reimplemented for Misskey: the upstream relies on scripts/harness-audit.js to mechanically score, while this version asks Claude to score directly with pnpm/git/grep, and adds Misskey-specific evaluation axes (SPDX coverage / endpoint-list 登録漏れ / migration 順序 / ja-JP.yml 整合).
+Imported into Misskey .claude/ on 2026-05-10.
+The 7-category rubric and output contract are derived from the upstream ECC version (MIT).
+The runtime layer was substantially reimplemented for Misskey: the upstream relies on scripts/harness-audit.js to mechanically score, while this version uses repository-native commands and the SPDX checker, and adds Misskey-specific evaluation axes (SPDX coverage / endpoint-list 登録漏れ / migration 順序 / ja-JP.yml 整合).
 
 note: 元 ECC 版は scripts/harness-audit.js (専用 Node スクリプト) で機械採点していたが、Misskey は ECC plugin runtime に依存しない方針なので、Claude が直接ファイルを読んで採点する手動運用版に書き換えた。Misskey 固有の重要観点 (SPDX 適用率 / endpoint-list 登録漏れ / migration 順序 / ja-JP.yml 整合) を評価軸として明示的に組み込んでいる。
 -->
@@ -33,10 +35,10 @@ Misskey リポジトリの `.claude/` 構成を 7 カテゴリで採点し、改
 | --- | --- | --- |
 | 1 | Tool Coverage | skill / agent / command の数、欠けているワークフロー段、重複なし |
 | 2 | Context Efficiency | frontmatter description の冗長度、SKILL.md の長さ分布、重複情報、CLAUDE.md の肥大化 |
-| 3 | Quality Gates | Stop / PreToolUse / PostToolUse hook の整備、`/quality-gate` 等の完了前ゲートの有無、自動 lint/typecheck |
+| 3 | Quality Gates | 変更ファイル lint、`/quality-gate`、変更別 test / typecheck、CI gate との整合 |
 | 4 | Memory Persistence | `.claude/skills/*/SKILL.md` と `references/` の同期状態を評価。プロジェクト側 `.claude/memory/` は未採用方針 (auto-memory はユーザーホーム側で自動運用) のため、ここを採点起点にせず既定 5/10 から開始する |
 | 5 | Eval Coverage | `working-on-backend` / `working-on-frontend` の testing リファレンス (backend-testing.md / frontend-testing.md) の網羅、Misskey 固有の e2e/fed/Storybook/Playwright 適用ガイド |
-| 6 | Security Guardrails | SPDX 規約適用、migration 不変性ルール、ja-JP.yml 限定編集ルール、secrets 検出 |
+| 6 | Security Guardrails | SPDX checker、migration 不変性ルール、ja-JP.yml 限定編集ルール、secrets 検出 |
 | 7 | Cost Efficiency | enabledPlugins の重複・過剰、context-budget の整備、MCP 過剰登録なし |
 
 ## Misskey 固有の確認項目 (採点根拠コマンド)
@@ -44,18 +46,9 @@ Misskey リポジトリの `.claude/` 構成を 7 カテゴリで採点し、改
 採点時に以下を実コマンドで確認する。各項目の **属するカテゴリ** は項目内に明記する (#1-#3 は Security Guardrails、#4 は Tool Coverage、#5 は Quality Gates):
 
 ```bash
-# 1. [Security Guardrails] SPDX 適用率 (新規ファイル想定の汎用チェック)
-#    - node_modules を prune で除外
-#    - packages/misskey-js は MIT サブパッケージなので AGPL ヘッダーを持たない (AGENTS.md §1) → 除外
-#    - built/ なども除外
-#    候補にはなお *.config.{ts,js} / *eslint* / *.d.ts のような CI 上 SPDX 対象外
-#    (.github/workflows/check-spdx-license-id.yml の exclude 参照) も混ざるため、
-#    上位に出たファイルが「新規追加した実コード」かどうかは目視判定する。
-find packages \
-  \( -type d \( -name node_modules -o -name built -o -name dist -o -path 'packages/misskey-js' \) -prune \) \
-  -o -type f \( -name '*.ts' -o -name '*.js' -o -name '*.vue' -o -name '*.scss' \) -print \
-  | xargs -r grep -L 'SPDX-License-Identifier: AGPL-3.0-only' | head -20
-# → 上位に新規実コードが無ければ満点
+# 1. [Security Guardrails] SPDX 対象・CI 判定・HTML コメント形式
+node scripts/check-spdx.mjs
+# → exit 0 (`SPDX: OK`) なら満点。追加の目視判定はしない
 
 # 2. [Security Guardrails] ja-JP.yml 以外の locales が直近で手動編集されていないか
 #    --pretty=format: でコミットヘッダ行を抑止し、ファイル名行のみを残してから grep する。
@@ -105,20 +98,19 @@ grep -rn 'console\.\(log\|debug\)' packages/backend/src packages/frontend/src 2>
 ## サンプル出力
 
 ```text
-Harness Audit (repo): 55/70
+Harness Audit (repo): 52/70
 
 Tool Coverage:        9/10   (skills 5, agents 2, commands 5 — 偏りなし)
 Context Efficiency:   8/10   (description 平均 3-5 行、肥大なし)
-Quality Gates:        5/10   (Stop hook 共有設定に未登録 / `/quality-gate` あり)
+Quality Gates:        7/10   (変更ファイル lint / `/quality-gate` あり、広域 gate は任意)
 Memory Persistence:   5/10   (プロジェクト側 memory/ 未採用方針 = 既定値)
 Eval Coverage:        7/10   (backend/frontend testing リファレンス網羅、Storybook 一部抜け)
-Security Guardrails:  10/10  (SPDX 100%, locales OK, migrations clean)
+Security Guardrails:   8/10  (SPDX 欠落 1 件、locales OK、migrations clean)
 Cost Efficiency:      8/10   (context-budget 導入済 / MCP 0)
 
 Failed Checks:
 - packages/frontend/src/.../X.vue で SPDX 欠落 (Security Guardrails)
 - console.log が backend に 3 件 (Quality Gates)
-- 共有 Stop hook なし (Quality Gates) — 各 contributor が `.claude/settings.local.json` で opt-in する方針なら減点しなくて良い
 
 Top 3 Actions:
 1) [Security Guardrails] SPDX 欠落 1 ファイルを修正:
@@ -137,10 +129,10 @@ Suggested next skills to apply:
 
 - 確定的: 同じ commit / 同じ `.claude/` 構成なら同じスコア
 - ヒューリスティクス: 「description の冗長度」のような主観項目は同一基準で機械的に判定
-- スクリプト不要: `pnpm` と `git`、`grep`/`find` 等の標準ツールのみ
+- 専用 audit script 不要: repository の `pnpm` / `git` コマンドと SPDX checker を使う
 
 ## 参考: ECC オリジナルとの差分
 
 - ECC 版は `node scripts/harness-audit.js` を直叩きする運用で、ECC リポジトリ全体に閉じた採点だった。
-- Misskey 版は **Misskey の規約 (SPDX/migration/locales/endpoint-list)** を Security 採点に組み込み、`pnpm` ベースの実コマンドで根拠を取る方式に再設計。
+- Misskey 版は **Misskey の規約 (SPDX/migration/locales/endpoint-list)** を Security 採点に組み込み、repository-native command で根拠を取る方式に再設計。
 - 結果として ECC への依存はゼロ。

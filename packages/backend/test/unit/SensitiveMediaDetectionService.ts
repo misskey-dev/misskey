@@ -7,7 +7,7 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import type { MiMeta } from '@/models/_.js';
 import type { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { LoggerService } from '@/core/LoggerService.js';
-import { AiService, type Prediction } from '@/core/AiService.js';
+import { SensitiveMediaDetectionService, type Prediction } from '@/core/SensitiveMediaDetectionService.js';
 
 const sendMock = vi.fn();
 
@@ -18,13 +18,13 @@ const DEFAULT_META = {
 	sensitiveMediaDetectionMaxImagesPerRequest: 4,
 };
 
-function makeService(metaOverrides: Partial<typeof DEFAULT_META> = {}): AiService {
+function makeService(metaOverrides: Partial<typeof DEFAULT_META> = {}): SensitiveMediaDetectionService {
 	const meta = { ...DEFAULT_META, ...metaOverrides } as unknown as MiMeta;
 	const httpRequestService = { send: sendMock } as unknown as HttpRequestService;
 	const loggerService = {
 		getLogger: () => ({ warn: () => {}, error: () => {}, info: () => {} }),
 	} as unknown as LoggerService;
-	return new AiService(meta, httpRequestService, loggerService);
+	return new SensitiveMediaDetectionService(meta, httpRequestService, loggerService);
 }
 
 function neutral(): Prediction[] {
@@ -42,7 +42,7 @@ function okResponse(results: unknown[]) {
 
 const buf = (s: string) => Buffer.from(s);
 
-describe('AiService', () => {
+describe('SensitiveMediaDetectionService', () => {
 	beforeEach(() => {
 		sendMock.mockReset();
 	});
