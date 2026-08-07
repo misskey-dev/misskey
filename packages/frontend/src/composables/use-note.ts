@@ -62,36 +62,34 @@ export interface UseNoteOptions {
 	currentAntenna?: Ref<Misskey.entities.Antenna | null> | null;
 }
 
-export function calculateMuteStatus<
-	CheckOnly extends boolean,
-	CheckForSensitiveMedia extends boolean,
-	ReturnTypeA = CheckOnly extends true ? boolean : Array<string | string[]> | false | 'sensitiveMute',
-	ReturnTypeB = CheckForSensitiveMedia extends true ? ReturnTypeA : Exclude<ReturnTypeA, 'sensitiveMute'>,
->(
+export function checkNoteWordMute(
 	noteToCheck: Misskey.entities.Note,
 	user: typeof $i,
 	mutedWords: Array<string | string[]> | null,
-	checkForSensitiveMedia: CheckForSensitiveMedia,
-	checkOnly: CheckOnly = false as CheckOnly,
-): ReturnTypeB {
+): Array<string | string[]> | false {
 	if (mutedWords != null) {
 		const result = checkWordMute(noteToCheck, user, mutedWords);
-		if (Array.isArray(result)) return checkOnly ? (result.length > 0) as ReturnTypeB : result as ReturnTypeB;
+		if (Array.isArray(result)) return result;
 
 		const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, user, mutedWords);
-		if (Array.isArray(replyResult)) return checkOnly ? (replyResult.length > 0) as ReturnTypeB : replyResult as ReturnTypeB;
+		if (Array.isArray(replyResult)) return replyResult;
 
 		const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, user, mutedWords);
-		if (Array.isArray(renoteResult)) return checkOnly ? (renoteResult.length > 0) as ReturnTypeB : renoteResult as ReturnTypeB;
+		if (Array.isArray(renoteResult)) return renoteResult;
 	}
 
-	if (checkOnly) return false as ReturnTypeB;
+	return false;
+}
 
+export function checkBuiltinSoftMute(
+	noteToCheck: Misskey.entities.Note,
+	checkForSensitiveMedia: boolean,
+): 'sensitiveMute' | false {
 	if (checkForSensitiveMedia && noteToCheck.files?.some((v) => v.isSensitive)) {
-		return 'sensitiveMute' as ReturnTypeB;
+		return 'sensitiveMute' as never;
 	}
 
-	return false as ReturnTypeB;
+	return false;
 }
 
 /** MkNote, MkNoteDetailedの共通ロジック */
@@ -146,8 +144,8 @@ export function useNote(
 
 	// ミュート判定
 	// mutedはミュート解除の操作で書き換わるのでrefだが、hardMutedは解除できないのでリアクティブにしない
-	const muted = ref($i ? calculateMuteStatus(appearNote, $i, $i.mutedWords, inTimeline && !tl_withSensitive.value) : false);
-	const hardMuted = props.withHardMute && $i ? calculateMuteStatus(appearNote, $i, $i.hardMutedWords, inTimeline && !tl_withSensitive.value, true) : false;
+	const muted = ref($i ? checkNoteWordMute(appearNote, $i, $i.mutedWords) || checkBuiltinSoftMute(appearNote, inTimeline && !tl_withSensitive.value) : false);
+	const hardMuted = props.withHardMute && $i ? checkNoteWordMute(appearNote, $i, $i.hardMutedWords) : false;
 
 	// 導出値
 	// rawNote / appearNote / $i.id / prefer.s は変化しないので一度だけ計算する
