@@ -65,6 +65,7 @@ import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
+	user?: Misskey.entities.User | null; // DriveFileのuserはnullになることがある。その場合に使用する所有者情報
 	raw?: boolean;
 }>();
 
@@ -162,6 +163,7 @@ async function openGallery(id?: string) {
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
 		defaultIndex: contents.findIndex(conten => conten.id === id),
 		contents: contents,
+		user: props.user,
 	}, {
 		closed: () => dispose(),
 	});

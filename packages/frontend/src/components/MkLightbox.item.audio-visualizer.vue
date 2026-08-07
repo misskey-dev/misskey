@@ -33,6 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { useTemplateRef, shallowRef, ref, computed, watch, onBeforeUnmount } from 'vue';
+import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { themeManager } from '@/theme.js';
 import { prefer } from '@/preferences.js';
@@ -48,6 +49,7 @@ defineOptions({
 
 const props = defineProps<{
 	content: Content;
+	user?: Misskey.entities.User | null; // DriveFileのuserはnullになることがある。その場合に使用する所有者情報
 	volume: number;
 }>();
 
@@ -58,6 +60,8 @@ const emit = defineEmits<{
 const audioEl = useTemplateRef('audioEl');
 const canvasEl = useTemplateRef('canvasEl');
 const canvasCtx = computed(() => canvasEl.value?.getContext('2d') ?? null);
+
+const fileUser = computed(() => props.content.file?.user ?? props.user);
 
 const isActuallyPlaying = ref(false);
 
@@ -175,7 +179,7 @@ function updateRange(frameMin: number, framePeak: number, dt: number) {
 //#endregion
 
 const defaultBgColor = themeManager.currentCompiledTheme?.accent ?? '#aaa';
-const accentColorHue = computed(() => tinycolor(props.content.file?.user?.avatarBlurhash ? extractAvgColorFromBlurhash(props.content.file.user.avatarBlurhash) ?? defaultBgColor : defaultBgColor).toHsl().h);
+const accentColorHue = computed(() => tinycolor(fileUser.value?.avatarBlurhash ? extractAvgColorFromBlurhash(fileUser.value.avatarBlurhash) ?? defaultBgColor : defaultBgColor).toHsl().h);
 const bgColor = computed(() => {
 	let targetLightness, targetSaturation;
 	if (store.r.darkMode.value) {
@@ -604,8 +608,8 @@ watch(() => props.volume, (to) => {
 
 watch([bgColor, fgColor], redrawIfStopped);
 
-watch(() => props.content.file?.user?.avatarUrl, (avatarUrl) => {
-	const img = new Image();
+watch(() => fileUser.value?.avatarUrl, (avatarUrl) => {
+		const img = new Image();
 	img.addEventListener('load', () => {
 		avatarImage.value = img;
 		redrawIfStopped();

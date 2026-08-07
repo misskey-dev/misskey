@@ -111,6 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							v-else-if="content.type === 'audio' && !prefer.s.useNativeUiForVideoAudioPlayer"
 							ref="audioVisualizer"
 							:content="content"
+							:user="user"
 							:volume="volume"
 							@click.stop="onMediaClick"
 							@loadedmetadata="originalContentLoaded = true"
@@ -213,6 +214,7 @@ import { getFileMenu } from '@/utility/get-file-menu.js';
 
 const props = withDefaults(defineProps<{
 	content: Content;
+	user?: Misskey.entities.User | null; // DriveFileのuserはnullになることがある。その場合に使用する所有者情報
 	activated: boolean;
 	initiallyOpened?: boolean;
 }>(), {
