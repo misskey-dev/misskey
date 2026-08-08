@@ -9882,7 +9882,7 @@ export interface operations {
                 'application/json': {
                     /** @enum {string} */
                     queue: 'system' | 'endedPollNotification' | 'postScheduledNote' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
-                    state: ('active' | 'wait' | 'delayed' | 'completed' | 'failed' | 'paused')[];
+                    state: ('active' | 'wait' | 'delayed' | 'completed' | 'failed')[];
                     search?: string;
                 };
             };

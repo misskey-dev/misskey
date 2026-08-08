@@ -6,7 +6,6 @@ settings:
 
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
-  bullmq>ioredis: 5.11.1
   chokidar: 5.0.0
   lodash: 4.18.1
 
@@ -571,8 +570,8 @@ importers:
         specifier: 4.1.10
         version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@26.1.2)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(happy-dom@20.11.1(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@2.15.0(@types/node@26.1.2)(@typescript/typescript6@6.0.2))(vite@8.2.0(@types/node@26.1.2)(esbuild@0.28.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(tsx@4.23.1))
       vitest-mock-extended:
-        specifier: 5.1.0
-        version: 5.1.0(@typescript/typescript6@6.0.2)(vitest@4.1.10)
+        specifier: 5.1.1
+        version: 5.1.1(@typescript/typescript6@6.0.2)(vitest@4.1.10)
     optionalDependencies:
       bufferutil:
         specifier: 4.1.0
@@ -4742,7 +4741,7 @@ packages:
     engines: {node: '>=14.17.0'}
     peerDependencies:
       bullmq-otel: '>=2.0.0'
-      ioredis: 5.11.1
+      ioredis: '>=5.0.0'
       pg: '>=8.0.0'
       redis: '>=5.0.0'
     peerDependenciesMeta:
@@ -5082,6 +5081,7 @@ packages:
   cron-parser@5.6.2:
     resolution: {integrity: sha512-yJ/G1LVir6CnlkLI40CsampPLKl1SprGGlUagWtGJxewytRVYezv5xVyzzbT+Pvzx+VIRvZVF7/a0eEMTxdnTA==}
     engines: {node: '>=18'}
+    deprecated: 'Published tarball was built from a stale dist/ and is missing the fixes from #414 and #415 — its contents are effectively v5.6.1. Upgrade to v5.7.0.'
 
   cropperjs@2.1.1:
     resolution: {integrity: sha512-FDJMarkY+/SepYarPZsvkG2LmI2PElecciMFnvBiBIoKnFYua/scprC5qejCLLyuX2jEqJRS2njbAsHxfjtIXA==}
@@ -9066,8 +9066,8 @@ packages:
     peerDependencies:
       vitest: '>=2.0.0'
 
-  vitest-mock-extended@5.1.0:
-    resolution: {integrity: sha512-xW28qmo6CbEROzwFRKw+fhLQcwoxBbUHdezDtBJXiHinthfyYZ3pwt4ez4r+XPdimTbXJcFetjzKBJqMw1A6Jw==}
+  vitest-mock-extended@5.1.1:
+    resolution: {integrity: sha512-k5Ji2+t4+nsdepXeakCkilyKydtgaULtP0HsjwQGIZsYr5hDTqrwCtC0+Sh0YBKUS7cY/Wxplf7SVjcZstTIMQ==}
     peerDependencies:
       typescript: 3.x || 4.x || 5.x || 6.x || 7.x
       vitest: '>=4.0.0'
@@ -18098,7 +18098,7 @@ snapshots:
     dependencies:
       vitest: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@26.1.2)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(happy-dom@20.11.1(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@2.15.0(@types/node@26.1.2)(typescript@6.0.3))(vite@8.2.0(@types/node@26.1.2)(esbuild@0.28.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(tsx@4.23.1))
 
-  vitest-mock-extended@5.1.0(@typescript/typescript6@6.0.2)(vitest@4.1.10):
+  vitest-mock-extended@5.1.1(@typescript/typescript6@6.0.2)(vitest@4.1.10):
     dependencies:
       ts-essentials: 10.2.1(@typescript/typescript6@6.0.2)
       typescript: '@typescript/typescript6@6.0.2'
