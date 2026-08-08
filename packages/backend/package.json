@@ -96,7 +96,7 @@
 		"hpagent": "1.2.0",
 		"http-link-header": "1.1.4",
 		"i18n": "workspace:*",
-		"ioredis": "6.0.0",
+		"ioredis": "5.11.1",
 		"ip-cidr": "4.0.2",
 		"ipaddr.js": "2.4.0",
 		"is-svg": "6.1.0",

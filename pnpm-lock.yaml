@@ -244,7 +244,7 @@ importers:
         version: 2.0.5
       bullmq:
         specifier: 6.0.5
-        version: 6.0.5(ioredis@6.0.0(supports-color@10.2.2))(pg@8.22.0)
+        version: 6.0.5(ioredis@5.11.1(supports-color@10.2.2))(pg@8.22.0)
       cacheable-lookup:
         specifier: 7.0.0
         version: 7.0.0
@@ -297,8 +297,8 @@ importers:
         specifier: workspace:*
         version: link:../i18n
       ioredis:
-        specifier: 6.0.0
-        version: 6.0.0(supports-color@10.2.2)
+        specifier: 5.11.1
+        version: 5.11.1(supports-color@10.2.2)
       ip-cidr:
         specifier: 4.0.2
         version: 4.0.2
@@ -424,7 +424,7 @@ importers:
         version: 1.9.1
       typeorm:
         specifier: 1.1.0
-        version: 1.1.0(ioredis@6.0.0(supports-color@10.2.2))(pg@8.22.0)(supports-color@10.2.2)
+        version: 1.1.0(ioredis@5.11.1(supports-color@10.2.2))(pg@8.22.0)(supports-color@10.2.2)
       ulid:
         specifier: 3.0.2
         version: 3.0.2
@@ -2298,6 +2298,9 @@ packages:
     peerDependenciesMeta:
       '@types/node':
         optional: true
+
+  '@ioredis/commands@1.10.0':
+    resolution: {integrity: sha512-UmeW7z4LfctwoQ5wkhVzgq8tXkreED2xZGpX+Bg+zA+WJFZCT6c062AfCK/Dfk81xZnnwdhJCUMkitihRaoC2Q==}
 
   '@ioredis/commands@2.0.0':
     resolution: {integrity: sha512-vrx0AE/T0h7cRZwfo1M39Cr+ZhZrkf0V8mQN75wucKCxCLD9l/VX6no3gFvrLqD1IlG/1LtzWovqEw3t0Vr9zg==}
@@ -6129,6 +6132,10 @@ packages:
     resolution: {integrity: sha512-7m1vEcPCxXYI8HqnL8CKI6siDyD+eIWSwgB3DZA+ZTogxk9I4CDnj4wilt9x/+/QbHI4YG5YZNmC6458/e9Ktg==}
     deprecated: The Intersection Observer polyfill is no longer needed and can safely be removed. Intersection Observer has been Baseline since 2019.
 
+  ioredis@5.11.1:
+    resolution: {integrity: sha512-ehuGcf94bQXhfagULNXrJdfnWO38v070jxSx/qE87Kjzmu2fU7ro5EFAb+OPituLqgfyuQaym5DlrNydW2sJ9A==}
+    engines: {node: '>=12.22.0'}
+
   ioredis@6.0.0:
     resolution: {integrity: sha512-f+Dtubxfpf6KYFq7WVXJoOLn0bk4TJrMrN9SzeE+jrWrCWj7XX3fA6vkryafhADX+GMymRxgDJDOI33COkJc0w==}
     engines: {node: '>=20.0.0'}
@@ -7767,6 +7774,10 @@ packages:
 
   redis-errors@1.2.0:
     resolution: {integrity: sha512-1qny3OExCf0UvUV/5wpYKf2YwPcOqXzkwKKSmKHiE6ZMQs5heeE/c8eXK+PNllPvmjgAbfnsbpkGZWy8cBpn9w==}
+    engines: {node: '>=4'}
+
+  redis-parser@3.0.0:
+    resolution: {integrity: sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==}
     engines: {node: '>=4'}
 
   reflect-metadata@0.2.2:
@@ -10305,6 +10316,8 @@ snapshots:
   '@inquirer/type@4.0.5(@types/node@26.1.2)':
     optionalDependencies:
       '@types/node': 26.1.2
+
+  '@ioredis/commands@1.10.0': {}
 
   '@ioredis/commands@2.0.0': {}
 
@@ -13017,7 +13030,7 @@ snapshots:
       node-gyp-build: 4.8.4
     optional: true
 
-  bullmq@6.0.5(ioredis@6.0.0(supports-color@10.2.2))(pg@8.22.0):
+  bullmq@6.0.5(ioredis@5.11.1(supports-color@10.2.2))(pg@8.22.0):
     dependencies:
       cron-parser: 5.6.2
       msgpackr: 2.0.5
@@ -13025,7 +13038,7 @@ snapshots:
       semver: 7.8.5
       tslib: 2.8.1
     optionalDependencies:
-      ioredis: 6.0.0(supports-color@10.2.2)
+      ioredis: 5.11.1(supports-color@10.2.2)
       pg: 8.22.0
 
   bundle-name@4.1.0:
@@ -14782,6 +14795,18 @@ snapshots:
       side-channel: 1.1.0
 
   intersection-observer@0.12.2: {}
+
+  ioredis@5.11.1(supports-color@10.2.2):
+    dependencies:
+      '@ioredis/commands': 1.10.0
+      cluster-key-slot: 1.1.1
+      debug: 4.4.3(supports-color@10.2.2)
+      denque: 2.1.0
+      redis-errors: 1.2.0
+      redis-parser: 3.0.0
+      standard-as-callback: 2.1.0
+    transitivePeerDependencies:
+      - supports-color
 
   ioredis@6.0.0(supports-color@10.2.2):
     dependencies:
@@ -16712,6 +16737,10 @@ snapshots:
 
   redis-errors@1.2.0: {}
 
+  redis-parser@3.0.0:
+    dependencies:
+      redis-errors: 1.2.0
+
   reflect-metadata@0.2.2: {}
 
   reflect.getprototypeof@1.0.10:
@@ -17851,7 +17880,7 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-  typeorm@1.1.0(ioredis@6.0.0(supports-color@10.2.2))(pg@8.22.0)(supports-color@10.2.2):
+  typeorm@1.1.0(ioredis@5.11.1(supports-color@10.2.2))(pg@8.22.0)(supports-color@10.2.2):
     dependencies:
       '@sqltools/formatter': 1.2.5
       ansis: 4.3.1
@@ -17864,7 +17893,7 @@ snapshots:
       tslib: 2.8.1
       yargs: 18.0.0
     optionalDependencies:
-      ioredis: 6.0.0(supports-color@10.2.2)
+      ioredis: 5.11.1(supports-color@10.2.2)
       pg: 8.22.0
     transitivePeerDependencies:
       - babel-plugin-macros
