@@ -18,7 +18,7 @@
 	},
 	"dependencies": {
 		"i18n": "workspace:*",
-		"magic-string": "0.30.21",
+		"magic-string": "1.1.0",
 		"oxc-walker": "1.1.1",
 		"rolldown": "1.2.1",
 		"vite": "8.2.0"

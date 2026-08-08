@@ -33,7 +33,7 @@
 		"@typescript-eslint/parser": "8.65.0",
 		"chokidar": "5.0.0",
 		"esbuild": "0.28.1",
-		"execa": "9.6.1",
+		"execa": "10.0.1",
 		"nodemon": "3.1.14",
 		"tsx": "4.23.1"
 	},
