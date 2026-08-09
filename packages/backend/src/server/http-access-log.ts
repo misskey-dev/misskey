@@ -123,7 +123,7 @@ export function registerHttpAccessLog(fastify: FastifyInstance, manager: LogMana
 
 	const states = new WeakMap<object, AccessRequestState>();
 
-	// HTTP計装の後に登録し、リクエスト開始時のactiveなTrace Contextを保存します。
+	// リクエスト開始時のactiveなTrace Contextを保存します。
 	fastify.addHook('onRequest', (request, _reply, done) => {
 		states.set(request, {
 			traceContext: manager.getActiveTraceContext(),

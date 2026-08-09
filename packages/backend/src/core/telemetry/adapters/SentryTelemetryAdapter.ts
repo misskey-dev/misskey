@@ -3,18 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import Logger from '@/logger.js';
-import { registerDiagLogger } from '@/core/telemetry/telemetry-diag.js';
-import { getQueueTraceContextMode, injectActiveTraceContext, startSpanWithQueueTraceContext } from '@/core/telemetry/queue-trace-context.js';
 import type { LogTraceContext } from '@/logging/types.js';
 import type * as SentryNode from '@sentry/node';
 import type { NodeOptions } from '@sentry/node';
-import type { OtelBackendRuntimeConfig, SentryBackendConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
-import type { QueueTraceContextCarrier, QueueTraceContextDeps } from '../queue-trace-context.js';
+import type { SentryBackendConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
 
-// OpenTelemetryAdapterのDEFAULT_SHUTDOWN_TIMEOUTと揃え、Sentryのtransportが詰まってもプロセス終了を妨げないようにする。
+// Sentryのtransportが詰まってもプロセス終了を妨げないようにする。
 const DEFAULT_SHUTDOWN_TIMEOUT = 5000;
-const logger = new Logger('telemetry', 'green');
 
 type SentryIntegrationsOption = NonNullable<NodeOptions['integrations']>;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,50 +68,9 @@ export function buildSentryNodeOptions(
 	};
 }
 
-type BuildSentryOtlpInitOptions = {
-	sentryConfig: SentryBackendConfig;
-	otelConfig: OtelBackendRuntimeConfig;
-	otlpProcessor: unknown;
-	nodeProfilingIntegration?: () => SentryIntegration;
-	warn?: (message: string) => void;
-};
-
-export function buildSentryOtlpInitOptions(options: BuildSentryOtlpInitOptions): SentryNodeOptions {
-	// OTel併存時も、remoteへtrace headerを漏らさないデフォルトはSentry単体時と揃える。
-	// propagateTraceToRemote: true か、options.tracePropagationTargets の明示指定がある場合のみ既定を上書きする。
-	const { tracePropagationTargets, ...sentryOptions } = options.sentryConfig.options;
-	const propagateTraceToRemote = options.otelConfig.propagateTraceToRemote === true || tracePropagationTargets != null;
-	const warn = options.warn ?? ((message: string) => logger.warn(message));
-
-	if (options.otelConfig.sampleRate != null) {
-		warn('otelForBackend.sampleRate is ignored when sentryForBackend is also configured; configure sentryForBackend.options.tracesSampleRate or tracesSampler instead.');
-	}
-
-	if (options.otelConfig.resourceAttributes != null) {
-		warn('otelForBackend.resourceAttributes is ignored when sentryForBackend is also configured; configure OTEL_RESOURCE_ATTRIBUTES instead.');
-	}
-
-	return {
-		...buildSentryNodeOptions({
-			...options.sentryConfig,
-			options: {
-				...sentryOptions,
-				...(propagateTraceToRemote ? { tracePropagationTargets } : {}),
-			},
-		}, options.nodeProfilingIntegration),
-
-		// Sentryの単一TracerProviderにOTLP processorを追加し、親欠損や二重providerを避ける。
-		openTelemetrySpanProcessors: [
-			...(options.sentryConfig.options.openTelemetrySpanProcessors ?? []),
-			options.otlpProcessor as NonNullable<SentryNodeOptions['openTelemetrySpanProcessors']>[number],
-		],
-	};
-}
-
 export class SentryTelemetryAdapter implements TelemetryAdapter {
 	private constructor(
 		private readonly Sentry: typeof SentryNode,
-		private readonly queueTraceContext?: QueueTraceContextDeps,
 	) {
 	}
 
@@ -127,45 +81,6 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 		Sentry.init(buildSentryNodeOptions(config, nodeProfilingIntegration));
 
 		return new SentryTelemetryAdapter(Sentry);
-	}
-
-	public static async createWithOtlpExport(
-		sentryConfig: SentryBackendConfig,
-		otelConfig: OtelBackendRuntimeConfig,
-	): Promise<SentryTelemetryAdapter> {
-		const Sentry = await import('@sentry/node');
-		const { nodeProfilingIntegration } = await import('@sentry/profiling-node');
-		const { context, diag, DiagLogLevel, propagation, ROOT_CONTEXT, SpanStatusCode, trace } = await import('@opentelemetry/api');
-		const { BatchSpanProcessor } = await import('@opentelemetry/sdk-trace-base');
-		const { OTLPTraceExporter } = await import('@opentelemetry/exporter-trace-otlp-proto');
-
-		registerDiagLogger(diag, DiagLogLevel.WARN);
-
-		// OTLP送信だけを担うprocessorを作り、provider生成はSentry.init側に任せる。
-		const otlpProcessor = new BatchSpanProcessor(new OTLPTraceExporter({
-			...(otelConfig.endpoint != null ? { url: otelConfig.endpoint } : {}),
-			...(otelConfig.headers != null ? { headers: otelConfig.headers } : {}),
-		}));
-
-		// SentryとOTLPを同一providerに集約することで、どちらの宛先にも同じspan実体を流す。
-		Sentry.init(buildSentryOtlpInitOptions({
-			sentryConfig,
-			otelConfig,
-			otlpProcessor,
-			nodeProfilingIntegration,
-		}));
-
-		// Sentry が初期化した同じ OTel provider から tracer/context API を受け取り、
-		// Queue を跨ぐ context 伝播も Sentry と OTLP の両方へ同一 span として出力する。
-		return new SentryTelemetryAdapter(Sentry, {
-			tracer: trace.getTracer('misskey-backend'),
-			propagation,
-			trace,
-			getActiveContext: () => context.active(),
-			rootContext: ROOT_CONTEXT,
-			mode: getQueueTraceContextMode(otelConfig.jobTraceContextMode),
-			spanStatusCodeError: SpanStatusCode.ERROR,
-		});
 	}
 
 	public captureMessage(message: string, opts: TelemetryCaptureMessageOptions): void {
@@ -187,19 +102,6 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 
 	public startSpan<T>(name: string, fn: () => T): T {
 		return this.Sentry.startSpan({ name }, fn);
-	}
-
-	public injectTraceContext(carrier: QueueTraceContextCarrier): void {
-		// Sentry 単体構成では queueTraceContext を持たず、従来どおりジョブデータを変更しない。
-		if (this.queueTraceContext == null) return;
-		injectActiveTraceContext(this.queueTraceContext, carrier);
-	}
-
-	public startSpanWithTraceContext<T>(name: string, jobData: object, fn: () => T): T {
-		// Sentry 単体構成では Sentry 既存の span 作成経路を使う。
-		if (this.queueTraceContext == null) return this.startSpan(name, fn);
-
-		return startSpanWithQueueTraceContext(this.queueTraceContext, name, jobData, fn, () => this.startSpan(name, fn));
 	}
 
 	public async shutdown(): Promise<void> {

@@ -54,8 +54,6 @@ minimumReleaseAgeExclude:
   - slacc-win32-x64-msvc
   - '@typescript/native-preview*'
   - vite # そのうち消す
-  # Renovate security update: @opentelemetry/core@2.8.0
-  - "@opentelemetry/core@2.8.0"
   # Renovate security update: typeorm@1.1.0
   - typeorm@1.1.0
   # Renovate security update: @fastify/static@10.1.2

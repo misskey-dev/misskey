@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onUnmounted, watch } from 'vue';
+import { computed } from 'vue';
 import { isLink } from '@@/js/is-link.js';
 import type { UploaderItem } from '@/composables/use-uploader.js';
 import { getUploadName } from '@/composables/use-uploader.js';
@@ -57,6 +57,7 @@ import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
+import type { Content } from '@/components/MkLightbox.item.vue';
 
 const props = defineProps<{
 	items: UploaderItem[];
@@ -71,32 +72,6 @@ const emit = defineEmits<{
 	(ev: 'showMenu', item: UploaderItem, event: PointerEvent): void;
 	(ev: 'showMenuViaContextmenu', item: UploaderItem, event: PointerEvent): void;
 }>();
-
-//#region objectUrlMap
-const objectUrlMap = new Map<UploaderItem, string>();
-
-watch(() => props.items, () => {
-	for (const item of props.items) {
-		if (!objectUrlMap.has(item)) {
-			objectUrlMap.set(item, URL.createObjectURL(item.file));
-		}
-	}
-
-	for (const [item, url] of objectUrlMap.entries()) {
-		if (!props.items.includes(item)) {
-			URL.revokeObjectURL(url);
-			objectUrlMap.delete(item);
-		}
-	}
-}, { immediate: true, deep: true });
-
-onUnmounted(() => {
-	for (const url of objectUrlMap.values()) {
-		URL.revokeObjectURL(url);
-	}
-	objectUrlMap.clear();
-});
-//#endregion
 
 function getUploadNameParts(item: UploaderItem): {
 	baseName: string;
@@ -127,13 +102,15 @@ function onContextmenu(item: UploaderItem, ev: PointerEvent) {
 
 async function onThumbnailClick(item: UploaderItem, ev: PointerEvent) {
 	if (item.file.type.startsWith('image') || item.file.type.startsWith('video')) {
-		const contents = props.items.filter(item => item.file.type.startsWith('image') || item.file.type.startsWith('video')).map(item => ({
-			id: item.id,
-			type: (item.file.type.startsWith('video') ? 'video' as const : 'image' as const),
-			url: objectUrlMap.get(item)!,
-			thumbnailUrl: item.thumbnail,
-			filename: getUploadName(item),
-		}));
+		const contents = props.items
+			.filter(item => item.file.type.startsWith('image') || item.file.type.startsWith('video'))
+			.map<Content>(item => ({
+				id: item.id,
+				type: (item.file.type.startsWith('video') ? 'video' : 'image'),
+				url: item.objectUrl,
+				thumbnailUrl: item.thumbnail,
+				filename: getUploadName(item),
+			}));
 
 		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
 			defaultIndex: contents.findIndex(content => content.id === item.id),
