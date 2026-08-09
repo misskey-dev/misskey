@@ -119,8 +119,8 @@ function showMenu(ev: PointerEvent) {
 // MediaControl: Common State
 const oncePlayed = ref(false);
 const isReady = ref(false);
-const isPlaying = ref(false);
-const isActuallyPlaying = ref(false);
+const isPlaying = ref(false); // ユーザーが再生中であることを期待する状態か
+const isActuallyPlaying = ref(false); // 実際に再生中か (バッファリング等で一時停止している場合は false)
 const elapsedTimeMs = ref(0);
 const durationMs = ref(0);
 const rangePercent = computed({
@@ -225,11 +225,15 @@ function syncBuffered() {
 	bufferedEnd.value = end;
 }
 
+function syncReady() {
+	const el = mediaEl.value;
+	isReady.value = el != null && el.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA;
+}
+
 function init() {
 	const el: HTMLMediaElement | null = mediaEl.value;
 	if (el == null) return;
 
-	isReady.value = true;
 	abortController = new AbortController();
 	const signal = abortController.signal;
 
@@ -237,8 +241,6 @@ function init() {
 		el.addEventListener(type, listener, { signal });
 	};
 
-	// 再生状態: このコンポーネント経由の操作でもネイティブUI経由の操作でも同じイベントが飛ぶので、
-	// これらを唯一の情報源にすることでどちらの経路でも同期がとれる
 	on('play', () => {
 		isPlaying.value = true;
 		oncePlayed.value = true;
@@ -277,12 +279,17 @@ function init() {
 	});
 
 	on('durationchange', syncDuration);
+	on('loadstart', syncReady);
+	on('canplay', syncReady);
+	on('canplaythrough', syncReady);
 	on('loadedmetadata', () => {
 		syncDuration();
 		syncBuffered();
+		syncReady();
 	});
 	on('progress', syncBuffered);
 	on('emptied', () => {
+		isReady.value = false;
 		isPlaying.value = false;
 		isActuallyPlaying.value = false;
 		oncePlayed.value = false;
@@ -313,6 +320,7 @@ function init() {
 
 	// 現在の要素の状態を state に取り込む
 	// (コントロール表示前に再生が始まっている場合等)
+	syncReady();
 	syncDuration();
 	syncBuffered();
 	syncElapsedTime();
@@ -382,6 +390,7 @@ onBeforeUnmount(teardown);
 
 defineExpose({
 	isPlaying,
+	isReady,
 	isActuallyPlaying,
 });
 </script>
@@ -420,6 +429,11 @@ defineExpose({
 .controlButton {
 	padding: 6px;
 	border-radius: 4px;
+
+	&:disabled {
+		opacity: 0.7;
+		cursor: not-allowed;
+	}
 
 	&:hover {
 		background-color: var(--MI_THEME-accentedBg);

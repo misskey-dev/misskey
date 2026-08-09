@@ -112,13 +112,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							ref="audioVisualizer"
 							:content="content"
 							:user="user"
+							:isPlaying="isMediaPlaying"
 							:volume="volume"
 							@click.stop="onMediaClick"
 							@loadedmetadata="originalContentLoaded = true"
 						/>
 					</template>
 
-					<div v-if="activated && (!originalContentLoaded || (isMediaControlledByMisskey && isMediaPlaying && !isMediaActuallyPlaying))" :class="$style.loading">
+					<div v-if="activated && (!originalContentLoaded || (isMediaControlledByMisskey && isMediaPlaying && (!isMediaReady || !isMediaActuallyPlaying)))" :class="$style.loading">
 						<MkLoading/>
 					</div>
 				</template>
@@ -267,6 +268,7 @@ const isMediaControlledByMisskey = computed(() => ['video', 'audio'].includes(pr
 // ビジュアライザー使用時は音量の適用をGainNode側が担当する (メディア要素は100%固定にして、波形が音量レベルに依存しないようにするため)
 const isVolumeHandledByVisualizer = computed(() => props.content.type === 'audio' && !prefer.s.useNativeUiForVideoAudioPlayer);
 const volume = ref(0.25);
+const isMediaReady = computed(() => mediaControl.value?.isReady ?? false);
 const isMediaPlaying = computed(() => mediaControl.value?.isPlaying ?? false);
 const isMediaActuallyPlaying = computed(() => mediaControl.value?.isActuallyPlaying ?? false);
 let canOpenAnimation = false;

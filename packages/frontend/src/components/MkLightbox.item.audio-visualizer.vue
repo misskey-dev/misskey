@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:class="$style.visualizer"
 		v-bind="$attrs"
 	></canvas>
-	<div v-if="!isActuallyPlaying" :class="$style.playIconWrapper">
+	<div v-if="!isPlaying" :class="$style.playIconWrapper">
 		<div :class="$style.playIcon">
 			<i class="ti ti-player-play"></i>
 		</div>
@@ -50,6 +50,7 @@ defineOptions({
 const props = defineProps<{
 	content: Content;
 	user?: Misskey.entities.User | null; // DriveFileのuserはnullになることがある。その場合に使用する所有者情報
+	isPlaying: boolean;
 	volume: number;
 }>();
 
@@ -62,8 +63,6 @@ const canvasEl = useTemplateRef('canvasEl');
 const canvasCtx = computed(() => canvasEl.value?.getContext('2d') ?? null);
 
 const fileUser = computed(() => props.content.file?.user ?? props.user);
-
-const isActuallyPlaying = ref(false);
 
 //#region 描画パラメータ
 // 低域しか見ないので、その範囲を十分な bin 数で刻めるよう大きめの FFT を使う (48kHz で bin 幅 ≒ 5.9Hz)
@@ -311,7 +310,6 @@ function stopVisualizerTick() {
 }
 
 function setPlaying(playing: boolean) {
-	isActuallyPlaying.value = playing;
 	if (playing && isVisualizerAvailable) {
 		startVisualizerTick();
 	} else {
