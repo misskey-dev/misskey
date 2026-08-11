@@ -1761,6 +1761,7 @@ _aboutMisskey:
   projectMembers: "Membres du projet"
 _displayOfSensitiveMedia:
   respect: "Cacher les médias marqués comme sensibles"
+  ignore: "Afficher les médias marqués comme sensibles"
   force: "Masquer tous les médias"
 _instanceTicker:
   none: "Cacher "
