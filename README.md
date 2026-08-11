@@ -58,6 +58,6 @@ Thanks to [Docker](https://hub.docker.com/) for providing the container platform
 	
 Support us with a ⭐ !
 
-[![Star History Chart](https://api.star-history.com/svg?repos=misskey-dev/misskey&type=Date)](https://star-history.com/#misskey-dev/misskey&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=misskey-dev/misskey&type=Date)](https://star-history.dera.page/#misskey-dev/misskey&Date)
 
 </div>
