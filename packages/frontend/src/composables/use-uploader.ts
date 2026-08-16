@@ -188,7 +188,7 @@ export function useUploader(options: {
 		items.value.splice(items.value.indexOf(item), 1);
 	}
 
-	function getMenu(item: UploaderItem): MenuItem[] {
+	function getMenu(item: UploaderItem, customPreviewHandler: (() => void) | null = null): MenuItem[] {
 		const menu: MenuItem[] = [];
 
 		if (
@@ -241,6 +241,11 @@ export function useUploader(options: {
 					text: i18n.ts.preview,
 					icon: 'ti ti-photo-search',
 					action: async () => {
+						if (customPreviewHandler != null) {
+							customPreviewHandler();
+							return;
+						}
+
 						const contents = items.value
 							.filter(item => item.file.type.startsWith('image/') || item.file.type.startsWith('video/'))
 							.map<Content>(item => ({
