@@ -608,6 +608,24 @@ export class LobbyEnvManager extends WorldEnvManager {
 		}
 
 		{
+			const objet = this.meshes.find(m => m.name.includes('__MI__'));
+			objet.rotation = objet.rotationQuaternion.toEulerAngles();
+			objet.rotationQuaternion = null;
+
+			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+			anim.setKeys([
+				{ frame: 0, value: 0 },
+				{ frame: 5000, value: (Math.PI * 2) },
+			]);
+			objet.animations = [anim];
+			this.engine.scene.beginAnimation(objet, 0, 5000, true);
+
+			this.engine.scene.onAfterAnimationsObservable.add(() => {
+				this.engine.sr.updateMesh([objet, ...objet.getChildMeshes()], false);
+			});
+		}
+
+		{
 			const ring = this.meshes.find(m => m.name.includes('__LED_RING__'));
 			ring.rotation = ring.rotationQuaternion.toEulerAngles();
 			ring.rotationQuaternion = null;
@@ -928,12 +946,12 @@ export class LobbyEnvManager extends WorldEnvManager {
 		//ps.start();
 		//this.engine.sr.fixParticleSystem(ps);
 
-		//const firework = new Firework(this.engine, this.EFFECT_RENDERING_GROUP);
-		//this.timer.setInterval(() => {
-		//	firework.launch({
-		//		position: [randomRange(cm(-5000), cm(5000)), cm(randomRange(1000, 3000)), randomRange(cm(-5000), cm(5000))],
-		//	});
-		//}, 1000);
+		const firework = new Firework(this.engine, this.EFFECT_RENDERING_GROUP);
+		this.timer.setInterval(() => {
+			firework.launch({
+				position: [randomRange(cm(-5000), cm(5000)), cm(randomRange(1000, 3000)), randomRange(cm(-5000), cm(5000))],
+			});
+		}, 1000);
 
 		this.registerMeshes(this.meshes);
 	}
