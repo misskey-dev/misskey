@@ -1,7 +1,7 @@
 import { describe, test, beforeAll, afterAll, vi } from 'vitest';
 import { strictEqual } from 'assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, fetchAdmin, isNoteUpdatedEventFired, isFired, type LoginUser, type Request, resolveRemoteUser, sleep, createRole, waitForFollowRelation, WAIT_FOR_FEDERATION } from './utils.js';
+import { createAccount, fetchAdmin, isNoteUpdatedEventFired, isFired, type LoginUser, type Request, resolveRemoteUser, sleep, createRole, waitForFollowRelation, FEDERATION_TIMEOUT, WAIT_FOR_FEDERATION } from './utils.js';
 
 const bAdmin = await fetchAdmin('b.test');
 
@@ -54,6 +54,7 @@ describe('Timeline', () => {
 			},
 			'note', msg => msg.text === text,
 			channelParams,
+			expect ? FEDERATION_TIMEOUT : undefined,
 		);
 		strictEqual(streamingFired, expect);
 
@@ -87,6 +88,7 @@ describe('Timeline', () => {
 				'b.test', bob, noteInB!.id,
 				async () => await alice.client.request('notes/delete', { noteId: note!.id }),
 				msg => msg.type === 'deleted' && msg.id === noteInB!.id,
+				FEDERATION_TIMEOUT,
 			);
 			strictEqual(streamingFired, true);
 

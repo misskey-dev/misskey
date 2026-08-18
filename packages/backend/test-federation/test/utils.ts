@@ -43,12 +43,14 @@ export async function sleep(ms = 250): Promise<void> {
 
 type WaitForOptions = NonNullable<Parameters<typeof vi.waitFor>[1]>;
 
+/** 連合の反映を待つ上限。`vi.waitFor()` を使わない待ち合わせ (ストリーミング) にも使う */
+export const FEDERATION_TIMEOUT = 10000;
+
 /**
  * 連合の反映は非同期なので、固定時間の `sleep()` だけで待つと CI の負荷次第で容易に flaky になる。
  * 「一定時間待つ」のではなく「条件が満たされるまで待つ」ために `vi.waitFor()` へ渡すオプション。
  * (`vi.waitFor()` の既定値は timeout 1000ms / interval 50ms で、連合の反映待ちには短すぎる)
  */
-const FEDERATION_TIMEOUT = 10000;
 export const WAIT_FOR_FEDERATION: WaitForOptions = { timeout: FEDERATION_TIMEOUT, interval: 250 };
 
 /** アカウント削除・凍結など、明らかに時間のかかる処理を待つ場合の {@link WAIT_FOR_FEDERATION} */
@@ -311,6 +313,7 @@ export async function isNoteUpdatedEventFired(
 	noteId: string,
 	trigger: () => Promise<unknown>,
 	cond: (msg: Parameters<Misskey.StreamEvents['noteUpdated']>[0]) => boolean,
+	timeout = NOT_FIRED_TIMEOUT,
 ): Promise<boolean> {
 	const stream = new Misskey.Stream(`wss://${host}`, { token: user.i }, { WebSocket });
 	try {
@@ -328,7 +331,7 @@ export async function isNoteUpdatedEventFired(
 
 		return await Promise.race([
 			receivePromise,
-			sleep(500).then(() => false),
+			sleep(timeout).then(() => false),
 		]);
 	} finally {
 		stream.close();
