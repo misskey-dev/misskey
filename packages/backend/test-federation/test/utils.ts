@@ -48,7 +48,8 @@ type WaitForOptions = NonNullable<Parameters<typeof vi.waitFor>[1]>;
  * 「一定時間待つ」のではなく「条件が満たされるまで待つ」ために `vi.waitFor()` へ渡すオプション。
  * (`vi.waitFor()` の既定値は timeout 1000ms / interval 50ms で、連合の反映待ちには短すぎる)
  */
-export const WAIT_FOR_FEDERATION: WaitForOptions = { timeout: 10000, interval: 250 };
+const FEDERATION_TIMEOUT = 10000;
+export const WAIT_FOR_FEDERATION: WaitForOptions = { timeout: FEDERATION_TIMEOUT, interval: 250 };
 
 /** アカウント削除・凍結など、明らかに時間のかかる処理を待つ場合の {@link WAIT_FOR_FEDERATION} */
 export const WAIT_FOR_SLOW_FEDERATION: WaitForOptions = { timeout: 30000, interval: 500 };
@@ -268,6 +269,9 @@ export function deepStrictEqualWithExcludedFields<T>(actual: T, expected: T, exc
 	deepStrictEqual(_actual, _expected);
 }
 
+/** 「発火しない」ことの確認に使う待ち時間 */
+const NOT_FIRED_TIMEOUT = 500;
+
 export async function isFired<C extends keyof Misskey.Channels, T extends keyof Misskey.Channels[C]['events']>(
 	host: Host,
 	user: { i: string },
@@ -277,6 +281,7 @@ export async function isFired<C extends keyof Misskey.Channels, T extends keyof 
 	// @ts-expect-error TODO: why getting error here?
 	cond: (msg: Parameters<Misskey.Channels[C]['events'][T]>[0]) => boolean,
 	params?: Misskey.Channels[C]['params'],
+	timeout = NOT_FIRED_TIMEOUT,
 ): Promise<boolean> {
 	const stream = new Misskey.Stream(`wss://${host}`, { token: user.i }, { WebSocket });
 	try {
@@ -293,7 +298,7 @@ export async function isFired<C extends keyof Misskey.Channels, T extends keyof 
 		await trigger();
 		return await Promise.race([
 			receivePromise,
-			sleep(500).then(() => false),
+			sleep(timeout).then(() => false),
 		]);
 	} finally {
 		stream.close();
@@ -337,7 +342,16 @@ export async function assertNotificationReceived(
 	cond: (notification: Misskey.entities.Notification) => boolean,
 	expect: boolean,
 ) {
-	const streamingFired = await isFired(receiverHost, receiver, 'main', trigger, 'notification', cond);
+	const streamingFired = await isFired(
+		receiverHost,
+		receiver,
+		'main',
+		trigger,
+		'notification',
+		cond,
+		undefined,
+		expect ? FEDERATION_TIMEOUT : undefined,
+	);
 	strictEqual(streamingFired, expect);
 
 	const fetchEndpointFired = async () => await receiver.client.request('i/notifications', {})
