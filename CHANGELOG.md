@@ -1,7 +1,9 @@
 ## 2026.8.0
 
 ### General
--
+- Enhance: 人気ユーザーの算出基準を変更できるように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/653, https://github.com/MisskeyIO/misskey/pull/664, https://github.com/MisskeyIO/misskey/pull/728, https://github.com/MisskeyIO/misskey/pull/734, https://github.com/MisskeyIO/misskey/pull/737)
+- Enhance: 人気ユーザーを表示しないようにできるように
 
 ### Client
 - Enhance: 画像ビューワーで、ピクセルアートの拡大表示に適したモードを追加（画像ビューワー起動時に画面上の詳細メニューから有効化できます）

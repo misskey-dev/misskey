@@ -52,7 +52,7 @@ const popularUsersPaginator = markRaw(new Paginator('users', {
 	params: {
 		state: 'alive',
 		origin: 'local',
-		sort: '+follower',
+		sort: '+pv',
 	},
 }));
 </script>

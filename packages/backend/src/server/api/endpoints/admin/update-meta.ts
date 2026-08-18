@@ -216,6 +216,10 @@ export const paramDef = {
 				required: ['software', 'versionRange'],
 			},
 		},
+		preferPopularUserFactor: {
+			type: 'string',
+			enum: ['follower', 'pv', 'none'],
+		},
 		singleUserMode: { type: 'boolean' },
 		ugcVisibilityForVisitor: {
 			type: 'string',
@@ -754,6 +758,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (Array.isArray(ps.federationHosts)) {
 				set.federationHosts = ps.federationHosts.filter(Boolean).map(x => x.toLowerCase());
+			}
+
+			if (ps.preferPopularUserFactor !== undefined) {
+				set.preferPopularUserFactor = ps.preferPopularUserFactor;
 			}
 
 			if (ps.singleUserMode !== undefined) {

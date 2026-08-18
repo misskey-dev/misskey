@@ -1422,6 +1422,10 @@ prepend: "先頭に追加"
 urlPreviewSensitiveList: "サムネイルの表示を制限するURL"
 urlPreviewSensitiveListDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、サムネイルが表示されなくなります。"
 pixelatedZoom: "ピクセルアート拡大モード"
+explorePage: "「みつける」ページ"
+pageViewCount: "ページ閲覧数"
+preferPopularUserFactor: "人気のユーザーの算出基準"
+preferPopularUserFactorDescription: "ページ閲覧数はローカルユーザーにのみ適用されます（リモートユーザーはフォロワー数で表示されます）。「無効」に設定すると、ローカル・リモートどちらの「人気のユーザー」セクションも表示されなくなります。"
 
 _imageEditing:
   _vars:
