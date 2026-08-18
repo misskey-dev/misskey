@@ -5703,6 +5703,14 @@ export interface Locale extends ILocale {
      * ピクセルアート拡大モード
      */
     "pixelatedZoom": string;
+    /**
+     * スペシャルリアクション
+     */
+    "spReaction": string;
+    /**
+     * スペシャルリアクションの残り使用可能回数がありません
+     */
+    "noRemainingUsesForSpReaction": string;
     "_imageEditing": {
         "_vars": {
             /**
@@ -7028,6 +7036,24 @@ export interface Locale extends ILocale {
          * アクティビティを表示する
          */
         "showActivitiesForVisitor": string;
+        /**
+         * 機能
+         */
+        "features": string;
+        "_spReactions": {
+            /**
+             * スペシャルリアクションを有効にする
+             */
+            "enable": string;
+            /**
+             * 通常のリアクションより目立つ「スペシャルリアクション」をノートに送れる機能です。
+             */
+            "description1": string;
+            /**
+             * 有効にする場合、ロールポリシーで、毎月送ることのできる最大数を設定してください。
+             */
+            "description2": string;
+        };
         "_userGeneratedContentsVisibilityForVisitor": {
             /**
              * 全て公開
@@ -8289,6 +8315,10 @@ export interface Locale extends ILocale {
              * ウォーターマーク機能の使用可否
              */
             "watermarkAvailable": string;
+            /**
+             * スペシャルリアクションの月間送信上限
+             */
+            "spReactionsMonthlyLimit": string;
         };
         "_condition": {
             /**
@@ -11033,6 +11063,10 @@ export interface Locale extends ILocale {
              * リアクション
              */
             "reaction": string;
+            /**
+             * スペシャルリアクション
+             */
+            "spReaction": string;
             /**
              * アンケートが終了
              */

@@ -11,6 +11,7 @@
  * renote - 投稿がRenoteされた
  * quote - 投稿が引用Renoteされた
  * reaction - 投稿にリアクションされた
+ * spReaction - スペシャルリアクションされた
  * pollEnded - 自分のアンケートもしくは自分が投票したアンケートが終了した
  * scheduledNotePosted - 予約したノートが投稿された
  * scheduledNotePostFailed - 予約したノートの投稿に失敗した
@@ -33,6 +34,7 @@ export const notificationTypes = [
 	'renote',
 	'quote',
 	'reaction',
+	'spReaction',
 	'pollEnded',
 	'scheduledNotePosted',
 	'scheduledNotePostFailed',

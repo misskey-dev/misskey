@@ -23,7 +23,7 @@ import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
 import { MiChannel } from '@/models/Channel.js';
 import { MiChannelFavorite } from '@/models/ChannelFavorite.js';
 import { MiChannelFollowing } from '@/models/ChannelFollowing.js';
-import { MiChannelMuting } from "@/models/ChannelMuting.js";
+import { MiChannelMuting } from '@/models/ChannelMuting.js';
 import { MiChatApproval } from '@/models/ChatApproval.js';
 import { MiChatMessage } from '@/models/ChatMessage.js';
 import { MiChatRoom } from '@/models/ChatRoom.js';
@@ -50,6 +50,7 @@ import { MiNote } from '@/models/Note.js';
 import { MiNoteDraft } from '@/models/NoteDraft.js';
 import { MiNoteFavorite } from '@/models/NoteFavorite.js';
 import { MiNoteReaction } from '@/models/NoteReaction.js';
+import { MiNoteSpReaction } from '@/models/NoteSpReaction.js';
 import { MiNoteThreadMuting } from '@/models/NoteThreadMuting.js';
 import { MiPage } from '@/models/Page.js';
 import { MiPageLike } from '@/models/PageLike.js';
@@ -131,6 +132,7 @@ export {
 	MiNoteDraft,
 	MiNoteFavorite,
 	MiNoteReaction,
+	MiNoteSpReaction,
 	MiNoteThreadMuting,
 	MiPage,
 	MiPageLike,
@@ -211,6 +213,7 @@ export type NotesRepository = Repository<MiNote> & MiRepository<MiNote>;
 export type NoteDraftsRepository = Repository<MiNoteDraft> & MiRepository<MiNoteDraft>;
 export type NoteFavoritesRepository = Repository<MiNoteFavorite> & MiRepository<MiNoteFavorite>;
 export type NoteReactionsRepository = Repository<MiNoteReaction> & MiRepository<MiNoteReaction>;
+export type NoteSpReactionsRepository = Repository<MiNoteSpReaction> & MiRepository<MiNoteSpReaction>;
 export type NoteThreadMutingsRepository = Repository<MiNoteThreadMuting> & MiRepository<MiNoteThreadMuting>;
 export type PagesRepository = Repository<MiPage> & MiRepository<MiPage>;
 export type PageLikesRepository = Repository<MiPageLike> & MiRepository<MiPageLike>;

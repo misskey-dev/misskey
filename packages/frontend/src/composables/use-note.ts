@@ -4,14 +4,17 @@
  */
 
 import { ref } from 'vue';
-import type { Ref } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
 import { shouldCollapsed } from '@@/js/collapsed.js';
 import { host } from '@@/js/config.js';
-import { pleaseLogin } from '@/utility/please-login.js';
+import type { Ref } from 'vue';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
+import type { DI as DIType } from '@/di.js';
+import type { ExtractInjectedType } from '@/types/misc.js';
+import type { MenuItem } from '@/types/menu.js';
+import { pleaseLogin } from '@/utility/please-login.js';
 import { checkWordMute } from '@/utility/check-word-mute.js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import * as sound from '@/utility/sound.js';
@@ -34,9 +37,6 @@ import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkReactionsViewerDetails from '@/components/MkReactionsViewer.details.vue';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { notePage } from '@/filters/note.js';
-import type { DI as DIType } from '@/di.js';
-import type { ExtractInjectedType } from '@/types/misc.js';
-import type { MenuItem } from '@/types/menu.js';
 
 export interface UseNoteProps {
 	note: Misskey.entities.Note;
@@ -50,7 +50,7 @@ export interface UseNoteElements {
 	menuButton?: Ref<HTMLElement | null>;
 	renoteButton?: Ref<HTMLElement | null>;
 	renoteTime?: Ref<HTMLElement | null>;
-	reactButton?: Ref<HTMLElement | null>;
+	reactButton: Ref<HTMLElement>;
 	clipButton?: Ref<HTMLElement | null>;
 }
 
@@ -255,7 +255,7 @@ export function useNote(
 			}).then(() => {
 				noteEvents.emit(`reacted:${appearNote.id}`, { userId: $i!.id, reaction: '❤️' });
 			});
-			if (els.reactButton != null && els.reactButton.value != null && prefer.s.animation) {
+			if (prefer.s.animation) {
 				const rect = els.reactButton.value.getBoundingClientRect();
 				const { dispose } = os.popup(MkRippleEffect, {
 					x: rect.left + (els.reactButton.value.offsetWidth / 2),
@@ -266,7 +266,7 @@ export function useNote(
 			}
 		} else {
 			blur();
-			reactionPicker.show(els.reactButton?.value ?? null, rawNote, async (reaction) => {
+			reactionPicker.show(els.reactButton.value, rawNote, async (reaction) => {
 				if (prefer.s.confirmOnReact) {
 					const confirm = await os.confirm({
 						type: 'question',

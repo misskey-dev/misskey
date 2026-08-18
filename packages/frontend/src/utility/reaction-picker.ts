@@ -25,7 +25,7 @@ class ReactionPicker {
 	}
 
 	public show(
-		anchorElement: HTMLElement | null,
+		anchorElement: HTMLElement,
 		targetNote: Misskey.entities.Note | null,
 		onChosen?: (reaction: string) => void,
 		onClosed?: () => void,

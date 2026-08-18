@@ -3970,6 +3970,28 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
+     * **Credential required**: *No*
+     */
+    request<E extends 'notes/sp-reactions', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:reactions*
+     */
+    request<E extends 'notes/sp-reactions/create', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
      * **Credential required**: *Yes* / **Permission**: *read:account*
      */
     request<E extends 'notes/state', P extends Endpoints[E]['req']>(

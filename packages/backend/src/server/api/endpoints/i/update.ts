@@ -208,6 +208,7 @@ export const paramDef = {
 				renote: notificationRecieveConfig,
 				quote: notificationRecieveConfig,
 				reaction: notificationRecieveConfig,
+				spReaction: notificationRecieveConfig,
 				pollEnded: notificationRecieveConfig,
 				scheduledNotePosted: notificationRecieveConfig,
 				scheduledNotePostFailed: notificationRecieveConfig,

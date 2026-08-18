@@ -24,6 +24,7 @@ export const notificationTypes = [
 	'renote',
 	'quote',
 	'reaction',
+	'spReaction',
 	'pollEnded',
 	'scheduledNotePosted',
 	'scheduledNotePostFailed',
@@ -232,6 +233,7 @@ export const rolePolicies = [
 	'noteDraftLimit',
 	'scheduledNoteLimit',
 	'watermarkAvailable',
+	'spReactionsMonthlyLimit',
 ] as const;
 
 export const queueTypes = [

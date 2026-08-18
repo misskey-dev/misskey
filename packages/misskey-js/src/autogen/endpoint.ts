@@ -543,6 +543,9 @@ import type {
 	NotesShowResponse,
 	NotesShowPartialBulkRequest,
 	NotesShowPartialBulkResponse,
+	NotesSpReactionsRequest,
+	NotesSpReactionsResponse,
+	NotesSpReactionsCreateRequest,
 	NotesStateRequest,
 	NotesStateResponse,
 	NotesThreadMutingCreateRequest,
@@ -1024,6 +1027,8 @@ export type Endpoints = {
 	'notes/search-by-tag': { req: NotesSearchByTagRequest; res: NotesSearchByTagResponse };
 	'notes/show': { req: NotesShowRequest; res: NotesShowResponse };
 	'notes/show-partial-bulk': { req: NotesShowPartialBulkRequest; res: NotesShowPartialBulkResponse };
+	'notes/sp-reactions': { req: NotesSpReactionsRequest; res: NotesSpReactionsResponse };
+	'notes/sp-reactions/create': { req: NotesSpReactionsCreateRequest; res: EmptyResponse };
 	'notes/state': { req: NotesStateRequest; res: NotesStateResponse };
 	'notes/thread-muting/create': { req: NotesThreadMutingCreateRequest; res: EmptyResponse };
 	'notes/thread-muting/delete': { req: NotesThreadMutingDeleteRequest; res: EmptyResponse };

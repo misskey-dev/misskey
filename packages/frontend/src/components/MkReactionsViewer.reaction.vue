@@ -8,11 +8,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="buttonEl"
 	v-ripple="canToggle"
 	class="_button"
-	:class="[$style.root, { [$style.reacted]: myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: prefer.s.reactionsDisplaySize === 'small', [$style.large]: prefer.s.reactionsDisplaySize === 'large' }]"
+	:class="[$style.root, { [$style.reacted]: myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: prefer.s.reactionsDisplaySize === 'small', [$style.large]: prefer.s.reactionsDisplaySize === 'large', [$style.sp]: reaction.startsWith('sp:') }]"
 	@click="toggleReaction()"
 	@contextmenu.prevent.stop="menu"
 >
-	<MkReactionIcon style="pointer-events: none;" :class="prefer.s.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
+	<MkReactionIcon style="pointer-events: none;" :class="[$style.icon, { [$style.limitWidth]: prefer.s.limitWidthOfReaction }]" :reaction="unwrapSp(reaction)" :emojiUrl="reactionEmojis[unwrapSp(reaction).substring(1, unwrapSp(reaction).length - 1)]"/>
 	<span :class="$style.count">{{ count }}</span>
 </button>
 </template>
@@ -32,7 +32,6 @@ import { $i } from '@/i.js';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
 import { i18n } from '@/i18n.js';
 import * as sound from '@/utility/sound.js';
-import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
@@ -57,6 +56,13 @@ const emit = defineEmits<{
 }>();
 
 const buttonEl = useTemplateRef('buttonEl');
+
+function unwrapSp(reaction: string): string {
+	if (reaction.startsWith('sp:')) {
+		return reaction.substring(3);
+	}
+	return reaction;
+}
 
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
 
@@ -243,9 +249,9 @@ if (!mock) {
 	useTooltip(buttonEl, async (showing) => {
 		if (buttonEl.value == null) return;
 
-		const reactions = await misskeyApiGet('notes/reactions', {
+		const reactions = await misskeyApiGet('notes/sp-reactions', {
 			noteId: props.noteId,
-			type: props.reaction,
+			type: unwrapSp(props.reaction),
 			limit: 10,
 			_cacheKey_: props.count,
 		});
@@ -254,7 +260,7 @@ if (!mock) {
 
 		const { dispose } = os.popup(XDetails, {
 			showing,
-			reaction: props.reaction,
+			reaction: unwrapSp(props.reaction),
 			users,
 			count: props.count,
 			anchorElement: buttonEl.value,
@@ -274,6 +280,22 @@ if (!mock) {
 	border-radius: 6px;
 	align-items: center;
 	justify-content: center;
+
+	&.sp {
+		background: linear-gradient(319deg, #B67B03 0%, #DAAF08 45%, #FEE9A0 70%, #DAAF08 85%, #B67B03 90% 100%) !important;
+		border: solid 1px #B67B03 !important;
+		box-shadow: 1px 1px 2px #fff inset !important;
+
+		> .count {
+			color: #503600 !important;
+			text-shadow: 0 0 3px #fff !important;
+		}
+
+		> .icon {
+			filter: sepia(1) drop-shadow(0 0 3px #fff) !important;
+			mix-blend-mode: multiply !important;
+		}
+	}
 
 	&.canToggle {
 		background: var(--MI_THEME-buttonBg);
@@ -316,10 +338,6 @@ if (!mock) {
 
 		> .count {
 			color: var(--MI_THEME-accent);
-		}
-
-		> .icon {
-			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 		}
 	}
 }

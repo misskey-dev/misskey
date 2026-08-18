@@ -241,6 +241,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { inject, provide, ref, useTemplateRef, markRaw, computed } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { Ref } from 'vue';
+import type { Keymap } from '@/utility/hotkey.js';
 import { useNote } from '@/composables/use-note.js';
 import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
@@ -251,7 +253,6 @@ import { Paginator } from '@/utility/paginator.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import number from '@/filters/number.js';
 import { DI } from '@/di.js';
-import type { Keymap } from '@/utility/hotkey.js';
 
 // コンポーネント外部の依存関係
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -320,7 +321,7 @@ const {
 	menuButton,
 	renoteButton,
 	renoteTime,
-	reactButton,
+	reactButton: reactButton as Ref<HTMLElement>,
 	clipButton,
 }, {
 	inChannel,

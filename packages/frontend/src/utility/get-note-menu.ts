@@ -25,6 +25,8 @@ import { genEmbedCode } from '@/utility/get-embed-code.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
 import { globalEvents } from '@/events.js';
+import { reactionPicker } from '@/utility/reaction-picker.js';
+import { noteEvents } from '@/composables/use-note-capture.js';
 
 const isInBrowserTranslationAvailable = (
 	'LanguageDetector' in window &&
@@ -238,6 +240,17 @@ export function getNoteMenu(props: {
 		});
 	}
 
+	function spReaction(ev: PointerEvent): void {
+		reactionPicker.show((ev.currentTarget ?? ev.target) as HTMLElement, appearNote, async (reaction) => {
+			misskeyApi('notes/sp-reactions/create', {
+				noteId: appearNote.id,
+				reaction: reaction,
+			}).then(() => {
+				noteEvents.emit(`sp-reacted:${appearNote.id}`, { userId: $i!.id, reaction: reaction });
+			});
+		}, () => { focus(); });
+	}
+
 	function toggleThreadMute(mute: boolean): void {
 		os.apiWithDialog(mute ? 'notes/thread-muting/create' : 'notes/thread-muting/delete', {
 			noteId: appearNote.id,
@@ -427,6 +440,12 @@ export function getNoteMenu(props: {
 			icon: 'ti ti-paperclip',
 			text: i18n.ts.clip,
 			children: () => getNoteClipMenu(props),
+		});
+
+		menuItems.push({
+			icon: 'ti ti-sparkle-highlight',
+			text: i18n.ts.spReaction,
+			action: (ev) => spReaction(ev),
 		});
 
 		menuItems.push(statePromise.then(state => state.isMutedThread ? {
