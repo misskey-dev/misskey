@@ -1,7 +1,7 @@
 import { describe, test, beforeAll, afterAll, vi } from 'vitest';
 import { strictEqual } from 'assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, fetchAdmin, isNoteUpdatedEventFired, isFired, type LoginUser, type Request, resolveRemoteUser, sleep, createRole, waitForFollowers, WAIT_FOR_FEDERATION } from './utils.js';
+import { createAccount, fetchAdmin, isNoteUpdatedEventFired, isFired, type LoginUser, type Request, resolveRemoteUser, sleep, createRole, waitForFollowRelation, WAIT_FOR_FEDERATION } from './utils.js';
 
 const bAdmin = await fetchAdmin('b.test');
 
@@ -21,7 +21,9 @@ describe('Timeline', () => {
 		]);
 
 		await bob.client.request('following/create', { userId: aliceInB.id });
-		await waitForFollowers(alice, 1);
+		// NOTE: 配送側 (a.test) だけでなく、受信側のホームタイムラインへの fan-out にも
+		//       followings が要るので、両サーバーへ反映されるまで待つ
+		await waitForFollowRelation(bob, alice, 1);
 	});
 
 	type TimelineChannel = keyof Misskey.Channels & (`${string}Timeline` | 'antenna' | 'userList' | 'hashtag');

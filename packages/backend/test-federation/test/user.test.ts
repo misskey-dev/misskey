@@ -1,7 +1,7 @@
 import { describe, test, beforeAll, vi } from 'vitest';
 import assert, { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, waitForFollowers, waitForFollowing, WAIT_FOR_FEDERATION, WAIT_FOR_SLOW_FEDERATION } from './utils.js';
+import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, waitForFollowers, waitForFollowing, waitForFollowRelation, WAIT_FOR_FEDERATION, WAIT_FOR_SLOW_FEDERATION } from './utils.js';
 
 const [aAdmin, bAdmin] = await Promise.all([
 	fetchAdmin('a.test'),
@@ -71,8 +71,8 @@ describe('User', () => {
 					bob.client.request('following/create', { userId: aliceInB.id }),
 				]);
 				await Promise.all([
-					waitForFollowers(alice, 1),
-					waitForFollowers(bob, 1),
+					waitForFollowRelation(alice, bob, 1),
+					waitForFollowRelation(bob, alice, 1),
 				]);
 			});
 
@@ -144,7 +144,7 @@ describe('User', () => {
 				await bob.client.request('following/create', { userId: aliceInB.id });
 				// Update は「配送時点のフォロワー」にしか配送されないので、
 				// フォローが a.test 側に反映されてから i/update する
-				await waitForFollowers(alice, 1);
+				await waitForFollowRelation(bob, alice, 1);
 
 				await alice.client.request('i/update', { isCat: true });
 
@@ -167,7 +167,7 @@ describe('User', () => {
 				aliceInB = await resolveRemoteUser('a.test', alice.id, bob);
 
 				await bob.client.request('following/create', { userId: aliceInB.id });
-				await waitForFollowers(alice, 1);
+				await waitForFollowRelation(bob, alice, 1);
 			});
 
 			test('Pinning localOnly Note is not delivered', async () => {
@@ -234,10 +234,7 @@ describe('User', () => {
 			beforeAll(async () => {
 				await alice.client.request('following/create', { userId: bobInA.id });
 
-				await Promise.all([
-					waitForFollowing(alice, 1),
-					waitForFollowers(bob, 1),
-				]);
+				await waitForFollowRelation(alice, bob, 1);
 			});
 
 			test('Check consistency with `users/following` and `users/followers` endpoints', async () => {
@@ -260,10 +257,7 @@ describe('User', () => {
 			beforeAll(async () => {
 				await alice.client.request('following/delete', { userId: bobInA.id });
 
-				await Promise.all([
-					waitForFollowing(alice, 0),
-					waitForFollowers(bob, 0),
-				]);
+				await waitForFollowRelation(alice, bob, 0);
 			});
 
 			test('Check consistency with `users/following` and `users/followers` endpoints', async () => {
@@ -401,7 +395,7 @@ describe('User', () => {
 
 			test('Bob follows Alice, and Alice deleted themself', async () => {
 				await bob.client.request('following/create', { userId: aliceInB.id });
-				await waitForFollowers(alice, 1); // followed by Bob
+				await waitForFollowRelation(bob, alice, 1); // followed by Bob
 
 				await alice.client.request('i/delete-account', { password: alice.password });
 				await waitForFollowing(bob, 0, WAIT_FOR_SLOW_FEDERATION); // no following relation
@@ -434,7 +428,7 @@ describe('User', () => {
 
 			test('Bob follows Alice, then Alice gets deleted in B server', async () => {
 				await bob.client.request('following/create', { userId: aliceInB.id });
-				await waitForFollowers(alice, 1); // followed by Bob
+				await waitForFollowRelation(bob, alice, 1); // followed by Bob
 
 				await bAdmin.client.request('admin/delete-account', { userId: aliceInB.id });
 				await sleep();
@@ -490,7 +484,7 @@ describe('User', () => {
 
 			test('Bob follows Alice, and Alice gets suspended, there is no following relation, and Bob fails to follow again', async () => {
 				await bob.client.request('following/create', { userId: aliceInB.id });
-				await waitForFollowers(alice, 1); // followed by Bob
+				await waitForFollowRelation(bob, alice, 1); // followed by Bob
 
 				await aAdmin.client.request('admin/suspend-user', { userId: alice.id });
 				await waitForFollowing(bob, 0, WAIT_FOR_SLOW_FEDERATION); // no following relation

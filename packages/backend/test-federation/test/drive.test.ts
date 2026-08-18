@@ -1,7 +1,7 @@
 import { describe, test, beforeAll, vi } from 'vitest';
 import assert, { strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile, waitForFollowers, WAIT_FOR_FEDERATION } from './utils.js';
+import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile, waitForFollowRelation, WAIT_FOR_FEDERATION } from './utils.js';
 
 const bAdmin = await fetchAdmin('b.test');
 
@@ -106,7 +106,7 @@ describe('Drive', () => {
 				]);
 
 				await bob.client.request('following/create', { userId: aliceInB.id });
-				await waitForFollowers(alice, 1);
+				await waitForFollowRelation(bob, alice, 1);
 			});
 
 			test('Alice uploads sensitive image and it is shown as sensitive from Bob', async () => {

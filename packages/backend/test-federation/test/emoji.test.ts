@@ -1,7 +1,7 @@
 import { describe, test, beforeAll, vi } from 'vitest';
 import assert, { deepStrictEqual, strictEqual } from 'assert';
 import * as Misskey from 'misskey-js';
-import { addCustomEmoji, createAccount, type LoginUser, resolveRemoteUser, waitForFollowers, WAIT_FOR_FEDERATION } from './utils.js';
+import { addCustomEmoji, createAccount, type LoginUser, resolveRemoteUser, waitForFollowRelation, WAIT_FOR_FEDERATION } from './utils.js';
 
 describe('Emoji', () => {
 	let alice: LoginUser, bob: LoginUser;
@@ -19,7 +19,7 @@ describe('Emoji', () => {
 		]);
 
 		await bob.client.request('following/create', { userId: aliceInB.id });
-		await waitForFollowers(alice, 1);
+		await waitForFollowRelation(bob, alice, 1);
 	});
 
 	async function waitForNoteInB(cond: (note: Misskey.entities.Note) => boolean): Promise<Misskey.entities.Note> {

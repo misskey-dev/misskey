@@ -1,7 +1,7 @@
 import { describe, test, beforeAll, afterAll, vi } from 'vitest';
 import assert, { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile, waitForFollowing, WAIT_FOR_FEDERATION } from './utils.js';
+import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile, waitForFollowRelation, WAIT_FOR_FEDERATION } from './utils.js';
 
 describe('Note', () => {
 	let alice: LoginUser, bob: LoginUser;
@@ -146,7 +146,7 @@ describe('Note', () => {
 					carol = await createAccount('a.test');
 
 					await carol.client.request('following/create', { userId: bobInA.id });
-					await waitForFollowing(carol, 1);
+					await waitForFollowRelation(carol, bob, 1);
 				});
 
 				test('Check', async () => {
@@ -165,7 +165,7 @@ describe('Note', () => {
 
 				afterAll(async () => {
 					await carol.client.request('following/delete', { userId: bobInA.id });
-					await waitForFollowing(carol, 0);
+					await waitForFollowRelation(carol, bob, 0);
 				});
 			});
 
@@ -366,7 +366,7 @@ describe('Note', () => {
 				]);
 
 				await bobRemoteFollower.client.request('following/create', { userId: bobInA.id });
-				await waitForFollowing(bobRemoteFollower, 1);
+				await waitForFollowRelation(bobRemoteFollower, bob, 1);
 			});
 
 			test('A vote in Bob\'s server is delivered to Bob\'s remote followers', async () => {

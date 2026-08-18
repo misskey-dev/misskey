@@ -188,6 +188,17 @@ export async function waitForFollowing(follower: LoginUser, count: number, optio
 	}, options);
 }
 
+/**
+ * フォロー関係が両方のサーバーで反映されるまで待つ。
+ * 特に理由が無ければこちらを使う。
+ */
+export async function waitForFollowRelation(follower: LoginUser, followee: LoginUser, count: number, options: WaitForOptions = WAIT_FOR_FEDERATION): Promise<void> {
+	await Promise.all([
+		waitForFollowing(follower, count, options),
+		waitForFollowers(followee, count, options),
+	]);
+}
+
 export async function resolveRemoteUser(
 	host: Host,
 	id: string,
