@@ -195,9 +195,9 @@ import { getFileMenu } from '@/utility/get-file-menu.js';
 const props = withDefaults(defineProps<{
 	content: Content;
 	activated: boolean;
-	initiallyOpened?: boolean;
+	initiallyRevealed?: boolean;
 }>(), {
-	initiallyOpened: false,
+	initiallyRevealed: false,
 });
 
 const emit = defineEmits<{
@@ -302,8 +302,8 @@ function shouldHideInGallery(content: Content): boolean {
 	const hiddenByDefault = shouldHideFileByDefault(content.file, true);
 	if (!hiddenByDefault) return false;
 
-	// ギャラリー起動時に最初に開いたセンシティブ画像だけは初期表示で隠さない
-	if (content.file.isSensitive && props.initiallyOpened) {
+	// 呼び出し元で既にぼかしが解除されているものは初期表示で隠さない
+	if (props.initiallyRevealed) {
 		return false;
 	}
 

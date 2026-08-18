@@ -190,6 +190,7 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | Keybo
 				const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
 					defaultIndex: constents.findIndex(content => content.id === file.id),
 					contents: constents,
+					initiallyRevealedContentIds: [file.id],
 				}, {
 					closed: () => dispose(),
 				});
