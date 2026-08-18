@@ -286,6 +286,8 @@ export async function isFired<C extends keyof Misskey.Channels, T extends keyof 
 	timeout = NOT_FIRED_TIMEOUT,
 ): Promise<boolean> {
 	const stream = new Misskey.Stream(`wss://${host}`, { token: user.i }, { WebSocket });
+	// 先にイベントを受け取った場合でもタイマーが残り続けないよう、必ず解除する
+	let timer: ReturnType<typeof setTimeout> | undefined;
 	try {
 		const connection = stream.useChannel(channel, params);
 
@@ -300,9 +302,12 @@ export async function isFired<C extends keyof Misskey.Channels, T extends keyof 
 		await trigger();
 		return await Promise.race([
 			receivePromise,
-			sleep(timeout).then(() => false),
+			new Promise<boolean>(resolve => {
+				timer = setTimeout(() => resolve(false), timeout);
+			}),
 		]);
 	} finally {
+		clearTimeout(timer);
 		stream.close();
 	}
 };
@@ -316,6 +321,8 @@ export async function isNoteUpdatedEventFired(
 	timeout = NOT_FIRED_TIMEOUT,
 ): Promise<boolean> {
 	const stream = new Misskey.Stream(`wss://${host}`, { token: user.i }, { WebSocket });
+	// 先にイベントを受け取った場合でもタイマーが残り続けないよう、必ず解除する
+	let timer: ReturnType<typeof setTimeout> | undefined;
 	try {
 		stream.send('s', { id: noteId });
 
@@ -331,9 +338,12 @@ export async function isNoteUpdatedEventFired(
 
 		return await Promise.race([
 			receivePromise,
-			sleep(timeout).then(() => false),
+			new Promise<boolean>(resolve => {
+				timer = setTimeout(() => resolve(false), timeout);
+			}),
 		]);
 	} finally {
+		clearTimeout(timer);
 		stream.close();
 	}
 };
