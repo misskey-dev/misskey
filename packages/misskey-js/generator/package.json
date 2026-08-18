@@ -7,7 +7,7 @@
 		"generate": "tsx src/generator.ts && eslint ./built/**/*.ts --fix"
 	},
 	"devDependencies": {
-		"@readme/openapi-parser": "6.3.1",
+		"@readme/openapi-parser": "7.0.1",
 		"@types/node": "26.2.0",
 		"@typescript-eslint/eslint-plugin": "8.67.0",
 		"@typescript-eslint/parser": "8.67.0",
