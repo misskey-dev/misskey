@@ -1,7 +1,7 @@
-import { describe, test, beforeAll, afterAll } from 'vitest';
+import { describe, test, beforeAll, afterAll, vi } from 'vitest';
 import { strictEqual } from 'assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, fetchAdmin, isNoteUpdatedEventFired, isFired, type LoginUser, type Request, resolveRemoteUser, sleep, createRole } from './utils.js';
+import { createAccount, fetchAdmin, isNoteUpdatedEventFired, isFired, type LoginUser, type Request, resolveRemoteUser, sleep, createRole, waitForFollowers, WAIT_FOR_FEDERATION } from './utils.js';
 
 const bAdmin = await fetchAdmin('b.test');
 
@@ -21,7 +21,7 @@ describe('Timeline', () => {
 		]);
 
 		await bob.client.request('following/create', { userId: aliceInB.id });
-		await sleep();
+		await waitForFollowers(alice, 1);
 	});
 
 	type TimelineChannel = keyof Misskey.Channels & (`${string}Timeline` | 'antenna' | 'userList' | 'hashtag');
@@ -63,9 +63,19 @@ describe('Timeline', () => {
 			endpoint === 'roles/notes' ? { roleId: (channelParams as Misskey.Channels['roleTimeline']['params']).roleId } :
 			{};
 
+		const noteUri = `https://a.test/notes/${note!.id}`;
+		const fetchNoteInB = async () => (await (bob.client.request as Request)(endpoint, params))
+			.filter(({ uri }) => uri === noteUri).pop();
+
 		await sleep();
-		const notes = await (bob.client.request as Request)(endpoint, params);
-		const noteInB = notes.filter(({ uri }) => uri === `https://a.test/notes/${note!.id}`).pop();
+		// 届かないはずのケースは待っても意味がないので 1 回だけ取得する
+		const noteInB = expect
+			? await vi.waitFor(async () => {
+				const noteInB = await fetchNoteInB();
+				strictEqual(noteInB != null, true);
+				return noteInB!;
+			}, WAIT_FOR_FEDERATION)
+			: await fetchNoteInB();
 		const endpointFired = noteInB != null;
 		strictEqual(endpointFired, expect);
 
@@ -78,10 +88,10 @@ describe('Timeline', () => {
 			);
 			strictEqual(streamingFired, true);
 
-			await sleep();
-			const notes = await (bob.client.request as Request)(endpoint, params);
-			const endpointFired = notes.every(({ uri }) => uri !== `https://a.test/notes/${note!.id}`);
-			strictEqual(endpointFired, true);
+			await vi.waitFor(async () => {
+				const endpointFired = await fetchNoteInB() == null;
+				strictEqual(endpointFired, true);
+			}, WAIT_FOR_FEDERATION);
 		}
 	}
 

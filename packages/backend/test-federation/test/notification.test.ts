@@ -1,6 +1,6 @@
 import { describe, test, beforeAll, afterAll } from 'vitest';
 import * as Misskey from 'misskey-js';
-import { assertNotificationReceived, createAccount, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
+import { assertNotificationReceived, createAccount, type LoginUser, resolveRemoteNote, resolveRemoteUser, waitForFollowing } from './utils.js';
 
 describe('Notification', () => {
 	let alice: LoginUser, bob: LoginUser;
@@ -28,7 +28,7 @@ describe('Notification', () => {
 			);
 
 			await bob.client.request('following/delete', { userId: aliceInB.id });
-			await sleep();
+			await waitForFollowing(bob, 0);
 		});
 
 		test('Get notification when get followed', async () => {
