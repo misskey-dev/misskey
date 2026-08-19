@@ -38,6 +38,7 @@ type ValueMeta = Partial<{
 	sync: boolean;
 	// TODO: デバイスの時計がずれていた場合に不具合のもとになるため、対策を考える
 	modifiedAt?: number; // 設定値を変更した日時。同期した日時などではない。つまり別のデバイスでA日に変更したものをB日に同期して取得したとしてもmodifiedAtはA日である必要がある
+	syncModifiedAt?: number; // syncを変更した日時。設定値のmodifiedAtとは独立して管理する(syncの変更をmodifiedAtに反映すると状況によっては古い設定値で新しい設定値が上書きされる可能性があるため)
 	deleted: boolean; // 削除済みの設定値を同期時に他のデバイスに伝播させるためのtombstone
 }>;
 
@@ -216,9 +217,18 @@ export function mergeProfiles(a: PreferencesProfile, b: PreferencesProfile): Pre
 				mergedRecords.push(bRecord);
 			} else {
 				const aRecord = mergedRecords[existingIndex];
-				if ((bRecord[2]?.modifiedAt ?? 0) > (aRecord[2]?.modifiedAt ?? 0)) {
-					mergedRecords[existingIndex] = bRecord;
-				}
+				const valueRecord = (bRecord[2]?.modifiedAt ?? 0) > (aRecord[2]?.modifiedAt ?? 0) ? bRecord : aRecord;
+				const syncRecord = (bRecord[2]?.syncModifiedAt ?? 0) > (aRecord[2]?.syncModifiedAt ?? 0) ? bRecord : aRecord;
+
+				mergedRecords[existingIndex] = [
+					valueRecord[0],
+					valueRecord[1],
+					{
+						...valueRecord[2],
+						sync: syncRecord[2]?.sync,
+						syncModifiedAt: syncRecord[2]?.syncModifiedAt,
+					},
+				];
 			}
 		}
 
@@ -610,6 +620,7 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 		done({ success: true });
 
 		record[2].sync = true;
+		record[2].syncModifiedAt = Date.now();
 		this.save();
 
 		return { enabled: true };
@@ -619,7 +630,8 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 		if (!this.isSyncEnabled(key)) return;
 
 		const record = this.getMatchedRecordOf(key);
-		delete record[2].sync;
+		record[2].sync = false;
+		record[2].syncModifiedAt = Date.now();
 		this.save();
 	}
 
