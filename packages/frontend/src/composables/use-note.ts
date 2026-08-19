@@ -37,6 +37,7 @@ import { notePage } from '@/filters/note.js';
 import type { DI as DIType } from '@/di.js';
 import type { ExtractInjectedType } from '@/types/misc.js';
 import type { MenuItem } from '@/types/menu.js';
+import type { WordMuteResult } from '@/utility/check-word-mute.js';
 
 export interface UseNoteProps {
 	note: Misskey.entities.Note;
@@ -66,7 +67,7 @@ export function checkNoteWordMute(
 	noteToCheck: Misskey.entities.Note,
 	user: typeof $i,
 	mutedWords: Array<string | string[]> | null,
-): Array<string | string[]> | false {
+): WordMuteResult {
 	if (mutedWords != null) {
 		const result = checkWordMute(noteToCheck, user, mutedWords);
 		if (Array.isArray(result)) return result;
