@@ -54,11 +54,11 @@ export class UserKeypairService implements OnApplicationShutdown {
 
 		// migrate PKCS#1 => PKCS#8. legacy misskey generated PKCS#1 but slacc does not accept PKCS#8
 		if (keyPair.privateKey.contains('-----BEGIN RSA PRIVATE KEY-----')) {
-			const pkcs8Key = crypto.createPrivateKey({ key: keyPair.privateKey, format: 'pem', type: 'pkcs1' }).export({ format: 'pem', type: 'pkcs8' });
+			const pkcs8Key = nodeCrypto.createPrivateKey({ key: keyPair.privateKey, format: 'pem', type: 'pkcs1' }).export({ format: 'pem', type: 'pkcs8' });
 			keyPair.privateKey = pkcs8Key;
 			void this.userKeypairsRepository.update(userId, { privateKey: pkcs8Key });
 		}
 
-		return keyPair
+		return keyPair;
 	}
 }
