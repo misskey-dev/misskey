@@ -73,10 +73,12 @@ function onMockToggleReaction(emoji: string, count: number) {
 	emit('mockUpdateMyReaction', emoji, (count - _reactions.value[i][1]));
 }
 
+const remoteReactionRegex = /@\w/;
+
 function canReact(reaction: string) {
 	if (!$i) return false;
 	// TODO: CheckPermissions
-	return !reaction.match(/@\w/) && (customEmojisMap.has(reaction) || isSupportedEmoji(reaction));
+	return !remoteReactionRegex.test(reaction) && (customEmojisMap.has(reaction) || isSupportedEmoji(reaction));
 }
 
 watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
@@ -91,25 +93,32 @@ watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) =
 		}
 	}
 
-	const newReactionsNames = newReactions.map(([x]) => x);
+	const sorted = Object.entries(newSource);
+	if (prefer.s.showAvailableReactionsFirstInNote) {
+		// ソートの比較関数内で評価すると同じ絵文字に対して何度も実行されるため、事前に1回だけ評価しておく
+		const canReactCache = new Map<string, boolean>();
+		for (const [emoji] of sorted) {
+			canReactCache.set(emoji, canReact(emoji));
+		}
+		sorted.sort(([emojiA, countA], [emojiB, countB]) => {
+			const canReactA = canReactCache.get(emojiA)!;
+			const canReactB = canReactCache.get(emojiB)!;
+			if (canReactA !== canReactB) return canReactA ? -1 : 1;
+			return countB - countA;
+		});
+	} else {
+		sorted.sort(([, countA], [, countB]) => countB - countA);
+	}
+
+	const newReactionsNames = new Set(newReactions.map(([x]) => x));
 	newReactions = [
 		...newReactions,
-		...Object.entries(newSource)
-			.sort(([emojiA, countA], [emojiB, countB]) => {
-				if (prefer.s.showAvailableReactionsFirstInNote) {
-					if (!canReact(emojiA) && canReact(emojiB)) return 1;
-					if (canReact(emojiA) && !canReact(emojiB)) return -1;
-					return countB - countA;
-				} else {
-					return countB - countA;
-				}
-			})
-			.filter(([y], i) => i < maxNumber && !newReactionsNames.includes(y)),
+		...sorted.filter(([y], i) => i < maxNumber && !newReactionsNames.has(y)),
 	];
 
 	newReactions = newReactions.slice(0, props.maxNumber);
 
-	if (props.myReaction && !newReactions.map(([x]) => x).includes(props.myReaction)) {
+	if (props.myReaction && !newReactions.some(([x]) => x === props.myReaction)) {
 		newReactions.push([props.myReaction, newSource[props.myReaction]]);
 	}
 
