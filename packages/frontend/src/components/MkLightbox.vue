@@ -30,6 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:ref="(comp) => { items.set(i, comp as InstanceType<typeof XItem>); }"
 						v-model:pixelatedZoom="pixelatedZoom"
 						:content="content"
+						:user="user"
 						:initiallyRevealed="props.initiallyRevealedContentIds?.includes(content.id) ?? false"
 						:activated="activatedIndexes.has(i)"
 						@close="onItemClose"
@@ -50,6 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch, nextTick, onBeforeUnmount, onMounted, useTemplateRef } from 'vue';
+import * as Misskey from 'misskey-js';
 import XItem from './MkLightbox.item.vue';
 import type { Content } from './MkLightbox.item.vue';
 import type { Keymap } from '@/utility/hotkey.js';
@@ -62,6 +64,7 @@ const props = withDefaults(defineProps<{
 	defaultIndex?: number;
 	contents: Content[];
 	initiallyRevealedContentIds?: string[];
+	user?: Misskey.entities.User | null; // DriveFileのuserはnullになることがある。その場合に使用する所有者情報
 }>(), {
 });
 
