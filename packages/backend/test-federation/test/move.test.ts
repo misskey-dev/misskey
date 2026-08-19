@@ -1,6 +1,6 @@
 import { describe, test, beforeAll } from 'vitest';
 import assert, { strictEqual } from 'node:assert';
-import { createAccount, type LoginUser, sleep } from './utils.js';
+import { createAccount, type LoginUser, waitForFollowers, waitForFollowing } from './utils.js';
 
 describe('Move', () => {
 	test('Minimum move', async () => {
@@ -30,7 +30,9 @@ describe('Move', () => {
 			// Move @alice@a.test ==> @bob@b.test
 			await bob.client.request('i/update', { alsoKnownAs: [`@${alice.username}@a.test`] });
 			await alice.client.request('i/move', { moveToAccount: `@${bob.username}@b.test` });
-			await sleep();
+
+			await waitForFollowing(carol, 2);
+			await waitForFollowers(bob, 1);
 		});
 
 		test('Check from follower', async () => {
