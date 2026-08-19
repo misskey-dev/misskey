@@ -114,6 +114,11 @@ export function useNote(
 		for (const interruptor of noteViewInterruptors) {
 			try {
 				result = interruptor.handler(result!) as Misskey.entities.Note | null;
+
+				// nullになった場合（非表示）はこれ以上やることがないのでループを抜ける
+				if (result == null) {
+					break;
+				}
 			} catch (err) {
 				console.error(err);
 			}
@@ -121,7 +126,7 @@ export function useNote(
 		if (result == null) {
 			hideByPlugin = true;
 		} else {
-			rawNote = result as Misskey.entities.Note;
+			rawNote = result;
 		}
 	}
 
