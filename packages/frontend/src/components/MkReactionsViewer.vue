@@ -33,6 +33,7 @@ import * as Misskey from 'misskey-js';
 import { inject, watch, ref } from 'vue';
 import { TransitionGroup } from 'vue';
 import { isSupportedEmoji } from '@@/js/emojilist.js';
+import { getEmojiNameFromReaction } from '@@/js/emoji-name.js';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
@@ -74,12 +75,10 @@ function onMockToggleReaction(emoji: string, count: number) {
 }
 
 const remoteReactionRegex = /@\w/;
-const colonsRegex = /:/g;
-const localHostMarkRegex = /@\./;
 
 function canReact(reaction: string) {
 	if (!$i) return false;
-	const normalizedReaction = reaction.replace(colonsRegex, '').replace(localHostMarkRegex, '');
+	const normalizedReaction = getEmojiNameFromReaction(reaction);
 	// TODO: CheckPermissions
 	return !remoteReactionRegex.test(normalizedReaction) && (customEmojisMap.has(normalizedReaction) || isSupportedEmoji(normalizedReaction));
 }
