@@ -196,6 +196,7 @@ export function mergeProfiles(a: PreferencesProfile, b: PreferencesProfile): Pre
 		preferences: {},
 	} as PreferencesProfile;
 
+	// 片方にない設定項目を許容し、未知の設定項目も保持する
 	const keys = new Set([
 		...Object.keys(PREF_DEF),
 		...Object.keys(a.preferences),
