@@ -74,11 +74,14 @@ function onMockToggleReaction(emoji: string, count: number) {
 }
 
 const remoteReactionRegex = /@\w/;
+const colonsRegex = /:/g;
+const localHostMarkRegex = /@\./;
 
 function canReact(reaction: string) {
 	if (!$i) return false;
+	const normalizedReaction = reaction.replace(colonsRegex, '').replace(localHostMarkRegex, '');
 	// TODO: CheckPermissions
-	return !remoteReactionRegex.test(reaction) && (customEmojisMap.has(reaction) || isSupportedEmoji(reaction));
+	return !remoteReactionRegex.test(normalizedReaction) && (customEmojisMap.has(normalizedReaction) || isSupportedEmoji(normalizedReaction));
 }
 
 watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
