@@ -143,18 +143,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<MkButton v-if="storagePersistenceSupported && !storagePersisted" @click="enableStoragePersistence">{{ i18n.ts._settings.settingsPersistence_title }}</MkButton>
-
-		<SearchMarker :keywords="['profile', 'preferences']">
-			<MkFolder>
-				<template #icon><SearchIcon><i class="ti ti-cogs"></i></SearchIcon></template>
-				<template #label><SearchLabel>{{ i18n.ts.preferencesProfile }}</SearchLabel></template>
-
-				<div class="_buttons">
-					<MkButton @click="forceCloudBackup">{{ i18n.ts._preferencesBackup.forceBackup }}</MkButton>
-					<MkButton @click="forceCloudSync">{{ i18n.ts._preferencesBackup.forceSync }}</MkButton>
-				</div>
-			</MkFolder>
-		</SearchMarker>
 	</div>
 </SearchMarker>
 </template>
@@ -180,7 +168,6 @@ import MkRolePreview from '@/components/MkRolePreview.vue';
 import { signout } from '@/signout.js';
 import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
-import { cloudBackup, cloudSync } from '@/preferences/utility.js';
 
 const $i = ensureSignin();
 
@@ -235,16 +222,6 @@ function hideAllTips() {
 
 function readAllChatMessages() {
 	os.apiWithDialog('chat/read-all', {});
-}
-
-async function forceCloudBackup() {
-	await cloudBackup();
-	os.success();
-}
-
-async function forceCloudSync() {
-	await cloudSync();
-	os.success();
 }
 
 const headerActions = computed(() => []);
