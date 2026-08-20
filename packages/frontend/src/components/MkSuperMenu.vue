@@ -138,8 +138,6 @@ watch(searchQuery, (value) => {
 });
 
 function execSearch(value: string) {
-	console.log('execSearch', value);
-
 	const newResult: SearchResultItem[] = [];
 
 	const searchIndexItemById = searchIndexItemByIdComputed.value;
