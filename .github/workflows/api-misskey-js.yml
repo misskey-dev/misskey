@@ -6,6 +6,8 @@ on:
       - packages/misskey-js/**
       - .github/workflows/api-misskey-js.yml
   pull_request:
+    branches-ignore:
+      - master
     paths:
       - packages/misskey-js/**
       - .github/workflows/api-misskey-js.yml
