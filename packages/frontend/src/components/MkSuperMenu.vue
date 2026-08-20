@@ -96,7 +96,7 @@ export type SuperMenuDef = {
 
 <script lang="ts" setup>
 import { useTemplateRef, ref, watch, nextTick, computed, onUnmounted } from 'vue';
-import { debounce } from 'throttle-debounce';
+import { throttle } from 'throttle-debounce';
 import { getScrollContainer } from '@@/js/scroll.js';
 import type { SearchIndexItem } from '@/utility/inapp-search.js';
 import MkInput from '@/components/MkInput.vue';
@@ -121,6 +121,8 @@ type SearchResultItem = {
 
 initIntlString();
 
+const maxSearchResult = 20;
+
 const router = useRouter();
 const rootEl = useTemplateRef('rootEl');
 
@@ -136,6 +138,8 @@ watch(searchQuery, (value) => {
 });
 
 function execSearch(value: string) {
+	console.log('execSearch', value);
+
 	const newResult: SearchResultItem[] = [];
 
 	const searchIndexItemById = searchIndexItemByIdComputed.value;
@@ -171,6 +175,8 @@ function execSearch(value: string) {
 		const matchedIds = new Set<string>();
 
 		for (const item of items) {
+			if (matchedIds.size >= maxSearchResult) break;
+			if (matchedIds.has(item.id)) continue;
 			if (compareStringIncludes(item.label, value)) {
 				addSearchResult(item);
 				matchedIds.add(item.id);
@@ -178,6 +184,7 @@ function execSearch(value: string) {
 		}
 
 		for (const item of items) {
+			if (matchedIds.size >= maxSearchResult) break;
 			if (matchedIds.has(item.id)) continue;
 			if (item.keywords.some((x) => compareStringIncludes(x, value))) {
 				addSearchResult(item);
@@ -186,9 +193,11 @@ function execSearch(value: string) {
 		}
 
 		for (const item of items) {
+			if (matchedIds.size >= maxSearchResult) break;
 			if (matchedIds.has(item.id)) continue;
 			if (item.texts.some((x) => compareStringIncludes(x, value))) {
 				addSearchResult(item);
+				matchedIds.add(item.id);
 			}
 		}
 	}
@@ -196,10 +205,10 @@ function execSearch(value: string) {
 	searchResult.value = newResult;
 }
 
-const execSearchDebounced = debounce(150, execSearch);
+const execSearchThrottled = throttle(150, execSearch);
 
 onUnmounted(() => {
-	execSearchDebounced.cancel();
+	execSearchThrottled.cancel();
 });
 
 watch(rawSearchQuery, (value) => {
@@ -207,12 +216,12 @@ watch(rawSearchQuery, (value) => {
 
 	if (value === '') {
 		// クリア時は即座にメニュー表示へ戻すため、保留中の検索も破棄する
-		execSearchDebounced.cancel();
+		execSearchThrottled.cancel({ upcomingOnly: true });
 		searchResult.value = [];
 		return;
 	}
 
-	execSearchDebounced(value);
+	execSearchThrottled(value);
 });
 
 function searchOnInput(ev: InputEvent) {
