@@ -64,7 +64,7 @@ export class NotificationService implements OnApplicationShutdown {
 
 		this.redisClient.set(`latestReadNotification:${userId}`, latestNotificationId);
 
-		if (force || latestReadNotificationId == null || (latestReadNotificationId < latestNotificationId)) {
+		if (force || latestReadNotificationId == null || (this.compareXListIds(latestReadNotificationId, latestNotificationId) < 0)) {
 			return this.postReadAllNotifications(userId);
 		}
 	}
@@ -189,7 +189,7 @@ export class NotificationService implements OnApplicationShutdown {
 		const interval = notification.type === 'test' ? 0 : 2000;
 		setTimeout(interval, 'unread notification', { signal: this.#shutdownController.signal }).then(async () => {
 			const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${notifieeId}`);
-			if (latestReadNotificationId && (latestReadNotificationId >= redisId)) return;
+			if (latestReadNotificationId && (this.compareXListIds(latestReadNotificationId, redisId) >= 0)) return;
 
 			this.globalEventService.publishMainStream(notifieeId, 'unreadNotification', packed);
 			this.pushNotificationService.pushNotification(notifieeId, 'notification', packed);
@@ -242,6 +242,16 @@ export class NotificationService implements OnApplicationShutdown {
 	@bindThis
 	public dispose(): void {
 		this.#shutdownController.abort();
+	}
+
+	// Redis Stream ID (`ms-seq`) を Redis 本体と同じ数値順で比較する。
+	// JS の文字列比較は同一 ms で seq の桁数が異なる ID の順序を誤る ("...-9" < "...-10" が false になる) ため使わないこと
+	private compareXListIds(a: string, b: string): number {
+		const [aMs = 0n, aSeq = 0n] = a.split('-').map(BigInt);
+		const [bMs = 0n, bSeq = 0n] = b.split('-').map(BigInt);
+		if (aMs !== bMs) return aMs < bMs ? -1 : 1;
+		if (aSeq !== bSeq) return aSeq < bSeq ? -1 : 1;
+		return 0;
 	}
 
 	private toXListId(id: string): string {

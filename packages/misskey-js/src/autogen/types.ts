@@ -4163,6 +4163,7 @@ export type components = {
             hasUnreadChatMessages: boolean;
             hasUnreadNotification: boolean;
             hasPendingReceivedFollowRequest: boolean;
+            /** @description Saturates at 100. The actual number of unread notifications may be larger. */
             unreadNotificationsCount: number;
             mutedWords: string[][];
             hardMutedWords: string[][];
