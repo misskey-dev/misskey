@@ -74,6 +74,11 @@ const BIN_COUNT = FFT_SIZE / 2;
 const MIN_FREQ = 20;
 const MAX_FREQ = 16000;
 
+/**
+ * 低域の傾き補正の倍率。1オクターブ上がるごとにこの値を掛ける。1より大きいと高域が持ち上がる
+ */
+const SPECTRUM_TILT_COEFFICIENT = 1.06;
+
 const BEAT_BAND_COUNT = 36;
 const BEAT_MIN_FREQ = 30;
 const BEAT_MAX_FREQ = 300;
@@ -116,6 +121,8 @@ const bandEnd = new Uint16Array(BAND_COUNT);
 /** ビート検出用の低域だけを参照する bin の範囲 */
 const beatBandStart = new Uint16Array(BEAT_BAND_COUNT);
 const beatBandEnd = new Uint16Array(BEAT_BAND_COUNT);
+/** 帯域ごとに掛ける傾き補正の倍率 */
+const bandTilt = new Float32Array(BAND_COUNT);
 /** 帯域ごとの生の振幅 (フレーム内の作業用) */
 const rawLevels = new Float32Array(BAND_COUNT);
 /** 帯域ごとの平滑化済み振幅 (0-1) */
@@ -140,6 +147,9 @@ function getAudioVisualizerBarWidth(canvasWidth: number, barCount: number, thick
 	return (canvasWidth / barCount) * thicknessFactor;
 }
 
+/**
+ * FFT の bin を帯域ごとにまとめる。低域は十分な分解能で刻めるよう、対数的に帯域を広げる
+ */
 function writeLogarithmicFrequencyBands(options: {
 	fftSize: number;
 	sampleRate: number;
@@ -164,11 +174,33 @@ function writeLogarithmicFrequencyBands(options: {
 	}
 }
 
+/**
+ * 帯域ごとの傾き補正の倍率をかける
+ */
+function writeSpectrumTilt(options: {
+	sampleRate: number;
+	minFrequency: number;
+	maxFrequency: number;
+	tilt: Float32Array;
+}) {
+	const bandCount = options.tilt.length;
+	const maxFrequency = Math.min(options.maxFrequency, options.sampleRate / 2);
+	const frequencyRatio = maxFrequency / options.minFrequency;
+	const pivotFrequency = Math.sqrt(options.minFrequency * maxFrequency);
+
+	for (let i = 0; i < bandCount; i++) {
+		const centerFrequency = options.minFrequency * Math.pow(frequencyRatio, (i + 0.5) / bandCount);
+		options.tilt[i] = Math.pow(SPECTRUM_TILT_COEFFICIENT, Math.log2(centerFrequency / pivotFrequency));
+	}
+}
+
 function writeFrequencyBandLevels(options: {
 	frequencyData: Uint8Array;
 	starts: Uint16Array;
 	ends: Uint16Array;
 	levels: Float32Array;
+	/** 帯域ごとに掛ける倍率 (傾き補正が要らない用途では省略する) */
+	tilt?: Float32Array;
 }) {
 	const bandCount = options.levels.length;
 
@@ -181,7 +213,8 @@ function writeFrequencyBandLevels(options: {
 			if (value > max) max = value;
 		}
 		const binCount = options.ends[i] - options.starts[i];
-		options.levels[i] = (max * 0.7 + (total / binCount) * 0.3) / 255;
+		const level = (max * 0.7 + (total / binCount) * 0.3) / 255;
+		options.levels[i] = options.tilt == null ? level : Math.min(level * options.tilt[i], 1);
 	}
 
 	let previous = options.levels[0];
@@ -216,6 +249,13 @@ function setupBands(sampleRate: number) {
 		starts: bandStart,
 		ends: bandEnd,
 	});
+	writeSpectrumTilt({
+		sampleRate,
+		minFrequency: MIN_FREQ,
+		maxFrequency: MAX_FREQ,
+		tilt: bandTilt,
+	});
+	// ビート検出は低域を見るのが目的なので、こちらには傾き補正を掛けない
 	writeLogarithmicFrequencyBands({
 		fftSize: FFT_SIZE,
 		sampleRate,
@@ -498,12 +538,13 @@ function analyse(dt: number) {
 	if (analyserNode == null) return;
 	analyserNode.getByteFrequencyData(freqArray);
 
-	// 最大値寄りの帯域値を作り、隣接帯域どうしをならして山をなだらかにする
+	// 最大値寄りの帯域値を作り、低域寄りの傾きを補正してから、隣接帯域どうしをならして山をなだらかにする
 	const waveFrame = writeFrequencyBandLevels({
 		frequencyData: freqArray,
 		starts: bandStart,
 		ends: bandEnd,
 		levels: rawLevels,
+		tilt: bandTilt,
 	});
 
 	// 無音ゲート: 自動レンジ調整は微小なノイズも最大まで引き伸ばしてしまうので、
