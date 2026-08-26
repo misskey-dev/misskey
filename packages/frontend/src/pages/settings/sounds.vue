@@ -116,6 +116,10 @@ async function updated(type: keyof typeof sounds.value, sound: { type: SoundType
 }
 
 function reset() {
+	notUseSound.value = getInitialPrefValue('sound.notUseSound');
+	useSoundOnlyWhenActive.value = getInitialPrefValue('sound.useSoundOnlyWhenActive');
+	masterVolume.value = getInitialPrefValue('sound.masterVolume');
+
 	for (const sound of Object.keys(sounds.value) as Array<keyof typeof sounds.value>) {
 		const v = getInitialPrefValue(`sound.on.${sound}`);
 		prefer.commit(`sound.on.${sound}`, v);
