@@ -14,13 +14,13 @@
 		"@types/node": "26.2.0",
 		"@typescript-eslint/eslint-plugin": "8.67.0",
 		"@typescript-eslint/parser": "8.67.0",
-		"rollup": "4.62.4"
+		"rollup": "4.62.5"
 	},
 	"dependencies": {
 		"i18n": "workspace:*",
-		"magic-string": "1.1.0",
+		"magic-string": "1.2.2",
 		"oxc-walker": "1.1.1",
-		"rolldown": "1.2.3",
-		"vite": "8.2.1"
+		"rolldown": "1.2.5",
+		"vite": "8.2.2"
 	}
 }
