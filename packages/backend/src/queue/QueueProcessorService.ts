@@ -9,6 +9,7 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { OperationContextService } from '@/core/OperationContextService.js';
 import { TelemetryService } from '@/core/telemetry/TelemetryService.js';
 import { CheckModeratorsActivityProcessorService } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 import { runQueueJob } from './queue-job-runner.js';
@@ -94,6 +95,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private config: Config,
 
 		private queueLoggerService: QueueLoggerService,
+		private operationContextService: OperationContextService,
 		private telemetryService: TelemetryService,
 		private userWebhookDeliverProcessorService: UserWebhookDeliverProcessorService,
 		private systemWebhookDeliverProcessorService: SystemWebhookDeliverProcessorService,
@@ -179,18 +181,19 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			const logger = this.logger.createSubLogger('system');
 
 			this.systemQueueWorker = new Bull.Worker(QUEUE.SYSTEM, (job) => {
-				return runQueueJob(
-					this.telemetryService,
-					'Queue: System: ' + job.name,
-					() => processer(job) as Promise<void>,
-					err => {
+				return runQueueJob({
+					operationContext: { mode: 'none' },
+					telemetryService: this.telemetryService,
+					spanName: 'Queue: System: ' + job.name,
+					processJob: () => processer(job) as Promise<void>,
+					onError: err => {
 						logger.error(`failed(${err.name}: ${err.message}) id=${job.id}`, { job: renderJob(job), e: renderError(err) });
 						this.telemetryService.captureMessage(`Queue: System: ${job.name}: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					},
-				);
+				});
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.SYSTEM),
 				autorun: false,
@@ -233,18 +236,19 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			const logger = this.logger.createSubLogger('db');
 
 			this.dbQueueWorker = new Bull.Worker(QUEUE.DB, (job) => {
-				return runQueueJob(
-					this.telemetryService,
-					'Queue: DB: ' + job.name,
-					() => processer(job),
-					err => {
+				return runQueueJob({
+					operationContext: { mode: 'none' },
+					telemetryService: this.telemetryService,
+					spanName: 'Queue: DB: ' + job.name,
+					processJob: () => processer(job),
+					onError: err => {
 						logger.error(`failed(${err.name}: ${err.message}) id=${job.id}`, { job: renderJob(job), e: renderError(err) });
 						this.telemetryService.captureMessage(`Queue: DB: ${job.name}: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					},
-				);
+				});
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.DB),
 				autorun: false,
@@ -263,18 +267,19 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			const logger = this.logger.createSubLogger('deliver');
 
 			this.deliverQueueWorker = new Bull.Worker(QUEUE.DELIVER, (job) => {
-				return runQueueJob(
-					this.telemetryService,
-					'Queue: Deliver',
-					() => this.deliverProcessorService.process(job),
-					err => {
+				return runQueueJob({
+					operationContext: { mode: 'none' },
+					telemetryService: this.telemetryService,
+					spanName: 'Queue: Deliver',
+					processJob: () => this.deliverProcessorService.process(job),
+					onError: err => {
 						logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} to=${job.data.to}`, { e: renderError(err) });
 						this.telemetryService.captureMessage(`Queue: Deliver: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					},
-				);
+				});
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.DELIVER),
 				autorun: false,
@@ -301,11 +306,13 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			const logger = this.logger.createSubLogger('inbox');
 
 			this.inboxQueueWorker = new Bull.Worker(QUEUE.INBOX, (job) => {
-				return runQueueJob(
-					this.telemetryService,
-					'Queue: Inbox',
-					() => this.inboxProcessorService.process(job),
-					err => {
+				return runQueueJob({
+					// Inboxは1 Activity単位の短命処理で、NoteCreateのOperation境界として扱う。
+					operationContext: { mode: 'per-job', service: this.operationContextService },
+					telemetryService: this.telemetryService,
+					spanName: 'Queue: Inbox',
+					processJob: () => this.inboxProcessorService.process(job),
+					onError: err => {
 						const activityId = job.data.activity ? job.data.activity.id : 'none';
 						logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} activity=${activityId}`, { job: renderJob(job), e: renderError(err) });
 						this.telemetryService.captureMessage(`Queue: Inbox: ${err.name}: ${err.message}`, {
@@ -313,7 +320,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 							extra: { job, err },
 						});
 					},
-				);
+				});
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.INBOX),
 				autorun: false,
@@ -340,18 +347,19 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			const logger = this.logger.createSubLogger('user-webhook');
 
 			this.userWebhookDeliverQueueWorker = new Bull.Worker(QUEUE.USER_WEBHOOK_DELIVER, (job) => {
-				return runQueueJob(
-					this.telemetryService,
-					'Queue: UserWebhookDeliver',
-					() => this.userWebhookDeliverProcessorService.process(job),
-					err => {
+				return runQueueJob({
+					operationContext: { mode: 'none' },
+					telemetryService: this.telemetryService,
+					spanName: 'Queue: UserWebhookDeliver',
+					processJob: () => this.userWebhookDeliverProcessorService.process(job),
+					onError: err => {
 						logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} to=${job.data.to}`, { e: renderError(err) });
 						this.telemetryService.captureMessage(`Queue: UserWebhookDeliver: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					},
-				);
+				});
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.USER_WEBHOOK_DELIVER),
 				autorun: false,
@@ -378,18 +386,19 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			const logger = this.logger.createSubLogger('system-webhook');
 
 			this.systemWebhookDeliverQueueWorker = new Bull.Worker(QUEUE.SYSTEM_WEBHOOK_DELIVER, (job) => {
-				return runQueueJob(
-					this.telemetryService,
-					'Queue: SystemWebhookDeliver',
-					() => this.systemWebhookDeliverProcessorService.process(job),
-					err => {
+				return runQueueJob({
+					operationContext: { mode: 'none' },
+					telemetryService: this.telemetryService,
+					spanName: 'Queue: SystemWebhookDeliver',
+					processJob: () => this.systemWebhookDeliverProcessorService.process(job),
+					onError: err => {
 						logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} to=${job.data.to}`, { e: renderError(err) });
 						this.telemetryService.captureMessage(`Queue: SystemWebhookDeliver: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					},
-				);
+				});
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.SYSTEM_WEBHOOK_DELIVER),
 				autorun: false,
@@ -425,18 +434,19 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			const logger = this.logger.createSubLogger('relationship');
 
 			this.relationshipQueueWorker = new Bull.Worker(QUEUE.RELATIONSHIP, (job) => {
-				return runQueueJob(
-					this.telemetryService,
-					'Queue: Relationship: ' + job.name,
-					() => processer(job),
-					err => {
+				return runQueueJob({
+					operationContext: { mode: 'none' },
+					telemetryService: this.telemetryService,
+					spanName: 'Queue: Relationship: ' + job.name,
+					processJob: () => processer(job),
+					onError: err => {
 						logger.error(`failed(${err.name}: ${err.message}) id=${job.id}`, { job: renderJob(job), e: renderError(err) });
 						this.telemetryService.captureMessage(`Queue: Relationship: ${job.name}: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					},
-				);
+				});
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.RELATIONSHIP),
 				autorun: false,
@@ -467,18 +477,19 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			const logger = this.logger.createSubLogger('objectStorage');
 
 			this.objectStorageQueueWorker = new Bull.Worker(QUEUE.OBJECT_STORAGE, (job) => {
-				return runQueueJob(
-					this.telemetryService,
-					'Queue: ObjectStorage: ' + job.name,
-					() => processer(job) as Promise<void>,
-					err => {
+				return runQueueJob({
+					operationContext: { mode: 'none' },
+					telemetryService: this.telemetryService,
+					spanName: 'Queue: ObjectStorage: ' + job.name,
+					processJob: () => processer(job) as Promise<void>,
+					onError: err => {
 						logger.error(`failed(${err.name}: ${err.message}) id=${job.id}`, { job: renderJob(job), e: renderError(err) });
 						this.telemetryService.captureMessage(`Queue: ObjectStorage: ${job.name}: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					},
-				);
+				});
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.OBJECT_STORAGE),
 				autorun: false,
@@ -498,18 +509,19 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			const logger = this.logger.createSubLogger('ended-poll-notification');
 
 			this.endedPollNotificationQueueWorker = new Bull.Worker(QUEUE.ENDED_POLL_NOTIFICATION, (job) => {
-				return runQueueJob(
-					this.telemetryService,
-					'Queue: EndedPollNotification',
-					() => this.endedPollNotificationProcessorService.process(job),
-					err => {
+				return runQueueJob({
+					operationContext: { mode: 'none' },
+					telemetryService: this.telemetryService,
+					spanName: 'Queue: EndedPollNotification',
+					processJob: () => this.endedPollNotificationProcessorService.process(job),
+					onError: err => {
 						logger.error(`failed(${err.name}: ${err.message}) id=${job.id}`, { job: renderJob(job), e: renderError(err) });
 						this.telemetryService.captureMessage(`Queue: EndedPollNotification: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					},
-				);
+				});
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.ENDED_POLL_NOTIFICATION),
 				autorun: false,
@@ -522,18 +534,20 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			const logger = this.logger.createSubLogger('post-scheduled-note');
 
 			this.postScheduledNoteQueueWorker = new Bull.Worker(QUEUE.POST_SCHEDULED_NOTE, (job) => {
-				return runQueueJob(
-					this.telemetryService,
-					'Queue: PostScheduledNote',
-					() => this.postScheduledNoteProcessorService.process(job),
-					err => {
+				return runQueueJob({
+					// 予約投稿は1 Note単位の短命処理で、NoteCreateのOperation境界として扱う。
+					operationContext: { mode: 'per-job', service: this.operationContextService },
+					telemetryService: this.telemetryService,
+					spanName: 'Queue: PostScheduledNote',
+					processJob: () => this.postScheduledNoteProcessorService.process(job),
+					onError: err => {
 						logger.error(`failed(${err.name}: ${err.message}) id=${job.id}`, { job: renderJob(job), e: renderError(err) });
 						this.telemetryService.captureMessage(`Queue: PostScheduledNote: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					},
-				);
+				});
 			}, {
 				...baseWorkerOptions(this.config, QUEUE.POST_SCHEDULED_NOTE),
 				autorun: false,

@@ -30,6 +30,7 @@ import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { NotificationService } from '@/core/NotificationService.js';
+import { defineOperationMemo, OperationContextService } from '@/core/OperationContextService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
 // misskey-js の rolePolicies と同期すべし
@@ -123,6 +124,28 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	watermarkAvailable: true,
 };
 
+const anonymousUserPoliciesKey = Symbol('RoleService.anonymousUserPolicies');
+const rolesMemo = defineOperationMemo<void, readonly MiRole[]>(
+	'RoleService.roles',
+	() => 'roles',
+);
+const userAssignsMemo = defineOperationMemo<MiUser['id'], readonly MiRoleAssignment[]>(
+	'RoleService.userAssigns',
+	userId => userId,
+);
+const userRolesMemo = defineOperationMemo<MiUser['id'], readonly MiRole[]>(
+	'RoleService.userRoles',
+	userId => userId,
+);
+const userBadgeRolesMemo = defineOperationMemo<MiUser['id'], readonly MiRole[]>(
+	'RoleService.userBadgeRoles',
+	userId => userId,
+);
+const userPoliciesMemo = defineOperationMemo<MiUser['id'] | null, Readonly<RolePolicies>>(
+	'RoleService.userPolicies',
+	userId => userId ?? anonymousUserPoliciesKey,
+);
+
 @Injectable()
 export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	private rolesCache: MemorySingleCache<MiRole[]>;
@@ -156,6 +179,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		@Inject(DI.roleAssignmentsRepository)
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
 
+		private operationContextService: OperationContextService,
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
@@ -174,6 +198,65 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
+	private applyRoleChange(role: MiRole, mode: 'create' | 'update'): void {
+		const cached = this.rolesCache.get();
+		if (cached == null) return;
+
+		const index = cached.findIndex(candidate => candidate.id === role.id);
+		if (index === -1) {
+			if (mode === 'create') cached.push(role);
+			return;
+		}
+
+		cached[index] = role;
+		for (let i = cached.length - 1; i > index; i--) {
+			if (cached[i].id === role.id) cached.splice(i, 1);
+		}
+	}
+
+	@bindThis
+	private applyRoleDelete(roleId: MiRole['id']): void {
+		const cached = this.rolesCache.get();
+		if (cached == null) return;
+
+		for (let i = cached.length - 1; i >= 0; i--) {
+			if (cached[i].id === roleId) cached.splice(i, 1);
+		}
+	}
+
+	@bindThis
+	private applyUserRoleAssignmentUpsert(assignment: MiRoleAssignment): void {
+		const cached = this.roleAssignmentByUserIdCache.get(assignment.userId);
+		if (cached == null) return;
+
+		const normalizedAssignment = {
+			...assignment,
+			user: assignment.user ?? null,
+			role: assignment.role ?? null,
+		};
+		const index = cached.findIndex(candidate => candidate.id === assignment.id);
+		if (index === -1) {
+			cached.push(normalizedAssignment);
+			return;
+		}
+
+		cached[index] = normalizedAssignment;
+		for (let i = cached.length - 1; i > index; i--) {
+			if (cached[i].id === assignment.id) cached.splice(i, 1);
+		}
+	}
+
+	@bindThis
+	private applyUserRoleAssignmentDelete(userId: MiUser['id'], assignmentId: MiRoleAssignment['id']): void {
+		const cached = this.roleAssignmentByUserIdCache.get(userId);
+		if (cached == null) return;
+
+		for (let i = cached.length - 1; i >= 0; i--) {
+			if (cached[i].id === assignmentId) cached.splice(i, 1);
+		}
+	}
+
+	@bindThis
 	private async onMessage(_: string, data: string): Promise<void> {
 		const obj = JSON.parse(data);
 
@@ -181,54 +264,36 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
 			switch (type) {
 				case 'roleCreated': {
-					const cached = this.rolesCache.get();
-					if (cached) {
-						cached.push({
-							...body,
-							updatedAt: new Date(body.updatedAt),
-							lastUsedAt: new Date(body.lastUsedAt),
-						});
-					}
+					this.applyRoleChange({
+						...body,
+						updatedAt: new Date(body.updatedAt),
+						lastUsedAt: new Date(body.lastUsedAt),
+					}, 'create');
 					break;
 				}
 				case 'roleUpdated': {
-					const cached = this.rolesCache.get();
-					if (cached) {
-						const i = cached.findIndex(x => x.id === body.id);
-						if (i > -1) {
-							cached[i] = {
-								...body,
-								updatedAt: new Date(body.updatedAt),
-								lastUsedAt: new Date(body.lastUsedAt),
-							};
-						}
-					}
+					this.applyRoleChange({
+						...body,
+						updatedAt: new Date(body.updatedAt),
+						lastUsedAt: new Date(body.lastUsedAt),
+					}, 'update');
 					break;
 				}
 				case 'roleDeleted': {
-					const cached = this.rolesCache.get();
-					if (cached) {
-						this.rolesCache.set(cached.filter(x => x.id !== body.id));
-					}
+					this.applyRoleDelete(body.id);
 					break;
 				}
 				case 'userRoleAssigned': {
-					const cached = this.roleAssignmentByUserIdCache.get(body.userId);
-					if (cached) {
-						cached.push({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
-							...body,
-							expiresAt: body.expiresAt ? new Date(body.expiresAt) : null,
-							user: null, // joinなカラムは通常取ってこないので
-							role: null, // joinなカラムは通常取ってこないので
-						});
-					}
+					this.applyUserRoleAssignmentUpsert({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
+						...body,
+						expiresAt: body.expiresAt ? new Date(body.expiresAt) : null,
+						user: null, // joinなカラムは通常取ってこないので
+						role: null, // joinなカラムは通常取ってこないので
+					});
 					break;
 				}
 				case 'userRoleUnassigned': {
-					const cached = this.roleAssignmentByUserIdCache.get(body.userId);
-					if (cached) {
-						this.roleAssignmentByUserIdCache.set(body.userId, cached.filter(x => x.id !== body.id));
-					}
+					this.applyUserRoleAssignmentDelete(body.userId, body.id);
 					break;
 				}
 				default:
@@ -327,144 +392,204 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async getRoles() {
-		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
-		return roles;
+	private getRolesInternal(): Promise<readonly MiRole[]> {
+		return this.operationContextService.memoizeIfActive(rolesMemo, undefined, async () => {
+			const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
+			return [...roles];
+		});
 	}
 
 	@bindThis
-	public async getUserAssigns(userId: MiUser['id']) {
-		const now = Date.now();
-		let assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
-		// 期限切れのロールを除外
-		assigns = assigns.filter(a => a.expiresAt == null || (a.expiresAt.getTime() > now));
-		return assigns;
+	public async getRoles(): Promise<MiRole[]> {
+		return [...await this.getRolesInternal()];
 	}
 
 	@bindThis
-	public async getUserRoles(userId: MiUser['id']) {
-		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
-		const assigns = await this.getUserAssigns(userId);
-		const assignedRoles = roles.filter(r => assigns.map(x => x.roleId).includes(r.id));
-		const user = roles.some(r => r.target === 'conditional') ? await this.cacheService.findUserById(userId) : null;
-		const matchedCondRoles = roles.filter(r => r.target === 'conditional' && this.evalCond(user!, assignedRoles, r.condFormula));
-		return [...assignedRoles, ...matchedCondRoles];
+	private getUserAssignsInternal(userId: MiUser['id']): Promise<readonly MiRoleAssignment[]> {
+		return this.operationContextService.memoizeIfActive(userAssignsMemo, userId, async () => {
+			const now = Date.now();
+			const assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
+			// 期限切れのロールを除外
+			return assigns.filter(a => a.expiresAt == null || (a.expiresAt.getTime() > now));
+		});
+	}
+
+	@bindThis
+	public async getUserAssigns(userId: MiUser['id']): Promise<MiRoleAssignment[]> {
+		return [...await this.getUserAssignsInternal(userId)];
+	}
+
+	@bindThis
+	private getUserRolesInternal(userId: MiUser['id']): Promise<readonly MiRole[]> {
+		return this.operationContextService.memoizeIfActive(userRolesMemo, userId, async () => {
+			const roles = await this.getRolesInternal();
+			const assigns = await this.getUserAssignsInternal(userId);
+			const assignedRoleIds = new Set(assigns.map(assignment => assignment.roleId));
+			const assignedRoles = roles.filter(role => assignedRoleIds.has(role.id));
+			const user = roles.some(role => role.target === 'conditional') ? await this.cacheService.findUserById(userId) : null;
+			const matchedCondRoles = roles.filter(role => role.target === 'conditional' && this.evalCond(user!, assignedRoles, role.condFormula));
+			return [...assignedRoles, ...matchedCondRoles];
+		});
+	}
+
+	@bindThis
+	public async getUserRoles(userId: MiUser['id']): Promise<MiRole[]> {
+		return [...await this.getUserRolesInternal(userId)];
 	}
 
 	/**
 	 * 指定ユーザーのバッジロール一覧取得
 	 */
 	@bindThis
-	public async getUserBadgeRoles(userId: MiUser['id']) {
-		const now = Date.now();
-		let assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
-		// 期限切れのロールを除外
-		assigns = assigns.filter(a => a.expiresAt == null || (a.expiresAt.getTime() > now));
-		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
-		const assignedRoles = roles.filter(r => assigns.map(x => x.roleId).includes(r.id));
-		const assignedBadgeRoles = assignedRoles.filter(r => r.asBadge);
-		const badgeCondRoles = roles.filter(r => r.asBadge && (r.target === 'conditional'));
-		if (badgeCondRoles.length > 0) {
-			const user = roles.some(r => r.target === 'conditional') ? await this.cacheService.findUserById(userId) : null;
-			const matchedBadgeCondRoles = badgeCondRoles.filter(r => this.evalCond(user!, assignedRoles, r.condFormula));
-			return [...assignedBadgeRoles, ...matchedBadgeCondRoles];
-		} else {
-			return assignedBadgeRoles;
-		}
+	private getUserBadgeRolesInternal(userId: MiUser['id']): Promise<readonly MiRole[]> {
+		return this.operationContextService.memoizeIfActive(userBadgeRolesMemo, userId, async () => {
+			const assigns = await this.getUserAssignsInternal(userId);
+			const roles = await this.getRolesInternal();
+			const assignedRoleIds = new Set(assigns.map(assignment => assignment.roleId));
+			const assignedRoles = roles.filter(role => assignedRoleIds.has(role.id));
+			const assignedBadgeRoles = assignedRoles.filter(role => role.asBadge);
+			const badgeCondRoles = roles.filter(role => role.asBadge && role.target === 'conditional');
+			if (badgeCondRoles.length > 0) {
+				const user = await this.cacheService.findUserById(userId);
+				const matchedBadgeCondRoles = badgeCondRoles.filter(role => this.evalCond(user, assignedRoles, role.condFormula));
+				return [...assignedBadgeRoles, ...matchedBadgeCondRoles];
+			} else {
+				return assignedBadgeRoles;
+			}
+		});
+	}
+
+	@bindThis
+	public async getUserBadgeRoles(userId: MiUser['id']): Promise<MiRole[]> {
+		return [...await this.getUserBadgeRolesInternal(userId)];
+	}
+
+	@bindThis
+	private getUserPoliciesInternal(userId: MiUser['id'] | null): Promise<Readonly<RolePolicies>> {
+		return this.operationContextService.memoizeIfActive(userPoliciesMemo, userId, async () => {
+			// meta.policiesの変更はOperation中のスナップショットには反映しない。
+			// RoleService自身によるロール変更だけは、mutation側で明示的にこのmemoを破棄する。
+			const mergedBasePolicies = { ...DEFAULT_POLICIES, ...this.meta.policies };
+			const basePolicies = {
+				...mergedBasePolicies,
+				uploadableFileTypes: [...mergedBasePolicies.uploadableFileTypes],
+			};
+
+			if (userId == null) return basePolicies;
+
+			const roles = await this.getUserRolesInternal(userId);
+
+			function calc<T extends keyof RolePolicies>(name: T, aggregate: (values: RolePolicies[T][]) => RolePolicies[T]) {
+				if (roles.length === 0) return aggregate([basePolicies[name]]);
+
+				const policies = roles.map(role => role.policies[name] ?? { priority: 0, useDefault: true });
+
+				const p2 = policies.filter(policy => policy.priority === 2);
+				if (p2.length > 0) return aggregate(p2.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
+
+				const p1 = policies.filter(policy => policy.priority === 1);
+				if (p1.length > 0) return aggregate(p1.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
+
+				return aggregate(policies.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
+			}
+
+			function aggregateChatAvailability(vs: RolePolicies['chatAvailability'][]) {
+				if (vs.some(v => v === 'available')) return 'available';
+				if (vs.some(v => v === 'readonly')) return 'readonly';
+				return 'unavailable';
+			}
+
+			const serverMaxFileSizeMb = Math.floor(this.config.maxFileSize / (1024 * 1024));
+
+			return {
+				gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
+				ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
+				canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
+				mentionLimit: calc('mentionLimit', vs => Math.max(...vs)),
+				canInvite: calc('canInvite', vs => vs.some(v => v === true)),
+				inviteLimit: calc('inviteLimit', vs => Math.max(...vs)),
+				inviteLimitCycle: calc('inviteLimitCycle', vs => Math.max(...vs)),
+				inviteExpirationTime: calc('inviteExpirationTime', vs => Math.max(...vs)),
+				canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
+				canManageAvatarDecorations: calc('canManageAvatarDecorations', vs => vs.some(v => v === true)),
+				canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
+				canSearchUsers: calc('canSearchUsers', vs => vs.some(v => v === true)),
+				canUseTranslator: calc('canUseTranslator', vs => vs.some(v => v === true)),
+				canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
+				canCreateChannel: calc('canCreateChannel', vs => vs.some(v => v === true)),
+				driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
+				maxFileSizeMb: calc('maxFileSizeMb', vs => Math.min(serverMaxFileSizeMb, Math.max(...vs))),
+				alwaysMarkNsfw: calc('alwaysMarkNsfw', vs => vs.some(v => v === true)),
+				canUpdateBioMedia: calc('canUpdateBioMedia', vs => vs.some(v => v === true)),
+				pinLimit: calc('pinLimit', vs => Math.max(...vs)),
+				antennaLimit: calc('antennaLimit', vs => Math.max(...vs)),
+				wordMuteLimit: calc('wordMuteLimit', vs => Math.max(...vs)),
+				webhookLimit: calc('webhookLimit', vs => Math.max(...vs)),
+				clipLimit: calc('clipLimit', vs => Math.max(...vs)),
+				noteEachClipsLimit: calc('noteEachClipsLimit', vs => Math.max(...vs)),
+				userListLimit: calc('userListLimit', vs => Math.max(...vs)),
+				userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
+				rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
+				avatarDecorationLimit: calc('avatarDecorationLimit', vs => Math.max(...vs)),
+				canImportAntennas: calc('canImportAntennas', vs => vs.some(v => v === true)),
+				canImportBlocking: calc('canImportBlocking', vs => vs.some(v => v === true)),
+				canImportFollowing: calc('canImportFollowing', vs => vs.some(v => v === true)),
+				canImportMuting: calc('canImportMuting', vs => vs.some(v => v === true)),
+				canImportUserLists: calc('canImportUserLists', vs => vs.some(v => v === true)),
+				chatAvailability: calc('chatAvailability', aggregateChatAvailability),
+				uploadableFileTypes: calc('uploadableFileTypes', vs => {
+					const set = new Set<string>();
+					for (const v of vs) {
+						for (const type of v) {
+							if (type.trim() === '') continue;
+							set.add(type.trim());
+						}
+					}
+					return [...set];
+				}),
+				noteDraftLimit: calc('noteDraftLimit', vs => Math.max(...vs)),
+				scheduledNoteLimit: calc('scheduledNoteLimit', vs => Math.max(...vs)),
+				watermarkAvailable: calc('watermarkAvailable', vs => vs.some(v => v === true)),
+			};
+		});
 	}
 
 	@bindThis
 	public async getUserPolicies(userId: MiUser['id'] | null): Promise<RolePolicies> {
-		const basePolicies = { ...DEFAULT_POLICIES, ...this.meta.policies };
-
-		if (userId == null) return basePolicies;
-
-		const roles = await this.getUserRoles(userId);
-
-		function calc<T extends keyof RolePolicies>(name: T, aggregate: (values: RolePolicies[T][]) => RolePolicies[T]) {
-			if (roles.length === 0) return aggregate([basePolicies[name]]);
-
-			const policies = roles.map(role => role.policies[name] ?? { priority: 0, useDefault: true });
-
-			const p2 = policies.filter(policy => policy.priority === 2);
-			if (p2.length > 0) return aggregate(p2.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
-
-			const p1 = policies.filter(policy => policy.priority === 1);
-			if (p1.length > 0) return aggregate(p1.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
-
-			return aggregate(policies.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
-		}
-
-		function aggregateChatAvailability(vs: RolePolicies['chatAvailability'][]) {
-			if (vs.some(v => v === 'available')) return 'available';
-			if (vs.some(v => v === 'readonly')) return 'readonly';
-			return 'unavailable';
-		}
-
-		const serverMaxFileSizeMb = Math.floor(this.config.maxFileSize / (1024 * 1024));
-
+		const policies = await this.getUserPoliciesInternal(userId);
 		return {
-			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
-			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
-			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
-			mentionLimit: calc('mentionLimit', vs => Math.max(...vs)),
-			canInvite: calc('canInvite', vs => vs.some(v => v === true)),
-			inviteLimit: calc('inviteLimit', vs => Math.max(...vs)),
-			inviteLimitCycle: calc('inviteLimitCycle', vs => Math.max(...vs)),
-			inviteExpirationTime: calc('inviteExpirationTime', vs => Math.max(...vs)),
-			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
-			canManageAvatarDecorations: calc('canManageAvatarDecorations', vs => vs.some(v => v === true)),
-			canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
-			canSearchUsers: calc('canSearchUsers', vs => vs.some(v => v === true)),
-			canUseTranslator: calc('canUseTranslator', vs => vs.some(v => v === true)),
-			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
-			canCreateChannel: calc('canCreateChannel', vs => vs.some(v => v === true)),
-			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
-			maxFileSizeMb: calc('maxFileSizeMb', vs => Math.min(serverMaxFileSizeMb, Math.max(...vs))),
-			alwaysMarkNsfw: calc('alwaysMarkNsfw', vs => vs.some(v => v === true)),
-			canUpdateBioMedia: calc('canUpdateBioMedia', vs => vs.some(v => v === true)),
-			pinLimit: calc('pinLimit', vs => Math.max(...vs)),
-			antennaLimit: calc('antennaLimit', vs => Math.max(...vs)),
-			wordMuteLimit: calc('wordMuteLimit', vs => Math.max(...vs)),
-			webhookLimit: calc('webhookLimit', vs => Math.max(...vs)),
-			clipLimit: calc('clipLimit', vs => Math.max(...vs)),
-			noteEachClipsLimit: calc('noteEachClipsLimit', vs => Math.max(...vs)),
-			userListLimit: calc('userListLimit', vs => Math.max(...vs)),
-			userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
-			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
-			avatarDecorationLimit: calc('avatarDecorationLimit', vs => Math.max(...vs)),
-			canImportAntennas: calc('canImportAntennas', vs => vs.some(v => v === true)),
-			canImportBlocking: calc('canImportBlocking', vs => vs.some(v => v === true)),
-			canImportFollowing: calc('canImportFollowing', vs => vs.some(v => v === true)),
-			canImportMuting: calc('canImportMuting', vs => vs.some(v => v === true)),
-			canImportUserLists: calc('canImportUserLists', vs => vs.some(v => v === true)),
-			chatAvailability: calc('chatAvailability', aggregateChatAvailability),
-			uploadableFileTypes: calc('uploadableFileTypes', vs => {
-				const set = new Set<string>();
-				for (const v of vs) {
-					for (const type of v) {
-						if (type.trim() === '') continue;
-						set.add(type.trim());
-					}
-				}
-				return [...set];
-			}),
-			noteDraftLimit: calc('noteDraftLimit', vs => Math.max(...vs)),
-			scheduledNoteLimit: calc('scheduledNoteLimit', vs => Math.max(...vs)),
-			watermarkAvailable: calc('watermarkAvailable', vs => vs.some(v => v === true)),
+			...policies,
+			uploadableFileTypes: [...policies.uploadableFileTypes],
 		};
+	}
+
+	@bindThis
+	private invalidateUserRoleCalculations(userId: MiUser['id']): void {
+		this.operationContextService.invalidateIfActive(userAssignsMemo, userId);
+		this.operationContextService.invalidateIfActive(userRolesMemo, userId);
+		this.operationContextService.invalidateIfActive(userBadgeRolesMemo, userId);
+		this.operationContextService.invalidateIfActive(userPoliciesMemo, userId);
+	}
+
+	@bindThis
+	private invalidateAllRoleCalculations(): void {
+		// ロール定義の変更はロールアサイン自体には影響しないため、userAssignsMemoは保持する。
+		this.operationContextService.invalidateAllIfActive(rolesMemo);
+		this.operationContextService.invalidateAllIfActive(userRolesMemo);
+		this.operationContextService.invalidateAllIfActive(userBadgeRolesMemo);
+		this.operationContextService.invalidateAllIfActive(userPoliciesMemo);
 	}
 
 	@bindThis
 	public async isModerator(user: { id: MiUser['id'] } | null): Promise<boolean> {
 		if (user == null) return false;
-		return (this.meta.rootUserId === user.id) || (await this.getUserRoles(user.id)).some(r => r.isModerator || r.isAdministrator);
+		return (this.meta.rootUserId === user.id) || (await this.getUserRolesInternal(user.id)).some(r => r.isModerator || r.isAdministrator);
 	}
 
 	@bindThis
 	public async isAdministrator(user: { id: MiUser['id'] } | null): Promise<boolean> {
 		if (user == null) return false;
-		return (this.meta.rootUserId === user.id) || (await this.getUserRoles(user.id)).some(r => r.isAdministrator);
+		return (this.meta.rootUserId === user.id) || (await this.getUserRolesInternal(user.id)).some(r => r.isAdministrator);
 	}
 
 	@bindThis
@@ -492,7 +617,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		const includeRoot = opts?.includeRoot ?? false;
 		const excludeExpire = opts?.excludeExpire ?? false;
 
-		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
+		const roles = await this.getRolesInternal();
 		const moderatorRoles = includeAdmins
 			? roles.filter(r => r.isModerator || r.isAdministrator)
 			: roles.filter(r => r.isModerator);
@@ -536,7 +661,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public async getAdministratorIds(): Promise<MiUser['id'][]> {
-		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
+		const roles = await this.getRolesInternal();
 		const administratorRoles = roles.filter(r => r.isAdministrator);
 		const assigns = administratorRoles.length > 0 ? await this.roleAssignmentsRepository.findBy({
 			roleId: In(administratorRoles.map(r => r.id)),
@@ -572,6 +697,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 					roleId: roleId,
 					userId: userId,
 				});
+				this.applyUserRoleAssignmentDelete(userId, existing.id);
 			} else {
 				throw new RoleService.AlreadyAssignedError();
 			}
@@ -583,6 +709,9 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			roleId: roleId,
 			userId: userId,
 		});
+
+		this.applyUserRoleAssignmentUpsert(created);
+		this.invalidateUserRoleCalculations(userId);
 
 		this.rolesRepository.update(roleId, {
 			lastUsedAt: new Date(),
@@ -622,10 +751,14 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				roleId: roleId,
 				userId: userId,
 			});
+			this.applyUserRoleAssignmentDelete(userId, existing.id);
+			this.invalidateUserRoleCalculations(userId);
 			throw new RoleService.NotAssignedError();
 		}
 
 		await this.roleAssignmentsRepository.delete(existing.id);
+		this.applyUserRoleAssignmentDelete(userId, existing.id);
+		this.invalidateUserRoleCalculations(userId);
 
 		this.rolesRepository.update(roleId, {
 			lastUsedAt: now,
@@ -650,7 +783,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public async addNoteToRoleTimeline(note: Packed<'Note'>): Promise<void> {
-		const roles = await this.getUserRoles(note.userId);
+		const roles = await this.getUserRolesInternal(note.userId);
 
 		const redisPipeline = this.redisForTimelines.pipeline();
 
@@ -686,6 +819,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			policies: values.policies,
 		});
 
+		this.applyRoleChange(created, 'create');
+		this.invalidateAllRoleCalculations();
 		this.globalEventService.publishInternalEvent('roleCreated', created);
 
 		if (moderator) {
@@ -707,6 +842,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		});
 
 		const updated = await this.rolesRepository.findOneByOrFail({ id: role.id });
+		this.applyRoleChange(updated, 'update');
+		this.invalidateAllRoleCalculations();
 		this.globalEventService.publishInternalEvent('roleUpdated', updated);
 
 		if (moderator) {
@@ -721,6 +858,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	@bindThis
 	public async delete(role: MiRole, moderator?: MiUser): Promise<void> {
 		await this.rolesRepository.delete({ id: role.id });
+		this.applyRoleDelete(role.id);
+		this.invalidateAllRoleCalculations();
 		this.globalEventService.publishInternalEvent('roleDeleted', role);
 
 		if (moderator) {
