@@ -32,6 +32,7 @@ import { escapeHtml } from '@/misc/escape-html.js';
 import { JsonLdService } from './JsonLdService.js';
 import { ApMfmService } from './ApMfmService.js';
 import { CONTEXT } from './misc/contexts.js';
+import { OBJECT_LINK_MEDIA_TYPE } from './type.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 
 @Injectable()
@@ -449,11 +450,21 @@ export class ApRendererService {
 		const emojis = await this.getEmojis(note.emojis);
 		const apemojis = emojis.filter(emoji => !emoji.localOnly).map(emoji => this.renderEmoji(emoji));
 
-		const tag = [
+		const tag: IObject[] = [
 			...hashtagTags,
 			...mentionTags,
 			...apemojis,
 		];
+
+		if (quote != null) {
+			// FEP-e232: 引用を Object Link としても表現する（他ソフトウェアとの互換性）
+			tag.push({
+				type: 'Link',
+				mediaType: OBJECT_LINK_MEDIA_TYPE,
+				href: quote,
+				name: `RE: ${quote}`,
+			});
+		}
 
 		const asPoll = poll ? {
 			type: 'Question',

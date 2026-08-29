@@ -240,6 +240,21 @@ export const isHashtag = (object: IObject): object is IApHashtag =>
 	getApType(object) === 'Hashtag' &&
 	typeof object.name === 'string';
 
+// FEP-e232: Object Links https://w3id.org/fep/e232
+export const OBJECT_LINK_MEDIA_TYPE = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"';
+
+export interface IApObjectLink extends IObject {
+	type: 'Link';
+	mediaType: string;
+	href: string;
+	rel?: string | string[];
+}
+
+export const isObjectLink = (object: IObject): object is IApObjectLink =>
+	getApType(object) === 'Link' &&
+	typeof object.mediaType === 'string' &&
+	typeof object.href === 'string';
+
 export interface IApEmoji extends IObject {
 	type: 'Emoji';
 	name: string;

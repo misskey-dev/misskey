@@ -31,7 +31,7 @@ import { ApDbResolverService } from '../ApDbResolverService.js';
 import { ApResolverService } from '../ApResolverService.js';
 import { ApAudienceService } from '../ApAudienceService.js';
 import { ApPersonService } from './ApPersonService.js';
-import { extractApHashtags } from './tag.js';
+import { extractApHashtags, extractQuoteLinkUris } from './tag.js';
 import { ApMentionService } from './ApMentionService.js';
 import { ApQuestionService } from './ApQuestionService.js';
 import { ApImageService } from './ApImageService.js';
@@ -255,14 +255,16 @@ export class ApNoteService {
 		// 引用
 		let quote: MiNote | undefined | null = null;
 
-		if (note._misskey_quote ?? note.quoteUrl) {
+		const quoteUris = unique([note._misskey_quote, note.quoteUrl, ...extractQuoteLinkUris(note.tag)].filter(x => x != null));
+
+		if (quoteUris.length > 0) {
 			const tryResolveNote = async (uri: string): Promise<
 				| { status: 'ok'; res: MiNote }
 				| { status: 'permerror' | 'temperror' }
 			> => {
 				if (!/^https?:/.test(uri)) return { status: 'permerror' };
 				try {
-					const res = await this.resolveNote(uri);
+					const res = await this.resolveNote(uri, { resolver });
 					if (res == null) return { status: 'permerror' };
 					return { status: 'ok', res };
 				} catch (e) {
@@ -272,14 +274,20 @@ export class ApNoteService {
 				}
 			};
 
-			const uris = unique([note._misskey_quote, note.quoteUrl].filter(x => x != null));
-			const results = await Promise.all(uris.map(tryResolveNote));
-
-			quote = results.filter((x): x is { status: 'ok', res: MiNote } => x.status === 'ok').map(x => x.res).at(0);
-			if (!quote) {
-				if (results.some(x => x.status === 'temperror')) {
-					throw new Error('quote resolve failed');
+			// 引用として成立するのは 1 件のみなので、最初に解決できた候補で打ち切る
+			let hasTemperror = false;
+			for (const uri of quoteUris) {
+				const result = await tryResolveNote(uri);
+				if (result.status === 'ok') {
+					quote = result.res;
+					break;
+				} else if (result.status === 'temperror') {
+					hasTemperror = true;
 				}
+			}
+
+			if (!quote && hasTemperror) {
+				throw new Error('quote resolve failed');
 			}
 		}
 

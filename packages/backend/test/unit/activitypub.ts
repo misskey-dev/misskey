@@ -17,6 +17,7 @@ import type { IActor, IApDocument, ICollection, IObject, IPost } from '@/core/ac
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import { ApImageService } from '@/core/activitypub/models/ApImageService.js';
+import { extractQuoteLinkUris } from '@/core/activitypub/models/tag.js';
 import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -194,6 +195,172 @@ describe('ActivityPub', () => {
 			assert.deepStrictEqual(note?.uri, post.id);
 			assert.deepStrictEqual(note.visibility, 'public');
 			assert.deepStrictEqual(note.text, post.content);
+		});
+	});
+
+	describe('Quote as object link', () => {
+		const objectLinkMediaType = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"';
+
+		function createQuotePair(quoteTag: (quotedUri: string) => IObject) {
+			const actor = createRandomActor();
+			const quoted = {
+				'@context': 'https://www.w3.org/ns/activitystreams',
+				id: `${host}/notes/${secureRndstr(8)}`,
+				type: 'Note',
+				attributedTo: actor.id,
+				to: 'https://www.w3.org/ns/activitystreams#Public',
+				content: 'quoted post',
+			};
+			const quoting = {
+				'@context': 'https://www.w3.org/ns/activitystreams',
+				id: `${host}/notes/${secureRndstr(8)}`,
+				type: 'Note',
+				attributedTo: actor.id,
+				to: 'https://www.w3.org/ns/activitystreams#Public',
+				content: 'quoting post',
+				tag: [quoteTag(quoted.id)],
+			};
+			return { actor, quoted, quoting };
+		}
+
+		test('Note with only an object link (AS mediaType) is parsed as a quote', async () => {
+			const { actor, quoted, quoting } = createQuotePair(quotedUri => ({
+				type: 'Link',
+				mediaType: objectLinkMediaType,
+				href: quotedUri,
+				name: `RE: ${quotedUri}`,
+			}));
+			resolver.register(actor.id, actor);
+			resolver.register(quoted.id, quoted);
+			resolver.register(quoting.id, quoting);
+
+			const note = await noteService.createNote(quoting.id, undefined, resolver, true);
+
+			assert.ok(note?.renoteId != null);
+		});
+
+		test('Note with an object link (application/activity+json) is parsed as a quote', async () => {
+			const { actor, quoted, quoting } = createQuotePair(quotedUri => ({
+				type: 'Link',
+				mediaType: 'application/activity+json',
+				href: quotedUri,
+			}));
+			resolver.register(actor.id, actor);
+			resolver.register(quoted.id, quoted);
+			resolver.register(quoting.id, quoting);
+
+			const note = await noteService.createNote(quoting.id, undefined, resolver, true);
+
+			assert.ok(note?.renoteId != null);
+		});
+
+		test('Note with an object link with _misskey_quote rel is parsed as a quote', async () => {
+			const { actor, quoted, quoting } = createQuotePair(quotedUri => ({
+				type: 'Link',
+				mediaType: 'text/html',
+				rel: 'https://misskey-hub.net/ns#_misskey_quote',
+				href: quotedUri,
+			} as IObject));
+			resolver.register(actor.id, actor);
+			resolver.register(quoted.id, quoted);
+			resolver.register(quoting.id, quoting);
+
+			const note = await noteService.createNote(quoting.id, undefined, resolver, true);
+
+			assert.ok(note?.renoteId != null);
+		});
+
+		test('Only the first resolvable candidate is fetched (early exit)', async () => {
+			const actor = createRandomActor();
+			const quoted1 = {
+				'@context': 'https://www.w3.org/ns/activitystreams',
+				id: `${host}/notes/${secureRndstr(8)}`,
+				type: 'Note',
+				attributedTo: actor.id,
+				to: 'https://www.w3.org/ns/activitystreams#Public',
+				content: 'quoted post 1',
+			};
+			const quoted2 = {
+				'@context': 'https://www.w3.org/ns/activitystreams',
+				id: `${host}/notes/${secureRndstr(8)}`,
+				type: 'Note',
+				attributedTo: actor.id,
+				to: 'https://www.w3.org/ns/activitystreams#Public',
+				content: 'quoted post 2',
+			};
+			const quoting = {
+				'@context': 'https://www.w3.org/ns/activitystreams',
+				id: `${host}/notes/${secureRndstr(8)}`,
+				type: 'Note',
+				attributedTo: actor.id,
+				to: 'https://www.w3.org/ns/activitystreams#Public',
+				content: 'quoting post',
+				tag: [quoted1.id, quoted2.id].map(href => ({
+					type: 'Link',
+					mediaType: objectLinkMediaType,
+					href,
+				})),
+			};
+			resolver.register(actor.id, actor);
+			resolver.register(quoted1.id, quoted1);
+			resolver.register(quoted2.id, quoted2);
+			resolver.register(quoting.id, quoting);
+
+			const note = await noteService.createNote(quoting.id, undefined, resolver, true);
+
+			assert.ok(note?.renoteId != null);
+			// 最初の候補で解決が成立したら、残りの候補は fetch されない
+			assert.ok(resolver.remoteGetTrials().includes(quoted1.id));
+			assert.ok(!resolver.remoteGetTrials().includes(quoted2.id));
+		});
+
+		test('extractQuoteLinkUris caps the number of candidates (DoS prevention)', () => {
+			const links = Array.from({ length: 100 }, (_, i) => ({
+				type: 'Link',
+				mediaType: objectLinkMediaType,
+				href: `https://host2.test/notes/${i}`,
+			}));
+
+			const uris = extractQuoteLinkUris(links);
+
+			assert.ok(uris.length <= 4);
+			assert.deepStrictEqual(uris[0], 'https://host2.test/notes/0');
+		});
+
+		test('An unrelated link tag is not parsed as a quote', async () => {
+			const { actor, quoted, quoting } = createQuotePair(() => ({
+				type: 'Link',
+				mediaType: 'text/html',
+				href: 'https://example.com/somewhere',
+			}));
+			resolver.register(actor.id, actor);
+			resolver.register(quoted.id, quoted);
+			resolver.register(quoting.id, quoting);
+
+			const note = await noteService.createNote(quoting.id, undefined, resolver, true);
+
+			assert.deepStrictEqual(note?.renoteId, null);
+		});
+
+		test('renderNote emits an object link for a quote', async () => {
+			const { actor, quoted, quoting } = createQuotePair(quotedUri => ({
+				type: 'Link',
+				mediaType: objectLinkMediaType,
+				href: quotedUri,
+			}));
+			resolver.register(actor.id, actor);
+			resolver.register(quoted.id, quoted);
+			resolver.register(quoting.id, quoting);
+
+			const note = await noteService.createNote(quoting.id, undefined, resolver, true);
+			assert.ok(note != null);
+
+			const rendered = await rendererService.renderNote(note, false);
+			const links = (Array.isArray(rendered.tag) ? rendered.tag : [rendered.tag]).filter((t): t is IObject => t != null && typeof t === 'object' && (t as IObject).type === 'Link');
+
+			assert.deepStrictEqual(links.length, 1);
+			assert.deepStrictEqual((links[0] as IObject).href, quoted.id);
+			assert.deepStrictEqual((links[0] as IObject).mediaType, objectLinkMediaType);
 		});
 	});
 
