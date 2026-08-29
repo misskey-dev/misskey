@@ -414,7 +414,7 @@ export class NoteEntityService implements OnModuleInit {
 			fileIds: note.fileIds,
 			files: packedFiles != null ? this.packAttachedFiles(note.fileIds, packedFiles) : this.driveFileEntityService.packManyByIds(note.fileIds),
 			replyId: note.replyId,
-			renoteId: note.renoteId,
+			renoteId: note.quoteRejected ? null : note.renoteId,
 			channelId: note.channelId ?? undefined,
 			channel: channel ? {
 				id: channel.id,
@@ -428,6 +428,7 @@ export class NoteEntityService implements OnModuleInit {
 			hasPoll: note.hasPoll || undefined,
 			uri: note.uri ?? undefined,
 			url: note.url ?? undefined,
+			quoteRejected: note.quoteRejected || undefined,
 
 			...(opts.detail ? {
 				clippedCount: note.clippedCount,
@@ -441,7 +442,8 @@ export class NoteEntityService implements OnModuleInit {
 				})) : undefined,
 
 				// そもそもJOINしていない場合はundefined、JOINしたけど存在していなかった場合はnullで区別される
-				renote: (note.renoteId && note.renote === null) ? null : note.renoteId ? nullIfEntityNotFound(this.pack(note.renote ?? note.renoteId, me, {
+				// FEP-044f: 引用が拒否/失効されたノートは renote を null にして削除時と同じ表示にする (DB 上の renoteId は保持)
+				renote: note.quoteRejected ? null : (note.renoteId && note.renote === null) ? null : note.renoteId ? nullIfEntityNotFound(this.pack(note.renote ?? note.renoteId, me, {
 					detail: true,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,

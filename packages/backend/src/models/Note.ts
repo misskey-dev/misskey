@@ -148,6 +148,19 @@ export class MiNote {
 	})
 	public url: string | null;
 
+	@Index('IDX_NOTE_QUOTE_AUTHORIZATION_URI', { synchronize: false })
+	@Column('varchar', {
+		length: 1024, nullable: true,
+		comment: 'FEP-044f QuoteAuthorization URI attached to this quote note. null when not stamped.',
+	})
+	public quoteAuthorizationUri: string | null;
+
+	@Column('boolean', {
+		default: false,
+		comment: 'Whether the quote of this note was rejected or revoked by the quoted note author.',
+	})
+	public quoteRejected: boolean;
+
 	@Index('IDX_NOTE_FILE_IDS', { synchronize: false })
 	@Column({
 		...id(),

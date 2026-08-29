@@ -29,6 +29,8 @@ const base: MiNote = {
 	visibility: 'public',
 	uri: null,
 	url: null,
+	quoteAuthorizationUri: null,
+	quoteRejected: false,
 	fileIds: [],
 	attachedFileTypes: [],
 	visibleUserIds: [],

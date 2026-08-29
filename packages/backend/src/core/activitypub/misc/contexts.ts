@@ -564,6 +564,43 @@ const extension_context_definition = {
 		'@type': 'schema:text',
 	},
 	'isCat': 'misskey:isCat',
+	// FEP-044f (quote posts) https://w3id.org/fep/044f
+	QuoteRequest: 'https://w3id.org/fep/044f#QuoteRequest',
+	QuoteAuthorization: 'https://w3id.org/fep/044f#QuoteAuthorization',
+	quote: {
+		'@id': 'https://w3id.org/fep/044f#quote',
+		'@type': '@id',
+	},
+	quoteAuthorization: {
+		'@id': 'https://w3id.org/fep/044f#quoteAuthorization',
+		'@type': '@id',
+	},
+	// GoToSocial interaction policies (referenced by FEP-044f)
+	gts: 'https://gotosocial.org/ns#',
+	interactionPolicy: {
+		'@id': 'gts:interactionPolicy',
+		'@type': '@id',
+	},
+	canQuote: {
+		'@id': 'gts:canQuote',
+		'@type': '@id',
+	},
+	automaticApproval: {
+		'@id': 'gts:automaticApproval',
+		'@type': '@id',
+	},
+	manualApproval: {
+		'@id': 'gts:manualApproval',
+		'@type': '@id',
+	},
+	interactingObject: {
+		'@id': 'gts:interactingObject',
+		'@type': '@id',
+	},
+	interactionTarget: {
+		'@id': 'gts:interactionTarget',
+		'@type': '@id',
+	},
 	// vcard
 	vcard: 'http://www.w3.org/2006/vcard/ns#',
 } satisfies Context;

@@ -4470,6 +4470,7 @@ export type components = {
             renoteId?: string | null;
             reply?: components['schemas']['Note'] | null;
             renote?: components['schemas']['Note'] | null;
+            quoteRejected?: boolean;
             isHidden?: boolean;
             /** @enum {string} */
             visibility: 'public' | 'home' | 'followers' | 'specified';

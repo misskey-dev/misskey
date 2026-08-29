@@ -102,7 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="isEnabledUrlPreview">
 						<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
 					</div>
-					<div v-if="appearNote.renoteId" :class="$style.quote"><MkNoteSimple :note="appearNote?.renote ?? null" :class="$style.quoteNote"/></div>
+					<div v-if="appearNote.renote != null || appearNote.quoteRejected || appearNote.renoteId != null" :class="$style.quote"><MkNoteSimple :note="appearNote.renote ?? null" :quoteRejected="appearNote.quoteRejected" :class="$style.quoteNote"/></div>
 					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
 						<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
 					</button>

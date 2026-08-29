@@ -153,7 +153,7 @@ export const packedNotificationSchema = {
 				optional: false, nullable: false,
 			},
 		},
-	}, {
+		}, {
 		type: 'object',
 		properties: {
 			...baseSchema.properties,

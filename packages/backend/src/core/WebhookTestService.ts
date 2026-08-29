@@ -90,6 +90,8 @@ function generateDummyNote(override?: Partial<MiNote>): MiNote {
 		visibility: 'public',
 		uri: null,
 		url: null,
+		quoteAuthorizationUri: null,
+		quoteRejected: false,
 		fileIds: [],
 		attachedFileTypes: [],
 		visibleUserIds: [],

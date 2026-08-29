@@ -708,6 +708,79 @@ export class ActivityPubServerService {
 			return (this.apRendererService.addContext(await this.packActivity(note)));
 		});
 
+		// FEP-044f: note quote authorization (stateless stamp)
+		// ローカルノートの引用許可は常に自動 public 承認 (変更不可) なので、スタンプは DB に持たず
+		// URL に埋め込まれた引用ノート URI からステートレスに応答する。ノートの削除・非公開化で 404 = 失効。
+		fastify.get<{ Params: { note: string; token: string; } }>('/notes/:note/quote-authorization/:token', async (request, reply) => {
+			vary(reply.raw, 'Accept');
+
+			if (this.meta.federation === 'none') {
+				reply.code(403);
+				return;
+			}
+
+			const note = await this.notesRepository.findOneBy({
+				id: request.params.note,
+				userHost: IsNull(),
+				visibility: In(['public', 'home']),
+				localOnly: false,
+			});
+
+			if (note == null) {
+				reply.code(404);
+				return;
+			}
+
+			let quotingUri: string;
+			try {
+				quotingUri = Buffer.from(request.params.token, 'base64url').toString('utf-8');
+			} catch {
+				reply.code(404);
+				return;
+			}
+			if (!/^https?:\/\//.test(quotingUri)) {
+				reply.code(404);
+				return;
+			}
+
+			reply.header('Cache-Control', 'public, max-age=180');
+			this.setResponseType(request, reply);
+			return this.apRendererService.addContext(this.apRendererService.renderQuoteAuthorization(note, quotingUri));
+		});
+
+		// FEP-044f: quote request (Accept/Reject の object が deref される場合の保険)
+		fastify.get<{ Params: { note: string; } }>('/notes/:note/quote-request', async (request, reply) => {
+			vary(reply.raw, 'Accept');
+
+			if (this.meta.federation === 'none') {
+				reply.code(403);
+				return;
+			}
+
+			const note = await this.notesRepository.findOneBy({
+				id: request.params.note,
+				userHost: IsNull(),
+				visibility: In(['public', 'home']),
+				localOnly: false,
+			});
+
+			if (note == null || note.renoteId == null) {
+				reply.code(404);
+				return;
+			}
+
+			const renote = await this.notesRepository.findOneBy({ id: note.renoteId });
+
+			if (renote == null) {
+				reply.code(404);
+				return;
+			}
+
+			reply.header('Cache-Control', 'public, max-age=180');
+			this.setResponseType(request, reply);
+			return this.apRendererService.addContext(await this.apRendererService.renderQuoteRequest(note, renote));
+		});
+
 		// outbox
 		fastify.get<{
 			Params: { user: string; };

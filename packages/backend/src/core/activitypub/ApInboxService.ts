@@ -27,19 +27,22 @@ import { QueueService } from '@/core/QueueService.js';
 import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository, MiMeta } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import type { MiRemoteUser } from '@/models/User.js';
+import type { MiNote } from '@/models/Note.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { AbuseReportService } from '@/core/AbuseReportService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
+import { getApHrefNullable, getApId, getApIds, getApType, getOneApId, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isQuoteRequest, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
+import { ApRendererService } from './ApRendererService.js';
+import { ApDeliverManagerService } from './ApDeliverManagerService.js';
 import { ApResolverService } from './ApResolverService.js';
 import { ApAudienceService } from './ApAudienceService.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import { ApQuestionService } from './models/ApQuestionService.js';
 import type { Resolver } from './ApResolverService.js';
-import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IReject, IRemove, IUndo, IUpdate, IMove, IPost } from './type.js';
+import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IQuoteRequest, IReject, IRemove, IUndo, IUpdate, IMove, IPost } from './type.js';
 
 @Injectable()
 export class ApInboxService {
@@ -79,6 +82,8 @@ export class ApInboxService {
 		private noteDeleteService: NoteDeleteService,
 		private apResolverService: ApResolverService,
 		private apDbResolverService: ApDbResolverService,
+		private apRendererService: ApRendererService,
+		private apDeliverManagerService: ApDeliverManagerService,
 		private apLoggerService: ApLoggerService,
 		private apNoteService: ApNoteService,
 		private apPersonService: ApPersonService,
@@ -171,6 +176,8 @@ export class ApInboxService {
 			return await this.flag(actor, activity);
 		} else if (isMove(activity)) {
 			return await this.move(actor, activity, resolver);
+		} else if (isQuoteRequest(activity)) {
+			return await this.quoteRequest(actor, activity);
 		} else {
 			return `unrecognized activity type: ${activity.type}`;
 		}
@@ -220,6 +227,13 @@ export class ApInboxService {
 
 		this.logger.info(`Accept: ${uri}`);
 
+		// FEP-044f: 自ホスト発の QuoteRequest への Accept は resolve せず URI 形式で判定する
+		// (resolver.resolve に通すと resolveLocal が QuoteRequest でなくノート本体を返すケースがあるため)
+		const quoteRequestNoteId = this.parseLocalQuoteRequestUri(activity.object);
+		if (quoteRequestNoteId != null) {
+			return await this.acceptQuoteRequest(actor, quoteRequestNoteId, activity);
+		}
+
 		// eslint-disable-next-line no-param-reassign
 		resolver ??= await this.apResolverService.createResolver();
 
@@ -231,6 +245,74 @@ export class ApInboxService {
 		if (isFollow(object)) return await this.acceptFollow(actor, object);
 
 		return `skip: Unknown Accept type: ${getApType(object)}`;
+	}
+
+	/**
+	 * FEP-044f: object が自ホスト発の QuoteRequest URI (`/notes/:id/quote-request`) なら、その引用ノート ID を返す。
+	 */
+	@bindThis
+	private parseLocalQuoteRequestUri(object: IObject | string): string | null {
+		let objectUri: string;
+		try {
+			objectUri = getApId(object);
+		} catch {
+			return null;
+		}
+		const parsed = this.apDbResolverService.parseUri(objectUri);
+		if (parsed.local && parsed.type === 'notes' && parsed.rest === 'quote-request') {
+			return parsed.id;
+		}
+		return null;
+	}
+
+	/**
+	 * FEP-044f: こちらから送った QuoteRequest への Accept を処理し、承認スタンプ URI を保存して Update を再配送する。
+	 */
+	@bindThis
+	private async acceptQuoteRequest(actor: MiRemoteUser, noteId: string, activity: IAccept): Promise<string> {
+		const note = await this.notesRepository.findOne({ where: { id: noteId }, relations: { renote: true } });
+		if (note == null) return 'skip: note not found';
+		if (note.userHost != null) return 'skip: not a local note';
+		if (note.renote == null) return 'skip: not a quote';
+
+		if (note.renote.userId !== actor.id) {
+			return 'skip: actor is not the quoted note author';
+		}
+
+		if (activity.result == null) return 'skip: no result';
+		let resultUri: string;
+		try {
+			resultUri = getOneApId(activity.result);
+		} catch {
+			return 'skip: invalid result';
+		}
+		// スタンプは被引用ノートの作者と同一ホストが発行しているべき
+		if (!/^https?:\/\//.test(resultUri) || resultUri.length > 1024) {
+			return 'skip: invalid result uri';
+		}
+		if (this.utilityService.extractDbHost(resultUri) !== actor.host) {
+			return 'skip: result host mismatch';
+		}
+
+		const user = await this.usersRepository.findOneBy({ id: note.userId });
+		if (user == null || !this.userEntityService.isLocalUser(user)) return 'skip: note author is not local';
+
+		await this.notesRepository.update(note.id, {
+			quoteAuthorizationUri: resultUri,
+			quoteRejected: false,
+		});
+
+		// 承認スタンプ付きの Update を再配送する (Update<Note> を受信できない実装は無視するだけで無害)
+		note.quoteAuthorizationUri = resultUri;
+		note.quoteRejected = false;
+		const content = this.apRendererService.addContext(this.apRendererService.renderUpdate(await this.apRendererService.renderNote(note, false), user));
+		this.apDeliverManagerService.deliverToFollowers(user, content);
+		this.queueService.deliver(user, content, actor.inbox, false);
+		if (note.visibility === 'public') {
+			this.relayService.deliverToRelays(user, content);
+		}
+
+		return 'ok';
 	}
 
 	@bindThis
@@ -491,6 +573,12 @@ export class ApInboxService {
 
 		const uri = getApId(activity.object);
 
+		// FEP-044f: QuoteAuthorization (承認スタンプ) の失効
+		if (formerType == null || formerType === 'QuoteAuthorization') {
+			const revoked = await this.deleteQuoteAuthorization(actor, uri);
+			if (revoked != null) return revoked;
+		}
+
 		// type不明でもactorとobjectが同じならばそれはPersonに違いない
 		if (!formerType && actor.uri === uri) {
 			formerType = 'Person';
@@ -553,6 +641,28 @@ export class ApInboxService {
 		}
 	}
 
+	/**
+	 * FEP-044f: QuoteAuthorization への Delete (承認の失効)。
+	 * uri が既知の承認スタンプでなければ null を返し、通常の Delete 処理を継続させる。
+	 */
+	@bindThis
+	private async deleteQuoteAuthorization(actor: MiRemoteUser, uri: string): Promise<string | null> {
+		const note = await this.notesRepository.findOne({ where: { quoteAuthorizationUri: uri }, relations: { renote: true } });
+		if (note == null) return null;
+
+		if (note.renote == null || note.renote.userId !== actor.id) {
+			return 'skip: actor is not the quoted note author';
+		}
+
+		if (note.userHost == null) {
+			return await this.revokeQuote(note, actor);
+		} else {
+			// リモートの引用ノートは記録だけ更新する (表示の enforcement はしない)
+			await this.notesRepository.update(note.id, { quoteAuthorizationUri: null });
+			return 'ok: quote authorization cleared';
+		}
+	}
+
 	@bindThis
 	private async flag(actor: MiRemoteUser, activity: IFlag): Promise<string> {
 		// objectは `(User|Note) | (User|Note)[]` だけど、全パターンDBスキーマと対応させられないので
@@ -584,6 +694,12 @@ export class ApInboxService {
 		const uri = activity.id ?? activity;
 
 		this.logger.info(`Reject: ${uri}`);
+
+		// FEP-044f: 自ホスト発の QuoteRequest への Reject
+		const quoteRequestNoteId = this.parseLocalQuoteRequestUri(activity.object);
+		if (quoteRequestNoteId != null) {
+			return await this.rejectQuoteRequest(actor, quoteRequestNoteId);
+		}
 
 		// eslint-disable-next-line no-param-reassign
 		resolver ??= await this.apResolverService.createResolver();
@@ -619,6 +735,137 @@ export class ApInboxService {
 		}
 
 		await this.userFollowingService.remoteReject(actor, follower);
+		return 'ok';
+	}
+
+	/**
+	 * FEP-044f: こちらから送った QuoteRequest への Reject を処理する。
+	 * ノートは削除せず、拒否フラグを立てて表示側で引用の埋め込みを止め、作者に通知する。
+	 */
+	@bindThis
+	private async rejectQuoteRequest(actor: MiRemoteUser, noteId: string): Promise<string> {
+		const note = await this.notesRepository.findOne({ where: { id: noteId }, relations: { renote: true } });
+		if (note == null) return 'skip: note not found';
+		if (note.userHost != null) return 'skip: not a local note';
+		if (note.renote == null) return 'skip: not a quote';
+
+		if (note.renote.userId !== actor.id) {
+			return 'skip: actor is not the quoted note author';
+		}
+
+		return await this.revokeQuote(note, actor);
+	}
+
+	/**
+	 * FEP-044f: 引用の拒否/失効をノートに記録し、作者へ通知する。冪等。
+	 */
+	@bindThis
+	private async revokeQuote(note: MiNote, actor: MiRemoteUser): Promise<string> {
+		const updated = await this.notesRepository.update({ id: note.id, quoteRejected: false }, {
+			quoteRejected: true,
+			quoteAuthorizationUri: null,
+		});
+		if (!updated.affected) {
+			return 'skip: quote already revoked';
+		}
+
+		return 'ok: quote revoked';
+	}
+
+	/**
+	 * FEP-044f: リモートからの QuoteRequest を処理する。
+	 * ローカルユーザーの引用許可は常に自動 public 承認 (non-modifiable) なので、
+	 * 対象が公開ノートであれば即 Accept + 承認スタンプ URL を返す。
+	 */
+	@bindThis
+	private async quoteRequest(actor: MiRemoteUser, activity: IQuoteRequest): Promise<string> {
+		if (actor.uri !== getApId(activity.actor)) {
+			return 'skip: invalid actor';
+		}
+
+		this.logger.info(`QuoteRequest: ${activity.id ?? '(no id)'}`);
+
+		const targetUri = getApId(activity.object);
+
+		const note = await this.apDbResolverService.getNoteFromApId(targetUri);
+		if (note == null || note.userHost != null) {
+			return 'skip: quoted note is not local';
+		}
+
+		const instrument = toArray(activity.instrument).at(0);
+		if (instrument == null) return 'skip: no instrument';
+		let quotingUri: string;
+		try {
+			quotingUri = getApId(instrument);
+		} catch {
+			return 'skip: invalid instrument';
+		}
+
+		const quotedUser = await this.usersRepository.findOneBy({ id: note.userId });
+		if (quotedUser == null || !this.userEntityService.isLocalUser(quotedUser)) {
+			return 'skip: quoted note author is not local';
+		}
+
+		// Accept/Reject でエコーする QuoteRequest (instrument は embed しない)
+		const echo: IQuoteRequest = {
+			type: 'QuoteRequest',
+			...(activity.id != null ? { id: activity.id } : {}),
+			actor: getApId(activity.actor),
+			object: targetUri,
+			instrument: quotingUri,
+		};
+
+		const deliverReject = (): void => {
+			const content = this.apRendererService.addContext(this.apRendererService.renderReject(echo, quotedUser));
+			this.queueService.deliver(quotedUser, content, actor.inbox, false);
+		};
+
+		// なりすまし防止: 引用ノートは QuoteRequest の actor と同一ホストであること
+		if (this.utilityService.extractDbHost(quotingUri) !== actor.host) {
+			deliverReject();
+			return 'ok: rejected (instrument host mismatch)';
+		}
+
+		// 引用できるのは公開 (public/home) かつ連合するノートのみ
+		if (!['public', 'home'].includes(note.visibility) || note.localOnly) {
+			deliverReject();
+			return 'ok: rejected (quoted note is not publicly quotable)';
+		}
+
+		// ホームノートは public の引用を承認しない (ローカルでの引用が home 以下に制限されるのと同じ扱い)
+		// instrument がインラインされていない場合は宛先を判定できないため、自動承認の既定に従って通す
+		if (note.visibility === 'home' && typeof instrument !== 'string') {
+			const publicIds = ['https://www.w3.org/ns/activitystreams#Public', 'as:Public', 'Public'];
+			let isPublicQuote = false;
+			try {
+				isPublicQuote = getApIds(instrument.to).some(id => publicIds.includes(id));
+			} catch {
+				isPublicQuote = false;
+			}
+			if (isPublicQuote) {
+				deliverReject();
+				return 'ok: rejected (home note cannot be quoted publicly)';
+			}
+		}
+
+		// ブロックしている相手には許可しない (スタンプ URL は決定論的なので完全な防御ではない)
+		if (await this.userBlockingService.checkBlocked(note.userId, actor.id)) {
+			deliverReject();
+			return 'ok: rejected (blocked)';
+		}
+
+		const stampUrl = this.apRendererService.genQuoteAuthorizationUrl(note.id, quotingUri);
+		const accept = this.apRendererService.addContext(this.apRendererService.renderAccept(echo, quotedUser, stampUrl));
+		this.queueService.deliver(quotedUser, accept, actor.inbox, false);
+
+		// Mastodon 等は Accept 後の引用ノートを Update で配送するが、Misskey は Update<Note> を受信できないため
+		// ここで best-effort に取り込んでおく (取り込みに成功すれば既存の quote 通知も発火する)
+		setImmediate(() => {
+			this.apNoteService.resolveNote(quotingUri).catch(err => {
+				this.logger.warn(`failed to resolve quoting note ${quotingUri}: ${err}`);
+			});
+		});
+
 		return 'ok';
 	}
 

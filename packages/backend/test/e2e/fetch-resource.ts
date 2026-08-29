@@ -397,6 +397,41 @@ describe('Webリソース', () => {
 		});
 	});
 
+	describe('/notes/:id/quote-authorization/:token (FEP-044f)', () => {
+		const token = (quotingUri: string): string => Buffer.from(quotingUri, 'utf-8').toString('base64url');
+		const path = (noteId: string, quotingUri: string): string => `/notes/${noteId}/quote-authorization/${token(quotingUri)}`;
+		const quotingUri = 'https://remote.test/notes/xxxxxxxxxx';
+
+		test('はActivityPubとしてGETできる。', async () => {
+			const res = await ok({
+				path: path(alicesPost.id, quotingUri),
+				accept: ONLY_AP,
+				type: AP,
+			});
+			assert.strictEqual(res.body.type, 'QuoteAuthorization');
+			assert.strictEqual(res.body.interactingObject, quotingUri);
+			assert.strictEqual(res.body.interactionTarget.endsWith(`/notes/${alicesPost.id}`), true);
+		});
+
+		test('は存在しないノートIDのときGETできない。', async () => await notFound({
+			path: path('xxxxxxxxxx', quotingUri),
+			accept: ONLY_AP,
+		}));
+
+		test('はURIでないtokenのときGETできない。', async () => await notFound({
+			path: `/notes/${alicesPost.id}/quote-authorization/${token('not-a-uri')}`,
+			accept: ONLY_AP,
+		}));
+
+		test('はフォロワー限定ノートのときGETできない。', async () => {
+			const followersPost = await post(alice, { text: 'followers only', visibility: 'followers' });
+			await notFound({
+				path: path(followersPost.id, quotingUri),
+				accept: ONLY_AP,
+			});
+		});
+	});
+
 	describe('/play/:id', () => {
 		const path = (playid: string): string => `/play/${playid}`;
 

@@ -2601,6 +2601,10 @@ export interface Locale extends ILocale {
      */
     "deletedNote": string;
     /**
+     * 引用元の作者により引用が取り消されました
+     */
+    "quoteRejectedNote": string;
+    /**
      * 非公開のノート
      */
     "invisibleNote": string;

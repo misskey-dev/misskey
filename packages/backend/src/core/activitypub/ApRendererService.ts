@@ -32,7 +32,8 @@ import { escapeHtml } from '@/misc/escape-html.js';
 import { JsonLdService } from './JsonLdService.js';
 import { ApMfmService } from './ApMfmService.js';
 import { CONTEXT } from './misc/contexts.js';
-import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
+import { OBJECT_LINK_MEDIA_TYPE } from './type.js';
+import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IQuoteAuthorization, IQuoteRequest, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 
 @Injectable()
 export class ApRendererService {
@@ -71,11 +72,12 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAccept(object: string | IObject, user: { id: MiUser['id']; host: null }): IAccept {
+	public renderAccept(object: string | IObject, user: { id: MiUser['id']; host: null }, result?: string): IAccept {
 		return {
 			type: 'Accept',
 			actor: this.userEntityService.genLocalUserUri(user.id),
 			object,
+			result,
 		};
 	}
 
@@ -388,12 +390,23 @@ export class ApRendererService {
 		}
 
 		let quote: string | undefined;
+		let quoteAuthorization: string | undefined;
 
 		if (note.renoteId) {
 			const renote = await this.notesRepository.findOneBy({ id: note.renoteId });
 
 			if (renote) {
 				quote = renote.uri ? renote.uri : `${this.config.url}/notes/${renote.id}`;
+
+				if (renote.userHost == null) {
+					// ローカルノートの引用は常に自動承認 (non-modifiable automatic public quote permission) なので、
+					// 承認スタンプの URL をステートレスに構築できる
+					if (['public', 'home'].includes(renote.visibility) && !renote.localOnly) {
+						quoteAuthorization = this.genQuoteAuthorizationUrl(renote.id, `${this.config.url}/notes/${note.id}`);
+					}
+				} else if (note.quoteAuthorizationUri != null && !note.quoteRejected) {
+					quoteAuthorization = note.quoteAuthorizationUri;
+				}
 			}
 		}
 
@@ -449,11 +462,21 @@ export class ApRendererService {
 		const emojis = await this.getEmojis(note.emojis);
 		const apemojis = emojis.filter(emoji => !emoji.localOnly).map(emoji => this.renderEmoji(emoji));
 
-		const tag = [
+		const tag: IObject[] = [
 			...hashtagTags,
 			...mentionTags,
 			...apemojis,
 		];
+
+		if (quote != null) {
+			// FEP-e232: 引用を Object Link としても表現する（他ソフトウェアとの互換性）
+			tag.push({
+				type: 'Link',
+				mediaType: OBJECT_LINK_MEDIA_TYPE,
+				href: quote,
+				name: `RE: ${quote}`,
+			});
+		}
 
 		const asPoll = poll ? {
 			type: 'Question',
@@ -483,6 +506,15 @@ export class ApRendererService {
 			}),
 			_misskey_quote: quote,
 			quoteUrl: quote,
+			quote,
+			quoteAuthorization,
+			...(['public', 'home'].includes(note.visibility) ? {
+				interactionPolicy: {
+					canQuote: {
+						automaticApproval: ['https://www.w3.org/ns/activitystreams#Public'],
+					},
+				},
+			} : {}),
 			published: this.idService.parse(note.id).date.toISOString(),
 			to,
 			cc,
@@ -605,6 +637,44 @@ export class ApRendererService {
 					totalItems: poll.votes[i],
 				},
 			})),
+		};
+	}
+
+	/**
+	 * FEP-044f: QuoteAuthorization (承認スタンプ) の URL を生成する。
+	 * ローカルノートの引用許可は常に自動 public 承認 (変更不可) なので、スタンプは DB に永続化せず
+	 * この URL の GET に対してステートレスに応答する。
+	 */
+	@bindThis
+	public genQuoteAuthorizationUrl(quotedNoteId: MiNote['id'], quotingNoteUri: string): string {
+		return `${this.config.url}/notes/${quotedNoteId}/quote-authorization/${Buffer.from(quotingNoteUri, 'utf-8').toString('base64url')}`;
+	}
+
+	@bindThis
+	public genQuoteRequestUri(quotingNoteId: MiNote['id']): string {
+		return `${this.config.url}/notes/${quotingNoteId}/quote-request`;
+	}
+
+	@bindThis
+	public renderQuoteAuthorization(quotedNote: MiNote, quotingNoteUri: string): IQuoteAuthorization {
+		return {
+			type: 'QuoteAuthorization',
+			id: this.genQuoteAuthorizationUrl(quotedNote.id, quotingNoteUri),
+			attributedTo: this.userEntityService.genLocalUserUri(quotedNote.userId),
+			// FEP-044f: interactingObject を embed してはならない (URI のみ)
+			interactingObject: quotingNoteUri,
+			interactionTarget: `${this.config.url}/notes/${quotedNote.id}`,
+		};
+	}
+
+	@bindThis
+	public async renderQuoteRequest(note: MiNote, quotedNote: MiNote): Promise<IQuoteRequest> {
+		return {
+			id: this.genQuoteRequestUri(note.id),
+			type: 'QuoteRequest',
+			actor: this.userEntityService.genLocalUserUri(note.userId),
+			object: quotedNote.uri ?? `${this.config.url}/notes/${quotedNote.id}`,
+			instrument: await this.renderNote(note, false),
 		};
 	}
 

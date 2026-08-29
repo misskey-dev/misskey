@@ -133,6 +133,25 @@ export interface IPost extends IObject {
 	_misskey_quote?: string;
 	_misskey_content?: string;
 	quoteUrl?: string;
+	quote?: string | IObject;
+	quoteAuthorization?: string | IObject;
+	interactionPolicy?: IInteractionPolicy;
+}
+
+// https://gotosocial.org/ns#interactionPolicy (referenced by FEP-044f)
+export interface IInteractionPolicy {
+	canQuote?: {
+		automaticApproval?: ApObject;
+		manualApproval?: ApObject;
+	};
+}
+
+// https://w3id.org/fep/044f#QuoteAuthorization
+export interface IQuoteAuthorization extends IObject {
+	type: 'QuoteAuthorization';
+	attributedTo: string;
+	interactingObject: string;
+	interactionTarget: string;
 }
 
 export interface IQuestion extends IObject {
@@ -240,6 +259,21 @@ export const isHashtag = (object: IObject): object is IApHashtag =>
 	getApType(object) === 'Hashtag' &&
 	typeof object.name === 'string';
 
+// FEP-e232: Object Links https://w3id.org/fep/e232
+export const OBJECT_LINK_MEDIA_TYPE = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"';
+
+export interface IApObjectLink extends IObject {
+	type: 'Link';
+	mediaType: string;
+	href: string;
+	rel?: string | string[];
+}
+
+export const isObjectLink = (object: IObject): object is IApObjectLink =>
+	getApType(object) === 'Link' &&
+	typeof object.mediaType === 'string' &&
+	typeof object.href === 'string';
+
 export interface IApEmoji extends IObject {
 	type: 'Emoji';
 	name: string;
@@ -301,6 +335,7 @@ export interface IFollow extends IActivity {
 
 export interface IAccept extends IActivity {
 	type: 'Accept';
+	result?: ApObject;
 }
 
 export interface IReject extends IActivity {
@@ -337,6 +372,12 @@ export interface IMove extends IActivity {
 	target: IObject | string;
 }
 
+// https://w3id.org/fep/044f#QuoteRequest
+export interface IQuoteRequest extends IActivity {
+	type: 'QuoteRequest';
+	instrument?: ApObject;
+}
+
 export const isCreate = (object: IObject): object is ICreate => getApType(object) === 'Create';
 export const isDelete = (object: IObject): object is IDelete => getApType(object) === 'Delete';
 export const isUpdate = (object: IObject): object is IUpdate => getApType(object) === 'Update';
@@ -356,3 +397,4 @@ export const isBlock = (object: IObject): object is IBlock => getApType(object) 
 export const isFlag = (object: IObject): object is IFlag => getApType(object) === 'Flag';
 export const isMove = (object: IObject): object is IMove => getApType(object) === 'Move';
 export const isNote = (object: IObject): object is IPost => getApType(object) === 'Note';
+export const isQuoteRequest = (object: IObject): object is IQuoteRequest => getApType(object) === 'QuoteRequest';

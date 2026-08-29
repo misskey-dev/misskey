@@ -158,6 +158,11 @@ export class Resolver {
 						if (parsed.rest === 'activity') {
 							// this refers to the create activity and not the note itself
 							return this.apRendererService.addContext(this.apRendererService.renderCreate(await this.apRendererService.renderNote(note), note));
+						} else if (parsed.rest === 'quote-request') {
+							// FEP-044f: QuoteRequest
+							if (note.renoteId == null) throw new IdentifiableError('92f087a9-8b21-4757-90de-9c53f1af1e30', 'resolveLocal: not a quote');
+							const renote = await this.notesRepository.findOneByOrFail({ id: note.renoteId });
+							return this.apRendererService.addContext(await this.apRendererService.renderQuoteRequest(note, renote));
 						} else {
 							return this.apRendererService.renderNote(note);
 						}
