@@ -280,7 +280,7 @@ if ($i) {
 	pointer-events: none;
 	display: flex;
 
-	%.notificationsPosition_rightTop,
+	&.notificationsPosition_rightTop,
 	&.notificationsPosition_rightBottom {
 		--notificationSlideOffset: 250px;
 	}
