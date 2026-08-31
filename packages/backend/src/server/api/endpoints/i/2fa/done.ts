@@ -73,8 +73,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.notInitiated);
 			}
 
-			if (!await this.userAuthService.validateOtp(profile.userId, profile.twoFactorTempSecret, token)) {
-				throw new ApiError(meta.errors.verificationFailed);
+			try {
+				if (!await this.userAuthService.validateOtp(profile.userId, profile.twoFactorTempSecret, token)) {
+					throw new ApiError(meta.errors.verificationFailed);
+				}
+			} catch (e) {
+				if (e instanceof UserAuthService.AuthenticationFailedError) {
+					throw new ApiError(meta.errors.verificationFailed);
+				}
+				throw e;
 			}
 
 			const backupCodes = Array.from({ length: 5 }, () => new OTPAuth.Secret().base32);
