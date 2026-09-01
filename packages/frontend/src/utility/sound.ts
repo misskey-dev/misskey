@@ -5,7 +5,7 @@
 
 import type { SoundStore } from '@/preferences/def.js';
 import { prefer } from '@/preferences.js';
-import { PREF_DEF } from '@/preferences/def.js';
+import { isMainTab } from '@/tab.js';
 import { getInitialPrefValue } from '@/preferences/manager.js';
 
 let ctx: AudioContext;
@@ -156,6 +156,8 @@ export async function playMisskeySfxFile(soundStore: SoundStore): Promise<boolea
 	if ('userActivation' in navigator && !navigator.userActivation.hasBeenActive) return false;
 	// サウンドがない場合は再生しない
 	if (soundStore.type === null || soundStore.type === '_driveFile_' && !soundStore.fileUrl) return false;
+	// メインタブでない場合は再生しない
+	if (!isMainTab.value) return false;
 
 	canPlay = false;
 	return await playMisskeySfxFileInternal(soundStore).finally(() => {
