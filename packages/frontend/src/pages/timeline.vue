@@ -21,19 +21,42 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:withSensitive="withSensitive"
 			:onlyFiles="onlyFiles"
 			:sound="true"
-		/>
+		>
+			<template #empty>
+				<div v-if="$i != null && src === 'home'" class="_panel _gaps" :class="$style.tlOnboardingRoot">
+					<div :class="$style.tlOnboardingTitle">
+						<i class="ti ti-info-circle"></i> {{ isNewlyCreatedAccount ? i18n.tsx._tlOnboarding.titleWelcome({ name: instanceName }) : i18n.ts._tlOnboarding.titleNormal}}
+					</div>
+					<div :class="$style.tlOnboardingDescription">{{ $i.followingCount === 0 ? i18n.ts._tlOnboarding.descriptionZeroFollowing : i18n.ts._tlOnboarding.description }}</div>
+					<div class="_gaps_s">
+						<FormLink to="/explore" large>
+							<template #icon><i class="ti ti-hash"></i></template>
+							{{ i18n.ts.explore }}
+							<template #caption>{{ i18n.ts._tlOnboarding.exploreDescription }}</template>
+						</FormLink>
+						<FormLink v-if="isAvailableBasicTimeline('local')" large @click="switchToLocal">
+							<template #icon><i :class="basicTimelineIconClass('local')"></i></template>
+							{{ i18n.ts._tlOnboarding.ltlTitle }}
+							<template #caption>{{ i18n.ts._tlOnboarding.ltlDescription }}</template>
+						</FormLink>
+					</div>
+				</div>
+			</template>
+		</MkStreamingNotesTimeline>
 	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide, useTemplateRef, ref, onMounted, onActivated } from 'vue';
+import { computed, watch, useTemplateRef, ref, onMounted, onActivated } from 'vue';
+import { instanceName } from '@@/js/config.js';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import type { MenuItem } from '@/types/menu.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { PageHeaderItem } from '@/types/page-header.js';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
+import FormLink from '@/components/form/link.vue';
 import * as os from '@/os.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -105,6 +128,20 @@ const withSensitive = computed<boolean>({
 });
 
 const showFixedPostForm = prefer.model('showFixedPostForm');
+
+//#region TLチュートリアル
+const isNewlyCreatedAccount = computed(() => {
+	if (!$i) return false;
+	const createdAt = Date.parse($i.createdAt);
+	const now = Date.now();
+	return (now - createdAt) < (7 * 24 * 60 * 60 * 1000); // 7日以内
+});
+
+function switchToLocal() {
+	if (!isAvailableBasicTimeline('local')) return;
+	src.value = 'local';
+}
+//#endregion
 
 async function chooseList(ev: PointerEvent): Promise<void> {
 	const lists = await userListsCache.fetch();
@@ -332,5 +369,20 @@ definePage(() => ({
 	background: var(--MI_THEME-bg);
 	border-radius: var(--MI-radius);
 	overflow: clip;
+}
+
+.tlOnboardingRoot {
+	border-radius: var(--MI-radius);
+	overflow: clip;
+	padding: var(--MI-margin);
+	border: 2px solid var(--MI_THEME-accent);
+}
+
+.tlOnboardingTitle {
+	font-weight: bold;
+}
+
+.tlOnboardingDescription {
+	font-size: 90%;
 }
 </style>

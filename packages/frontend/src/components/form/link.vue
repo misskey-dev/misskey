@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<component
 		:is="to ? (external ? 'a' : 'MkA') : 'div'"
-		:class="[$style.main, { [$style.active]: active }]"
+		:class="[$style.main, { [$style.large]: large, [$style.active]: active }]"
 		class="_button"
 		v-bind="to ? (external ? { href: to, target: '_blank' } : { to, behavior }) : {}"
 	>
@@ -24,6 +24,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.headerText">
 			<div>
 				<MkCondensedLine :minScale="2 / 3"><slot></slot></MkCondensedLine>
+			</div>
+			<div v-if="$slots.caption" :class="$style.headerTextSub">
+				<MkCondensedLine :minScale="2 / 3"><slot name="caption"></slot></MkCondensedLine>
 			</div>
 		</div>
 		<span :class="$style.suffix">
@@ -41,6 +44,7 @@ defineProps<{
 	external?: boolean;
 	behavior?: null | 'window' | 'browser';
 	inline?: boolean;
+	large?: boolean;
 }>();
 </script>
 
@@ -64,6 +68,11 @@ defineProps<{
 	background: var(--MI_THEME-folderHeaderBg);
 	border-radius: 6px;
 	font-size: 0.9em;
+
+	&.large {
+		font-size: 1em;
+		padding: 9px 12px;
+	}
 
 	&:hover {
 		text-decoration: none;
@@ -97,6 +106,11 @@ defineProps<{
 	text-align: start;
 	overflow: hidden;
 	padding-right: 12px;
+}
+
+.headerTextSub {
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
+	font-size: .85em;
 }
 
 .suffix {
