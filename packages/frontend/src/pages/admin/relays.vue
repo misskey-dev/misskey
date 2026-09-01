@@ -8,6 +8,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<SearchMarker path="/admin/relays" :label="i18n.ts.relays" :keywords="['relays']" icon="ti ti-planet">
 			<div class="_gaps">
+				<SearchMarker :keywords="['reaction', 'like', 'deliver']">
+					<div class="_panel" style="padding: 16px;">
+						<MkSwitch v-model="deliverReactionsToRelays" @change="onChange_deliverReactionsToRelays">
+							<template #label><SearchLabel>{{ i18n.ts._serverSettings.deliverReactionsToRelays }}</SearchLabel></template>
+							<template #caption><SearchText>{{ i18n.ts._serverSettings.deliverReactionsToRelaysDescription }}</SearchText></template>
+						</MkSwitch>
+					</div>
+				</SearchMarker>
+
 				<div v-for="relay in relays" :key="relay.inbox" class="relaycxt _panel" style="padding: 16px;">
 					<div>{{ relay.inbox }}</div>
 					<div style="margin: 8px 0;">
@@ -28,12 +37,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 
+const meta = await misskeyApi('admin/meta');
+
 const relays = ref<Misskey.entities.AdminRelaysListResponse>([]);
+const deliverReactionsToRelays = ref(meta.deliverReactionsToRelays);
+
+function onChange_deliverReactionsToRelays(value: boolean) {
+	os.apiWithDialog('admin/update-meta', {
+		deliverReactionsToRelays: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
 
 async function addRelay() {
 	const { canceled, result: inbox } = await os.inputText({
