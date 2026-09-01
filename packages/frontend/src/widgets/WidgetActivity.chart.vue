@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" :class="$style.root" @mousedown.prevent="onMousedown">
+<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" :class="$style.root" @pointerdown.prevent="onPointerdown">
 	<polyline
 		:points="pointsNote"
 		fill="none"
@@ -53,46 +53,50 @@ const pointsReply = ref<string>();
 const pointsRenote = ref<string>();
 const pointsTotal = ref<string>();
 
-function dragListen(fn: (ev: MouseEvent | TouchEvent) => void) {
-	window.addEventListener('mousemove', fn);
-	window.addEventListener('mouseleave', dragClear.bind(null, fn));
-	window.addEventListener('mouseup', dragClear.bind(null, fn));
-}
-
-function dragClear(fn: (ev: MouseEvent | TouchEvent) => void) {
-	window.removeEventListener('mousemove', fn);
-	window.removeEventListener('mouseleave', dragClear as any);
-	window.removeEventListener('mouseup', dragClear as any);
-}
-
-function getPositionX(event: MouseEvent | TouchEvent) {
-	return 'touches' in event && event.touches.length > 0 ? event.touches[0].clientX : 'clientX' in event ? event.clientX : 0;
-}
-
-function getPositionY(event: MouseEvent | TouchEvent) {
-	return 'touches' in event && event.touches.length > 0 ? event.touches[0].clientY : 'clientY' in event ? event.clientY : 0;
-}
-
-function onMousedown(ev: MouseEvent) {
+function onPointerdown(ev: PointerEvent) {
 	const clickX = ev.clientX;
 	const clickY = ev.clientY;
 	const baseZoom = zoom.value;
 	const basePos = pos.value;
+	const draggingPointerId = ev.pointerId;
+	const target = ev.currentTarget as SVGSVGElement | null;
+	try {
+		target?.setPointerCapture(draggingPointerId);
+	} catch {
+		// ignore
+	}
 
-	// 動かした時
-	dragListen(me => {
-		const x = getPositionX(me);
-		const y = getPositionY(me);
+	const onDrag = (me: PointerEvent) => {
+		if (me.pointerId !== draggingPointerId) return;
 
-		let moveLeft = x - clickX;
-		let moveTop = y - clickY;
+		const x = me.clientX;
+		const y = me.clientY;
+
+		const moveLeft = x - clickX;
+		const moveTop = y - clickY;
 
 		zoom.value = Math.max(1, baseZoom + (-moveTop / 20));
 		pos.value = Math.min(0, basePos + moveLeft);
 		if (pos.value < -(((props.activity.length - 1) * zoom.value) - viewBoxX.value)) pos.value = -(((props.activity.length - 1) * zoom.value) - viewBoxX.value);
 
 		render();
-	});
+	};
+
+	const onDragEnd = (me: PointerEvent) => {
+		if (me.pointerId !== draggingPointerId) return;
+		window.removeEventListener('pointermove', onDrag);
+		window.removeEventListener('pointerup', onDragEnd);
+		window.removeEventListener('pointercancel', onDragEnd);
+		try {
+			target?.releasePointerCapture(draggingPointerId);
+		} catch {
+			// ignore
+		}
+	};
+
+	window.addEventListener('pointermove', onDrag, { passive: true });
+	window.addEventListener('pointerup', onDragEnd, { passive: true });
+	window.addEventListener('pointercancel', onDragEnd, { passive: true });
 }
 
 function render() {
@@ -118,5 +122,6 @@ onMounted(() => {
 	width: 100%;
 	box-sizing: border-box;
 	cursor: all-scroll;
+	touch-action: none;
 }
 </style>
