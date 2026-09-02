@@ -229,6 +229,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</MkPreferenceContainer>
 								</SearchMarker>
 
+								<SearchMarker :keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'cover', 'size', 'full', 'attachment']">
+									<MkPreferenceContainer k="coverMediaList">
+										<MkSwitch v-model="coverMediaList">
+											<template #label><SearchLabel>{{ i18n.ts.coverMediaList }}</SearchLabel></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
+
 								<SearchMarker :keywords="['reaction', 'picker', 'contextmenu', 'open']">
 									<MkPreferenceContainer k="useReactionPickerForContextMenu">
 										<MkSwitch v-model="useReactionPickerForContextMenu">
@@ -912,6 +920,7 @@ const showReactionsCount = prefer.model('showReactionsCount');
 const enableQuickAddMfmFunction = prefer.model('enableQuickAddMfmFunction');
 const forceShowAds = prefer.model('forceShowAds');
 const loadRawImages = prefer.model('loadRawImages');
+const coverMediaList = prefer.model('coverMediaList');
 const imageNewTab = prefer.model('imageNewTab');
 const showFixedPostForm = prefer.model('showFixedPostForm');
 const showFixedPostFormInChannel = prefer.model('showFixedPostFormInChannel');

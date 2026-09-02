@@ -2189,6 +2189,10 @@ export interface Locale extends ILocale {
      */
     "showMediaListByGridInWideArea": string;
     /**
+     * 添付画像のサムネイルを領域いっぱいに表示する
+     */
+    "coverMediaList": string;
+    /**
      * フォロー申請はありません
      */
     "noFollowRequests": string;
