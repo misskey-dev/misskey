@@ -19,6 +19,6 @@
 		"frontend": "workspace:*",
 		"playwright": "1.62.1",
 		"tsx": "4.23.12",
-		"vitest": "4.1.10"
+		"vitest": "4.1.11"
 	}
 }

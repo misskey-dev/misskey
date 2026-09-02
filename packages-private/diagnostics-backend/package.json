@@ -17,10 +17,10 @@
 	},
 	"devDependencies": {
 		"@types/node": "26.2.0",
-		"@types/pg": "8.21.0",
+		"@types/pg": "8.23.1",
 		"ioredis": "6.0.0",
 		"pg": "8.23.0",
 		"tsx": "4.23.12",
-		"vitest": "4.1.10"
+		"vitest": "4.1.11"
 	}
 }
