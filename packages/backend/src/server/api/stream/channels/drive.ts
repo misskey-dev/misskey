@@ -31,7 +31,7 @@ export class DriveChannel extends Channel {
 	}
 
 	@bindThis
-	public async onData(data: EventTypesToEventPayload<DriveEventTypes>) {
+	private async onData(data: EventTypesToEventPayload<DriveEventTypes>) {
 		this.send(data);
 	}
 

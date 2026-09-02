@@ -37,7 +37,7 @@ export class MainChannel extends Channel {
 	}
 
 	@bindThis
-	public async onData(data: EventTypesToEventPayload<MainEventTypes>) {
+	private async onData(data: EventTypesToEventPayload<MainEventTypes>) {
 		switch (data.type) {
 			case 'notification': {
 				// Ignore notifications from instances the user has muted

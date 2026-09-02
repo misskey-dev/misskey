@@ -33,7 +33,7 @@ export class AdminChannel extends Channel {
 	}
 
 	@bindThis
-	public async onData(data: EventTypesToEventPayload<AdminEventTypes>) {
+	private async onData(data: EventTypesToEventPayload<AdminEventTypes>) {
 		this.send(data);
 	}
 
