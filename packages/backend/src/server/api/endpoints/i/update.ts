@@ -68,10 +68,22 @@ export const meta = {
 			id: 'f419f9f8-2f4d-46b1-9fb4-49d3a2fd7191',
 		},
 
+		avatarSizeTooLarge: {
+			message: 'The file specified as an avatar is too large.',
+			code: 'AVATAR_SIZE_TOO_LARGE',
+			id: '92c714fd-fcf4-4795-a688-9d3fda2e5594',
+		},
+
 		bannerNotAnImage: {
 			message: 'The file specified as a banner is not an image.',
 			code: 'BANNER_NOT_AN_IMAGE',
 			id: '75aedb19-2afd-4e6d-87fc-67941256fa60',
+		},
+
+		bannerSizeTooLarge: {
+			message: 'The file specified as a banner is too large.',
+			code: 'BANNER_SIZE_TOO_LARGE',
+			id: '8ac3f0ab-207d-4595-ab3a-c6574cf770e7',
 		},
 
 		noSuchPage: {
@@ -376,6 +388,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (avatar == null || avatar.userId !== user.id) throw new ApiError(meta.errors.noSuchAvatar);
 				if (!avatar.type.startsWith('image/')) throw new ApiError(meta.errors.avatarNotAnImage);
+				if (avatar.size > 1024 * 1024) throw new ApiError(meta.errors.avatarSizeTooLarge); // 1MB
 
 				updates.avatarId = avatar.id;
 				updates.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
@@ -394,6 +407,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (banner == null || banner.userId !== user.id) throw new ApiError(meta.errors.noSuchBanner);
 				if (!banner.type.startsWith('image/')) throw new ApiError(meta.errors.bannerNotAnImage);
+				if (banner.size > 1024 * 1024 * 2) throw new ApiError(meta.errors.bannerSizeTooLarge); // 2MB
 
 				updates.bannerId = banner.id;
 				updates.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
