@@ -269,6 +269,13 @@ function save() {
 
 function changeAvatar(ev: PointerEvent) {
 	async function done(driveFile: Misskey.entities.DriveFile) {
+		if (driveFile.size > 1024 * 1024) {
+			os.alert({
+				type: 'error',
+				text: i18n.tsx.fileSizeTooLargeMax({ n: '1MB' }),
+			});
+			return;
+		}
 		const i = await os.apiWithDialog('i/update', {
 			avatarId: driveFile.id,
 		});
@@ -318,6 +325,13 @@ function changeAvatar(ev: PointerEvent) {
 
 function changeBanner(ev: PointerEvent) {
 	async function done(driveFile: Misskey.entities.DriveFile) {
+		if (driveFile.size > 1024 * 1024 * 2) {
+			os.alert({
+				type: 'error',
+				text: i18n.tsx.fileSizeTooLargeMax({ n: '2MB' }),
+			});
+			return;
+		}
 		const i = await os.apiWithDialog('i/update', {
 			bannerId: driveFile.id,
 		});

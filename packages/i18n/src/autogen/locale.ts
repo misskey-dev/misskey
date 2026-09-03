@@ -5707,6 +5707,10 @@ export interface Locale extends ILocale {
      * ピクセルアート拡大モード
      */
     "pixelatedZoom": string;
+    /**
+     * ファイルサイズが大きすぎます。(最大: {n})
+     */
+    "fileSizeTooLargeMax": ParameterizedString<"n">;
     "_imageEditing": {
         "_vars": {
             /**
