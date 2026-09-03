@@ -191,6 +191,12 @@ export const paramDef = {
 		followingVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
 		followersVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
 		chatScope: { type: 'string', enum: ['everyone', 'followers', 'following', 'mutual', 'none'] },
+		hiddenRoleIds: {
+			type: 'array',
+			maxItems: 256,
+			uniqueItems: true,
+			items: { type: 'string', format: 'misskey:id' },
+		},
 		pinnedPageId: { type: 'string', format: 'misskey:id', nullable: true },
 		mutedWords: muteWords,
 		hardMutedWords: muteWords,
@@ -293,6 +299,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.followingVisibility !== undefined) profileUpdates.followingVisibility = ps.followingVisibility;
 			if (ps.followersVisibility !== undefined) profileUpdates.followersVisibility = ps.followersVisibility;
 			if (ps.chatScope !== undefined) updates.chatScope = ps.chatScope;
+			if (ps.hiddenRoleIds !== undefined) {
+				const roles = await this.roleService.getUserRoles(user.id);
+				const allowedRoleIds = new Set(roles.filter(role => role.isPublic && !role.isPublicDisplayRequired).map(role => role.id));
+				const hiddenRoleIds: string[] = [];
+				const seenRoleIds = new Set<string>();
+
+				for (const roleId of ps.hiddenRoleIds) {
+					if (seenRoleIds.has(roleId) || !allowedRoleIds.has(roleId)) continue;
+					seenRoleIds.add(roleId);
+					hiddenRoleIds.push(roleId);
+				}
+
+				updates.hiddenRoleIds = hiddenRoleIds;
+			}
 
 			function checkMuteWordCount(mutedWords: (string[] | string)[], limit: number) {
 				const count = (arr: (string[] | string)[]) => {
