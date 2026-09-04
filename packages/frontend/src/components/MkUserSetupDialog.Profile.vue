@@ -87,6 +87,13 @@ async function setAvatar(ev: PointerEvent) {
 
 	const driveFile = (await os.launchUploader([originalOrCropped], { multiple: false }))[0];
 
+	if (driveFile.size > 1024 * 1024) {
+		os.alert({
+			type: 'error',
+			text: i18n.tsx.fileSizeTooLargeMax({ n: '1MB' }),
+		});
+		return;
+	}
 	const i = await os.apiWithDialog('i/update', {
 		avatarId: driveFile.id,
 	});
