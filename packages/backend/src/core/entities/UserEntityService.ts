@@ -46,6 +46,7 @@ import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { IdService } from '@/core/IdService.js';
 import type { AnnouncementService } from '@/core/AnnouncementService.js';
 import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import type { SystemAccountService } from '@/core/SystemAccountService.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { ChatService } from '@/core/ChatService.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -95,6 +96,7 @@ export class UserEntityService implements OnModuleInit {
 	private idService: IdService;
 	private avatarDecorationService: AvatarDecorationService;
 	private chatService: ChatService;
+	private systemAccountService: SystemAccountService;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -151,6 +153,7 @@ export class UserEntityService implements OnModuleInit {
 		this.idService = this.moduleRef.get('IdService');
 		this.avatarDecorationService = this.moduleRef.get('AvatarDecorationService');
 		this.chatService = this.moduleRef.get('ChatService');
+		this.systemAccountService = this.moduleRef.get('SystemAccountService');
 	}
 
 	//#region Validators
@@ -474,6 +477,8 @@ export class UserEntityService implements OnModuleInit {
 
 		const isModerator = isMe && isDetailed ? this.roleService.isModerator(user) : undefined;
 		const isAdmin = isMe && isDetailed ? this.roleService.isAdministrator(user) : undefined;
+		const isProxy = (await this.systemAccountService.getUser('proxy'))?.id === user.id;
+
 		const unreadAnnouncements = isMe && isDetailed ?
 			(await this.announcementService.getUnreadAnnouncements(user)).map((announcement) => ({
 				createdAt: this.idService.parse(announcement.id).date.toISOString(),
@@ -500,6 +505,7 @@ export class UserEntityService implements OnModuleInit {
 			}))) : [],
 			isBot: user.isBot,
 			isCat: user.isCat,
+			isProxy,
 			requireSigninToViewContents: user.requireSigninToViewContents === false ? undefined : true,
 			makeNotesFollowersOnlyBefore: user.makeNotesFollowersOnlyBefore ?? undefined,
 			makeNotesHiddenBefore: user.makeNotesHiddenBefore ?? undefined,

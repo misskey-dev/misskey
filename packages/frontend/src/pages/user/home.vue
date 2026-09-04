@@ -27,6 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<span class="username"><MkAcct :user="user" :detail="true"/></span>
 									<span v-if="user.isLocked"><i class="ti ti-lock"></i></span>
 									<span v-if="user.isBot"><i class="ti ti-robot"></i></span>
+									<span v-if="user.isProxy" :title="i18n.ts.proxyAccount"><i class="ti ti-ghost"></i></span>
 									<button v-if="$i && !isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
 										<i class="ti ti-edit"></i> {{ i18n.ts.addMemo }}
 									</button>
@@ -45,6 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<span class="username"><MkAcct :user="user" :detail="true"/></span>
 								<span v-if="user.isLocked"><i class="ti ti-lock"></i></span>
 								<span v-if="user.isBot"><i class="ti ti-robot"></i></span>
+								<span v-if="user.isProxy"><i class="ti ti-ghost"></i></span>
 							</div>
 						</div>
 						<div v-if="user.followedMessage != null" class="followedMessage">

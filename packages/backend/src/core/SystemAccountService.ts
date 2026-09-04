@@ -83,7 +83,7 @@ export class SystemAccountService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async fetch(type: typeof SYSTEM_ACCOUNT_TYPES[number]): Promise<MiLocalUser> {
+	public async getUser(type: typeof SYSTEM_ACCOUNT_TYPES[number]): Promise<MiLocalUser | null> {
 		const cached = this.cache.get(type);
 		if (cached) return cached;
 
@@ -95,6 +95,17 @@ export class SystemAccountService implements OnApplicationShutdown {
 		if (systemAccount) {
 			this.cache.set(type, systemAccount.user as MiLocalUser);
 			return systemAccount.user as MiLocalUser;
+		} else {
+			return null;
+		}
+	}
+
+	@bindThis
+	public async fetch(type: typeof SYSTEM_ACCOUNT_TYPES[number]): Promise<MiLocalUser> {
+		const systemAccountUser = await this.getUser(type);
+
+		if (systemAccountUser != null) {
+			return systemAccountUser;
 		} else {
 			const created = await this.createCorrespondingUser(type, {
 				username: `system.${type}`, // NOTE: (できれば避けたいが) . が含まれるかどうかでシステムアカウントかどうかを判定している処理もあるので変えないように
