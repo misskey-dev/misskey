@@ -14,6 +14,8 @@ on:
       - .github/workflows/test-frontend.yml
       - .github/misskey/test.yml
   pull_request:
+    branches-ignore:
+      - master
     paths:
       - packages/frontend/**
       # for permissions

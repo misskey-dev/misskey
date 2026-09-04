@@ -1,7 +1,7 @@
-import { describe, test, beforeAll } from 'vitest';
+import { describe, test, beforeAll, vi } from 'vitest';
 import assert, { strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
+import { createAccount, deepStrictEqualWithExcludedFields, fetchAdmin, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile, waitForFollowRelation, WAIT_FOR_FEDERATION } from './utils.js';
 
 const bAdmin = await fetchAdmin('b.test');
 
@@ -106,18 +106,19 @@ describe('Drive', () => {
 				]);
 
 				await bob.client.request('following/create', { userId: aliceInB.id });
-				await sleep();
+				await waitForFollowRelation(bob, alice, 1);
 			});
 
 			test('Alice uploads sensitive image and it is shown as sensitive from Bob', async () => {
 				const file = await uploadFile('a.test', alice);
 				await alice.client.request('drive/files/update', { fileId: file.id, isSensitive: true });
 				await alice.client.request('notes/create', { text: 'sensitive', fileIds: [file.id] });
-				await sleep();
 
-				const notes = await bob.client.request('notes/timeline', {});
-				strictEqual(notes.length, 1);
-				const noteInB = notes[0];
+				const noteInB = await vi.waitFor(async () => {
+					const notes = await bob.client.request('notes/timeline', {});
+					strictEqual(notes.length, 1);
+					return notes[0];
+				}, WAIT_FOR_FEDERATION);
 				assert(noteInB.files != null);
 				strictEqual(noteInB.files.length, 1);
 				strictEqual(noteInB.files[0].isSensitive, true);

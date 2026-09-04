@@ -1,7 +1,7 @@
-import { describe, test, beforeAll, afterAll } from 'vitest';
+import { describe, test, beforeAll, afterAll, vi } from 'vitest';
 import assert, { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
+import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile, waitForFollowRelation, WAIT_FOR_FEDERATION } from './utils.js';
 
 describe('Note', () => {
 	let alice: LoginUser, bob: LoginUser;
@@ -85,10 +85,10 @@ describe('Note', () => {
 			]);
 			strictEqual(aliceInB.id, resolvedNote.userId);
 
-			await sleep();
-
-			const resolvedReplyedNote = await bob.client.request('notes/show', { noteId: resolvedNote.replyId });
-			strictEqual(resolvedReplyedNote.repliesCount, 1);
+			await vi.waitFor(async () => {
+				const resolvedReplyedNote = await bob.client.request('notes/show', { noteId: resolvedNote.replyId! });
+				strictEqual(resolvedReplyedNote.repliesCount, 1);
+			}, WAIT_FOR_FEDERATION);
 		});
 
 		test('Consistency of Renote', async () => {
@@ -146,27 +146,26 @@ describe('Note', () => {
 					carol = await createAccount('a.test');
 
 					await carol.client.request('following/create', { userId: bobInA.id });
-					await sleep();
+					await waitForFollowRelation(carol, bob, 1);
 				});
 
 				test('Check', async () => {
 					const note = (await bob.client.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
 					const noteInA = await resolveRemoteNote('b.test', note.id, carol);
 					await bob.client.request('notes/delete', { noteId: note.id });
-					await sleep();
 
-					await rejects(
+					await vi.waitFor(async () => await rejects(
 						async () => await carol.client.request('notes/show', { noteId: noteInA.id }),
 						(err: any) => {
 							strictEqual(err.code, 'NO_SUCH_NOTE');
 							return true;
 						},
-					);
+					), WAIT_FOR_FEDERATION);
 				});
 
 				afterAll(async () => {
 					await carol.client.request('following/delete', { userId: bobInA.id });
-					await sleep();
+					await waitForFollowRelation(carol, bob, 0);
 				});
 			});
 
@@ -175,18 +174,20 @@ describe('Note', () => {
 					const note = (await bob.client.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
 					const noteInA = await resolveRemoteNote('b.test', note.id, alice);
 					await alice.client.request('notes/create', { renoteId: noteInA.id });
-					await sleep();
+					await vi.waitFor(async () => {
+						const renotes = await bob.client.request('notes/renotes', { noteId: note.id });
+						strictEqual(renotes.length, 1);
+					}, WAIT_FOR_FEDERATION);
 
 					await bob.client.request('notes/delete', { noteId: note.id });
-					await sleep();
 
-					await rejects(
+					await vi.waitFor(async () => await rejects(
 						async () => await alice.client.request('notes/show', { noteId: noteInA.id }),
 						(err: any) => {
 							strictEqual(err.code, 'NO_SUCH_NOTE');
 							return true;
 						},
-					);
+					), WAIT_FOR_FEDERATION);
 				});
 			});
 
@@ -195,18 +196,20 @@ describe('Note', () => {
 					const note = (await bob.client.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
 					const noteInA = await resolveRemoteNote('b.test', note.id, alice);
 					await alice.client.request('notes/create', { text: 'Hello Bob!', replyId: noteInA.id });
-					await sleep();
+					await vi.waitFor(async () => {
+						const replies = await bob.client.request('notes/replies', { noteId: note.id });
+						strictEqual(replies.length, 1);
+					}, WAIT_FOR_FEDERATION);
 
 					await bob.client.request('notes/delete', { noteId: note.id });
-					await sleep();
 
-					await rejects(
+					await vi.waitFor(async () => await rejects(
 						async () => await alice.client.request('notes/show', { noteId: noteInA.id }),
 						(err: any) => {
 							strictEqual(err.code, 'NO_SUCH_NOTE');
 							return true;
 						},
-					);
+					), WAIT_FOR_FEDERATION);
 				});
 			});
 
@@ -269,16 +272,22 @@ describe('Note', () => {
 	});
 
 	describe('Reaction', () => {
+		async function waitForReactions(noteId: string, count: number): Promise<Misskey.entities.NotesReactionsResponse> {
+			return await vi.waitFor(async () => {
+				const reactions = await alice.client.request('notes/reactions', { noteId });
+				strictEqual(reactions.length, count);
+				return reactions;
+			}, WAIT_FOR_FEDERATION);
+		}
+
 		describe('Consistency', () => {
 			test('Unicode reaction', async () => {
 				const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
 				const resolvedNote = await resolveRemoteNote('a.test', note.id, bob);
 				const reaction = '😅';
 				await bob.client.request('notes/reactions/create', { noteId: resolvedNote.id, reaction });
-				await sleep();
 
-				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
-				strictEqual(reactions.length, 1);
+				const reactions = await waitForReactions(note.id, 1);
 				strictEqual(reactions[0].type, reaction);
 				strictEqual(reactions[0].user.id, bobInA.id);
 			});
@@ -288,10 +297,8 @@ describe('Note', () => {
 				const resolvedNote = await resolveRemoteNote('a.test', note.id, bob);
 				const emoji = await addCustomEmoji('b.test');
 				await bob.client.request('notes/reactions/create', { noteId: resolvedNote.id, reaction: `:${emoji.name}:` });
-				await sleep();
 
-				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
-				strictEqual(reactions.length, 1);
+				const reactions = await waitForReactions(note.id, 1);
 				strictEqual(reactions[0].type, `:${emoji.name}@b.test:`);
 				strictEqual(reactions[0].user.id, bobInA.id);
 			});
@@ -303,10 +310,8 @@ describe('Note', () => {
 				const noteInB = await resolveRemoteNote('a.test', note.id, bob);
 				const emoji = await addCustomEmoji('b.test');
 				await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: `:${emoji.name}:` });
-				await sleep();
 
-				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
-				strictEqual(reactions.length, 1);
+				const reactions = await waitForReactions(note.id, 1);
 				strictEqual(reactions[0].type, '❤');
 			});
 
@@ -319,10 +324,8 @@ describe('Note', () => {
 				const noteInB = await resolveRemoteNote('a.test', note.id, bob);
 				const emoji = await addCustomEmoji('b.test', { isSensitive: true });
 				await bob.client.request('notes/reactions/create', { noteId: noteInB.id, reaction: `:${emoji.name}:` });
-				await sleep();
 
-				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
-				strictEqual(reactions.length, 1);
+				const reactions = await waitForReactions(note.id, 1);
 				strictEqual(reactions[0].type, `:${emoji.name}@b.test:`);
 			});
 		});
@@ -340,12 +343,13 @@ describe('Note', () => {
 				const note = (await bob.client.request('notes/create', { poll: { choices: ['inu', 'neko'] } })).createdNote;
 				const noteInA = await resolveRemoteNote('b.test', note.id, carol);
 				await carol.client.request('notes/polls/vote', { noteId: noteInA.id, choice: 0 });
-				await sleep();
 
-				const noteAfterVote = await bob.client.request('notes/show', { noteId: note.id });
-				assert(noteAfterVote.poll != null);
-				strictEqual(noteAfterVote.poll.choices[0].votes, 1);
-				strictEqual(noteAfterVote.poll.choices[1].votes, 0);
+				await vi.waitFor(async () => {
+					const noteAfterVote = await bob.client.request('notes/show', { noteId: note.id });
+					assert(noteAfterVote.poll != null);
+					strictEqual(noteAfterVote.poll.choices[0].votes, 1);
+					strictEqual(noteAfterVote.poll.choices[1].votes, 0);
+				}, WAIT_FOR_FEDERATION);
 			});
 		});
 
@@ -362,7 +366,7 @@ describe('Note', () => {
 				]);
 
 				await bobRemoteFollower.client.request('following/create', { userId: bobInA.id });
-				await sleep();
+				await waitForFollowRelation(bobRemoteFollower, bob, 1);
 			});
 
 			test('A vote in Bob\'s server is delivered to Bob\'s remote followers', async () => {
@@ -370,12 +374,13 @@ describe('Note', () => {
 				// NOTE: resolve before voting
 				const noteInA = await resolveRemoteNote('b.test', note.id, bobRemoteFollower);
 				await localVoter.client.request('notes/polls/vote', { noteId: note.id, choice: 0 });
-				await sleep();
 
-				const noteAfterVote = await bobRemoteFollower.client.request('notes/show', { noteId: noteInA.id });
-				assert(noteAfterVote.poll != null);
-				strictEqual(noteAfterVote.poll.choices[0].votes, 1);
-				strictEqual(noteAfterVote.poll.choices[1].votes, 0);
+				await vi.waitFor(async () => {
+					const noteAfterVote = await bobRemoteFollower.client.request('notes/show', { noteId: noteInA.id });
+					assert(noteAfterVote.poll != null);
+					strictEqual(noteAfterVote.poll.choices[0].votes, 1);
+					strictEqual(noteAfterVote.poll.choices[1].votes, 0);
+				}, WAIT_FOR_FEDERATION);
 			});
 		});
 	});
