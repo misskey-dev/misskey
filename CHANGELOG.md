@@ -1,5 +1,8 @@
 ## Unreleased
 
+### Note
+- Node.js v22のサポートを終了しました。Node.js v22では動作しません。Node.js v24, v26をご利用ください。
+
 ### General
 -
 
@@ -7,7 +10,7 @@
 -
 
 ### Server
--
+- Enhance: 動画処理のパフォーマンスを改善
 
 
 ## 2026.9.0
