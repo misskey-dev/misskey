@@ -13,6 +13,7 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
+import { MiDeletedNote } from '@/models/DeletedNote.js';
 import type { BlockingsRepository, ChannelFollowingsRepository, ChannelsRepository, DriveFilesRepository, FollowingsRepository, InstancesRepository, MiFollowing, MiMeta, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiApp } from '@/models/App.js';
@@ -644,6 +645,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	@bindThis
 	private async insertNote(user: { id: MiUser['id']; host: MiUser['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
 		const insert = new MiNote({
+			// Note: id は transaction内で確定させるので、ここの id は一時的なものである可能性がある
 			id: this.idService.gen(data.createdAt?.getTime()),
 			fileIds: data.files ? data.files.map(file => file.id) : [],
 			replyId: data.reply ? data.reply.id : null,
@@ -702,11 +704,45 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		// 投稿を作成
 		try {
-			if (insert.hasPoll) {
-				// Start transaction
-				await this.db.transaction(async transactionalEntityManager => {
-					await transactionalEntityManager.insert(MiNote, insert);
+			await this.db.transaction(async transactionalEntityManager => {
+				if (data.uri) {
+					// This query acquires FOR KEY SHARE lock for note with same uri row.
+					// It's unlikely to success this query since we have checked if note with the uri exists before
+					// creating remote note, but for some cases for replication delay, this query can lock row.
+					//
+					// This lock is necessary to prevent conflicting delete transaction and this transaction.
+					// Without this lock, `MiDeletedNote` and `MiNote` will have row with same `uri` as shown below:
+					// 1. The delete transaction executes `DELETE FROM note`.
+					// 2. The delete transaction has not yet saved or committed `MiDeletedNote`.
+					// 3. The creation transaction runs `findOneBy(MiDeletedNote, { uri })` and finds no tombstone.
+					// 4. The creation transaction attempts to insert `MiNote` with the same URI on inserting new note.
+					// 5. PostgreSQL waits for the uncommitted deletion of the old `MiNote`.
+					// 6. The delete transaction saves `MiDeletedNote` and commits.
+					// 7. The waiting create insert succeeds because the old `MiNote` row is now deleted.
+					// 8. Both `MiNote` and `MiDeletedNote` will have row with same URI.
+					//
+					// `SELECT FOR KEY SHARE` waits for delete transaction to complete so the problem would not happen.
+					await transactionalEntityManager.createQueryBuilder(MiNote, 'note')
+						.setLock('for_key_share')
+						.where('note.uri = :uri', { uri: data.uri })
+						.getRawOne();
 
+					// もし URI が指定されている場合は、MiDeletedNote から id を引き継ぐ。
+					const deletedOne = await transactionalEntityManager.findOneBy(MiDeletedNote, { uri: data.uri });
+					if (deletedOne != null) {
+						if (deletedOne.deletedAt) {
+							// もしこの投稿がモデレータ等によって削除されていた場合は、復活させてはいけないので、エラーにする
+							throw new Error('This note uri is deleted by moderator.');
+						}
+						// さもなければ、もとの id を引き継ぎ、MiDeletedNote からは削除する
+						insert.id = deletedOne.id;
+						await transactionalEntityManager.delete(MiDeletedNote, deletedOne.id);
+					}
+				}
+
+				await transactionalEntityManager.insert(MiNote, insert);
+
+				if (insert.hasPoll) {
 					const poll = new MiPoll({
 						noteId: insert.id,
 						choices: data.poll!.choices,
@@ -720,10 +756,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 					});
 
 					await transactionalEntityManager.insert(MiPoll, poll);
-				});
-			} else {
-				await this.notesRepository.insert(insert);
-			}
+				}
+			});
 
 			return {
 				...insert,

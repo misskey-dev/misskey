@@ -36,8 +36,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<article :class="$style.note">
 		<header :class="$style.noteHeader">
-			<EmAvatar :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link/>
-			<div :class="$style.noteHeaderBody">
+			<div v-if="appearNote.deletedAt" :class="$style.noteHeaderAvatar"></div>
+			<EmAvatar v-else :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link/>
+			<div v-if="appearNote.deletedAt" :class="$style.noteHeaderBody">
+				<div :class="$style.noteHeaderName" style="opacity: 0.5;">
+					Unknown User
+				</div>
+			</div>
+			<div v-else :class="$style.noteHeaderBody">
 				<div :class="$style.noteHeaderBodyUpper">
 					<div style="min-width: 0;">
 						<div class="_nowrap">
@@ -65,20 +71,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-show="appearNote.cw == null || showContent">
 				<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 				<EmA v-if="appearNote.replyId" :class="$style.noteReplyTarget" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></EmA>
+				<div v-if="appearNote.deletedAt" :class="$style.deleted">
+					{{ i18n.ts.deletedNote }}
+				</div>
 				<EmMfm
-					v-if="appearNote.text"
+					v-else-if="appearNote.text"
 					:parsedNodes="parsed"
 					:text="appearNote.text"
 					:author="appearNote.user"
 					:nyaize="'respect'"
 					:emojiUrls="appearNote.emojis"
 				/>
-				<a v-if="appearNote.renote != null" :class="$style.rn">RN:</a>
+				<a v-if="appearNote.renoteId != null" :class="$style.rn">RN:</a>
 				<div v-if="appearNote.files && appearNote.files.length > 0">
 					<EmMediaList :mediaList="appearNote.files" :originalEntityUrl="`${url}/notes/${appearNote.id}`"/>
 				</div>
 				<EmPoll v-if="appearNote.poll" ref="pollViewer" :noteId="appearNote.id" :poll="appearNote.poll" :readOnly="true" :class="$style.poll"/>
-				<div v-if="appearNote.renote" :class="$style.quote"><EmNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
+				<div v-if="appearNote.renoteId" :class="$style.quote"><EmNoteSimple :note="appearNote.renote ?? null" :class="$style.quoteNote"/></div>
 				<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
 					<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
 				</button>
