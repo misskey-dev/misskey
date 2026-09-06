@@ -42,7 +42,6 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 
 COPY --link . ./
 
-RUN git submodule update --init
 RUN pnpm build
 RUN rm -rf .git/
 

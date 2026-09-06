@@ -21,6 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject, onMounted, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getUnicodeEmojiOrNull } from '@@/js/emojilist.js';
+import { getEmojiNameFromReaction, isLocalCustomEmojiReaction } from '@@/js/emoji-name.js';
 import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
 import type { MenuItem } from '@/types/menu';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
@@ -58,7 +59,7 @@ const emit = defineEmits<{
 
 const buttonEl = useTemplateRef('buttonEl');
 
-const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
+const emojiName = computed(() => getEmojiNameFromReaction(props.reaction));
 
 const canToggle = computed(() => {
 	const emoji = customEmojisMap.get(emojiName.value) ?? getUnicodeEmojiOrNull(props.reaction);
@@ -68,7 +69,7 @@ const canToggle = computed(() => {
 	return props.reaction.match(/@\w/) == null && $i != null && emoji != null;
 });
 const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
-const isLocalCustomEmoji = props.reaction[0] === ':' && props.reaction.includes('@.');
+const isLocalCustomEmoji = isLocalCustomEmojiReaction(props.reaction);
 
 async function toggleReaction() {
 	if (!canToggle.value) return;
@@ -168,7 +169,7 @@ async function menu(ev: PointerEvent) {
 			action: async () => {
 				const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
 					emoji: await misskeyApiGet('emoji', {
-						name: props.reaction.replace(/:/g, '').replace(/@\./, ''),
+						name: emojiName.value,
 					}),
 				}, {
 					closed: () => dispose(),
