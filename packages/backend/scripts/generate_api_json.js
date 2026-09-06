@@ -18,6 +18,10 @@ async function main() {
 		throw new Error('`built` directory does not exist.');
 	}
 
+	// バックエンド本体を動作させるにあたって必要
+	// （エントリーポイントから↓のファイルをimportしてるわけではないので別途importが必要）
+	await import('reflect-metadata');
+
 	/** @type {import('../src/config.js')} */
 	const { loadConfig } = await import('../built/config.js');
 
