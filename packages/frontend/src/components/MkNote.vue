@@ -169,6 +169,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 		</template>
 	</I18n>
+	<I18n v-else-if="muted === 'sensitiveChannel'" :src="i18n.ts.userSaysSomethingInSensitiveChannel" tag="small">
+		<template #name>
+			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
+				<MkUserName :user="appearNote.user"/>
+			</MkA>
+		</template>
+	</I18n>
 	<I18n v-else-if="showSoftWordMutedWord !== true" :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
@@ -240,6 +247,9 @@ provide(DI.mock, props.mock);
 // 周辺コンテキストのインジェクト
 const inTimeline = inject<boolean>('inTimeline', false);
 const tl_withSensitive = inject<Ref<boolean>>('tl_withSensitive', ref(true));
+// for some timelines, like home timeline which only shows the following channels,
+// we never collapse sensitive channel notes so we allow inject to override the preference
+const collapseSensitiveChannel = inject(DI.collapseSensitiveChannel, true);
 const inChannel = inject(DI.inChannel, null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 const currentAntenna = inject<Ref<Misskey.entities.Antenna | null> | null>('currentAntenna', null);
@@ -293,6 +303,7 @@ const {
 }, {
 	inTimeline,
 	tl_withSensitive,
+	collapseSensitiveChannel,
 	inChannel,
 	currentClip,
 	currentAntenna,
