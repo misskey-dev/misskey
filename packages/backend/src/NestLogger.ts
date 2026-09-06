@@ -42,7 +42,15 @@ export class NestLogger implements LoggerService {
 	error(message: any, ...optionalParams: any[]) {
 		const stack = optionalParams.find(isStack);
 		const context = takeContext(optionalParams.filter(param => !isStack(param)));
-		nestLogger.error(withContext(message, context), stack != null ? { stack } : null);
+		const text = withContext(message, context);
+
+		if (message instanceof Error) {
+			nestLogger.error({ message: text, error: message });
+		} else if (stack != null) {
+			nestLogger.error({ message: text, error: { name: 'Error', message: String(message), stack } });
+		} else {
+			nestLogger.error(text);
+		}
 	}
 
 	/**
