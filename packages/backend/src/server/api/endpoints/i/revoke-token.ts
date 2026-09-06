@@ -13,21 +13,18 @@ import { ApiError } from '../../error.js';
 export const meta = {
 	description: 'Revoke an access token of the authenticated user. Requires credential. When called with an access token (third-party app), only the token currently in use can be revoked.',
 
-	// アクセストークン自身を失効させられるようにするため requireCredential は使わず、
-	// 認証・権限チェックを実装内で行う (ApiCallService が requireCredential:true かつ kind なしの
-	// エンドポイントへのトークン経由のリクエストを一律 PERMISSION_DENIED にするため)
 	errors: {
 		credentialRequired: {
 			message: 'Credential required.',
 			code: 'CREDENTIAL_REQUIRED',
-			id: '1384574d-a912-4b81-8601-c7b1c4085df1',
+			id: '6f1f0d3a-3d5b-4b1f-9c3e-2a6d1e5b8c47',
 			httpStatusCode: 401,
 		},
 		permissionDenied: {
-			message: 'Your app does not have the necessary permissions to use this endpoint.',
+			message: 'Permission denied.',
 			code: 'PERMISSION_DENIED',
-			kind: 'permission',
-			id: '1370e5b7-d4eb-4566-bb1d-7748ee6a1838',
+			id: 'fc20d118-5705-4462-b6c5-2b5b43092cf3',
+			httpStatusCode: 403,
 		},
 	},
 } as const;
