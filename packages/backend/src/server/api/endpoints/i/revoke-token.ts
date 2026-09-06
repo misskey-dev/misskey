@@ -27,7 +27,7 @@ export const meta = {
 			message: 'Your app does not have the necessary permissions to use this endpoint.',
 			code: 'PERMISSION_DENIED',
 			kind: 'permission',
-			id: '1370e5b7-d4eb-4566-bb1d-7748ee6a1838',
+			id: 'fc20d118-5705-4462-b6c5-2b5b43092cf3',
 		},
 	},
 } as const;
