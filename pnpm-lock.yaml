@@ -8,6 +8,8 @@ overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
   lodash: 4.18.1
+  undici@^7: 7.29.1
+  undici@^6: 6.28.1
   '@tabler/icons-webfont>sharp': '-'
 
 importers:
@@ -8743,12 +8745,12 @@ packages:
   undici-types@8.3.0:
     resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
 
-  undici@6.28.0:
-    resolution: {integrity: sha512-LIY910g9TI13YS95lrMFrs8Rm/u/irgHeTWoKCoteeJ04CUJ92eEfj0rVn+7VKMPBpUPiUoBKfhNyLI23EE/KA==}
+  undici@6.28.1:
+    resolution: {integrity: sha512-zWpdTVD54H48CIybL0rWQ3ukpb9d23wM7eH5RtfdmeP70cWHNjtfo7P4vZX+5CoDcO53J4Pu5uXp7lNfjc6DRA==}
     engines: {node: '>=18.17'}
 
-  undici@7.25.0:
-    resolution: {integrity: sha512-xXnp4kTyor2Zq+J1FfPI6Eq3ew5h6Vl0F/8d9XU5zZQf1tX9s2Su1/3PiMmUANFULpmksxkClamIZcaUqryHsQ==}
+  undici@7.29.1:
+    resolution: {integrity: sha512-RYONW2MeafgYlkVOKYKkA/Ag7BmXqgIWCa8t1m0JcxrQg9pI9lEqRhAOruOBCbAohOa/gkCF+iPi9hrgvTzu6Q==}
     engines: {node: '>=20.18.1'}
 
   undici@8.9.0:
@@ -9312,7 +9314,7 @@ snapshots:
     dependencies:
       '@types/json-schema': 7.0.15
       js-yaml: 5.4.1
-      undici: 6.28.0
+      undici: 6.28.1
 
   '@aws-sdk/checksums@3.1000.29':
     dependencies:
@@ -9599,7 +9601,7 @@ snapshots:
   '@digitalbazaar/http-client@4.3.0':
     dependencies:
       ky: 1.14.3
-      undici: 6.28.0
+      undici: 6.28.1
 
   '@emnapi/core@1.11.0':
     dependencies:
@@ -9866,7 +9868,7 @@ snapshots:
       fast-querystring: 1.1.2
       fastify-plugin: 5.1.0
       toad-cache: 3.7.0
-      undici: 7.25.0
+      undici: 7.29.1
 
   '@fastify/send@4.1.0':
     dependencies:
@@ -12950,7 +12952,7 @@ snapshots:
       parse5: 7.3.0
       parse5-htmlparser2-tree-adapter: 7.1.0
       parse5-parser-stream: 7.1.2
-      undici: 7.25.0
+      undici: 7.29.1
       whatwg-mimetype: 4.0.0
 
   chokidar@5.0.0:
@@ -17667,9 +17669,9 @@ snapshots:
 
   undici-types@8.3.0: {}
 
-  undici@6.28.0: {}
+  undici@6.28.1: {}
 
-  undici@7.25.0: {}
+  undici@7.29.1: {}
 
   undici@8.9.0: {}
 
