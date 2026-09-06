@@ -936,6 +936,27 @@ export type Channels = {
             };
         };
     };
+    worldRoom: {
+        params: {
+            roomId: string;
+        };
+        events: {
+            entered: (payload: {
+                playerProfiles: any;
+            }) => void;
+            sync: (payload: any) => void;
+            playerEntered: (payload: {
+                id: string;
+                profile: any;
+            }) => void;
+            playerLeft: (payload: {
+                id: string;
+            }) => void;
+        };
+        receives: {
+            update: any;
+        };
+    };
 };
 
 // @public (undocumented)
@@ -2199,6 +2220,24 @@ declare namespace entities {
         V2AdminEmojiListRequest,
         V2AdminEmojiListResponse,
         VerifyEmailRequest,
+        WorldAvatarsCreateRequest,
+        WorldAvatarsCreateResponse,
+        WorldAvatarsDeleteRequest,
+        WorldAvatarsListRequest,
+        WorldAvatarsListResponse,
+        WorldAvatarsShowRequest,
+        WorldAvatarsShowResponse,
+        WorldAvatarsUpdateRequest,
+        WorldAvatarsUpdateResponse,
+        WorldRoomsCreateRequest,
+        WorldRoomsCreateResponse,
+        WorldRoomsDeleteRequest,
+        WorldRoomsListByUserRequest,
+        WorldRoomsListByUserResponse,
+        WorldRoomsShowRequest,
+        WorldRoomsShowResponse,
+        WorldRoomsUpdateRequest,
+        WorldRoomsUpdateResponse,
         Error_2 as Error,
         UserLite,
         UserDetailedNotMeOnly,
@@ -2268,7 +2307,11 @@ declare namespace entities {
         ChatMessageLiteForRoom,
         ChatRoom,
         ChatRoomInvitation,
-        ChatRoomMembership
+        ChatRoomMembership,
+        WorldRoomLite,
+        WorldRoomDetailed,
+        WorldAvatarLite,
+        WorldAvatarDetailed
     }
 }
 export { entities }
@@ -3767,6 +3810,72 @@ type V2AdminEmojiListResponse = operations['v2___admin___emoji___list']['respons
 
 // @public (undocumented)
 type VerifyEmailRequest = operations['verify-email']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldAvatarDetailed = components['schemas']['WorldAvatarDetailed'];
+
+// @public (undocumented)
+type WorldAvatarLite = components['schemas']['WorldAvatarLite'];
+
+// @public (undocumented)
+type WorldAvatarsCreateRequest = operations['world___avatars___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldAvatarsCreateResponse = operations['world___avatars___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type WorldAvatarsDeleteRequest = operations['world___avatars___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldAvatarsListRequest = operations['world___avatars___list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldAvatarsListResponse = operations['world___avatars___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type WorldAvatarsShowRequest = operations['world___avatars___show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldAvatarsShowResponse = operations['world___avatars___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type WorldAvatarsUpdateRequest = operations['world___avatars___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldAvatarsUpdateResponse = operations['world___avatars___update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomDetailed = components['schemas']['WorldRoomDetailed'];
+
+// @public (undocumented)
+type WorldRoomLite = components['schemas']['WorldRoomLite'];
+
+// @public (undocumented)
+type WorldRoomsCreateRequest = operations['world___rooms___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsCreateResponse = operations['world___rooms___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsDeleteRequest = operations['world___rooms___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsListByUserRequest = operations['world___rooms___list-by-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsListByUserResponse = operations['world___rooms___list-by-user']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsShowRequest = operations['world___rooms___show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsShowResponse = operations['world___rooms___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsUpdateRequest = operations['world___rooms___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsUpdateResponse = operations['world___rooms___update']['responses']['200']['content']['application/json'];
 
 // Warnings were encountered during analysis:
 //

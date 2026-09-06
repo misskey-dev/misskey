@@ -11,6 +11,8 @@ packages:
   - packages/misskey-js/generator
   - packages/misskey-reversi
   - packages/misskey-bubble-game
+  - packages/misskey-world
+  - packages/frontend-misskey-world-engine
   - packages-private/*
 allowBuilds:
   '@nestjs/core': true
@@ -34,6 +36,7 @@ allowBuilds:
   protobufjs: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
+  - '@babylonjs/*'
   - '@misskey-dev/*'
   - '@syuilo/aiscript'
   - buraha

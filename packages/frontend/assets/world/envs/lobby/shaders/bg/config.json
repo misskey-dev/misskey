@@ -1,0 +1,9 @@
+{
+	"animate": true,
+	"_comment_": "パフォーマンスのためrefreshrateはもっと高い値にしたいがbabylonのバグか知らないけどおそらくSRと併用していることが原因でエラーになる",
+	"refreshrate": 1,
+	"uniforms": [
+	],
+	"sampler2Ds": [
+	]
+}

@@ -747,6 +747,118 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
+			<SearchMarker v-slot="slotProps" :keywords="['world', 'rooms']">
+				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+					<template #label><SearchLabel>World / Rooms</SearchLabel></template>
+					<template #icon><SearchIcon><i class="ti ti-buildings"></i></SearchIcon></template>
+
+					<div class="_gaps_m">
+						<div class="_gaps_s">
+							<SearchMarker :keywords="['username']">
+								<MkPreferenceContainer k="world.showUsernameOnAvatar">
+									<MkSwitch v-model="worldShowUsernameOnAvatar">
+										<template #label><SearchLabel>{{ i18n.ts._miWorld.showUsernameOnAvatar }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['avatar', 'icon']">
+								<MkPreferenceContainer k="world.show2dAvatarOnAvatar">
+									<MkSwitch v-model="worldShow2dAvatarOnAvatar">
+										<template #label><SearchLabel>{{ i18n.ts._miWorld.show2dAvatarOnAvatar }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+						</div>
+
+						<SearchMarker :keywords="['fov', 'fieldofview']">
+							<MkPreferenceContainer k="world.fov">
+								<MkRange
+									v-model="worldFov"
+									:min="2"
+									:max="0.5"
+									:step="0.1"
+								>
+									<template #label><SearchLabel>{{ i18n.ts._miWorld.fov }}</SearchLabel></template>
+								</MkRange>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['graphics', 'quality']">
+							<MkPreferenceContainer k="world.graphicsQuality">
+								<MkSelect
+									v-model="worldGraphicsQuality"
+									:items="[
+										{ label: i18n.ts.auto, value: null },
+										{ type: 'divider' },
+										{ label: i18n.ts.high, value: GRAPHICS_QUALITY.HIGH },
+										{ label: i18n.ts.medium, value: GRAPHICS_QUALITY.MEDIUM },
+										{ label: i18n.ts.low, value: GRAPHICS_QUALITY.LOW },
+									]"
+								>
+									<template #label><SearchLabel>{{ i18n.ts._miWorld.graphicsQuality }}</SearchLabel></template>
+									<template #caption>{{ i18n.ts._miWorld.higherValuePerformanceNote }}</template>
+								</MkSelect>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['framerate', 'fps', 'limitation']">
+							<MkPreferenceContainer k="world.fps">
+								<MkSelect
+									v-model="worldFps"
+									:items="[
+										{ label: i18n.ts.auto, value: null },
+										{ type: 'divider' },
+										{ label: 'Max', value: 'max' },
+										{ label: '~120fps', value: '120' },
+										{ label: '~60fps', value: '60' },
+										{ label: '~30fps', value: '30' },
+									]"
+								>
+									<template #label><SearchLabel>{{ i18n.ts._miWorld.frameRateLimitation }}</SearchLabel></template>
+									<template #caption>{{ i18n.ts._miWorld.higherValuePerformanceNote }}</template>
+								</MkSelect>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['resolution']">
+							<MkPreferenceContainer k="world.resolution">
+								<MkSelect
+									v-model="worldResolution"
+									:items="[
+										{ label: i18n.ts.auto, value: null },
+										{ type: 'divider' },
+										{ label: '2x', value: 2 },
+										{ label: '1x', value: 1 },
+										{ label: '0.5x', value: 0.5 },
+									]"
+								>
+									<template #label><SearchLabel>{{ i18n.ts._miWorld.resolution }}</SearchLabel></template>
+									<template #caption>{{ i18n.ts._miWorld.higherValuePerformanceNote }}</template>
+								</MkSelect>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['antialiasing']">
+							<MkPreferenceContainer k="world.antialias">
+								<MkSwitch v-model="worldAntialias">
+									<template #label><SearchLabel>{{ i18n.ts._miWorld.antialiasing }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['rendering', 'thread']">
+							<MkPreferenceContainer k="world.separateRenderingThread">
+								<MkSwitch v-model="worldSeparateRenderingThread">
+									<template #label><SearchLabel>{{ i18n.ts._miWorld.separateRenderingThread }}</SearchLabel></template>
+									<template #caption>{{ i18n.ts._miWorld.separateRenderingThread_description }}</template>
+								</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
+					</div>
+				</MkFolder>
+			</SearchMarker>
+
 			<SearchMarker v-slot="slotProps" :keywords="['other']">
 				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 					<template #label><SearchLabel>{{ i18n.ts.other }}</SearchLabel></template>
@@ -866,6 +978,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, watch } from 'vue';
 import { langs } from '@@/js/config.js';
 import * as Misskey from 'misskey-js';
+import { GRAPHICS_QUALITY } from 'misskey-world-engine/src/utility.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkRadios from '@/components/MkRadios.vue';
@@ -957,6 +1070,14 @@ const useNativeUiForVideoAudioPlayer = prefer.model('useNativeUiForVideoAudioPla
 const contextMenu = prefer.model('contextMenu');
 const menuStyle = prefer.model('menuStyle');
 const makeEveryTextElementsSelectable = prefer.model('makeEveryTextElementsSelectable');
+const worldSeparateRenderingThread = prefer.model('world.separateRenderingThread');
+const worldGraphicsQuality = prefer.model('world.graphicsQuality');
+const worldFps = prefer.model('world.fps');
+const worldResolution = prefer.model('world.resolution');
+const worldAntialias = prefer.model('world.antialias');
+const worldFov = prefer.model('world.fov');
+const worldShowUsernameOnAvatar = prefer.model('world.showUsernameOnAvatar');
+const worldShow2dAvatarOnAvatar = prefer.model('world.show2dAvatarOnAvatar');
 
 const fontSize = ref(miLocalStorage.getItem('fontSize') as '1' | '2' | '3' | null);
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
@@ -1016,6 +1137,12 @@ watch([
 	showAvailableReactionsFirstInNote,
 	animatedMfm,
 	advancedMfm,
+	worldSeparateRenderingThread,
+	worldGraphicsQuality,
+	worldFps,
+	worldResolution,
+	worldAntialias,
+	worldFov,
 ], () => {
 	suggestReload();
 });

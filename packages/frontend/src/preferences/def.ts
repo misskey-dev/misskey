@@ -530,6 +530,34 @@ export const PREF_DEF = definePreferences({
 		},
 	},
 
+	'world.graphicsQuality': {
+		default: null as number | null,
+	},
+	'world.fps': {
+		default: null as 'max' | '120' | '60' | '30' | null,
+	},
+	'world.resolution': {
+		default: null as 0.5 | 1 | 2 | null,
+	},
+	'world.antialias': {
+		default: true,
+	},
+	'world.fov': {
+		default: 1,
+	},
+	'world.separateRenderingThread': {
+		default: true,
+	},
+	'world.showUsernameOnAvatar': {
+		default: true,
+	},
+	'world.show2dAvatarOnAvatar': {
+		default: false,
+	},
+	'world.room.advancedCustomize': {
+		default: false,
+	},
+
 	'experimental.stackingRouterView': {
 		default: false,
 	},

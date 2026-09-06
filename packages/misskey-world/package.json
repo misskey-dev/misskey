@@ -1,0 +1,23 @@
+{
+	"type": "module",
+	"name": "misskey-world",
+	"private": true,
+	"scripts": {
+		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"typecheck": "tsgo --noEmit",
+		"lint": "pnpm typecheck && pnpm eslint"
+	},
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "8.59.2",
+		"@typescript-eslint/parser": "8.59.2",
+		"esbuild": "0.28.0",
+		"execa": "9.6.1",
+		"nodemon": "3.1.14"
+	},
+	"files": [
+		"built"
+	],
+	"dependencies": {
+		"misskey-js": "workspace:*"
+	}
+}

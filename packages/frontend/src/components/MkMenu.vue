@@ -234,7 +234,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch, shallowRef, reactive, isRef } from 'vue';
-import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent } from '@/types/menu.js';
+import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent, MenuDivider } from '@/types/menu.js';
 import type { Keymap } from '@/utility/hotkey.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
 import * as os from '@/os.js';
@@ -339,7 +339,11 @@ function onItemMouseLeave() {
 }
 
 async function showRadioOptions(item: MenuRadio, ev: MouseEvent | PointerEvent | KeyboardEvent) {
-	const children: MenuItem[] = item.options.map<MenuRadioOption>(def => {
+	const children: MenuItem[] = item.options.map<MenuRadioOption | MenuDivider>(def => {
+		if (def.type === 'divider') {
+			return { type: 'divider' };
+		}
+
 		return {
 			type: 'radioOption',
 			text: def.label,

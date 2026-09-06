@@ -173,6 +173,16 @@ export interface ChatEventTypes {
 	};
 }
 
+export interface WorldEventTypes {
+	enter: {
+		user: Packed<'UserLite'>;
+		avatar: Packed<'WorldAvatarLite'>['def'] | null;
+	};
+	left: {
+		userId: MiUser['id'];
+	};
+}
+
 export interface ReversiEventTypes {
 	matched: {
 		game: Packed<'ReversiGameDetailed'>;
@@ -315,6 +325,10 @@ export type GlobalEvents = {
 		name: `chatRoomStream:${MiChatRoom['id']}`;
 		payload: EventTypesToEventPayload<ChatEventTypes>;
 	};
+	world: {
+		name: `worldStream:${string}`;
+		payload: EventTypesToEventPayload<WorldEventTypes>;
+	};
 	reversi: {
 		name: `reversiStream:${MiUser['id']}`;
 		payload: EventTypesToEventPayload<ReversiEventTypes>;
@@ -434,5 +448,10 @@ export class GlobalEventService {
 	@bindThis
 	public publishReversiGameStream<K extends keyof ReversiGameEventTypes>(gameId: MiReversiGame['id'], type: K, value?: ReversiGameEventTypes[K]): void {
 		this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishWorldStream<K extends keyof WorldEventTypes>(spaceKey: string, type: K, value?: WorldEventTypes[K]): void {
+		this.publish(`worldStream:${spaceKey}`, type, typeof value === 'undefined' ? null : value);
 	}
 }

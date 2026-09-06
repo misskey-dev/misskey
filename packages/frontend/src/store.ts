@@ -118,6 +118,11 @@ export const store = markRaw(new Pizzax('base', {
 		where: 'device',
 		default: true,
 	},
+
+	recentlyUsedRoomFurnitures: {
+		where: 'device',
+		default: [] as string[],
+	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期

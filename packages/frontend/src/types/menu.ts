@@ -78,10 +78,11 @@ export interface MenuSwitch extends TextMenuBase {
 export interface MenuRadio extends TextMenuBase {
 	type: 'radio';
 	ref: Ref<OptionValue>;
-	options: {
+	options: ({
+		type?: 'option';
 		label: string;
 		value: OptionValue;
-	}[];
+	} | MenuDivider)[];
 	disabled?: boolean | Ref<boolean>;
 }
 

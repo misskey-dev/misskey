@@ -47,6 +47,8 @@
 				'packages/misskey-reversi/**/package.json',
 				'packages/sw/**/package.json',
 				'packages/icons-subsetter/**/package.json',
+				'packages/misskey-world/**/package.json',
+				'packages/frontend-misskey-world-engine/**/package.json',
 			],
 			// prevent wastage of Chromatic snapshots
 			rebaseWhen: 'never',
