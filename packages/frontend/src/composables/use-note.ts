@@ -13,7 +13,7 @@ import { host } from '@@/js/config.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
 import { checkWordMute } from '@/utility/check-word-mute.js';
-import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import * as sound from '@/utility/sound.js';
 import * as os from '@/os.js';
 import { reactionPicker } from '@/utility/reaction-picker.js';
@@ -37,6 +37,7 @@ import { notePage } from '@/filters/note.js';
 import type { DI as DIType } from '@/di.js';
 import type { ExtractInjectedType } from '@/types/misc.js';
 import type { MenuItem } from '@/types/menu.js';
+import type { WordMuteResult } from '@/utility/check-word-mute.js';
 
 export interface UseNoteProps {
 	note: Misskey.entities.Note;
@@ -66,7 +67,7 @@ export function checkNoteWordMute(
 	noteToCheck: Misskey.entities.Note,
 	user: typeof $i,
 	mutedWords: Array<string | string[]> | null,
-): Array<string | string[]> | false {
+): WordMuteResult {
 	if (mutedWords != null) {
 		const result = checkWordMute(noteToCheck, user, mutedWords);
 		if (Array.isArray(result)) return result;
@@ -114,6 +115,11 @@ export function useNote(
 		for (const interruptor of noteViewInterruptors) {
 			try {
 				result = interruptor.handler(result!) as Misskey.entities.Note | null;
+
+				// nullになった場合（非表示）はこれ以上やることがないのでループを抜ける
+				if (result == null) {
+					break;
+				}
 			} catch (err) {
 				console.error(err);
 			}
@@ -121,7 +127,7 @@ export function useNote(
 		if (result == null) {
 			hideByPlugin = true;
 		} else {
-			rawNote = result as Misskey.entities.Note;
+			rawNote = result;
 		}
 	}
 
@@ -193,10 +199,9 @@ export function useNote(
 
 		if (appearNote.reactionAcceptance === 'likeOnly' && els.reactButton != null) {
 			useTooltip(els.reactButton, async (showing) => {
-				const reactions = await misskeyApiGet('notes/reactions', {
+				const reactions = await misskeyApi('notes/reactions', {
 					noteId: appearNote.id,
 					limit: 10,
-					_cacheKey_: $appearNote.reactionCount,
 				});
 				const users = reactions.map(x => x.user);
 				if (users.length < 1 || els.reactButton!.value == null) return;
