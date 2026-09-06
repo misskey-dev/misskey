@@ -6,6 +6,8 @@ on:
       - master
       - develop
   pull_request:
+    branches-ignore:
+      - master
 
 env:
   NODE_ENV: production

@@ -227,18 +227,6 @@ git checkout HEAD -- locales/zh-CN.yml
 
 PR 化前なら何度でもやり直せる。**マージしてしまうと Crowdin 側との整合性が崩れて手動回復が必要** になるので、PR レビュー段階で必ず `locales/*.yml` (ja-JP 以外) の diff がゼロであることを確認する。
 
-### CHANGELOG 記載の判定
-
-| 変更内容 | CHANGELOG 記載 |
-|---|---|
-| 新規画面追加と一緒に新キー追加 | 必要 (`### Client` に Feat/Enhance) |
-| 既存文言の改善 (誤字脱字以外) | 必要 (`### Client` に Enhance) |
-| 誤字脱字・微妙な言い回し修正 | 不要 |
-| キーのリネーム (UI 変化なし) | 不要 |
-| キー削除 (画面から消える) | 必要 (`### Client` に Feat / 機能削除) |
-
-書き方は [shipping-misskey-change スキル](../../../shipping-misskey-change/SKILL.md) を参照。
-
 ## トラブルシュート
 
 i18n 周辺で踏みやすい失敗とその対処。エラー文字列で grep してたどり着けるよう整理。

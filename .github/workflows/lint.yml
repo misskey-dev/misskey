@@ -21,6 +21,8 @@ on:
       - .github/workflows/lint.yml
       - package.json
   pull_request:
+    branches-ignore:
+      - master
     paths:
       - packages/backend/**
       - packages/frontend/**
