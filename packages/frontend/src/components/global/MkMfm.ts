@@ -211,7 +211,9 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							token.props.args.math ? 'math' :
 							null;
 						if (family) style = `font-family: ${family};`;
-						break;
+						return h('span', {
+        					style: 'display: inline; ' + (family ? `font-family: ${family};` : ''),
+    					}, genEl(token.children, scale));
 					}
 					case 'blur': {
 						return h('span', {
