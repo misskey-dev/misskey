@@ -66,7 +66,6 @@
 		"@napi-rs/canvas": "1.0.7",
 		"@nestjs/common": "12.0.1",
 		"@nestjs/core": "12.0.1",
-		"@nestjs/testing": "12.0.1",
 		"@oxc-project/runtime": "0.146.0",
 		"@peertube/http-signature": "1.7.0",
 		"@sentry/node": "10.70.0",
@@ -147,7 +146,7 @@
 	},
 	"devDependencies": {
 		"@kitajs/ts-html-plugin": "4.1.4",
-		"@nestjs/platform-express": "12.0.1",
+		"@nestjs/testing": "12.0.1",
 		"@rollup/plugin-esm-shim": "0.1.8",
 		"@sentry/vue": "10.70.0",
 		"@sinonjs/fake-timers": "15.4.0",
