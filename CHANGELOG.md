@@ -35,6 +35,15 @@
 - Fix: 通知トーストのアニメーションの挙動が不安定になる問題を修正
 
 ### Server
+- Feat: OpenTelemetryサポート
+  - 詳細な設定はconfigファイルを参照してください。
+  - Sentryとの併用も可能です。Sentry併用時は、PostgreSQL Query と Redis command は Sentry で計装されます。
+  - 以下の自動計装をサポートしています。（計装対象にする項目は設定可能）
+    - PostgreSQL query
+    - Redis command
+    - 全ての受信HTTPリクエスト
+    - 全ての送信HTTPリクエスト
+    - ジョブキュー（エンキュー元のトレースを含む）
 - Feat: `.well-known/change-password`に対応（`/settings/security`にリダイレクトします）
 - Enhance: アクセストークンでAPIを使用している際に、自身のアクセストークンを失効させることができるように
   - `i/revoke-token` エンドポイントにリクエストすることで、現在使用しているアクセストークンを失効させることができます
