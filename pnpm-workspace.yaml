@@ -53,20 +53,14 @@ minimumReleaseAgeExclude:
   - slacc-win32-arm64-msvc
   - slacc-win32-x64-msvc
   - '@typescript/native-preview*'
-  - vite # そのうち消す
-  # Renovate security update: typeorm@1.1.0
-  - typeorm@1.1.0
-  # Renovate security update: @fastify/static@10.1.2
-  - "@fastify/static@10.1.2"
-  # Renovate security update: tar@7.5.21
-  - tar@7.5.21
-  # Renovate security update: js-yaml@5.2.2
-  - js-yaml@5.2.2
+  - undici@6.28.1 || 7.29.1 # そのうち消す
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
-  'bullmq>ioredis': 5.11.1
   chokidar: 5.0.0
   lodash: 4.18.1
+  undici@^7: 7.29.1
+  undici@^6: 6.28.1
+  '@tabler/icons-webfont>sharp': '-'
 engineStrict: true
 saveExact: true
 shellEmulator: true

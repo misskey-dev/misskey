@@ -4181,6 +4181,10 @@ export interface Locale extends ILocale {
      */
     "cannotLoad": string;
     /**
+     * プレビューできません
+     */
+    "cannotPreview": string;
+    /**
      * プロフィール表示回数
      */
     "numberOfProfileView": string;

@@ -19,6 +19,6 @@ export const DI = {
 	inModal: Symbol() as InjectionKey<boolean>,
 	inAppSearchMarkerId: Symbol() as InjectionKey<Ref<string | null>>,
 	inChannel: Symbol() as InjectionKey<ComputedRef<string | null> | null>, // 現在開いているチャンネルのID
-	mkLightboxItemVideoEl: Symbol() as InjectionKey<Ref<HTMLVideoElement | null>>,
+	mkLightboxItemMediaEl: Symbol() as InjectionKey<Ref<HTMLVideoElement | HTMLAudioElement | null>>,
 	collapseSensitiveChannel: Symbol() as InjectionKey<boolean | 'renote-only'>,
 };

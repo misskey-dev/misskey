@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div :class="[$style.root, { [$style.contentVisibilityAuto]: contentVisibilityAuto }]">
 	<div :class="$style.head">
 		<MkAvatar v-if="['pollEnded', 'note'].includes(notification.type) && 'note' in notification" :class="$style.icon" :user="notification.note.user" link preview/>
 		<MkAvatar v-else-if="['roleAssigned', 'achievementEarned', 'exportCompleted', 'login', 'createToken', 'scheduledNotePosted', 'scheduledNotePostFailed'].includes(notification.type)" :class="$style.icon" :user="$i" link preview/>
@@ -193,9 +193,11 @@ const props = withDefaults(defineProps<{
 	notification: Misskey.entities.Notification;
 	withTime?: boolean;
 	full?: boolean;
+	contentVisibilityAuto?: boolean;
 }>(), {
 	withTime: false,
 	full: false,
+	contentVisibilityAuto: true,
 });
 
 type ExportCompletedNotification = Misskey.entities.Notification & { type: 'exportCompleted' };
@@ -241,8 +243,11 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	overflow-wrap: break-word;
 	display: flex;
 	contain: content;
-	content-visibility: auto;
-	contain-intrinsic-size: 0 100px;
+
+	&.contentVisibilityAuto {
+		content-visibility: auto;
+		contain-intrinsic-size: 0 100px;
+	}
 
 	--eventFollow: #36aed2;
 	--eventRenote: #36d298;

@@ -13,6 +13,8 @@ on:
       - pnpm-lock.yaml
       - .github/workflows/packages-private.yml
   pull_request:
+    branches-ignore:
+      - master
     paths:
       - packages-private/**
       - packages/shared/eslint.config.js
