@@ -115,13 +115,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, useTemplateRef, onUnmounted, onBeforeUnmount } from 'vue';
+import type { ShallowRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode.js';
 import { host, url } from '@@/js/config.js';
 import MkUploaderItems from './MkUploaderItems.vue';
-import type { ShallowRef } from 'vue';
 import type { PostFormProps } from '@/types/post-form.js';
 import type { MenuItem } from '@/types/menu.js';
 import type { PollEditorModelValue } from '@/components/MkPollEditor.vue';
@@ -235,7 +235,7 @@ const uploader = useUploader({
 	multiple: true,
 });
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
 	uploader.dispose();
 });
 
@@ -1184,16 +1184,16 @@ async function insertEmoji(ev: PointerEvent) {
 
 	let pos = textareaEl.value?.selectionStart ?? 0;
 	let posEnd = textareaEl.value?.selectionEnd ?? text.value.length;
-	emojiPicker.show(
-		target as HTMLElement,
-		emoji => {
+	emojiPicker.show({
+		anchorElement: target as HTMLElement,
+		onChosen: emoji => {
 			const textBefore = text.value.substring(0, pos);
 			const textAfter = text.value.substring(posEnd);
 			text.value = textBefore + emoji + textAfter;
 			pos += emoji.length;
 			posEnd += emoji.length;
 		},
-		() => {
+		onClosed: () => {
 			textAreaReadOnly.value = false;
 			nextTick(() => {
 				if (textareaEl.value) {
@@ -1202,7 +1202,7 @@ async function insertEmoji(ev: PointerEvent) {
 				}
 			});
 		},
-	);
+	});
 }
 
 async function insertMfmFunction(ev: PointerEvent) {
@@ -1473,6 +1473,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+	emojiPicker.closeWindow();
 	uploader.abortAll();
 	if (textAutocomplete) {
 		textAutocomplete.detach();
