@@ -10,7 +10,7 @@ const logger = new Logger('core', 'cyan');
 const nestLogger = logger.createSubLogger('nest', 'green');
 
 // NestJSはcontextを可変長引数の末尾へ渡す。errorだけは (message, stack, context) の形も取り、
-// Nest 12のlifecycle hookのように Logger.error(reason, reason.stack) とcontext無しで呼ぶ経路もある。
+// Nestのlifecycle hookのように Logger.error(reason, reason.stack) とcontext無しで呼ぶ経路もある。
 // stackもcontextもstringなので、ConsoleLoggerと同じ判定でstackを先に切り離してからcontextを取り出す。
 const stackFormat = /^(.)+\n\s+at .+:\d+:\d+/;
 
