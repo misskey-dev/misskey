@@ -3,9 +3,9 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"oxlint": "oxlint",
 		"inspect-browser": "tsx src/inspect-browser.ts",
-		"lint": "pnpm typecheck && pnpm eslint",
+		"lint": "pnpm typecheck && pnpm oxlint",
 		"render-browser-html": "tsx src/render-browser-html.ts",
 		"render-md": "tsx src/render-md.ts",
 		"test": "vitest run",

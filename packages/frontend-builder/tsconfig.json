@@ -4,8 +4,6 @@
 		"target": "ES2022",
 		"module": "nodenext",
 		"moduleResolution": "nodenext",
-		"declaration": true,
-		"declarationMap": true,
 		"sourceMap": false,
 		"noEmit": true,
 		"removeComments": true,

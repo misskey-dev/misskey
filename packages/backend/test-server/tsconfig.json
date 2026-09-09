@@ -28,6 +28,7 @@
 		"paths": {
 			"@/*": ["../src/*"]
 		},
+		"rootDir": "../",
 		"outDir": "../built-test",
 		"types": [
 			"node"

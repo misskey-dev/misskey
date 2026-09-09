@@ -4,13 +4,12 @@
 	"description": "Misskey TypeGenerator",
 	"type": "module",
 	"scripts": {
-		"generate": "tsx src/generator.ts && eslint ./built/**/*.ts --fix"
+		"oxlint": "oxlint",
+		"generate": "tsx src/generator.ts && oxlint ./built/**/*.ts --fix"
 	},
 	"devDependencies": {
 		"@readme/openapi-parser": "7.0.1",
 		"@types/node": "26.4.0",
-		"@typescript-eslint/eslint-plugin": "8.68.0",
-		"@typescript-eslint/parser": "8.68.0",
 		"openapi-types": "12.1.3",
 		"openapi-typescript": "7.13.0",
 		"ts-case-convert": "2.3.1",
