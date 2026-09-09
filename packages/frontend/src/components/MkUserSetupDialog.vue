@@ -76,13 +76,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 			<template v-else-if="page === 3">
 				<div style="height: 100cqh; overflow: auto;">
-					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
-						<XFollow/>
-					</div>
-					<div :class="$style.pageFooter">
-						<div class="_buttonsCenter">
-							<MkButton rounded data-testid="user-setup-back" @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-							<MkButton primary rounded gradate style="" data-testid="user-setup-continue" @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+					<div :class="$style.pageRoot">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
+							<XFollow/>
+						</div>
+						<div :class="$style.pageFooter">
+							<div class="_buttonsCenter">
+								<MkButton rounded data-testid="user-setup-back" @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
+								<MkButton primary rounded gradate style="" data-testid="user-setup-continue" @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -243,6 +245,10 @@ async function later(later: boolean) {
 
 .pageMain {
 	flex-grow: 1;
+	// JUICE: 下部固定(position: sticky)のpageFooterぶんの高さを確保しておかないと、
+	// 横長など縦方向が狭い画面でスクロール最下部にある要素(アイコン変更ボタン・
+	// 自己紹介欄の保存ボタン等)がフッターの裏に隠れてしまう
+	padding-bottom: 72px;
 }
 
 .pageFooter {
