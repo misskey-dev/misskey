@@ -15,7 +15,7 @@ export class LoggerService {
 	}
 
 	@bindThis
-	public getLogger(domain: string, color?: Keyword | undefined) {
+	public getLogger(domain: string, color?: Keyword) {
 		return new Logger(domain, color);
 	}
 }

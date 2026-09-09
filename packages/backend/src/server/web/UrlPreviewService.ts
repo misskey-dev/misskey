@@ -87,8 +87,8 @@ export class UrlPreviewService implements OnApplicationShutdown {
 			const fetcher = async () => {
 				const result = await (
 					this.meta.urlPreviewSummaryProxyUrl
-					? this.fetchSummaryFromProxy(url, lang)
-					: this.fetchSummary(url, lang)
+						? this.fetchSummaryFromProxy(url, lang)
+						: this.fetchSummary(url, lang)
 				);
 
 				if (!result.url.startsWith('http://') && !result.url.startsWith('https://')) {

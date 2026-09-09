@@ -44,7 +44,7 @@ class DummyFastifyReply {
 }
 class DummyFastifyRequest {
 	public ip: string;
-	public body: {credential: any, context: string};
+	public body: { credential: any, context: string };
 	public headers: IncomingHttpHeaders = { 'accept': 'application/json' };
 	constructor(body?: any) {
 		this.ip = '0.0.0.0';
@@ -66,7 +66,7 @@ describe('SigninWithPasskeyApiService', () => {
 	let userProfilesRepository: UserProfilesRepository;
 	let webAuthnService: WebAuthnService;
 	let idService: IdService;
-	let FakeWebauthnVerify: ()=>Promise<string>;
+	let FakeWebauthnVerify: () => Promise<string>;
 
 	async function createUser(data: Partial<MiUser> = {}) {
 		const user = await usersRepository
@@ -112,7 +112,7 @@ describe('SigninWithPasskeyApiService', () => {
 
 		const dummyUser = {
 			id: uid, username: uid, usernameLower: uid.toLowerCase(), uri: null, host: null,
-		 };
+		};
 		const dummyProfile = {
 			userId: uid,
 			password: 'qwerty',

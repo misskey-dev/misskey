@@ -38,7 +38,7 @@ export class PageEntityService {
 	@bindThis
 	public async pack(
 		src: MiPage['id'] | MiPage,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 		hint?: {
 			packedUser?: Packed<'UserLite'>
 		},
@@ -114,7 +114,7 @@ export class PageEntityService {
 	@bindThis
 	public async packMany(
 		pages: MiPage[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 	) {
 		const _users = pages.map(({ user, userId }) => user ?? userId);
 		const _userMap = await this.userEntityService.packMany(_users, me)

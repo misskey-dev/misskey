@@ -28,7 +28,7 @@ export class FlashEntityService {
 	@bindThis
 	public async pack(
 		src: MiFlash['id'] | MiFlash,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 		hint?: {
 			packedUser?: Packed<'UserLite'>,
 			likedFlashIds?: MiFlash['id'][],
@@ -65,7 +65,7 @@ export class FlashEntityService {
 	@bindThis
 	public async packMany(
 		flashes: MiFlash[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 	) {
 		const _users = flashes.map(({ user, userId }) => user ?? userId);
 		const _userMap = await this.userEntityService.packMany(_users, me)
