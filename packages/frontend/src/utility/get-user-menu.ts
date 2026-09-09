@@ -231,15 +231,15 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			text: i18n.ts.searchThisUsersNotes,
 			action: () => {
 				const query = {
-						username: user.username,
-					} as { username: string, host?: string };
+					username: user.username,
+				} as { username: string, host?: string };
 
 				if (user.host !== null) {
 					query.host = user.host;
 				}
 
 				router.push('/search', {
-					query
+					query,
 				});
 			},
 		});

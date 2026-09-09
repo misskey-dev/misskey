@@ -276,8 +276,7 @@ async function reportAbuse() {
 function showMenu(ev: PointerEvent) {
 	if (!flash.value) return;
 
-	const menu: MenuItem[] = [
-		...($i && $i.id !== flash.value.userId ? [
+	const menu: MenuItem[] = ($i && $i.id !== flash.value.userId ? [
 			{
 				icon: 'ti ti-exclamation-circle',
 				text: i18n.ts.reportAbuse,
@@ -301,8 +300,7 @@ function showMenu(ev: PointerEvent) {
 					}),
 				},
 			] : []),
-		] : []),
-	];
+		] : []);
 
 	os.popupMenu(menu, ev.currentTarget ?? ev.target);
 }

@@ -28,7 +28,7 @@ export async function lookup(router?: Router) {
 		_router.push('/tags/:tag', {
 			params: {
 				tag: query.substring(1),
-			}
+			},
 		});
 		return;
 	}

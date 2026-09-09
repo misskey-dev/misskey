@@ -144,7 +144,7 @@
 			if (legacyLocale) {
 				const parsed = JSON.parse(legacyLocale);
 				messages = {
-					...(parsed._bootErrors ?? {}),
+					...parsed._bootErrors,
 					reload: parsed.reload,
 				};
 			}

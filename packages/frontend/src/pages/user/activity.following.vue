@@ -153,20 +153,18 @@ async function renderChart() {
 				mode: 'index',
 			},
 			plugins: {
-				legend: {
-					display: false,
-				},
+				legend: { display: false },
 				tooltip: {
 					enabled: false,
 					mode: 'index',
-					animation: {
-						duration: 0,
-					},
+					animation: { duration: 0 },
 					external: externalTooltipHandler,
 				},
+				/* eslint-disable */
 				...({ // TSを黙らすため
 					gradient,
 				}),
+				/* eslint-enable */
 			},
 		},
 		plugins: [chartVLine(vLineColor), chartLegend(legendEl.value)],

@@ -41,7 +41,7 @@ export type ApiWithDialogCustomErrors = Record<string, { title?: string; text: s
 export const apiWithDialog = (<E extends keyof Misskey.Endpoints>(
 	endpoint: E,
 	data: Misskey.Endpoints[E]['req'],
-	token?: string | null | undefined,
+	token?: string | null,
 	customErrors?: ApiWithDialogCustomErrors,
 ) => {
 	const promise = misskeyApi(endpoint, data, token);
