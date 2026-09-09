@@ -247,6 +247,9 @@ async function later(later: boolean) {
 
 .pageFooter {
 	position: sticky;
+	// JUICE: MkButton等がposition:relative+z-index:1を持つため、
+	// 明示しないとpageMain側のボタンがこのstickyフッターより手前に描画されてしまう
+	z-index: 10;
 	bottom: 0;
 	left: 0;
 	flex-shrink: 0;
