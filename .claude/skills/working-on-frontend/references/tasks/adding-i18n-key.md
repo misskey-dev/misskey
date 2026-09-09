@@ -75,7 +75,7 @@ import { i18n } from '@/i18n.js';
 ## ステップ 4: 検証
 
 ```bash
-# i18n の型再生成 → typecheck + eslint (lint は generate を呼ばないので順番が必須)
+# i18n の型再生成 → typecheck + oxlint (lint は generate を呼ばないので順番が必須)
 pnpm --filter i18n generate
 pnpm --filter i18n lint
 

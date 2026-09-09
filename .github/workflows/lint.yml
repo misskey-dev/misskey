@@ -16,7 +16,7 @@ on:
       - packages/misskey-js/**
       - packages/misskey-bubble-game/**
       - packages/misskey-reversi/**
-      - packages/shared/eslint.config.js
+      - packages/shared/oxlint-browser.js
       - scripts/check-dts*.mjs
       - .github/workflows/lint.yml
       - package.json
@@ -34,7 +34,7 @@ on:
       - packages/misskey-js/**
       - packages/misskey-bubble-game/**
       - packages/misskey-reversi/**
-      - packages/shared/eslint.config.js
+      - packages/shared/oxlint-browser.js
       - scripts/check-dts*.mjs
       - .github/workflows/lint.yml
       - package.json
@@ -71,9 +71,6 @@ jobs:
         - misskey-js
         - misskey-bubble-game
         - misskey-reversi
-    env:
-      eslint-cache-version: v1
-      eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.workspace }}
     steps:
     - uses: actions/checkout@v7.0.0
       with:
@@ -86,13 +83,7 @@ jobs:
         node-version-file: '.node-version'
         cache: 'pnpm'
     - run: pnpm i --frozen-lockfile
-    - name: Restore eslint cache
-      uses: actions/cache@v6.1.0
-      with:
-        path: ${{ env.eslint-cache-path }}
-        key: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ github.ref_name }}-${{ github.sha }}
-        restore-keys: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
-    - run: pnpm --filter ${{ matrix.workspace }} run eslint --cache --cache-location ${{ env.eslint-cache-path }} --cache-strategy content
+    - run: pnpm --filter ${{ matrix.workspace }} run oxlint
 
   typecheck:
     needs: [pnpm_install]
