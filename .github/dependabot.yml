@@ -34,6 +34,3 @@ updates:
       patterns:
         - "storybook*"
         - "@storybook/*"
-    typescript-eslint:
-      patterns:
-        - "@typescript-eslint/*"
