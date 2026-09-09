@@ -61,7 +61,7 @@
 		"tar": "7.5.22"
 	},
 	"devDependencies": {
-		"@misskey-dev/oxlint-fmt-config": "0.1.0",
+		"@misskey-dev/oxlint-fmt-config": "0.1.1",
 		"@stylistic/eslint-plugin": "5.10.0",
 		"@types/node": "26.4.0",
 		"@typescript/native": "npm:typescript@7.0.2",

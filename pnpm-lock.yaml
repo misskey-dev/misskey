@@ -33,8 +33,8 @@ importers:
         version: 7.5.22
     devDependencies:
       '@misskey-dev/oxlint-fmt-config':
-        specifier: 0.1.0
-        version: 0.1.0(@stylistic/eslint-plugin@5.10.0(eslint@9.39.5(supports-color@10.2.2)))(oxlint-tsgolint@7.0.2001)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))
+        specifier: 0.1.1
+        version: 0.1.1(@stylistic/eslint-plugin@5.10.0(eslint@9.39.5(supports-color@10.2.2)))(oxlint-tsgolint@7.0.2001)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))
       '@stylistic/eslint-plugin':
         specifier: 5.10.0
         version: 5.10.0(eslint@9.39.5(supports-color@10.2.2))
@@ -2158,8 +2158,8 @@ packages:
   '@misskey-dev/emoji-data@17.0.3':
     resolution: {integrity: sha512-RmW0C2A1Zxn7DTYVCOhMDyCyyXYJLBc5GIEuhcufaqF0Gxw9+gIwaitCI3OUWnR928XnDwvvaizhJSjvIEF+2Q==}
 
-  '@misskey-dev/oxlint-fmt-config@0.1.0':
-    resolution: {integrity: sha512-oa3IEJf6+9UtQhn/BRYMpILwNsr07oL2FNXhLD4aYwEjCoU3DgNNQBfuos5YanLz4MRCMp21LNVeA5W6Tu/fNQ==}
+  '@misskey-dev/oxlint-fmt-config@0.1.1':
+    resolution: {integrity: sha512-Tu4yIB/GzMdDr+JQWPBb95zkfV2CTfEIU8Vcds0EmIyVElP2+MOEHjEoNJVJkWcy5xCXOmSoj/1iTTP+4gkJ+A==}
     peerDependencies:
       '@stylistic/eslint-plugin': 5.10.0
       oxlint: ^1
@@ -9946,7 +9946,7 @@ snapshots:
 
   '@misskey-dev/emoji-data@17.0.3': {}
 
-  '@misskey-dev/oxlint-fmt-config@0.1.0(@stylistic/eslint-plugin@5.10.0(eslint@9.39.5(supports-color@10.2.2)))(oxlint-tsgolint@7.0.2001)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))':
+  '@misskey-dev/oxlint-fmt-config@0.1.1(@stylistic/eslint-plugin@5.10.0(eslint@9.39.5(supports-color@10.2.2)))(oxlint-tsgolint@7.0.2001)(oxlint@1.81.0(oxlint-tsgolint@7.0.2001))':
     dependencies:
       oxlint: 1.81.0(oxlint-tsgolint@7.0.2001)
       oxlint-tsgolint: 7.0.2001
