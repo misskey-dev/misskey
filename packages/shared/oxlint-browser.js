@@ -16,8 +16,8 @@ export const frontendJsRules = {
 	}],
 	'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
 	// e ... error や event など、複数のキーワードの頭文字であり分かりにくいため
-	'id-denylist': ['error', 'e'],
 	// window ... グローバルスコープと衝突し、予期せぬ結果を招くため
+	'id-denylist': ['error', 'e', 'window'],
 	// close ... window.closeと衝突 or 紛らわしい
 	// open ... window.openと衝突 or 紛らわしい
 	// fetch ... window.fetchと衝突 or 紛らわしい
