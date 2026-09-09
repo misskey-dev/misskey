@@ -227,7 +227,7 @@ watch(q, () => {
 		return;
 	}
 
-	const newQ = q.value.replace(/:/g, '').toLowerCase();
+	const newQ = q.value.replace(/:/g, '');
 
 	const searchCustom = () => {
 		const max = 100;
