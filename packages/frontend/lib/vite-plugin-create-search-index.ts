@@ -338,7 +338,7 @@ function extractUsageInfoFromTemplateAst(
 
 		// マーカーID取得
 		const markerIdProp = node.props?.find(p => p.name === 'markerId');
-		const markerId = markerIdProp?.type == NodeTypes.ATTRIBUTE ? markerIdProp.value?.content : null;
+		const markerId = markerIdProp?.type === NodeTypes.ATTRIBUTE ? markerIdProp.value?.content : null;
 
 		// SearchMarkerにマーカーIDがない場合はエラー
 		if (markerId == null) {
@@ -425,7 +425,7 @@ const propertyAccessProxyHandler: ProxyHandler<AccessProxy> = {
 		if (p in target) {
 			return (target as any)[p];
 		}
-		if (p == 'toJSON' || p == Symbol.toPrimitive) {
+		if (p === 'toJSON' || p === Symbol.toPrimitive) {
 			return propertyAccessProxyToJSON;
 		}
 		if (typeof p === 'string') {
@@ -433,7 +433,7 @@ const propertyAccessProxyHandler: ProxyHandler<AccessProxy> = {
 		}
 		return undefined;
 	},
-}
+};
 
 function propertyAccessProxyToJSON(this: AccessProxy, hint: string) {
 	const expression = this[propertyAccessProxySymbol].reduce((prev, current) => {
@@ -715,7 +715,7 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 		enforce: 'post',
 
 		async resolveId(id) {
-			if (id == allSearchIndexFile) {
+			if (id === allSearchIndexFile) {
 				return '\0' + allSearchIndexFile;
 			}
 
@@ -727,7 +727,7 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 		},
 
 		async load(id) {
-			if (id == '\0' + allSearchIndexFile) {
+			if (id === '\0' + allSearchIndexFile) {
 				const files = options.targetFilePaths.map((filePathPattern) => fs.globSync(filePathPattern)).flat();
 				let generatedFile = '';
 				let arrayElements = '';
