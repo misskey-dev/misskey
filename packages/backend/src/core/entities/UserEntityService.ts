@@ -404,7 +404,7 @@ export class UserEntityService implements OnModuleInit {
 
 	public async pack<S extends 'MeDetailed' | 'UserDetailedNotMe' | 'UserDetailed' | 'UserLite' = 'UserLite'>(
 		src: MiUser['id'] | MiUser,
-		me?: { id: MiUser['id']; } | null | undefined,
+		me?: { id: MiUser['id']; } | null,
 		options?: {
 			schema?: S,
 			includeSecrets?: boolean,
@@ -530,8 +530,8 @@ export class UserEntityService implements OnModuleInit {
 				movedTo: user.movedToUri ? this.apPersonService.resolvePerson(user.movedToUri).then(user => user.id).catch(() => null) : null,
 				alsoKnownAs: user.alsoKnownAs ?
 					Promise.all(toArray(user.alsoKnownAs).map(uri => this.apPersonService.fetchPerson(uri).then(user => user?.id).catch(() => null)))
-				.then(xs => xs.length === 0 ? null : xs.filter(x => x != null))
-				: null,
+						.then(xs => xs.length === 0 ? null : xs.filter(x => x != null))
+					: null,
 				createdAt: this.idService.parse(user.id).date.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,

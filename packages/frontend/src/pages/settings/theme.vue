@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else class="_gaps">
 			<template v-if="!store.r.darkMode.value">
 				<SearchMarker :keywords="['light', 'theme']">
-					<MkFolder :defaultOpen="true" :max-height="500">
+					<MkFolder :defaultOpen="true" :maxHeight="500">
 						<template #icon><i class="ti ti-sun"></i></template>
 						<template #label><SearchLabel>{{ i18n.ts.themeForLightMode }}</SearchLabel></template>
 						<template #caption>{{ lightThemeName }}</template>
@@ -115,7 +115,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 			<template v-else>
 				<SearchMarker :keywords="['dark', 'theme']">
-					<MkFolder :defaultOpen="true" :max-height="500">
+					<MkFolder :defaultOpen="true" :maxHeight="500">
 						<template #icon><i class="ti ti-moon"></i></template>
 						<template #label><SearchLabel>{{ i18n.ts.themeForDarkMode }}</SearchLabel></template>
 						<template #caption>{{ darkThemeName }}</template>

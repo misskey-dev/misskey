@@ -11,7 +11,7 @@ export function ReversiGamePage(props: CommonProps<{
 	reversiGame: Packed<'ReversiGameDetailed'>;
 }>) {
 	const title = `${props.reversiGame.user1.username} vs ${props.reversiGame.user2.username}`;
-	const description = `⚫⚪Misskey Reversi⚪⚫`;
+	const description = '⚫⚪Misskey Reversi⚪⚫';
 
 	function ogBlock() {
 		return (

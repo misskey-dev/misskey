@@ -687,7 +687,7 @@ describe('ユーザー', () => {
 		const expected: [] = [];
 		assert.deepStrictEqual(response, expected);
 	});
-	test('をID指定のリスト形式で取得することができる', async() => {
+	test('をID指定のリスト形式で取得することができる', async () => {
 		const parameters = { userIds: [bob.id, alice.id, carol.id] };
 		const response = await successfulApiCall({ endpoint: 'users/show', parameters, user: alice });
 		const expected = [

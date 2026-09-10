@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 				</Transition>
-				<MkFolder :defaultOpen="false" :max-height="280" class="_margin">
+				<MkFolder :defaultOpen="false" :maxHeight="280" class="_margin">
 					<template #icon><i class="ti ti-code"></i></template>
 					<template #label>{{ i18n.ts._play.viewSource }}</template>
 
@@ -276,33 +276,34 @@ async function reportAbuse() {
 function showMenu(ev: PointerEvent) {
 	if (!flash.value) return;
 
-	const menu: MenuItem[] = [
-		...($i && $i.id !== flash.value.userId ? [
-			{
-				icon: 'ti ti-exclamation-circle',
-				text: i18n.ts.reportAbuse,
-				action: reportAbuse,
-			},
-			...($i.isModerator || $i.isAdmin ? [
-				{
-					type: 'divider' as const,
-				},
-				{
-					icon: 'ti ti-trash',
-					text: i18n.ts.delete,
-					danger: true,
-					action: () => os.confirm({
-						type: 'warning',
-						text: i18n.ts.deleteConfirm,
-					}).then(({ canceled }) => {
-						if (canceled || !flash.value) return;
+	const menu: MenuItem[] = [];
 
-						os.apiWithDialog('flash/delete', { flashId: flash.value.id });
-					}),
-				},
-			] : []),
-		] : []),
-	];
+	if ($i != null && $i.id !== flash.value.userId) {
+		menu.push({
+			icon: 'ti ti-exclamation-circle',
+			text: i18n.ts.reportAbuse,
+			action: reportAbuse,
+		});
+
+		if ($i.isModerator || $i.isAdmin) {
+			menu.push({
+				type: 'divider' as const,
+			});
+			menu.push({
+				icon: 'ti ti-trash',
+				text: i18n.ts.delete,
+				danger: true,
+				action: () => os.confirm({
+					type: 'warning',
+					text: i18n.ts.deleteConfirm,
+				}).then(({ canceled }) => {
+					if (canceled || !flash.value) return;
+
+					os.apiWithDialog('flash/delete', { flashId: flash.value.id });
+				}),
+			});
+		}
+	}
 
 	os.popupMenu(menu, ev.currentTarget ?? ev.target);
 }

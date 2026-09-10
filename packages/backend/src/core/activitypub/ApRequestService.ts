@@ -19,7 +19,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
-import { assertActivityMatchesUrl, FetchAllowSoftFailMask as FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
+import { assertActivityMatchesUrl, FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
 import type { IObject } from './type.js';
 
 type Request = {

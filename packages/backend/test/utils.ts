@@ -443,15 +443,23 @@ export function makeStreamCatcher<T>(
 	cond: (message: Record<string, any>) => boolean,
 	extractor: (message: Record<string, any>) => T,
 	timeout = 60 * 1000): Promise<T> {
-	let ws: WebSocket;
-	const p = new Promise<T>(async (resolve) => {
-		ws = await connectStream(user, channel, (msg) => {
-			if (cond(msg)) {
-				resolve(extractor(msg));
-			}
-		});
+	let ws: WebSocket | null = null;
+	let catchMessage!: (value: T) => void;
+	const caught = new Promise<T>(resolve => {
+		catchMessage = resolve;
+	});
+
+	// Promise executor を async にすると接続失敗が握り潰されタイムアウトまで待たされるため、
+	// 非同期処理は executor の外に出して connectStream の失敗をそのまま伝播させる
+	const p = connectStream(user, channel, (msg) => {
+		if (cond(msg)) {
+			catchMessage(extractor(msg));
+		}
+	}).then(_ws => {
+		ws = _ws;
+		return caught;
 	}).finally(() => {
-		ws.close();
+		ws?.close();
 	});
 
 	return timeoutPromise(p, timeout);
@@ -463,7 +471,7 @@ export type SimpleGetResponse = {
 	type: string | null,
 	location: string | null
 };
-export const simpleGet = async (path: string, accept = '*/*', cookie: any = undefined, bodyExtractor: (res: Response) => Promise<string | null> = _ => Promise.resolve(null)): Promise<SimpleGetResponse> => {
+export const simpleGet = async (path: string, accept = '*/*', cookie?: any, bodyExtractor: (res: Response) => Promise<string | null> = _ => Promise.resolve(null)): Promise<SimpleGetResponse> => {
 	const res = await relativeFetch(path, {
 		headers: {
 			Accept: accept,
@@ -654,34 +662,35 @@ export async function captureWebhook<T = SystemWebhookPayload>(postAction: () =>
 	const fastify = Fastify();
 
 	let timeoutHandle: NodeJS.Timeout | null = null;
-	const result = await new Promise<string>(async (resolve, reject) => {
-		fastify.all('/', async (req, res) => {
-			if (timeoutHandle) {
-				clearTimeout(timeoutHandle);
-			}
+	let receiveBody!: (body: string) => void;
+	let failReceiving!: (err: unknown) => void;
+	// Promise executor を async にすると listen / postAction の失敗が握り潰されるため、
+	// resolve / reject だけを取り出して非同期処理は executor の外で行う
+	const received = new Promise<string>((resolve, reject) => {
+		receiveBody = resolve;
+		failReceiving = reject;
+	});
 
+	try {
+		fastify.all('/', (req, res) => {
 			const body = JSON.stringify(req.body);
 			res.status(200).send('ok');
-			await fastify.close();
-			resolve(body);
+			receiveBody(body);
 		});
 
 		await fastify.listen({ port });
 
-		timeoutHandle = setTimeout(async () => {
-			await fastify.close();
-			reject(new Error('timeout'));
+		timeoutHandle = setTimeout(() => {
+			failReceiving(new Error('timeout'));
 		}, 3000);
 
-		try {
-			await postAction();
-		} catch (e) {
-			await fastify.close();
-			reject(e);
+		postAction().catch(failReceiving);
+
+		return JSON.parse(await received) as T;
+	} finally {
+		if (timeoutHandle) {
+			clearTimeout(timeoutHandle);
 		}
-	});
-
-	await fastify.close();
-
-	return JSON.parse(result) as T;
+		await fastify.close();
+	}
 }

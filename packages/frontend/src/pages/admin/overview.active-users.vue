@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<MkLoading v-if="fetching"/>
+	<MkLoading v-if="fetching" />
 	<div v-show="!fetching" :class="$style.root" class="_panel">
 		<canvas ref="chartEl"></canvas>
 	</div>
@@ -153,9 +153,11 @@ async function renderChart() {
 					},
 					external: externalTooltipHandler,
 				},
+				/* eslint-disable */
 				...({ // TSを黙らすため
 					gradient,
 				}),
+				/* eslint-enable */
 			},
 		},
 		plugins: [chartVLine(vLineColor)],

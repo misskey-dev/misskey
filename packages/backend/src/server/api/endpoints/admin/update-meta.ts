@@ -193,7 +193,7 @@ export const paramDef = {
 			type: 'array', nullable: true,
 			items: {
 				type: 'string',
-			}
+			},
 		},
 		federation: {
 			type: 'string',

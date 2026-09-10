@@ -291,12 +291,12 @@ const headerTabs = computed(() => [...(prefer.r.pinnedUserLists.value.map(l => (
 	onClick: chooseChannel,
 }] as Tab[]);
 
-const headerTabsWhenNotLogin = computed(() => [...availableBasicTimelines().map(tl => ({
+const headerTabsWhenNotLogin = computed(() => availableBasicTimelines().map(tl => ({
 	key: tl,
 	title: i18n.ts._timelines[tl],
 	icon: basicTimelineIconClass(tl),
 	iconOnly: true,
-}))] as Tab[]);
+})) as Tab[]);
 
 definePage(() => ({
 	title: i18n.ts.timeline,

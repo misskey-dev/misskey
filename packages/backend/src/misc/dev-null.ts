@@ -10,7 +10,7 @@ export class DevNull extends Writable implements NodeJS.WritableStream {
 		super(opts);
 	}
 
-	_write (chunk: any, encoding: BufferEncoding, cb: (err?: Error | null) => void) {
+	_write(chunk: any, encoding: BufferEncoding, cb: (err?: Error | null) => void) {
 		setImmediate(cb);
 	}
 }

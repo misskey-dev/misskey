@@ -38,7 +38,7 @@ function merge<T extends ILocale>(...args: (T | ILocale | undefined)[]): T {
 /**
  * 何故か文字列にバックスペース文字が混入することがあり、YAMLが壊れるので取り除く
  */
-function clean (text: string) {
+function clean(text: string) {
 	return text.replace(new RegExp(String.fromCodePoint(0x08), 'g'), '');
 }
 

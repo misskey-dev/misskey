@@ -76,7 +76,7 @@ describe('JsonConsoleBackend', () => {
 		}));
 
 		expect(output).toHaveBeenCalledOnce();
-		expect(output.mock.calls[0][0]).toMatchInlineSnapshot(`"{\"timestamp\":\"2025-01-02T03:04:05.678Z\",\"level\":\"error\",\"message\":\"delivery failed\",\"loggerName\":\"queue.deliver\",\"eventName\":\"queue.job.failed\",\"attributes\":{\"jobId\":\"123\",\"attempt\":2},\"error\":{\"type\":\"TypeError\",\"message\":\"broken\",\"stack\":\"stack\"},\"processId\":1234,\"isPrimary\":false,\"workerId\":7}"`);
+		expect(output.mock.calls[0][0]).toMatchInlineSnapshot('"{\"timestamp\":\"2025-01-02T03:04:05.678Z\",\"level\":\"error\",\"message\":\"delivery failed\",\"loggerName\":\"queue.deliver\",\"eventName\":\"queue.job.failed\",\"attributes\":{\"jobId\":\"123\",\"attempt\":2},\"error\":{\"type\":\"TypeError\",\"message\":\"broken\",\"stack\":\"stack\"},\"processId\":1234,\"isPrimary\":false,\"workerId\":7}"');
 	});
 
 	test('omits pretty-only compatibility data and context colors', () => {
