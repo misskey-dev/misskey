@@ -111,7 +111,7 @@ export const api = async <E extends keyof misskey.Endpoints, P extends misskey.E
 	};
 };
 
-export const relativeFetch = async (path: string, init?: RequestInit) => {
+export const relativeFetch = async (path: string, init?: RequestInit | undefined) => {
 	return await fetch(new URL(path, `http://127.0.0.1:${port}/`).toString(), init);
 };
 
