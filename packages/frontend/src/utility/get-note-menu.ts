@@ -636,7 +636,7 @@ export function getRenoteMenu(props: {
 	const normalExternalChannelRenoteItems: MenuItem[] = [];
 
 	if (appearNote.channel) {
-		channelRenoteItems.push(...[{
+		channelRenoteItems.push({
 			text: i18n.ts.inChannelRenote,
 			icon: 'ti ti-repeat',
 			action: () => {
@@ -671,11 +671,11 @@ export function getRenoteMenu(props: {
 					});
 				}
 			},
-		}]);
+		});
 	}
 
 	if (!appearNote.channel || appearNote.channel.allowRenoteToExternal) {
-		normalRenoteItems.push(...[{
+		normalRenoteItems.push({
 			text: i18n.ts.renote,
 			icon: 'ti ti-repeat',
 			action: () => {
@@ -717,7 +717,7 @@ export function getRenoteMenu(props: {
 					renote: appearNote,
 				});
 			},
-		}])]);
+		}]));
 
 		normalExternalChannelRenoteItems.push({
 			type: 'parent',

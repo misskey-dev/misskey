@@ -173,7 +173,7 @@ function isCssModuleAccess(node: ESTree.Node, ctxName: string, key: string): nod
 	if (node.object.object.type !== 'Identifier') return false;
 	if (node.object.object.name !== ctxName) return false;
 	return getMemberPropertyName(node.object.property, node.object.computed) === key;
-	}
+}
 
 function isCssModuleReference(node: ESTree.Node, ctxName: string, key: string): node is Extract<ESTree.Node, { type: 'MemberExpression' }> {
 	if (!isCssModuleAccess(node, ctxName, key)) return false;

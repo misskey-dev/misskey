@@ -18,7 +18,7 @@ export function misskeyApi<
 >(
 	endpoint: E,
 	data: P & { i?: string | null; } = {} as any,
-	token?: string | null | undefined,
+	token?: string | null,
 	signal?: AbortSignal,
 ): Promise<_ResT> {
 	if (endpoint.includes('://')) throw new Error('invalid endpoint');

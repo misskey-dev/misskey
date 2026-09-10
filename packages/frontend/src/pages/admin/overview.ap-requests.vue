@@ -167,23 +167,19 @@ onMounted(async () => {
 				},
 			},
 			plugins: {
-				legend: {
-					display: false,
-				},
+				legend: { display: false },
 				tooltip: {
 					enabled: false,
 					mode: 'index',
-					animation: {
-						duration: 0,
-					},
+					animation: { duration: 0 },
 					external: externalTooltipHandler,
-					callbacks: {
-						label: context => `${context.dataset.label}: ${Math.abs(context.parsed.y)}`,
-					},
+					callbacks: { label: (context) => `${context.dataset.label}: ${Math.abs(context.parsed.y)}` }
 				},
+				/* eslint-disable */
 				...({ // TSを黙らすため
 					gradient,
 				}),
+				/* eslint-enable */
 			},
 		},
 		plugins: [chartVLine(vLineColor)],
@@ -258,20 +254,18 @@ onMounted(async () => {
 				},
 			},
 			plugins: {
-				legend: {
-					display: false,
-				},
+				legend: { display: false },
 				tooltip: {
 					enabled: false,
 					mode: 'index',
-					animation: {
-						duration: 0,
-					},
-					external: externalTooltipHandler2,
+					animation: { duration: 0 },
+					external: externalTooltipHandler2
 				},
+				/* eslint-disable */
 				...({ // TSを黙らすため
 					gradient,
 				}),
+				/* eslint-enable */
 			},
 		},
 		plugins: [chartVLine(vLineColor)],
