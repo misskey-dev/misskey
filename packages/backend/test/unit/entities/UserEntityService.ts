@@ -202,7 +202,7 @@ describe('UserEntityService', () => {
 			await app.close();
 		});
 
-		test('UserLite', async() => {
+		test('UserLite', async () => {
 			const me = await createUser();
 			const who = await createUser();
 
@@ -217,7 +217,7 @@ describe('UserEntityService', () => {
 			expect(actual.achievements).toBeUndefined();
 		});
 
-		test('UserDetailedNotMe', async() => {
+		test('UserDetailedNotMe', async () => {
 			const me = await createUser();
 			const who = await createUser({}, { birthday: '2000-01-01' });
 
@@ -232,7 +232,7 @@ describe('UserEntityService', () => {
 			expect(actual.achievements).toBeUndefined();
 		});
 
-		test('MeDetailed', async() => {
+		test('MeDetailed', async () => {
 			const achievements = [{ name: 'iLoveMisskey' as const, unlockedAt: new Date().getTime() }];
 			const me = await createUser({}, {
 				birthday: '2000-01-01',
@@ -260,7 +260,7 @@ describe('UserEntityService', () => {
 		});
 
 		describe('packManyによるpreloadがある時、preloadが無い時とpackの結果が同じになるか見たい', () => {
-			test('no-preload', async() => {
+			test('no-preload', async () => {
 				const me = await createUser();
 				// meがフォローしてる人たち
 				const followeeMe = await Promise.all(randomIntRange().map(() => createUser()));
@@ -383,7 +383,7 @@ describe('UserEntityService', () => {
 				}
 			});
 
-			test('preload', async() => {
+			test('preload', async () => {
 				const me = await createUser();
 
 				{

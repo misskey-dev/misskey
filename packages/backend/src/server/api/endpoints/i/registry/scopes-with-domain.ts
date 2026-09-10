@@ -23,7 +23,7 @@ export const meta = {
 						items: {
 							type: 'string',
 						},
-					}
+					},
 				},
 				domain: {
 					type: 'string',

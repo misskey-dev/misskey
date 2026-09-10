@@ -38,7 +38,7 @@ export const paramDef = {
 
 @Injectable() // eslint-disable-next-line import/no-default-export
 export default class extends Endpoint<typeof meta, typeof paramDef> {
-	constructor (
+	constructor(
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 

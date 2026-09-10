@@ -4,7 +4,7 @@
  */
 
 // eslint-disable-next-line import/no-default-export
-export default function(reaction: string): string {
+export default function (reaction: string): string {
 	switch (reaction) {
 		case 'like': return '👍';
 		case 'love': return '❤️';
