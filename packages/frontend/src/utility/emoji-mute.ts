@@ -50,7 +50,7 @@ export function unmute(emoji:string) {
 	const mutedEmojis = prefer.r.mutingEmojis.value;
 	console.log('unmute', emoji, emojiMuteKey);
 	console.log('mutedEmojis', mutedEmojis);
-	prefer.commit('mutingEmojis', mutedEmojis.filter((e) => e !== emojiMuteKey));
+	prefer.commit('mutingEmojis', mutedEmojis.filter((targetEmoji) => targetEmoji !== emojiMuteKey));
 }
 
 export function checkMuted(emoji: string) {
