@@ -25,7 +25,7 @@ export class FlashLikeEntityService {
 	@bindThis
 	public async pack(
 		src: MiFlashLike['id'] | MiFlashLike,
-		me?: { id: MiUser['id'] } | null,
+		me?: { id: MiUser['id'] } | null | undefined,
 	) {
 		const like = typeof src === 'object' ? src : await this.flashLikesRepository.findOneByOrFail({ id: src });
 

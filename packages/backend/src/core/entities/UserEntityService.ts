@@ -658,7 +658,7 @@ export class UserEntityService implements OnModuleInit {
 
 	public async packMany<S extends 'MeDetailed' | 'UserDetailedNotMe' | 'UserDetailed' | 'UserLite' = 'UserLite'>(
 		users: (MiUser['id'] | MiUser)[],
-		me?: { id: MiUser['id'] } | null,
+		me?: { id: MiUser['id'] } | null | undefined,
 		options?: {
 			schema?: S,
 			includeSecrets?: boolean,

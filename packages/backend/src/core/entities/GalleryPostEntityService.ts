@@ -34,7 +34,7 @@ export class GalleryPostEntityService {
 	@bindThis
 	public async pack(
 		src: MiGalleryPost['id'] | MiGalleryPost,
-		me?: { id: MiUser['id'] } | null,
+		me?: { id: MiUser['id'] } | null | undefined,
 		hint?: {
 			packedUser?: Packed<'UserLite'>
 		},
@@ -63,7 +63,7 @@ export class GalleryPostEntityService {
 	@bindThis
 	public async packMany(
 		posts: MiGalleryPost[],
-		me?: { id: MiUser['id'] } | null,
+		me?: { id: MiUser['id'] } | null | undefined,
 	) {
 		const _users = posts.map(({ user, userId }) => user ?? userId);
 		const _userMap = await this.userEntityService.packMany(_users, me)

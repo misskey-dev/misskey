@@ -63,7 +63,7 @@ export class NoteDraftEntityService implements OnModuleInit {
 	@bindThis
 	public async pack(
 		src: MiNoteDraft['id'] | MiNoteDraft,
-		me?: { id: MiUser['id'] } | null,
+		me?: { id: MiUser['id'] } | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
@@ -155,7 +155,7 @@ export class NoteDraftEntityService implements OnModuleInit {
 	@bindThis
 	public async packMany(
 		noteDrafts: MiNoteDraft[],
-		me?: { id: MiUser['id'] } | null,
+		me?: { id: MiUser['id'] } | null | undefined,
 		options?: {
 			detail?: boolean;
 		},

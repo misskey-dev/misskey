@@ -29,7 +29,7 @@ export class RenoteMutingEntityService {
 	@bindThis
 	public async pack(
 		src: MiRenoteMuting['id'] | MiRenoteMuting,
-		me?: { id: MiUser['id'] } | null,
+		me?: { id: MiUser['id'] } | null | undefined,
 		hints?: {
 			packedMutee?: Packed<'UserDetailedNotMe'>
 		},

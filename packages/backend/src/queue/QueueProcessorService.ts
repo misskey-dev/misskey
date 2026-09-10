@@ -575,7 +575,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async onApplicationShutdown(signal?: string): Promise<void> {
+	public async onApplicationShutdown(signal?: string | undefined): Promise<void> {
 		await this.stop();
 	}
 }

@@ -34,7 +34,7 @@ export class ClipEntityService {
 	@bindThis
 	public async pack(
 		src: MiClip['id'] | MiClip,
-		me?: { id: MiUser['id'] } | null,
+		me?: { id: MiUser['id'] } | null | undefined,
 		hint?: {
 			packedUser?: Packed<'UserLite'>
 		},
@@ -60,7 +60,7 @@ export class ClipEntityService {
 	@bindThis
 	public async packMany(
 		clips: MiClip[],
-		me?: { id: MiUser['id'] } | null,
+		me?: { id: MiUser['id'] } | null | undefined,
 	) {
 		const _users = clips.map(({ user, userId }) => user ?? userId);
 		const _userMap = await this.userEntityService.packMany(_users, me)

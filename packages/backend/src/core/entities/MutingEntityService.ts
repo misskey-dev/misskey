@@ -29,7 +29,7 @@ export class MutingEntityService {
 	@bindThis
 	public async pack(
 		src: MiMuting['id'] | MiMuting,
-		me?: { id: MiUser['id'] } | null,
+		me?: { id: MiUser['id'] } | null | undefined,
 		hints?: {
 			packedMutee?: Packed<'UserDetailedNotMe'>,
 		},

@@ -47,7 +47,7 @@ export class ChannelEntityService {
 	@bindThis
 	public async pack(
 		src: MiChannel['id'] | MiChannel,
-		me?: { id: MiUser['id'] } | null,
+		me?: { id: MiUser['id'] } | null | undefined,
 		detailed?: boolean,
 		opts?: {
 			bannerFiles?: Map<MiDriveFile['id'], MiDriveFile>;
@@ -136,7 +136,7 @@ export class ChannelEntityService {
 	@bindThis
 	public async packMany(
 		src: MiChannel['id'][] | MiChannel[],
-		me?: { id: MiUser['id'] } | null,
+		me?: { id: MiUser['id'] } | null | undefined,
 		detailed?: boolean,
 	): Promise<Packed<'Channel'>[]> {
 		// IDのみの要素がある場合、DBからオブジェクトを取得して補う

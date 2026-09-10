@@ -156,7 +156,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string): void {
+	public onApplicationShutdown(signal?: string | undefined): void {
 		this.dispose();
 	}
 }
