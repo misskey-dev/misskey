@@ -12,11 +12,11 @@ export function makeEmojiMuteKey(props: { name: string; host?: string | null }) 
 	return props.name.startsWith(':') ? props.name : `:${props.name}${props.host ? `@${props.host}` : ''}:`;
 }
 
-export function extractCustomEmojiName (name:string) {
+export function extractCustomEmojiName(name:string) {
 	return normalizeCustomEmojiName(name).split('@')[0];
 }
 
-export function extractCustomEmojiHost (name:string) {
+export function extractCustomEmojiHost(name:string) {
 	// nameは:emojiName@host:の形式
 	// 取り出したい部分はhostなので、@以降を取り出す
 	const index = name.indexOf('@');

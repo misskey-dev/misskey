@@ -17,7 +17,7 @@ import { panelDirective } from './panel.js';
 import { adaptiveBorderDirective } from './adaptive-border.js';
 import { adaptiveBgDirective } from './adaptive-bg.js';
 
-export default function(app: App) {
+export default function (app: App) {
 	for (const [key, value] of Object.entries(directives)) {
 		app.directive(key, value);
 	}
