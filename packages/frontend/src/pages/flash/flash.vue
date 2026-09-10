@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 				</Transition>
-				<MkFolder :defaultOpen="false" :max-height="280" class="_margin">
+				<MkFolder :defaultOpen="false" :maxHeight="280" class="_margin">
 					<template #icon><i class="ti ti-code"></i></template>
 					<template #label>{{ i18n.ts._play.viewSource }}</template>
 
