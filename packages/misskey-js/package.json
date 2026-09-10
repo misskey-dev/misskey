@@ -24,9 +24,9 @@
 		"tsd": "tsd",
 		"api": "pnpm api-extractor run --local --verbose",
 		"api-prod": "pnpm api-extractor run --verbose",
-		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"oxlint": "oxlint",
 		"typecheck": "tsc --noEmit",
-		"lint": "pnpm typecheck && pnpm eslint",
+		"lint": "pnpm typecheck && pnpm oxlint",
 		"vitest": "vitest run --coverage",
 		"test": "pnpm vitest && pnpm tsd",
 		"update-autogen-code": "pnpm --filter misskey-js-type-generator generate && ncp generator/built/autogen src/autogen"
@@ -39,8 +39,6 @@
 	"devDependencies": {
 		"@microsoft/api-extractor": "7.59.0",
 		"@types/node": "26.4.0",
-		"@typescript-eslint/eslint-plugin": "8.68.0",
-		"@typescript-eslint/parser": "8.68.0",
 		"@vitest/coverage-v8": "4.1.11",
 		"esbuild": "0.28.2",
 		"execa": "10.0.1",

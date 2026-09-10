@@ -54,6 +54,8 @@ minimumReleaseAgeExclude:
   - slacc-win32-x64-msvc
   - '@typescript/native-preview*'
   - undici@6.28.1 || 7.29.1 # そのうち消す
+  - '@vizejs/native-*'
+  - oxlint-plugin-vize
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0

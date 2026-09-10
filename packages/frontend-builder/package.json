@@ -2,18 +2,13 @@
 	"name": "frontend-builder",
 	"type": "module",
 	"scripts": {
-		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"oxlint": "oxlint",
 		"typecheck": "tsc --noEmit",
-		"lint": "pnpm typecheck && pnpm eslint"
-	},
-	"exports": {
-		"./*": "./js/*"
+		"lint": "pnpm typecheck && pnpm oxlint"
 	},
 	"devDependencies": {
 		"@types/estree": "1.0.9",
 		"@types/node": "26.4.0",
-		"@typescript-eslint/eslint-plugin": "8.68.0",
-		"@typescript-eslint/parser": "8.68.0",
 		"rollup": "4.63.1"
 	},
 	"dependencies": {

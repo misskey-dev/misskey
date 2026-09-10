@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"target": "ESNext",
 		"module": "ESNext",
-		"moduleResolution": "node16",
+		"moduleResolution": "bundler",
 		"strict": true,
 		"strictFunctionTypes": true,
 		"strictNullChecks": true,

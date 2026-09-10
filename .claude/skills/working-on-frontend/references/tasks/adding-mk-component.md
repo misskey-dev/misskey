@@ -161,11 +161,11 @@ const emit = defineEmits<{
 # 型チェック (vue-tsc)
 pnpm --filter frontend typecheck
 
-# ESLint (規約全体)
-pnpm --filter frontend eslint
+# oxlint (規約全体)
+pnpm --filter frontend oxlint
 
-# 単一ファイルに ESLint --fix
-pnpm exec eslint --fix packages/frontend/src/components/Mk<Name>.vue
+# 単一ファイルに oxlint --fix (config 解決のため package root で実行する)
+pnpm --filter frontend exec oxlint --fix -- src/components/Mk<Name>.vue
 
 # Storybook で目視確認
 pnpm --filter frontend storybook-dev    # localhost:6006

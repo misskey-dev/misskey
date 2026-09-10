@@ -14,8 +14,8 @@
 		"test:e2e": "playwright test --config playwright.config.ts",
 		"test:browser": "vitest --run --globals --config vitest.config.browser.ts",
 		"typecheck": "vue-tsc --noEmit",
-		"eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",
-		"lint": "pnpm typecheck && pnpm eslint"
+		"oxlint": "oxlint --quiet",
+		"lint": "pnpm typecheck && pnpm oxlint"
 	},
 	"dependencies": {
 		"@analytics/google-analytics": "1.1.0",
@@ -105,15 +105,11 @@
 		"@types/textarea-caret": "3.0.4",
 		"@types/throttle-debounce": "5.0.2",
 		"@types/tinycolor2": "1.4.6",
-		"@typescript-eslint/eslint-plugin": "8.68.0",
-		"@typescript-eslint/parser": "8.68.0",
 		"@vitest/browser-playwright": "4.1.11",
 		"@vitest/coverage-v8": "4.1.11",
 		"@vue/compiler-core": "3.5.42",
 		"astring": "1.9.0",
 		"chromatic": "18.7.1",
-		"eslint-plugin-import": "2.32.0",
-		"eslint-plugin-vue": "10.10.0",
 		"execa": "10.0.1",
 		"happy-dom": "20.12.0",
 		"intersection-observer": "0.12.2",
@@ -124,6 +120,7 @@
 		"msw-storybook-addon": "3.0.0",
 		"nodemon": "3.1.14",
 		"oxc-walker": "1.1.1",
+		"oxlint-plugin-vize": "0.404.14",
 		"playwright": "1.62.1",
 		"prettier": "3.9.6",
 		"react": "19.2.8",
@@ -141,7 +138,6 @@
 		"vitest": "4.1.11",
 		"vitest-fetch-mock": "0.4.5",
 		"vue-component-type-helpers": "3.3.11",
-		"vue-eslint-parser": "10.4.1",
 		"vue-tsc": "3.3.11"
 	}
 }
