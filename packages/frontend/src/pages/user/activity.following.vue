@@ -153,11 +153,15 @@ async function renderChart() {
 				mode: 'index',
 			},
 			plugins: {
-				legend: { display: false },
+				legend: {
+					display: false,
+				},
 				tooltip: {
 					enabled: false,
 					mode: 'index',
-					animation: { duration: 0 },
+					animation: {
+						duration: 0,
+					},
 					external: externalTooltipHandler,
 				},
 				/* eslint-disable */

@@ -158,14 +158,18 @@ async function renderChart() {
 					text: 'Unique/Natural PV',
 					padding: {
 						top: 0,
-						bottom: 12
-					}
+						bottom: 12,
+					},
 				},
-				legend: { display: false },
+				legend: {
+					display: false,
+				},
 				tooltip: {
 					enabled: false,
 					mode: 'index',
-					animation: { duration: 0 },
+					animation: {
+						duration: 0,
+					},
 					external: externalTooltipHandler,
 				},
 				/* eslint-disable */
