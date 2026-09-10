@@ -40,7 +40,7 @@ async function exe(script: string): Promise<ExeResult> {
 			out: (value) => {
 				outputs.push(value);
 			},
-		}
+		},
 	);
 	const ast = Parser.parse(script);
 	await interpreter.exec(ast);
