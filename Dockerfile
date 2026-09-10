@@ -1,6 +1,6 @@
-# syntax = docker/dockerfile:1.23
+# syntax = docker/dockerfile:1.27
 
-ARG NODE_VERSION=26.4.0-trixie
+ARG NODE_VERSION=26.8.1-trixie
 
 # build assets & compile TypeScript
 
