@@ -123,7 +123,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
+	public onApplicationShutdown(signal?: string): void {
 		this.dispose();
 	}
 }

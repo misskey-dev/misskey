@@ -1271,7 +1271,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async onApplicationShutdown(signal?: string | undefined): Promise<void> {
+	public async onApplicationShutdown(signal?: string): Promise<void> {
 		await this.dispose();
 	}
 }

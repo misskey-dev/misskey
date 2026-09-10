@@ -10,7 +10,6 @@ import { Layout } from '@/server/web/views/base.js';
 export function ChannelPage(props: CommonProps<{
 	channel: Packed<'Channel'>;
 }>) {
-
 	function ogBlock() {
 		return (
 			<>

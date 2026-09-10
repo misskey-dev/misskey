@@ -111,7 +111,7 @@ export const api = async <E extends keyof misskey.Endpoints, P extends misskey.E
 	};
 };
 
-export const relativeFetch = async (path: string, init?: RequestInit | undefined) => {
+export const relativeFetch = async (path: string, init?: RequestInit) => {
 	return await fetch(new URL(path, `http://127.0.0.1:${port}/`).toString(), init);
 };
 
@@ -463,7 +463,7 @@ export type SimpleGetResponse = {
 	type: string | null,
 	location: string | null
 };
-export const simpleGet = async (path: string, accept = '*/*', cookie: any = undefined, bodyExtractor: (res: Response) => Promise<string | null> = _ => Promise.resolve(null)): Promise<SimpleGetResponse> => {
+export const simpleGet = async (path: string, accept = '*/*', cookie?: any, bodyExtractor: (res: Response) => Promise<string | null> = _ => Promise.resolve(null)): Promise<SimpleGetResponse> => {
 	const res = await relativeFetch(path, {
 		headers: {
 			Accept: accept,

@@ -158,7 +158,7 @@ export class ChannelFollowingService implements OnModuleInit {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
+	public onApplicationShutdown(signal?: string): void {
 		this.dispose();
 	}
 }

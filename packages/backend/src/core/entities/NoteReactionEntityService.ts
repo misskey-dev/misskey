@@ -48,7 +48,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 	@bindThis
 	public async pack(
 		src: MiNoteReaction['id'] | MiNoteReaction,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 		options?: object,
 		hints?: {
 			packedUser?: Packed<'UserLite'>
@@ -70,7 +70,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 	@bindThis
 	public async packMany(
 		reactions: MiNoteReaction[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 		options?: object,
 	): Promise<Packed<'NoteReaction'>[]> {
 		const opts = Object.assign({
@@ -84,7 +84,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 	@bindThis
 	public async packWithNote(
 		src: MiNoteReaction['id'] | MiNoteReaction,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 		options?: object,
 		hints?: {
 			packedUser?: Packed<'UserLite'>
@@ -107,7 +107,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 	@bindThis
 	public async packManyWithNote(
 		reactions: MiNoteReaction[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 		options?: object,
 	): Promise<Packed<'NoteReactionWithNote'>[]> {
 		const opts = Object.assign({

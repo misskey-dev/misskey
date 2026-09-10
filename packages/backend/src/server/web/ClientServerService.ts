@@ -408,7 +408,7 @@ export class ClientServerService {
 				);
 			}
 
-			let content = `User-agent: *\n`;
+			let content = 'User-agent: *\n';
 			content += disallowedPaths.map((path) => `Disallow: ${path}`).join('\n') + '\n';
 			content += 'Allow: /\n';
 			content += '\n# todo: sitemap\n';

@@ -27,7 +27,7 @@ export class NoteFavoriteEntityService {
 	@bindThis
 	public async pack(
 		src: MiNoteFavorite['id'] | MiNoteFavorite,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 	) {
 		const favorite = typeof src === 'object' ? src : await this.noteFavoritesRepository.findOneByOrFail({ id: src });
 

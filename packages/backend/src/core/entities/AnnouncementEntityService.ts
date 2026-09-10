@@ -26,7 +26,7 @@ export class AnnouncementEntityService {
 	@bindThis
 	public async pack(
 		src: MiAnnouncement['id'] | MiAnnouncement & { isRead?: boolean | null },
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 	): Promise<Packed<'Announcement'>> {
 		const announcement = typeof src === 'object'
 			? src
@@ -62,7 +62,7 @@ export class AnnouncementEntityService {
 	@bindThis
 	public async packMany(
 		announcements: (MiAnnouncement['id'] | MiAnnouncement & { isRead?: boolean | null } | MiAnnouncement)[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 	) : Promise<Packed<'Announcement'>[]> {
 		return (await Promise.allSettled(announcements.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')

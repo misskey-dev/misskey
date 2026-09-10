@@ -28,7 +28,7 @@ export class InviteCodeEntityService {
 	@bindThis
 	public async pack(
 		src: MiRegistrationTicket['id'] | MiRegistrationTicket,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 		hints?: {
 			packedCreatedBy?: Packed<'UserLite'>,
 			packedUsedBy?: Packed<'UserLite'>,

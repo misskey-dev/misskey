@@ -63,7 +63,7 @@ export class NoteDraftEntityService implements OnModuleInit {
 	@bindThis
 	public async pack(
 		src: MiNoteDraft['id'] | MiNoteDraft,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
@@ -155,7 +155,7 @@ export class NoteDraftEntityService implements OnModuleInit {
 	@bindThis
 	public async packMany(
 		noteDrafts: MiNoteDraft[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 		options?: {
 			detail?: boolean;
 		},
@@ -165,9 +165,7 @@ export class NoteDraftEntityService implements OnModuleInit {
 		// TODO: 本当は renote とか reply がないのに renoteId とか replyId があったらここで解決しておく
 		const fileIds = noteDrafts.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(x => x != null);
 		const packedFiles = fileIds.length > 0 ? await this.driveFileEntityService.packManyByIdsMap(fileIds) : new Map();
-		const users = [
-			...noteDrafts.map(({ user, userId }) => user ?? userId),
-		];
+		const users = noteDrafts.map(({ user, userId }) => user ?? userId);
 		const packedUsers = await this.userEntityService.packMany(users, me)
 			.then(users => new Map(users.map(u => [u.id, u])));
 

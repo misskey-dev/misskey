@@ -28,7 +28,7 @@ export class BlockingEntityService {
 	@bindThis
 	public async pack(
 		src: MiBlocking['id'] | MiBlocking,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null,
 		hint?: {
 			blockee?: Packed<'UserDetailedNotMe'>,
 		},
