@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Not, In, IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import * as v from 'valibot';
 import * as mi from '@/misc/schema/index.js';
@@ -11,6 +10,7 @@ import { maximum } from '@/misc/prelude/array.js';
 import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { packedUserDetailedSchema } from '@/models/schema/user.js';
@@ -49,6 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private notesRepository: NotesRepository,
 
 		private userEntityService: UserEntityService,
+		private queryService: QueryService,
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -59,17 +60,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			// Fetch recent notes
-			const recentNotes = await this.notesRepository.find({
-				where: {
-					userId: user.id,
-					replyId: Not(IsNull()),
-				},
-				order: {
-					id: -1,
-				},
-				take: 1000,
-				select: { replyId: true },
-			});
+			const recentNotesQuery = this.notesRepository.createQueryBuilder('note')
+				.select(['note.id', 'note.replyId'])
+				.where('note.userId = :userId', { userId: user.id })
+				.andWhere('note.replyId IS NOT NULL')
+				.orderBy('note.id', 'DESC')
+				.limit(1000);
+
+			// 対象ユーザー自身がリクエストしている場合、generateVisibilityQuery の
+			// `note.userId = :meId` に必ず一致して常に真になるので、条件ごと省略する
+			const isSelf = me != null && me.id === user.id;
+			if (!isSelf) {
+				this.queryService.generateVisibilityQuery(recentNotesQuery, me);
+			}
+
+			const recentNotes = await recentNotesQuery.getMany();
 
 			// 投稿が少なかったら中断
 			if (recentNotes.length === 0) {
@@ -77,12 +82,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// TODO ミュートを考慮
-			const replyTargetNotes = await this.notesRepository.find({
-				where: {
-					id: In(recentNotes.map(p => p.replyId)),
-				},
-				select: { userId: true },
-			});
+			const replyTargetNotesQuery = this.notesRepository.createQueryBuilder('note')
+				.select(['note.id', 'note.userId'])
+				.where('note.id IN (:...replyIds)', { replyIds: recentNotes.map(p => p.replyId) });
+
+			this.queryService.generateVisibilityQuery(replyTargetNotesQuery, me);
+
+			const replyTargetNotes = await replyTargetNotesQuery.getMany();
 
 			const repliedUsers: any = {};
 

@@ -28,16 +28,16 @@
 		"built"
 	],
 	"devDependencies": {
-		"@types/node": "26.2.0",
-		"@typescript-eslint/eslint-plugin": "8.67.0",
-		"@typescript-eslint/parser": "8.67.0",
+		"@types/node": "26.4.0",
+		"@typescript-eslint/eslint-plugin": "8.68.0",
+		"@typescript-eslint/parser": "8.68.0",
 		"chokidar": "5.0.0",
 		"esbuild": "0.28.2",
 		"execa": "10.0.1",
 		"nodemon": "3.1.14",
-		"tsx": "4.23.12"
+		"tsx": "4.23.13"
 	},
 	"dependencies": {
-		"js-yaml": "5.3.0"
+		"js-yaml": "5.4.1"
 	}
 }

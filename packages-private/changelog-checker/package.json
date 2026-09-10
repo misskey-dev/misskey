@@ -12,12 +12,12 @@
 	},
 	"devDependencies": {
 		"@types/mdast": "4.0.4",
-		"@types/node": "26.2.0",
+		"@types/node": "26.4.0",
 		"@vitest/coverage-v8": "4.1.11",
 		"mdast-util-to-string": "4.0.0",
 		"remark": "15.0.1",
 		"remark-parse": "11.0.0",
-		"tsx": "4.23.12",
+		"tsx": "4.23.13",
 		"unified": "11.0.5",
 		"vitest": "4.1.11"
 	}
