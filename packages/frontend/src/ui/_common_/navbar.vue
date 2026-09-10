@@ -207,6 +207,7 @@ function menuEdit() {
 	--subButtonWidth: 20px;
 
 	flex: 0 0 var(--nav-width);
+	transition: width 200ms ease-out, flex-basis 200ms ease-out;
 	width: var(--nav-width);
 	box-sizing: border-box;
 }
