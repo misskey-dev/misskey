@@ -120,7 +120,7 @@
 		"msw-storybook-addon": "3.0.0",
 		"nodemon": "3.1.14",
 		"oxc-walker": "1.1.1",
-		"oxlint-plugin-vize": "0.404.13",
+		"oxlint-plugin-vize": "0.404.14",
 		"playwright": "1.62.1",
 		"prettier": "3.9.6",
 		"react": "19.2.8",
