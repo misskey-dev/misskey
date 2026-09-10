@@ -87,16 +87,16 @@ export const frontendVizeRules = {
 	// 'vue/attributes-order': ['error', {
 	// 	alphabetical: false,
 	// }], // vize formatter
-	// 'vize/vue/no-mutating-props': ['error', {
-	// 	shallowOnly: true,
-	// }], // bug (options not accepted), to be reported
+	'vize/vue/no-mutating-props': ['error', {
+		shallowOnly: true,
+	}],
 	'vize/vue/no-use-v-if-with-v-for': 'error',
 	'vize/script/no-ref-as-operand': 'error',
 	'vize/vue/no-multi-spaces': 'error',
 	'vize/vue/no-v-html': 'warn',
-	// 'vize/vue/sfc-element-order': ['error', {
-	// 	order: ['template', 'script:not([setup])', 'script[setup]', 'style'],
-	// }], // bug (options not accepted), to be reported
+	'vize/vue/sfc-element-order': ['error', {
+		order: ['template', 'script:not([setup])', 'script[setup]', 'style'],
+	}],
 	// 'vize/vue/html-indent': ['warn', 'tab', {
 	// 	attribute: 1,
 	// 	baseIndent: 0,
@@ -118,16 +118,16 @@ export const frontendVizeRules = {
 	'vize/script/return-in-computed-property': 'warn',
 	'vize/type/no-reactivity-loss': 'warn',
 	// 'vize/vue/max-attributes-per-line': 'off', // vize formatter
-	// 'vize/vue/html-self-closing': ['error', {
-	// 	html: {
-	// 		void: 'any',
-	// 		normal: 'never',
-	// 		component: 'any',
-	// 	},
-	// 	svg: 'any',
-	// 	math: 'any',
-	// }], // bug (options not accepted), to be reported
+	'vize/vue/html-self-closing': ['error', {
+		html: {
+			void: 'any',
+			normal: 'never',
+			component: 'any',
+		},
+		svg: 'any',
+		math: 'any',
+	}],
 	// 'vize/vue/singleline-html-element-content-newline': 'off', // vize formatter
-	// 'vize/vue/v-on-event-hyphenation': ['error', 'never'], // bug (options not accepted), to be reported
-	// 'vize/vue/attribute-hyphenation': ['error', 'never'], // bug (options not accepted), to be reported
+	'vize/vue/v-on-event-hyphenation': ['error', 'never'],
+	'vize/vue/attribute-hyphenation': ['error', 'never'],
 };
