@@ -4,10 +4,12 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { SystemWebhookEntityService } from '@/core/entities/SystemWebhookEntityService.js';
 import { systemWebhookEventTypes } from '@/models/SystemWebhook.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { packedSystemWebhookSchema } from '@/models/schema/system-webhook.js';
 
 export const meta = {
 	tags: ['admin', 'system-webhook'],
@@ -17,31 +19,13 @@ export const meta = {
 	secure: true,
 	kind: 'write:admin:system-webhook',
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-			ref: 'SystemWebhook',
-		},
-	},
+	res: v.array(packedSystemWebhookSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		isActive: {
-			type: 'boolean',
-		},
-		on: {
-			type: 'array',
-			items: {
-				type: 'string',
-				enum: systemWebhookEventTypes,
-			},
-		},
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	isActive: v.optional(v.boolean()),
+	on: v.optional(v.array(v.picklist([...systemWebhookEventTypes]))),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

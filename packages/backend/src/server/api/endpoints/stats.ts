@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import type { InstancesRepository, NoteReactionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -15,55 +16,23 @@ export const meta = {
 
 	tags: ['meta'],
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			notesCount: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			originalNotesCount: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			usersCount: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			originalUsersCount: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			reactionsCount: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			//originalReactionsCount: {
-			//	type: 'number',
-			//	optional: false, nullable: false,
-			//},
-			instances: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			driveUsageLocal: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			driveUsageRemote: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-		},
-	},
+	res: v.object({
+		notesCount: v.number(),
+		originalNotesCount: v.number(),
+		usersCount: v.number(),
+		originalUsersCount: v.number(),
+		reactionsCount: v.number(),
+		//originalReactionsCount: {
+		//	type: 'number',
+		//	optional: false, nullable: false,
+		//},
+		instances: v.number(),
+		driveUsageLocal: v.number(),
+		driveUsageRemote: v.number(),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -1,6 +1,8 @@
 # API endpoint の meta / paramDef / res 完全早見表
 
-[`IEndpointMeta`](../../../../../packages/backend/src/server/api/endpoints.ts) の全フィールドと AJV `paramDef` の実用パターン、それと PR レビューで頻発する落とし穴を 1 つにまとめたページ。新規 / 既存 endpoint 編集時に開く。
+[`IEndpointMeta`](../../../../../packages/backend/src/server/api/endpoints.ts) の全フィールドと [Valibot](https://valibot.dev/) `paramDef` / `res` の実用パターン、それと PR レビューで頻発する落とし穴を 1 つにまとめたページ。新規 / 既存 endpoint 編集時に開く。
+
+**スキーマは Valibot に統一されている**。既存スキーマの書き換え規則・ヘルパーの網羅表は [valibot-cookbook.md](valibot-cookbook.md) を参照。本ページは「新しく endpoint を書くとき手元に置く早見表」。
 
 ## 目次
 
@@ -9,7 +11,8 @@
 - [`kind` の値](#kind-の値)
 - [`errors` の書き方](#errors-の書き方)
 - [`res` の書き方](#res-の書き方)
-- [`paramDef` (AJV) 実用パターン](#paramdef-ajv-実用パターン)
+- [`paramDef` (Valibot) 実用パターン](#paramdef-valibot-実用パターン)
+- [型の導出](#型の導出)
 - [OpenAPI への反映マップ](#openapi-への反映マップ)
 - [落とし穴](#落とし穴)
 
@@ -22,11 +25,11 @@
 | `stability` | `'deprecated' \| 'experimental' \| 'stable'` | (未指定) | 安定度のヒント。`'deprecated'` を付けた API は新規利用を避ける |
 | `tags` | `ReadonlyArray<string>` | — | OpenAPI タグ。実質 `tags[0]` のみが反映される |
 | `errors` | `Record<key, { message, code, id }>` | — | クライアントに返す業務エラー定義。各 `id` は UUID v4 で一意 |
-| `res` | `Schema` (`@/misc/json-schema.js`) | — | レスポンス JSON Schema。`ref: 'Note'` のような packed entity 参照も可 |
+| `res` | `AnyValibotSchema` (`@/misc/schema/index.js`) | — | レスポンススキーマ。packed entity のスキーマ (`packedNoteSchema` 等) を直接 import して置ける |
 | `requireCredential` | `boolean` | `false` | 認証必須か。`true` のとき `kind` を必ず設定する |
 | `requireModerator` | `boolean` | `false` | isModerator ロール必須。`true` のとき `kind` 必須 |
 | `requireAdmin` | `boolean` | `false` | isAdministrator ロール必須。`true` のとき `kind` 必須 |
-| `requiredRolePolicy` | `KeyOf<'RolePolicies'>` | (未指定) | 特定のロールポリシー (例: `'canCreateChannel'`) を満たすロールを要求 |
+| `requiredRolePolicy` | `keyof PackedRolePolicies & string` | (未指定) | 特定のロールポリシー (例: `'canCreateChannel'`) を満たすロールを要求 |
 | `prohibitMoved` | `boolean` | `false` | アカウント移行済ユーザーを拒否 (主に write 系で検討) |
 | `limit` | `{ key?, duration?, max?, minInterval? }` | なし | レート制限。`duration` と `max` はセットで設定する |
 | `requireFile` | `boolean` | `false` | multipart/form-data でファイル添付必須。`true` だと `exec` の `file` 引数が確実に渡る |
@@ -94,170 +97,176 @@ errors: {
 
 ## `res` の書き方
 
-JSON Schema または packed entity への参照:
+`res` には Valibot スキーマをそのまま書く。packed entity は **スキーマを直接 import** する (定義ジャンプ・補完が効く)。OpenAPI 生成時はスキーマオブジェクトの同一性 (`defineEntity()` 登録の逆引き) で `#/components/schemas/X` の `$ref` に復元されるので、コード上は直接 import・spec 上は `$ref` が両立する。
 
 ```ts
-// 単純なオブジェクト
-res: {
-	type: 'object',
-	optional: false, nullable: false,
-	properties: {
-		count: { type: 'integer' },
-	},
-},
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
+import { packedNoteSchema } from '@/models/schema/note.js';
 
-// packed entity 参照
-res: {
-	type: 'object',
-	optional: false, nullable: false,
-	ref: 'Note',                  // ← packages/backend/src/models/json-schema/*.ts の定義名
-},
+// 単純なオブジェクト
+res: v.object({
+	count: mi.integer(),
+}),
+
+// packed entity 参照 (packages/backend/src/models/schema/*.ts のスキーマを直接 import)
+res: packedNoteSchema,
 
 // 配列
-res: {
-	type: 'array',
-	optional: false, nullable: false,
-	items: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Note',
-	},
-},
+res: v.array(packedNoteSchema),
+
+// 空レスポンス (204) もありうる場合は optional / nullable で包む
+res: v.optional(packedNoteSchema),
 ```
 
-各プロパティに `optional: false, nullable: false` を **必ず明示する**。省略すると schema が緩くなり、生成される misskey-js 型も曖昧になる。
+**required の導出**: `v.optional()` / `v.nullish()` で包まれていない entries が `required` に載る。旧 JSON Schema の `optional: false, nullable: false` を毎回書いていた作法は不要で、**包まない = required** が既定。
 
-## `paramDef` (AJV) 実用パターン
+**`res` はランタイム検証されない** (型付けと OpenAPI 生成のためだけに使う)。ハンドラの戻り値の型が `v.InferOutput<typeof meta.res>` に一致することは TypeScript が保証する。
 
-`paramDef` は AJV (`new Ajv({ useDefaults: true })`) でコンパイルされた JSON Schema 7 互換のスキーマ。詳細は [endpoint-base.ts](../../../../../packages/backend/src/server/api/endpoint-base.ts) の AJV 初期化を参照。
+## `paramDef` (Valibot) 実用パターン
 
-### カスタム format
+`paramDef` は Valibot スキーマ。[endpoint-base.ts](../../../../../packages/backend/src/server/api/endpoint-base.ts) が `v.safeParse()` で検証し、**default 適用済みの新しいオブジェクト**をハンドラに渡す (入力オブジェクトは書き換えない)。検証に失敗すると `INVALID_PARAM` (`info.details` に dot-path 付きの issue 一覧) で reject する。
 
-**`format: 'misskey:id'`** だけが Misskey 独自 ([endpoint-base.ts](../../../../../packages/backend/src/server/api/endpoint-base.ts) の `addFormat`):
-
-```ts
-ajv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);
-```
-
-その他 (`'date-time'`, `'email'`, `'url'` 等) は JSON Schema 標準。AJV はデフォルトでは format 検証を行わないが、Misskey の AJV 設定ではフォーマット名はバリデーションエラーを出さず通過する程度の動作になっている (ID パターンのみ実際に正規表現検証される)。
+ヘルパーは `import * as mi from '@/misc/schema/index.js';`、素の Valibot は `import * as v from 'valibot';` で使う。
 
 ### 基本パターン
 
 ```ts
-export const paramDef = {
-	type: 'object',
-	properties: {
-		noteId: { type: 'string', format: 'misskey:id' },         // 必須 ID
-		text: { type: 'string', minLength: 1, maxLength: 500 },   // 文字長制約
-		count: { type: 'integer', minimum: 0, maximum: 100, default: 10 },
-		isPublic: { type: 'boolean', default: false },
-		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'] },
-	},
-	required: ['noteId'],
-} as const;
+export const paramDef = v.object({
+	noteId: mi.misskeyId(),                                             // 必須 ID
+	text: v.optional(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(500))),
+	count: mi.integer({ min: 0, max: 100 }),
+	isPublic: v.optional(v.boolean(), false),                           // default 付き
+	visibility: v.optional(v.picklist(['public', 'home', 'followers', 'specified'])),
+});
 ```
 
-`as const` を必ず付ける。これで `SchemaType<typeof paramDef>` が型推論される。
+`as const` は**不要** (型は Valibot が推論する)。パラメータ無しの endpoint は `v.object({})`。
+
+### optional / nullable / default
+
+| 意味 | 書き方 |
+|---|---|
+| 必須 | 素のスキーマ (`mi.misskeyId()`) |
+| 省略可 | `v.optional(x)` |
+| `null` 可 | `v.nullable(x)` |
+| 省略可 かつ `null` 可 | `v.nullish(x)` |
+| 省略時に default | `v.optional(x, d)` |
+| `null` 可 + default | `v.optional(v.nullable(x), d)` — **`v.nullish(x, d)` は不可** (明示的に送られた `null` まで `d` に上書きしてしまう) |
+
+### 文字列長は必ず `mi.minCodePoints` / `mi.maxCodePoints`
+
+素の `v.minLength` / `v.maxLength` を**文字列に使ってはいけない**。Valibot の `minLength`/`maxLength` は UTF-16 コードユニット数で数えるため、サロゲートペア (絵文字など) で境界値の意味が変わる。**配列の要素数**には `v.minLength` / `v.maxLength` をそのまま使ってよい。
+
+```ts
+text: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(500)),
+```
 
 ### ページネーション (sinceId / untilId / limit)
 
-[notes/timeline.ts](../../../../../packages/backend/src/server/api/endpoints/notes/timeline.ts):
-
 ```ts
-properties: {
-	limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-	sinceId: { type: 'string', format: 'misskey:id' },
-	untilId: { type: 'string', format: 'misskey:id' },
-	sinceDate: { type: 'integer' },
-	untilDate: { type: 'integer' },
-},
+export const paramDef = v.object({
+	...mi.paginationEntries({ max: 100, default: 10 }),   // limit → sinceId → untilId の順で展開
+	...mi.paginationDateEntries(),                        // sinceDate / untilDate が要るときだけ
+});
 ```
 
 `QueryService.makePaginationQuery(qb, ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)` で TypeORM クエリビルダに反映する。
 
+**プロパティの宣言順は api.json の出力順そのもの**なので、既存 endpoint を触るときは順序を保つこと (`limit` が末尾に来ているファイルなどではヘルパーを使わず個別に書く)。
+
 ### 配列とアイテム制約
 
 ```ts
-properties: {
-	// 一意・最小1・最大100 個のID リスト
-	noteIds: {
-		type: 'array',
-		uniqueItems: true,
-		minItems: 1,
-		maxItems: 100,
-		items: { type: 'string', format: 'misskey:id' },
-	},
-},
+noteIds: v.pipe(
+	v.array(mi.misskeyId()),
+	mi.uniqueArray(),      // uniqueItems: true 相当 (プリミティブ要素専用)
+	v.minLength(1),
+	v.maxLength(100),
+),
 ```
 
-実例: [notes/show-partial-bulk.ts](../../../../../packages/backend/src/server/api/endpoints/notes/show-partial-bulk.ts) (`noteIds`), [notes/drafts/create.ts](../../../../../packages/backend/src/server/api/endpoints/notes/drafts/create.ts) (`fileIds` / `visibleUserIds` は `uniqueItems` 付き)
+実例: [notes/show-partial-bulk.ts](../../../../../packages/backend/src/server/api/endpoints/notes/show-partial-bulk.ts), [notes/drafts/create.ts](../../../../../packages/backend/src/server/api/endpoints/notes/drafts/create.ts)
 
-### `oneOf` / `anyOf` (排他的選択)
+### 排他的選択 (どれか 1 つのパラメータ形態)
 
-複数のリクエストパラメータ形態を許す場合:
+トップレベルを `v.union` にし、**共通プロパティは各分岐へ分配して書く**:
 
 ```ts
-properties: {
-	userId: { type: 'string', format: 'misskey:id' },
-	username: { type: 'string' },
-	host: { type: 'string', nullable: true },
-},
-anyOf: [
-	{ required: ['userId'] },
-	{ required: ['username'] },
-],
+const commonEntries = { host: v.nullish(v.string()) };
+
+export const paramDef = v.union([
+	v.object({ userId: mi.misskeyId(), ...commonEntries }),
+	v.object({ username: v.string(), ...commonEntries }),
+]);
 ```
 
-`res` 側でも `oneOf` を使ってバリアントレスポンスを表現できる ([ap/show.ts](../../../../../packages/backend/src/server/api/endpoints/ap/show.ts) の `res`):
+実例: [users/show.ts](../../../../../packages/backend/src/server/api/endpoints/users/show.ts), [users/following.ts](../../../../../packages/backend/src/server/api/endpoints/users/following.ts)
 
-```ts
-res: {
-	optional: false, nullable: false,
-	oneOf: [
-		{ type: 'object', properties: { type: { enum: ['User'] }, object: { ref: 'UserDetailedNotMe' } } },
-		{ type: 'object', properties: { type: { enum: ['Note'] }, object: { ref: 'Note' } } },
-	],
-},
-```
+`res` 側でバリアントを表すときは、判別キーがあれば `v.variant('type', [...])`、無ければ `v.pipe(v.union([...]), mi.asOneOf())` ([ap/show.ts](../../../../../packages/backend/src/server/api/endpoints/ap/show.ts))。
 
-### `additionalProperties` (動的キー)
+### 動的キー (旧 `additionalProperties`)
 
-固定の `properties` ではなく「任意のキー → 値の型」を表すとき:
-
-```ts
-data: {
-	type: 'object',
-	additionalProperties: {
-		anyOf: [{ type: 'number' }],
-	},
-},
-```
+| 旧 JSON Schema | Valibot |
+|---|---|
+| `additionalProperties: <Schema>` | `v.record(v.string(), <値のスキーマ>)` |
+| `additionalProperties: true` (無検証・spec に明示) | `mi.anyRecord()` |
+| `properties` 無しの `object` (無検証・spec に出さない) | `mi.anyObject()` |
+| `properties` と `additionalProperties` の併用 | `v.objectWithRest({...}, <値のスキーマ>)` |
+| `additionalProperties: false` | `v.strictObject({...})` |
 
 実例: [retention.ts](../../../../../packages/backend/src/server/api/endpoints/retention.ts), [admin/get-table-stats.ts](../../../../../packages/backend/src/server/api/endpoints/admin/get-table-stats.ts)
 
-`type: 'object', additionalProperties: true` だと「任意の中身を受け入れる」(検証なし) になる。
+### 未知キーの扱い (要注意)
 
-### `default` (値補完)
+`v.object()` は **スキーマに無いキーを parse 結果から取り除く**。`ps` をそのまま DB や他サービスへ渡している / `Object.keys(ps)` やスプレッドで動的に扱っている endpoint では、素通しが要るなら `v.objectWithRest({...}, v.any())` を使う。
 
-AJV を `useDefaults: true` で構築しているため、`default` を書くとリクエストに値が無い場合に自動で埋まる:
+### よく使うヘルパー
 
-```ts
-properties: {
-	includeMyRenotes: { type: 'boolean', default: true },
-},
+| ヘルパー | 用途 |
+|---|---|
+| `mi.misskeyId()` | Misskey ID (`format: 'misskey:id'` + 正規表現検証) |
+| `mi.integer({ min?, max? })` | 整数 |
+| `mi.limit({ max, def? })` | ページネーションの `limit` 単体 |
+| `mi.paginationEntries({ max, default })` / `mi.paginationDateEntries()` | ページネーション断片 |
+| `mi.minCodePoints(n)` / `mi.maxCodePoints(n)` | 文字列長 (コードポイント数) |
+| `mi.uniqueArray()` | 配列要素の一意性 |
+| `mi.nullableEnum([null, 'a', 'b'])` | `null` を含む enum |
+| `mi.idString()` / `mi.dateTimeString()` / `mi.urlString()` | res 側の `format` 注釈 (検証なし) |
+| `mi.example(schema, value)` / `mi.format(x)` / `mi.deprecated()` / `mi.openApi({...})` | OpenAPI メタデータ |
+
+全一覧とシグネチャは [valibot-cookbook.md のヘルパー一覧](valibot-cookbook.md#ヘルパー一覧-miscschemaindexjs-の公開-api) を参照。
+
+## 型の導出
+
+| 欲しいもの | 書き方 |
+|---|---|
+| ハンドラが受け取る型 (`ps`) | `v.InferOutput<typeof paramDef>` (自動で付くので通常は書かない) |
+| クライアントが送ってよい型 | `v.InferInput<typeof paramDef>` |
+| レスポンスの型 | `v.InferOutput<typeof meta.res>` |
+| packed entity の型 | `import type { PackedNote } from '@/models/schema/note.js';` (**直接 import**) |
+
+`Packed<'Note'>` / `KeyOf<'RolePolicies'>` / `SchemaType<...>` / `Schema` はすべて撤去済み。新規に書かないこと。
+
+**default 付きキーは入力型では省略可・出力型では必須**になる (`v.optional(x, d)`)。
+
+## 検証コマンド
+
+`paramDef` / `res` / entity スキーマを触ったら以下を通す:
+
+```sh
+pnpm --filter backend typecheck
+
+# API 契約が変わっていないことの確認 (リファクタリング時は差分ゼロが必須)
+pnpm --filter backend build
+pnpm --filter backend generate-api-json --no-build
+node packages/backend/scripts/diff-api-json.mjs --baseline <事前に取ったベースライン>
+
+# 意図的に API を変えた場合は misskey-js を再生成して同じコミットに含める
+pnpm build-misskey-js-with-types
 ```
 
-クライアントの省略を吸収できるため、後方互換変更で重宝する。
-
-### nullable プロパティ
-
-```ts
-properties: {
-	parentId: { type: 'string', format: 'misskey:id', nullable: true },
-},
-```
-
-`nullable: true` を付けると `null` を明示的に受け付ける。
+ベースラインは変更前に `node packages/backend/scripts/diff-api-json.mjs --snapshot --out <path>` で取得しておく。
 
 ## OpenAPI への反映マップ
 
@@ -337,10 +346,11 @@ PR レビューで頻発するミスを「**症状 → 原因 → 修正**」で
 - **原因**: バックエンドに i18n 機構が無い
 - **修正**: `message` は英語ハードコードに統一。フロントエンドは `error.id` (UUID) または `error.code` をキーに自前で localize する
 
-### 9. `as const` を忘れる
+### 9. `meta` の `as const` を忘れる
 
-- **症状**: `Endpoint<typeof meta, typeof paramDef>` の型推論が壊れて `ps` の型が `any` になる
-- **修正**: `export const meta = { ... } as const;` と `export const paramDef = { ... } as const;` を必ず付ける
+- **症状**: `Endpoint<typeof meta, typeof paramDef>` の型推論が壊れる (`requireCredential: true` の narrowing が効かず `me` が `MiLocalUser | null` になる等)
+- **修正**: `export const meta = { ... } as const;` を必ず付ける
+- **注**: `paramDef` 側に `as const` は**不要** (Valibot が型を推論する)。付けるとむしろノイズなので書かない
 
 ### 10. `requireCredential: true` なのに `kind` を書き忘れる
 
@@ -352,7 +362,7 @@ PR レビューで頻発するミスを「**症状 → 原因 → 修正**」で
 ### 11. `requireFile: true` の cleanup を呼び忘れて一時ファイルが残る
 
 - **症状**: アップロード後にエンドポイントが正常終了/例外終了しても OS の一時ディレクトリにファイルが残り続け、ディスクが埋まる
-- **原因**: [endpoint-base.ts](../../../../../packages/backend/src/server/api/endpoint-base.ts) が `cleanup` を自動で呼ぶのは **AJV バリデーション失敗時のみ**
+- **原因**: [endpoint-base.ts](../../../../../packages/backend/src/server/api/endpoint-base.ts) が `cleanup` を自動で呼ぶのは **paramDef の検証失敗時のみ**
 - **修正**: `try { ... } finally { cleanup!(); }` で囲む ([drive/files/create.ts](../../../../../packages/backend/src/server/api/endpoints/drive/files/create.ts) の `finally { cleanup!(); }` が手本)
 
 ### 12. `requiredRolePolicy` だけで匿名許可してしまう

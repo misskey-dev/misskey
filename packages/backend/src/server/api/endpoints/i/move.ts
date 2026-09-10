@@ -5,6 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
@@ -67,18 +69,12 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-	},
+	res: mi.anyObject(),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		moveToAccount: { type: 'string' },
-	},
-	required: ['moveToAccount'],
-} as const;
+export const paramDef = v.object({
+	moveToAccount: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
@@ -131,7 +127,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// abort if unintended
 			if (!allowed || moveTo.movedToUri) throw new ApiError(meta.errors.destinationAccountForbids);
 
-			return await this.accountMoveService.moveFromLocal(me, moveTo);
+			// legacy スキーマでは res の型が any に潰れていたため見えなかった相違で、
+			// mi.anyObject() 化により Record<string, any> に厳密化されたためのキャスト (ランタイムの検証・挙動は変えていない)。
+			return await this.accountMoveService.moveFromLocal(me, moveTo) as Record<string, unknown>;
 		});
 	}
 }

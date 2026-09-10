@@ -5,6 +5,8 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { DriveFilesRepository, MiDriveFile, PagesRepository } from '@/models/_.js';
 import { pageNameSchema } from '@/models/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -12,6 +14,7 @@ import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { PageService } from '@/core/PageService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { packedPageSchema } from '@/models/schema/page.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -28,11 +31,7 @@ export const meta = {
 		max: 10,
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Page',
-	},
+	res: packedPageSchema,
 
 	errors: {
 		noSuchFile: {
@@ -48,26 +47,18 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		title: { type: 'string' },
-		name: { ...pageNameSchema, minLength: 1 },
-		summary: { type: 'string', nullable: true },
-		content: { type: 'array', items: {
-			type: 'object', additionalProperties: true,
-		} },
-		variables: { type: 'array', items: {
-			type: 'object', additionalProperties: true,
-		} },
-		script: { type: 'string' },
-		eyeCatchingImageId: { type: 'string', format: 'misskey:id', nullable: true },
-		font: { type: 'string', enum: ['serif', 'sans-serif'], default: 'sans-serif' },
-		alignCenter: { type: 'boolean', default: false },
-		hideTitleWhenPinned: { type: 'boolean', default: false },
-	},
-	required: ['title', 'name', 'content', 'variables', 'script'],
-} as const;
+export const paramDef = v.object({
+	title: v.string(),
+	name: v.pipe(v.string(), v.regex(new RegExp(pageNameSchema.pattern)), mi.minCodePoints(1)),
+	summary: v.optional(v.nullable(v.string())),
+	content: v.array(mi.anyRecord()),
+	variables: v.array(mi.anyRecord()),
+	script: v.string(),
+	eyeCatchingImageId: v.optional(v.nullable(mi.misskeyId())),
+	font: v.optional(v.picklist(['serif', 'sans-serif']), 'sans-serif'),
+	alignCenter: v.optional(v.boolean(), false),
+	hideTitleWhenPinned: v.optional(v.boolean(), false),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

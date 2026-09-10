@@ -5,6 +5,8 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFilesRepository, GalleryPostsRepository } from '@/models/_.js';
 import { MiGalleryPost } from '@/models/GalleryPost.js';
@@ -12,6 +14,7 @@ import type { MiDriveFile } from '@/models/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedGalleryPostSchema } from '@/models/schema/gallery-post.js';
 
 export const meta = {
 	tags: ['gallery'],
@@ -27,29 +30,19 @@ export const meta = {
 		max: 20,
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'GalleryPost',
-	},
+	res: packedGalleryPostSchema,
 
 	errors: {
 
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		title: { type: 'string', minLength: 1 },
-		description: { type: 'string', nullable: true },
-		fileIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 32, items: {
-			type: 'string', format: 'misskey:id',
-		} },
-		isSensitive: { type: 'boolean', default: false },
-	},
-	required: ['title', 'fileIds'],
-} as const;
+export const paramDef = v.object({
+	title: v.pipe(v.string(), mi.minCodePoints(1)),
+	description: v.optional(v.nullable(v.string())),
+	fileIds: v.pipe(v.array(mi.misskeyId()), mi.uniqueArray(), v.minLength(1), v.maxLength(32)),
+	isSensitive: v.optional(v.boolean(), false),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

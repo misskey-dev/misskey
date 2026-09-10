@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { InstancesRepository } from '@/models/_.js';
 import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
@@ -18,13 +19,9 @@ export const meta = {
 	kind: 'write:admin:federation',
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		host: { type: 'string' },
-	},
-	required: ['host'],
-} as const;
+export const paramDef = v.object({
+	host: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

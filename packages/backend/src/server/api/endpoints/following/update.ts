@@ -5,12 +5,15 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { FollowingsRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { packedUserLiteSchema } from '@/models/schema/user.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -45,22 +48,14 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'UserLite',
-	},
+	res: packedUserLiteSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-		notify: { type: 'string', enum: ['normal', 'none'] },
-		withReplies: { type: 'boolean' },
-	},
-	required: ['userId'],
-} as const;
+export const paramDef = v.object({
+	userId: mi.misskeyId(),
+	notify: v.optional(v.picklist(['normal', 'none'])),
+	withReplies: v.optional(v.boolean()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

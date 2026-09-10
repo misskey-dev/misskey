@@ -4,7 +4,7 @@
  */
 
 import type { MiNote } from '@/models/Note.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedNote } from '@/models/schema/note.js';
 
 // NoteEntityService.isPureRenote とよしなにリンク
 
@@ -39,24 +39,24 @@ export function isQuote(note: Renote): note is Quote {
 }
 
 type PackedRenote =
-	Packed<'Note'> & {
-		renoteId: NonNullable<Packed<'Note'>['renoteId']>
+	PackedNote & {
+		renoteId: NonNullable<PackedNote['renoteId']>
 	};
 
 type PackedQuote =
 	PackedRenote & ({
-		text: NonNullable<Packed<'Note'>['text']>
+		text: NonNullable<PackedNote['text']>
 	} | {
-		cw: NonNullable<Packed<'Note'>['cw']>
+		cw: NonNullable<PackedNote['cw']>
 	} | {
-		replyId: NonNullable<Packed<'Note'>['replyId']>
+		replyId: NonNullable<PackedNote['replyId']>
 	} | {
-		poll: NonNullable<Packed<'Note'>['poll']>
+		poll: NonNullable<PackedNote['poll']>
 	} | {
-		fileIds: NonNullable<Packed<'Note'>['fileIds']>
+		fileIds: NonNullable<PackedNote['fileIds']>
 	});
 
-export function isRenotePacked(note: Packed<'Note'>): note is PackedRenote {
+export function isRenotePacked(note: PackedNote): note is PackedRenote {
 	return note.renoteId != null;
 }
 

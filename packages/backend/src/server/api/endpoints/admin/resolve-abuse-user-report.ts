@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AbuseUserReportsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -28,14 +30,10 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		reportId: { type: 'string', format: 'misskey:id' },
-		resolvedAs: { type: 'string', enum: ['accept', 'reject', null], nullable: true },
-	},
-	required: ['reportId'],
-} as const;
+export const paramDef = v.object({
+	reportId: mi.misskeyId(),
+	resolvedAs: v.optional(mi.nullableEnum(['accept', 'reject', null])),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

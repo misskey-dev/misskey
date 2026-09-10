@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
 import {
@@ -12,6 +14,7 @@ import {
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 import { DI } from '@/di-symbols.js';
 import type { UserProfilesRepository } from '@/models/_.js';
+import { packedAbuseReportNotificationRecipientSchema } from '@/models/schema/abuse-report-notification-recipient.js';
 
 export const meta = {
 	tags: ['admin', 'abuse-report', 'notification-recipient'],
@@ -21,10 +24,7 @@ export const meta = {
 	secure: true,
 	kind: 'write:admin:abuse-report:notification-recipient',
 
-	res: {
-		type: 'object',
-		ref: 'AbuseReportNotificationRecipient',
-	},
+	res: packedAbuseReportNotificationRecipientSchema,
 
 	errors: {
 		correlationCheckEmail: {
@@ -48,36 +48,13 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		isActive: {
-			type: 'boolean',
-		},
-		name: {
-			type: 'string',
-			minLength: 1,
-			maxLength: 255,
-		},
-		method: {
-			type: 'string',
-			enum: ['email', 'webhook'],
-		},
-		userId: {
-			type: 'string',
-			format: 'misskey:id',
-		},
-		systemWebhookId: {
-			type: 'string',
-			format: 'misskey:id',
-		},
-	},
-	required: [
-		'isActive',
-		'name',
-		'method',
-	],
-} as const;
+export const paramDef = v.object({
+	isActive: v.boolean(),
+	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(255)),
+	method: v.picklist(['email', 'webhook']),
+	userId: v.optional(mi.misskeyId()),
+	systemWebhookId: v.optional(mi.misskeyId()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

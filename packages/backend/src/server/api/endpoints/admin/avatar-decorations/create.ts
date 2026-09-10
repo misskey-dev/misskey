@@ -4,6 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { IdService } from '@/core/IdService.js';
@@ -15,67 +17,25 @@ export const meta = {
 	requiredRolePolicy: 'canManageAvatarDecorations',
 	kind: 'write:admin:avatar-decorations',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			id: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'id',
-			},
-			createdAt: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'date-time',
-			},
-			updatedAt: {
-				type: 'string',
-				optional: false, nullable: true,
-				format: 'date-time',
-			},
-			name: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			description: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			url: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			roleIdsThatCanBeUsedThisDecoration: {
-				type: 'array',
-				optional: false, nullable: false,
-				items: {
-					type: 'string',
-					optional: false, nullable: false,
-					format: 'id',
-				},
-			},
-			category: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-		},
-	},
+	res: v.object({
+		id: mi.idString(),
+		createdAt: mi.dateTimeString(),
+		updatedAt: v.nullable(mi.dateTimeString()),
+		name: v.string(),
+		description: v.string(),
+		url: v.string(),
+		roleIdsThatCanBeUsedThisDecoration: v.array(mi.idString()),
+		category: v.nullable(v.string()),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string', minLength: 1 },
-		description: { type: 'string' },
-		url: { type: 'string', minLength: 1 },
-		roleIdsThatCanBeUsedThisDecoration: { type: 'array', items: {
-			type: 'string',
-		} },
-		category: { type: 'string', nullable: true },
-	},
-	required: ['name', 'description', 'url'],
-} as const;
+export const paramDef = v.object({
+	name: v.pipe(v.string(), mi.minCodePoints(1)),
+	description: v.string(),
+	url: v.pipe(v.string(), mi.minCodePoints(1)),
+	roleIdsThatCanBeUsedThisDecoration: v.optional(v.array(v.string())),
+	category: v.nullish(v.string()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

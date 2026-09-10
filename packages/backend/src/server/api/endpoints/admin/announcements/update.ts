@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AnnouncementsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -26,22 +28,18 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		id: { type: 'string', format: 'misskey:id' },
-		title: { type: 'string', minLength: 1 },
-		text: { type: 'string', minLength: 1 },
-		imageUrl: { type: 'string', nullable: true, minLength: 0 },
-		icon: { type: 'string', enum: ['info', 'warning', 'error', 'success'] },
-		display: { type: 'string', enum: ['normal', 'banner', 'dialog'] },
-		forExistingUsers: { type: 'boolean' },
-		silence: { type: 'boolean' },
-		needConfirmationToRead: { type: 'boolean' },
-		isActive: { type: 'boolean' },
-	},
-	required: ['id'],
-} as const;
+export const paramDef = v.object({
+	id: mi.misskeyId(),
+	title: v.optional(v.pipe(v.string(), mi.minCodePoints(1))),
+	text: v.optional(v.pipe(v.string(), mi.minCodePoints(1))),
+	imageUrl: v.optional(v.nullable(v.pipe(v.string(), mi.minCodePoints(0)))),
+	icon: v.optional(v.picklist(['info', 'warning', 'error', 'success'])),
+	display: v.optional(v.picklist(['normal', 'banner', 'dialog'])),
+	forExistingUsers: v.optional(v.boolean()),
+	silence: v.optional(v.boolean()),
+	needConfirmationToRead: v.optional(v.boolean()),
+	isActive: v.optional(v.boolean()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

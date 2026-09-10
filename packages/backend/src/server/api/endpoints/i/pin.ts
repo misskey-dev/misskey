@@ -4,9 +4,12 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NotePiningService } from '@/core/NotePiningService.js';
+import { packedMeDetailedSchema } from '@/models/schema/user.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -37,20 +40,12 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'MeDetailed',
-	},
+	res: packedMeDetailedSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		noteId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['noteId'],
-} as const;
+export const paramDef = v.object({
+	noteId: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

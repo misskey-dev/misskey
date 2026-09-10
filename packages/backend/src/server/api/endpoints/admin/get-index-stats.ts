@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 
@@ -14,23 +15,13 @@ export const meta = {
 	kind: 'read:admin:index-stats',
 
 	tags: ['admin'],
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-			properties: {
-				tablename: { type: 'string' },
-				indexname: { type: 'string' },
-			},
-		},
-	},
+	res: v.array(v.object({
+		tablename: v.string(),
+		indexname: v.string(),
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

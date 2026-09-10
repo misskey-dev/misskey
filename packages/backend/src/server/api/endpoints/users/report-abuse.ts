@@ -4,6 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -39,14 +41,10 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-		comment: { type: 'string', minLength: 1, maxLength: 2048 },
-	},
-	required: ['userId', 'comment'],
-} as const;
+export const paramDef = v.object({
+	userId: mi.misskeyId(),
+	comment: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(2048)),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

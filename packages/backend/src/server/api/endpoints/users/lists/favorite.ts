@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UserListFavoritesRepository, UserListsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
@@ -28,13 +30,9 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		listId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['listId'],
-} as const;
+export const paramDef = v.object({
+	listId: mi.misskeyId(),
+});
 
 @Injectable() // eslint-disable-next-line import/no-default-export
 export default class extends Endpoint<typeof meta, typeof paramDef> {

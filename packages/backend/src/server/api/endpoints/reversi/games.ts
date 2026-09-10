@@ -5,34 +5,26 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
 import { DI } from '@/di-symbols.js';
 import type { ReversiGamesRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
+import { packedReversiGameLiteSchema } from '@/models/schema/reversi-game.js';
 
 export const meta = {
 	requireCredential: false,
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: { ref: 'ReversiGameLite' },
-	},
+	res: v.array(packedReversiGameLiteSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		my: { type: 'boolean', default: false },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+	my: v.optional(v.boolean(), false),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

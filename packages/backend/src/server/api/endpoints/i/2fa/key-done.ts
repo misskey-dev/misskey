@@ -5,6 +5,8 @@
 
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -13,6 +15,7 @@ import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/model
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { ApiError } from '@/server/api/error.js';
 import { UserAuthService } from '@/core/UserAuthService.js';
+import type { RegistrationResponseJSON } from '@simplewebauthn/server';
 
 export const meta = {
 	requireCredential: true,
@@ -33,29 +36,19 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		nullable: false,
-		optional: false,
-		properties: {
-			id: { type: 'string' },
-			name: { type: 'string' },
-		},
-	},
+	res: v.object({
+		id: v.string(),
+		name: v.string(),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		password: { type: 'string' },
-		token: { type: 'string', nullable: true },
-		name: { type: 'string', minLength: 1, maxLength: 30 },
-		credential: { type: 'object' },
-	},
-	required: ['password', 'name', 'credential'],
-} as const;
+export const paramDef = v.object({
+	password: v.string(),
+	token: v.optional(v.nullable(v.string())),
+	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(30)),
+	credential: mi.anyObject(),
+});
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
@@ -95,7 +88,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.twoFactorNotEnabled);
 			}
 
-			const keyInfo = await this.webAuthnService.verifyRegistration(me.id, ps.credential);
+			// legacy スキーマでは ps.credential の型が any に潰れていたため見えなかった相違で、
+			// mi.anyObject() 化により Record<string, any> に厳密化されたためのキャスト (ランタイムの検証・挙動は変えていない)。
+			const keyInfo = await this.webAuthnService.verifyRegistration(me.id, ps.credential as RegistrationResponseJSON);
 			const keyId = keyInfo.credentialID;
 
 			await this.userSecurityKeysRepository.insert({

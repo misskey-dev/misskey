@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RegistrationTicketsRepository } from '@/models/_.js';
 import { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
@@ -11,6 +13,7 @@ import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { generateInviteCode } from '@/misc/generate-invite-code.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { packedInviteCodeSchema } from '@/models/schema/invite-code.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -28,25 +31,13 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'InviteCode',
-		},
-	},
+	res: v.array(packedInviteCodeSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		count: { type: 'integer', minimum: 1, maximum: 100, default: 1 },
-		expiresAt: { type: 'string', nullable: true },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	count: v.optional(mi.integer({ min: 1, max: 100 }), 1),
+	expiresAt: v.nullish(v.string()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

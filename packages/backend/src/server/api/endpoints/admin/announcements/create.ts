@@ -4,6 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
 
@@ -14,57 +16,27 @@ export const meta = {
 	requireModerator: true,
 	kind: 'write:admin:announcements',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			id: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'id',
-				example: 'xxxxxxxxxx',
-			},
-			createdAt: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'date-time',
-			},
-			updatedAt: {
-				type: 'string',
-				optional: false, nullable: true,
-				format: 'date-time',
-			},
-			title: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			text: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			imageUrl: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-		},
-	},
+	res: v.object({
+		id: mi.example(mi.idString(), 'xxxxxxxxxx'),
+		createdAt: mi.dateTimeString(),
+		updatedAt: v.nullable(mi.dateTimeString()),
+		title: v.string(),
+		text: v.string(),
+		imageUrl: v.nullable(v.string()),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		title: { type: 'string', minLength: 1 },
-		text: { type: 'string', minLength: 1 },
-		imageUrl: { type: 'string', nullable: true, minLength: 0 },
-		icon: { type: 'string', enum: ['info', 'warning', 'error', 'success'], default: 'info' },
-		display: { type: 'string', enum: ['normal', 'banner', 'dialog'], default: 'normal' },
-		forExistingUsers: { type: 'boolean', default: false },
-		silence: { type: 'boolean', default: false },
-		needConfirmationToRead: { type: 'boolean', default: false },
-		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
-	},
-	required: ['title', 'text', 'imageUrl'],
-} as const;
+export const paramDef = v.object({
+	title: v.pipe(v.string(), mi.minCodePoints(1)),
+	text: v.pipe(v.string(), mi.minCodePoints(1)),
+	imageUrl: v.nullable(v.pipe(v.string(), mi.minCodePoints(0))),
+	icon: v.optional(v.picklist(['info', 'warning', 'error', 'success']), 'info'),
+	display: v.optional(v.picklist(['normal', 'banner', 'dialog']), 'normal'),
+	forExistingUsers: v.optional(v.boolean(), false),
+	silence: v.optional(v.boolean(), false),
+	needConfirmationToRead: v.optional(v.boolean(), false),
+	userId: v.optional(v.nullable(mi.misskeyId()), null),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

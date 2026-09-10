@@ -4,9 +4,12 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ReversiService } from '@/core/ReversiService.js';
 import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
+import { packedReversiGameDetailedSchema } from '@/models/schema/reversi-game.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -18,28 +21,16 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			desynced: { type: 'boolean' },
-			game: {
-				type: 'object',
-				optional: true, nullable: true,
-				ref: 'ReversiGameDetailed',
-			},
-		},
-	},
+	res: v.object({
+		desynced: v.boolean(),
+		game: v.optional(v.nullable(packedReversiGameDetailedSchema)),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		gameId: { type: 'string', format: 'misskey:id' },
-		crc32: { type: 'string' },
-	},
-	required: ['gameId', 'crc32'],
-} as const;
+export const paramDef = v.object({
+	gameId: mi.misskeyId(),
+	crc32: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

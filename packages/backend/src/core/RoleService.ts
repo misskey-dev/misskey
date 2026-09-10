@@ -27,7 +27,7 @@ import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedNote } from '@/models/schema/note.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
@@ -649,7 +649,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async addNoteToRoleTimeline(note: Packed<'Note'>): Promise<void> {
+	public async addNoteToRoleTimeline(note: PackedNote): Promise<void> {
 		const roles = await this.getUserRoles(note.userId);
 
 		const redisPipeline = this.redisForTimelines.pipeline();

@@ -5,11 +5,14 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/const.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { DriveService } from '@/core/DriveService.js';
+import { packedDriveFileSchema } from '@/models/schema/drive-file.js';
 import { MiMeta } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -32,11 +35,7 @@ export const meta = {
 
 	description: 'Upload a new drive file.',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'DriveFile',
-	},
+	res: packedDriveFileSchema,
 
 	errors: {
 		invalidFileName: {
@@ -72,17 +71,15 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
-		name: { type: 'string', nullable: true, default: null },
-		comment: { type: 'string', nullable: true, maxLength: DB_MAX_IMAGE_COMMENT_LENGTH, default: null },
-		isSensitive: { type: 'boolean', default: false },
-		force: { type: 'boolean', default: false },
-	},
-	required: [],
-} as const;
+// NOTE: `meta.requireFile` の `file` パラメータはリクエストが multipart/form-data で運ばれる
+// (JSON ボディではない) ため paramDef には現れず、api.json 生成時に gen-spec.ts が注入する。
+export const paramDef = v.object({
+	folderId: v.optional(v.nullable(mi.misskeyId()), null),
+	name: v.optional(v.nullable(v.string()), null),
+	comment: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(DB_MAX_IMAGE_COMMENT_LENGTH))), null),
+	isSensitive: v.optional(v.boolean(), false),
+	force: v.optional(v.boolean(), false),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

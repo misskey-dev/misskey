@@ -11,7 +11,7 @@ backend の API endpoint やスキーマ (`meta` / `paramDef` / `res`) を変更
 - 新規エンドポイント追加 (`packages/backend/src/server/api/endpoints/<category>/<name>.ts`)
 - 既存エンドポイントの `meta` (errors / res / kind / requireCredential 等) を変更
 - 既存エンドポイントの `paramDef` (入力 schema) を変更
-- packed entity (`packages/backend/src/models/json-schema/*.ts`) を変更
+- packed entity (`packages/backend/src/models/schema/*.ts`) を変更
 
 実質「`packages/backend/src/server/api/` 配下を触ったら必ず」と考えてよい。
 

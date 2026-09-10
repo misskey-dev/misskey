@@ -5,6 +5,8 @@
 
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AppsRepository, AuthSessionsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
@@ -17,21 +19,10 @@ export const meta = {
 
 	requireCredential: false,
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			token: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			url: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'url',
-			},
-		},
-	},
+	res: v.object({
+		token: v.string(),
+		url: mi.urlString(),
+	}),
 
 	errors: {
 		noSuchApp: {
@@ -42,13 +33,9 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		appSecret: { type: 'string' },
-	},
-	required: ['appSecret'],
-} as const;
+export const paramDef = v.object({
+	appSecret: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -4,11 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { DriveService } from '@/core/DriveService.js';
+import { packedDriveFileSchema } from '@/models/schema/drive-file.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -51,24 +54,16 @@ export const meta = {
 			id: '7f59dccb-f465-75ab-5cf4-3ce44e3282f7',
 		},
 	},
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'DriveFile',
-	},
+	res: packedDriveFileSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		fileId: { type: 'string', format: 'misskey:id' },
-		folderId: { type: 'string', format: 'misskey:id', nullable: true },
-		name: { type: 'string' },
-		isSensitive: { type: 'boolean' },
-		comment: { type: 'string', nullable: true, maxLength: 512 },
-	},
-	required: ['fileId'],
-} as const;
+export const paramDef = v.object({
+	fileId: mi.misskeyId(),
+	folderId: v.optional(v.nullable(mi.misskeyId())),
+	name: v.optional(v.string()),
+	isSensitive: v.optional(v.boolean()),
+	comment: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(512)))),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

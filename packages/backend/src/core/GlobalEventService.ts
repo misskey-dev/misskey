@@ -21,7 +21,15 @@ import type { MiWebhook } from '@/models/Webhook.js';
 import type { MiSystemWebhook } from '@/models/SystemWebhook.js';
 import type { MiMeta } from '@/models/Meta.js';
 import { MiAvatarDecoration, MiChatMessage, MiChatRoom, MiReversiGame, MiRole, MiRoleAssignment } from '@/models/_.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedAnnouncement } from '@/models/schema/announcement.js';
+import type { PackedChatMessage, PackedChatMessageLite } from '@/models/schema/chat-message.js';
+import type { PackedDriveFile } from '@/models/schema/drive-file.js';
+import type { PackedDriveFolder } from '@/models/schema/drive-folder.js';
+import type { PackedEmojiDetailed } from '@/models/schema/emoji.js';
+import type { PackedNote } from '@/models/schema/note.js';
+import type { PackedNotification } from '@/models/schema/notification.js';
+import type { PackedReversiGameDetailed } from '@/models/schema/reversi-game.js';
+import type { PackedMeDetailed, PackedUser, PackedUserDetailed, PackedUserDetailedNotMe, PackedUserLite } from '@/models/schema/user.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
@@ -32,44 +40,44 @@ import type { EventEmitter } from 'events';
 //#region Stream type-body definitions
 export interface BroadcastTypes {
 	emojiAdded: {
-		emoji: Packed<'EmojiDetailed'>;
+		emoji: PackedEmojiDetailed;
 	};
 	emojiUpdated: {
-		emojis: Packed<'EmojiDetailed'>[];
+		emojis: PackedEmojiDetailed[];
 	};
 	emojiDeleted: {
-		emojis: Packed<'EmojiDetailed'>[];
+		emojis: PackedEmojiDetailed[];
 	};
 	announcementCreated: {
-		announcement: Packed<'Announcement'>;
+		announcement: PackedAnnouncement;
 	};
 }
 
 export interface MainEventTypes {
-	notification: Packed<'Notification'>;
-	mention: Packed<'Note'>;
-	reply: Packed<'Note'>;
-	renote: Packed<'Note'>;
-	follow: Packed<'UserDetailedNotMe'>;
-	followed: Packed<'UserLite'>;
-	unfollow: Packed<'UserDetailedNotMe'>;
-	meUpdated: Packed<'MeDetailed'>;
+	notification: PackedNotification;
+	mention: PackedNote;
+	reply: PackedNote;
+	renote: PackedNote;
+	follow: PackedUserDetailedNotMe;
+	followed: PackedUserLite;
+	unfollow: PackedUserDetailedNotMe;
+	meUpdated: PackedMeDetailed;
 	pageEvent: {
 		pageId: MiPage['id'];
 		event: string;
 		var: any;
 		userId: MiUser['id'];
-		user: Packed<'UserDetailed'>;
+		user: PackedUserDetailed;
 	};
 	urlUploadFinished: {
 		marker?: string | null;
-		file: Packed<'DriveFile'>;
+		file: PackedDriveFile;
 	};
 	readAllNotifications: undefined;
 	notificationFlushed: undefined;
-	unreadNotification: Packed<'Notification'>;
+	unreadNotification: PackedNotification;
 	unreadAntenna: MiAntenna;
-	newChatMessage: Packed<'ChatMessage'>;
+	newChatMessage: PackedChatMessage;
 	readAllAnnouncements: undefined;
 	myTokenRegenerated: undefined;
 	signin: {
@@ -84,21 +92,21 @@ export interface MainEventTypes {
 		key: string;
 		value: any | null;
 	};
-	driveFileCreated: Packed<'DriveFile'>;
+	driveFileCreated: PackedDriveFile;
 	readAntenna: MiAntenna;
-	receiveFollowRequest: Packed<'UserLite'>;
+	receiveFollowRequest: PackedUserLite;
 	announcementCreated: {
-		announcement: Packed<'Announcement'>;
+		announcement: PackedAnnouncement;
 	};
 }
 
 export interface DriveEventTypes {
-	fileCreated: Packed<'DriveFile'>;
+	fileCreated: PackedDriveFile;
 	fileDeleted: MiDriveFile['id'];
-	fileUpdated: Packed<'DriveFile'>;
-	folderCreated: Packed<'DriveFolder'>;
+	fileUpdated: PackedDriveFile;
+	folderCreated: PackedDriveFolder;
 	folderDeleted: MiDriveFolder['id'];
-	folderUpdated: Packed<'DriveFolder'>;
+	folderUpdated: PackedDriveFolder;
 }
 
 export interface NoteEventTypes {
@@ -137,8 +145,8 @@ type NoteStreamEventTypes = {
 };
 
 export interface UserListEventTypes {
-	userAdded: Packed<'UserLite'>;
-	userRemoved: Packed<'UserLite'>;
+	userAdded: PackedUserLite;
+	userRemoved: PackedUserLite;
 }
 
 export interface AntennaEventTypes {
@@ -146,7 +154,7 @@ export interface AntennaEventTypes {
 }
 
 export interface RoleTimelineEventTypes {
-	note: Packed<'Note'>;
+	note: PackedNote;
 }
 
 export interface AdminEventTypes {
@@ -159,26 +167,26 @@ export interface AdminEventTypes {
 }
 
 export interface ChatEventTypes {
-	message: Packed<'ChatMessageLite'>;
-	deleted: Packed<'ChatMessageLite'>['id'];
+	message: PackedChatMessageLite;
+	deleted: PackedChatMessageLite['id'];
 	react: {
 		reaction: string;
-		user?: Packed<'UserLite'>;
+		user?: PackedUserLite;
 		messageId: MiChatMessage['id'];
 	};
 	unreact: {
 		reaction: string;
-		user?: Packed<'UserLite'>;
+		user?: PackedUserLite;
 		messageId: MiChatMessage['id'];
 	};
 }
 
 export interface ReversiEventTypes {
 	matched: {
-		game: Packed<'ReversiGameDetailed'>;
+		game: PackedReversiGameDetailed;
 	};
 	invited: {
-		user: Packed<'User'>;
+		user: PackedUser;
 	};
 }
 
@@ -194,11 +202,11 @@ export interface ReversiGameEventTypes {
 	};
 	log: Reversi.Serializer.Log & { id: string | null };
 	started: {
-		game: Packed<'ReversiGameDetailed'>;
+		game: PackedReversiGameDetailed;
 	};
 	ended: {
 		winnerId: MiUser['id'] | null;
-		game: Packed<'ReversiGameDetailed'>;
+		game: PackedReversiGameDetailed;
 	};
 	canceled: {
 		userId: MiUser['id'];
@@ -305,7 +313,7 @@ export type GlobalEvents = {
 	};
 	notes: {
 		name: 'notesStream';
-		payload: Serialized<Packed<'Note'>>;
+		payload: Serialized<PackedNote>;
 	};
 	chatUser: {
 		name: `chatUserStream:${MiUser['id']}-${MiUser['id']}`;
@@ -407,7 +415,7 @@ export class GlobalEventService {
 	}
 
 	@bindThis
-	public publishNotesStream(note: Packed<'Note'>): void {
+	public publishNotesStream(note: PackedNote): void {
 		this.publish('notesStream', null, note);
 	}
 

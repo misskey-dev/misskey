@@ -4,10 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { webhookEventTypes } from '@/models/Webhook.js';
 import type { WebhooksRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { packedUserWebhookSchema } from '@/models/schema/user-webhook.js';
 import { ApiError } from '../../../error.js';
 
 // TODO: UserWebhook schemaの適用
@@ -26,19 +29,12 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		ref: 'UserWebhook',
-	},
+	res: packedUserWebhookSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		webhookId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['webhookId'],
-} as const;
+export const paramDef = v.object({
+	webhookId: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

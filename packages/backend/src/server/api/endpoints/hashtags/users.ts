@@ -4,41 +4,32 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository } from '@/models/_.js';
 import { safeForSql } from "@/misc/safe-for-sql.js";
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedUserDetailedSchema } from '@/models/schema/user.js';
 
 export const meta = {
 	requireCredential: false,
 
 	tags: ['hashtags', 'users'],
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'UserDetailed',
-		},
-	},
+	res: v.array(packedUserDetailedSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		tag: { type: 'string' },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		offset: { type: 'integer', default: 0 },
-		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'] },
-		state: { type: 'string', enum: ['all', 'alive'], default: 'all' },
-		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'local' },
-	},
-	required: ['tag', 'sort'],
-} as const;
+export const paramDef = v.object({
+	tag: v.string(),
+	limit: mi.limit({ max: 100, def: 10 }),
+	offset: v.optional(mi.integer(), 0),
+	sort: v.picklist(['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt']),
+	state: v.optional(v.picklist(['all', 'alive']), 'all'),
+	origin: v.optional(v.picklist(['combined', 'local', 'remote']), 'local'),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

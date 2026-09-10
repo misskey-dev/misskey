@@ -5,6 +5,7 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { FollowingsRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -26,13 +27,10 @@ export const meta = {
 	kind: 'write:following',
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		notify: { type: 'string', enum: ['normal', 'none'] },
-		withReplies: { type: 'boolean' },
-	},
-} as const;
+export const paramDef = v.object({
+	notify: v.optional(v.picklist(['normal', 'none'])),
+	withReplies: v.optional(v.boolean()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

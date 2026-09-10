@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedAnnouncement } from '@/models/schema/announcement.js';
 import type { CommonProps } from '@/server/web/views/_.js';
 import { Layout } from '@/server/web/views/base.js';
 
 export function AnnouncementPage(props: CommonProps<{
-	announcement: Packed<'Announcement'>;
+	announcement: PackedAnnouncement;
 }>) {
 	const description = props.announcement.text.length > 100 ? props.announcement.text.slice(0, 100) + '…' : props.announcement.text;
 

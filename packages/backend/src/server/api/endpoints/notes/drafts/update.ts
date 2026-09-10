@@ -5,11 +5,14 @@
 
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteDraftService } from '@/core/NoteDraftService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { NoteDraftEntityService } from '@/core/entities/NoteDraftEntityService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { packedNoteDraftSchema } from '@/models/schema/note-draft.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -21,17 +24,9 @@ export const meta = {
 
 	kind: 'write:account',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			updatedDraft: {
-				type: 'object',
-				optional: false, nullable: false,
-				ref: 'NoteDraft',
-			},
-		},
-	},
+	res: v.object({
+		updatedDraft: packedNoteDraftSchema,
+	}),
 
 	errors: {
 		noSuchRenoteTarget: {
@@ -185,59 +180,36 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		draftId: { type: 'string', nullable: false, format: 'misskey:id' },
-		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'] },
-		visibleUserIds: { type: 'array', uniqueItems: true, items: {
-			type: 'string', format: 'misskey:id',
-		} },
-		cw: { type: 'string', nullable: true, minLength: 1, maxLength: 100 },
-		hashtag: { type: 'string', nullable: true, maxLength: 200 },
-		localOnly: { type: 'boolean' },
-		reactionAcceptance: { type: 'string', nullable: true, enum: [null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'] },
-		replyId: { type: 'string', format: 'misskey:id', nullable: true },
-		renoteId: { type: 'string', format: 'misskey:id', nullable: true },
-		channelId: { type: 'string', format: 'misskey:id', nullable: true },
+export const paramDef = v.object({
+	draftId: mi.misskeyId(),
+	visibility: v.optional(v.picklist(['public', 'home', 'followers', 'specified'])),
+	visibleUserIds: v.optional(v.pipe(v.array(mi.misskeyId()), mi.uniqueArray())),
+	cw: v.nullish(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100))),
+	hashtag: v.nullish(v.pipe(v.string(), mi.maxCodePoints(200))),
+	localOnly: v.optional(v.boolean()),
+	reactionAcceptance: v.optional(mi.nullableEnum([null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'])),
+	replyId: v.nullish(mi.misskeyId()),
+	renoteId: v.nullish(mi.misskeyId()),
+	channelId: v.nullish(mi.misskeyId()),
 
-		// anyOf内にバリデーションを書いても最初の一つしかチェックされない
-		// See https://github.com/misskey-dev/misskey/pull/10082
-		text: {
-			type: 'string',
-			minLength: 0,
-			maxLength: MAX_NOTE_TEXT_LENGTH,
-			nullable: true,
-		},
-		fileIds: {
-			type: 'array',
-			uniqueItems: true,
-			minItems: 0,
-			maxItems: 16,
-			items: { type: 'string', format: 'misskey:id' },
-		},
-		poll: {
-			type: 'object',
-			nullable: true,
-			properties: {
-				choices: {
-					type: 'array',
-					uniqueItems: true,
-					minItems: 0,
-					maxItems: 10,
-					items: { type: 'string', minLength: 1, maxLength: 50 },
-				},
-				multiple: { type: 'boolean' },
-				expiresAt: { type: 'integer', nullable: true },
-				expiredAfter: { type: 'integer', nullable: true, minimum: 1 },
-			},
-			required: ['choices'],
-		},
-		scheduledAt: { type: 'integer', nullable: true },
-		isActuallyScheduled: { type: 'boolean' },
-	},
-	required: ['draftId'],
-} as const;
+	// anyOf内にバリデーションを書いても最初の一つしかチェックされない
+	// See https://github.com/misskey-dev/misskey/pull/10082
+	text: v.nullish(v.pipe(v.string(), mi.minCodePoints(0), mi.maxCodePoints(MAX_NOTE_TEXT_LENGTH))),
+	fileIds: v.optional(v.pipe(v.array(mi.misskeyId()), mi.uniqueArray(), v.minLength(0), v.maxLength(16))),
+	poll: v.nullish(v.object({
+		choices: v.pipe(
+			v.array(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(50))),
+			mi.uniqueArray(),
+			v.minLength(0),
+			v.maxLength(10),
+		),
+		multiple: v.optional(v.boolean()),
+		expiresAt: v.nullish(mi.integer()),
+		expiredAfter: v.nullish(mi.integer({ min: 1 })),
+	})),
+	scheduledAt: v.nullish(mi.integer()),
+	isActuallyScheduled: v.optional(v.boolean()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

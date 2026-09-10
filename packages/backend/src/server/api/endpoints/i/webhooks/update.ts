@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { WebhooksRepository } from '@/models/_.js';
 import { webhookEventTypes } from '@/models/Webhook.js';
@@ -28,20 +30,14 @@ export const meta = {
 
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		webhookId: { type: 'string', format: 'misskey:id' },
-		name: { type: 'string', minLength: 1, maxLength: 100 },
-		url: { type: 'string', minLength: 1, maxLength: 1024 },
-		secret: { type: 'string', nullable: true, maxLength: 1024 },
-		on: { type: 'array', items: {
-			type: 'string', enum: webhookEventTypes,
-		} },
-		active: { type: 'boolean' },
-	},
-	required: ['webhookId'],
-} as const;
+export const paramDef = v.object({
+	webhookId: mi.misskeyId(),
+	name: v.optional(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100))),
+	url: v.optional(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(1024))),
+	secret: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(1024)))),
+	on: v.optional(v.array(v.picklist([...webhookEventTypes]))),
+	active: v.optional(v.boolean()),
+});
 
 // TODO: ロジックをサービスに切り出す
 

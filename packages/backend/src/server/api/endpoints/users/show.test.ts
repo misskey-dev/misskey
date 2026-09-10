@@ -13,6 +13,8 @@ const VALID = true;
 const INVALID = false;
 
 describe('api:users/show', () => {
+	// paramDef は Valibot 化済み (`v.union([...])`)。
+	// getValidator は legacy JSON Schema / Valibot の両方を受け付けて boolean を返す。
 	describe('validation', () => {
 		const v = getValidator(paramDef);
 

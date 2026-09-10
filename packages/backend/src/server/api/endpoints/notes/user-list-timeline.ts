@@ -5,6 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { MiMeta, MiUserList, NotesRepository, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -15,6 +17,7 @@ import { QueryService } from '@/core/QueryService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { packedNoteSchema } from '@/models/schema/note.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -23,15 +26,7 @@ export const meta = {
 	requireCredential: true,
 	kind: 'read:account',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Note',
-		},
-	},
+	res: v.array(packedNoteSchema),
 
 	errors: {
 		noSuchList: {
@@ -42,28 +37,17 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		listId: { type: 'string', format: 'misskey:id' },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		allowPartial: { type: 'boolean', default: false }, // true is recommended but for compatibility false by default
-		includeMyRenotes: { type: 'boolean', default: true },
-		includeRenotedMyNotes: { type: 'boolean', default: true },
-		includeLocalRenotes: { type: 'boolean', default: true },
-		withRenotes: { type: 'boolean', default: true },
-		withFiles: {
-			type: 'boolean',
-			default: false,
-			description: 'Only show notes that have attached files.',
-		},
-	},
-	required: ['listId'],
-} as const;
+export const paramDef = v.object({
+	listId: mi.misskeyId(),
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+	allowPartial: v.optional(v.boolean(), false), // true is recommended but for compatibility false by default
+	includeMyRenotes: v.optional(v.boolean(), true),
+	includeRenotedMyNotes: v.optional(v.boolean(), true),
+	includeLocalRenotes: v.optional(v.boolean(), true),
+	withRenotes: v.optional(v.boolean(), true),
+	withFiles: v.optional(v.pipe(v.boolean(), v.description('Only show notes that have attached files.')), false),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

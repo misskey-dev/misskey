@@ -5,6 +5,8 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { NotesRepository, MiMeta } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
@@ -18,6 +20,7 @@ import { MiLocalUser } from '@/models/User.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
+import { packedNoteSchema } from '@/models/schema/note.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -25,34 +28,19 @@ export const meta = {
 	requireCredential: true,
 	kind: 'read:account',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Note',
-		},
-	},
+	res: v.array(packedNoteSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		allowPartial: { type: 'boolean', default: false }, // true is recommended but for compatibility false by default
-		includeMyRenotes: { type: 'boolean', default: true },
-		includeRenotedMyNotes: { type: 'boolean', default: true },
-		includeLocalRenotes: { type: 'boolean', default: true },
-		withFiles: { type: 'boolean', default: false },
-		withRenotes: { type: 'boolean', default: true },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+	allowPartial: v.optional(v.boolean(), false), // true is recommended but for compatibility false by default
+	includeMyRenotes: v.optional(v.boolean(), true),
+	includeRenotedMyNotes: v.optional(v.boolean(), true),
+	includeLocalRenotes: v.optional(v.boolean(), true),
+	withFiles: v.optional(v.boolean(), false),
+	withRenotes: v.optional(v.boolean(), true),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

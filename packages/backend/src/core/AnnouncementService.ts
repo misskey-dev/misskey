@@ -9,7 +9,7 @@ import { DI } from '@/di-symbols.js';
 import type { MiUser } from '@/models/User.js';
 import type { AnnouncementReadsRepository, AnnouncementsRepository, MiAnnouncement, MiAnnouncementRead, UsersRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
-import { Packed } from '@/misc/json-schema.js';
+import type { PackedAnnouncement } from '@/models/schema/announcement.js';
 import { IdService } from '@/core/IdService.js';
 import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -66,7 +66,7 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async create(values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
+	public async create(values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<{ raw: MiAnnouncement; packed: PackedAnnouncement }> {
 		const announcement = await this.announcementsRepository.insertOne({
 			id: this.idService.gen(),
 			updatedAt: null,
@@ -180,7 +180,7 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async getAnnouncement(announcementId: MiAnnouncement['id'], me: MiUser | null): Promise<Packed<'Announcement'>> {
+	public async getAnnouncement(announcementId: MiAnnouncement['id'], me: MiUser | null): Promise<PackedAnnouncement> {
 		const announcement = await this.announcementsRepository.findOneByOrFail({ id: announcementId });
 
 		if (announcement.userId && (me == null || announcement.userId !== me.id)) {

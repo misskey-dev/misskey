@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { AnnouncementsRepository, AnnouncementReadsRepository } from '@/models/_.js';
 import type { MiAnnouncement } from '@/models/Announcement.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -18,93 +20,30 @@ export const meta = {
 	requireModerator: true,
 	kind: 'read:admin:announcements',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			properties: {
-				id: {
-					type: 'string',
-					optional: false, nullable: false,
-					format: 'id',
-					example: 'xxxxxxxxxx',
-				},
-				createdAt: {
-					type: 'string',
-					optional: false, nullable: false,
-					format: 'date-time',
-				},
-				updatedAt: {
-					type: 'string',
-					optional: false, nullable: true,
-					format: 'date-time',
-				},
-				text: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-				title: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-				icon: {
-					type: 'string',
-					optional: false, nullable: false,
-					enum: ['info', 'warning', 'error', 'success'],
-				},
-				display: {
-					type: 'string',
-					optional: false, nullable: false,
-					enum: ['normal', 'banner', 'dialog'],
-				},
-				isActive: {
-					type: 'boolean',
-					optional: false, nullable: false,
-				},
-				forExistingUsers: {
-					type: 'boolean',
-					optional: false, nullable: false,
-				},
-				silence: {
-					type: 'boolean',
-					optional: false, nullable: false,
-				},
-				needConfirmationToRead: {
-					type: 'boolean',
-					optional: false, nullable: false,
-				},
-				userId: {
-					type: 'string',
-					optional: false, nullable: true,
-				},
-				imageUrl: {
-					type: 'string',
-					optional: false, nullable: true,
-				},
-				reads: {
-					type: 'number',
-					optional: false, nullable: false,
-				},
-			},
-		},
-	},
+	res: v.array(v.object({
+		id: mi.example(mi.idString(), 'xxxxxxxxxx'),
+		createdAt: mi.dateTimeString(),
+		updatedAt: v.nullable(mi.dateTimeString()),
+		text: v.string(),
+		title: v.string(),
+		icon: v.picklist(['info', 'warning', 'error', 'success']),
+		display: v.picklist(['normal', 'banner', 'dialog']),
+		isActive: v.boolean(),
+		forExistingUsers: v.boolean(),
+		silence: v.boolean(),
+		needConfirmationToRead: v.boolean(),
+		userId: v.nullable(v.string()),
+		imageUrl: v.nullable(v.string()),
+		reads: v.number(),
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		userId: { type: 'string', format: 'misskey:id', nullable: true },
-		status: { type: 'string', enum: ['all', 'active', 'archived'], default: 'active' },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+	userId: v.nullish(mi.misskeyId()),
+	status: v.optional(v.picklist(['all', 'active', 'archived']), 'active'),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

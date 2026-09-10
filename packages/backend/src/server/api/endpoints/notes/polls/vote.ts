@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { UsersRepository, PollsRepository, PollVotesRepository } from '@/models/_.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import { IdService } from '@/core/IdService.js';
@@ -65,14 +67,10 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		noteId: { type: 'string', format: 'misskey:id' },
-		choice: { type: 'integer' },
-	},
-	required: ['noteId', 'choice'],
-} as const;
+export const paramDef = v.object({
+	noteId: mi.misskeyId(),
+	choice: mi.integer(),
+});
 
 // TODO: ロジックをサービスに切り出す
 

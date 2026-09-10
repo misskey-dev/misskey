@@ -5,6 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
 import type { UsersRepository, UserProfilesRepository, MiMeta } from '@/models/_.js';
@@ -33,27 +35,14 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			password: {
-				type: 'string',
-				optional: false, nullable: false,
-				minLength: 8,
-				maxLength: 8,
-			},
-		},
-	},
+	res: v.object({
+		password: v.pipe(v.string(), mi.minCodePoints(8), mi.maxCodePoints(8)),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['userId'],
-} as const;
+export const paramDef = v.object({
+	userId: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

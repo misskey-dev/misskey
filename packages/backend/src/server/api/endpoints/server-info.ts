@@ -5,6 +5,7 @@
 
 import * as os from 'node:os';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MiMeta } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -15,60 +16,23 @@ export const meta = {
 	cacheSec: 60 * 1,
 
 	tags: ['meta'],
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			machine: {
-				type: 'string',
-				nullable: false,
-			},
-			cpu: {
-				type: 'object',
-				nullable: false,
-				properties: {
-					model: {
-						type: 'string',
-						nullable: false,
-					},
-					cores: {
-						type: 'number',
-						nullable: false,
-					},
-				},
-			},
-			mem: {
-				type: 'object',
-				properties: {
-					total: {
-						type: 'number',
-						nullable: false,
-					},
-				},
-			},
-			fs: {
-				type: 'object',
-				nullable: false,
-				properties: {
-					total: {
-						type: 'number',
-						nullable: false,
-					},
-					used: {
-						type: 'number',
-						nullable: false,
-					},
-				},
-			},
-		},
-	},
+	res: v.object({
+		machine: v.string(),
+		cpu: v.object({
+			model: v.string(),
+			cores: v.number(),
+		}),
+		mem: v.object({
+			total: v.number(),
+		}),
+		fs: v.object({
+			total: v.number(),
+			used: v.number(),
+		}),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

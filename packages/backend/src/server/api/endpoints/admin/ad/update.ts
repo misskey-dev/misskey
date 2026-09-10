@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AdsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -26,23 +28,19 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		id: { type: 'string', format: 'misskey:id' },
-		memo: { type: 'string' },
-		url: { type: 'string', minLength: 1 },
-		imageUrl: { type: 'string', minLength: 1 },
-		place: { type: 'string' },
-		priority: { type: 'string' },
-		ratio: { type: 'integer' },
-		expiresAt: { type: 'integer' },
-		startsAt: { type: 'integer' },
-		dayOfWeek: { type: 'integer' },
-		isSensitive: { type: 'boolean' },
-	},
-	required: ['id'],
-} as const;
+export const paramDef = v.object({
+	id: mi.misskeyId(),
+	memo: v.optional(v.string()),
+	url: v.optional(v.pipe(v.string(), mi.minCodePoints(1))),
+	imageUrl: v.optional(v.pipe(v.string(), mi.minCodePoints(1))),
+	place: v.optional(v.string()),
+	priority: v.optional(v.string()),
+	ratio: v.optional(mi.integer()),
+	expiresAt: v.optional(mi.integer()),
+	startsAt: v.optional(mi.integer()),
+	dayOfWeek: v.optional(mi.integer()),
+	isSensitive: v.optional(v.boolean()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -6,11 +6,14 @@
 import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { packedNoteSchema } from '@/models/schema/note.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -27,17 +30,9 @@ export const meta = {
 
 	kind: 'write:notes',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			createdNote: {
-				type: 'object',
-				optional: false, nullable: false,
-				ref: 'Note',
-			},
-		},
-	},
+	res: v.object({
+		createdNote: packedNoteSchema,
+	}),
 
 	errors: {
 		noSuchRenoteTarget: {
@@ -126,92 +121,73 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'], default: 'public' },
-		visibleUserIds: { type: 'array', uniqueItems: true, items: {
-			type: 'string', format: 'misskey:id',
-		} },
-		cw: { type: 'string', nullable: true, minLength: 1, maxLength: 100 },
-		localOnly: { type: 'boolean', default: false },
-		reactionAcceptance: { type: 'string', nullable: true, enum: [null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'], default: null },
-		noExtractMentions: { type: 'boolean', default: false },
-		noExtractHashtags: { type: 'boolean', default: false },
-		noExtractEmojis: { type: 'boolean', default: false },
-		replyId: { type: 'string', format: 'misskey:id', nullable: true },
-		renoteId: { type: 'string', format: 'misskey:id', nullable: true },
-		channelId: { type: 'string', format: 'misskey:id', nullable: true },
+/** legacy `then.properties.text.pattern` (`'[^\\s]+'`) と同一。空白以外の文字を 1 つ以上含むこと */
+const TEXT_PATTERN = /[^\s]+/;
+
+export const paramDef = v.pipe(
+	v.object({
+		visibility: v.optional(v.picklist(['public', 'home', 'followers', 'specified']), 'public'),
+		visibleUserIds: v.optional(v.pipe(v.array(mi.misskeyId()), mi.uniqueArray())),
+		cw: v.nullish(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100))),
+		localOnly: v.optional(v.boolean(), false),
+		reactionAcceptance: v.optional(mi.nullableEnum([null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote']), null),
+		noExtractMentions: v.optional(v.boolean(), false),
+		noExtractHashtags: v.optional(v.boolean(), false),
+		noExtractEmojis: v.optional(v.boolean(), false),
+		replyId: v.nullish(mi.misskeyId()),
+		renoteId: v.nullish(mi.misskeyId()),
+		channelId: v.nullish(mi.misskeyId()),
 
 		// anyOf内にバリデーションを書いても最初の一つしかチェックされない
 		// See https://github.com/misskey-dev/misskey/pull/10082
-		text: {
-			type: 'string',
-			minLength: 1,
-			maxLength: MAX_NOTE_TEXT_LENGTH,
-			nullable: true,
-		},
-		fileIds: {
-			type: 'array',
-			uniqueItems: true,
-			minItems: 1,
-			maxItems: 16,
-			items: { type: 'string', format: 'misskey:id' },
-		},
-		mediaIds: {
-			type: 'array',
-			uniqueItems: true,
-			minItems: 1,
-			maxItems: 16,
-			items: { type: 'string', format: 'misskey:id' },
-		},
-		poll: {
-			type: 'object',
-			nullable: true,
-			properties: {
-				choices: {
-					type: 'array',
-					uniqueItems: true,
-					minItems: 2,
-					maxItems: 10,
-					items: { type: 'string', minLength: 1, maxLength: 50 },
-				},
-				multiple: { type: 'boolean' },
-				expiresAt: { type: 'integer', nullable: true },
-				expiredAfter: { type: 'integer', nullable: true, minimum: 1 },
-			},
-			required: ['choices'],
-		},
-	},
+		text: v.nullish(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(MAX_NOTE_TEXT_LENGTH))),
+		fileIds: v.optional(v.pipe(v.array(mi.misskeyId()), mi.uniqueArray(), v.minLength(1), v.maxLength(16))),
+		mediaIds: v.optional(v.pipe(v.array(mi.misskeyId()), mi.uniqueArray(), v.minLength(1), v.maxLength(16))),
+		poll: v.nullish(v.object({
+			choices: v.pipe(
+				v.array(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(50))),
+				mi.uniqueArray(),
+				v.minLength(2),
+				v.maxLength(10),
+			),
+			multiple: v.optional(v.boolean()),
+			expiresAt: v.nullish(mi.integer()),
+			expiredAfter: v.nullish(mi.integer({ min: 1 })),
+		})),
+	}),
 	// (re)note with text, files and poll are optional
-	if: {
-		properties: {
-			renoteId: {
-				type: 'null',
-			},
-			fileIds: {
-				type: 'null',
-			},
-			mediaIds: {
-				type: 'null',
-			},
-			poll: {
-				type: 'null',
-			},
-		},
-	},
-	then: {
-		properties: {
-			text: {
-				type: 'string',
-				minLength: 1,
-				maxLength: MAX_NOTE_TEXT_LENGTH,
-				pattern: '[^\\s]+',
-			},
-		},
-		required: ['text'],
-	},
-} as const;
+	//
+	// legacy の `if`/`then` (cookbook R14) の再現:
+	//   if:   renoteId / fileIds / mediaIds / poll が **すべて** 「欠落」または `null`
+	//         (JSON Schema の `properties` はキーが存在するときだけ制約するため「欠落」も if を満たす。
+	//          fileIds / mediaIds は上の properties 側で `null` を許していないので実質「欠落」のみ)
+	//   then: `text` が required かつ `type: 'string'` かつ pattern `[^\s]+`
+	//         (`minLength: 1` / `maxLength: MAX_NOTE_TEXT_LENGTH` は上の properties.text と同一の制約で、
+	//          text が string ならそちらで既に検証済みなのでここでは重複して検査しない)
+	//
+	// NOTE: valibot には if/then の直訳が無いため rawCheck で表現する。ランタイム検証は等価だが
+	//       api.json からは `if`/`then` の記述が消える (意図的差分。allowlist 登録済み)。
+	v.rawCheck(({ dataset, addIssue }) => {
+		if (!dataset.typed) return;
+		const value = dataset.value;
+
+		const isTextRequired = value.renoteId == null && value.fileIds == null && value.mediaIds == null && value.poll == null;
+		if (!isTextRequired) return;
+
+		if (typeof value.text === 'string' && TEXT_PATTERN.test(value.text)) return;
+
+		addIssue({
+			message: 'text is required unless renoteId, fileIds, mediaIds or poll is present.',
+			path: [{
+				type: 'object',
+				origin: 'value',
+				input: value as unknown as Record<string, unknown>,
+				key: 'text',
+				value: value.text,
+			}],
+		});
+	}),
+);
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

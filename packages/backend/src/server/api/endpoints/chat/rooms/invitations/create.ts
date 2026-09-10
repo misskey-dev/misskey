@@ -5,11 +5,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { ChatService } from '@/core/ChatService.js';
 import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
+import { packedChatRoomInvitationSchema } from '@/models/schema/chat-room-invitation.js';
 
 export const meta = {
 	tags: ['chat'],
@@ -25,11 +28,7 @@ export const meta = {
 		max: 50,
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'ChatRoomInvitation',
-	},
+	res: packedChatRoomInvitationSchema,
 
 	errors: {
 		noSuchRoom: {
@@ -40,14 +39,10 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		roomId: { type: 'string', format: 'misskey:id' },
-		userId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['roomId', 'userId'],
-} as const;
+export const paramDef = v.object({
+	roomId: mi.misskeyId(),
+	userId: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

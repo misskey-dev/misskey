@@ -4,39 +4,27 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { FlashService } from '@/core/FlashService.js';
+import { packedFlashSchema } from '@/models/schema/flash.js';
 
 export const meta = {
 	tags: ['flash'],
 
 	requireCredential: false,
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Flash',
-		},
-	},
+	res: v.array(packedFlashSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		query: { type: 'string', minLength: 1, maxLength: 100 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 5 },
-	},
-	required: ['query'],
-} as const;
+export const paramDef = v.object({
+	query: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)),
+	...mi.paginationEntries({ max: 100, default: 5 }),
+	...mi.paginationDateEntries(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

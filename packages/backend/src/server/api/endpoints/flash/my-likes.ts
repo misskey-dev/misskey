@@ -4,10 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { FlashLikeEntityService } from '@/core/entities/FlashLikeEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { FlashService } from '@/core/FlashService.js';
+import { packedFlashSchema } from '@/models/schema/flash.js';
 
 export const meta = {
 	tags: ['account', 'flash'],
@@ -16,39 +19,17 @@ export const meta = {
 
 	kind: 'read:flash-likes',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			properties: {
-				id: {
-					type: 'string',
-					optional: false, nullable: false,
-					format: 'id',
-				},
-				flash: {
-					type: 'object',
-					optional: false, nullable: false,
-					ref: 'Flash',
-				},
-			},
-		},
-	},
+	res: v.array(v.object({
+		id: mi.idString(),
+		flash: packedFlashSchema,
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		search: { type: 'string', minLength: 1, maxLength: 100, nullable: true },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+	search: v.optional(v.nullable(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)))),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

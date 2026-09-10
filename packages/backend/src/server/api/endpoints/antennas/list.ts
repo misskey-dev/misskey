@@ -4,10 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AntennasRepository } from '@/models/_.js';
 import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedAntennaSchema } from '@/models/schema/antenna.js';
 
 export const meta = {
 	tags: ['antennas', 'account'],
@@ -16,22 +18,10 @@ export const meta = {
 
 	kind: 'read:account',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Antenna',
-		},
-	},
+	res: v.array(packedAntennaSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

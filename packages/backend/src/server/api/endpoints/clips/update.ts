@@ -4,9 +4,12 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ClipService } from '@/core/ClipService.js';
+import { packedClipSchema } from '@/models/schema/clip.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -26,23 +29,15 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Clip',
-	},
+	res: packedClipSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		clipId: { type: 'string', format: 'misskey:id' },
-		name: { type: 'string', minLength: 1, maxLength: 100 },
-		isPublic: { type: 'boolean' },
-		description: { type: 'string', nullable: true, maxLength: 2048 },
-	},
-	required: ['clipId'],
-} as const;
+export const paramDef = v.object({
+	clipId: mi.misskeyId(),
+	name: v.optional(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100))),
+	isPublic: v.optional(v.boolean()),
+	description: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(2048)))),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

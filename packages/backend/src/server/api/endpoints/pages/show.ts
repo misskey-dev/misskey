@@ -5,11 +5,14 @@
 
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { UsersRepository, PagesRepository } from '@/models/_.js';
 import type { MiPage } from '@/models/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedPageSchema } from '@/models/schema/page.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -17,11 +20,7 @@ export const meta = {
 
 	requireCredential: false,
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Page',
-	},
+	res: packedPageSchema,
 
 	errors: {
 		noSuchPage: {
@@ -32,25 +31,15 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	anyOf: [
-		{
-			type: 'object',
-			properties: {
-				pageId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['pageId'],
-		},
-		{
-			type: 'object',
-			properties: {
-				name: { type: 'string' },
-				username: { type: 'string' },
-			},
-			required: ['name', 'username'],
-		},
-	],
-} as const;
+export const paramDef = v.union([
+	v.object({
+		pageId: mi.misskeyId(),
+	}),
+	v.object({
+		name: v.string(),
+		username: v.string(),
+	}),
+]);
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

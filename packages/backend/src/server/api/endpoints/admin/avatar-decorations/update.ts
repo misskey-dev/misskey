@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
@@ -20,20 +22,14 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		id: { type: 'string', format: 'misskey:id' },
-		name: { type: 'string', minLength: 1 },
-		description: { type: 'string' },
-		url: { type: 'string', minLength: 1 },
-		roleIdsThatCanBeUsedThisDecoration: { type: 'array', items: {
-			type: 'string',
-		} },
-		category: { type: 'string', nullable: true },
-	},
-	required: ['id'],
-} as const;
+export const paramDef = v.object({
+	id: mi.misskeyId(),
+	name: v.optional(v.pipe(v.string(), mi.minCodePoints(1))),
+	description: v.optional(v.string()),
+	url: v.optional(v.pipe(v.string(), mi.minCodePoints(1))),
+	roleIdsThatCanBeUsedThisDecoration: v.optional(v.array(v.string())),
+	category: v.nullish(v.string()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

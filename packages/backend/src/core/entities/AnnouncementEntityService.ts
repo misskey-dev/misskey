@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AnnouncementsRepository, AnnouncementReadsRepository, MiAnnouncement, MiUser } from '@/models/_.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedAnnouncement } from '@/models/schema/announcement.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 
@@ -27,7 +27,7 @@ export class AnnouncementEntityService {
 	public async pack(
 		src: MiAnnouncement['id'] | MiAnnouncement & { isRead?: boolean | null },
 		me?: { id: MiUser['id'] } | null | undefined,
-	): Promise<Packed<'Announcement'>> {
+	): Promise<PackedAnnouncement> {
 		const announcement = typeof src === 'object'
 			? src
 			: await this.announcementsRepository.findOneByOrFail({
@@ -63,9 +63,9 @@ export class AnnouncementEntityService {
 	public async packMany(
 		announcements: (MiAnnouncement['id'] | MiAnnouncement & { isRead?: boolean | null } | MiAnnouncement)[],
 		me?: { id: MiUser['id'] } | null | undefined,
-	) : Promise<Packed<'Announcement'>[]> {
+	) : Promise<PackedAnnouncement[]> {
 		return (await Promise.allSettled(announcements.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')
-			.map(result => (result as PromiseFulfilledResult<Packed<'Announcement'>>).value);
+			.map(result => (result as PromiseFulfilledResult<PackedAnnouncement>).value);
 	}
 }

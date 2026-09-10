@@ -4,11 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MiClip } from '@/models/_.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ApiError } from '@/server/api/error.js';
 import { ClipService } from '@/core/ClipService.js';
+import { packedClipSchema } from '@/models/schema/clip.js';
 
 export const meta = {
 	tags: ['clips'],
@@ -19,11 +22,7 @@ export const meta = {
 
 	kind: 'write:account',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Clip',
-	},
+	res: packedClipSchema,
 
 	errors: {
 		tooManyClips: {
@@ -34,15 +33,11 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string', minLength: 1, maxLength: 100 },
-		isPublic: { type: 'boolean', default: false },
-		description: { type: 'string', nullable: true, maxLength: 2048 },
-	},
-	required: ['name'],
-} as const;
+export const paramDef = v.object({
+	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)),
+	isPublic: v.optional(v.boolean(), false),
+	description: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(2048)))),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

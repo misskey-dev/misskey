@@ -5,12 +5,15 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { ChannelsRepository, DriveFilesRepository } from '@/models/_.js';
 import type { MiChannel } from '@/models/Channel.js';
 import { IdService } from '@/core/IdService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedChannelSchema } from '@/models/schema/channel.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -29,11 +32,7 @@ export const meta = {
 		max: 10,
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Channel',
-	},
+	res: packedChannelSchema,
 
 	errors: {
 		noSuchFile: {
@@ -44,18 +43,14 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string', minLength: 1, maxLength: 128 },
-		description: { type: 'string', nullable: true, maxLength: 2048 },
-		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
-		color: { type: 'string', minLength: 1, maxLength: 16 },
-		isSensitive: { type: 'boolean', nullable: true },
-		allowRenoteToExternal: { type: 'boolean', nullable: true },
-	},
-	required: ['name'],
-} as const;
+export const paramDef = v.object({
+	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(128)),
+	description: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(2048)))),
+	bannerId: v.optional(v.nullable(mi.misskeyId())),
+	color: v.optional(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(16))),
+	isSensitive: v.optional(v.nullable(v.boolean())),
+	allowRenoteToExternal: v.optional(v.nullable(v.boolean())),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

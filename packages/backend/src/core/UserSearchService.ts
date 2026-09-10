@@ -11,7 +11,7 @@ import { bindThis } from '@/decorators.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import type { Config } from '@/config.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { Packed } from '@/misc/json-schema.js';
+import type { PackedUser } from '@/models/schema/user.js';
 
 function defaultActiveThreshold() {
 	return new Date(Date.now() - 1000 * 60 * 60 * 24 * 30);
@@ -78,7 +78,7 @@ export class UserSearchService {
 			detail?: boolean,
 		},
 		me?: MiUser | null,
-	): Promise<Packed<'User'>[]> {
+	): Promise<PackedUser[]> {
 		const queries = me ? this.buildSearchUserQueries(me, params) : this.buildSearchUserNoLoginQueries(params);
 
 		let resultSet = new Set<MiUser['id']>();

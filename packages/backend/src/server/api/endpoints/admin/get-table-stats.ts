@@ -5,6 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 
@@ -15,35 +17,18 @@ export const meta = {
 
 	tags: ['admin'],
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		additionalProperties: {
-			type: 'object',
-			properties: {
-				count: {
-					type: 'number',
-				},
-				size: {
-					type: 'number',
-				},
-			},
-			required: ['count', 'size'],
+	res: mi.example(v.record(v.string(), v.object({
+		count: v.number(),
+		size: v.number(),
+	})), {
+		migrations: {
+			count: 66,
+			size: 32768,
 		},
-		example: {
-			migrations: {
-				count: 66,
-				size: 32768,
-			},
-		},
-	},
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

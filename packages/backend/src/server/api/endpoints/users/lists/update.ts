@@ -4,10 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedUserListSchema } from '@/models/schema/user-list.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -19,11 +22,7 @@ export const meta = {
 
 	description: 'Update the properties of a list.',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'UserList',
-	},
+	res: packedUserListSchema,
 
 	errors: {
 		noSuchList: {
@@ -34,15 +33,11 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		listId: { type: 'string', format: 'misskey:id' },
-		name: { type: 'string', minLength: 1, maxLength: 100 },
-		isPublic: { type: 'boolean' },
-	},
-	required: ['listId'],
-} as const;
+export const paramDef = v.object({
+	listId: mi.misskeyId(),
+	name: v.optional(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100))),
+	isPublic: v.optional(v.boolean()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

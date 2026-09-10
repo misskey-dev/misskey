@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ClipService } from '@/core/ClipService.js';
 import { ApiError } from '../../error.js';
@@ -32,14 +34,10 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		clipId: { type: 'string', format: 'misskey:id' },
-		noteId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['clipId', 'noteId'],
-} as const;
+export const paramDef = v.object({
+	clipId: mi.misskeyId(),
+	noteId: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

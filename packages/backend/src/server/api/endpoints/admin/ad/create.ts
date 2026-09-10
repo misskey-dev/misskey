@@ -4,11 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AdsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { packedAdSchema } from '@/models/schema/ad.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -16,30 +19,21 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 	kind: 'write:admin:ad',
-	res: {
-		type: 'object',
-		optional: false,
-		nullable: false,
-		ref: 'Ad',
-	},
+	res: packedAdSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		url: { type: 'string', minLength: 1 },
-		memo: { type: 'string' },
-		place: { type: 'string' },
-		priority: { type: 'string' },
-		ratio: { type: 'integer' },
-		expiresAt: { type: 'integer' },
-		startsAt: { type: 'integer' },
-		imageUrl: { type: 'string', minLength: 1 },
-		dayOfWeek: { type: 'integer' },
-		isSensitive: { type: 'boolean' },
-	},
-	required: ['url', 'memo', 'place', 'priority', 'ratio', 'expiresAt', 'startsAt', 'imageUrl', 'dayOfWeek'],
-} as const;
+export const paramDef = v.object({
+	url: v.pipe(v.string(), mi.minCodePoints(1)),
+	memo: v.string(),
+	place: v.string(),
+	priority: v.string(),
+	ratio: mi.integer(),
+	expiresAt: mi.integer(),
+	startsAt: mi.integer(),
+	imageUrl: v.pipe(v.string(), mi.minCodePoints(1)),
+	dayOfWeek: mi.integer(),
+	isSensitive: v.optional(v.boolean()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

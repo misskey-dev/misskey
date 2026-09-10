@@ -4,10 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { UserSearchService } from '@/core/UserSearchService.js';
+import { packedUserSchema } from '@/models/schema/user.js';
 
 export const meta = {
 	tags: ['users'],
@@ -17,28 +20,16 @@ export const meta = {
 
 	description: 'Search for users.',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'User',
-		},
-	},
+	res: v.array(packedUserSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		query: { type: 'string' },
-		offset: { type: 'integer', default: 0 },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		origin: { type: 'string', enum: ['local', 'remote', 'combined'], default: 'combined' },
-		detail: { type: 'boolean', default: true },
-	},
-	required: ['query'],
-} as const;
+export const paramDef = v.object({
+	query: v.string(),
+	offset: v.optional(mi.integer(), 0),
+	limit: mi.limit({ max: 100, def: 10 }),
+	origin: v.optional(v.picklist(['local', 'remote', 'combined']), 'combined'),
+	detail: v.optional(v.boolean(), true),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

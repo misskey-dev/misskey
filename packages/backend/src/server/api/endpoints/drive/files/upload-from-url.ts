@@ -5,6 +5,8 @@
 
 import ms from 'ms';
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
@@ -27,18 +29,14 @@ export const meta = {
 	kind: 'write:drive',
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		url: { type: 'string' },
-		folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
-		isSensitive: { type: 'boolean', default: false },
-		comment: { type: 'string', nullable: true, maxLength: 512, default: null },
-		marker: { type: 'string', nullable: true, default: null },
-		force: { type: 'boolean', default: false },
-	},
-	required: ['url'],
-} as const;
+export const paramDef = v.object({
+	url: v.string(),
+	folderId: v.optional(v.nullable(mi.misskeyId()), null),
+	isSensitive: v.optional(v.boolean(), false),
+	comment: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(512))), null),
+	marker: v.optional(v.nullable(v.string()), null),
+	force: v.optional(v.boolean(), false),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

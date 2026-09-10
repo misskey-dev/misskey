@@ -4,6 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { RelayService } from '@/core/RelayService.js';
 
@@ -15,13 +16,9 @@ export const meta = {
 	kind: 'write:admin:relays',
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		inbox: { type: 'string' },
-	},
-	required: ['inbox'],
-} as const;
+export const paramDef = v.object({
+	inbox: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

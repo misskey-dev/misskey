@@ -5,6 +5,8 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { DriveFilesRepository, MiDriveFile } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -51,27 +53,19 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		pageId: { type: 'string', format: 'misskey:id' },
-		title: { type: 'string' },
-		name: { ...pageNameSchema, minLength: 1 },
-		summary: { type: 'string', nullable: true },
-		content: { type: 'array', items: {
-			type: 'object', additionalProperties: true,
-		} },
-		variables: { type: 'array', items: {
-			type: 'object', additionalProperties: true,
-		} },
-		script: { type: 'string' },
-		eyeCatchingImageId: { type: 'string', format: 'misskey:id', nullable: true },
-		font: { type: 'string', enum: ['serif', 'sans-serif'] },
-		alignCenter: { type: 'boolean' },
-		hideTitleWhenPinned: { type: 'boolean' },
-	},
-	required: ['pageId'],
-} as const;
+export const paramDef = v.object({
+	pageId: mi.misskeyId(),
+	title: v.optional(v.string()),
+	name: v.optional(v.pipe(v.string(), v.regex(new RegExp(pageNameSchema.pattern)), mi.minCodePoints(1))),
+	summary: v.optional(v.nullable(v.string())),
+	content: v.optional(v.array(mi.anyRecord())),
+	variables: v.optional(v.array(mi.anyRecord())),
+	script: v.optional(v.string()),
+	eyeCatchingImageId: v.optional(v.nullable(mi.misskeyId())),
+	font: v.optional(v.picklist(['serif', 'sans-serif'])),
+	alignCenter: v.optional(v.boolean()),
+	hideTitleWhenPinned: v.optional(v.boolean()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

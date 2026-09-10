@@ -5,6 +5,8 @@
 
 import { In, IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { MiMeta, UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -13,6 +15,7 @@ import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DI } from '@/di-symbols.js';
 import PerUserPvChart from '@/core/chart/charts/per-user-pv.js';
 import { RoleService } from '@/core/RoleService.js';
+import { packedUserDetailedSchema } from '@/models/schema/user.js';
 import { ApiError } from '../../error.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
 import type { FindOptionsWhere } from 'typeorm';
@@ -24,22 +27,14 @@ export const meta = {
 
 	description: 'Show the properties of a user.',
 
-	res: {
-		optional: false, nullable: false,
-		oneOf: [
-			{
-				type: 'object',
-				ref: 'UserDetailed',
-			},
-			{
-				type: 'array',
-				items: {
-					type: 'object',
-					ref: 'UserDetailed',
-				},
-			},
-		],
-	},
+	// NOTE: 判別子の無い oneOf (単体 or 配列) なので v.union + asOneOf で現行出力 (oneOf) を維持する
+	res: v.pipe(
+		v.union([
+			packedUserDetailedSchema,
+			v.array(packedUserDetailedSchema),
+		]),
+		mi.asOneOf(),
+	),
 
 	errors: {
 		failedToResolveRemoteUser: {
@@ -58,47 +53,27 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	allOf: [
-		{
-			anyOf: [
-				{
-					type: 'object',
-					properties: {
-						userId: { type: 'string', format: 'misskey:id' },
-					},
-					required: ['userId'],
-				},
-				{
-					type: 'object',
-					properties: {
-						userIds: { type: 'array', uniqueItems: true, items: {
-							type: 'string', format: 'misskey:id',
-						} },
-					},
-					required: ['userIds'],
-				},
-				{
-					type: 'object',
-					properties: {
-						username: { type: 'string' },
-					},
-					required: ['username'],
-				},
-			],
-		},
-		{
-			type: 'object',
-			properties: {
-				host: {
-					type: 'string',
-					nullable: true,
-					description: 'The local host is represented with `null`.',
-				},
-			},
-		},
-	],
-} as const;
+// legacy の `allOf: [{ anyOf: [...] }, { host }]` の共通パート
+const hostEntry = v.optional(v.nullable(v.pipe(
+	v.string(),
+	v.description('The local host is represented with `null`.'),
+)));
+
+// NOTE: cookbook R9 に従い allOf に混在した anyOf を各分岐へ共通パートを分配した v.union に変換している
+export const paramDef = v.union([
+	v.object({
+		userId: mi.misskeyId(),
+		host: hostEntry,
+	}),
+	v.object({
+		userIds: v.pipe(v.array(mi.misskeyId()), mi.uniqueArray()),
+		host: hostEntry,
+	}),
+	v.object({
+		username: v.string(),
+		host: hostEntry,
+	}),
+]);
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

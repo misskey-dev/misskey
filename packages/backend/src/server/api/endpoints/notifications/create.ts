@@ -4,6 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NotificationService } from '@/core/NotificationService.js';
 
@@ -23,15 +24,11 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		body: { type: 'string' },
-		header: { type: 'string', nullable: true },
-		icon: { type: 'string', nullable: true },
-	},
-	required: ['body'],
-} as const;
+export const paramDef = v.object({
+	body: v.string(),
+	header: v.optional(v.nullable(v.string())),
+	icon: v.optional(v.nullable(v.string())),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

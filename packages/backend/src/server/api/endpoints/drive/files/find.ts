@@ -5,10 +5,13 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedDriveFileSchema } from '@/models/schema/drive-file.js';
 
 export const meta = {
 	requireCredential: true,
@@ -19,25 +22,13 @@ export const meta = {
 
 	description: 'Search for a drive file by the given parameters.',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'DriveFile',
-		},
-	},
+	res: v.array(packedDriveFileSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string' },
-		folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
-	},
-	required: ['name'],
-} as const;
+export const paramDef = v.object({
+	name: v.string(),
+	folderId: v.optional(v.nullable(mi.misskeyId()), null),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -4,36 +4,27 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { FlashsRepository } from '@/models/_.js';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { FlashsRepository } from '@/models/_.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { FlashService } from '@/core/FlashService.js';
+import { packedFlashSchema } from '@/models/schema/flash.js';
 
 export const meta = {
 	tags: ['flash'],
 
 	requireCredential: false,
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Flash',
-		},
-	},
+	res: v.array(packedFlashSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		offset: { type: 'integer', minimum: 0, default: 0 },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	offset: v.optional(mi.integer({ min: 0 }), 0),
+	limit: mi.limit({ max: 100, def: 10 }),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

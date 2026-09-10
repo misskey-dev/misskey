@@ -7,7 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { RenoteMutingsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedRenoteMuting } from '@/models/schema/renote-muting.js';
+import type { PackedUserDetailedNotMe } from '@/models/schema/user.js';
 import type { } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiRenoteMuting } from '@/models/RenoteMuting.js';
@@ -31,9 +32,9 @@ export class RenoteMutingEntityService {
 		src: MiRenoteMuting['id'] | MiRenoteMuting,
 		me?: { id: MiUser['id'] } | null | undefined,
 		hints?: {
-			packedMutee?: Packed<'UserDetailedNotMe'>
+			packedMutee?: PackedUserDetailedNotMe
 		},
-	): Promise<Packed<'RenoteMuting'>> {
+	): Promise<PackedRenoteMuting> {
 		const muting = typeof src === 'object' ? src : await this.renoteMutingsRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({

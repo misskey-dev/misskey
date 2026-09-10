@@ -7,7 +7,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { EntityNotFoundError, In } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedDriveFile } from '@/models/schema/drive-file.js';
+import type { PackedNote } from '@/models/schema/note.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
@@ -118,7 +120,7 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	private treatVisibility(packedNote: Packed<'Note'>): Packed<'Note'>['visibility'] {
+	private treatVisibility(packedNote: PackedNote): PackedNote['visibility'] {
 		if (packedNote.visibility === 'public' || packedNote.visibility === 'home') {
 			const followersOnlyBefore = packedNote.user.makeNotesFollowersOnlyBefore;
 			if (shouldHideNoteByTime(followersOnlyBefore, packedNote.createdAt)) {
@@ -129,7 +131,7 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async shouldHideNote(packedNote: Packed<'Note'>, meId: MiUser['id'] | null): Promise<boolean> {
+	public async shouldHideNote(packedNote: PackedNote, meId: MiUser['id'] | null): Promise<boolean> {
 		if (meId === packedNote.userId) return false;
 		// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
 
@@ -179,7 +181,7 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public hideNote(packedNote: Packed<'Note'>): void {
+	public hideNote(packedNote: PackedNote): void {
 		packedNote.visibleUserIds = undefined;
 		packedNote.fileIds = [];
 		packedNote.files = [];
@@ -325,7 +327,7 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async packAttachedFiles(fileIds: MiNote['fileIds'], packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>): Promise<Packed<'DriveFile'>[]> {
+	public async packAttachedFiles(fileIds: MiNote['fileIds'], packedFiles: Map<MiNote['fileIds'][number], PackedDriveFile | null>): Promise<PackedDriveFile[]> {
 		const missingIds = [];
 		for (const id of fileIds) {
 			if (!packedFiles.has(id)) missingIds.push(id);
@@ -350,11 +352,11 @@ export class NoteEntityService implements OnModuleInit {
 			_hint_?: {
 				bufferedReactions: Map<MiNote['id'], { deltas: Record<string, number>; pairs: ([MiUser['id'], string])[] }> | null;
 				myReactions: Map<MiNote['id'], string | null>;
-				packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>;
-				packedUsers: Map<MiUser['id'], Packed<'UserLite'>>
+				packedFiles: Map<MiNote['fileIds'][number], PackedDriveFile | null>;
+				packedUsers: Map<MiUser['id'], PackedUserLite>
 			};
 		},
-	): Promise<Packed<'Note'>> {
+	): Promise<PackedNote> {
 		const opts = Object.assign({
 			detail: true,
 			skipHide: false,
@@ -392,7 +394,7 @@ export class NoteEntityService implements OnModuleInit {
 		const packedFiles = options?._hint_?.packedFiles;
 		const packedUsers = options?._hint_?.packedUsers;
 
-		const packed: Packed<'Note'> = await awaitAll({
+		const packed: PackedNote = await awaitAll({
 			id: note.id,
 			createdAt: this.idService.parse(note.id).date.toISOString(),
 			userId: note.userId,

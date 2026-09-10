@@ -4,11 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { UserListsRepository, UserListFavoritesRepository, UserListMembershipsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { QueryService } from '@/core/QueryService.js';
+import { packedUserLiteSchema } from '@/models/schema/user.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -26,49 +29,23 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-			nullable: false,
-			properties: {
-				id: {
-					type: 'string',
-					format: 'misskey:id',
-				},
-				createdAt: {
-					type: 'string',
-					format: 'date-time',
-				},
-				userId: {
-					type: 'string',
-					format: 'misskey:id',
-				},
-				user: {
-					type: 'object',
-					ref: 'UserLite',
-				},
-				withReplies: {
-					type: 'boolean',
-				},
-			},
-		},
-	},
+	res: v.array(v.object({
+		// NOTE: legacy 側は 'id' ではなく 'misskey:id' format だったため mi.idString() ではなく
+		// R12 の「上記以外の res 側 format」分岐 (mi.format()) で注釈のみ維持する
+		id: v.pipe(v.string(), mi.format('misskey:id')),
+		createdAt: mi.dateTimeString(),
+		userId: v.pipe(v.string(), mi.format('misskey:id')),
+		user: packedUserLiteSchema,
+		withReplies: v.boolean(),
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		listId: { type: 'string', format: 'misskey:id' },
-		forPublic: { type: 'boolean', default: false },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-	},
-	required: ['listId'],
-} as const;
+export const paramDef = v.object({
+	listId: mi.misskeyId(),
+	forPublic: v.optional(v.boolean(), false),
+	...mi.paginationEntries({ max: 100, default: 30 }),
+	...mi.paginationDateEntries(),
+});
 
 @Injectable() // eslint-disable-next-line import/no-default-export
 export default class extends Endpoint<typeof meta, typeof paramDef> {

@@ -11,6 +11,7 @@
 
 import * as nestedProperty from 'nested-property';
 import { EntitySchema, LessThan, Between } from 'typeorm';
+import * as v from 'valibot';
 import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/misc/prelude/time.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
@@ -86,49 +87,60 @@ type Unflatten<T extends Record<string, any>> = UnionToIntersection<
 	}[Extract<keyof T, string>]
 >;
 
-type ToJsonSchema<S> = {
-	type: 'object';
-	properties: {
-		[K in keyof S]: S[K] extends number[] ? { type: 'array'; items: { type: 'number'; }; } : ToJsonSchema<S[K]>;
-	},
-	required: (keyof S)[];
-};
+/**
+ * チャートのスキーマ (`'foo.bar'` のようなドット区切りのフラットなキー定義) から、
+ * `getChart()` の戻り値 (= endpoint の `meta.res`) に対応する Valibot スキーマを組み立てる。
+ *
+ * - 中間ノード (ドットで区切られた前半) → `v.object({ ... })`
+ * - 葉 (各キーの値。span 分の数値配列) → `v.array(v.number())`
+ *
+ * 保つべき不変条件 (api.json の出力形をこれで固定している):
+ *
+ * - すべてのキーは必ず存在するので optional/nullable ラッパーを付けない
+ *   → OpenAPI 変換後、各 object ノードは `required: [全キー]` を持つ
+ * - 葉は必ず `number` の配列 (`{ type: 'array', items: { type: 'number' } }`)
+ * - キーの出力順序は入力スキーマの宣言順を保存する
+ *
+ * NOTE: `meta.res` は OpenAPI 生成と戻り値の型付けにしか使われない (ランタイム検証はしない)
+ * ため、戻り値の型引数は出力型としてのみ意味を持つ。
+ */
+export function getResSchema<S extends Schema>(schema: S): v.GenericSchema<Unflatten<ChartResult<S>>> {
+	/** `null` = 葉 (数値配列) */
+	type Node = Map<string, Node | null>;
 
-export function getJsonSchema<S extends Schema>(schema: S): ToJsonSchema<Unflatten<ChartResult<S>>> {
-	const unflatten = (str: string, parent: Record<string, any>) => {
+	const unflatten = (str: string, parent: Node): void => {
 		const keys = str.split('.');
 		const key = keys.shift();
 		const nextKey = keys[0];
 
 		if (key == null) return;
 
-		if (parent.properties[key] == null) {
-			parent.properties[key] = nextKey ? {
-				type: 'object',
-				properties: {},
-				required: [],
-			} : {
-				type: 'array',
-				items: {
-					type: 'number',
-				},
-			};
+		if (!parent.has(key)) {
+			parent.set(key, nextKey ? new Map() : null);
 		}
 
-		if (nextKey) unflatten(keys.join('.'), parent.properties[key] as Record<string, any>);
+		if (nextKey) {
+			const child = parent.get(key);
+			// 同じプレフィックスが葉としても使われている (`'a'` と `'a.b'` が併存する) スキーマは表現できない
+			if (child == null) throw new Error(`getResSchema: conflicting chart schema key '${key}'`);
+			unflatten(keys.join('.'), child);
+		}
 	};
 
-	const jsonSchema = {
-		type: 'object',
-		properties: {} as Record<string, unknown>,
-		required: [],
-	};
+	const root: Node = new Map();
 
 	for (const k in schema) {
-		unflatten(k, jsonSchema);
+		unflatten(k, root);
 	}
 
-	return jsonSchema as ToJsonSchema<Unflatten<ChartResult<S>>>;
+	const build = (node: Node): v.GenericSchema => v.object(
+		Object.fromEntries([...node].map(([key, child]) => [
+			key,
+			child == null ? v.array(v.number()) : build(child),
+		])),
+	);
+
+	return build(root) as v.GenericSchema<Unflatten<ChartResult<S>>>;
 }
 
 /**

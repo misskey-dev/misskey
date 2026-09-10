@@ -4,11 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { HashtagsRepository } from '@/models/_.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { HashtagEntityService } from '@/core/entities/HashtagEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedHashtagSchema } from '@/models/schema/hashtag.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -16,11 +18,7 @@ export const meta = {
 
 	requireCredential: false,
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Hashtag',
-	},
+	res: packedHashtagSchema,
 
 	errors: {
 		noSuchHashtag: {
@@ -31,13 +29,9 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		tag: { type: 'string' },
-	},
-	required: ['tag'],
-} as const;
+export const paramDef = v.object({
+	tag: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

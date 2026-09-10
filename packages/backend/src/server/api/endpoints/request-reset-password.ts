@@ -6,6 +6,7 @@
 import ms from 'ms';
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import type { PasswordResetRequestsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
@@ -31,14 +32,10 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		username: { type: 'string' },
-		email: { type: 'string' },
-	},
-	required: ['username', 'email'],
-} as const;
+export const paramDef = v.object({
+	username: v.string(),
+	email: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

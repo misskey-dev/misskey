@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedGalleryPost } from '@/models/schema/gallery-post.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
 import type { CommonProps } from '@/server/web/views/_.js';
 import { Layout } from '@/server/web/views/base.js';
 
 export function GalleryPostPage(props: CommonProps<{
-	galleryPost: Packed<'GalleryPost'>;
+	galleryPost: PackedGalleryPost;
 	profile: MiUserProfile;
 }>) {
 	function ogBlock() {

@@ -5,6 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import type { BubbleGameRecordsRepository } from '@/models/_.js';
@@ -31,25 +33,13 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		score: { type: 'integer', minimum: 0 },
-		seed: { type: 'string', minLength: 1, maxLength: 1024 },
-		logs: {
-			type: 'array',
-			items: {
-				type: 'array',
-				items: {
-					type: 'number',
-				},
-			},
-		},
-		gameMode: { type: 'string' },
-		gameVersion: { type: 'integer' },
-	},
-	required: ['score', 'seed', 'logs', 'gameMode', 'gameVersion'],
-} as const;
+export const paramDef = v.object({
+	score: mi.integer({ min: 0 }),
+	seed: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(1024)),
+	logs: v.array(v.array(v.number())),
+	gameMode: v.string(),
+	gameVersion: mi.integer(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

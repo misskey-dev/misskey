@@ -4,6 +4,8 @@
  */
 
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { id } from './util/id.js';
 import { MiDriveFile } from './DriveFile.js';
 
@@ -316,10 +318,25 @@ export type MiPartialRemoteUser = Partial<MiUser> & {
 	uri: string;
 };
 
-export const localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString().slice(1, -1) } as const;
-export const passwordSchema = { type: 'string', minLength: 1 } as const;
-export const nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
-export const descriptionSchema = { type: 'string', minLength: 1, maxLength: 1500 } as const;
-export const followedMessageSchema = { type: 'string', minLength: 1, maxLength: 256 } as const;
-export const locationSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
-export const birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString().slice(1, -1) } as const;
+// #region 共有スキーマ断片 (cookbook R15)
+//
+// 複数の endpoint (`admin/accounts/create` / `admin/update-proxy-account` / `username/available` /
+// `i/update` / `users/following`) と {@link UserEntityService} の validate 系が消費する断片。
+// (pattern / minLength / maxLength は api.json 上の出力が変わらないよう一字一句そのまま移植している)。
+
+/** `^\w{1,20}$` (ローカルユーザー名) */
+export const localUsernameSchema = v.pipe(v.string(), v.regex(/^\w{1,20}$/));
+
+export const passwordSchema = v.pipe(v.string(), mi.minCodePoints(1));
+
+export const nameSchema = v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(50));
+
+export const descriptionSchema = v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(1500));
+
+export const followedMessageSchema = v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(256));
+
+export const locationSchema = v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(50));
+
+/** `YYYY-MM-DD` */
+export const birthdaySchema = v.pipe(v.string(), v.regex(/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/));
+// #endregion

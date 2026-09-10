@@ -4,11 +4,13 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import {
 	AbuseReportNotificationRecipientEntityService,
 } from '@/core/entities/AbuseReportNotificationRecipientEntityService.js';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
+import { packedAbuseReportNotificationRecipientSchema } from '@/models/schema/abuse-report-notification-recipient.js';
 
 export const meta = {
 	tags: ['admin', 'abuse-report', 'notification-recipient'],
@@ -18,28 +20,12 @@ export const meta = {
 	secure: true,
 	kind: 'read:admin:abuse-report:notification-recipient',
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-			ref: 'AbuseReportNotificationRecipient',
-		},
-	},
+	res: v.array(packedAbuseReportNotificationRecipientSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		method: {
-			type: 'array',
-			items: {
-				type: 'string',
-				enum: ['email', 'webhook'],
-			},
-		},
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	method: v.optional(v.array(v.picklist(['email', 'webhook']))),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

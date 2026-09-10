@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import type { WebhooksRepository } from '@/models/_.js';
@@ -29,46 +31,25 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		properties: {
-			id: {
-				type: 'string',
-				format: 'misskey:id',
-			},
-			userId: {
-				type: 'string',
-				format: 'misskey:id',
-			},
-			name: { type: 'string' },
-			on: {
-				type: 'array',
-				items: {
-					type: 'string',
-					enum: webhookEventTypes,
-				},
-			},
-			url: { type: 'string' },
-			secret: { type: 'string' },
-			active: { type: 'boolean' },
-			latestSentAt: { type: 'string', format: 'date-time', nullable: true },
-			latestStatus: { type: 'integer', nullable: true },
-		},
-	},
+	res: v.object({
+		id: v.pipe(v.string(), mi.format('misskey:id')),
+		userId: v.pipe(v.string(), mi.format('misskey:id')),
+		name: v.string(),
+		on: v.array(v.picklist([...webhookEventTypes])),
+		url: v.string(),
+		secret: v.string(),
+		active: v.boolean(),
+		latestSentAt: v.nullable(mi.dateTimeString()),
+		latestStatus: v.nullable(mi.integer()),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string', minLength: 1, maxLength: 100 },
-		url: { type: 'string', minLength: 1, maxLength: 1024 },
-		secret: { type: 'string', maxLength: 1024, default: '' },
-		on: { type: 'array', items: {
-			type: 'string', enum: webhookEventTypes,
-		} },
-	},
-	required: ['name', 'url', 'on'],
-} as const;
+export const paramDef = v.object({
+	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)),
+	url: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(1024)),
+	secret: v.optional(v.pipe(v.string(), mi.maxCodePoints(1024)), ''),
+	on: v.array(v.picklist([...webhookEventTypes])),
+});
 
 // TODO: ロジックをサービスに切り出す
 

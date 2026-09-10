@@ -4,13 +4,18 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { UsersRepository, SigninsRepository, UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
 import { IdService } from '@/core/IdService.js';
-import { notificationRecieveConfig } from '@/models/json-schema/user.js';
+import { notificationRecieveConfigSchema } from '@/models/schema/user.js';
+import { packedSigninSchema } from '@/models/schema/signin.js';
+import { packedRoleSchema, packedRolePoliciesSchema } from '@/models/schema/role.js';
+import type { PackedSignin } from '@/models/schema/signin.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -19,177 +24,60 @@ export const meta = {
 	requireModerator: true,
 	kind: 'read:admin:show-user',
 
-	res: {
-		type: 'object',
-		nullable: false, optional: false,
-		properties: {
-			email: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			emailVerified: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			followedMessage: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			autoAcceptFollowed: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			noCrawle: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			preventAiLearning: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			alwaysMarkNsfw: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			autoSensitive: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			carefulBot: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			injectFeaturedNote: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			receiveAnnouncementEmail: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			mutedWords: {
-				type: 'array',
-				optional: false, nullable: false,
-				items: {
-					anyOf: [
-						{
-							type: 'string',
-						},
-						{
-							type: 'array',
-							items: {
-								type: 'string',
-							},
-						},
-					],
-				},
-			},
-			mutedInstances: {
-				type: 'array',
-				optional: false, nullable: false,
-				items: {
-					type: 'string',
-				},
-			},
-			notificationRecieveConfig: {
-				type: 'object',
-				optional: false, nullable: false,
-				properties: {
-					note: { optional: true, ...notificationRecieveConfig },
-					follow: { optional: true, ...notificationRecieveConfig },
-					mention: { optional: true, ...notificationRecieveConfig },
-					reply: { optional: true, ...notificationRecieveConfig },
-					renote: { optional: true, ...notificationRecieveConfig },
-					quote: { optional: true, ...notificationRecieveConfig },
-					reaction: { optional: true, ...notificationRecieveConfig },
-					pollEnded: { optional: true, ...notificationRecieveConfig },
-					scheduledNotePosted: { optional: true, ...notificationRecieveConfig },
-					scheduledNotePostFailed: { optional: true, ...notificationRecieveConfig },
-					receiveFollowRequest: { optional: true, ...notificationRecieveConfig },
-					followRequestAccepted: { optional: true, ...notificationRecieveConfig },
-					roleAssigned: { optional: true, ...notificationRecieveConfig },
-					chatRoomInvitationReceived: { optional: true, ...notificationRecieveConfig },
-					achievementEarned: { optional: true, ...notificationRecieveConfig },
-					app: { optional: true, ...notificationRecieveConfig },
-					test: { optional: true, ...notificationRecieveConfig },
-				},
-			},
-			isModerator: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			isSilenced: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			isSuspended: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			isHibernated: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			lastActiveDate: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			moderationNote: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			signins: {
-				type: 'array',
-				optional: false, nullable: false,
-				items: {
-					ref: 'Signin',
-				},
-			},
-			policies: {
-				type: 'object',
-				optional: false, nullable: false,
-				ref: 'RolePolicies',
-			},
-			roles: {
-				type: 'array',
-				optional: false, nullable: false,
-				items: {
-					type: 'object',
-					ref: 'Role',
-				},
-			},
-			roleAssigns: {
-				type: 'array',
-				optional: false, nullable: false,
-				items: {
-					type: 'object',
-					properties: {
-						createdAt: {
-							type: 'string',
-							optional: false, nullable: false,
-						},
-						expiresAt: {
-							type: 'string',
-							optional: false, nullable: true,
-						},
-						roleId: {
-							type: 'string',
-							optional: false, nullable: false,
-						},
-					},
-				},
-			},
-		},
-	},
+	res: v.object({
+		email: v.nullable(v.string()),
+		emailVerified: v.boolean(),
+		followedMessage: v.nullable(v.string()),
+		autoAcceptFollowed: v.boolean(),
+		noCrawle: v.boolean(),
+		preventAiLearning: v.boolean(),
+		alwaysMarkNsfw: v.boolean(),
+		autoSensitive: v.boolean(),
+		carefulBot: v.boolean(),
+		injectFeaturedNote: v.boolean(),
+		receiveAnnouncementEmail: v.boolean(),
+		// NOTE: legacy の items は `type` を持たない `anyOf` なので素の v.union (= anyOf 出力)
+		mutedWords: v.array(v.union([v.string(), v.array(v.string())])),
+		mutedInstances: v.array(v.string()),
+		notificationRecieveConfig: v.object({
+			note: v.optional(notificationRecieveConfigSchema),
+			follow: v.optional(notificationRecieveConfigSchema),
+			mention: v.optional(notificationRecieveConfigSchema),
+			reply: v.optional(notificationRecieveConfigSchema),
+			renote: v.optional(notificationRecieveConfigSchema),
+			quote: v.optional(notificationRecieveConfigSchema),
+			reaction: v.optional(notificationRecieveConfigSchema),
+			pollEnded: v.optional(notificationRecieveConfigSchema),
+			scheduledNotePosted: v.optional(notificationRecieveConfigSchema),
+			scheduledNotePostFailed: v.optional(notificationRecieveConfigSchema),
+			receiveFollowRequest: v.optional(notificationRecieveConfigSchema),
+			followRequestAccepted: v.optional(notificationRecieveConfigSchema),
+			roleAssigned: v.optional(notificationRecieveConfigSchema),
+			chatRoomInvitationReceived: v.optional(notificationRecieveConfigSchema),
+			achievementEarned: v.optional(notificationRecieveConfigSchema),
+			app: v.optional(notificationRecieveConfigSchema),
+			test: v.optional(notificationRecieveConfigSchema),
+		}),
+		isModerator: v.boolean(),
+		isSilenced: v.boolean(),
+		isSuspended: v.boolean(),
+		isHibernated: v.boolean(),
+		lastActiveDate: v.nullable(v.string()),
+		moderationNote: v.string(),
+		signins: v.array(packedSigninSchema),
+		policies: packedRolePoliciesSchema,
+		roles: v.array(packedRoleSchema),
+		roleAssigns: v.array(v.object({
+			createdAt: v.string(),
+			expiresAt: v.nullable(v.string()),
+			roleId: v.string(),
+		})),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['userId'],
-} as const;
+export const paramDef = v.object({
+	userId: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
@@ -251,7 +139,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isHibernated: user.isHibernated,
 				lastActiveDate: user.lastActiveDate ? user.lastActiveDate.toISOString() : null,
 				moderationNote: profile.moderationNote ?? '',
-				signins,
+				// NOTE: legacy の res は `items: { ref: 'Signin' }` (type キー無し) だったため
+				// SchemaType が any に潰れており、MiSignin をそのまま返す実装が型検査を通っていた。
+				// ランタイム挙動を変えないため (現行レスポンスは MiSignin の生の形) キャストで維持する。
+				signins: signins as unknown as PackedSignin[],
 				policies: await this.roleService.getUserPolicies(user.id),
 				roles: await this.roleEntityService.packMany(roles, me),
 				roleAssigns: roleAssigns.map(a => ({

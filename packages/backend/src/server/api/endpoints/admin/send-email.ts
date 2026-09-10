@@ -4,6 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { EmailService } from '@/core/EmailService.js';
 
@@ -15,15 +16,11 @@ export const meta = {
 	kind: 'write:admin:send-email',
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		to: { type: 'string' },
-		subject: { type: 'string' },
-		text: { type: 'string' },
-	},
-	required: ['to', 'subject', 'text'],
-} as const;
+export const paramDef = v.object({
+	to: v.string(),
+	subject: v.string(),
+	text: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

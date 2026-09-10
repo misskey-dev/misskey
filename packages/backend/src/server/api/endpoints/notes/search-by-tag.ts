@@ -5,6 +5,8 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { NotesRepository } from '@/models/_.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
@@ -12,73 +14,45 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedNoteSchema } from '@/models/schema/note.js';
 
 export const meta = {
 	tags: ['notes', 'hashtags'],
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Note',
-		},
-	},
+	res: v.array(packedNoteSchema),
 } as const;
 
-export const paramDef = {
-	allOf: [
-		{
-			anyOf: [
-				{
-					type: 'object',
-					properties: {
-						tag: { type: 'string', minLength: 1 },
-					},
-					required: ['tag'],
-				},
-				{
-					type: 'object',
-					properties: {
-						query: {
-							type: 'array',
-							description: 'The outer arrays are chained with OR, the inner arrays are chained with AND.',
-							items: {
-								type: 'array',
-								items: {
-									type: 'string',
-									minLength: 1,
-								},
-								minItems: 1,
-							},
-							minItems: 1,
-						},
-					},
-					required: ['query'],
-				},
-			],
-		},
-		{
-			type: 'object',
-			properties: {
-				reply: { type: 'boolean', nullable: true, default: null },
-				renote: { type: 'boolean', nullable: true, default: null },
-				withFiles: {
-					type: 'boolean',
-					default: false,
-					description: 'Only show notes that have attached files.',
-				},
-				poll: { type: 'boolean', nullable: true, default: null },
-				sinceId: { type: 'string', format: 'misskey:id' },
-				untilId: { type: 'string', format: 'misskey:id' },
-				sinceDate: { type: 'integer' },
-				untilDate: { type: 'integer' },
-				limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-			},
-		},
-	],
-} as const;
+// legacy の `allOf: [{ anyOf: [...] }, { reply, renote, ... }]` の共通パート
+const filterEntries = {
+	reply: v.optional(v.nullable(v.boolean()), null),
+	renote: v.optional(v.nullable(v.boolean()), null),
+	withFiles: v.optional(v.pipe(v.boolean(), v.description('Only show notes that have attached files.')), false),
+	poll: v.optional(v.nullable(v.boolean()), null),
+	sinceId: v.optional(mi.misskeyId()),
+	untilId: v.optional(mi.misskeyId()),
+	sinceDate: v.optional(mi.integer()),
+	untilDate: v.optional(mi.integer()),
+	limit: mi.limit({ max: 100, def: 10 }),
+};
+
+// NOTE: cookbook R9 に従い allOf に混在した anyOf を各分岐へ共通パートを分配した v.union に変換している
+export const paramDef = v.union([
+	v.object({
+		tag: v.pipe(v.string(), mi.minCodePoints(1)),
+		...filterEntries,
+	}),
+	v.object({
+		query: v.pipe(
+			v.array(v.pipe(
+				v.array(v.pipe(v.string(), mi.minCodePoints(1))),
+				v.minLength(1),
+			)),
+			v.minLength(1),
+			v.description('The outer arrays are chained with OR, the inner arrays are chained with AND.'),
+		),
+		...filterEntries,
+	}),
+]);
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

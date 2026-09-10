@@ -4,9 +4,11 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { packedChannelSchema } from '@/models/schema/channel.js';
 
 export const meta = {
 	tags: ['channels', 'mute'],
@@ -16,22 +18,10 @@ export const meta = {
 
 	kind: 'read:channels',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Channel',
-		},
-	},
+	res: v.array(packedChannelSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

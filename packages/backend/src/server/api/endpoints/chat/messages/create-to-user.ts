@@ -5,12 +5,15 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { ChatService } from '@/core/ChatService.js';
 import type { DriveFilesRepository, MiUser } from '@/models/_.js';
+import { packedChatMessageLiteFor1on1Schema } from '@/models/schema/chat-message.js';
 
 export const meta = {
 	tags: ['chat'],
@@ -26,11 +29,7 @@ export const meta = {
 		max: 500,
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'ChatMessageLiteFor1on1',
-	},
+	res: packedChatMessageLiteFor1on1Schema,
 
 	errors: {
 		recipientIsYourself: {
@@ -65,15 +64,11 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		text: { type: 'string', nullable: true, maxLength: 2000 },
-		fileId: { type: 'string', format: 'misskey:id' },
-		toUserId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['toUserId'],
-} as const;
+export const paramDef = v.object({
+	text: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(2000)))),
+	fileId: v.optional(mi.misskeyId()),
+	toUserId: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -4013,6 +4013,366 @@ export type components = {
                 id: string;
             };
         };
+        Announcement: {
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string | null;
+            text: string;
+            title: string;
+            imageUrl: string | null;
+            /** @enum {string} */
+            icon: 'info' | 'warning' | 'error' | 'success';
+            /** @enum {string} */
+            display: 'dialog' | 'normal' | 'banner';
+            needConfirmationToRead: boolean;
+            silence: boolean;
+            forYou: boolean;
+            isRead?: boolean;
+        };
+        DriveFolder: {
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            name: string;
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            parentId: string | null;
+            foldersCount?: number;
+            filesCount?: number;
+            parent?: components['schemas']['DriveFolder'] | null;
+        };
+        DriveFile: {
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** @example 192.jpg */
+            name: string;
+            /** @example image/jpeg */
+            type: string;
+            /**
+             * Format: md5
+             * @example 15eca7fba0480996e2245f5185bf39f2
+             */
+            md5: string;
+            /** @example 51469 */
+            size: number;
+            isSensitive: boolean;
+            blurhash: string | null;
+            properties: {
+                /** @example 1280 */
+                width?: number;
+                /** @example 720 */
+                height?: number;
+                /** @example 8 */
+                orientation?: number;
+                /** @example rgb(40,65,87) */
+                avgColor?: string;
+            };
+            /** Format: url */
+            url: string;
+            /** Format: url */
+            thumbnailUrl: string | null;
+            comment: string | null;
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            folderId: string | null;
+            folder?: components['schemas']['DriveFolder'] | null;
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            userId: string | null;
+            user?: components['schemas']['UserLite'] | null;
+        };
+        Note: {
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            deletedAt?: string | null;
+            text: string | null;
+            cw?: string | null;
+            /** Format: id */
+            userId: string;
+            user: components['schemas']['UserLite'];
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            replyId?: string | null;
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            renoteId?: string | null;
+            reply?: components['schemas']['Note'] | null;
+            renote?: components['schemas']['Note'] | null;
+            isHidden?: boolean;
+            /** @enum {string} */
+            visibility: 'public' | 'home' | 'followers' | 'specified';
+            mentions?: string[];
+            visibleUserIds?: string[];
+            fileIds?: string[];
+            files?: components['schemas']['DriveFile'][];
+            tags?: string[];
+            poll?: {
+                /** Format: date-time */
+                expiresAt?: string | null;
+                multiple: boolean;
+                choices: {
+                    isVoted: boolean;
+                    text: string;
+                    votes: number;
+                }[];
+            } | null;
+            emojis?: {
+                [key: string]: string;
+            };
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            channelId?: string | null;
+            channel?: {
+                id: string;
+                name: string;
+                color: string;
+                isSensitive: boolean;
+                allowRenoteToExternal: boolean;
+                userId: string | null;
+            } | null;
+            localOnly?: boolean;
+            /** @enum {string|null} */
+            reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
+            reactionEmojis: {
+                [key: string]: string;
+            };
+            reactions: {
+                [key: string]: number;
+            };
+            reactionCount: number;
+            renoteCount: number;
+            repliesCount: number;
+            uri?: string;
+            url?: string;
+            reactionAndUserPairCache?: string[];
+            clippedCount?: number;
+            hasPoll?: boolean;
+            myReaction?: string | null;
+        };
+        PageBlock: {
+            id: string;
+            /** @enum {string} */
+            type: 'text';
+            text: string;
+        } | {
+            id: string;
+            /** @enum {string} */
+            type: 'section';
+            title: string;
+            children: components['schemas']['PageBlock'][];
+        } | {
+            id: string;
+            /** @enum {string} */
+            type: 'image';
+            fileId: string | null;
+        } | {
+            id: string;
+            /** @enum {string} */
+            type: 'note';
+            detailed: boolean;
+            note: string | null;
+        };
+        Page: {
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: id */
+            userId: string;
+            user: components['schemas']['UserLite'];
+            content: components['schemas']['PageBlock'][];
+            variables: Record<string, never>[];
+            title: string;
+            name: string;
+            summary: string | null;
+            hideTitleWhenPinned: boolean;
+            alignCenter: boolean;
+            /** @enum {string} */
+            font: 'serif' | 'sans-serif';
+            script: string;
+            eyeCatchingImageId: string | null;
+            eyeCatchingImage: components['schemas']['DriveFile'] | null;
+            attachedFiles: components['schemas']['DriveFile'][];
+            likedCount: number;
+            isLiked?: boolean;
+        };
+        RoleCondFormulaLogics: {
+            id: string;
+            /** @enum {string} */
+            type: 'and' | 'or';
+            values: components['schemas']['RoleCondFormulaValue'][];
+        };
+        RoleCondFormulaValueNot: {
+            id: string;
+            /** @enum {string} */
+            type: 'not';
+            value: components['schemas']['RoleCondFormulaValue'];
+        };
+        RoleCondFormulaValueIsLocalOrRemote: {
+            id: string;
+            /** @enum {string} */
+            type: 'isLocal' | 'isRemote';
+        };
+        RoleCondFormulaValueUserSettingBooleanSchema: {
+            id: string;
+            /** @enum {string} */
+            type: 'isSuspended' | 'isLocked' | 'isBot' | 'isCat' | 'isExplorable';
+        };
+        RoleCondFormulaValueAssignedRole: {
+            id: string;
+            /** @enum {string} */
+            type: 'roleAssignedTo';
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            roleId: string;
+        };
+        RoleCondFormulaValueCreated: {
+            id: string;
+            /** @enum {string} */
+            type: 'createdLessThan' | 'createdMoreThan';
+            sec: number;
+        };
+        RoleCondFormulaFollowersOrFollowingOrNotes: {
+            id: string;
+            /** @enum {string} */
+            type: 'followersLessThanOrEq' | 'followersMoreThanOrEq' | 'followingLessThanOrEq' | 'followingMoreThanOrEq' | 'notesLessThanOrEq' | 'notesMoreThanOrEq';
+            value: number;
+        };
+        RoleCondFormulaValue: components['schemas']['RoleCondFormulaLogics'] | components['schemas']['RoleCondFormulaValueNot'] | components['schemas']['RoleCondFormulaValueIsLocalOrRemote'] | components['schemas']['RoleCondFormulaValueUserSettingBooleanSchema'] | components['schemas']['RoleCondFormulaValueAssignedRole'] | components['schemas']['RoleCondFormulaValueCreated'] | components['schemas']['RoleCondFormulaFollowersOrFollowingOrNotes'];
+        RoleLite: {
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            id: string;
+            /** @example New Role */
+            name: string;
+            /** @example #000000 */
+            color: string | null;
+            iconUrl: string | null;
+            description: string;
+            /** @example false */
+            isModerator: boolean;
+            /** @example false */
+            isAdministrator: boolean;
+            /** @example 0 */
+            displayOrder: number;
+        };
+        RolePolicies: {
+            gtlAvailable: boolean;
+            ltlAvailable: boolean;
+            canPublicNote: boolean;
+            mentionLimit: number;
+            canInvite: boolean;
+            inviteLimit: number;
+            inviteLimitCycle: number;
+            inviteExpirationTime: number;
+            canManageCustomEmojis: boolean;
+            canManageAvatarDecorations: boolean;
+            canSearchNotes: boolean;
+            canSearchUsers: boolean;
+            canUseTranslator: boolean;
+            canHideAds: boolean;
+            canCreateChannel: boolean;
+            driveCapacityMb: number;
+            maxFileSizeMb: number;
+            uploadableFileTypes: string[];
+            alwaysMarkNsfw: boolean;
+            canUpdateBioMedia: boolean;
+            pinLimit: number;
+            antennaLimit: number;
+            wordMuteLimit: number;
+            webhookLimit: number;
+            clipLimit: number;
+            noteEachClipsLimit: number;
+            userListLimit: number;
+            userEachUserListsLimit: number;
+            rateLimitFactor: number;
+            avatarDecorationLimit: number;
+            canImportAntennas: boolean;
+            canImportBlocking: boolean;
+            canImportFollowing: boolean;
+            canImportMuting: boolean;
+            canImportUserLists: boolean;
+            /** @enum {string} */
+            chatAvailability: 'available' | 'readonly' | 'unavailable';
+            noteDraftLimit: number;
+            scheduledNoteLimit: number;
+            watermarkAvailable: boolean;
+        };
+        Role: components['schemas']['RoleLite'] & {
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @enum {string} */
+            target: 'manual' | 'conditional';
+            condFormula: components['schemas']['RoleCondFormulaValue'];
+            /** @example false */
+            isPublic: boolean;
+            /** @example false */
+            isExplorable: boolean;
+            /** @example false */
+            asBadge: boolean;
+            /** @example false */
+            preserveAssignmentOnMoveAccount: boolean;
+            /** @example false */
+            canEditMembersByModerator: boolean;
+            policies: {
+                [key: string]: {
+                    value?: number | boolean;
+                    priority?: number;
+                    useDefault?: boolean;
+                };
+            };
+            usersCount: number;
+        };
+        /** @enum {string} */
+        AchievementName: 'notes1' | 'notes10' | 'notes100' | 'notes500' | 'notes1000' | 'notes5000' | 'notes10000' | 'notes20000' | 'notes30000' | 'notes40000' | 'notes50000' | 'notes60000' | 'notes70000' | 'notes80000' | 'notes90000' | 'notes100000' | 'login3' | 'login7' | 'login15' | 'login30' | 'login60' | 'login100' | 'login200' | 'login300' | 'login400' | 'login500' | 'login600' | 'login700' | 'login800' | 'login900' | 'login1000' | 'passedSinceAccountCreated1' | 'passedSinceAccountCreated2' | 'passedSinceAccountCreated3' | 'loggedInOnBirthday' | 'loggedInOnNewYearsDay' | 'noteClipped1' | 'noteFavorited1' | 'myNoteFavorited1' | 'profileFilled' | 'markedAsCat' | 'following1' | 'following10' | 'following50' | 'following100' | 'following300' | 'followers1' | 'followers10' | 'followers50' | 'followers100' | 'followers300' | 'followers500' | 'followers1000' | 'collectAchievements30' | 'viewAchievements3min' | 'iLoveMisskey' | 'foundTreasure' | 'client30min' | 'client60min' | 'noteDeletedWithin1min' | 'postedAtLateNight' | 'postedAt0min0sec' | 'selfQuote' | 'htl20npm' | 'viewInstanceChart' | 'outputHelloWorldOnScratchpad' | 'open3windows' | 'driveFolderCircularReference' | 'reactWithoutRead' | 'clickedClickHere' | 'justPlainLucky' | 'setNameToSyuilo' | 'cookieClicked' | 'brainDiver' | 'smashTestNotificationButton' | 'tutorialCompleted' | 'bubbleGameExplodingHead' | 'bubbleGameDoubleExplodingHead';
+        Achievement: {
+            name: components['schemas']['AchievementName'];
+            unlockedAt: number;
+        };
         UserLite: {
             /**
              * Format: id
@@ -4375,24 +4735,32 @@ export type components = {
         MeDetailed: components['schemas']['UserLite'] & components['schemas']['UserDetailedNotMeOnly'] & components['schemas']['MeDetailedOnly'];
         UserDetailed: components['schemas']['UserDetailedNotMe'] | components['schemas']['MeDetailed'];
         User: components['schemas']['UserLite'] | components['schemas']['UserDetailed'];
-        UserList: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
+        SystemWebhook: {
             id: string;
+            isActive: boolean;
             /** Format: date-time */
-            createdAt: string;
+            updatedAt: string;
+            /** Format: date-time */
+            latestSentAt: string | null;
+            latestStatus: number | null;
             name: string;
-            userIds?: string[];
-            isPublic: boolean;
+            on: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
+            url: string;
+            secret: string;
         };
-        Achievement: {
-            name: components['schemas']['AchievementName'];
-            unlockedAt: number;
+        AbuseReportNotificationRecipient: {
+            id: string;
+            isActive: boolean;
+            /** Format: date-time */
+            updatedAt: string;
+            name: string;
+            /** @enum {string} */
+            method: 'email' | 'webhook';
+            userId?: string;
+            user?: components['schemas']['UserLite'];
+            systemWebhookId?: string;
+            systemWebhook?: components['schemas']['SystemWebhook'];
         };
-        /** @enum {string} */
-        AchievementName: 'notes1' | 'notes10' | 'notes100' | 'notes500' | 'notes1000' | 'notes5000' | 'notes10000' | 'notes20000' | 'notes30000' | 'notes40000' | 'notes50000' | 'notes60000' | 'notes70000' | 'notes80000' | 'notes90000' | 'notes100000' | 'login3' | 'login7' | 'login15' | 'login30' | 'login60' | 'login100' | 'login200' | 'login300' | 'login400' | 'login500' | 'login600' | 'login700' | 'login800' | 'login900' | 'login1000' | 'passedSinceAccountCreated1' | 'passedSinceAccountCreated2' | 'passedSinceAccountCreated3' | 'loggedInOnBirthday' | 'loggedInOnNewYearsDay' | 'noteClipped1' | 'noteFavorited1' | 'myNoteFavorited1' | 'profileFilled' | 'markedAsCat' | 'following1' | 'following10' | 'following50' | 'following100' | 'following300' | 'followers1' | 'followers10' | 'followers50' | 'followers100' | 'followers300' | 'followers500' | 'followers1000' | 'collectAchievements30' | 'viewAchievements3min' | 'iLoveMisskey' | 'foundTreasure' | 'client30min' | 'client60min' | 'noteDeletedWithin1min' | 'postedAtLateNight' | 'postedAt0min0sec' | 'selfQuote' | 'htl20npm' | 'viewInstanceChart' | 'outputHelloWorldOnScratchpad' | 'open3windows' | 'driveFolderCircularReference' | 'reactWithoutRead' | 'clickedClickHere' | 'justPlainLucky' | 'setNameToSyuilo' | 'cookieClicked' | 'brainDiver' | 'smashTestNotificationButton' | 'tutorialCompleted' | 'bubbleGameExplodingHead' | 'bubbleGameDoubleExplodingHead';
         Ad: {
             /**
              * Format: id
@@ -4412,27 +4780,266 @@ export type components = {
             dayOfWeek: number;
             isSensitive: boolean;
         };
-        Announcement: {
+        EmojiSimple: {
+            aliases: string[];
+            name: string;
+            category: string | null;
+            url: string;
+            localOnly?: boolean;
+            isSensitive?: boolean;
+            roleIdsThatCanBeUsedThisEmojiAsReaction?: string[];
+        };
+        EmojiDetailed: {
+            /** Format: id */
+            id: string;
+            aliases: string[];
+            name: string;
+            category: string | null;
+            /** @description The local host is represented with `null`. */
+            host: string | null;
+            url: string;
+            license: string | null;
+            isSensitive: boolean;
+            localOnly: boolean;
+            roleIdsThatCanBeUsedThisEmojiAsReaction: string[];
+        };
+        EmojiDetailedAdmin: {
+            /** Format: id */
+            id: string;
+            /** Format: date-time */
+            updatedAt: string | null;
+            name: string;
+            /** @description The local host is represented with `null`. */
+            host: string | null;
+            publicUrl: string;
+            originalUrl: string;
+            uri: string | null;
+            type: string | null;
+            aliases: string[];
+            category: string | null;
+            license: string | null;
+            localOnly: boolean;
+            isSensitive: boolean;
+            roleIdsThatCanBeUsedThisEmojiAsReaction: {
+                /** Format: misskey:id */
+                id: string;
+                name: string;
+            }[];
+        };
+        InviteCode: {
             /**
              * Format: id
              * @example xxxxxxxxxx
              */
             id: string;
+            /** @example GR6S02ERUA5VR */
+            code: string;
+            /** Format: date-time */
+            expiresAt: string | null;
             /** Format: date-time */
             createdAt: string;
+            createdBy: components['schemas']['UserLite'] | null;
+            usedBy: components['schemas']['UserLite'] | null;
             /** Format: date-time */
-            updatedAt: string | null;
-            text: string;
-            title: string;
-            imageUrl: string | null;
+            usedAt: string | null;
+            used: boolean;
+        };
+        MetaClientOptions: {
             /** @enum {string} */
-            icon: 'info' | 'warning' | 'error' | 'success';
+            entrancePageStyle: 'classic' | 'simple';
+            showTimelineForVisitor: boolean;
+            showActivitiesForVisitor: boolean;
+        };
+        MetaLite: {
+            maintainerName: string | null;
+            maintainerEmail: string | null;
+            version: string;
+            providesTarball: boolean;
+            name: string | null;
+            shortName: string | null;
+            /**
+             * Format: url
+             * @example https://misskey.example.com
+             */
+            uri: string;
+            description: string | null;
+            langs: string[];
+            tosUrl: string | null;
+            /** @default https://github.com/misskey-dev/misskey */
+            repositoryUrl: string | null;
+            /** @default https://github.com/misskey-dev/misskey/issues/new */
+            feedbackUrl: string | null;
+            defaultDarkTheme: string | null;
+            defaultLightTheme: string | null;
+            clientOptions: components['schemas']['MetaClientOptions'];
+            disableRegistration: boolean;
+            emailRequiredForSignup: boolean;
+            enableHcaptcha: boolean;
+            hcaptchaSiteKey: string | null;
+            enableMcaptcha: boolean;
+            mcaptchaSiteKey: string | null;
+            mcaptchaInstanceUrl: string | null;
+            enableRecaptcha: boolean;
+            recaptchaSiteKey: string | null;
+            enableTurnstile: boolean;
+            turnstileSiteKey: string | null;
+            enableTestcaptcha: boolean;
+            googleAnalyticsMeasurementId: string | null;
+            swPublickey: string | null;
+            /** @default /assets/ai.png */
+            mascotImageUrl: string;
+            bannerUrl: string | null;
+            serverErrorImageUrl: string | null;
+            infoImageUrl: string | null;
+            notFoundImageUrl: string | null;
+            iconUrl: string | null;
+            maxNoteTextLength: number;
+            ads: {
+                /**
+                 * Format: id
+                 * @example xxxxxxxxxx
+                 */
+                id: string;
+                /** Format: url */
+                url: string;
+                place: string;
+                ratio: number;
+                /** Format: url */
+                imageUrl: string;
+                dayOfWeek: number;
+                isSensitive?: boolean;
+            }[];
+            /** @default 0 */
+            notesPerOneAd: number;
+            enableEmail: boolean;
+            enableServiceWorker: boolean;
+            translatorAvailable: boolean;
+            sentryForFrontend: {
+                options: {
+                    dsn: string;
+                } & {
+                    [key: string]: unknown;
+                };
+                vueIntegration?: {
+                    [key: string]: unknown;
+                } | null;
+                browserTracingIntegration?: {
+                    [key: string]: unknown;
+                } | null;
+                replayIntegration?: {
+                    [key: string]: unknown;
+                } | null;
+            } | null;
+            mediaProxy: string;
+            enableUrlPreview: boolean;
+            backgroundImageUrl: string | null;
+            impressumUrl: string | null;
+            logoImageUrl: string | null;
+            privacyPolicyUrl: string | null;
+            inquiryUrl: string | null;
+            serverRules: string[];
+            themeColor: string | null;
+            policies: components['schemas']['RolePolicies'];
+            /**
+             * @default local
+             * @enum {string}
+             */
+            noteSearchableScope: 'local' | 'global';
+            maxFileSize: number;
             /** @enum {string} */
-            display: 'dialog' | 'normal' | 'banner';
-            needConfirmationToRead: boolean;
-            silence: boolean;
-            forYou: boolean;
-            isRead?: boolean;
+            federation: 'all' | 'specified' | 'none';
+        };
+        MetaDetailedOnly: {
+            features?: {
+                registration: boolean;
+                emailRequiredForSignup: boolean;
+                localTimeline: boolean;
+                globalTimeline: boolean;
+                hcaptcha: boolean;
+                turnstile: boolean;
+                recaptcha: boolean;
+                objectStorage: boolean;
+                serviceWorker: boolean;
+                /** @default true */
+                miauth: boolean;
+            };
+            proxyAccountName: string | null;
+            /** @example false */
+            requireSetup: boolean;
+            cacheRemoteFiles: boolean;
+            cacheRemoteSensitiveFiles: boolean;
+        };
+        MetaDetailed: components['schemas']['MetaLite'] & components['schemas']['MetaDetailedOnly'];
+        QueueCount: {
+            waiting: number;
+            active: number;
+            completed: number;
+            failed: number;
+            delayed: number;
+        };
+        QueueMetrics: {
+            meta: {
+                count: number;
+                prevTS: number;
+                prevCount: number;
+            };
+            data: number[];
+            count: number;
+        };
+        QueueJob: {
+            id: string;
+            name: string;
+            data: Record<string, never>;
+            opts: Record<string, never>;
+            timestamp: number;
+            processedOn?: number;
+            processedBy?: string;
+            finishedOn?: number;
+            progress: Record<string, never>;
+            attempts: number;
+            delay: number;
+            failedReason: string;
+            stacktrace: string[];
+            returnValue: Record<string, never>;
+            isFailed: boolean;
+        };
+        Signin: {
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            ip: string;
+            headers: Record<string, never>;
+            success: boolean;
+        };
+        Antenna: {
+            /** Format: id */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            name: string;
+            keywords: string[][];
+            excludeKeywords: string[][];
+            /** @enum {string} */
+            src: 'home' | 'all' | 'users' | 'list' | 'users_blacklist';
+            /** Format: id */
+            userListId: string | null;
+            users: string[];
+            /** @default false */
+            caseSensitive: boolean;
+            /** @default false */
+            localOnly: boolean;
+            /** @default false */
+            excludeBots: boolean;
+            /** @default false */
+            withReplies: boolean;
+            withFile: boolean;
+            isActive: boolean;
+            /** @default false */
+            hasUnreadNote: boolean;
+            /** @default false */
+            notify: boolean;
+            /** @default false */
+            excludeNotesInSensitiveChannel: boolean;
         };
         App: {
             id: string;
@@ -4442,7 +5049,19 @@ export type components = {
             secret?: string;
             isAuthorized?: boolean;
         };
-        Note: {
+        Blocking: {
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: id */
+            blockeeId: string;
+            blockee: components['schemas']['UserDetailedNotMe'];
+        };
+        Channel: {
             /**
              * Format: id
              * @example xxxxxxxxxx
@@ -4451,76 +5070,238 @@ export type components = {
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
-            deletedAt?: string | null;
-            text: string | null;
-            cw?: string | null;
+            lastNotedAt: string | null;
+            name: string;
+            description: string | null;
+            /** Format: id */
+            userId: string | null;
+            /** Format: url */
+            bannerUrl: string | null;
+            /** Format: id */
+            bannerId: string | null;
+            pinnedNoteIds: string[];
+            color: string;
+            isArchived: boolean;
+            usersCount: number;
+            notesCount: number;
+            isSensitive: boolean;
+            allowRenoteToExternal: boolean;
+            isFollowing?: boolean;
+            isFavorited?: boolean;
+            isMuting?: boolean;
+            pinnedNotes?: components['schemas']['Note'][];
+        };
+        Clip: {
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            lastClippedAt: string | null;
             /** Format: id */
             userId: string;
             user: components['schemas']['UserLite'];
+            name: string;
+            description: string | null;
+            isPublic: boolean;
+            favoritedCount: number;
+            isFavorited?: boolean;
+            notesCount?: number;
+        };
+        ChatRoom: {
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            ownerId: string;
+            owner: components['schemas']['UserLite'];
+            name: string;
+            description: string;
+            isMuted?: boolean;
+            invitationExists?: boolean;
+        };
+        ChatMessage: {
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            fromUserId: string;
+            fromUser: components['schemas']['UserLite'];
+            toUserId?: string | null;
+            toUser?: components['schemas']['UserLite'] | null;
+            toRoomId?: string | null;
+            toRoom?: components['schemas']['ChatRoom'] | null;
+            text?: string | null;
+            fileId?: string | null;
+            file?: components['schemas']['DriveFile'] | null;
+            isRead?: boolean;
+            reactions: {
+                reaction: string;
+                user: components['schemas']['UserLite'];
+            }[];
+        };
+        ChatMessageLite: {
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            fromUserId: string;
+            fromUser?: components['schemas']['UserLite'];
+            toUserId?: string | null;
+            toRoomId?: string | null;
+            text?: string | null;
+            fileId?: string | null;
+            file?: components['schemas']['DriveFile'] | null;
+            reactions: {
+                reaction: string;
+                user?: components['schemas']['UserLite'] | null;
+            }[];
+        };
+        ChatMessageLiteFor1on1: {
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            fromUserId: string;
+            toUserId: string;
+            text?: string | null;
+            fileId?: string | null;
+            file?: components['schemas']['DriveFile'] | null;
+            reactions: {
+                reaction: string;
+            }[];
+        };
+        ChatMessageLiteForRoom: {
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            fromUserId: string;
+            fromUser: components['schemas']['UserLite'];
+            toRoomId: string;
+            text?: string | null;
+            fileId?: string | null;
+            file?: components['schemas']['DriveFile'] | null;
+            reactions: {
+                reaction: string;
+                user: components['schemas']['UserLite'];
+            }[];
+        };
+        Following: {
             /**
              * Format: id
              * @example xxxxxxxxxx
              */
-            replyId?: string | null;
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            renoteId?: string | null;
-            reply?: components['schemas']['Note'] | null;
-            renote?: components['schemas']['Note'] | null;
-            isHidden?: boolean;
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: id */
+            followeeId: string;
+            /** Format: id */
+            followerId: string;
+            followee?: components['schemas']['UserDetailedNotMe'];
+            follower?: components['schemas']['UserDetailedNotMe'];
+        };
+        FederationInstance: {
+            /** Format: id */
+            id: string;
+            /** Format: date-time */
+            firstRetrievedAt: string;
+            /** @example misskey.example.com */
+            host: string;
+            usersCount: number;
+            notesCount: number;
+            followingCount: number;
+            followersCount: number;
+            isNotResponding: boolean;
+            isSuspended: boolean;
             /** @enum {string} */
-            visibility: 'public' | 'home' | 'followers' | 'specified';
-            mentions?: string[];
-            visibleUserIds?: string[];
+            suspensionState: 'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding' | 'softwareSuspended';
+            isBlocked: boolean;
+            /** @example misskey */
+            softwareName: string | null;
+            softwareVersion: string | null;
+            /** @example true */
+            openRegistrations: boolean | null;
+            name: string | null;
+            description: string | null;
+            maintainerName: string | null;
+            maintainerEmail: string | null;
+            isSilenced: boolean;
+            isMediaSilenced: boolean;
+            /** Format: url */
+            iconUrl: string | null;
+            /** Format: url */
+            faviconUrl: string | null;
+            themeColor: string | null;
+            /** Format: date-time */
+            infoUpdatedAt: string | null;
+            /** Format: date-time */
+            latestRequestReceivedAt: string | null;
+            moderationNote?: string | null;
+        };
+        Flash: {
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: id */
+            userId: string;
+            user: components['schemas']['UserLite'];
+            title: string;
+            summary: string;
+            script: string;
+            /** @enum {string} */
+            visibility: 'private' | 'public';
+            likedCount: number;
+            isLiked?: boolean;
+        };
+        GalleryPost: {
+            /**
+             * Format: id
+             * @example xxxxxxxxxx
+             */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: id */
+            userId: string;
+            user: components['schemas']['UserLite'];
+            title: string;
+            description: string | null;
             fileIds?: string[];
             files?: components['schemas']['DriveFile'][];
             tags?: string[];
-            poll?: {
-                /** Format: date-time */
-                expiresAt?: string | null;
-                multiple: boolean;
-                choices: {
-                    isVoted: boolean;
-                    text: string;
-                    votes: number;
-                }[];
-            } | null;
-            emojis?: {
-                [key: string]: string;
-            };
+            isSensitive: boolean;
+            likedCount: number;
+            isLiked?: boolean;
+        };
+        Hashtag: {
+            /** @example misskey */
+            tag: string;
+            mentionedUsersCount: number;
+            mentionedLocalUsersCount: number;
+            mentionedRemoteUsersCount: number;
+            attachedUsersCount: number;
+            attachedLocalUsersCount: number;
+            attachedRemoteUsersCount: number;
+        };
+        NoteFavorite: {
             /**
              * Format: id
              * @example xxxxxxxxxx
              */
-            channelId?: string | null;
-            channel?: {
-                id: string;
-                name: string;
-                color: string;
-                isSensitive: boolean;
-                allowRenoteToExternal: boolean;
-                userId: string | null;
-            } | null;
-            localOnly?: boolean;
-            /** @enum {string|null} */
-            reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
-            reactionEmojis: {
-                [key: string]: string;
-            };
-            reactions: {
-                [key: string]: number;
-            };
-            reactionCount: number;
-            renoteCount: number;
-            repliesCount: number;
-            uri?: string;
-            url?: string;
-            reactionAndUserPairCache?: string[];
-            clippedCount?: number;
-            hasPoll?: boolean;
-            myReaction?: string | null;
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            note: components['schemas']['Note'];
+            /** Format: id */
+            noteId: string;
         };
         NoteDraft: {
             /**
@@ -4570,34 +5351,14 @@ export type components = {
             scheduledAt: number | null;
             isActuallyScheduled: boolean;
         };
-        NoteReaction: {
-            /** Format: id */
+        ChatRoomInvitation: {
             id: string;
             /** Format: date-time */
             createdAt: string;
+            userId: string;
             user: components['schemas']['UserLite'];
-            type: string;
-        };
-        NoteReactionWithNote: {
-            /** Format: id */
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            user: components['schemas']['UserLite'];
-            type: string;
-            note: components['schemas']['Note'];
-        };
-        NoteFavorite: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            note: components['schemas']['Note'];
-            /** Format: id */
-            noteId: string;
+            roomId: string;
+            room: components['schemas']['ChatRoom'];
         };
         Notification: {
             /** Format: id */
@@ -4812,87 +5573,19 @@ export type components = {
             /** @enum {string} */
             type: 'test';
         };
-        DriveFile: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
+        UserWebhook: {
+            /** Format: id */
             id: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** @example 192.jpg */
+            /** Format: id */
+            userId: string;
             name: string;
-            /** @example image/jpeg */
-            type: string;
-            /**
-             * Format: md5
-             * @example 15eca7fba0480996e2245f5185bf39f2
-             */
-            md5: string;
-            /** @example 51469 */
-            size: number;
-            isSensitive: boolean;
-            blurhash: string | null;
-            properties: {
-                /** @example 1280 */
-                width?: number;
-                /** @example 720 */
-                height?: number;
-                /** @example 8 */
-                orientation?: number;
-                /** @example rgb(40,65,87) */
-                avgColor?: string;
-            };
-            /** Format: url */
+            on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
             url: string;
-            /** Format: url */
-            thumbnailUrl: string | null;
-            comment: string | null;
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            folderId: string | null;
-            folder?: components['schemas']['DriveFolder'] | null;
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            userId: string | null;
-            user?: components['schemas']['UserLite'] | null;
-        };
-        DriveFolder: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            id: string;
+            secret: string;
+            active: boolean;
             /** Format: date-time */
-            createdAt: string;
-            name: string;
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            parentId: string | null;
-            foldersCount?: number;
-            filesCount?: number;
-            parent?: components['schemas']['DriveFolder'] | null;
-        };
-        Following: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: id */
-            followeeId: string;
-            /** Format: id */
-            followerId: string;
-            followee?: components['schemas']['UserDetailedNotMe'];
-            follower?: components['schemas']['UserDetailedNotMe'];
+            latestSentAt: string | null;
+            latestStatus: number | null;
         };
         Muting: {
             /**
@@ -4908,6 +5601,23 @@ export type components = {
             muteeId: string;
             mutee: components['schemas']['UserDetailedNotMe'];
         };
+        NoteReaction: {
+            /** Format: id */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            user: components['schemas']['UserLite'];
+            type: string;
+        };
+        NoteReactionWithNote: {
+            /** Format: id */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            user: components['schemas']['UserLite'];
+            type: string;
+            note: components['schemas']['Note'];
+        };
         RenoteMuting: {
             /**
              * Format: id
@@ -4919,479 +5629,6 @@ export type components = {
             /** Format: id */
             muteeId: string;
             mutee: components['schemas']['UserDetailedNotMe'];
-        };
-        Blocking: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: id */
-            blockeeId: string;
-            blockee: components['schemas']['UserDetailedNotMe'];
-        };
-        Hashtag: {
-            /** @example misskey */
-            tag: string;
-            mentionedUsersCount: number;
-            mentionedLocalUsersCount: number;
-            mentionedRemoteUsersCount: number;
-            attachedUsersCount: number;
-            attachedLocalUsersCount: number;
-            attachedRemoteUsersCount: number;
-        };
-        InviteCode: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            id: string;
-            /** @example GR6S02ERUA5VR */
-            code: string;
-            /** Format: date-time */
-            expiresAt: string | null;
-            /** Format: date-time */
-            createdAt: string;
-            createdBy: components['schemas']['UserLite'] | null;
-            usedBy: components['schemas']['UserLite'] | null;
-            /** Format: date-time */
-            usedAt: string | null;
-            used: boolean;
-        };
-        Page: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            /** Format: id */
-            userId: string;
-            user: components['schemas']['UserLite'];
-            content: components['schemas']['PageBlock'][];
-            variables: Record<string, never>[];
-            title: string;
-            name: string;
-            summary: string | null;
-            hideTitleWhenPinned: boolean;
-            alignCenter: boolean;
-            /** @enum {string} */
-            font: 'serif' | 'sans-serif';
-            script: string;
-            eyeCatchingImageId: string | null;
-            eyeCatchingImage: components['schemas']['DriveFile'] | null;
-            attachedFiles: components['schemas']['DriveFile'][];
-            likedCount: number;
-            isLiked?: boolean;
-        };
-        PageBlock: {
-            id: string;
-            /** @enum {string} */
-            type: 'text';
-            text: string;
-        } | {
-            id: string;
-            /** @enum {string} */
-            type: 'section';
-            title: string;
-            children: components['schemas']['PageBlock'][];
-        } | {
-            id: string;
-            /** @enum {string} */
-            type: 'image';
-            fileId: string | null;
-        } | {
-            id: string;
-            /** @enum {string} */
-            type: 'note';
-            detailed: boolean;
-            note: string | null;
-        };
-        Channel: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            lastNotedAt: string | null;
-            name: string;
-            description: string | null;
-            /** Format: id */
-            userId: string | null;
-            /** Format: url */
-            bannerUrl: string | null;
-            /** Format: id */
-            bannerId: string | null;
-            pinnedNoteIds: string[];
-            color: string;
-            isArchived: boolean;
-            usersCount: number;
-            notesCount: number;
-            isSensitive: boolean;
-            allowRenoteToExternal: boolean;
-            isFollowing?: boolean;
-            isFavorited?: boolean;
-            isMuting?: boolean;
-            pinnedNotes?: components['schemas']['Note'][];
-        };
-        QueueCount: {
-            waiting: number;
-            active: number;
-            completed: number;
-            failed: number;
-            delayed: number;
-        };
-        QueueMetrics: {
-            meta: {
-                count: number;
-                prevTS: number;
-                prevCount: number;
-            };
-            data: number[];
-            count: number;
-        };
-        QueueJob: {
-            id: string;
-            name: string;
-            data: Record<string, never>;
-            opts: Record<string, never>;
-            timestamp: number;
-            processedOn?: number;
-            processedBy?: string;
-            finishedOn?: number;
-            progress: Record<string, never>;
-            attempts: number;
-            delay: number;
-            failedReason: string;
-            stacktrace: string[];
-            returnValue: Record<string, never>;
-            isFailed: boolean;
-        };
-        Antenna: {
-            /** Format: id */
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            name: string;
-            keywords: string[][];
-            excludeKeywords: string[][];
-            /** @enum {string} */
-            src: 'home' | 'all' | 'users' | 'list' | 'users_blacklist';
-            /** Format: id */
-            userListId: string | null;
-            users: string[];
-            /** @default false */
-            caseSensitive: boolean;
-            /** @default false */
-            localOnly: boolean;
-            /** @default false */
-            excludeBots: boolean;
-            /** @default false */
-            withReplies: boolean;
-            withFile: boolean;
-            isActive: boolean;
-            /** @default false */
-            hasUnreadNote: boolean;
-            /** @default false */
-            notify: boolean;
-            /** @default false */
-            excludeNotesInSensitiveChannel: boolean;
-        };
-        Clip: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            lastClippedAt: string | null;
-            /** Format: id */
-            userId: string;
-            user: components['schemas']['UserLite'];
-            name: string;
-            description: string | null;
-            isPublic: boolean;
-            favoritedCount: number;
-            isFavorited?: boolean;
-            notesCount?: number;
-        };
-        FederationInstance: {
-            /** Format: id */
-            id: string;
-            /** Format: date-time */
-            firstRetrievedAt: string;
-            /** @example misskey.example.com */
-            host: string;
-            usersCount: number;
-            notesCount: number;
-            followingCount: number;
-            followersCount: number;
-            isNotResponding: boolean;
-            isSuspended: boolean;
-            /** @enum {string} */
-            suspensionState: 'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding' | 'softwareSuspended';
-            isBlocked: boolean;
-            /** @example misskey */
-            softwareName: string | null;
-            softwareVersion: string | null;
-            /** @example true */
-            openRegistrations: boolean | null;
-            name: string | null;
-            description: string | null;
-            maintainerName: string | null;
-            maintainerEmail: string | null;
-            isSilenced: boolean;
-            isMediaSilenced: boolean;
-            /** Format: url */
-            iconUrl: string | null;
-            /** Format: url */
-            faviconUrl: string | null;
-            themeColor: string | null;
-            /** Format: date-time */
-            infoUpdatedAt: string | null;
-            /** Format: date-time */
-            latestRequestReceivedAt: string | null;
-            moderationNote?: string | null;
-        };
-        GalleryPost: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            /** Format: id */
-            userId: string;
-            user: components['schemas']['UserLite'];
-            title: string;
-            description: string | null;
-            fileIds?: string[];
-            files?: components['schemas']['DriveFile'][];
-            tags?: string[];
-            isSensitive: boolean;
-            likedCount: number;
-            isLiked?: boolean;
-        };
-        EmojiSimple: {
-            aliases: string[];
-            name: string;
-            category: string | null;
-            url: string;
-            localOnly?: boolean;
-            isSensitive?: boolean;
-            roleIdsThatCanBeUsedThisEmojiAsReaction?: string[];
-        };
-        EmojiDetailed: {
-            /** Format: id */
-            id: string;
-            aliases: string[];
-            name: string;
-            category: string | null;
-            /** @description The local host is represented with `null`. */
-            host: string | null;
-            url: string;
-            license: string | null;
-            isSensitive: boolean;
-            localOnly: boolean;
-            roleIdsThatCanBeUsedThisEmojiAsReaction: string[];
-        };
-        EmojiDetailedAdmin: {
-            /** Format: id */
-            id: string;
-            /** Format: date-time */
-            updatedAt: string | null;
-            name: string;
-            /** @description The local host is represented with `null`. */
-            host: string | null;
-            publicUrl: string;
-            originalUrl: string;
-            uri: string | null;
-            type: string | null;
-            aliases: string[];
-            category: string | null;
-            license: string | null;
-            localOnly: boolean;
-            isSensitive: boolean;
-            roleIdsThatCanBeUsedThisEmojiAsReaction: {
-                /** Format: misskey:id */
-                id: string;
-                name: string;
-            }[];
-        };
-        Flash: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            /** Format: id */
-            userId: string;
-            user: components['schemas']['UserLite'];
-            title: string;
-            summary: string;
-            script: string;
-            /** @enum {string} */
-            visibility: 'private' | 'public';
-            likedCount: number;
-            isLiked?: boolean;
-        };
-        Signin: {
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            ip: string;
-            headers: Record<string, never>;
-            success: boolean;
-        };
-        RoleCondFormulaLogics: {
-            id: string;
-            /** @enum {string} */
-            type: 'and' | 'or';
-            values: components['schemas']['RoleCondFormulaValue'][];
-        };
-        RoleCondFormulaValueNot: {
-            id: string;
-            /** @enum {string} */
-            type: 'not';
-            value: components['schemas']['RoleCondFormulaValue'];
-        };
-        RoleCondFormulaValueIsLocalOrRemote: {
-            id: string;
-            /** @enum {string} */
-            type: 'isLocal' | 'isRemote';
-        };
-        RoleCondFormulaValueUserSettingBooleanSchema: {
-            id: string;
-            /** @enum {string} */
-            type: 'isSuspended' | 'isLocked' | 'isBot' | 'isCat' | 'isExplorable';
-        };
-        RoleCondFormulaValueAssignedRole: {
-            id: string;
-            /** @enum {string} */
-            type: 'roleAssignedTo';
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            roleId: string;
-        };
-        RoleCondFormulaValueCreated: {
-            id: string;
-            /** @enum {string} */
-            type: 'createdLessThan' | 'createdMoreThan';
-            sec: number;
-        };
-        RoleCondFormulaFollowersOrFollowingOrNotes: {
-            id: string;
-            /** @enum {string} */
-            type: 'followersLessThanOrEq' | 'followersMoreThanOrEq' | 'followingLessThanOrEq' | 'followingMoreThanOrEq' | 'notesLessThanOrEq' | 'notesMoreThanOrEq';
-            value: number;
-        };
-        RoleCondFormulaValue: components['schemas']['RoleCondFormulaLogics'] | components['schemas']['RoleCondFormulaValueNot'] | components['schemas']['RoleCondFormulaValueIsLocalOrRemote'] | components['schemas']['RoleCondFormulaValueUserSettingBooleanSchema'] | components['schemas']['RoleCondFormulaValueAssignedRole'] | components['schemas']['RoleCondFormulaValueCreated'] | components['schemas']['RoleCondFormulaFollowersOrFollowingOrNotes'];
-        RoleLite: {
-            /**
-             * Format: id
-             * @example xxxxxxxxxx
-             */
-            id: string;
-            /** @example New Role */
-            name: string;
-            /** @example #000000 */
-            color: string | null;
-            iconUrl: string | null;
-            description: string;
-            /** @example false */
-            isModerator: boolean;
-            /** @example false */
-            isAdministrator: boolean;
-            /** @example 0 */
-            displayOrder: number;
-        };
-        Role: components['schemas']['RoleLite'] & {
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            /** @enum {string} */
-            target: 'manual' | 'conditional';
-            condFormula: components['schemas']['RoleCondFormulaValue'];
-            /** @example false */
-            isPublic: boolean;
-            /** @example false */
-            isExplorable: boolean;
-            /** @example false */
-            asBadge: boolean;
-            /** @example false */
-            preserveAssignmentOnMoveAccount: boolean;
-            /** @example false */
-            canEditMembersByModerator: boolean;
-            policies: {
-                [key: string]: {
-                    value?: number | boolean;
-                    priority?: number;
-                    useDefault?: boolean;
-                };
-            };
-            usersCount: number;
-        };
-        RolePolicies: {
-            gtlAvailable: boolean;
-            ltlAvailable: boolean;
-            canPublicNote: boolean;
-            mentionLimit: number;
-            canInvite: boolean;
-            inviteLimit: number;
-            inviteLimitCycle: number;
-            inviteExpirationTime: number;
-            canManageCustomEmojis: boolean;
-            canManageAvatarDecorations: boolean;
-            canSearchNotes: boolean;
-            canSearchUsers: boolean;
-            canUseTranslator: boolean;
-            canHideAds: boolean;
-            canCreateChannel: boolean;
-            driveCapacityMb: number;
-            maxFileSizeMb: number;
-            uploadableFileTypes: string[];
-            alwaysMarkNsfw: boolean;
-            canUpdateBioMedia: boolean;
-            pinLimit: number;
-            antennaLimit: number;
-            wordMuteLimit: number;
-            webhookLimit: number;
-            clipLimit: number;
-            noteEachClipsLimit: number;
-            userListLimit: number;
-            userEachUserListsLimit: number;
-            rateLimitFactor: number;
-            avatarDecorationLimit: number;
-            canImportAntennas: boolean;
-            canImportBlocking: boolean;
-            canImportFollowing: boolean;
-            canImportMuting: boolean;
-            canImportUserLists: boolean;
-            /** @enum {string} */
-            chatAvailability: 'available' | 'readonly' | 'unavailable';
-            noteDraftLimit: number;
-            scheduledNoteLimit: number;
-            watermarkAvailable: boolean;
         };
         ReversiGameLite: {
             /** Format: id */
@@ -5465,254 +5702,17 @@ export type components = {
             logs: number[][];
             map: string[];
         };
-        MetaLite: {
-            maintainerName: string | null;
-            maintainerEmail: string | null;
-            version: string;
-            providesTarball: boolean;
-            name: string | null;
-            shortName: string | null;
+        UserList: {
             /**
-             * Format: url
-             * @example https://misskey.example.com
+             * Format: id
+             * @example xxxxxxxxxx
              */
-            uri: string;
-            description: string | null;
-            langs: string[];
-            tosUrl: string | null;
-            /** @default https://github.com/misskey-dev/misskey */
-            repositoryUrl: string | null;
-            /** @default https://github.com/misskey-dev/misskey/issues/new */
-            feedbackUrl: string | null;
-            defaultDarkTheme: string | null;
-            defaultLightTheme: string | null;
-            clientOptions: components['schemas']['MetaClientOptions'];
-            disableRegistration: boolean;
-            emailRequiredForSignup: boolean;
-            enableHcaptcha: boolean;
-            hcaptchaSiteKey: string | null;
-            enableMcaptcha: boolean;
-            mcaptchaSiteKey: string | null;
-            mcaptchaInstanceUrl: string | null;
-            enableRecaptcha: boolean;
-            recaptchaSiteKey: string | null;
-            enableTurnstile: boolean;
-            turnstileSiteKey: string | null;
-            enableTestcaptcha: boolean;
-            googleAnalyticsMeasurementId: string | null;
-            swPublickey: string | null;
-            /** @default /assets/ai.png */
-            mascotImageUrl: string;
-            bannerUrl: string | null;
-            serverErrorImageUrl: string | null;
-            infoImageUrl: string | null;
-            notFoundImageUrl: string | null;
-            iconUrl: string | null;
-            maxNoteTextLength: number;
-            ads: {
-                /**
-                 * Format: id
-                 * @example xxxxxxxxxx
-                 */
-                id: string;
-                /** Format: url */
-                url: string;
-                place: string;
-                ratio: number;
-                /** Format: url */
-                imageUrl: string;
-                dayOfWeek: number;
-                isSensitive?: boolean;
-            }[];
-            /** @default 0 */
-            notesPerOneAd: number;
-            enableEmail: boolean;
-            enableServiceWorker: boolean;
-            translatorAvailable: boolean;
-            sentryForFrontend: {
-                options: {
-                    dsn: string;
-                } & {
-                    [key: string]: unknown;
-                };
-                vueIntegration?: {
-                    [key: string]: unknown;
-                } | null;
-                browserTracingIntegration?: {
-                    [key: string]: unknown;
-                } | null;
-                replayIntegration?: {
-                    [key: string]: unknown;
-                } | null;
-            } | null;
-            mediaProxy: string;
-            enableUrlPreview: boolean;
-            backgroundImageUrl: string | null;
-            impressumUrl: string | null;
-            logoImageUrl: string | null;
-            privacyPolicyUrl: string | null;
-            inquiryUrl: string | null;
-            serverRules: string[];
-            themeColor: string | null;
-            policies: components['schemas']['RolePolicies'];
-            /**
-             * @default local
-             * @enum {string}
-             */
-            noteSearchableScope: 'local' | 'global';
-            maxFileSize: number;
-            /** @enum {string} */
-            federation: 'all' | 'specified' | 'none';
-        };
-        MetaDetailedOnly: {
-            features?: {
-                registration: boolean;
-                emailRequiredForSignup: boolean;
-                localTimeline: boolean;
-                globalTimeline: boolean;
-                hcaptcha: boolean;
-                turnstile: boolean;
-                recaptcha: boolean;
-                objectStorage: boolean;
-                serviceWorker: boolean;
-                /** @default true */
-                miauth: boolean;
-            };
-            proxyAccountName: string | null;
-            /** @example false */
-            requireSetup: boolean;
-            cacheRemoteFiles: boolean;
-            cacheRemoteSensitiveFiles: boolean;
-        };
-        MetaDetailed: components['schemas']['MetaLite'] & components['schemas']['MetaDetailedOnly'];
-        MetaClientOptions: {
-            /** @enum {string} */
-            entrancePageStyle: 'classic' | 'simple';
-            showTimelineForVisitor: boolean;
-            showActivitiesForVisitor: boolean;
-        };
-        UserWebhook: {
-            /** Format: id */
             id: string;
-            /** Format: id */
-            userId: string;
+            /** Format: date-time */
+            createdAt: string;
             name: string;
-            on: ('mention' | 'unfollow' | 'follow' | 'followed' | 'note' | 'reply' | 'renote' | 'reaction')[];
-            url: string;
-            secret: string;
-            active: boolean;
-            /** Format: date-time */
-            latestSentAt: string | null;
-            latestStatus: number | null;
-        };
-        SystemWebhook: {
-            id: string;
-            isActive: boolean;
-            /** Format: date-time */
-            updatedAt: string;
-            /** Format: date-time */
-            latestSentAt: string | null;
-            latestStatus: number | null;
-            name: string;
-            on: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
-            url: string;
-            secret: string;
-        };
-        AbuseReportNotificationRecipient: {
-            id: string;
-            isActive: boolean;
-            /** Format: date-time */
-            updatedAt: string;
-            name: string;
-            /** @enum {string} */
-            method: 'email' | 'webhook';
-            userId?: string;
-            user?: components['schemas']['UserLite'];
-            systemWebhookId?: string;
-            systemWebhook?: components['schemas']['SystemWebhook'];
-        };
-        ChatMessage: {
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            fromUserId: string;
-            fromUser: components['schemas']['UserLite'];
-            toUserId?: string | null;
-            toUser?: components['schemas']['UserLite'] | null;
-            toRoomId?: string | null;
-            toRoom?: components['schemas']['ChatRoom'] | null;
-            text?: string | null;
-            fileId?: string | null;
-            file?: components['schemas']['DriveFile'] | null;
-            isRead?: boolean;
-            reactions: {
-                reaction: string;
-                user: components['schemas']['UserLite'];
-            }[];
-        };
-        ChatMessageLite: {
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            fromUserId: string;
-            fromUser?: components['schemas']['UserLite'];
-            toUserId?: string | null;
-            toRoomId?: string | null;
-            text?: string | null;
-            fileId?: string | null;
-            file?: components['schemas']['DriveFile'] | null;
-            reactions: {
-                reaction: string;
-                user?: components['schemas']['UserLite'] | null;
-            }[];
-        };
-        ChatMessageLiteFor1on1: {
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            fromUserId: string;
-            toUserId: string;
-            text?: string | null;
-            fileId?: string | null;
-            file?: components['schemas']['DriveFile'] | null;
-            reactions: {
-                reaction: string;
-            }[];
-        };
-        ChatMessageLiteForRoom: {
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            fromUserId: string;
-            fromUser: components['schemas']['UserLite'];
-            toRoomId: string;
-            text?: string | null;
-            fileId?: string | null;
-            file?: components['schemas']['DriveFile'] | null;
-            reactions: {
-                reaction: string;
-                user: components['schemas']['UserLite'];
-            }[];
-        };
-        ChatRoom: {
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            ownerId: string;
-            owner: components['schemas']['UserLite'];
-            name: string;
-            description: string;
-            isMuted?: boolean;
-            invitationExists?: boolean;
-        };
-        ChatRoomInvitation: {
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            userId: string;
-            user: components['schemas']['UserLite'];
-            roomId: string;
-            room: components['schemas']['ChatRoom'];
+            userIds?: string[];
+            isPublic: boolean;
         };
         ChatRoomMembership: {
             id: string;
@@ -5971,6 +5971,15 @@ export interface operations {
             };
             /** @description Forbidden error */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8698,12 +8707,20 @@ export interface operations {
     admin___emoji___update: {
         requestBody: {
             content: {
-                'application/json': ({
+                'application/json': {
                     /** Format: misskey:id */
                     id: string;
+                    /** Format: misskey:id */
+                    fileId?: string;
+                    /** @description Use `null` to reset the category. */
+                    category?: string | null;
+                    aliases?: string[];
+                    license?: string | null;
+                    isSensitive?: boolean;
+                    localOnly?: boolean;
+                    roleIdsThatCanBeUsedThisEmojiAsReaction?: string[];
                 } | {
                     name: string;
-                }) & {
                     /** Format: misskey:id */
                     fileId?: string;
                     /** @description Use `null` to reset the category. */
@@ -9056,6 +9073,15 @@ export interface operations {
             };
             /** @description Forbidden error */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10942,6 +10968,15 @@ export interface operations {
                     'application/json': components['schemas']['Error'];
                 };
             };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
             /** @description I'm Ai */
             418: {
                 headers: {
@@ -11508,14 +11543,14 @@ export interface operations {
                 'application/json': {
                     /** Format: misskey:id */
                     roleId: string;
+                    /** @default 10 */
+                    limit?: number;
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
-                    /** @default 10 */
-                    limit?: number;
                 };
             };
         };
@@ -12460,6 +12495,15 @@ export interface operations {
                     'application/json': components['schemas']['Error'];
                 };
             };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
             /** @description I'm Ai */
             418: {
                 headers: {
@@ -12919,6 +12963,15 @@ export interface operations {
             };
             /** @description Forbidden error */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -19524,14 +19577,14 @@ export interface operations {
         requestBody: {
             content: {
                 'application/json': {
+                    /** @default 10 */
+                    limit?: number;
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
-                    /** @default 10 */
-                    limit?: number;
                     /** Format: misskey:id */
                     fileId: string;
                 };
@@ -19598,14 +19651,14 @@ export interface operations {
         requestBody: {
             content: {
                 'application/json': {
+                    /** @default 10 */
+                    limit?: number;
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
-                    /** @default 10 */
-                    limit?: number;
                     /** Format: misskey:id */
                     fileId: string;
                 };
@@ -19788,6 +19841,15 @@ export interface operations {
             };
             /** @description Forbidden error */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Payload too large */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -21200,14 +21262,14 @@ export interface operations {
             content: {
                 'application/json': {
                     host: string;
+                    /** @default 10 */
+                    limit?: number;
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
-                    /** @default 10 */
-                    limit?: number;
                 };
             };
         };
@@ -21273,14 +21335,14 @@ export interface operations {
             content: {
                 'application/json': {
                     host: string;
+                    /** @default 10 */
+                    limit?: number;
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
-                    /** @default 10 */
-                    limit?: number;
                 };
             };
         };
@@ -21630,14 +21692,14 @@ export interface operations {
             content: {
                 'application/json': {
                     host: string;
+                    /** @default 10 */
+                    limit?: number;
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
-                    /** @default 10 */
-                    limit?: number;
                 };
             };
         };
@@ -21878,6 +21940,15 @@ export interface operations {
                     'application/json': components['schemas']['Error'];
                 };
             };
+            /** @description Unprocessable entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
             /** @description Too many requests */
             429: {
                 headers: {
@@ -21889,6 +21960,15 @@ export interface operations {
             };
             /** @description Internal server error */
             500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Server error */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -22328,14 +22408,14 @@ export interface operations {
             content: {
                 'application/json': {
                     query: string;
+                    /** @default 5 */
+                    limit?: number;
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
-                    /** @default 5 */
-                    limit?: number;
                 };
             };
         };
@@ -22835,14 +22915,14 @@ export interface operations {
                 'application/json': {
                     /** @default false */
                     notification?: boolean;
+                    /** @default 10 */
+                    limit?: number;
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
-                    /** @default 10 */
-                    limit?: number;
                 };
             };
         };
@@ -23036,14 +23116,14 @@ export interface operations {
         requestBody: {
             content: {
                 'application/json': {
+                    /** @default 10 */
+                    limit?: number;
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
-                    /** @default 10 */
-                    limit?: number;
                 };
             };
         };
@@ -23176,14 +23256,14 @@ export interface operations {
         requestBody: {
             content: {
                 'application/json': {
+                    /** @default 10 */
+                    limit?: number;
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
-                    /** @default 10 */
-                    limit?: number;
                 };
             };
         };
@@ -27116,7 +27196,7 @@ export interface operations {
                 'application/json': {
                     key: string;
                     /** @default [] */
-                    scope: string[];
+                    scope?: string[];
                     domain?: string | null;
                 };
             };
@@ -27183,7 +27263,7 @@ export interface operations {
             content: {
                 'application/json': {
                     /** @default [] */
-                    scope: string[];
+                    scope?: string[];
                     domain?: string | null;
                 };
             };
@@ -27251,7 +27331,7 @@ export interface operations {
                 'application/json': {
                     key: string;
                     /** @default [] */
-                    scope: string[];
+                    scope?: string[];
                     domain?: string | null;
                 };
             };
@@ -27321,7 +27401,7 @@ export interface operations {
             content: {
                 'application/json': {
                     /** @default [] */
-                    scope: string[];
+                    scope?: string[];
                     domain?: string | null;
                 };
             };
@@ -27388,7 +27468,7 @@ export interface operations {
             content: {
                 'application/json': {
                     /** @default [] */
-                    scope: string[];
+                    scope?: string[];
                     domain?: string | null;
                 };
             };
@@ -27458,7 +27538,7 @@ export interface operations {
                 'application/json': {
                     key: string;
                     /** @default [] */
-                    scope: string[];
+                    scope?: string[];
                     domain?: string | null;
                 };
             };
@@ -27585,7 +27665,7 @@ export interface operations {
                     key: string;
                     value: unknown;
                     /** @default [] */
-                    scope: string[];
+                    scope?: string[];
                     domain?: string | null;
                 };
             };
@@ -28101,6 +28181,15 @@ export interface operations {
             };
             /** @description I'm Ai */
             418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Unprocessable entity */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -31265,12 +31354,30 @@ export interface operations {
     'notes___search-by-tag': {
         requestBody: {
             content: {
-                'application/json': ({
+                'application/json': {
                     tag: string;
+                    /** @default null */
+                    reply?: boolean | null;
+                    /** @default null */
+                    renote?: boolean | null;
+                    /**
+                     * @description Only show notes that have attached files.
+                     * @default false
+                     */
+                    withFiles?: boolean;
+                    /** @default null */
+                    poll?: boolean | null;
+                    /** Format: misskey:id */
+                    sinceId?: string;
+                    /** Format: misskey:id */
+                    untilId?: string;
+                    sinceDate?: number;
+                    untilDate?: number;
+                    /** @default 10 */
+                    limit?: number;
                 } | {
                     /** @description The outer arrays are chained with OR, the inner arrays are chained with AND. */
                     query: string[][];
-                }) & {
                     /** @default null */
                     reply?: boolean | null;
                     /** @default null */
@@ -34141,14 +34248,14 @@ export interface operations {
                 'application/json': {
                     /** Format: misskey:id */
                     roleId: string;
+                    /** @default 10 */
+                    limit?: number;
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
-                    /** @default 10 */
-                    limit?: number;
                 };
             };
         };
@@ -35153,14 +35260,21 @@ export interface operations {
     users___followers: {
         requestBody: {
             content: {
-                'application/json': ({
+                'application/json': {
                     /** Format: misskey:id */
                     userId: string;
+                    /** Format: misskey:id */
+                    sinceId?: string;
+                    /** Format: misskey:id */
+                    untilId?: string;
+                    sinceDate?: number;
+                    untilDate?: number;
+                    /** @default 10 */
+                    limit?: number;
                 } | {
                     username: string;
                     /** @description The local host is represented with `null`. */
                     host: string | null;
-                }) & {
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
@@ -35232,14 +35346,9 @@ export interface operations {
     users___following: {
         requestBody: {
             content: {
-                'application/json': ({
+                'application/json': {
                     /** Format: misskey:id */
                     userId: string;
-                } | {
-                    username: string;
-                    /** @description The local host is represented with `null`. */
-                    host: string | null;
-                }) & {
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
@@ -35248,7 +35357,27 @@ export interface operations {
                     untilDate?: number;
                     /** @default 10 */
                     limit?: number;
-                    /** @description @deprecated use get-following-users-by-birthday instead. */
+                    /**
+                     * @deprecated
+                     * @description @deprecated use get-following-users-by-birthday instead.
+                     */
+                    birthday?: string | null;
+                } | {
+                    username: string;
+                    /** @description The local host is represented with `null`. */
+                    host: string | null;
+                    /** Format: misskey:id */
+                    sinceId?: string;
+                    /** Format: misskey:id */
+                    untilId?: string;
+                    sinceDate?: number;
+                    untilDate?: number;
+                    /** @default 10 */
+                    limit?: number;
+                    /**
+                     * @deprecated
+                     * @description @deprecated use get-following-users-by-birthday instead.
+                     */
                     birthday?: string | null;
                 };
             };
@@ -36887,11 +37016,14 @@ export interface operations {
     'users___search-by-username-and-host': {
         requestBody: {
             content: {
-                'application/json': ({
+                'application/json': {
                     username: string | null;
+                    /** @default 10 */
+                    limit?: number;
+                    /** @default true */
+                    detail?: boolean;
                 } | {
                     host: string | null;
-                }) & {
                     /** @default 10 */
                     limit?: number;
                     /** @default true */
@@ -36959,14 +37091,17 @@ export interface operations {
     users___show: {
         requestBody: {
             content: {
-                'application/json': ({
+                'application/json': {
                     /** Format: misskey:id */
                     userId: string;
+                    /** @description The local host is represented with `null`. */
+                    host?: string | null;
                 } | {
                     userIds: string[];
+                    /** @description The local host is represented with `null`. */
+                    host?: string | null;
                 } | {
                     username: string;
-                }) & {
                     /** @description The local host is represented with `null`. */
                     host?: string | null;
                 };
@@ -37002,6 +37137,15 @@ export interface operations {
             };
             /** @description Forbidden error */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -37119,14 +37263,14 @@ export interface operations {
                         hostType?: 'local' | 'remote' | 'all';
                         roleIds?: string[];
                     } | null;
+                    /** @default 10 */
+                    limit?: number;
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */
                     untilId?: string;
                     sinceDate?: number;
                     untilDate?: number;
-                    /** @default 10 */
-                    limit?: number;
                     page?: number;
                     /**
                      * @default [

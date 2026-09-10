@@ -8,7 +8,7 @@ import { bindThis } from '@/decorators.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { deepClone } from '@/misc/clone.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedNote } from '@/models/schema/note.js';
 import type { MiUser } from '@/models/User.js';
 
 /** Streamにおいて、ノートを隠す（hideNote）を適用するためのService */
@@ -18,10 +18,10 @@ export class NoteStreamingHidingService {
 		private noteEntityService: NoteEntityService,
 	) {}
 
-	private collectRenoteChain(note: Packed<'Note'>): Packed<'Note'>[] {
-		const renoteChain: Packed<'Note'>[] = [];
+	private collectRenoteChain(note: PackedNote): PackedNote[] {
+		const renoteChain: PackedNote[] = [];
 
-		for (let current: Packed<'Note'> | null | undefined = note; current != null; current = current.renote) {
+		for (let current: PackedNote | null | undefined = note; current != null; current = current.renote) {
 			renoteChain.push(current);
 		}
 
@@ -40,7 +40,7 @@ export class NoteStreamingHidingService {
 	 * @returns 配信するノートオブジェクト、または配信スキップの場合は `null`
 	 */
 	@bindThis
-	public async filter(note: Packed<'Note'>, meId: MiUser['id'] | null): Promise<Packed<'Note'> | null> {
+	public async filter(note: PackedNote, meId: MiUser['id'] | null): Promise<PackedNote | null> {
 		const renoteChain = this.collectRenoteChain(note);
 		const shouldHide = await Promise.all(renoteChain.map(n => this.noteEntityService.shouldHideNote(n, meId)));
 

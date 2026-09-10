@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedReversiGameDetailed } from '@/models/schema/reversi-game.js';
 import type { CommonProps } from '@/server/web/views/_.js';
 import { Layout } from '@/server/web/views/base.js';
 
 export function ReversiGamePage(props: CommonProps<{
-	reversiGame: Packed<'ReversiGameDetailed'>;
+	reversiGame: PackedReversiGameDetailed;
 }>) {
 	const title = `${props.reversiGame.user1.username} vs ${props.reversiGame.user2.username}`;
 	const description = `⚫⚪Misskey Reversi⚪⚫`;

@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { RegistryApiService } from '@/core/RegistryApiService.js';
 import { ApiError } from '../../../error.js';
@@ -20,31 +21,18 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		properties: {
-			updatedAt: {
-				type: 'string',
-				optional: false,
-			},
-			value: {
-				optional: false,
-			},
-		},
-	},
+	res: v.object({
+		updatedAt: v.string(),
+		// json-schema 側も型未指定で無検証だったため、意味を変えないよう v.any() を維持
+		value: v.any(),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		key: { type: 'string' },
-		scope: { type: 'array', default: [], items: {
-			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
-		} },
-		domain: { type: 'string', nullable: true },
-	},
-	required: ['key', 'scope'],
-} as const;
+export const paramDef = v.object({
+	key: v.string(),
+	scope: v.optional(v.array(v.pipe(v.string(), v.regex(/^[a-zA-Z0-9_]+$/))), []),
+	domain: v.nullish(v.string()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

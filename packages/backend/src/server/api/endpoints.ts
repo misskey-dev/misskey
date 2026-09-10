@@ -4,7 +4,10 @@
  */
 
 import { permissions } from 'misskey-js';
-import type { KeyOf, Schema } from '@/misc/json-schema.js';
+import { getCastableParams } from '@/misc/schema/param-introspect.js';
+import type { CastableType } from '@/misc/schema/param-introspect.js';
+import type { AnyValibotSchema } from '@/misc/schema/introspect.js';
+import type { PackedRolePolicies } from '@/models/schema/role.js';
 
 import * as endpointsObject from './endpoint-list.js';
 
@@ -18,10 +21,16 @@ interface IEndpointMetaBase {
 			readonly message: string;
 			readonly code: string;
 			readonly id: string;
+			/**
+			 * このエラーを返すときの HTTP ステータスコード (ApiError と同じ意味)。
+			 * 省略した場合は 400 として返される。OpenAPI 生成でもこの値が使われる
+			 */
+			readonly httpStatusCode?: number;
+			readonly kind?: 'client' | 'server' | 'permission';
 		};
 	};
 
-	readonly res?: Schema;
+	readonly res?: AnyValibotSchema;
 
 	/**
 	 * このエンドポイントにリクエストするのにユーザー情報が必須か否か
@@ -39,7 +48,7 @@ interface IEndpointMetaBase {
 	 */
 	readonly requireAdmin?: boolean;
 
-	readonly requiredRolePolicy?: KeyOf<'RolePolicies'>;
+	readonly requiredRolePolicy?: keyof PackedRolePolicies & string;
 
 	/**
 	 * 引っ越し済みのユーザーによるリクエストを禁止するか
@@ -127,10 +136,17 @@ export type IEndpointMeta = (Omit<IEndpointMetaBase, 'requireCrential' | 'requir
 export interface IEndpoint {
 	name: string;
 	meta: IEndpointMeta;
-	params: Schema;
+	params: AnyValibotSchema;
+	/**
+	 * GET / multipart リクエストで `JSON.parse` によるキャストが必要なトップレベルパラメータ。
+	 * (paramDef の内省結果を毎リクエスト計算しないよう、初回アクセス時に 1 回だけ求めてキャッシュする)
+	 */
+	castableParams: Record<string, CastableType>;
 }
 
 const endpoints: IEndpoint[] = Object.entries(endpointsObject).map(([name, ep]) => {
+	let castableParams: Record<string, CastableType> | null = null;
+
 	return {
 		name: name,
 		get meta() {
@@ -138,6 +154,12 @@ const endpoints: IEndpoint[] = Object.entries(endpointsObject).map(([name, ep]) 
 		},
 		get params() {
 			return ep.paramDef;
+		},
+		get castableParams() {
+			if (castableParams == null) {
+				castableParams = getCastableParams(ep.paramDef);
+			}
+			return castableParams;
 		},
 	};
 });

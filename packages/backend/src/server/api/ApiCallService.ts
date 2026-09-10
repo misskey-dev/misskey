@@ -420,10 +420,10 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		// Cast non JSON input
-		if ((ep.meta.requireFile || request.method === 'GET') && ep.params.properties) {
-			for (const k of Object.keys(ep.params.properties)) {
-				const param = ep.params.properties![k];
-				if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
+		if (ep.meta.requireFile || request.method === 'GET') {
+			// NOTE: キャスト対象は endpoint 構築時に paramDef から抽出済み (legacy / Valibot 両対応)
+			for (const [k, type] of Object.entries(ep.castableParams)) {
+				if (typeof data[k] === 'string') {
 					try {
 						data[k] = JSON.parse(data[k]);
 					} catch (_) {
@@ -433,7 +433,7 @@ export class ApiCallService implements OnApplicationShutdown {
 							id: '0b5f1631-7c1a-41a6-b399-cce335f34d85',
 						}, {
 							param: k,
-							reason: `cannot cast to ${param.type}`,
+							reason: `cannot cast to ${type}`,
 						});
 					}
 				}

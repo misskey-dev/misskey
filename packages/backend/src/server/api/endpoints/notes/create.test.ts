@@ -19,6 +19,8 @@ const VALID = true;
 const INVALID = false;
 
 describe('api:notes/create', () => {
+	// paramDef は Valibot 化済み (`v.pipe(v.object(...), v.rawCheck(...))`)。
+	// getValidator は legacy JSON Schema / Valibot の両方を受け付けて boolean を返す。
 	describe('validation', () => {
 		const v = getValidator(paramDef);
 		const tooLong = readFile(_dirname + '/../../../../../test/resources/misskey.svg', 'utf-8');
@@ -256,6 +258,45 @@ describe('api:notes/create', () => {
 			});
 			test('reject invalid renoteId', () => {
 				expect(v({ renoteId: 'あ' }))
+					.toBe(INVALID);
+			});
+		});
+
+		// legacy paramDef の `if`/`then` (renoteId / fileIds / mediaIds / poll がすべて欠落か null なら
+		// text が必須かつ `[^\s]+` にマッチすること) を rawCheck で再現したものの等価性テスト
+		describe('conditional text requirement (legacy if/then)', () => {
+			test('only mediaIds', () => {
+				expect(v({ mediaIds: ['1', '2', '3'] }))
+					.toBe(VALID);
+			});
+
+			test('reject null mediaIds', () => {
+				expect(v({ mediaIds: null }))
+					.toBe(INVALID);
+			});
+
+			test('null renoteId does not satisfy the text requirement', () => {
+				expect(v({ renoteId: null }))
+					.toBe(INVALID);
+			});
+
+			test('null poll does not satisfy the text requirement', () => {
+				expect(v({ poll: null }))
+					.toBe(INVALID);
+			});
+
+			test('whitespace-only text with a renote is accepted', () => {
+				expect(v({ text: ' ', renoteId: '1' }))
+					.toBe(VALID);
+			});
+
+			test('whitespace-only text with files is accepted', () => {
+				expect(v({ text: ' ', fileIds: ['1'] }))
+					.toBe(VALID);
+			});
+
+			test('reject whitespace-only text with null renoteId', () => {
+				expect(v({ text: ' ', renoteId: null }))
 					.toBe(INVALID);
 			});
 		});

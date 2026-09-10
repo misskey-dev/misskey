@@ -4,6 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -15,27 +16,13 @@ export const meta = {
 
 	kind: 'read:drive',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			capacity: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			usage: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-		},
-	},
+	res: v.object({
+		capacity: v.number(),
+		usage: v.number(),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

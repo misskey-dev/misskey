@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import type { UserListsRepository, AntennasRepository } from '@/models/_.js';
@@ -11,6 +13,7 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
+import { packedAntennaSchema } from '@/models/schema/antenna.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -42,41 +45,23 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Antenna',
-	},
+	res: packedAntennaSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string', minLength: 1, maxLength: 100 },
-		src: { type: 'string', enum: ['home', 'all', 'users', 'list', 'users_blacklist'] },
-		userListId: { type: 'string', format: 'misskey:id', nullable: true },
-		keywords: { type: 'array', items: {
-			type: 'array', items: {
-				type: 'string',
-			},
-		} },
-		excludeKeywords: { type: 'array', items: {
-			type: 'array', items: {
-				type: 'string',
-			},
-		} },
-		users: { type: 'array', items: {
-			type: 'string',
-		} },
-		caseSensitive: { type: 'boolean' },
-		localOnly: { type: 'boolean' },
-		excludeBots: { type: 'boolean' },
-		withReplies: { type: 'boolean' },
-		withFile: { type: 'boolean' },
-		excludeNotesInSensitiveChannel: { type: 'boolean' },
-	},
-	required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile'],
-} as const;
+export const paramDef = v.object({
+	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)),
+	src: v.picklist(['home', 'all', 'users', 'list', 'users_blacklist']),
+	userListId: v.optional(v.nullable(mi.misskeyId())),
+	keywords: v.array(v.array(v.string())),
+	excludeKeywords: v.array(v.array(v.string())),
+	users: v.array(v.string()),
+	caseSensitive: v.boolean(),
+	localOnly: v.optional(v.boolean()),
+	excludeBots: v.optional(v.boolean()),
+	withReplies: v.boolean(),
+	withFile: v.boolean(),
+	excludeNotesInSensitiveChannel: v.optional(v.boolean()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

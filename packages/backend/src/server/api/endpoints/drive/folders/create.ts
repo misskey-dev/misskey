@@ -5,12 +5,15 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFoldersRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { DriveFolderEntityService } from '@/core/entities/DriveFolderEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
+import { packedDriveFolderSchema } from '@/models/schema/drive-folder.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -33,21 +36,13 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
-		ref: 'DriveFolder',
-	},
+	res: packedDriveFolderSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string', default: 'Untitled', maxLength: 200 },
-		parentId: { type: 'string', format: 'misskey:id', nullable: true },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	name: v.optional(v.pipe(v.string(), mi.maxCodePoints(200)), 'Untitled'),
+	parentId: v.optional(v.nullable(mi.misskeyId())),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -4,11 +4,14 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { SearchService } from '@/core/SearchService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
+import { packedNoteSchema } from '@/models/schema/note.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -16,15 +19,7 @@ export const meta = {
 
 	requireCredential: false,
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Note',
-		},
-	},
+	res: v.array(packedNoteSchema),
 
 	errors: {
 		unavailable: {
@@ -35,27 +30,20 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		query: { type: 'string' },
-		rangeStartAt: { type: 'integer', nullable: true },
-		rangeEndAt: { type: 'integer', nullable: true },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		offset: { type: 'integer', default: 0 },
-		host: {
-			type: 'string',
-			description: 'The local host is represented with `.`.',
-		},
-		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
-		channelId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
-	},
-	required: ['query'],
-} as const;
+export const paramDef = v.object({
+	query: v.string(),
+	rangeStartAt: v.optional(v.nullable(mi.integer())),
+	rangeEndAt: v.optional(v.nullable(mi.integer())),
+	sinceId: v.optional(mi.misskeyId()),
+	untilId: v.optional(mi.misskeyId()),
+	sinceDate: v.optional(mi.integer()),
+	untilDate: v.optional(mi.integer()),
+	limit: mi.limit({ max: 100, def: 10 }),
+	offset: v.optional(mi.integer(), 0),
+	host: v.optional(v.pipe(v.string(), v.description('The local host is represented with `.`.'))),
+	userId: v.optional(v.nullable(mi.misskeyId()), null),
+	channelId: v.optional(v.nullable(mi.misskeyId()), null),
+});
 
 // TODO: ロジックをサービスに切り出す
 

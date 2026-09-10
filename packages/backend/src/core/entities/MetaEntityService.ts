@@ -6,7 +6,7 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import JSON5 from 'json5';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedMetaDetailed, PackedMetaLite } from '@/models/schema/meta.js';
 import type { MiMeta } from '@/models/Meta.js';
 import type { AdsRepository } from '@/models/_.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
@@ -32,7 +32,7 @@ export class MetaEntityService {
 	) { }
 
 	@bindThis
-	public async pack(meta?: MiMeta): Promise<Packed<'MetaLite'>> {
+	public async pack(meta?: MiMeta): Promise<PackedMetaLite> {
 		let instance = meta;
 
 		if (!instance) {
@@ -65,7 +65,7 @@ export class MetaEntityService {
 			}
 		}
 
-		const packed: Packed<'MetaLite'> = {
+		const packed: PackedMetaLite = {
 			maintainerName: instance.maintainerName,
 			maintainerEmail: instance.maintainerEmail,
 
@@ -141,7 +141,7 @@ export class MetaEntityService {
 	}
 
 	@bindThis
-	public async packDetailed(meta?: MiMeta): Promise<Packed<'MetaDetailed'>> {
+	public async packDetailed(meta?: MiMeta): Promise<PackedMetaDetailed> {
 		let instance = meta;
 
 		if (!instance) {
@@ -152,7 +152,7 @@ export class MetaEntityService {
 
 		const proxyAccount = await this.systemAccountService.fetch('proxy');
 
-		const packDetailed: Packed<'MetaDetailed'> = {
+		const packDetailed: PackedMetaDetailed = {
 			...packed,
 			cacheRemoteFiles: instance.cacheRemoteFiles,
 			cacheRemoteSensitiveFiles: instance.cacheRemoteSensitiveFiles,

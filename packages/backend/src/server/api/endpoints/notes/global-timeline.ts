@@ -5,6 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
@@ -12,20 +14,13 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
+import { packedNoteSchema } from '@/models/schema/note.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Note',
-		},
-	},
+	res: v.array(packedNoteSchema),
 
 	errors: {
 		gtlDisabled: {
@@ -36,19 +31,12 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		withFiles: { type: 'boolean', default: false },
-		withRenotes: { type: 'boolean', default: true },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	withFiles: v.optional(v.boolean(), false),
+	withRenotes: v.optional(v.boolean(), true),
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

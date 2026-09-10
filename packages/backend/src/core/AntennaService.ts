@@ -13,7 +13,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedNote } from '@/models/schema/note.js';
 import type { AntennasRepository, UserListMembershipsRepository } from '@/models/_.js';
 import type { MiAntenna } from '@/models/Antenna.js';
 import type { MiNote } from '@/models/Note.js';
@@ -113,7 +113,7 @@ export class AntennaService implements OnApplicationShutdown {
 	// NOTE: フォローしているユーザーのノート、リストのユーザーのノート、グループのユーザーのノート指定はパフォーマンス上の理由で無効になっている
 
 	@bindThis
-	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | Packed<'Note'>), noteUser: { id: MiUser['id']; username: string; host: string | null; isBot: boolean; }): Promise<boolean> {
+	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | PackedNote), noteUser: { id: MiUser['id']; username: string; host: string | null; isBot: boolean; }): Promise<boolean> {
 		if (antenna.excludeNotesInSensitiveChannel && note.channel?.isSensitive) return false;
 
 		if (antenna.excludeBots && noteUser.isBot) return false;

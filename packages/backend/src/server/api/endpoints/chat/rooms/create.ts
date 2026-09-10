@@ -5,11 +5,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { ChatService } from '@/core/ChatService.js';
 import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
+import { packedChatRoomSchema } from '@/models/schema/chat-room.js';
 
 export const meta = {
 	tags: ['chat'],
@@ -25,24 +28,16 @@ export const meta = {
 		max: 10,
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'ChatRoom',
-	},
+	res: packedChatRoomSchema,
 
 	errors: {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string', maxLength: 256 },
-		description: { type: 'string', maxLength: 1024 },
-	},
-	required: ['name'],
-} as const;
+export const paramDef = v.object({
+	name: v.pipe(v.string(), mi.maxCodePoints(256)),
+	description: v.optional(v.pipe(v.string(), mi.maxCodePoints(1024))),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

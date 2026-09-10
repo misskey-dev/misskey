@@ -5,11 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { isActor, isPost, getApId } from '@/core/activitypub/type.js';
-import type { SchemaType } from '@/misc/json-schema.js';
 import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
@@ -20,6 +21,8 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
+import { packedUserDetailedNotMeSchema } from '@/models/schema/user.js';
+import { packedNoteSchema } from '@/models/schema/note.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -61,50 +64,26 @@ export const meta = {
 		},
 	},
 
-	res: {
-		optional: false, nullable: false,
-		oneOf: [
-			{
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						optional: false, nullable: false,
-						enum: ['User'],
-					},
-					object: {
-						type: 'object',
-						optional: false, nullable: false,
-						ref: 'UserDetailedNotMe',
-					},
-				},
-			},
-			{
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						optional: false, nullable: false,
-						enum: ['Note'],
-					},
-					object: {
-						type: 'object',
-						optional: false, nullable: false,
-						ref: 'Note',
-					},
-				},
-			},
-		],
-	},
+	// NOTE: 判別子 `type` を持つが、legacy 出力に `type: 'object'` が無いので v.variant ではなく
+	// v.union + asOneOf を使う (v.variant は常に `type: 'object'` を併記するため差分になる)
+	res: v.pipe(
+		v.union([
+			v.object({
+				type: v.literal('User'),
+				object: packedUserDetailedNotMeSchema,
+			}),
+			v.object({
+				type: v.literal('Note'),
+				object: packedNoteSchema,
+			}),
+		]),
+		mi.asOneOf(),
+	),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		uri: { type: 'string' },
-	},
-	required: ['uri'],
-} as const;
+export const paramDef = v.object({
+	uri: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
@@ -131,7 +110,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	 * URIからUserかNoteを解決する
 	 */
 	@bindThis
-	private async fetchAny(uri: string, me: MiLocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
+	private async fetchAny(uri: string, me: MiLocalUser | null | undefined): Promise<v.InferOutput<typeof meta['res']> | null> {
 		if (!this.utilityService.isFederationAllowedUri(uri)) {
 			throw new ApiError(meta.errors.federationNotAllowed);
 		}
@@ -201,7 +180,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	}
 
 	@bindThis
-	private async mergePack(me: MiLocalUser | null | undefined, user: MiUser | null | undefined, note: MiNote | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
+	private async mergePack(me: MiLocalUser | null | undefined, user: MiUser | null | undefined, note: MiNote | null | undefined): Promise<v.InferOutput<typeof meta.res> | null> {
 		if (user != null) {
 			return {
 				type: 'User',

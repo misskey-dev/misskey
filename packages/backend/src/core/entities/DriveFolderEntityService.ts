@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, DriveFoldersRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedDriveFolder } from '@/models/schema/drive-folder.js';
 import type { } from '@/models/Blocking.js';
 import type { MiDriveFolder } from '@/models/DriveFolder.js';
 import { bindThis } from '@/decorators.js';
@@ -39,9 +39,9 @@ export class DriveFolderEntityService {
 			folderMap?: Map<string, MiDriveFolder>;
 			foldersCountMap?: Map<string, number> | null;
 			filesCountMap?: Map<string, number> | null;
-			parentPacker?: (id: string) => Promise<Packed<'DriveFolder'>>;
+			parentPacker?: (id: string) => Promise<PackedDriveFolder>;
 		},
-	): Promise<Packed<'DriveFolder'>> {
+	): Promise<PackedDriveFolder> {
 		const opts = Object.assign({
 			detail: false,
 		}, options);
@@ -80,7 +80,7 @@ export class DriveFolderEntityService {
 		options?: {
 			detail: boolean
 		},
-	): Promise<Array<Packed<'DriveFolder'>>> {
+	): Promise<Array<PackedDriveFolder>> {
 		/**
 		 * 重複を除去しつつ、必要なDriveFolderオブジェクトをすべて取得する
 		 */
@@ -171,8 +171,8 @@ export class DriveFolderEntityService {
 			}
 		}
 
-		const packedMap = new Map<string, Promise<Packed<'DriveFolder'>>>();
-		const packFromId = (id: string): Promise<Packed<'DriveFolder'>> => {
+		const packedMap = new Map<string, Promise<PackedDriveFolder>>();
+		const packFromId = (id: string): Promise<PackedDriveFolder> => {
 			const cached = packedMap.get(id);
 			if (cached) return cached;
 

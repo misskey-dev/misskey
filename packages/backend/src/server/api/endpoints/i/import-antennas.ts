@@ -5,6 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueueService } from '@/core/QueueService.js';
 import type { AntennasRepository, DriveFilesRepository, UsersRepository, MiAntenna as _Antenna } from '@/models/_.js';
@@ -47,13 +49,9 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		fileId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['fileId'],
-} as const;
+export const paramDef = v.object({
+	fileId: mi.misskeyId(),
+});
 
 @Injectable() // eslint-disable-next-line import/no-default-export
 export default class extends Endpoint<typeof meta, typeof paramDef> {

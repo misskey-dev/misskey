@@ -5,6 +5,8 @@
 
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -37,19 +39,13 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-	},
+	res: mi.anyObject(),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		password: { type: 'string' },
-		token: { type: 'string', nullable: true },
-	},
-	required: ['password'],
-} as const;
+export const paramDef = v.object({
+	password: v.string(),
+	token: v.optional(v.nullable(v.string())),
+});
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()

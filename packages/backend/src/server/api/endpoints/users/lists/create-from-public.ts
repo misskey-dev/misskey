@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { UserListsRepository, UserListMembershipsRepository, BlockingsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUserList } from '@/models/UserList.js';
@@ -14,16 +16,13 @@ import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { RoleService } from '@/core/RoleService.js';
 import { UserListService } from '@/core/UserListService.js';
+import { packedUserListSchema } from '@/models/schema/user-list.js';
 
 export const meta = {
 	requireCredential: true,
 	prohibitMoved: true,
 	kind: 'write:account',
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'UserList',
-	},
+	res: packedUserListSchema,
 
 	errors: {
 		tooManyUserLists: {
@@ -62,14 +61,10 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string', minLength: 1, maxLength: 100 },
-		listId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['name', 'listId'],
-} as const;
+export const paramDef = v.object({
+	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)),
+	listId: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
