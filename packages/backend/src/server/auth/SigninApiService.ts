@@ -44,6 +44,9 @@ const SIGNIN_SESSION_TTL = 600;
 
 const SIGNIN_SESSION_VERSION = 1;
 
+/** どのパスワードにも一致しないダミーハッシュ。コストは他のハッシュ (genSalt(8)) と揃えてある */
+const DUMMY_PASSWORD_HASH = '$2b$08$6EvZeOM5RNP82FxBASRTtu2f6.3SkJYZriJIGl9nHU1kXMjwZLyIm';
+
 //#region エラー ID (MkSignin.vue の switch と対応)
 const ERR_NO_SUCH_USER = '6cc579cc-885d-43d8-95c2-b8c7fc963280';
 const ERR_INCORRECT_PASSWORD = '932c904e-9460-45b7-9ce6-7ed33be7eb2c';
@@ -333,11 +336,10 @@ export class SigninApiService {
 		}
 
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: session.userId! });
-		if (profile.password == null) {
-			return fail(403, ERR_INCORRECT_PASSWORD, false);
-		}
 
-		if (!await bcrypt.compare(password, profile.password)) {
+		// 短絡するとパスワード未設定のアカウントだけ応答が速くなり、設定の有無が漏れる
+		const same = await bcrypt.compare(password, profile.password ?? DUMMY_PASSWORD_HASH);
+		if (!same || profile.password == null) {
 			return fail(403, ERR_INCORRECT_PASSWORD, false);
 		}
 
