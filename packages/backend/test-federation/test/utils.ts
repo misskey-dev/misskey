@@ -12,6 +12,9 @@ const __dirname = dirname(__filename);
 export const ADMIN_PARAMS = { username: 'admin', password: 'admin' };
 const ADMIN_CACHE = new Map<Host, SigninResponse>();
 
+/** レートリミットに当たったときの再試行回数の上限。無限に再試行するとテストが理由も出さずに固まる */
+const SIGNIN_MAX_ATTEMPTS = 5;
+
 await Promise.all([
 	fetchAdmin('a.test'),
 	fetchAdmin('b.test'),
@@ -80,9 +83,6 @@ async function authRequest<T>(host: Host, path: 'signin/init' | 'signin/continue
 
 	return json;
 }
-
-/** レートリミットに当たったときの再試行回数の上限。無限に再試行するとテストが理由も出さずに固まる */
-const SIGNIN_MAX_ATTEMPTS = 5;
 
 async function signin(
 	host: Host,

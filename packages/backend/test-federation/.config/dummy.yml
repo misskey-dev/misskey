@@ -1,2 +1,6 @@
 url: https://example.com/
 port: 3000
+
+# 連合テストは 1 つの IP から多数のアカウントを作成してサインインするため、
+# IP 単位のレートリミットは正常系を阻害するだけで意味がない
+enableIpRateLimit: false
