@@ -61,6 +61,7 @@ export type DbJobMap = {
 	importUserLists: DbUserImportJobData;
 	importCustomEmojis: DbUserImportJobData;
 	deleteAccount: DbUserDeleteJobData;
+	reIndexNotes: DbReIndexNotesJobData;
 };
 
 export type DbJobDataWithUser = {
@@ -97,6 +98,13 @@ export type DbUserImportToDbJobData = {
 	user: ThinUser;
 	target: string;
 	withReplies?: boolean;
+};
+
+export type DbReIndexNotesJobData = {
+	/** トリガーした管理者 user id (ModerationLog / adminStream 通知に使用) */
+	actor: ThinUser;
+	sinceDate?: number | null;
+	untilDate?: number | null;
 };
 
 export type ObjectStorageJobData = ObjectStorageFileJobData | Record<string, unknown>;

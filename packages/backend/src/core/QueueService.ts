@@ -295,6 +295,38 @@ export class QueueService {
 		});
 	}
 
+	/**
+	 * Meilisearch の再インデックスジョブを投入する。
+	 *
+	 * 同時に複数走らせると Meilisearch とサーバの負荷が大きいため、
+	 * 固定 jobId で重複排除する (active/wait/delayed に同名 job が居る場合 BullMQ は add をスキップする)。
+	 * 重複時の挙動を呼び出し側 (endpoint) でハンドリングできるよう、投入前に `getReIndexNotesJob()` で
+	 * 既存ジョブを確認できる。
+	 */
+	@bindThis
+	public createReIndexNotesJob(actor: ThinUser, opts: { sinceDate?: number | null; untilDate?: number | null } = {}) {
+		return this.dbQueue.add('reIndexNotes', {
+			actor: { id: actor.id },
+			sinceDate: opts.sinceDate ?? null,
+			untilDate: opts.untilDate ?? null,
+		}, {
+			jobId: 'reIndexNotes',
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 5,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 30, // keep up to 30 days
+				count: 20,
+			},
+		});
+	}
+
+	@bindThis
+	public getReIndexNotesJob() {
+		return this.dbQueue.getJob('reIndexNotes');
+	}
+
 	@bindThis
 	public createExportClipsJob(user: ThinUser) {
 		return this.dbQueue.add('exportClips', {
