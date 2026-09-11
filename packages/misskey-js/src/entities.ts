@@ -139,44 +139,66 @@ export type SignupPendingResponse = {
 	i: string,
 };
 
-export type SigninFlowRequest = {
-	username: string;
-	password?: string;
-	token?: string;
-	credential?: AuthenticationResponseJSON;
-	'hcaptcha-response'?: string | null;
-	'g-recaptcha-response'?: string | null;
-	'turnstile-response'?: string | null;
-	'm-captcha-response'?: string | null;
-	'testcaptcha-response'?: string | null;
+// サインインは /api ではなく /auth 配下 (POST /auth/signin/init と /auth/signin/continue) で
+// 行うため api.types.ts の Endpoints には載らない。backend 側もこの型を import して使う。
+
+export type SigninCaptchaResponse = {
+	type: 'hcaptcha' | 'recaptcha-v2' | 'turnstile' | 'm-captcha' | 'testcaptcha';
+	response: string;
 };
 
-export type SigninFlowResponse = {
+//#region POST /auth/signin/init
+export type SigninInitRequest = Record<string, never>;
+
+export type SigninInitResponse = {
+	sessionId: string;
+	/** セッション失効の epoch ms。クライアントはこの手前で再 init する */
+	expiresAt: number;
+	/** Conditional Mediation 用の匿名 challenge */
+	passkeyOptions: PublicKeyCredentialRequestOptionsJSON;
+};
+//#endregion
+
+//#region POST /auth/signin/continue
+type SigninContinueBase = {
+	sessionId: string;
+};
+
+export type SigninContinueRequestUsername = SigninContinueBase & {
+	username: string;
+	captchaResponse?: SigninCaptchaResponse;
+};
+export type SigninContinueRequestPassword = SigninContinueBase & {
+	password: string;
+};
+export type SigninContinueRequestTotp = SigninContinueBase & {
+	token: string;
+};
+export type SigninContinueRequestPasskey = SigninContinueBase & {
+	passkeyCredential: AuthenticationResponseJSON;
+};
+
+export type SigninContinueRequest =
+	| SigninContinueRequestUsername
+	| SigninContinueRequestPassword
+	| SigninContinueRequestTotp
+	| SigninContinueRequestPasskey;
+
+export type SigninContinueResponse = {
+	finished: false;
+	next: 'password' | 'totp';
+	expiresAt: number;
+} | {
+	finished: false;
+	next: 'passkey' | 'totpOrPasskey';
+	expiresAt: number;
+	passkeyOptions: PublicKeyCredentialRequestOptionsJSON;
+} | {
 	finished: true;
 	id: User['id'];
 	i: string;
-} | {
-	finished: false;
-	next: 'captcha' | 'password' | 'totp';
-} | {
-	finished: false;
-	next: 'passkey';
-	authRequest: PublicKeyCredentialRequestOptionsJSON;
 };
-
-export type SigninWithPasskeyRequest = {
-	credential?: AuthenticationResponseJSON;
-	context?: string;
-};
-
-export type SigninWithPasskeyInitResponse = {
-	option: PublicKeyCredentialRequestOptionsJSON;
-	context: string;
-};
-
-export type SigninWithPasskeyResponse = {
-	signinResponse: SigninFlowResponse & { finished: true };
-};
+//#endregion
 
 export type I2faPasskeyRegisterResponse = PublicKeyCredentialCreationOptionsJSON;
 
