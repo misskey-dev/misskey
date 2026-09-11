@@ -36,7 +36,7 @@ import type { AuthMethod, SigninSession } from '@/server/auth/signin-policy.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
-/** WebAuthnService.SIGNIN_CHALLENGE_TTL と揃えること (匿名 passkey challenge を束ねて延長するため) */
+/** WebAuthnService.SIGNIN_CHALLENGE_TTL と揃えること (passkey challenge がフローより先に切れないように) */
 const SIGNIN_SESSION_TTL = 600;
 
 /** continue で延長し続けられても、作成からこの時間で必ず失効させる */
