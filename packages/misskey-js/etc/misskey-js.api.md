@@ -1465,26 +1465,6 @@ export type Endpoints = Overwrite<Endpoints_2, {
         req: SignupPendingRequest;
         res: SignupPendingResponse;
     };
-    'signin-flow': {
-        req: SigninFlowRequest;
-        res: SigninFlowResponse;
-    };
-    'signin-with-passkey': {
-        req: SigninWithPasskeyRequest;
-        res: {
-            $switch: {
-                $cases: [
-                [
-                    {
-                    context: string;
-                },
-                SigninWithPasskeyResponse
-                ]
-                ];
-                $default: SigninWithPasskeyInitResponse;
-            };
-        };
-    };
     'i/2fa/passkey/register': {
         req: I2faPasskeyRegisterRequest;
         res: I2faPasskeyRegisterResponse_2;
@@ -1527,11 +1507,15 @@ declare namespace entities {
         SignupResponse,
         SignupPendingRequest,
         SignupPendingResponse,
-        SigninFlowRequest,
-        SigninFlowResponse,
-        SigninWithPasskeyRequest,
-        SigninWithPasskeyInitResponse,
-        SigninWithPasskeyResponse,
+        SigninCaptchaResponse,
+        SigninInitRequest,
+        SigninInitResponse,
+        SigninContinueRequestUsername,
+        SigninContinueRequestPassword,
+        SigninContinueRequestTotp,
+        SigninContinueRequestPasskey,
+        SigninContinueRequest,
+        SigninContinueResponse,
         I2faPasskeyRegisterResponse_2 as I2faPasskeyRegisterResponse,
         I2faPasskeyDoneRequest_2 as I2faPasskeyDoneRequest,
         PartialRolePolicyOverride,
@@ -3406,49 +3390,61 @@ type ServerStatsLog = ServerStats[];
 type Signin = components['schemas']['Signin'];
 
 // @public (undocumented)
-type SigninFlowRequest = {
-    username: string;
-    password?: string;
-    token?: string;
-    credential?: AuthenticationResponseJSON;
-    'hcaptcha-response'?: string | null;
-    'g-recaptcha-response'?: string | null;
-    'turnstile-response'?: string | null;
-    'm-captcha-response'?: string | null;
-    'testcaptcha-response'?: string | null;
+type SigninCaptchaResponse = {
+    type: 'hcaptcha' | 'recaptcha-v2' | 'turnstile' | 'm-captcha' | 'testcaptcha';
+    response: string;
 };
 
 // @public (undocumented)
-type SigninFlowResponse = {
+type SigninContinueRequest = SigninContinueRequestUsername | SigninContinueRequestPassword | SigninContinueRequestTotp | SigninContinueRequestPasskey;
+
+// @public (undocumented)
+type SigninContinueRequestPasskey = SigninContinueBase & {
+    passkeyCredential: AuthenticationResponseJSON;
+};
+
+// @public (undocumented)
+type SigninContinueRequestPassword = SigninContinueBase & {
+    password: string;
+};
+
+// @public (undocumented)
+type SigninContinueRequestTotp = SigninContinueBase & {
+    token: string;
+};
+
+// Warning: (ae-forgotten-export) The symbol "SigninContinueBase" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+type SigninContinueRequestUsername = SigninContinueBase & {
+    username: string;
+    captchaResponse?: SigninCaptchaResponse;
+};
+
+// @public (undocumented)
+type SigninContinueResponse = {
+    finished: false;
+    next: 'password' | 'totp';
+    expiresAt: number;
+} | {
+    finished: false;
+    next: 'passkey' | 'totpOrPasskey';
+    expiresAt: number;
+    passkeyOptions: PublicKeyCredentialRequestOptionsJSON_2;
+} | {
     finished: true;
     id: User['id'];
     i: string;
-} | {
-    finished: false;
-    next: 'captcha' | 'password' | 'totp';
-} | {
-    finished: false;
-    next: 'passkey';
-    authRequest: PublicKeyCredentialRequestOptionsJSON_2;
 };
 
 // @public (undocumented)
-type SigninWithPasskeyInitResponse = {
-    option: PublicKeyCredentialRequestOptionsJSON_2;
-    context: string;
-};
+type SigninInitRequest = Record<string, never>;
 
 // @public (undocumented)
-type SigninWithPasskeyRequest = {
-    credential?: AuthenticationResponseJSON;
-    context?: string;
-};
-
-// @public (undocumented)
-type SigninWithPasskeyResponse = {
-    signinResponse: SigninFlowResponse & {
-        finished: true;
-    };
+type SigninInitResponse = {
+    sessionId: string;
+    expiresAt: number;
+    passkeyOptions: PublicKeyCredentialRequestOptionsJSON_2;
 };
 
 // @public (undocumented)

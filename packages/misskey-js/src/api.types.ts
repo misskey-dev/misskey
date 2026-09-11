@@ -11,11 +11,6 @@ import {
 } from './autogen/entities.js';
 import {
 	PartialRolePolicyOverride,
-	SigninFlowRequest,
-	SigninFlowResponse,
-	SigninWithPasskeyInitResponse,
-	SigninWithPasskeyRequest,
-	SigninWithPasskeyResponse,
 	SignupPendingRequest,
 	SignupPendingResponse,
 	SignupRequest,
@@ -91,27 +86,6 @@ export type Endpoints = Overwrite<
 		'signup-pending': {
 			req: SignupPendingRequest;
 			res: SignupPendingResponse;
-		},
-		// api.jsonには載せないものなのでここで定義
-		'signin-flow': {
-			req: SigninFlowRequest;
-			res: SigninFlowResponse;
-		},
-		'signin-with-passkey': {
-			req: SigninWithPasskeyRequest;
-			res: {
-				$switch: {
-					$cases: [
-						[
-							{
-								context: string;
-							},
-							SigninWithPasskeyResponse,
-						],
-					];
-					$default: SigninWithPasskeyInitResponse;
-				},
-			},
 		},
 		'i/2fa/passkey/register': {
 			req: I2faPasskeyRegisterRequest;

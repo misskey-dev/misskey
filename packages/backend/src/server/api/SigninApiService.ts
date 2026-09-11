@@ -6,7 +6,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { IsNull } from 'typeorm';
-import * as Misskey from 'misskey-js';
 import { DI } from '@/di-symbols.js';
 import type {
 	MiMeta,
@@ -150,12 +149,12 @@ export class SigninApiService {
 				return {
 					finished: false,
 					next: 'password',
-				} satisfies Misskey.entities.SigninFlowResponse;
+				};
 			} else {
 				return {
 					finished: false,
 					next: 'captcha',
-				} satisfies Misskey.entities.SigninFlowResponse;
+				};
 			}
 		}
 
@@ -268,7 +267,7 @@ export class SigninApiService {
 				finished: false,
 				next: 'passkey',
 				authRequest,
-			} satisfies Misskey.entities.SigninFlowResponse;
+			};
 		} else {
 			if (!same || !profile.twoFactorEnabled) {
 				return await fail(403, {
@@ -279,7 +278,7 @@ export class SigninApiService {
 				return {
 					finished: false,
 					next: 'totp',
-				} satisfies Misskey.entities.SigninFlowResponse;
+				};
 			}
 		}
 		// never get here
