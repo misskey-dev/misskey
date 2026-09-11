@@ -15,10 +15,10 @@
 		"diagnostics-shared": "workspace:*"
 	},
 	"devDependencies": {
-		"@types/node": "26.2.0",
+		"@types/node": "26.4.0",
 		"frontend": "workspace:*",
 		"playwright": "1.62.1",
-		"tsx": "4.23.12",
+		"tsx": "4.23.13",
 		"vitest": "4.1.11"
 	}
 }
