@@ -141,7 +141,10 @@ export class ApInboxService {
 
 	@bindThis
 	public async performOneActivity(actor: MiRemoteUser, activity: IObject, resolver?: Resolver): Promise<string | void> {
-		if (actor.isSuspended) return;
+		// Actor updates must remain reachable so the origin can lift a suspension.
+		if (this.userEntityService.isSuspendedEither(actor) && !isUpdate(activity)) {
+			return 'skip: suspended actor';
+		}
 
 		if (isCreate(activity)) {
 			return await this.create(actor, activity, resolver);
@@ -795,6 +798,8 @@ export class ApInboxService {
 		if (isActor(object)) {
 			await this.apPersonService.updatePerson(actor.uri, resolver, object);
 			return 'ok: Person updated';
+		} else if (this.userEntityService.isSuspendedEither(actor)) {
+			return 'skip: suspended actor';
 		} else if (getApType(object) === 'Question') {
 			await this.apQuestionService.updateQuestion(object, actor, resolver).catch(err => console.error(err));
 			return 'ok: Question updated';
