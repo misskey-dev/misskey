@@ -25,14 +25,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<div v-if="$i.twoFactorEnabled" class="_gaps_s">
 						<div>{{ i18n.ts._2fa.alreadyRegistered }}</div>
-						<template v-if="$i.securityKeysList!.length > 0">
+						<div class="_buttons">
 							<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
-							<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
-						</template>
-						<MkButton v-else danger @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
+							<MkButton danger @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
+						</div>
 					</div>
 
-					<div v-else-if="!$i.twoFactorEnabled" class="_gaps_s">
+					<div v-else class="_gaps_s">
 						<MkButton primary gradate @click="registerTOTP">{{ i18n.ts._2fa.registerTOTP }}</MkButton>
 						<MkLink url="https://misskey-hub.net/docs/for-users/stepped-guides/how-to-enable-2fa/" target="_blank"><i class="ti ti-help-circle"></i> {{ i18n.ts.learnMore }}</MkLink>
 					</div>
@@ -43,6 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkFolder>
 					<template #icon><i class="ti ti-key"></i></template>
 					<template #label><SearchLabel>{{ i18n.ts.securityKeyAndPasskey }}</SearchLabel></template>
+					<template #suffix><i v-if="$i.securityKeysList!.length > 0" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 					<div class="_gaps_s">
 						<MkInfo>
 							{{ i18n.ts._2fa.securityKeyInfo }}
@@ -50,10 +50,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<MkInfo v-if="!browserSupportsWebAuthn()" warn>
 							{{ i18n.ts._2fa.securityKeyNotSupported }}
-						</MkInfo>
-
-						<MkInfo v-else-if="browserSupportsWebAuthn() && !$i.twoFactorEnabled" warn>
-							{{ i18n.ts._2fa.registerTOTPBeforeKey }}
 						</MkInfo>
 
 						<template v-else>
@@ -72,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</SearchMarker>
 
 			<SearchMarker :keywords="['password', 'less', 'key', 'passkey', 'login', 'signin']">
-				<MkSwitch :disabled="!$i.twoFactorEnabled || $i.securityKeysList!.length === 0" :modelValue="usePasswordLessLogin" @update:modelValue="v => updatePasswordLessLogin(v)">
+				<MkSwitch :disabled="$i.securityKeysList!.length === 0" :modelValue="usePasswordLessLogin" @update:modelValue="v => updatePasswordLessLogin(v)">
 					<template #label><SearchLabel>{{ i18n.ts.passwordLessLogin }}</SearchLabel></template>
 					<template #caption><SearchText>{{ i18n.ts.passwordLessLoginDescription }}</SearchText></template>
 				</MkSwitch>
