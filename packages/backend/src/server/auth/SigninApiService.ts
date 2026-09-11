@@ -292,6 +292,10 @@ export class SigninApiService {
 			return fail(400, ERR_INTERNAL, true);
 		}
 
+		// captcha はインスタンスの設定だけに基づいて常に検証する。2FA の有無で分岐させると、
+		// 2FA を設定している = 狙う価値の高いアカウントほど captcha の保護が無くなる
+		await this.verifyCaptcha(captchaResponse);
+
 		const user = await this.usersRepository.findOneBy({
 			usernameLower: username.toLowerCase(),
 			host: IsNull(),
@@ -307,10 +311,6 @@ export class SigninApiService {
 		}
 
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
-
-		if (!profile.twoFactorEnabled) {
-			await this.verifyCaptcha(captchaResponse);
-		}
 
 		const securityKeysAvailable = await this.userSecurityKeysRepository.countBy({ userId: user.id }).then(result => result >= 1);
 
@@ -518,11 +518,13 @@ export class SigninApiService {
 	private async verifyCaptcha(captchaResponse: Misskey.entities.SigninCaptchaResponse | undefined): Promise<void> {
 		if (process.env.NODE_ENV === 'test') return;
 
+		// インスタンスで有効になっている (= 解かれていなければならない) プロバイダ
 		const enabled: Record<Misskey.entities.SigninCaptchaResponse['type'], boolean> = {
-			'hcaptcha': this.meta.enableHcaptcha && this.meta.hcaptchaSecretKey != null,
-			'recaptcha-v2': this.meta.enableRecaptcha && this.meta.recaptchaSecretKey != null,
-			'turnstile': this.meta.enableTurnstile && this.meta.turnstileSecretKey != null,
-			'm-captcha': this.meta.enableMcaptcha && this.meta.mcaptchaSecretKey != null && this.meta.mcaptchaSitekey != null && this.meta.mcaptchaInstanceUrl != null,
+			// 秘密鍵が空のときに「有効」と見なすと誰もサインインできなくなるので truthy 判定にする
+			'hcaptcha': !!(this.meta.enableHcaptcha && this.meta.hcaptchaSecretKey),
+			'recaptcha-v2': !!(this.meta.enableRecaptcha && this.meta.recaptchaSecretKey),
+			'turnstile': !!(this.meta.enableTurnstile && this.meta.turnstileSecretKey),
+			'm-captcha': !!(this.meta.enableMcaptcha && this.meta.mcaptchaSecretKey && this.meta.mcaptchaSitekey && this.meta.mcaptchaInstanceUrl),
 			'testcaptcha': this.meta.enableTestcaptcha,
 		};
 
