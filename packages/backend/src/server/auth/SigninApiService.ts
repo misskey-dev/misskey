@@ -36,18 +36,14 @@ import type { AuthMethod, SigninSession } from '@/server/auth/signin-policy.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
-/**
- * サインインフローの一時状態の寿命(秒)。Conditional Mediation の待機中も切れないよう長めに取る。
- * 束ねてある匿名 passkey challenge ごと延長するので、WebAuthnService.SIGNIN_CHALLENGE_TTL と揃えること。
- */
+/** WebAuthnService.SIGNIN_CHALLENGE_TTL と揃えること (匿名 passkey challenge を束ねて延長するため) */
 const SIGNIN_SESSION_TTL = 600;
 
-/** サインインフローの一時状態の絶対寿命(ミリ秒)。continue で延長し続けられても、作成から一定時間で必ず失効させる */
+/** continue で延長し続けられても、作成からこの時間で必ず失効させる */
 const SIGNIN_SESSION_MAX_LIFETIME = 30 * 60 * 1000;
 
 const SIGNIN_SESSION_VERSION = 1;
 
-/** 1 つのサインインフローで処理できるステップ数の上限 */
 const SIGNIN_SESSION_MAX_ATTEMPTS = 10;
 
 /** どのパスワードにも一致しないダミーハッシュ。コストは他のハッシュ (genSalt(8)) と揃えてある */
@@ -74,10 +70,7 @@ type StepKey = typeof STEP_KEYS[number];
 type StepFailure = {
 	status: number;
 	id: string;
-	/**
-	 * セッションを破棄するか。パスワード / TOTP の不一致は false にして同じセッションで再入力させる。
-	 * パスキー検証失敗は challenge を消費済みなので必ず true にすること。
-	 */
+	/** パスキー検証失敗は challenge を消費済みなので必ず true にすること */
 	hard: boolean;
 };
 
@@ -126,7 +119,6 @@ export class SigninApiService {
 		this.logger = this.loggerService.getLogger('Signin');
 	}
 
-	/** POST /auth/signin/init — セッションを発行し、Conditional Mediation 用の匿名 challenge を返す */
 	@bindThis
 	public async signinInit(request: FastifyRequest, reply: FastifyReply) {
 		if (!await this.checkIpRateLimit(request, 'init')) {
@@ -155,10 +147,7 @@ export class SigninApiService {
 		} satisfies Misskey.entities.SigninInitResponse;
 	}
 
-	/**
-	 * POST /auth/signin/continue — 1 リクエストにつき 1 ステップを検証する。
-	 * 「次に何を要求するか」の判断は signin-policy.ts に集約してある。
-	 */
+	/** 「次に何を要求するか」の判断は signin-policy.ts に集約してある */
 	@bindThis
 	public async signinContinue(request: FastifyRequest, reply: FastifyReply) {
 		if (!await this.checkIpRateLimit(request, 'continue')) {
@@ -204,8 +193,7 @@ export class SigninApiService {
 			}
 		}
 
-		// 1 つのフロー内での再試行 (TOTP の総当たり、ユーザー名を変えながらの探り) を縛る。
-		// signin-user が効かない「ユーザーが確定しないまま繰り返す」領域もこれでカバーする
+		// signin-user が効かない「ユーザーが確定しないまま繰り返す」再試行を縛る
 		session.attempts = (session.attempts ?? 0) + 1;
 		if (session.attempts > SIGNIN_SESSION_MAX_ATTEMPTS) {
 			// 429 はクライアントが再試行可能と解釈してセッションを張り直さないので、失効として返す
@@ -225,9 +213,8 @@ export class SigninApiService {
 				result = await this.handleTotp(session, body);
 				break;
 			case 'passkeyCredential': {
-				// 匿名経路はここで初めてユーザーが確定するので、ユーザー別バケットを事後に消費する。
-				// ユーザー確定済みの経路は事前チェック済みで、ここで弾くと challenge を使い切った後に
-				// 拒否することになる
+				// 匿名経路はここで初めてユーザーが確定する。確定済みの経路をここで弾くと、
+				// challenge を使い切った後に拒否することになる
 				const anonymous = session.userId == null;
 				result = await this.handlePasskey(signinFlowId, session, body);
 				if (anonymous && result.ok && session.userId != null && !await this.checkUserRateLimit(session.userId)) {
@@ -315,8 +302,7 @@ export class SigninApiService {
 			return fail(400, ERR_INTERNAL, true);
 		}
 
-		// captcha はインスタンスの設定だけに基づいて常に検証する。2FA の有無で分岐させると、
-		// 2FA を設定している = 狙う価値の高いアカウントほど captcha の保護が無くなる
+		// 2FA の有無で分岐させると、狙う価値の高いアカウントほど captcha の保護が無くなる
 		await this.verifyCaptcha(captchaResponse);
 
 		const user = await this.usersRepository.findOneBy({
@@ -386,10 +372,6 @@ export class SigninApiService {
 		return OK;
 	}
 
-	/**
-	 * ユーザー未確定なら匿名 challenge を検証してユーザーを引き当て、
-	 * 確定済みならそのユーザー宛の challenge を検証する。
-	 */
 	@bindThis
 	private async handlePasskey(signinFlowId: string, session: SigninSession, body: Record<string, unknown>): Promise<StepResult> {
 		const credential = body.passkeyCredential;
@@ -504,10 +486,7 @@ export class SigninApiService {
 
 	//#region レートリミット (RateLimiterService.limit() は throw せず戻り値で超過を伝える)
 
-	/**
-	 * NOTE: RateLimiterService は NODE_ENV !== 'production' で自己無効化するため、テストでは効かない。
-	 * init はログイン画面を開くたびに呼ばれるので、continue と同じ制限にはできない。
-	 */
+	/** NOTE: RateLimiterService は NODE_ENV !== 'production' で自己無効化するため、テストでは効かない */
 	@bindThis
 	private async checkIpRateLimit(request: FastifyRequest, kind: 'init' | 'continue'): Promise<boolean> {
 		if (!this.config.enableIpRateLimit) return true;
@@ -516,8 +495,7 @@ export class SigninApiService {
 			this.logger.warn('Recieved signin request from localhost IP address for rate limiting in production environment. This is likely due to an improper trustProxy setting in the config file.');
 		}
 
-		// 最小間隔は課さない。NAT 配下では同一 IP から無関係な利用者が同時に来るのが正常で、
-		// init はログイン画面を開くたび、continue は多段フローで連続して呼ばれる
+		// 最小間隔は課さない。NAT 配下では無関係な利用者が同一 IP から同時に来るのが正常
 		const limitation = kind === 'init'
 			? { key: 'signin-init', duration: 30 * 60 * 1000, max: 300 }
 			// 特定アカウントへの総当たりは signin-user が縛るので、ここでは password spraying の抑止に絞る
@@ -537,9 +515,6 @@ export class SigninApiService {
 	//#region captcha
 
 	/**
-	 * captcha を検証する。インスタンスで有効なプロバイダがあるのに、応答が無い / 有効でない
-	 * プロバイダの応答しか無い場合は必ず失敗させる。
-	 *
 	 * `if (captchaResponse != null)` の形にしてはいけない。クライアントが captchaResponse を
 	 * 省くだけで検証が丸ごとスキップされる。
 	 *
