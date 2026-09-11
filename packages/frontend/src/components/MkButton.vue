@@ -147,7 +147,7 @@ function onMousedown(evt: MouseEvent): void {
 	border-radius: 5px;
 	overflow: clip;
 	box-sizing: border-box;
-	transition: background 0.1s ease;
+	transition: background 0.1s ease, transform 0.1s ease;
 
 	&:hover {
 		text-decoration: none;
@@ -159,6 +159,7 @@ function onMousedown(evt: MouseEvent): void {
 
 	&:not(:disabled):active {
 		background: var(--MI_THEME-buttonHoverBg);
+		transform: scale(0.98);
 	}
 
 	&.iconOnly {
