@@ -21,6 +21,7 @@
 	"dependencies": {
 		"@misskey-dev/emoji-data": "17.0.3",
 		"i18n": "workspace:*",
+		"idb-keyval": "6.3.0",
 		"json5": "2.2.3",
 		"misskey-js": "workspace:*",
 		"shiki": "4.4.3",
