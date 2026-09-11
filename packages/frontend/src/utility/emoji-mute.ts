@@ -4,6 +4,7 @@
  */
 
 import { computed } from 'vue';
+import { normalizeCustomEmojiName } from '@@/js/emoji-name.js';
 import { prefer } from '@/preferences.js';
 
 // custom絵文字の情報からキーを作成する
@@ -12,7 +13,7 @@ export function makeEmojiMuteKey(props: { name: string; host?: string | null }) 
 }
 
 export function extractCustomEmojiName (name:string) {
-	return (name[0] === ':' ? name.substring(1, name.length - 1) : name).replace('@.', '').split('@')[0];
+	return normalizeCustomEmojiName(name).split('@')[0];
 }
 
 export function extractCustomEmojiHost (name:string) {
