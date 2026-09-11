@@ -12,7 +12,7 @@ import {
 	// utils
 	registerUser, resetState, visitHome, closeUserSetupDialog, postNote,
 	// page utils
-	waitApiResponse, signIn,
+	waitApiResponse, waitSigninFinished, signIn,
 } from './utils.js';
 import type { RegisteredUser } from './utils.js';
 
@@ -127,7 +127,7 @@ test.describe('After user signup', () => {
 		await page.getByTestId('signin-page-password').waitFor({ state: 'visible', timeout: 10000 });
 		await locateMkInput(page, 'signin-password').fill('alice1234');
 
-		const signinResponse = waitApiResponse(page, '/api/signin-flow');
+		const signinResponse = waitSigninFinished(page);
 		// Enterキーで続行できるかどうかの確認も兼ねる
 		await page.keyboard.press('Enter');
 		await signinResponse;
