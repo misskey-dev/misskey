@@ -110,7 +110,7 @@ export class SigninWithPasskeyApiService {
 			const context = randomUUID();
 			this.logger.info(`Initiate Passkey challenge: context: ${context}`);
 			const authChallengeOptions = {
-				option: await this.webAuthnService.initiateSignInWithPasskeyAuthentication(context),
+				option: await this.webAuthnService.initiateAnonymousAuthentication(context),
 				context: context,
 			};
 			reply.code(200);
@@ -130,7 +130,7 @@ export class SigninWithPasskeyApiService {
 
 		let authorizedUserId: MiUser['id'] | null;
 		try {
-			authorizedUserId = await this.webAuthnService.verifySignInWithPasskeyAuthentication(context, credential);
+			authorizedUserId = await this.webAuthnService.verifyAnonymousAuthentication(context, credential);
 		} catch (err) {
 			this.logger.warn(`Passkey challenge Verify error! : ${err}`);
 			const errorId = (err as IdentifiableError).id;

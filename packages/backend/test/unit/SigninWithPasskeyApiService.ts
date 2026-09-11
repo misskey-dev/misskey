@@ -108,7 +108,7 @@ describe('SigninWithPasskeyApiService', () => {
 		FakeWebauthnVerify = async () => {
 			return uid;
 		};
-		vi.spyOn(webAuthnService, 'verifySignInWithPasskeyAuthentication').mockImplementation(FakeWebauthnVerify);
+		vi.spyOn(webAuthnService, 'verifyAnonymousAuthentication').mockImplementation(FakeWebauthnVerify);
 
 		const dummyUser = {
 			id: uid, username: uid, usernameLower: uid.toLowerCase(), uri: null, host: null,
@@ -166,7 +166,7 @@ describe('SigninWithPasskeyApiService', () => {
 		it('Should return 403 When Challenge Verify fail', async () => {
 			const req = new DummyFastifyRequest({ context: dummyContext, credential: { dummy: [] } }) as ApiFastifyRequestType;
 			const res = new DummyFastifyReply() as FastifyReply;
-			vi.spyOn(webAuthnService, 'verifySignInWithPasskeyAuthentication')
+			vi.spyOn(webAuthnService, 'verifyAnonymousAuthentication')
 				.mockImplementation(async () => {
 					throw new IdentifiableError('THIS_ERROR_CODE_SHOULD_BE_FORWARDED');
 				});
