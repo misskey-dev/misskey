@@ -60,14 +60,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</form>
 
 		<!-- パスワードレスログイン -->
-		<div :class="$style.orHr">
-			<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
-		</div>
-		<div>
-			<MkButton type="button" style="margin: auto auto;" large rounded primary gradate @click="emit('passkeyClick')">
-				<i class="ti ti-device-usb" style="font-size: medium;"></i>{{ i18n.ts.signinWithPasskey }}
-			</MkButton>
-		</div>
+		<!-- NOTE: Conditional Mediation 対応環境では username 欄のオートフィルから選べるので出さない。
+		           非対応環境で消すとパスワードレス設定のユーザーがログイン手段を失うため残す -->
+		<template v-if="showPasskeyButton">
+			<div :class="$style.orHr">
+				<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
+			</div>
+			<div>
+				<MkButton type="button" style="margin: auto auto;" large rounded primary gradate @click="emit('passkeyClick')">
+					<i class="ti ti-device-usb" style="font-size: medium;"></i>{{ i18n.ts.signinWithPasskey }}
+				</MkButton>
+			</div>
+		</template>
 	</div>
 </div>
 </template>
@@ -94,10 +98,13 @@ const props = withDefaults(defineProps<{
 	message?: string,
 	openOnRemote?: OpenOnRemoteOptions,
 	initialUsername?: string;
+	/** パスキーログインのボタンを表示するか (親は Conditional Mediation 非対応のときだけ true を渡す) */
+	showPasskeyButton?: boolean;
 }>(), {
 	message: '',
 	openOnRemote: undefined,
 	initialUsername: undefined,
+	showPasskeyButton: false,
 });
 
 const emit = defineEmits<{
