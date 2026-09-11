@@ -47,6 +47,9 @@ const SIGNIN_SESSION_MAX_LIFETIME = 30 * 60 * 1000;
 
 const SIGNIN_SESSION_VERSION = 1;
 
+/** 1 つのサインインフローで処理できるステップ数の上限 */
+const SIGNIN_SESSION_MAX_ATTEMPTS = 10;
+
 /** どのパスワードにも一致しないダミーハッシュ。コストは他のハッシュ (genSalt(8)) と揃えてある */
 const DUMMY_PASSWORD_HASH = '$2b$08$6EvZeOM5RNP82FxBASRTtu2f6.3SkJYZriJIGl9nHU1kXMjwZLyIm';
 
@@ -137,6 +140,7 @@ export class SigninApiService {
 			available: null,
 			passwordless: false,
 			satisfied: [],
+			attempts: 0,
 			createdAt: Date.now(),
 		};
 
@@ -198,6 +202,15 @@ export class SigninApiService {
 			if (!await this.checkUserRateLimit(session.userId)) {
 				return this.rateLimited(reply);
 			}
+		}
+
+		// 1 つのフロー内での再試行 (TOTP の総当たり、ユーザー名を変えながらの探り) を縛る。
+		// signin-user が効かない「ユーザーが確定しないまま繰り返す」領域もこれでカバーする
+		session.attempts = (session.attempts ?? 0) + 1;
+		if (session.attempts > SIGNIN_SESSION_MAX_ATTEMPTS) {
+			// 429 はクライアントが再試行可能と解釈してセッションを張り直さないので、失効として返す
+			await this.dropSession(signinFlowId);
+			return this.error(reply, 401, ERR_INVALID_SIGNIN_SESSION);
 		}
 
 		let result: StepResult;

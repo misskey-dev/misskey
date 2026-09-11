@@ -32,12 +32,15 @@ const ERR_SUSPENDED = 'e03a5f46-d309-4865-9b69-56282d94e1eb';
 const ERR_UNKNOWN_WEBAUTHN_KEY = '36b96a7d-b547-412d-aeed-2d611cdc8cdc';
 //#endregion
 
+/** SigninApiService の SIGNIN_SESSION_MAX_ATTEMPTS と対応 */
+const MAX_ATTEMPTS = 10;
+
 /**
  * サインイン (`POST /auth/signin/init` と `POST /auth/signin/continue`)。
  * 2 要素認証の設定と絡む正常系は `2fa.ts` を参照。
  *
- * NOTE: `RateLimiterService` は `NODE_ENV !== 'production'` で自己無効化するため、
- * ここではレートリミットを検証できない。
+ * NOTE: `RateLimiterService` は `NODE_ENV !== 'production'` で自己無効化するため、IP / ユーザー単位の
+ * レートリミットはここでは検証できない (セッション内の試行回数はセッションに持つので検証できる)。
  */
 describe('サインイン', () => {
 	const password = 'test';
@@ -339,6 +342,75 @@ describe('サインイン', () => {
 			const retried = await contExpectingError({ sessionId, password: 'bar' });
 			assert.strictEqual(retried.status, 403);
 			assert.strictEqual(retried.body.error.id, ERR_INCORRECT_PASSWORD);
+		});
+	});
+
+	describe('フロー内の試行回数', () => {
+		let erin: misskey.entities.SignupResponse;
+
+		beforeAll(async () => {
+			erin = await signup({ username: 'erin', password });
+		}, 1000 * 60 * 2);
+
+		/** ユーザー名まで進めて、残りの試行回数を返す */
+		const untilPassword = async () => {
+			const { sessionId } = await init();
+
+			const usernameRes = await cont({ sessionId, username: erin.username });
+			assert.strictEqual(usernameRes.status, 200);
+
+			// ユーザー名も 1 ステップとして数えられる
+			return { sessionId, remaining: MAX_ATTEMPTS - 1 };
+		};
+
+		test('上限に達しない範囲の間違いは soft 失敗のまま', async () => {
+			const { sessionId, remaining } = await untilPassword();
+
+			for (let i = 0; i < remaining - 1; i++) {
+				const res = await contExpectingError({ sessionId, password: 'bar' });
+				assert.strictEqual(res.status, 403);
+				assert.strictEqual(res.body.error.id, ERR_INCORRECT_PASSWORD);
+			}
+
+			// 最後の 1 回が残っているので、正しいパスワードなら完了できる
+			const finished = await cont({ sessionId, password });
+			assert.strictEqual(finished.status, 200);
+			assertSigninFinished(finished.body);
+			assert.strictEqual(finished.body.id, erin.id);
+		});
+
+		test('上限を超えるとセッションごと失効する', async () => {
+			const { sessionId, remaining } = await untilPassword();
+
+			for (let i = 0; i < remaining; i++) {
+				const res = await contExpectingError({ sessionId, password: 'bar' });
+				assert.strictEqual(res.status, 403);
+				assert.strictEqual(res.body.error.id, ERR_INCORRECT_PASSWORD);
+			}
+
+			// レートリミット (429) ではなくセッション失効として返す。429 だとクライアントは
+			// 再試行可能と解釈し、死んだセッションのまま取り残される
+			const exceeded = await contExpectingError({ sessionId, password: 'bar' });
+			assert.strictEqual(exceeded.status, 401);
+			assert.strictEqual(exceeded.body.error.id, ERR_INVALID_SIGNIN_SESSION);
+
+			// 正しいパスワードでもこのセッションはもう使えない
+			const afterwards = await contExpectingError({ sessionId, password });
+			assert.strictEqual(afterwards.status, 401);
+			assert.strictEqual(afterwards.body.error.id, ERR_INVALID_SIGNIN_SESSION);
+		});
+
+		test('使い切ってもセッションを取り直せばサインインできる', async () => {
+			const { sessionId, remaining } = await untilPassword();
+
+			for (let i = 0; i < remaining; i++) {
+				assert.strictEqual((await contExpectingError({ sessionId, password: 'bar' })).status, 403);
+			}
+			assert.strictEqual((await contExpectingError({ sessionId, password: 'bar' })).status, 401);
+
+			// 上限はフロー単位。使い切ったセッションを捨てれば同じユーザーでやり直せる
+			const res = await signinFlow({ username: erin.username, password });
+			assert.strictEqual(res.id, erin.id);
 		});
 	});
 

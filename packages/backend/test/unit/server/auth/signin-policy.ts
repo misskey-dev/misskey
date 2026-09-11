@@ -14,6 +14,7 @@ function session(params: Partial<SigninSession> = {}): SigninSession {
 		available: [],
 		passwordless: false,
 		satisfied: [],
+		attempts: 0,
 		createdAt: 0,
 		...params,
 	};
