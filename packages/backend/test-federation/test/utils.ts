@@ -81,9 +81,13 @@ async function authRequest<T>(host: Host, path: 'signin/init' | 'signin/continue
 	return json;
 }
 
+/** レートリミットに当たったときの再試行回数の上限。無限に再試行するとテストが理由も出さずに固まる */
+const SIGNIN_MAX_ATTEMPTS = 5;
+
 async function signin(
 	host: Host,
 	params: { username: string, password: string },
+	attempt = 1,
 ): Promise<SigninResponse> {
 	// wait for a second to prevent hit rate limit
 	await sleep(1000);
@@ -103,8 +107,11 @@ async function signin(
 		return signinResponse;
 	} catch (err) {
 		if ((err as AuthApiError).code === 'TOO_MANY_AUTHENTICATION_FAILURES') {
+			if (attempt >= SIGNIN_MAX_ATTEMPTS) {
+				throw new Error(`signin as ${params.username} on ${host} kept hitting the rate limit after ${SIGNIN_MAX_ATTEMPTS} attempts: ${(err as AuthApiError).message}`);
+			}
 			await sleep(Math.random() * 2000);
-			return await signin(host, params);
+			return await signin(host, params, attempt + 1);
 		}
 		throw err;
 	}
