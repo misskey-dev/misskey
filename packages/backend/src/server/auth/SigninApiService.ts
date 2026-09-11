@@ -36,7 +36,10 @@ import type { AuthMethod, SigninSession } from '@/server/auth/signin-policy.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
-/** サインインフローの一時状態の寿命(秒)。Conditional Mediation の待機中も切れないよう長めに取る */
+/**
+ * サインインフローの一時状態の寿命(秒)。Conditional Mediation の待機中も切れないよう長めに取る。
+ * 束ねてある匿名 passkey challenge ごと延長するので、WebAuthnService.SIGNIN_CHALLENGE_TTL と揃えること。
+ */
 const SIGNIN_SESSION_TTL = 600;
 
 const SIGNIN_SESSION_VERSION = 1;
@@ -132,7 +135,7 @@ export class SigninApiService {
 		};
 
 		const expiresAt = await this.saveSession(signinFlowId, session);
-		const passkeyOptions = await this.webAuthnService.initiateSignInWithPasskeyAuthentication(signinFlowId);
+		const passkeyOptions = await this.webAuthnService.initiateAnonymousAuthentication(signinFlowId);
 
 		reply.code(200);
 		return {
@@ -376,7 +379,7 @@ export class SigninApiService {
 		if (session.userId == null) {
 			let userId: string | null;
 			try {
-				userId = await this.webAuthnService.verifySignInWithPasskeyAuthentication(signinFlowId, credential as AuthenticationResponseJSON);
+				userId = await this.webAuthnService.verifyAnonymousAuthentication(signinFlowId, credential as AuthenticationResponseJSON);
 			} catch (err) {
 				this.logger.warn(`Anonymous passkey verification failed: ${err}`);
 				return fail(403, identifiableErrorId(err, ERR_ANONYMOUS_PASSKEY_VERIFICATION_FAILED), true);
@@ -451,16 +454,22 @@ export class SigninApiService {
 		return session;
 	}
 
-	/** セッションを保存し、延長後の失効時刻(epoch ms)を返す */
+	/** セッションを保存し、延長後の失効時刻(epoch ms)を返す。束ねた匿名 passkey challenge も一緒に延ばす */
 	@bindThis
 	private async saveSession(signinFlowId: string, session: SigninSession): Promise<number> {
-		await this.redisClient.setex(`signin:session:${signinFlowId}`, SIGNIN_SESSION_TTL, JSON.stringify(session));
+		await Promise.all([
+			this.redisClient.setex(`signin:session:${signinFlowId}`, SIGNIN_SESSION_TTL, JSON.stringify(session)),
+			this.redisClient.expire(`webauthn:signinChallenge:${signinFlowId}`, SIGNIN_SESSION_TTL),
+		]);
 		return Date.now() + (SIGNIN_SESSION_TTL * 1000);
 	}
 
 	@bindThis
 	private async dropSession(signinFlowId: string): Promise<void> {
-		await this.redisClient.del(`signin:session:${signinFlowId}`);
+		await Promise.all([
+			this.redisClient.del(`signin:session:${signinFlowId}`),
+			this.redisClient.del(`webauthn:signinChallenge:${signinFlowId}`),
+		]);
 	}
 
 	//#endregion
