@@ -492,7 +492,8 @@ export class SigninApiService {
 
 		const limitation = kind === 'init'
 			? { key: 'signin-init', duration: 30 * 60 * 1000, max: 100, minInterval: 500 }
-			: { key: 'signin-continue', duration: 60 * 60 * 1000, max: 30, minInterval: 300 };
+			// 多段フローでは continue を連続で送るのが正常なので、最小間隔は課さない (スループットは max で縛る)
+			: { key: 'signin-continue', duration: 60 * 60 * 1000, max: 30 };
 
 		return await this.rateLimiterService.limit(limitation, getIpHash(request.ip)) == null;
 	}
