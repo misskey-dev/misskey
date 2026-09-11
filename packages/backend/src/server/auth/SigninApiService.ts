@@ -530,6 +530,12 @@ export class SigninApiService {
 
 		if (!Object.values(enabled).some(v => v)) return;
 
+		// testcaptcha は固定文字列で通るので、本物のプロバイダと併用時に受理すると迂回路になる
+		const anyRealProviderEnabled = (['hcaptcha', 'recaptcha-v2', 'turnstile', 'm-captcha'] as const).some(p => enabled[p]);
+		if (anyRealProviderEnabled) {
+			enabled.testcaptcha = false;
+		}
+
 		// リクエストに載る応答は 1 つだけなので、有効なプロバイダのどれか 1 つを解けば通過する
 		if (captchaResponse == null || enabled[captchaResponse.type] !== true) {
 			throw new FastifyReplyError(400, 'captcha-failed: no response provided');
