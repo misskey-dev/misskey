@@ -14,7 +14,7 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
-import { UserAuthService } from '@/core/UserAuthService.js';
+import { TotpService } from '@/core/TotpService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -77,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private userEntityService: UserEntityService,
 		private emailService: EmailService,
-		private userAuthService: UserAuthService,
+		private totpService: TotpService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -90,7 +90,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				try {
-					await this.userAuthService.twoFactorAuthenticate(profile, token);
+					await this.totpService.twoFactorAuthenticate(profile, token);
 				} catch (_) {
 					throw new Error('authentication failed');
 				}
