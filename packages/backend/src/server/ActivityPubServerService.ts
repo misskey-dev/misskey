@@ -7,7 +7,7 @@ import * as crypto from 'node:crypto';
 import { IncomingMessage } from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import fastifyAccepts from '@fastify/accepts';
-import httpSignature from '@peertube/http-signature';
+import { parseRequestSignature } from '@misskey-dev/node-http-message-signatures';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
 import accepts from 'accepts';
 import vary from 'vary';
@@ -115,7 +115,12 @@ export class ActivityPubServerService {
 		let signature;
 
 		try {
-			signature = httpSignature.parseRequest(request.raw, { 'headers': ['(request-target)', 'host', 'date'], authorizationHeaderName: 'signature' });
+			const parsed = parseRequestSignature(request.raw, {
+				requiredComponents: { draft: ['(request-target)', 'host', 'date', 'digest'] },
+				clockSkew: { forward: 300_000, delay: 300_000 },
+			});
+			if (parsed.version !== 'draft') throw new Error('Only draft HTTP signatures are supported');
+			signature = parsed.value;
 		} catch (_) {
 			reply.code(401);
 			return;
