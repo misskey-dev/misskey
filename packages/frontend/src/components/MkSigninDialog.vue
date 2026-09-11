@@ -43,7 +43,7 @@ withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done', v: Misskey.entities.SigninFlowResponse & { finished: true }): void;
+	(ev: 'done', v: Misskey.entities.SigninContinueResponse & { finished: true }): void;
 	(ev: 'closed'): void;
 	(ev: 'cancelled'): void;
 }>();
@@ -55,7 +55,7 @@ function onClose() {
 	if (modal.value) modal.value.close();
 }
 
-function onLogin(res: Misskey.entities.SigninFlowResponse & { finished: true }) {
+function onLogin(res: Misskey.entities.SigninContinueResponse & { finished: true }) {
 	emit('done', res);
 	if (modal.value) modal.value.close();
 }
