@@ -178,9 +178,9 @@ export type SigninWithPasskeyResponse = {
 	signinResponse: SigninFlowResponse & { finished: true };
 };
 
-export type I2faRegisterKeyResponse = PublicKeyCredentialCreationOptionsJSON;
+export type I2faPasskeyRegisterResponse = PublicKeyCredentialCreationOptionsJSON;
 
-export type I2faKeyDoneRequest = {
+export type I2faPasskeyDoneRequest = {
 	password: string;
 	token?: string | null;
 	name: string;
