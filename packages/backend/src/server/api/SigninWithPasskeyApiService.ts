@@ -21,8 +21,8 @@ import { WebAuthnService } from '@/core/WebAuthnService.js';
 import Logger from '@/logger.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type { IdentifiableError } from '@/misc/identifiable-error.js';
+import { SigninService } from '@/server/auth/SigninService.js';
 import { RateLimiterService } from './RateLimiterService.js';
-import { SigninService } from './SigninService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 

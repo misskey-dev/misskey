@@ -26,8 +26,8 @@ import { TotpService } from '@/core/TotpService.js';
 import { CaptchaService } from '@/core/CaptchaService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
+import { SigninService } from '@/server/auth/SigninService.js';
 import { RateLimiterService } from './RateLimiterService.js';
-import { SigninService } from './SigninService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 

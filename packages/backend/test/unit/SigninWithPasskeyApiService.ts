@@ -19,7 +19,7 @@ import { CoreModule } from '@/core/CoreModule.js';
 import { SigninWithPasskeyApiService } from '@/server/api/SigninWithPasskeyApiService.js';
 import { RateLimiterService } from '@/server/api/RateLimiterService.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
-import { SigninService } from '@/server/api/SigninService.js';
+import { SigninService } from '@/server/auth/SigninService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 class FakeLimiter {
