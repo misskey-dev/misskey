@@ -26,6 +26,9 @@ export type SigninSession = {
 	/** 既に充足した手段 */
 	satisfied: AuthMethod[];
 
+	/** このフローで処理したステップ数 */
+	attempts: number;
+
 	createdAt: number;
 };
 
