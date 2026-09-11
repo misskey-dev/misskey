@@ -22,6 +22,7 @@ import type { Config } from '@/config.js';
 import { UserListService } from '@/core/UserListService.js';
 import { FilterUnionByProperty, groupedNotificationTypes, obsoleteNotificationTypes } from '@/types.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
+// import { escapeHtml } from '@/misc/escape-html.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {
@@ -214,7 +215,8 @@ export class NotificationService implements OnApplicationShutdown {
 		const locale = locales[userProfile.lang ?? 'ja-JP'];
 		const i18n = new I18n(locale);
 		// TODO: render user information html
-		sendEmail(userProfile.email, i18n.t('_email._follow.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
+		const body = `${follower.name} (@${Acct.toString(follower)})`;
+		sendEmail(userProfile.email, i18n.t('_email._follow.title'), escapeHtml(body), body);
 		*/
 	}
 
@@ -226,7 +228,8 @@ export class NotificationService implements OnApplicationShutdown {
 		const locale = locales[userProfile.lang ?? 'ja-JP'];
 		const i18n = new I18n(locale);
 		// TODO: render user information html
-		sendEmail(userProfile.email, i18n.t('_email._receiveFollowRequest.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
+		const body = `${follower.name} (@${Acct.toString(follower)})`;
+		sendEmail(userProfile.email, i18n.t('_email._receiveFollowRequest.title'), escapeHtml(body), body);
 		*/
 	}
 
