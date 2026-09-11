@@ -503,10 +503,12 @@ export class SigninApiService {
 			this.logger.warn('Recieved signin request from localhost IP address for rate limiting in production environment. This is likely due to an improper trustProxy setting in the config file.');
 		}
 
+		// 最小間隔は課さない。NAT 配下では同一 IP から無関係な利用者が同時に来るのが正常で、
+		// init はログイン画面を開くたび、continue は多段フローで連続して呼ばれる
 		const limitation = kind === 'init'
-			? { key: 'signin-init', duration: 30 * 60 * 1000, max: 100, minInterval: 500 }
-			// 多段フローでは continue を連続で送るのが正常なので、最小間隔は課さない (スループットは max で縛る)
-			: { key: 'signin-continue', duration: 60 * 60 * 1000, max: 30 };
+			? { key: 'signin-init', duration: 30 * 60 * 1000, max: 300 }
+			// 特定アカウントへの総当たりは signin-user が縛るので、ここでは password spraying の抑止に絞る
+			: { key: 'signin-continue', duration: 60 * 60 * 1000, max: 100 };
 
 		return await this.rateLimiterService.limit(limitation, getIpHash(request.ip)) == null;
 	}
