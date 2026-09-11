@@ -6,17 +6,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.wrapper" data-testid="signin-page-password">
 	<div class="_gaps" :class="$style.root">
-		<div :class="$style.avatar" :style="{ backgroundImage: user ? `url('${user.avatarUrl}')` : undefined }"></div>
+		<div v-if="user" :class="$style.avatar" :style="{ backgroundImage: `url('${user.avatarUrl}')` }"></div>
+		<div v-else :class="[$style.avatar, $style.avatarFallback]">
+			<i class="ti ti-user" aria-hidden="true"></i>
+		</div>
 		<div :class="$style.welcomeBackMessage">
-			<I18n :src="i18n.ts.welcomeBackWithName" tag="span">
+			<I18n v-if="user" :src="i18n.ts.welcomeBackWithName" tag="span">
 				<template #name><Mfm :text="user.name ?? user.username" :plain="true"/></template>
 			</I18n>
+			<span v-else>{{ i18n.ts.welcomeBack }}</span>
 		</div>
 
 		<!-- password入力 -->
 		<form class="_gaps_s" @submit.prevent="emit('passwordSubmitted', password)">
-			<!-- ブラウザ オートコンプリート用 -->
-			<input type="hidden" name="username" autocomplete="username" :value="user.username">
+			<!-- パスワードマネージャがユーザー名とパスワードを紐付けるのに要るので、user が引けていなくても出す。
+			     ユーザー名検索は大小文字を区別しないので、引けているなら正規化済みの user.username を優先する -->
+			<input type="hidden" name="username" autocomplete="username" :value="user?.username ?? username">
 
 			<MkInput v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true" required autofocus data-testid="signin-password">
 				<template #prefix><i class="ti ti-lock"></i></template>
@@ -40,7 +45,10 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 
 defineProps<{
-	user: Misskey.entities.UserDetailed;
+	/** 表示名・アイコン用。users/show に失敗した場合は null */
+	user: Misskey.entities.UserDetailed | null;
+	/** 入力されたユーザー名。パスワードマネージャに紐付けを教えるためだけに使い、認証には使わない */
+	username: string;
 }>();
 
 // NOTE: パスワードはこのコンポーネントの外に出たあと保持されない。
@@ -78,6 +86,15 @@ function resetPassword(): void {
 	background-position: center;
 	background-size: cover;
 	border-radius: 100%;
+
+	&.avatarFallback {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: var(--MI_THEME-accentedBg);
+		color: var(--MI_THEME-accent);
+		font-size: 24px;
+	}
 }
 
 .welcomeBackMessage {

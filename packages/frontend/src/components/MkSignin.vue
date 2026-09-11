@@ -33,7 +33,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			v-else-if="page === 'password'"
 			key="password"
 
-			:user="userInfo!"
+			:user="userInfo"
+			:username="enteredUsername"
 
 			@passwordSubmitted="onPasswordSubmitted"
 		/>
@@ -142,6 +143,9 @@ const anonymousPasskeyOptions = shallowRef<PublicKeyCredentialRequestOptionsJSON
 
 /** パスワード画面に出す表示名・アイコン。認証には一切使わない */
 const userInfo = ref<null | Misskey.entities.UserDetailed>(null);
+
+/** 入力されたユーザー名。パスワードマネージャがユーザー名とパスワードを紐付けるのに要る */
+const enteredUsername = ref('');
 
 const credentialRequest = shallowRef<PublicKeyCredentialRequestOptionsJSON | null>(null);
 const totpAvailable = ref(false);
@@ -311,6 +315,7 @@ async function ensureSession(): Promise<string | null> {
 /** 入力画面に戻してセッションを取り直す */
 async function restartSession(): Promise<void> {
 	userInfo.value = null;
+	enteredUsername.value = '';
 	credentialRequest.value = null;
 	totpAvailable.value = false;
 	setPage('input');
@@ -335,6 +340,8 @@ async function onUsernameSubmitted(step: Omit<Misskey.entities.SigninContinueReq
 
 	// users/show を待つ間も塞ぐ。username ステップの二重送信はサーバーがセッションごと破棄する
 	waiting.value = true;
+
+	enteredUsername.value = step.username;
 
 	// 表示名とアイコンをパスワード画面に出すためだけに引く (認証には使わない)
 	userInfo.value = await misskeyApi('users/show', {
@@ -410,16 +417,6 @@ async function continueSignin(step: SigninStep): Promise<void> {
 
 	switch (res.body.next) {
 		case 'password': {
-			if (userInfo.value == null) {
-				// パスワード画面はユーザー情報 (表示名・アイコン) を必須にしているので進めない
-				os.alert({
-					type: 'error',
-					title: i18n.ts.loginFailed,
-					text: i18n.ts.noSuchUser,
-				});
-				await restartSession();
-				break;
-			}
 			setPage('password');
 			break;
 		}
@@ -594,6 +591,7 @@ onBeforeUnmount(() => {
 	anonymousPasskeyOptions.value = null;
 	credentialRequest.value = null;
 	userInfo.value = null;
+	enteredUsername.value = '';
 });
 </script>
 
