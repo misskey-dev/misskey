@@ -29,12 +29,6 @@ export const meta = {
 			code: 'INCORRECT_PASSWORD',
 			id: '38769596-efe2-4faf-9bec-abbb3f2cd9ba',
 		},
-
-		twoFactorNotEnabled: {
-			message: '2fa not enabled.',
-			code: 'TWO_FACTOR_NOT_ENABLED',
-			id: 'bf32b864-449b-47b8-974e-f9a5468546f1',
-		},
 	},
 
 	res: {
@@ -89,10 +83,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const passwordMatched = await bcrypt.compare(ps.password, profile.password ?? '');
 			if (!passwordMatched) {
 				throw new ApiError(meta.errors.incorrectPassword);
-			}
-
-			if (!profile.twoFactorEnabled) {
-				throw new ApiError(meta.errors.twoFactorNotEnabled);
 			}
 
 			return await this.webAuthnService.initiateRegistration(
