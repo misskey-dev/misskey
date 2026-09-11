@@ -70,6 +70,7 @@ async function authRequest<T>(host: Host, path: 'signin/init' | 'signin/continue
 	const json = await res.json() as T & { error?: { id?: string, code?: string } };
 
 	if (!res.ok) {
+		// eslint-disable-next-line no-throw-literal
 		throw Object.assign(new Error(`POST /auth/${path} on ${host} failed: ${res.status} ${JSON.stringify(json)}`), {
 			status: res.status,
 			id: json.error?.id,
