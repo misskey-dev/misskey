@@ -211,13 +211,17 @@ export class SigninApiService {
 			case 'token':
 				result = await this.handleTotp(session, body);
 				break;
-			case 'passkeyCredential':
+			case 'passkeyCredential': {
+				// 匿名経路はここで初めてユーザーが確定するので、ユーザー別バケットを事後に消費する。
+				// ユーザー確定済みの経路は事前チェック済みで、ここで弾くと challenge を使い切った後に
+				// 拒否することになる
+				const anonymous = session.userId == null;
 				result = await this.handlePasskey(signinFlowId, session, body);
-				// 匿名経路ではここで初めてユーザーが確定するので、ユーザー別バケットも事後に消費する
-				if (result.ok && session.userId != null && !await this.checkUserRateLimit(session.userId)) {
+				if (anonymous && result.ok && session.userId != null && !await this.checkUserRateLimit(session.userId)) {
 					return this.rateLimited(reply);
 				}
 				break;
+			}
 		}
 
 		if (!result.ok) {
