@@ -42,6 +42,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
  */
 const SIGNIN_SESSION_TTL = 600;
 
+/** サインインフローの一時状態の絶対寿命(ミリ秒)。continue で延長し続けられても、作成から一定時間で必ず失効させる */
+const SIGNIN_SESSION_MAX_LIFETIME = 30 * 60 * 1000;
+
 const SIGNIN_SESSION_VERSION = 1;
 
 /** どのパスワードにも一致しないダミーハッシュ。コストは他のハッシュ (genSalt(8)) と揃えてある */
@@ -453,6 +456,11 @@ export class SigninApiService {
 		// ローリングデプロイ中に古い形のセッションを読んでしまわないようにする
 		if (session.v !== SIGNIN_SESSION_VERSION) return null;
 
+		if (Date.now() - session.createdAt >= SIGNIN_SESSION_MAX_LIFETIME) {
+			await this.dropSession(signinFlowId);
+			return null;
+		}
+
 		return session;
 	}
 
@@ -463,7 +471,8 @@ export class SigninApiService {
 			this.redisClient.setex(`signin:session:${signinFlowId}`, SIGNIN_SESSION_TTL, JSON.stringify(session)),
 			this.redisClient.expire(`webauthn:signinChallenge:${signinFlowId}`, SIGNIN_SESSION_TTL),
 		]);
-		return Date.now() + (SIGNIN_SESSION_TTL * 1000);
+		// 実際の失効より後の時刻をクライアントに見せないよう、スライディング TTL と絶対寿命の早いほうを返す
+		return Math.min(Date.now() + (SIGNIN_SESSION_TTL * 1000), session.createdAt + SIGNIN_SESSION_MAX_LIFETIME);
 	}
 
 	@bindThis
