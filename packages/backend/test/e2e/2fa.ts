@@ -59,12 +59,13 @@ describe('2要素認証', () => {
 	};
 
 	const keyDoneParam = (param: {
-		token: string,
+		/** TOTP を設定していないユーザーでは不要 (`i/2fa/passkey/done` 側も nullable) */
+		token?: string,
 		keyName: string,
 		credentialId: Uint8Array,
 		creationOptions: PublicKeyCredentialCreationOptionsJSON,
 	}): {
-		token: string,
+		token?: string,
 		password: string,
 		name: string,
 		credential: RegistrationResponseJSON,
@@ -504,5 +505,96 @@ describe('2要素認証', () => {
 			password,
 			token: otpToken(registerResponse.body.secret),
 		}, alice);
+	});
+
+	describe('を設定していないユーザーでも、', () => {
+		/** 鍵を登録し、その credentialId を返す */
+		const registerPasskeyWithoutTotp = async (keyName: string): Promise<Buffer> => {
+			const registerKeyResponse = await api('i/2fa/passkey/register', {
+				password,
+			}, alice);
+			assert.strictEqual(registerKeyResponse.status, 200);
+			assert.notEqual(registerKeyResponse.body.rp, undefined);
+			assert.notEqual(registerKeyResponse.body.challenge, undefined);
+
+			const credentialId = crypto.randomBytes(0x41);
+			const keyDoneResponse = await api('i/2fa/passkey/done', keyDoneParam({
+				keyName,
+				credentialId,
+				creationOptions: registerKeyResponse.body,
+			} as any) as any, alice);
+			assert.strictEqual(keyDoneResponse.status, 200);
+			assert.strictEqual(keyDoneResponse.body.id, credentialId.toString('base64url'));
+			assert.strictEqual(keyDoneResponse.body.name, keyName);
+
+			return credentialId;
+		};
+
+		beforeEach(async () => {
+			// TOTP が残っていても secret が無く解除できないので、assert で検知する
+			const iResponse = await api('i', {}, alice);
+			assert.strictEqual(iResponse.status, 200);
+			assert.strictEqual(iResponse.body.twoFactorEnabled, false, 'TOTP が有効なままでは「TOTP なし」を検証できない');
+
+			// 鍵 0 個の状態から始める
+			for (const key of iResponse.body.securityKeysList ?? []) {
+				const removeKeyResponse = await api('i/2fa/passkey/remove', {
+					password,
+					credentialId: key.id,
+				}, alice);
+				assert.strictEqual(removeKeyResponse.status, 200);
+			}
+		});
+
+		test('パスキーを登録でき、一覧に現れる。', async () => {
+			const keyName = 'passkey-without-totp';
+			const credentialId = await registerPasskeyWithoutTotp(keyName);
+
+			const iResponse = await api('i', {}, alice);
+			assert.strictEqual(iResponse.status, 200);
+			assert.strictEqual(iResponse.body.twoFactorEnabled, false);
+			assert.strictEqual(iResponse.body.securityKeys, true);
+			assert.ok(iResponse.body.securityKeysList);
+			assert.strictEqual(iResponse.body.securityKeysList.length, 1);
+			assert.strictEqual(iResponse.body.securityKeysList[0].id, credentialId.toString('base64url'));
+			assert.strictEqual(iResponse.body.securityKeysList[0].name, keyName);
+
+			// 後片付け
+			const removeKeyResponse = await api('i/2fa/passkey/remove', {
+				password,
+				credentialId: credentialId.toString('base64url'),
+			}, alice);
+			assert.strictEqual(removeKeyResponse.status, 200);
+
+			const afterIResponse = await api('i', {}, alice);
+			assert.strictEqual(afterIResponse.status, 200);
+			assert.strictEqual(afterIResponse.body.securityKeys, false);
+		});
+
+		test('パスキーでパスワードレスログインを有効にできる。', async () => {
+			const credentialId = await registerPasskeyWithoutTotp('passwordless-without-totp');
+
+			const passwordLessResponse = await api('i/2fa/passkey/password-less', {
+				value: true,
+			}, alice);
+			assert.strictEqual(passwordLessResponse.status, 204);
+
+			const iResponse = await api('i', {}, alice);
+			assert.strictEqual(iResponse.status, 200);
+			assert.strictEqual(iResponse.body.twoFactorEnabled, false);
+			assert.strictEqual(iResponse.body.usePasswordLessLogin, true);
+
+			// 後片付け
+			// (`i/2fa/passkey/remove` は最後の鍵を消すと usePasswordLessLogin も落とす)
+			const removeKeyResponse = await api('i/2fa/passkey/remove', {
+				password,
+				credentialId: credentialId.toString('base64url'),
+			}, alice);
+			assert.strictEqual(removeKeyResponse.status, 200);
+
+			const afterIResponse = await api('i', {}, alice);
+			assert.strictEqual(afterIResponse.status, 200);
+			assert.strictEqual(afterIResponse.body.usePasswordLessLogin, false);
+		});
 	});
 });
