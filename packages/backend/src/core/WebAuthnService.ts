@@ -28,12 +28,13 @@ import type {
 
 @Injectable()
 export class WebAuthnService {
-	/** 登録・ユーザー指定認証の challenge。モーダル上で数秒〜十数秒で解決するので短くてよい */
+	/** 登録 challenge の寿命(秒)。モーダル上で数秒〜十数秒で解決するので短くてよい */
 	private static readonly CHALLENGE_TTL = 90;
 
 	/**
-	 * サインインセッションに束ねた匿名 challenge の寿命(秒)。Conditional Mediation の待機中も
-	 * 切れないよう長く取る。SigninApiService の SIGNIN_SESSION_TTL と揃えること。
+	 * サインインフローで使う challenge の寿命(秒)。SigninApiService の SIGNIN_SESSION_TTL と揃えること。
+	 * フローの寿命より短いと、Conditional Mediation の待機中や TOTP 画面からパスキーへ切り替えた
+	 * ところで challenge だけが先に切れて失敗する。
 	 * リプレイ防止は TTL ではなく単回使用 (getdel) と origin / RPID バインドで担保している。
 	 */
 	private static readonly SIGNIN_CHALLENGE_TTL = 600;
@@ -148,6 +149,10 @@ export class WebAuthnService {
 		};
 	}
 
+	/**
+	 * ユーザーが確定したあとの認証を開始する。呼び出し元はサインインフローだけなので、
+	 * challenge の寿命もフローに合わせる。
+	 */
 	@bindThis
 	public async initiateAuthentication(userId: MiUser['id']): Promise<PublicKeyCredentialRequestOptionsJSON> {
 		const relyingParty = this.getRelyingParty();
@@ -168,7 +173,7 @@ export class WebAuthnService {
 			userVerification: 'preferred',
 		});
 
-		await this.redisClient.setex(`webauthn:authenticationChallenge:${userId}`, WebAuthnService.CHALLENGE_TTL, authenticationOptions.challenge);
+		await this.redisClient.setex(`webauthn:authenticationChallenge:${userId}`, WebAuthnService.SIGNIN_CHALLENGE_TTL, authenticationOptions.challenge);
 
 		return authenticationOptions;
 	}
