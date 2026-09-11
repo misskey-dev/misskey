@@ -44,7 +44,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			v-else-if="page === 'totp'"
 			key="totp"
 
+			:passkeyAvailable="passkeyAvailable"
+
 			@totpSubmitted="onTotpSubmitted"
+			@usePasskey="onUsePasskey"
 		/>
 
 		<!-- 4. パスキー -->
@@ -151,7 +154,12 @@ const userInfo = ref<null | Misskey.entities.UserDetailed>(null);
 const enteredUsername = ref('');
 
 const credentialRequest = shallowRef<PublicKeyCredentialRequestOptionsJSON | null>(null);
+/**
+ * TOTP とパスキーの相互の逃げ道。片方だけにすると、オートフィルに乗らない環境やローミング鍵の
+ * 利用者が一方の手段へ到達できなくなるので、必ず対で出すこと。
+ */
 const totpAvailable = ref(false);
+const passkeyAvailable = ref(false);
 
 /** Conditional Mediation が使えない環境で「パスキーでログイン」ボタンを出すか */
 const showPasskeyButton = ref(false);
@@ -324,6 +332,7 @@ async function restartSession(): Promise<void> {
 	enteredUsername.value = '';
 	credentialRequest.value = null;
 	totpAvailable.value = false;
+	passkeyAvailable.value = false;
 	setPage('input');
 	await initSession();
 }
@@ -373,6 +382,10 @@ function onUseTotp(): void {
 	setPage('totp');
 }
 
+function onUsePasskey(): void {
+	setPage('passkey');
+}
+
 /** 「パスキーでログイン」ボタン。init が発行済みの匿名 challenge をそのまま使う */
 async function onPasskeyLogin(): Promise<void> {
 	if (!browserSupportsWebAuthn()) return;
@@ -388,6 +401,7 @@ async function onPasskeyLogin(): Promise<void> {
 
 	credentialRequest.value = options;
 	totpAvailable.value = false;
+	passkeyAvailable.value = false;
 	setPage('passkey');
 
 	nextTick(() => {
@@ -435,6 +449,7 @@ async function continueSignin(step: SigninStep): Promise<void> {
 			break;
 		}
 		case 'totp': {
+			passkeyAvailable.value = false;
 			setPage('totp');
 			break;
 		}
@@ -442,6 +457,7 @@ async function continueSignin(step: SigninStep): Promise<void> {
 			if (browserSupportsWebAuthn()) {
 				credentialRequest.value = res.body.passkeyOptions;
 				totpAvailable.value = false;
+				passkeyAvailable.value = false;
 				setPage('passkey');
 			} else {
 				// このブラウザではパスキーを扱えず、TOTP へのフォールバックも無いので入力画面まで戻す
@@ -455,13 +471,16 @@ async function continueSignin(step: SigninStep): Promise<void> {
 			break;
 		}
 		case 'totpOrPasskey': {
+			// ここに来たのは Conditional Mediation からログインしなかった利用者なので、TOTP を既定にする。
+			// パスキー画面は onMounted で OS の認証ダイアログを開くため、既定にすると TOTP 利用者に必ず出る
 			if (browserSupportsWebAuthn()) {
 				credentialRequest.value = res.body.passkeyOptions;
 				totpAvailable.value = true;
-				setPage('passkey');
+				passkeyAvailable.value = true;
 			} else {
-				setPage('totp');
+				passkeyAvailable.value = false;
 			}
+			setPage('totp');
 			break;
 		}
 	}
