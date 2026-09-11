@@ -7,8 +7,19 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as crypto from 'node:crypto';
+import * as OTPAuth from 'otpauth';
 import { describe, beforeAll, test } from 'vitest';
-import { api, authApi, signinFlow, signup, assertSigninFinished } from '../utils.js';
+import { MiUserProfile } from '@/models/_.js';
+import {
+	api,
+	authApi,
+	initTestDb,
+	signinFlow,
+	signup,
+	assertSigninFinished,
+	assertSigninPending,
+	assertPasskeyRequested,
+} from '../utils.js';
 import { webauthnAuthenticationResponse, webauthnRegistrationResponse } from '../webauthn.js';
 import type { AuthApiErrorResponse } from '../utils.js';
 import type * as misskey from 'misskey-js';
@@ -17,6 +28,8 @@ import type * as misskey from 'misskey-js';
 const ERR_INCORRECT_PASSWORD = '932c904e-9460-45b7-9ce6-7ed33be7eb2c';
 const ERR_INVALID_SIGNIN_SESSION = '8e385d0a-bee2-43f3-a8cf-3fdd54da7446';
 const ERR_PASSWORDLESS_DISABLED = '2d84773e-f7b7-4d0b-8f72-bb69b584c912';
+const ERR_SUSPENDED = 'e03a5f46-d309-4865-9b69-56282d94e1eb';
+const ERR_UNKNOWN_WEBAUTHN_KEY = '36b96a7d-b547-412d-aeed-2d611cdc8cdc';
 //#endregion
 
 /**
@@ -198,6 +211,159 @@ describe('サインイン', () => {
 				credentialId: credentialId.toString('base64url'),
 			}, alice);
 			assert.strictEqual(removeKeyResponse.status, 200);
+		});
+
+		test('登録されていないパスキーは弾かれ、セッションも破棄される', async () => {
+			const { sessionId, passkeyOptions } = await init();
+
+			const res = await contExpectingError({
+				sessionId,
+				passkeyCredential: webauthnAuthenticationResponse({
+					credentialId: crypto.randomBytes(0x41),
+					requestOptions: passkeyOptions,
+				}),
+			});
+			assert.strictEqual(res.status, 403);
+			// WebAuthnService が投げた ID をそのまま伝える (クライアントはこれで文言を出し分ける)
+			assert.strictEqual(res.body.error.id, ERR_UNKNOWN_WEBAUTHN_KEY);
+
+			// challenge は単回使用なので、このセッションではもうパスキーを出し直せない
+			const afterwards = await contExpectingError({ sessionId, username: alice.username });
+			assert.strictEqual(afterwards.status, 401);
+			assert.strictEqual(afterwards.body.error.id, ERR_INVALID_SIGNIN_SESSION);
+		});
+	});
+
+	describe('第 2 要素が複数あるとき', () => {
+		let bob: misskey.entities.SignupResponse;
+		let totpSecret: string;
+		const credentialId = crypto.randomBytes(0x41);
+
+		const otpToken = (secret: string): string => {
+			return OTPAuth.TOTP.generate({
+				secret: OTPAuth.Secret.fromBase32(secret),
+				digits: 6,
+			});
+		};
+
+		beforeAll(async () => {
+			bob = await signup({ username: 'bob', password });
+
+			// TOTP を有効にする前に登録しておくと、パスキー側のリクエストに token が要らない
+			const registerKeyResponse = await api('i/2fa/passkey/register', { password }, bob);
+			assert.strictEqual(registerKeyResponse.status, 200);
+
+			const keyDoneResponse = await api('i/2fa/passkey/done', {
+				password,
+				name: 'both-factors',
+				credential: webauthnRegistrationResponse({
+					credentialId,
+					creationOptions: registerKeyResponse.body,
+				}),
+			}, bob);
+			assert.strictEqual(keyDoneResponse.status, 200);
+
+			const totpRegisterResponse = await api('i/2fa/totp/register', { password }, bob);
+			assert.strictEqual(totpRegisterResponse.status, 200);
+			totpSecret = totpRegisterResponse.body.secret;
+
+			const totpDoneResponse = await api('i/2fa/totp/done', { token: otpToken(totpSecret) }, bob);
+			assert.strictEqual(totpDoneResponse.status, 200);
+		}, 1000 * 60 * 2);
+
+		/** ユーザー名 → パスワードまで進め、第 2 要素を要求している応答を返す */
+		const untilSecondFactor = async () => {
+			const { sessionId } = await init();
+
+			const usernameRes = await cont({ sessionId, username: bob.username });
+			assert.strictEqual(usernameRes.status, 200);
+
+			const passwordRes = await cont({ sessionId, password });
+			assert.strictEqual(passwordRes.status, 200);
+			assertSigninPending(passwordRes.body);
+			assert.strictEqual(passwordRes.body.next, 'totpOrPasskey');
+
+			return { sessionId, body: passwordRes.body };
+		};
+
+		// 案内は 1 つに畳まれるが、受理する手段は畳まれない。どちらを送っても完了する
+		test('TOTP で完了できる', async () => {
+			const { sessionId } = await untilSecondFactor();
+
+			const res = await cont({ sessionId, token: otpToken(totpSecret) });
+			assert.strictEqual(res.status, 200);
+			assertSigninFinished(res.body);
+			assert.strictEqual(res.body.id, bob.id);
+		});
+
+		test('パスキーで完了できる', async () => {
+			const { sessionId, body } = await untilSecondFactor();
+			const requestOptions = assertPasskeyRequested(body);
+
+			const res = await cont({
+				sessionId,
+				passkeyCredential: webauthnAuthenticationResponse({ credentialId, requestOptions }),
+			});
+			assert.strictEqual(res.status, 200);
+			assertSigninFinished(res.body);
+			assert.strictEqual(res.body.id, bob.id);
+		});
+	});
+
+	describe('パスワードが設定されていないアカウント', () => {
+		let carol: misskey.entities.SignupResponse;
+
+		beforeAll(async () => {
+			carol = await signup({ username: 'carol', password });
+
+			// パスワードを持たないローカルアカウントを作る API が無いので、DB から直接消す
+			const connection = await initTestDb(true);
+			await connection.getRepository(MiUserProfile).update({ userId: carol.id }, { password: null });
+			await connection.destroy();
+		}, 1000 * 60 * 2);
+
+		// パスワード未設定であることを、パスワードの誤りと区別できるシグナルにしない
+		// (応答時間を揃えるダミー bcrypt 比較そのものはここでは検証できない)
+		test('パスワードの誤りと同じエラーになり、セッションも維持される', async () => {
+			const { sessionId } = await init();
+
+			const usernameRes = await cont({ sessionId, username: carol.username });
+			assert.strictEqual(usernameRes.status, 200);
+			assertSigninPending(usernameRes.body);
+			assert.strictEqual(usernameRes.body.next, 'password');
+
+			const res = await contExpectingError({ sessionId, password });
+			assert.strictEqual(res.status, 403);
+			assert.strictEqual(res.body.error.id, ERR_INCORRECT_PASSWORD);
+
+			const retried = await contExpectingError({ sessionId, password: 'bar' });
+			assert.strictEqual(retried.status, 403);
+			assert.strictEqual(retried.body.error.id, ERR_INCORRECT_PASSWORD);
+		});
+	});
+
+	describe('凍結', () => {
+		let dave: misskey.entities.SignupResponse;
+
+		beforeAll(async () => {
+			dave = await signup({ username: 'dave', password });
+		}, 1000 * 60 * 2);
+
+		test('ステップを通過した後に凍結されると、完了させてもらえない', async () => {
+			const { sessionId } = await init();
+
+			const usernameRes = await cont({ sessionId, username: dave.username });
+			assert.strictEqual(usernameRes.status, 200);
+
+			// alice は最初にサインアップしたユーザーなので管理者
+			const suspendRes = await api('admin/suspend-user', { userId: dave.id }, alice);
+			assert.strictEqual(suspendRes.status, 204);
+
+			// セッションの寿命は 600 秒あるので、進行中に凍結されうる。
+			// ユーザー名のステップで見た状態のまま完了させてはいけない
+			const res = await contExpectingError({ sessionId, password });
+			assert.strictEqual(res.status, 403);
+			assert.strictEqual(res.body.error.id, ERR_SUSPENDED);
 		});
 	});
 });
