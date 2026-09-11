@@ -13,9 +13,9 @@ import type { InstancesRepository, AccessTokensRepository } from '@/models/_.js'
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { SignupApiService } from '@/server/auth/SignupApiService.js';
 import endpoints from './endpoints.js';
 import { ApiCallService } from './ApiCallService.js';
-import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';
 import { SigninWithPasskeyApiService } from './SigninWithPasskeyApiService.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
