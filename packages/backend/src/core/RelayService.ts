@@ -15,6 +15,7 @@ import { DI } from '@/di-symbols.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { UserKeypairService } from './UserKeypairService.js';
 
 @Injectable()
 export class RelayService {
@@ -28,6 +29,7 @@ export class RelayService {
 		private queueService: QueueService,
 		private systemAccountService: SystemAccountService,
 		private apRendererService: ApRendererService,
+		private userKeypairService: UserKeypairService,
 	) {
 		this.relaysCache = new MemorySingleCache<MiRelay[]>(1000 * 60 * 10); // 10m
 	}
@@ -108,7 +110,7 @@ export class RelayService {
 	}
 
 	@bindThis
-	public async deliverToRelays(user: { id: MiUser['id']; host: null; }, activity: any): Promise<void> {
+	public async deliverToRelays(user: { id: MiUser['id']; host: null; }, activity: any, forceMainKey = false): Promise<void> {
 		if (activity == null) return;
 
 		const relays = await this.getAcceptedRelays();
@@ -116,11 +118,9 @@ export class RelayService {
 
 		const copy = deepClone(activity);
 		if (!copy.to) copy.to = ['https://www.w3.org/ns/activitystreams#Public'];
+		const privateKey = await this.userKeypairService.getLocalUserPrivateKeyPem(user.id, forceMainKey ? 'main' : undefined);
+		const signed = await this.apRendererService.attachLdSignature(copy, privateKey);
 
-		const signed = await this.apRendererService.attachLdSignature(copy, user);
-
-		for (const relay of relays) {
-			this.queueService.deliver(user, signed, relay.inbox, false);
-		}
+		this.queueService.deliverMany(user, signed, new Map(relays.map(({ inbox }) => [inbox, false])), forceMainKey);
 	}
 }

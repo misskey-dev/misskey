@@ -5162,6 +5162,7 @@ export type components = {
             /** Format: date-time */
             latestRequestReceivedAt: string | null;
             moderationNote?: string | null;
+            httpMessageSignaturesImplementationLevel: string;
         };
         GalleryPost: {
             /**
@@ -12004,6 +12005,7 @@ export interface operations {
                         isModerator: boolean;
                         isSilenced: boolean;
                         isSuspended: boolean;
+                        isRemoteSuspended: boolean;
                         isHibernated: boolean;
                         lastActiveDate: string | null;
                         moderationNote: string;
@@ -12015,6 +12017,16 @@ export interface operations {
                             expiresAt: string | null;
                             roleId: string;
                         }[];
+                        publicKeys: {
+                            userId: string;
+                            keyId: string;
+                            keyPem: string;
+                        }[] | null;
+                        keyPairs: {
+                            userId: string;
+                            publicKey: string;
+                            ed25519PublicKey: string | null;
+                        } | null;
                     };
                 };
             };
