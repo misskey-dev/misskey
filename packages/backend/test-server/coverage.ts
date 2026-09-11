@@ -163,18 +163,19 @@ class BundledCoverageProvider extends V8CoverageProvider {
 	}
 }
 
-/** `<tool> ignore file` 形式のカバレッジ除外ヒント */
+/** ファイル単位のカバレッジ除外ヒント (`istanbul` / `c8` / `v8` / `node:coverage` の ignore 指定) */
 const IGNORE_FILE_HINT = /(istanbul|[cv]8|node:coverage)(\s+ignore\s+)file(?=\W|$)/g;
 
 /**
- * チャンクに紛れ込んだ `ignore file` ヒントを無効化する。
+ * チャンクに含まれるファイル単位の除外ヒントを無効化する。
  *
- * バンドルにはサードパーティ由来の `istanbul ignore file` コメントが含まれることがあり、
- * 1つでもあるとそのチャンク全体のカバレッジが丸ごと破棄されてしまう
- * (バンドル前は個別のファイルに対する指定でも、バンドル後は巨大な1ファイルの指定になる)。
- * V8のオフセットがずれないよう、同じ長さのまま大文字化して一致しないようにする。
+ * この手のヒントは本来ファイル1つを除外するものだが、バンドル後は複数のソースが
+ * 1ファイルに同居しているため、1つでもあるとそのチャンク全体のカバレッジが
+ * 丸ごと破棄されてしまう。巻き添えの方が被害が大きいので、
+ * V8のオフセットがずれないよう同じ長さのまま大文字化して一致しないようにする。
  *
- * なおMisskey自身の `src` にはこの種のヒントが無いため、意図を潰すことはない。
+ * 現状 `src` にこの種のヒントは無いので実際に潰している指定は無いが、
+ * 後から追加された場合やバンドル対象が広がった場合の保険として残している。
  */
 function neutralizeIgnoreFileHints(code: string): string {
 	return code.replace(IGNORE_FILE_HINT, (_, tool: string, separator: string) => `${tool}${separator}FILE`);
