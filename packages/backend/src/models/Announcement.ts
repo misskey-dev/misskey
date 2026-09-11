@@ -60,6 +60,12 @@ export class MiAnnouncement {
 	})
 	public isActive: boolean;
 
+	@Column('timestamp with time zone', {
+		comment: 'The date after which the Announcement is automatically archived.',
+		nullable: true,
+	})
+	public autoArchiveAt: Date | null;
+
 	@Index()
 	@Column('boolean', {
 		default: false,
