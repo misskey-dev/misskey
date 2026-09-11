@@ -107,6 +107,9 @@ type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K>
 /** `sessionId` は MkSignin が握るので、子コンポーネントはステップの中身だけを渡す */
 type SigninStep = DistributiveOmit<Misskey.entities.SigninContinueRequest, 'sessionId'>;
 
+/** 失敗したステップの種別。同じエラーでも、どのステップが落ちたかで復帰のしかたが変わる */
+type SigninStepKind = 'username' | 'password' | 'totp' | 'passkey';
+
 type AuthApiFailure = {
 	/** ネットワーク到達自体に失敗した場合は `null` */
 	status: number | null;
@@ -199,16 +202,19 @@ function extractErrorId(body: unknown): string | null {
  * サーバーが同じセッションのままやり直しを許す失敗か (backend の `StepFailure.hard === false`)。
  * これ以外ではサーバー側のセッションが破棄されており、再 init しないと次が必ず 401 になる。
  */
-function isRetryableFailure(status: number, id: string | null): boolean {
+function isRetryableFailure(id: string | null, failedStep: SigninStepKind): boolean {
 	switch (id) {
 		case ERR_INCORRECT_PASSWORD:
 		case ERR_INCORRECT_TOTP:
-		case ERR_RATE_LIMIT: // レートリミットはセッションに触れる前に返る
 			return true;
-		// username ステップ (404) ならユーザー名を入れ直せるが、
-		// 匿名パスキー経路 (403) でユーザーが見つからない場合は challenge を使い切っている
+		// レートリミットでセッションは破棄されない。ただしパスキーの検証後に消費されるバケットもあり、
+		// その経路ではセッションが残っていても challenge は使い切られている
+		case ERR_RATE_LIMIT:
+			return true;
+		// username ステップならユーザー名を入れ直せる。他のステップで返るのは、サインイン成立後に
+		// ユーザーが消えていた場合か匿名パスキーの照合に失敗した場合で、どちらもセッションは破棄済み
 		case ERR_NO_SUCH_USER:
-			return status === 404;
+			return failedStep === 'username';
 		default:
 			return false;
 	}
@@ -390,6 +396,14 @@ async function onPasskeyLogin(): Promise<void> {
 }
 //#endregion
 
+/** `SigninContinueRequest` はステップごとのキーの有無で分かれているので、そこから種別を取る */
+function stepKindOf(step: SigninStep): SigninStepKind {
+	if ('username' in step) return 'username';
+	if ('password' in step) return 'password';
+	if ('token' in step) return 'totp';
+	return 'passkey';
+}
+
 async function continueSignin(step: SigninStep): Promise<void> {
 	waiting.value = true;
 
@@ -405,7 +419,7 @@ async function continueSignin(step: SigninStep): Promise<void> {
 	});
 
 	if (!res.ok) {
-		await onSigninApiError(res.failure);
+		await onSigninApiError(res.failure, stepKindOf(step));
 		return;
 	}
 
@@ -467,7 +481,7 @@ async function onLoginSucceeded(res: Misskey.entities.SigninContinueResponse & {
 	}
 }
 
-async function onSigninApiError(failure: AuthApiFailure): Promise<void> {
+async function onSigninApiError(failure: AuthApiFailure, failedStep: SigninStepKind): Promise<void> {
 	const id = extractErrorId(failure.body);
 
 	if (failure.status == null) {
@@ -568,8 +582,18 @@ async function onSigninApiError(failure: AuthApiFailure): Promise<void> {
 
 	inputPageEl.value?.resetCaptcha();
 
-	if (!isRetryableFailure(failure.status, id)) {
+	if (!isRetryableFailure(id, failedStep)) {
 		await restartSession();
+	} else if (failedStep === 'username') {
+		// このステップは匿名 challenge を消費しないので、onUsernameSubmitted が畳んだセレモニーを
+		// 張り直す。張り直さないとオートフィルからパスキーを選べないままになる
+		if (signinFlowId.value != null && anonymousPasskeyOptions.value != null) {
+			startConditionalMediation(signinFlowId.value, anonymousPasskeyOptions.value);
+		}
+	} else if (failedStep === 'passkey' && page.value === 'input') {
+		// 匿名 challenge は単回使用で、この失敗までに使い切られている可能性がある。入力画面では
+		// オートフィルが唯一のパスキー導線なので、セッションごと取り直して張り直す
+		await initSession();
 	}
 
 	nextTick(() => {
