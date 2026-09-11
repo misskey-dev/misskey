@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<!-- password入力 -->
-		<form class="_gaps_s" @submit.prevent="onSubmit">
+		<form class="_gaps_s" @submit.prevent="emit('passwordSubmitted', password)">
 			<!-- ブラウザ オートコンプリート用 -->
 			<input type="hidden" name="username" autocomplete="username" :value="user.username">
 
@@ -23,108 +23,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
 			</MkInput>
 
-			<div v-if="needCaptcha">
-				<MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
-				<MkCaptcha v-if="instance.enableMcaptcha" ref="mcaptcha" v-model="mCaptchaResponse" provider="mcaptcha" :sitekey="instance.mcaptchaSiteKey" :instanceUrl="instance.mcaptchaInstanceUrl"/>
-				<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
-				<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
-				<MkCaptcha v-if="instance.enableTestcaptcha" ref="testcaptcha" v-model="testcaptchaResponse" provider="testcaptcha" :sitekey="null"/>
-			</div>
-
-			<MkButton type="submit" :disabled="needCaptcha && captchaFailed" large primary rounded style="margin: 0 auto;" data-testid="signin-page-password-continue">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+			<MkButton type="submit" large primary rounded style="margin: 0 auto;" data-testid="signin-page-password-continue">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 		</form>
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-export type PwResponse = {
-	password: string;
-	captcha: {
-		hCaptchaResponse: string | null;
-		mCaptchaResponse: string | null;
-		reCaptchaResponse: string | null;
-		turnstileResponse: string | null;
-		testcaptchaResponse: string | null;
-	};
-};
-</script>
-
 <script setup lang="ts">
-import { ref, computed, useTemplateRef, defineAsyncComponent } from 'vue';
+import { ref, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 
-import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkCaptcha from '@/components/MkCaptcha.vue';
 
-const props = defineProps<{
+defineProps<{
 	user: Misskey.entities.UserDetailed;
-	needCaptcha: boolean;
 }>();
 
+// NOTE: パスワードはこのコンポーネントの外に出たあと保持されない。
+// /auth/signin/continue の 1 リクエストで使い切り、以降のステップでは再送しない
 const emit = defineEmits<{
-	(ev: 'passwordSubmitted', v: PwResponse): void;
+	(ev: 'passwordSubmitted', v: string): void;
 }>();
 
 const password = ref('');
-
-const hCaptcha = useTemplateRef('hcaptcha');
-const mCaptcha = useTemplateRef('mcaptcha');
-const reCaptcha = useTemplateRef('recaptcha');
-const turnstile = useTemplateRef('turnstile');
-const testcaptcha = useTemplateRef('testcaptcha');
-
-const hCaptchaResponse = ref<string | null>(null);
-const mCaptchaResponse = ref<string | null>(null);
-const reCaptchaResponse = ref<string | null>(null);
-const turnstileResponse = ref<string | null>(null);
-const testcaptchaResponse = ref<string | null>(null);
-
-const captchaFailed = computed((): boolean => {
-	return (
-		(instance.enableHcaptcha && !hCaptchaResponse.value) ||
-		(instance.enableMcaptcha && !mCaptchaResponse.value) ||
-		(instance.enableRecaptcha && !reCaptchaResponse.value) ||
-		(instance.enableTurnstile && !turnstileResponse.value) ||
-		(instance.enableTestcaptcha && !testcaptchaResponse.value)
-	);
-});
 
 function resetPassword(): void {
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkForgotPassword.vue')), {}, {
 		closed: () => dispose(),
 	});
 }
-
-function onSubmit() {
-	emit('passwordSubmitted', {
-		password: password.value,
-		captcha: {
-			hCaptchaResponse: hCaptchaResponse.value,
-			mCaptchaResponse: mCaptchaResponse.value,
-			reCaptchaResponse: reCaptchaResponse.value,
-			turnstileResponse: turnstileResponse.value,
-			testcaptchaResponse: testcaptchaResponse.value,
-		},
-	});
-}
-
-function resetCaptcha() {
-	hCaptcha.value?.reset();
-	mCaptcha.value?.reset();
-	reCaptcha.value?.reset();
-	turnstile.value?.reset();
-	testcaptcha.value?.reset();
-}
-
-defineExpose({
-	resetCaptcha,
-});
 </script>
 
 <style lang="scss" module>
@@ -143,7 +74,7 @@ defineExpose({
 	margin: 0 auto 0 auto;
 	width: 64px;
 	height: 64px;
-	background: #ddd;
+	background: color-mix(in srgb, var(--MI_THEME-fg), transparent 85%);
 	background-position: center;
 	background-size: cover;
 	border-radius: 100%;
@@ -152,37 +83,5 @@ defineExpose({
 .welcomeBackMessage {
 	text-align: center;
 	font-size: 1.1em;
-}
-
-.instanceManualSelectButton {
-	display: block;
-	text-align: center;
-	opacity: .7;
-	font-size: .8em;
-
-	&:hover {
-		text-decoration: underline;
-	}
-}
-
-.orHr {
-	position: relative;
-	margin: .4em auto;
-	width: 100%;
-	height: 1px;
-	background: var(--MI_THEME-divider);
-}
-
-.orMsg {
-	position: absolute;
-	top: -.6em;
-	display: inline-block;
-	padding: 0 1em;
-	background: var(--MI_THEME-panel);
-	font-size: 0.8em;
-	color: var(--MI_THEME-fgOnPanel);
-	margin: 0;
-	left: 50%;
-	transform: translateX(-50%);
 }
 </style>

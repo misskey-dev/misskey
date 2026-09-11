@@ -5289,6 +5289,10 @@ export interface Locale extends ILocale {
      */
     "passkeyVerificationSucceededButPasswordlessLoginDisabled": string;
     /**
+     * ログインの有効期限が切れました。最初からやり直してください。
+     */
+    "signinSessionExpired": string;
+    /**
      * フォロワーへのメッセージ
      */
     "messageToFollower": string;
