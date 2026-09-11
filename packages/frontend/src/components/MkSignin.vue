@@ -199,8 +199,7 @@ function isRetryableFailure(status: number, id: string | null): boolean {
 	switch (id) {
 		case ERR_INCORRECT_PASSWORD:
 		case ERR_INCORRECT_TOTP:
-		// レートリミットはセッションに触れる前に返る
-		case ERR_RATE_LIMIT:
+		case ERR_RATE_LIMIT: // レートリミットはセッションに触れる前に返る
 			return true;
 		// username ステップ (404) ならユーザー名を入れ直せるが、
 		// 匿名パスキー経路 (403) でユーザーが見つからない場合は challenge を使い切っている
