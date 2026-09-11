@@ -5193,6 +5193,10 @@ export interface Locale extends ILocale {
      */
     "useTotp": string;
     /**
+     * パスキーを使う
+     */
+    "usePasskey": string;
+    /**
      * バックアップコードを使う
      */
     "useBackupCode": string;

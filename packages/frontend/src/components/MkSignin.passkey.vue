@@ -58,7 +58,8 @@ async function queryKey() {
 }
 
 onMounted(() => {
-	queryKey();
+	// 利用者が OS のダイアログを閉じると reject される。画面上のボタンで再試行できる
+	queryKey().catch(() => {});
 });
 </script>
 
