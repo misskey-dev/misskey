@@ -577,9 +577,7 @@ export class UserEntityService implements OnModuleInit {
 			...(isDetailed && (isMe || iAmModerator) ? {
 				twoFactorEnabled: profile!.twoFactorEnabled,
 				usePasswordLessLogin: profile!.usePasswordLessLogin,
-				securityKeys: profile!.twoFactorEnabled
-					? this.userSecurityKeysRepository.countBy({ userId: user.id }).then(result => result >= 1)
-					: false,
+				securityKeys: this.userSecurityKeysRepository.countBy({ userId: user.id }).then(result => result >= 1),
 			} : {}),
 
 			...(isDetailed && isMe ? {
@@ -624,18 +622,16 @@ export class UserEntityService implements OnModuleInit {
 			...(opts.includeSecrets ? {
 				email: profile!.email,
 				emailVerified: profile!.emailVerified,
-				securityKeysList: profile!.twoFactorEnabled
-					? this.userSecurityKeysRepository.find({
-						where: {
-							userId: user.id,
-						},
-						select: {
-							id: true,
-							name: true,
-							lastUsed: true,
-						},
-					})
-					: [],
+				securityKeysList: this.userSecurityKeysRepository.find({
+					where: {
+						userId: user.id,
+					},
+					select: {
+						id: true,
+						name: true,
+						lastUsed: true,
+					},
+				}),
 			} : {}),
 
 			...(relation ? {
