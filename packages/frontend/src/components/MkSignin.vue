@@ -22,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:message="message"
 			:openOnRemote="openOnRemote"
 			:initialUsername="initialUsername"
+			:showPasskeyButton="showPasskeyButton"
 
 			@usernameSubmitted="onUsernameSubmitted"
 			@passkeyClick="onPasskeyLogin"
@@ -66,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, onMounted, ref, shallowRef, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import { browserSupportsWebAuthn } from '@simplewebauthn/browser';
+import { WebAuthnAbortService, browserSupportsWebAuthn, browserSupportsWebAuthnAutofill, startAuthentication } from '@simplewebauthn/browser';
 import type { PublicKeyCredentialRequestOptionsJSON, AuthenticationResponseJSON } from '@simplewebauthn/browser';
 import { authUrl } from '@@/js/config.js';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
@@ -144,6 +145,10 @@ const userInfo = ref<null | Misskey.entities.UserDetailed>(null);
 
 const credentialRequest = shallowRef<PublicKeyCredentialRequestOptionsJSON | null>(null);
 const totpAvailable = ref(false);
+
+/** Conditional Mediation が使えない環境で「パスキーでログイン」ボタンを出すか */
+const showPasskeyButton = ref(false);
+let passkeyAutofillAvailable = false;
 
 let initPromise: Promise<AuthApiFailure | null> | null = null;
 let renewalTimer: number | null = null;
@@ -232,6 +237,9 @@ function scheduleSessionRenewal(expiresAt: number): void {
 }
 
 async function doInitSession(): Promise<AuthApiFailure | null> {
+	// 古いセッションの challenge を握ったままの Conditional Mediation は必ず畳む
+	WebAuthnAbortService.cancelCeremony();
+
 	clearRenewalTimer();
 	signinFlowId.value = null;
 	anonymousPasskeyOptions.value = null;
@@ -242,8 +250,38 @@ async function doInitSession(): Promise<AuthApiFailure | null> {
 	signinFlowId.value = res.body.sessionId;
 	anonymousPasskeyOptions.value = res.body.passkeyOptions;
 	scheduleSessionRenewal(res.body.expiresAt);
+	startConditionalMediation(res.body.sessionId, res.body.passkeyOptions);
 
 	return null;
+}
+
+/**
+ * Conditional Mediation を開始する。オートフィルからパスキーを選ぶとログインが完了する。
+ *
+ * `startAuthentication` はオートフィルが選ばれるまで解決しないので await してはいけない。
+ * 中断は `WebAuthnAbortService.cancelCeremony()` で行う (`signal` は受け取らない)。
+ * `verifyBrowserAutofillInput` は `autocomplete` の末尾が `webauthn` の `<input>` が DOM に
+ * 無いと throw するので、MkSignin.input.vue のユーザー名欄が描画されてから開始する。
+ */
+function startConditionalMediation(sessionId: string, options: PublicKeyCredentialRequestOptionsJSON): void {
+	if (!passkeyAutofillAvailable) return;
+
+	nextTick(() => {
+		if (signinFlowId.value !== sessionId || page.value !== 'input') return;
+
+		startAuthentication({
+			optionsJSON: options,
+			useBrowserAutofill: true,
+		}).then((credential) => {
+			// 匿名 challenge はユーザー未確定の間しか使えない。オートフィルが遅れて解決した場合に
+			// 備え、開始時のセッションのままかを必ず確認する
+			if (signinFlowId.value !== sessionId || page.value !== 'input') return;
+
+			return continueSignin({ passkeyCredential: credential });
+		}).catch(() => {
+			// ユーザーによるキャンセル、または cancelCeremony による中断。どちらも何もしない
+		});
+	});
 }
 
 /** セッションを発行する。同時に走った呼び出しは 1 本にまとめる */
@@ -280,10 +318,11 @@ async function restartSession(): Promise<void> {
 	await initSession();
 }
 
-/** ページ遷移。入力画面を離れるときはセッションの作り直しを止める */
+/** ページ遷移。入力画面を離れるときはセッションの作り直しと Conditional Mediation を止める */
 function setPage(next: SigninPage): void {
 	if (page.value === 'input' && next !== 'input') {
 		clearRenewalTimer();
+		WebAuthnAbortService.cancelCeremony();
 	}
 	page.value = next;
 }
@@ -291,6 +330,10 @@ function setPage(next: SigninPage): void {
 
 //#region 各ステップ
 async function onUsernameSubmitted(step: Omit<Misskey.entities.SigninContinueRequestUsername, 'sessionId'>): Promise<void> {
+	// ここで畳まないと、後からオートフィルが解決した credential が「ユーザー確定済み」の
+	// セッションへ送られ、匿名 challenge が見つからずセッションごとハード失敗する
+	WebAuthnAbortService.cancelCeremony();
+
 	// users/show を待つ間も塞ぐ。username ステップの二重送信はサーバーがセッションごと破棄する
 	waiting.value = true;
 
@@ -538,11 +581,15 @@ async function onSigninApiError(failure: AuthApiFailure): Promise<void> {
 	});
 }
 
-onMounted(() => {
-	initSession();
+onMounted(async () => {
+	passkeyAutofillAvailable = browserSupportsWebAuthn() && await browserSupportsWebAuthnAutofill();
+	showPasskeyButton.value = browserSupportsWebAuthn() && !passkeyAutofillAvailable;
+
+	await initSession();
 });
 
 onBeforeUnmount(() => {
+	WebAuthnAbortService.cancelCeremony();
 	clearRenewalTimer();
 	signinFlowId.value = null;
 	anonymousPasskeyOptions.value = null;
