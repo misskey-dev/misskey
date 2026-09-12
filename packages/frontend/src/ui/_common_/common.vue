@@ -104,9 +104,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, ref, TransitionGroup } from 'vue';
 import * as Misskey from 'misskey-js';
+import { isSafeMode } from '@@/js/config.js';
 import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
-import { isSafeMode } from '@@/js/config.js';
 import { popups } from '@/os.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -407,7 +407,7 @@ if ($i) {
 		border-top-color: var(--MI_THEME-accent);
 		border-left-color: var(--MI_THEME-accent);
 		border-radius: 50%;
-		animation: progress-spinner 400ms linear infinite;
+		animation: progress-spinner 600ms linear infinite;
 	}
 }
 
