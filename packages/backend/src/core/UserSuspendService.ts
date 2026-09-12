@@ -13,7 +13,6 @@ import { DI } from '@/di-symbols.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { RelationshipJobData } from '@/queue/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 @Injectable()
@@ -38,9 +37,7 @@ export class UserSuspendService {
 
 	@bindThis
 	public async suspend(user: MiUser, moderator: MiUser): Promise<void> {
-		await this.usersRepository.update(user.id, {
-			isSuspended: true,
-		});
+		await this.updateSuspendedState(user.id, true);
 
 		this.moderationLogService.log(moderator, 'suspend', {
 			userId: user.id,
@@ -50,15 +47,12 @@ export class UserSuspendService {
 
 		(async () => {
 			await this.postSuspend(user).catch(_ => {});
-			await this.unFollowAll(user).catch(_ => {});
 		})();
 	}
 
 	@bindThis
 	public async unsuspend(user: MiUser, moderator: MiUser): Promise<void> {
-		await this.usersRepository.update(user.id, {
-			isSuspended: false,
-		});
+		await this.updateSuspendedState(user.id, false);
 
 		this.moderationLogService.log(moderator, 'unsuspend', {
 			userId: user.id,
@@ -145,24 +139,14 @@ export class UserSuspendService {
 	}
 
 	@bindThis
-	private async unFollowAll(follower: MiUser) {
-		const followings = await this.followingsRepository.find({
-			where: {
-				followerId: follower.id,
-				followeeId: Not(IsNull()),
-			},
+	private async updateSuspendedState(userId: MiUser['id'], isSuspended: boolean): Promise<void> {
+		await this.usersRepository.manager.transaction(async manager => {
+			// The user row is also locked before inserting a following.
+			await manager.getRepository(this.usersRepository.target).update(userId, { isSuspended });
+			await manager.getRepository(this.followingsRepository.target).update(
+				{ followerId: userId },
+				{ isFollowerSuspended: isSuspended },
+			);
 		});
-
-		const jobs: RelationshipJobData[] = [];
-		for (const following of followings) {
-			if (following.followeeId && following.followerId) {
-				jobs.push({
-					from: { id: following.followerId },
-					to: { id: following.followeeId },
-					silent: true,
-				});
-			}
-		}
-		this.queueService.createUnfollowJob(jobs);
 	}
 }
