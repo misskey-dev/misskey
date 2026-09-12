@@ -113,7 +113,7 @@ async function registerTOTP(): Promise<void> {
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
 
-	const twoFactorData = await os.apiWithDialog('i/2fa/register', {
+	const twoFactorData = await os.apiWithDialog('i/2fa/totp/register', {
 		password: auth.result.password,
 		token: auth.result.token,
 	});
@@ -129,7 +129,7 @@ async function unregisterTOTP(): Promise<void> {
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
 
-	os.apiWithDialog('i/2fa/unregister', {
+	os.apiWithDialog('i/2fa/totp/remove', {
 		password: auth.result.password,
 		token: auth.result.token,
 	}).then(res => {
@@ -168,7 +168,7 @@ async function unregisterKey(key: NonNullable<Misskey.entities.MeDetailedOnly['s
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
 
-	await os.apiWithDialog('i/2fa/remove-key', {
+	await os.apiWithDialog('i/2fa/passkey/remove', {
 		password: auth.result.password,
 		token: auth.result.token,
 		credentialId: key.id,
@@ -186,7 +186,7 @@ async function renameKey(key: NonNullable<Misskey.entities.MeDetailedOnly['secur
 	});
 	if (name.canceled) return;
 
-	await os.apiWithDialog('i/2fa/update-key', {
+	await os.apiWithDialog('i/2fa/passkey/update', {
 		name: name.result,
 		credentialId: key.id,
 	});
@@ -196,7 +196,7 @@ async function addSecurityKey() {
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
 
-	const registrationOptions = await os.apiWithDialog('i/2fa/register-key', {
+	const registrationOptions = await os.apiWithDialog('i/2fa/passkey/register', {
 		password: auth.result.password,
 		token: auth.result.token,
 	});
@@ -221,7 +221,7 @@ async function addSecurityKey() {
 	const auth2 = await os.authenticateDialog();
 	if (auth2.canceled) return;
 
-	await os.apiWithDialog('i/2fa/key-done', {
+	await os.apiWithDialog('i/2fa/passkey/done', {
 		password: auth2.result.password,
 		token: auth2.result.token,
 		name: name.result,
@@ -230,7 +230,7 @@ async function addSecurityKey() {
 }
 
 async function updatePasswordLessLogin(value: boolean) {
-	await os.apiWithDialog('i/2fa/password-less', {
+	await os.apiWithDialog('i/2fa/passkey/password-less', {
 		value,
 	});
 }
