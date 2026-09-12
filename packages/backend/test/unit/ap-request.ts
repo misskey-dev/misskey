@@ -98,7 +98,7 @@ describe('ap-request', () => {
 		assert.deepStrictEqual(httpSignature.verifySignature(parsed, keypair.publicKey), true);
 	});
 
-	test('request-target omits hash and does not add empty query', async () => {
+	test('request-target omits hash and preserves empty query delimiter', async () => {
 		const keypair = await genRsaKeyPair();
 		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
 
@@ -108,6 +108,13 @@ describe('ap-request', () => {
 			additionalHeaders: { 'User-Agent': 'UA' },
 		});
 		assert.ok(withHash.signingString.split('\n').includes('(request-target): get /users/alice?page=2'));
+
+		const emptyQueryWithHash = await ApRequestCreator.createSignedGet({
+			key,
+			url: 'https://example.com/outbox?#ignored',
+			additionalHeaders: { 'User-Agent': 'UA' },
+		});
+		assert.ok(emptyQueryWithHash.signingString.split('\n').includes('(request-target): get /outbox?'));
 
 		const withoutQuery = await ApRequestCreator.createSignedGet({
 			key,
