@@ -7,6 +7,7 @@ import { ServerService } from '@/server/ServerService.js';
 import { loadConfig } from '@/config.js';
 import { NestLogger } from '@/NestLogger.js';
 import { INestApplicationContext } from '@nestjs/common';
+import type { FastifyInstance } from 'fastify';
 
 const config = loadConfig();
 const originEnv = JSON.stringify(process.env);
@@ -15,6 +16,7 @@ process.env.NODE_ENV = 'test';
 
 let app: INestApplicationContext;
 let serverService: ServerService;
+let controller: FastifyInstance | undefined;
 
 /**
  * テスト用のサーバインスタンスを起動する
@@ -42,6 +44,10 @@ export async function setup() {
  * テスト用のサーバインスタンスを停止する
  */
 export async function teardown() {
+	// 先に閉じないとリスナーが残り、また停止処理中に/env-resetを受け付けてアプリが再生成されうる
+	await controller?.close();
+	controller = undefined;
+
 	await serverService.dispose();
 	await app.close();
 	await killTestServer();
@@ -68,6 +74,7 @@ async function killTestServer() {
  */
 async function startControllerEndpoints(port = config.port + 1000) {
 	const fastify = Fastify();
+	controller = fastify;
 
 	fastify.post<{ Body: { key?: string, value?: string } }>('/env', async (req, res) => {
 		console.log(req.body);
