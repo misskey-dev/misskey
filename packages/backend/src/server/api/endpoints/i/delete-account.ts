@@ -9,7 +9,7 @@ import type { UsersRepository, UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DeleteAccountService } from '@/core/DeleteAccountService.js';
 import { DI } from '@/di-symbols.js';
-import { UserAuthService } from '@/core/UserAuthService.js';
+import { TotpService } from '@/core/TotpService.js';
 
 export const meta = {
 	requireCredential: true,
@@ -35,7 +35,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
-		private userAuthService: UserAuthService,
+		private totpService: TotpService,
 		private deleteAccountService: DeleteAccountService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -48,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				try {
-					await this.userAuthService.twoFactorAuthenticate(profile, token);
+					await this.totpService.twoFactorAuthenticate(profile, token);
 				} catch (_) {
 					throw new Error('authentication failed');
 				}

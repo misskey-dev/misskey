@@ -70,38 +70,6 @@ describe('Endpoints', () => {
 		});
 	});
 
-	describe('signin-flow', () => {
-		test('間違ったパスワードでサインインできない', async () => {
-			const res = await api('signin-flow', {
-				username: 'test1',
-				password: 'bar',
-			});
-
-			assert.strictEqual(res.status, 403);
-		});
-
-		test('クエリをインジェクションできない', async () => {
-			const res = await api('signin-flow', {
-				username: 'test1',
-				// @ts-expect-error password must be string
-				password: {
-					$gt: '',
-				},
-			});
-
-			assert.strictEqual(res.status, 400);
-		});
-
-		test('正しい情報でサインインできる', async () => {
-			const res = await api('signin-flow', {
-				username: 'test1',
-				password: 'test1',
-			});
-
-			assert.strictEqual(res.status, 200);
-		});
-	});
-
 	describe('i/update', () => {
 		test('アカウント設定を更新できる', async () => {
 			const myName = '大室櫻子';

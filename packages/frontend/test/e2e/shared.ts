@@ -74,6 +74,21 @@ export async function waitApiResponse(page: Page, path: string, timeout = 30_000
 	}, { timeout });
 }
 
+/**
+ * サインインの完了を待つ。どのステップも同じ `POST /auth/signin/continue` を叩くので、
+ * パスだけで待つと途中のステップの応答で解決してしまう。`finished: true` の応答まで待つ。
+ */
+export async function waitSigninFinished(page: Page, timeout = 30_000): Promise<void> {
+	await page.waitForResponse(async (response) => {
+		if (!response.url().endsWith('/auth/signin/continue')) return false;
+		if (response.request().method() !== 'POST') return false;
+		if (!response.ok()) return false;
+
+		const body = await response.json().catch(() => null) as { finished?: boolean } | null;
+		return body?.finished === true;
+	}, { timeout });
+}
+
 export async function signIn(page: Page, baseUrl: string, username: string, password: string): Promise<void> {
 	await visitHome(page, baseUrl);
 	await page.getByTestId('signin').click();
@@ -82,7 +97,7 @@ export async function signIn(page: Page, baseUrl: string, username: string, pass
 	await page.keyboard.press('Enter');
 	await page.getByTestId('signin-page-password').waitFor({ state: 'visible', timeout: 10_000 });
 	await locateMkInput(page, 'signin-password').fill(password);
-	const signinResponse = waitApiResponse(page, '/api/signin-flow');
+	const signinResponse = waitSigninFinished(page);
 	await page.keyboard.press('Enter');
 	await signinResponse;
 }

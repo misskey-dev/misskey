@@ -5,23 +5,18 @@ import {
 	AdminRolesCreateResponse,
 	EmptyRequest,
 	EmptyResponse,
-	I2faRegisterKeyRequest,
-	I2faKeyDoneResponse,
+	I2faPasskeyRegisterRequest,
+	I2faPasskeyDoneResponse,
 	UsersShowRequest,
 } from './autogen/entities.js';
 import {
 	PartialRolePolicyOverride,
-	SigninFlowRequest,
-	SigninFlowResponse,
-	SigninWithPasskeyInitResponse,
-	SigninWithPasskeyRequest,
-	SigninWithPasskeyResponse,
 	SignupPendingRequest,
 	SignupPendingResponse,
 	SignupRequest,
 	SignupResponse,
-	I2faRegisterKeyResponse,
-	I2faKeyDoneRequest,
+	I2faPasskeyRegisterResponse,
+	I2faPasskeyDoneRequest,
 } from './entities.js';
 
 type Overwrite<T, U extends { [Key in keyof T]?: unknown }> = Omit<
@@ -92,34 +87,13 @@ export type Endpoints = Overwrite<
 			req: SignupPendingRequest;
 			res: SignupPendingResponse;
 		},
-		// api.jsonには載せないものなのでここで定義
-		'signin-flow': {
-			req: SigninFlowRequest;
-			res: SigninFlowResponse;
+		'i/2fa/passkey/register': {
+			req: I2faPasskeyRegisterRequest;
+			res: I2faPasskeyRegisterResponse;
 		},
-		'signin-with-passkey': {
-			req: SigninWithPasskeyRequest;
-			res: {
-				$switch: {
-					$cases: [
-						[
-							{
-								context: string;
-							},
-							SigninWithPasskeyResponse,
-						],
-					];
-					$default: SigninWithPasskeyInitResponse;
-				},
-			},
-		},
-		'i/2fa/register-key': {
-			req: I2faRegisterKeyRequest;
-			res: I2faRegisterKeyResponse;
-		},
-		'i/2fa/key-done': {
-			req: I2faKeyDoneRequest;
-			res: I2faKeyDoneResponse;
+		'i/2fa/passkey/done': {
+			req: I2faPasskeyDoneRequest;
+			res: I2faPasskeyDoneResponse;
 		},
 		'admin/roles/create': {
 			req: Overwrite<AdminRolesCreateRequest, { policies: PartialRolePolicyOverride }>;

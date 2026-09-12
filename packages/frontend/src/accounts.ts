@@ -200,7 +200,7 @@ export async function switchAccount(host: string, id: string) {
 		login(token);
 	} else {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {}, {
-			done: async (res: Misskey.entities.SigninFlowResponse & { finished: true }) => {
+			done: async (res: Misskey.entities.SigninContinueResponse & { finished: true }) => {
 				store.set('accountTokens', { ...store.s.accountTokens, [host + '/' + res.id]: res.i });
 				login(res.i);
 			},
@@ -260,7 +260,7 @@ export async function getAccountMenu(opts: {
 					const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {
 						initialUsername: username,
 					}, {
-						done: async (res: Misskey.entities.SigninFlowResponse & { finished: true }) => {
+						done: async (res: Misskey.entities.SigninContinueResponse & { finished: true }) => {
 							store.set('accountTokens', { ...store.s.accountTokens, [host + '/' + res.id]: res.i });
 
 							if (callback) {
@@ -344,7 +344,7 @@ export async function getAccountMenu(opts: {
 export function getAccountWithSigninDialog(): Promise<{ id: string, token: string } | null> {
 	return new Promise((resolve) => {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {}, {
-			done: async (res: Misskey.entities.SigninFlowResponse & { finished: true }) => {
+			done: async (res: Misskey.entities.SigninContinueResponse & { finished: true }) => {
 				const user = await fetchAccount(res.i, res.id, true);
 				await addAccount(host, user, res.i);
 				resolve({ id: res.id, token: res.i });

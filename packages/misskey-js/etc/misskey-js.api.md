@@ -1465,33 +1465,13 @@ export type Endpoints = Overwrite<Endpoints_2, {
         req: SignupPendingRequest;
         res: SignupPendingResponse;
     };
-    'signin-flow': {
-        req: SigninFlowRequest;
-        res: SigninFlowResponse;
+    'i/2fa/passkey/register': {
+        req: I2faPasskeyRegisterRequest;
+        res: I2faPasskeyRegisterResponse_2;
     };
-    'signin-with-passkey': {
-        req: SigninWithPasskeyRequest;
-        res: {
-            $switch: {
-                $cases: [
-                [
-                    {
-                    context: string;
-                },
-                SigninWithPasskeyResponse
-                ]
-                ];
-                $default: SigninWithPasskeyInitResponse;
-            };
-        };
-    };
-    'i/2fa/register-key': {
-        req: I2faRegisterKeyRequest;
-        res: I2faRegisterKeyResponse_2;
-    };
-    'i/2fa/key-done': {
-        req: I2faKeyDoneRequest_2;
-        res: I2faKeyDoneResponse;
+    'i/2fa/passkey/done': {
+        req: I2faPasskeyDoneRequest_2;
+        res: I2faPasskeyDoneResponse;
     };
     'admin/roles/create': {
         req: Overwrite<AdminRolesCreateRequest, {
@@ -1527,13 +1507,17 @@ declare namespace entities {
         SignupResponse,
         SignupPendingRequest,
         SignupPendingResponse,
-        SigninFlowRequest,
-        SigninFlowResponse,
-        SigninWithPasskeyRequest,
-        SigninWithPasskeyInitResponse,
-        SigninWithPasskeyResponse,
-        I2faRegisterKeyResponse_2 as I2faRegisterKeyResponse,
-        I2faKeyDoneRequest_2 as I2faKeyDoneRequest,
+        SigninCaptchaResponse,
+        SigninInitRequest,
+        SigninInitResponse,
+        SigninContinueRequestUsername,
+        SigninContinueRequestPassword,
+        SigninContinueRequestTotp,
+        SigninContinueRequestPasskey,
+        SigninContinueRequest,
+        SigninContinueResponse,
+        I2faPasskeyRegisterResponse_2 as I2faPasskeyRegisterResponse,
+        I2faPasskeyDoneRequest_2 as I2faPasskeyDoneRequest,
         PartialRolePolicyOverride,
         EmptyRequest,
         EmptyResponse,
@@ -1939,16 +1923,16 @@ declare namespace entities {
         HashtagsUsersRequest,
         HashtagsUsersResponse,
         IResponse,
-        I2faDoneRequest,
-        I2faDoneResponse,
-        I2faKeyDoneResponse,
-        I2faPasswordLessRequest,
-        I2faRegisterRequest,
-        I2faRegisterResponse,
-        I2faRegisterKeyRequest,
-        I2faRemoveKeyRequest,
-        I2faUnregisterRequest,
-        I2faUpdateKeyRequest,
+        I2faPasskeyDoneResponse,
+        I2faPasskeyPasswordLessRequest,
+        I2faPasskeyRegisterRequest,
+        I2faPasskeyRemoveRequest,
+        I2faPasskeyUpdateRequest,
+        I2faTotpDoneRequest,
+        I2faTotpDoneResponse,
+        I2faTotpRegisterRequest,
+        I2faTotpRegisterResponse,
+        I2faTotpRemoveRequest,
         IAppsRequest,
         IAppsResponse,
         IAuthorizedAppsRequest,
@@ -2543,13 +2527,7 @@ type HashtagsUsersRequest = operations['hashtags___users']['requestBody']['conte
 type HashtagsUsersResponse = operations['hashtags___users']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type I2faDoneRequest = operations['i___2fa___done']['requestBody']['content']['application/json'];
-
-// @public (undocumented)
-type I2faDoneResponse = operations['i___2fa___done']['responses']['200']['content']['application/json'];
-
-// @public (undocumented)
-type I2faKeyDoneRequest_2 = {
+type I2faPasskeyDoneRequest_2 = {
     password: string;
     token?: string | null;
     name: string;
@@ -2557,31 +2535,37 @@ type I2faKeyDoneRequest_2 = {
 };
 
 // @public (undocumented)
-type I2faKeyDoneResponse = operations['i___2fa___key-done']['responses']['200']['content']['application/json'];
+type I2faPasskeyDoneResponse = operations['i___2fa___passkey___done']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type I2faPasswordLessRequest = operations['i___2fa___password-less']['requestBody']['content']['application/json'];
+type I2faPasskeyPasswordLessRequest = operations['i___2fa___passkey___password-less']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type I2faRegisterKeyRequest = operations['i___2fa___register-key']['requestBody']['content']['application/json'];
+type I2faPasskeyRegisterRequest = operations['i___2fa___passkey___register']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type I2faRegisterKeyResponse_2 = PublicKeyCredentialCreationOptionsJSON_2;
+type I2faPasskeyRegisterResponse_2 = PublicKeyCredentialCreationOptionsJSON_2;
 
 // @public (undocumented)
-type I2faRegisterRequest = operations['i___2fa___register']['requestBody']['content']['application/json'];
+type I2faPasskeyRemoveRequest = operations['i___2fa___passkey___remove']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type I2faRegisterResponse = operations['i___2fa___register']['responses']['200']['content']['application/json'];
+type I2faPasskeyUpdateRequest = operations['i___2fa___passkey___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type I2faRemoveKeyRequest = operations['i___2fa___remove-key']['requestBody']['content']['application/json'];
+type I2faTotpDoneRequest = operations['i___2fa___totp___done']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type I2faUnregisterRequest = operations['i___2fa___unregister']['requestBody']['content']['application/json'];
+type I2faTotpDoneResponse = operations['i___2fa___totp___done']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type I2faUpdateKeyRequest = operations['i___2fa___update-key']['requestBody']['content']['application/json'];
+type I2faTotpRegisterRequest = operations['i___2fa___totp___register']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faTotpRegisterResponse = operations['i___2fa___totp___register']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type I2faTotpRemoveRequest = operations['i___2fa___totp___remove']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IAppsRequest = operations['i___apps']['requestBody']['content']['application/json'];
@@ -3406,49 +3390,61 @@ type ServerStatsLog = ServerStats[];
 type Signin = components['schemas']['Signin'];
 
 // @public (undocumented)
-type SigninFlowRequest = {
-    username: string;
-    password?: string;
-    token?: string;
-    credential?: AuthenticationResponseJSON;
-    'hcaptcha-response'?: string | null;
-    'g-recaptcha-response'?: string | null;
-    'turnstile-response'?: string | null;
-    'm-captcha-response'?: string | null;
-    'testcaptcha-response'?: string | null;
+type SigninCaptchaResponse = {
+    type: 'hcaptcha' | 'recaptcha-v2' | 'turnstile' | 'm-captcha' | 'testcaptcha';
+    response: string;
 };
 
 // @public (undocumented)
-type SigninFlowResponse = {
+type SigninContinueRequest = SigninContinueRequestUsername | SigninContinueRequestPassword | SigninContinueRequestTotp | SigninContinueRequestPasskey;
+
+// @public (undocumented)
+type SigninContinueRequestPasskey = SigninContinueBase & {
+    passkeyCredential: AuthenticationResponseJSON;
+};
+
+// @public (undocumented)
+type SigninContinueRequestPassword = SigninContinueBase & {
+    password: string;
+};
+
+// @public (undocumented)
+type SigninContinueRequestTotp = SigninContinueBase & {
+    token: string;
+};
+
+// Warning: (ae-forgotten-export) The symbol "SigninContinueBase" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+type SigninContinueRequestUsername = SigninContinueBase & {
+    username: string;
+    captchaResponse?: SigninCaptchaResponse;
+};
+
+// @public (undocumented)
+type SigninContinueResponse = {
+    finished: false;
+    next: 'password' | 'totp';
+    expiresAt: number;
+} | {
+    finished: false;
+    next: 'passkey' | 'totpOrPasskey';
+    expiresAt: number;
+    passkeyOptions: PublicKeyCredentialRequestOptionsJSON_2;
+} | {
     finished: true;
     id: User['id'];
     i: string;
-} | {
-    finished: false;
-    next: 'captcha' | 'password' | 'totp';
-} | {
-    finished: false;
-    next: 'passkey';
-    authRequest: PublicKeyCredentialRequestOptionsJSON_2;
 };
 
 // @public (undocumented)
-type SigninWithPasskeyInitResponse = {
-    option: PublicKeyCredentialRequestOptionsJSON_2;
-    context: string;
-};
+type SigninInitRequest = Record<string, never>;
 
 // @public (undocumented)
-type SigninWithPasskeyRequest = {
-    credential?: AuthenticationResponseJSON;
-    context?: string;
-};
-
-// @public (undocumented)
-type SigninWithPasskeyResponse = {
-    signinResponse: SigninFlowResponse & {
-        finished: true;
-    };
+type SigninInitResponse = {
+    sessionId: string;
+    expiresAt: number;
+    passkeyOptions: PublicKeyCredentialRequestOptionsJSON_2;
 };
 
 // @public (undocumented)

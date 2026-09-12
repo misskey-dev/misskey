@@ -28,6 +28,17 @@ import type {
 
 @Injectable()
 export class WebAuthnService {
+	/** 登録 challenge の寿命(秒)。モーダル上で数秒〜十数秒で解決するので短くてよい */
+	private static readonly CHALLENGE_TTL = 90;
+
+	/**
+	 * サインインフローで使う challenge の寿命(秒)。SigninApiService の SIGNIN_SESSION_TTL と揃えること。
+	 * フローの寿命より短いと、Conditional Mediation の待機中や TOTP 画面からパスキーへ切り替えた
+	 * ところで challenge だけが先に切れて失敗する。
+	 * リプレイ防止は TTL ではなく単回使用 (getdel) と origin / RPID バインドで担保している。
+	 */
+	private static readonly SIGNIN_CHALLENGE_TTL = 600;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -76,7 +87,7 @@ export class WebAuthnService {
 			},
 		});
 
-		await this.redisClient.setex(`webauthn:registrationChallenge:${userId}`, 90, registrationOptions.challenge);
+		await this.redisClient.setex(`webauthn:registrationChallenge:${userId}`, WebAuthnService.CHALLENGE_TTL, registrationOptions.challenge);
 
 		return registrationOptions;
 	}
@@ -138,6 +149,10 @@ export class WebAuthnService {
 		};
 	}
 
+	/**
+	 * ユーザーが確定したあとの認証を開始する。呼び出し元はサインインフローだけなので、
+	 * challenge の寿命もフローに合わせる。
+	 */
 	@bindThis
 	public async initiateAuthentication(userId: MiUser['id']): Promise<PublicKeyCredentialRequestOptionsJSON> {
 		const relyingParty = this.getRelyingParty();
@@ -158,40 +173,41 @@ export class WebAuthnService {
 			userVerification: 'preferred',
 		});
 
-		await this.redisClient.setex(`webauthn:authenticationChallenge:${userId}`, 90, authenticationOptions.challenge);
+		await this.redisClient.setex(`webauthn:authenticationChallenge:${userId}`, WebAuthnService.SIGNIN_CHALLENGE_TTL, authenticationOptions.challenge);
 
 		return authenticationOptions;
 	}
 
 	/**
-	 * Initiate Passkey Auth (Without specifying user)
+	 * ユーザーを指定しない (誰がサインインしようとしているか分からない) 認証を開始する。
+	 * challenge はサインインフローのセッションに束ねる。
 	 * @returns authenticationOptions
 	 */
 	@bindThis
-	public async initiateSignInWithPasskeyAuthentication(context: string): Promise<PublicKeyCredentialRequestOptionsJSON> {
-		const relyingParty = await this.getRelyingParty();
+	public async initiateAnonymousAuthentication(signinFlowId: string): Promise<PublicKeyCredentialRequestOptionsJSON> {
+		const relyingParty = this.getRelyingParty();
 
 		const authenticationOptions = await generateAuthenticationOptions({
 			rpID: relyingParty.rpId,
 			userVerification: 'preferred',
 		});
 
-		await this.redisClient.setex(`webauthn:passkeyChallenge:${context}`, 90, authenticationOptions.challenge);
+		await this.redisClient.setex(`webauthn:signinChallenge:${signinFlowId}`, WebAuthnService.SIGNIN_CHALLENGE_TTL, authenticationOptions.challenge);
 
 		return authenticationOptions;
 	}
 
 	/**
-	 * Verify Webauthn AuthenticationCredential
+	 * ユーザーを指定しない認証の AuthenticationCredential を検証する。
 	 * @throws IdentifiableError
 	 * @returns If the challenge is successful, return the user ID. Otherwise, return null.
 	 */
 	@bindThis
-	public async verifySignInWithPasskeyAuthentication(context: string, response: AuthenticationResponseJSON): Promise<MiUser['id'] | null> {
-		const challenge = await this.redisClient.getdel(`webauthn:passkeyChallenge:${context}`);
+	public async verifyAnonymousAuthentication(signinFlowId: string, response: AuthenticationResponseJSON): Promise<MiUser['id'] | null> {
+		const challenge = await this.redisClient.getdel(`webauthn:signinChallenge:${signinFlowId}`);
 
 		if (!challenge) {
-			throw new IdentifiableError('2d16e51c-007b-4edd-afd2-f7dd02c947f6', `challenge '${context}' not found`);
+			throw new IdentifiableError('2d16e51c-007b-4edd-afd2-f7dd02c947f6', 'challenge not found');
 		}
 
 		const key = await this.userSecurityKeysRepository.findOneBy({
@@ -202,7 +218,7 @@ export class WebAuthnService {
 			throw new IdentifiableError('36b96a7d-b547-412d-aeed-2d611cdc8cdc', 'Unknown Webauthn key');
 		}
 
-		const relyingParty = await this.getRelyingParty();
+		const relyingParty = this.getRelyingParty();
 
 		let verification;
 		try {
