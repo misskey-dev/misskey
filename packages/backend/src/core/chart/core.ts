@@ -21,12 +21,14 @@ const COLUMN_PREFIX = '___' as const;
 const UNIQUE_TEMP_COLUMN_PREFIX = 'unique_temp___' as const;
 const COLUMN_DELIMITER = '_' as const;
 
+type ValueRange = 'big' | 'medium' | 'small';
+
 type Schema = Record<string, {
 	uniqueIncrement?: boolean;
 
 	intersection?: string[] | ReadonlyArray<string>;
 
-	range?: 'big' | 'small' | 'medium';
+	range?: ValueRange;
 
 	// previousな値を引き継ぐかどうか
 	accumulate?: boolean;
@@ -61,6 +63,42 @@ const camelToSnake = (str: string): string => {
 };
 
 const removeDuplicates = (array: any[]) => Array.from(new Set(array));
+
+const COLUMN_RANGE_LIMITS = {
+	small: { min: -32768, max: 32767 }, // smallint
+	medium: { min: -2147483648, max: 2147483647 }, // integer
+} as const satisfies Partial<Record<ValueRange, { min: number; max: number; }>>;
+
+const getColumnRangeLimit = (range?: ValueRange): { min: number; max: number; } | null => {
+	return range === 'big' ? null : COLUMN_RANGE_LIMITS[range ?? 'medium'];
+};
+
+/**
+ * カラムの型が表現できる範囲に値を丸める。
+ * 範囲を超えた値を書き込もうとするとDBがエラーを返し、
+ * そのチャートの更新が以降ずっと失敗し続ける(=バッファが解放されない)ため、
+ * 精度を犠牲にしてでも更新自体は成功させる。
+ */
+const clampToColumnRange = (value: number, range?: ValueRange): number => {
+	const limit = getColumnRangeLimit(range);
+	if (limit == null) return value;
+	return Math.min(Math.max(value, limit.min), limit.max);
+};
+
+/**
+ * カラムを加減算するSQL式を作る。
+ * 結果がカラムの型の範囲を超える場合は上限/下限で頭打ちにする。
+ */
+const buildIncrementExpression = (columnName: string, value: number, range?: ValueRange): string => {
+	const limit = getColumnRangeLimit(range);
+	if (limit == null) {
+		return value > 0 ? `"${columnName}" + ${value}` : `"${columnName}" - ${Math.abs(value)}`;
+	}
+	// 加減算の途中でオーバーフローしないよう、bigintに広げてから丸める
+	return value > 0
+		? `LEAST("${columnName}"::bigint + ${value}, ${limit.max})`
+		: `GREATEST("${columnName}"::bigint - ${Math.abs(value)}, ${limit.min})`;
+};
 
 type Commit<S extends Schema> = {
 	[K in keyof S]?: S[K]['uniqueIncrement'] extends true ? string[] : number;
@@ -422,6 +460,13 @@ export default abstract class Chart<T extends Schema> {
 			return;
 		}
 
+		// バッファは書き込みを試みる前に切り離す。
+		// DBへの書き込みが失敗した場合、その分の集計は失われるが、
+		// バッファに残し続けると失敗し続けた場合に際限なく積み上がり、メモリリークになるため。
+		// (この処理が始まった後に追加された分は次回の書き込み対象になる)
+		const buffer = this.buffer;
+		this.buffer = [];
+
 		// TODO: 前の時間のログがbufferにあった場合のハンドリング
 		// 例えば、save が20分ごとに行われるとして、前回行われたのは 01:50 だったとする。
 		// 次に save が行われるのは 02:10 ということになるが、もし 01:55 に新規ログが buffer に追加されたとすると、
@@ -431,7 +476,7 @@ export default abstract class Chart<T extends Schema> {
 		const update = async (logHour: RawRecord<T>, logDay: RawRecord<T>): Promise<void> => {
 			const finalDiffs = {} as Record<string, number | string[]>;
 
-			for (const diff of this.buffer.filter(q => q.group == null || (q.group === logHour.group)).map(q => q.diff)) {
+			for (const diff of buffer.filter(q => q.group == null || (q.group === logHour.group)).map(q => q.diff)) {
 				for (const [k, v] of Object.entries(diff)) {
 					if (finalDiffs[k] == null) {
 						finalDiffs[k] = v;
@@ -450,10 +495,11 @@ export default abstract class Chart<T extends Schema> {
 			for (const [k, v] of Object.entries(finalDiffs)) {
 				if (typeof v === 'number') {
 					const name = COLUMN_PREFIX + k.replaceAll('.', COLUMN_DELIMITER) as string & keyof Columns<T>;
-					if (v > 0) queryForHour[name] = () => `"${name}" + ${v}`;
-					if (v < 0) queryForHour[name] = () => `"${name}" - ${Math.abs(v)}`;
-					if (v > 0) queryForDay[name] = () => `"${name}" + ${v}`;
-					if (v < 0) queryForDay[name] = () => `"${name}" - ${Math.abs(v)}`;
+					if (v !== 0) {
+						const exp = buildIncrementExpression(name, v, this.schema[k].range);
+						queryForHour[name] = () => exp;
+						queryForDay[name] = () => exp;
+					}
 				} else if (Array.isArray(v) && v.length > 0) { // ユニークインクリメント
 					const tempColumnName = UNIQUE_TEMP_COLUMN_PREFIX + k.replaceAll('.', COLUMN_DELIMITER) as string & keyof TempColumnsForUnique<T>;
 					// TODO: item をSQLエスケープ
@@ -471,8 +517,8 @@ export default abstract class Chart<T extends Schema> {
 					const tempColumnName = UNIQUE_TEMP_COLUMN_PREFIX + k.replaceAll('.', COLUMN_DELIMITER) as keyof TempColumnsForUnique<T>;
 					const cardinalityOfHour = new Set([...(v as string[]), ...(logHour[tempColumnName] as unknown as string[])]).size;
 					const cardinalityOfDay = new Set([...(v as string[]), ...(logDay[tempColumnName] as unknown as string[])]).size;
-					queryForHour[name] = cardinalityOfHour;
-					queryForDay[name] = cardinalityOfDay;
+					queryForHour[name] = clampToColumnRange(cardinalityOfHour, this.schema[k].range);
+					queryForDay[name] = clampToColumnRange(cardinalityOfDay, this.schema[k].range);
 				}
 			}
 
@@ -500,8 +546,8 @@ export default abstract class Chart<T extends Schema> {
 							if (!targetValuesForDay.has(v)) currentValuesForDay.delete(v);
 						});
 					}
-					queryForHour[name] = currentValuesForHour.size;
-					queryForDay[name] = currentValuesForDay.size;
+					queryForHour[name] = clampToColumnRange(currentValuesForHour.size, v.range);
+					queryForDay[name] = clampToColumnRange(currentValuesForDay.size, v.range);
 				}
 			}
 
@@ -520,12 +566,9 @@ export default abstract class Chart<T extends Schema> {
 			]);
 
 			this.logger.info(`${this.name + (logHour.group ? `:${logHour.group}` : '')}: Updated`);
-
-			// TODO: この一連の処理が始まった後に新たにbufferに入ったものは消さないようにする
-			this.buffer = this.buffer.filter(q => q.group != null && (q.group !== logHour.group));
 		};
 
-		const groups = removeDuplicates(this.buffer.map(log => log.group));
+		const groups = removeDuplicates(buffer.map(log => log.group));
 
 		await Promise.all(
 			groups.map(group =>
@@ -543,7 +586,7 @@ export default abstract class Chart<T extends Schema> {
 		const columns = {} as Record<keyof Columns<T>, number>;
 		for (const [k, v] of Object.entries(data) as ([keyof typeof data, number])[]) {
 			const name = COLUMN_PREFIX + (k as string).replaceAll('.', COLUMN_DELIMITER) as keyof Columns<T>;
-			columns[name] = v;
+			columns[name] = clampToColumnRange(v, this.schema[k as string].range);
 		}
 
 		if (Object.keys(columns).length === 0) {
