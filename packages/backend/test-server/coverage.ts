@@ -8,18 +8,13 @@ import type { TransformResult } from 'vite';
 import type { TestProject } from 'vitest/node';
 
 /**
- * e2eテスト用のサーバはvitestのglobalSetup、つまりvitestのメインプロセス上で動く。
- * 一方vitestのカバレッジ計測はテストファイルを実行するworker側でしか行われないので、
- * 何もしないとサーバ内で実行されたコード (= APIエンドポイントの実装そのもの) が
- * 一切カバレッジに計上されない。
- *
- * そこでここではV8のPrecise Coverageを自前で有効にし、レポート生成の直前に
- * vitest本体のカバレッジプロバイダの結果へ合流させる。
- * サーバはrolldownでバンドルした `built-test/*.js` を素のNodeで実行しているため、
- * 各チャンクに付随するsourcemapを使って `src/**\/*.ts` 単位へ変換する。
+ * e2eテスト用のサーバはvitestのglobalSetup (= メインプロセス) で動くため、
+ * worker側でしか行われないvitestのカバレッジ計測に乗らない。
+ * そこでV8のPrecise Coverageを自前で有効にし、レポート生成の直前に本体のカバレッジへ合流させる。
+ * サーバはバンドルした `built-test/*.js` を実行しているので、sourcemapで `src` 単位へ変換する。
  */
 
-/** バンドルの出力先 (`built-test`)。このファイルはそこへバンドルされる。 */
+/** バンドルの出力先 */
 const outputDir = dirname(fileURLToPath(import.meta.url));
 const srcDir = resolve(outputDir, '../src');
 
@@ -28,10 +23,8 @@ let profiling = false;
 
 /**
  * V8のPrecise Coverageの計測を開始する。
- *
- * モジュール評価時に走るコードも計測対象にするため、サーバ本体を読み込む前に呼ぶこと。
- * Node.js本体の `NODE_V8_COVERAGE` の実装と同じく、応答を待たずに同期的にdispatchする
- * (ここでawaitすると後続のモジュール評価が先行してしまう)。
+ * モジュール評価時に走るコードも対象にするため、サーバ本体を読み込む前に呼ぶこと。
+ * awaitすると後続のモジュール評価が先行してしまうので、応答は待たない。
  */
 export function startCoverage(): void {
 	if (profiling) return;
@@ -51,13 +44,9 @@ function stopCoverage(): void {
 	session.disconnect();
 }
 
-/**
- * サーバ側のカバレッジをvitestのレポートへ合流させるためのフックを仕掛ける。
- *
- * カバレッジが有効でない場合 (= 通常の `test:e2e`) は計測を止めてオーバーヘッドを避ける。
- */
+/** サーバ側のカバレッジをvitestのレポートへ合流させるフックを仕掛ける (無効なら計測を止める) */
 export async function setupCoverage(project: TestProject): Promise<void> {
-	// 起動時に生成済みのプロバイダがそのまま返る (未生成かつカバレッジ無効ならnull)
+	// 起動時に生成済みのものが返る (カバレッジ無効ならnull)
 	const provider = await project.vitest.createCoverageProvider();
 
 	if (provider == null || provider.name !== 'v8') {
@@ -65,7 +54,6 @@ export async function setupCoverage(project: TestProject): Promise<void> {
 		return;
 	}
 
-	// `name` がv8であることは上で確認済み
 	const v8Provider = provider as V8CoverageProvider;
 	const generateCoverage = v8Provider.generateCoverage.bind(v8Provider);
 
@@ -76,7 +64,7 @@ export async function setupCoverage(project: TestProject): Promise<void> {
 			const serverCoverageMap = await collectServerCoverage(project, v8Provider);
 			if (serverCoverageMap != null) (coverageMap as CoverageMapLike).merge(serverCoverageMap);
 		} catch (err) {
-			// カバレッジの収集に失敗してもe2eテストの結果自体は壊さない
+			// 収集に失敗してもテストの結果自体は壊さない
 			console.error('[test-server] failed to collect coverage of the test server:', err);
 		}
 
@@ -84,12 +72,17 @@ export async function setupCoverage(project: TestProject): Promise<void> {
 	};
 }
 
-/**
- * バンドルの実行結果をistanbulのカバレッジへ変換する。
- */
+/** バンドルの実行結果をistanbulのカバレッジへ変換する */
 async function collectServerCoverage(project: TestProject, provider: V8CoverageProvider): Promise<CoverageMapLike | null> {
+	// watchモードの2回目以降は計測が止まっている
+	if (!profiling) return null;
+
 	const collectStartedAt = performance.now();
 	const scripts = await takePreciseCoverage();
+
+	// 以降の変換処理自体が計測対象になると大幅に遅くなるので、取得できた時点で止める
+	stopCoverage();
+
 	const chunks: ScriptCoverageWithOffset[] = [];
 
 	for (const script of scripts) {
@@ -97,10 +90,10 @@ async function collectServerCoverage(project: TestProject, provider: V8CoverageP
 
 		const filename = fileURLToPath(script.url);
 		if (!isBundledChunk(filename)) continue;
-		// node_modules由来のチャンクを変換しても捨てるだけなので、srcを含むものに絞る
+		// srcを含まないチャンクは変換しても捨てるだけ
 		if (!await hasBackendSources(filename)) continue;
 
-		// 素のNodeがESMとしてそのまま評価しているので、ラッパーによるオフセットは無い
+		// 素のNodeがESMとして評価しているので、ラッパーによるオフセットは無い
 		chunks.push({ ...script, startOffset: 0 });
 	}
 
@@ -110,11 +103,11 @@ async function collectServerCoverage(project: TestProject, provider: V8CoverageP
 
 	const bundleProvider = new BundledCoverageProvider();
 	bundleProvider.initialize(project.vitest);
-	// 未実行ファイルの走査は本体のプロバイダが行うので、こちらでは走らせない
+	// 未実行ファイルの走査は本体のプロバイダが行う
 	bundleProvider.options.include = undefined;
-	// チャンク1つあたりのASTが大きいので、並列に処理させるとピークメモリが膨らむ
+	// チャンクのASTが大きいので、並列に処理させるとピークメモリが膨らむ
 	bundleProvider.options.processingConcurrency = 1;
-	// 中間ファイルが本体のプロバイダのものと衝突しないよう、別のディレクトリを使う
+	// 中間ファイルが本体のプロバイダのものと衝突しないようにする
 	bundleProvider.coverageFilesDirectory = resolve(bundleProvider.options.reportsDirectory, '.tmp-test-server');
 	await mkdir(bundleProvider.coverageFilesDirectory, { recursive: true });
 
@@ -126,18 +119,17 @@ async function collectServerCoverage(project: TestProject, provider: V8CoverageP
 			testFiles: ['test-server'],
 		});
 
-		const remapStartedAt = performance.now();
+		const convertStartedAt = performance.now();
 
-		// allTestsRunをfalseにして、未実行ファイルの走査 (本体側で実施済み) をスキップさせる
+		// allTestsRunをfalseにして未実行ファイルの走査をスキップさせる
 		const coverageMap = await bundleProvider.generateCoverage({ allTestsRun: false }) as CoverageMapLike;
 
-		// バンドルのsourcemapにはnode_modules由来のソースも含まれるので、
-		// 本体のプロバイダの `coverage.include` / `coverage.exclude` で絞り込む
+		// sourcemapにはnode_modules由来のソースも含まれるので、本体の設定で絞り込む
 		coverageMap.filter(filename => provider.isIncluded(filename));
 
-		// e2eの所要時間が伸びた際に、この後処理とProfilerの実行時オーバーヘッドの
-		// どちらが効いているのか切り分けられるようにしておく
-		console.log(`[test-server] coverage: collect ${toSeconds(collectDuration)}s (${scripts.length} scripts -> ${chunks.length} chunks), remap ${toSeconds(performance.now() - remapStartedAt)}s`);
+		const transformStartedAt = bundleProvider.transformStartedAt ?? performance.now();
+		const ranges = chunks.reduce((total, chunk) => total + chunk.functions.reduce((n, fn) => n + fn.ranges.length, 0), 0);
+		console.log(`[test-server] coverage: collect ${toSeconds(collectDuration)}s (${scripts.length} scripts -> ${chunks.length} chunks, ${ranges} ranges), merge ${toSeconds(transformStartedAt - convertStartedAt)}s, remap ${toSeconds(performance.now() - transformStartedAt)}s`);
 
 		return coverageMap;
 	} finally {
@@ -146,21 +138,21 @@ async function collectServerCoverage(project: TestProject, provider: V8CoverageP
 }
 
 class BundledCoverageProvider extends V8CoverageProvider {
-	/**
-	 * 変換対象はバンドル済みのチャンクのみ。
-	 * remap後のソース単位の絞り込みは、呼び出し側が本体のプロバイダの設定を使って行う。
-	 */
+	/** 変換フェーズの開始時刻 (所要時間の内訳用) */
+	transformStartedAt: number | undefined;
+
+	/** 変換対象はバンドル済みのチャンクのみ (ソース単位の絞り込みは呼び出し側で行う) */
 	override isIncluded(filename: string): boolean {
 		return isBundledChunk(filename);
 	}
 
 	/**
-	 * サーバはViteを介さずビルド済みのチャンクをそのまま実行しているため、
-	 * V8が返すオフセットはディスク上のファイルに対するものになる。
-	 * Viteの変換結果を返すとオフセットがずれてしまうので、
-	 * 生のコードと隣接する `.map` をそのまま渡す。
+	 * V8が返すオフセットはディスク上のファイルに対するものなので、
+	 * Viteの変換結果ではなく生のコードと隣接する `.map` を渡す。
 	 */
 	override async transformFile(url: string): Promise<TransformResult | null> {
+		this.transformStartedAt ??= performance.now();
+
 		const filename = url.startsWith('file://') ? fileURLToPath(url) : url;
 		if (!isBundledChunk(filename)) return null;
 
@@ -173,19 +165,13 @@ class BundledCoverageProvider extends V8CoverageProvider {
 	}
 }
 
-/** ファイル単位のカバレッジ除外ヒント (`istanbul` / `c8` / `v8` / `node:coverage` の ignore 指定) */
+/** ファイル単位のカバレッジ除外ヒント */
 const IGNORE_FILE_HINT = /(istanbul|[cv]8|node:coverage)(\s+ignore\s+)file(?=\W|$)/g;
 
 /**
  * チャンクに含まれるファイル単位の除外ヒントを無効化する。
- *
- * この手のヒントは本来ファイル1つを除外するものだが、バンドル後は複数のソースが
- * 1ファイルに同居しているため、1つでもあるとそのチャンク全体のカバレッジが
- * 丸ごと破棄されてしまう。巻き添えの方が被害が大きいので、
- * V8のオフセットがずれないよう同じ長さのまま大文字化して一致しないようにする。
- *
- * 現状 `src` にこの種のヒントは無いので実際に潰している指定は無いが、
- * 後から追加された場合やバンドル対象が広がった場合の保険として残している。
+ * 本来は1ファイルを除外するものだが、バンドル後は1つあるだけでそのチャンク全体の
+ * カバレッジが破棄されてしまう。オフセットを保つため同じ長さのまま一致しないようにする。
  */
 function neutralizeIgnoreFileHints(code: string): string {
 	return code.replace(IGNORE_FILE_HINT, (_, tool: string, separator: string) => `${tool}${separator}FILE`);
@@ -201,9 +187,6 @@ function isBundledChunk(filename: string): boolean {
 
 const backendSourcesCache = new Map<string, boolean>();
 
-/**
- * チャンクのsourcemapが `src` 配下のファイルを含むかどうか。
- */
 async function hasBackendSources(filename: string): Promise<boolean> {
 	const cached = backendSourcesCache.get(filename);
 	if (cached != null) return cached;
@@ -213,7 +196,7 @@ async function hasBackendSources(filename: string): Promise<boolean> {
 		const map = JSON.parse(await readFile(`${filename}.map`, 'utf-8')) as { sources?: (string | null)[] };
 		included = (map.sources ?? []).some(source => source != null && resolve(outputDir, source).startsWith(srcDir + sep));
 	} catch {
-		// sourcemapが無い (or 壊れている) チャンクは元のソースへ戻せないので対象外
+		// sourcemapが無いチャンクは元のソースへ戻せない
 		included = false;
 	}
 

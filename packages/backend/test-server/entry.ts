@@ -1,16 +1,12 @@
 import { setupCoverage, startCoverage } from './coverage.js';
 import type { TestProject } from 'vitest/node';
 
-// サーバ本体より先にV8のカバレッジ計測を開始する。
-// こうしないとNestJSのデコレータ適用などモジュール評価時に走るコードを取りこぼす。
+// NestJSのデコレータ適用などモジュール評価時に走るコードも計測対象にするため、
+// サーバ本体を読み込む前に開始する
 startCoverage();
 
-/**
- * サーバ本体。
- *
- * 静的importにするとバンドル後に別チャンクの読み込みがこのファイルの本体より先に評価され、
- * {@link startCoverage} が間に合わなくなるため、意図的に動的importにしている。
- */
+// 静的importにするとバンドル後に別チャンクの評価がこのファイルの本体より先に走り、
+// startCoverage() が間に合わなくなるため動的importにしている
 let serverModule: Promise<typeof import('./server.js')> | undefined;
 
 function loadServer() {

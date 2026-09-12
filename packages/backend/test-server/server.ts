@@ -44,7 +44,7 @@ export async function setup() {
  * テスト用のサーバインスタンスを停止する
  */
 export async function teardown() {
-	// 先に閉じないとリスナーが残り、また停止処理中に/env-resetを受け付けてアプリが再生成されうる
+	// 停止処理中に/env-resetを受け付けてアプリが再生成されないよう、先に閉じる
 	await controller?.close();
 	controller = undefined;
 
