@@ -88,9 +88,11 @@ export async function setupCoverage(project: TestProject): Promise<void> {
  * バンドルの実行結果をistanbulのカバレッジへ変換する。
  */
 async function collectServerCoverage(project: TestProject, provider: V8CoverageProvider): Promise<CoverageMapLike | null> {
+	const collectStartedAt = performance.now();
+	const scripts = await takePreciseCoverage();
 	const chunks: ScriptCoverageWithOffset[] = [];
 
-	for (const script of await takePreciseCoverage()) {
+	for (const script of scripts) {
 		if (!script.url.startsWith('file://')) continue;
 
 		const filename = fileURLToPath(script.url);
@@ -101,6 +103,8 @@ async function collectServerCoverage(project: TestProject, provider: V8CoverageP
 		// 素のNodeがESMとしてそのまま評価しているので、ラッパーによるオフセットは無い
 		chunks.push({ ...script, startOffset: 0 });
 	}
+
+	const collectDuration = performance.now() - collectStartedAt;
 
 	if (chunks.length === 0) return null;
 
@@ -122,12 +126,18 @@ async function collectServerCoverage(project: TestProject, provider: V8CoverageP
 			testFiles: ['test-server'],
 		});
 
+		const remapStartedAt = performance.now();
+
 		// allTestsRunをfalseにして、未実行ファイルの走査 (本体側で実施済み) をスキップさせる
 		const coverageMap = await bundleProvider.generateCoverage({ allTestsRun: false }) as CoverageMapLike;
 
 		// バンドルのsourcemapにはnode_modules由来のソースも含まれるので、
 		// 本体のプロバイダの `coverage.include` / `coverage.exclude` で絞り込む
 		coverageMap.filter(filename => provider.isIncluded(filename));
+
+		// e2eの所要時間が伸びた際に、この後処理とProfilerの実行時オーバーヘッドの
+		// どちらが効いているのか切り分けられるようにしておく
+		console.log(`[test-server] coverage: collect ${toSeconds(collectDuration)}s (${scripts.length} scripts -> ${chunks.length} chunks), remap ${toSeconds(performance.now() - remapStartedAt)}s`);
 
 		return coverageMap;
 	} finally {
@@ -179,6 +189,10 @@ const IGNORE_FILE_HINT = /(istanbul|[cv]8|node:coverage)(\s+ignore\s+)file(?=\W|
  */
 function neutralizeIgnoreFileHints(code: string): string {
 	return code.replace(IGNORE_FILE_HINT, (_, tool: string, separator: string) => `${tool}${separator}FILE`);
+}
+
+function toSeconds(duration: number): string {
+	return (duration / 1000).toFixed(1);
 }
 
 function isBundledChunk(filename: string): boolean {
