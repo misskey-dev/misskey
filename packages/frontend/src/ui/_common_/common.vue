@@ -228,7 +228,7 @@ if ($i) {
 }
 .transition_notification_leaveTo {
 	opacity: 0;
-	transform: translateX(calc(-1 * var(--notificationSlideOffset, 250px)));
+	transform: translateX(var(--notificationSlideOffset, 250px));
 }
 
 .menuDrawerBg {
