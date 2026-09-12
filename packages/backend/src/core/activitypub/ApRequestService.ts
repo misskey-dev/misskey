@@ -120,7 +120,8 @@ export class ApRequestCreator {
 
 		for (const key of includeHeaders.map(x => x.toLowerCase())) {
 			if (key === '(request-target)') {
-				results.push(`(request-target): ${request.method.toLowerCase()} ${new URL(request.url).pathname}`);
+				const url = new URL(request.url);
+				results.push(`(request-target): ${request.method.toLowerCase()} ${url.pathname}${url.search}`);
 			} else {
 				results.push(`${key}: ${request.headers[key]}`);
 			}
