@@ -391,7 +391,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		// They must remain available for the configured following-source share.
 		const eligible = uniqueScored.filter(item => item.forced || item.source === 'following' || item.quality >= settings.minimumScore);
 		const selectionSettings = resultLimit === settings.resultLimit ? settings : { ...settings, resultLimit };
-		let selected = this.selectSources(eligible.filter(item => !item.forced && !forcedTargets.has(item.targetId)), selectionSettings, seed);
+		const selected = this.selectSources(eligible.filter(item => !item.forced && !forcedTargets.has(item.targetId)), selectionSettings, seed);
 		// Source selection normally honours the configured ratios, but a depleted
 		// source can fall back to another list while iterating. Do not let that
 		// fallback erase the followed-account share when visible Home/followers
