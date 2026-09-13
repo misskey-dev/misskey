@@ -374,6 +374,7 @@ describe('AbuseReportNotificationService', () => {
 					assignee: null,
 					resolved: false,
 					forwarded: false,
+					reasons: [],
 					comment: 'test',
 					moderationNote: '',
 					resolvedAs: null,
