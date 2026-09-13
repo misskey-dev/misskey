@@ -187,7 +187,7 @@ export class SigninApiService {
 				return this.error(reply, 400, ERR_INTERNAL);
 			}
 
-			// パスワード等の総当たりは、IP を変えられても効くこのバケットで止める
+			// パスワード等の総当たりは、ユーザー単位のレートリミットの方で止める
 			if (!await this.checkUserRateLimit(session.userId)) {
 				return this.rateLimited(reply);
 			}
@@ -302,7 +302,6 @@ export class SigninApiService {
 			return fail(400, ERR_INTERNAL, true);
 		}
 
-		// 2FA の有無で分岐させると、狙う価値の高いアカウントほど captcha の保護が無くなる
 		await this.verifyCaptcha(captchaResponse);
 
 		const user = await this.usersRepository.findOneBy({
@@ -495,7 +494,7 @@ export class SigninApiService {
 			this.logger.warn('Recieved signin request from localhost IP address for rate limiting in production environment. This is likely due to an improper trustProxy setting in the config file.');
 		}
 
-		// 最小間隔は課さない。NAT 配下では無関係な利用者が同一 IP から同時に来るのが正常
+		// 最小間隔は課さない。NAT 配下では無関係な利用者が同一 IP から同時に来ることがある
 		const limitation = kind === 'init'
 			? { key: 'signin-init', duration: 30 * 60 * 1000, max: 300 }
 			// 特定アカウントへの総当たりは signin-user が縛るので、ここでは password spraying の抑止に絞る
