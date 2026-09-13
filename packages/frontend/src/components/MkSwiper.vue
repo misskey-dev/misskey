@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@touchend.passive="touchEnd"
 >
 	<Transition
-		:class="[$style.transitionChildren, { [$style.swiping]: isSwipingForClass }]"
+		:class="$style.transitionChildren"
 		:enterActiveClass="$style.swipeAnimation_enterActive"
 		:leaveActiveClass="$style.swipeAnimation_leaveActive"
 		:enterFromClass="transitionName === 'swipeAnimationLeft' ? $style.swipeAnimationLeft_enterFrom : $style.swipeAnimationRight_enterFrom"
@@ -67,7 +67,6 @@ let startScreenY: number | null = null;
 const currentTabIndex = computed(() => props.tabs.findIndex(tab => tab.key === tabModel.value));
 
 const pullDistance = ref(0);
-const isSwipingForClass = ref(false);
 let swipeAborted = false;
 let swipeDirectionLocked: 'horizontal' | 'vertical' | null = null;
 
@@ -112,9 +111,6 @@ function touchMove(event: TouchEvent) {
 		swipeAborted = true;
 		pullDistance.value = 0;
 		isSwiping.value = false;
-		window.setTimeout(() => {
-			isSwipingForClass.value = false;
-		}, 400);
 		return;
 	}
 
@@ -130,7 +126,6 @@ function touchMove(event: TouchEvent) {
 	if (distanceX === 0) return;
 
 	isSwiping.value = true;
-	isSwipingForClass.value = true;
 	nextTick(() => {
 		// グリッチを控えるため、1.5px以上の差がないと更新しない
 		if (Math.abs(distanceX - pullDistance.value) < 1.5) return;
@@ -172,9 +167,6 @@ function touchEnd(event: TouchEvent) {
 
 	pullDistance.value = 0;
 	isSwiping.value = false;
-	window.setTimeout(() => {
-		isSwipingForClass.value = false;
-	}, 400);
 
 	swipeDirectionLocked = null; // スワイプ方向をリセット
 }
@@ -243,9 +235,5 @@ watch(tabModel, (newTab, oldTab) => {
 	&.swipeAnimationLeft_leaveTo {
 		transform: translateX(calc(-100% - 24px));
 	}
-}
-
-.swiping {
-	transition: transform .2s ease-out;
 }
 </style>
