@@ -214,6 +214,7 @@ function menuEdit() {
 
 .body {
 	position: relative;
+	transition: width 200ms ease-out;
 	width: var(--nav-icon-only-width);
 	height: 100%;
 	box-sizing: border-box;
@@ -328,6 +329,7 @@ function menuEdit() {
 
 .subButtons {
 	position: fixed;
+	transition: left 200ms ease-out;
 	left: var(--nav-width);
 	bottom: 80px;
 	z-index: 1001;
