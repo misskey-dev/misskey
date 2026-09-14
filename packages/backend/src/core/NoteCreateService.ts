@@ -1076,7 +1076,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			&& data.renote?.visibility === 'public';
 		if (note.visibility !== 'public' && !(note.visibility === 'home' && note.tags.length > 0) && !isPublicRenoteByHomeUser) return;
 		const configuredLimit = this.meta.recommendedTimelineSettings?.candidatePoolLimit;
-		const candidatePoolLimit = typeof configuredLimit === 'number' ? Math.max(100, Math.min(10000, Math.floor(configuredLimit))) : 3000;
+		const candidatePoolLimit = typeof configuredLimit === 'number' && Number.isSafeInteger(Math.floor(configuredLimit)) ? Math.max(100, Math.floor(configuredLimit)) : 3000;
 
 		const pipeline = this.redisForTimelines.pipeline();
 		pipeline.incr('torikago:recommended:version');

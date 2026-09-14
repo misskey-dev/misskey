@@ -260,9 +260,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const value = raw[key];
 			return typeof value === 'number' && Number.isFinite(value) ? Math.min(max, Math.max(min, Math.floor(value))) : defaults[key] as number;
 		};
+		const unboundedInteger = (key: keyof Settings, min: number) => {
+			const value = raw[key];
+			const integerValue = typeof value === 'number' && Number.isFinite(value) ? Math.floor(value) : null;
+			return integerValue != null && Number.isSafeInteger(integerValue) ? Math.max(min, integerValue) : defaults[key] as number;
+		};
 		const strings = (key: keyof Settings) => Array.isArray(raw[key]) ? raw[key].filter((x): x is string => typeof x === 'string').slice(0, 100) : defaults[key] as string[];
 		return {
-			candidatePoolLimit: integer('candidatePoolLimit', 100, 10000), candidateScanLimit: integer('candidateScanLimit', 30, 200), resultLimit: integer('resultLimit', 20, 100),
+			candidatePoolLimit: unboundedInteger('candidatePoolLimit', 100), candidateScanLimit: integer('candidateScanLimit', 30, 200), resultLimit: integer('resultLimit', 20, 100),
 			snapshotHours: integer('snapshotHours', 1, 168), seenDays: integer('seenDays', 1, 30), seenLimit: integer('seenLimit', 100, 5000),
 			twoHopPercent: integer('twoHopPercent', 0, 100), followingPercent: integer('followingPercent', 0, 100), unknownPercent: integer('unknownPercent', 0, 100),
 			qualityPercent: integer('qualityPercent', 0, 100), balancedPercent: integer('balancedPercent', 0, 100), freshPercent: integer('freshPercent', 0, 100),
