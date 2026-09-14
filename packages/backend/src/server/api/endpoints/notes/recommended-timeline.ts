@@ -81,7 +81,7 @@ const defaults: Settings = {
 
 // Increment when the ranking/seen semantics change so previously generated
 // snapshots and stale seen records cannot hide the corrected result set.
-const recommendationCacheVersion = 'v11';
+const recommendationCacheVersion = 'v12';
 
 type RecommendationContext = {
 	followingIds: string[];
@@ -315,6 +315,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			.andWhere('note.userId = ANY(:twoHopIds)', { twoHopIds })
 			.andWhere('note.visibility = \'public\'')
 			.andWhere('note.id >= :oldestId', { oldestId: this.idService.gen(Date.now() - days * 86400000) })
+			// A global newest-first query lets a few very active accounts occupy every
+			// two-hop slot. Keep the newest visible note from each candidate author so
+			// this source reflects the reader's own follow graph without fetching more.
+			.distinctOn(['note.userId'])
+			.orderBy('note.userId', 'ASC')
+			.addOrderBy('note.id', 'DESC')
 			.getMany();
 		const [sharedNotes, initialDirectNotes, initialTwoHopNotes] = await Promise.all([
 			candidateIds.length > 0 ? createVisibleQuery().andWhere('note.id = ANY(:candidateIds)', { candidateIds }).getMany() : [],
@@ -389,12 +395,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		const uniqueScored = [...scored].sort((a, b) => b.quality - a.quality).filter((item, index, items) => items.findIndex(other => other.targetId === item.targetId) === index);
 		const forced = uniqueScored.filter(item => item.forced).slice(0, settings.forcedLimit);
 		const forcedTargets = new Set(forced.map(item => item.targetId));
-		// The minimum score is a discovery-quality threshold. Do not apply it to
-		// notes from accounts the reader follows: Home and followers-only notes are
-		// intentionally less public, so they do not receive the public-note bonus,
-		// yet they are already authorised by the normal visibility query above.
-		// They must remain available for the configured following-source share.
-		const eligible = uniqueScored.filter(item => item.forced || item.source === 'following' || item.quality >= settings.minimumScore);
+		// Forced entries bypass the threshold, but every ordinary source uses the
+		// configured minimum score consistently, including followed accounts.
+		const eligible = uniqueScored.filter(item => item.forced || item.quality >= settings.minimumScore);
 		const selectionSettings = resultLimit === settings.resultLimit ? settings : { ...settings, resultLimit };
 		const selected = this.selectSources(eligible.filter(item => !item.forced && !forcedTargets.has(item.targetId)), selectionSettings, seed);
 		// Source selection normally honours the configured ratios, but a depleted
