@@ -82,6 +82,13 @@ const run = async () => {
 				print: true,
 			});
 		},
+		err: (err) => {
+			os.alert({
+				type: 'error',
+				title: 'AiScript Error',
+				text: String(err),
+			});
+		},
 		log: (type, params) => {
 			switch (type) {
 				case 'end': logs.value.push({
@@ -100,7 +107,8 @@ const run = async () => {
 	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: 'Syntax error :(',
+			title: 'Syntax Error',
+			text: String(err),
 		});
 		return;
 	}
@@ -109,7 +117,8 @@ const run = async () => {
 	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: err instanceof Error ? err.message : String(err),
+			title: 'AiScript Internal Error',
+			text: String(err),
 		});
 	}
 };

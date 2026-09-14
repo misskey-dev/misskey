@@ -135,7 +135,7 @@ async function run() {
 			os.alert({
 				type: 'error',
 				title: 'AiScript Error',
-				text: err.toString(),
+				text: String(err),
 			});
 		},
 		log: (type, params) => {
@@ -157,7 +157,7 @@ async function run() {
 		os.alert({
 			type: 'error',
 			title: 'Syntax Error',
-			text: err.toString(),
+			text: String(err),
 		});
 		return;
 	}
@@ -168,8 +168,8 @@ async function run() {
 		// so errors caught here are AiScript's internal errors.
 		os.alert({
 			type: 'error',
-			title: 'Internal Error',
-			text: err.toString(),
+			title: 'AiScript Internal Error',
+			text: String(err),
 		});
 	}
 }
