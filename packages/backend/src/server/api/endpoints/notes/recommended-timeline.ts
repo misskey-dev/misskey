@@ -81,7 +81,7 @@ const defaults: Settings = {
 
 // Increment when the ranking/seen semantics change so previously generated
 // snapshots and stale seen records cannot hide the corrected result set.
-const recommendationCacheVersion = 'v13';
+const recommendationCacheVersion = 'v14';
 
 type RecommendationContext = {
 	followingIds: string[];
@@ -283,12 +283,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 	private async buildRecommendation(me: MiLocalUser, settings: Settings, excludedTargets = new Set<string>(), candidateOffset = 0, resultLimit = settings.resultLimit, seed = '', existingAuthorCounts = new Map<string, number>()): Promise<string[]> {
 		const candidateIds = await this.redisForTimelines.lrange('torikago:recommended:candidates', candidateOffset, candidateOffset + settings.candidateScanLimit - 1);
-		const context = await this.getRecommendationContext(me);
+		const context = await this.getRecommendationContext(me, settings);
 		const followingIds = context.followingIds;
 		const directIds = followingIds;
 		const twoHopRows = context.twoHopRows;
 		const twoHopIds = twoHopRows.map(row => row.userId);
-		if (candidateIds.length === 0 && directIds.length === 0) return [];
+		if (candidateIds.length === 0 && directIds.length === 0 && twoHopIds.length === 0) return [];
 
 		const reactionAffinity = new Map(context.reactionAffinity);
 		const favoriteAffinity = new Map(context.favoriteAffinity);
@@ -311,20 +311,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		// intentionally small: ranking needs a varied shortlist, not every note
 		// written by every followed account.
 		const sourceNoteLimit = Math.min(settings.candidateScanLimit, Math.max(60, resultLimit * 3));
+		// The two-hop graph is ordered by the number of followed accounts that
+		// connect the reader to each author. Query the wider, socially strongest
+		// cohort independently from the shared pool, while keeping a bounded scan.
+		const prioritizedTwoHopIds = twoHopIds;
+		const twoHopFetchLimit = Math.min(300, Math.max(sourceNoteLimit, resultLimit * 4));
 		const fetchDirectNotes = (days: number) => directIds.length === 0 ? Promise.resolve([]) : createVisibleQuery(sourceNoteLimit)
 			.andWhere('note.userId = ANY(:directIds)', { directIds })
 			.andWhere('note.id >= :oldestId', { oldestId: this.idService.gen(Date.now() - days * 86400000) })
 			.getMany();
-		const fetchTwoHopNotes = (days: number) => twoHopIds.length === 0 ? Promise.resolve([]) : createVisibleQuery(sourceNoteLimit)
-			.andWhere('note.userId = ANY(:twoHopIds)', { twoHopIds })
+		const fetchTwoHopNotes = (days: number) => prioritizedTwoHopIds.length === 0 ? Promise.resolve([]) : createVisibleQuery(twoHopFetchLimit)
+			.andWhere('note.userId = ANY(:twoHopIds)', { twoHopIds: prioritizedTwoHopIds })
 			.andWhere('note.visibility = \'public\'')
 			.andWhere('note.id >= :oldestId', { oldestId: this.idService.gen(Date.now() - days * 86400000) })
-			// A global newest-first query lets a few very active accounts occupy every
-			// two-hop slot. Keep the newest visible note from each candidate author so
-			// this source reflects the reader's own follow graph without fetching more.
-			.distinctOn(['note.userId'])
-			.orderBy('note.userId', 'ASC')
-			.addOrderBy('note.id', 'DESC')
+			// Subsequent scroll batches inspect older notes from the same strong social
+			// cohort. The final selector enforces maxNotesPerAuthor across the snapshot.
+			.skip(Math.max(0, candidateOffset))
 			.getMany();
 		const [sharedNotes, initialDirectNotes, initialTwoHopNotes] = await Promise.all([
 			candidateIds.length > 0 ? createVisibleQuery().andWhere('note.id = ANY(:candidateIds)', { candidateIds }).getMany() : [],
@@ -427,7 +429,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.sort((a, b) => b.quality - a.quality)
 				.slice(0, wantedFollowing - selectedFollowing);
 			for (const replacement of replacements) {
-				const replaceAt = selected.map(item => item.source === 'unknown' || item.source === 'twoHop').lastIndexOf(true);
+				// Do not consume the reserved two-hop share merely to fill the followed
+				// share. Unknown slots are the fallback space for either personalised source.
+				const replaceAt = selected.map(item => item.source === 'unknown').lastIndexOf(true);
 				if (replaceAt < 0) break;
 				const replaced = selected[replaceAt]!;
 				const replacedCount = selectedAuthorCounts.get(replaced.authorId) ?? 0;
@@ -446,7 +450,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		return [...forced, ...regular].slice(0, resultLimit).map(item => item.displayId);
 	}
 
-	private async getRecommendationContext(me: MiLocalUser): Promise<RecommendationContext> {
+	private async getRecommendationContext(me: MiLocalUser, settings: Settings): Promise<RecommendationContext> {
 		const key = `torikago:recommended:${recommendationCacheVersion}:context:${me.id}`;
 		const cached = await this.redisClient.get(key);
 		if (cached != null) {
@@ -459,11 +463,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		}
 
 		const followingIds = (await this.followingsRepository.find({ select: { followeeId: true }, where: { followerId: me.id } })).map(row => row.followeeId);
+		const twoHopContextLimit = Math.min(500, Math.max(80, settings.candidateScanLimit * 4));
 		const twoHopRows: { userId: string; socialProof: string }[] = followingIds.length === 0 ? [] : await this.followingsRepository.createQueryBuilder('following')
 			.select('following.followeeId', 'userId').addSelect('COUNT(*)', 'socialProof')
 			.where('following.followerId IN (:...followingIds)', { followingIds }).andWhere('following.followeeId != :meId', { meId: me.id })
-			.andWhere('following.followeeId NOT IN (:...followingIds)', { followingIds }).groupBy('following.followeeId').orderBy('COUNT(*)', 'DESC').limit(80).getRawMany();
-		const authorIds = [...new Set([me.id, ...followingIds, ...twoHopRows.map(row => row.userId)])];
+			.andWhere('following.followeeId NOT IN (:...followingIds)', { followingIds }).groupBy('following.followeeId').orderBy('COUNT(*)', 'DESC').limit(twoHopContextLimit).getRawMany();
+		// Affinity queries stay bounded even though the retrieval pool is wider.
+		// Social-proof scoring remains available for every two-hop row.
+		const authorIds = [...new Set([me.id, ...followingIds, ...twoHopRows.slice(0, 80).map(row => row.userId)])];
 		const [reactionRows, favoriteRows, renoteRows] = authorIds.length === 0 ? [[], [], []] : await Promise.all([
 			this.noteReactionsRepository.createQueryBuilder('reaction').innerJoin('reaction.note', 'target').select('target.userId', 'userId').addSelect('COUNT(*)', 'count').where('reaction.userId = :meId', { meId: me.id }).andWhere('target.userId IN (:...authorIds)', { authorIds }).groupBy('target.userId').getRawMany<{ userId: string; count: string }>(),
 			this.noteFavoritesRepository.createQueryBuilder('favorite').innerJoin('favorite.note', 'target').select('target.userId', 'userId').addSelect('COUNT(*)', 'count').where('favorite.userId = :meId', { meId: me.id }).andWhere('target.userId IN (:...authorIds)', { authorIds }).groupBy('target.userId').getRawMany<{ userId: string; count: string }>(),
