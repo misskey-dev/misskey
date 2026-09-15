@@ -357,6 +357,7 @@ export function role(params: {
 	isPublic?: boolean,
 	isExplorable?: boolean,
 	asBadge?: boolean,
+	isPublicDisplayRequired?: boolean,
 	canEditMembersByModerator?: boolean,
 	usersCount?: number,
 }, seed?: string): entities.Role {
@@ -380,6 +381,7 @@ export function role(params: {
 		isPublic: params.isPublic ?? true,
 		isExplorable: params.isExplorable ?? true,
 		asBadge: params.asBadge ?? true,
+		isPublicDisplayRequired: params.isPublicDisplayRequired ?? false,
 		canEditMembersByModerator: params.canEditMembersByModerator ?? false,
 		usersCount: params.usersCount ?? 10,
 		preserveAssignmentOnMoveAccount: false,

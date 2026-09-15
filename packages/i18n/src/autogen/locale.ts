@@ -8035,6 +8035,14 @@ export interface Locale extends ILocale {
          */
         "descriptionOfIsPublic": string;
         /**
+         * 非表示を許可しない（常に表示）
+         */
+        "isPublicDisplayRequired": string;
+        /**
+         * 有効にすると、ユーザーはこの公開ロール/ロールバッジを非表示にできません。
+         */
+        "descriptionOfIsPublicDisplayRequired": string;
+        /**
          * オプション
          */
         "options": string;
@@ -12186,6 +12194,28 @@ export interface Locale extends ILocale {
              */
             "notUnique": string;
         };
+    };
+    "_roleDisplay": {
+        /**
+         * ロールの表示/非表示
+         */
+        "title": string;
+        /**
+         * 自分に割り当てられているロールを確認したり、プロフィールやノート上で表示・公開するロールを選択したりできます。
+         */
+        "description": string;
+        /**
+         * このロールは、管理者により、{link}への表示とロールタイムラインの有効化が設定されています。プロフィール上で非表示にすることはできますが、あなたにこのロールが付与されていることが知られる可能性があります。
+         */
+        "roleExplorableAlert": ParameterizedString<"link">;
+        /**
+         * ロール/ロールバッジを表示する
+         */
+        "displayToggle": string;
+        /**
+         * 管理者の設定により非表示にすることはできません。
+         */
+        "alwaysShownByAdmin": string;
     };
     "_roleSelectDialog": {
         /**

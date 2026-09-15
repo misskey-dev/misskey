@@ -176,6 +176,11 @@ export const packedUserLiteSchema = {
 				type: 'object',
 				nullable: false, optional: false,
 				properties: {
+					id: {
+						type: 'string',
+						nullable: false, optional: false,
+						format: 'id',
+					},
 					name: {
 						type: 'string',
 						nullable: false, optional: false,
@@ -510,6 +515,15 @@ export const packedMeDetailedOnlySchema = {
 		isDeleted: {
 			type: 'boolean',
 			nullable: false, optional: false,
+		},
+		hiddenRoleIds: {
+			type: 'array',
+			nullable: false, optional: false,
+			items: {
+				type: 'string',
+				nullable: false, optional: false,
+				format: 'id',
+			},
 		},
 		twoFactorBackupCodesStock: {
 			type: 'string',
