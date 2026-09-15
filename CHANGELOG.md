@@ -7,7 +7,7 @@
 - Enhance: Scratchpadに導入していた非同期エラーへの対応をPlayやウィジェットにも実装
 
 ### Server
--
+- Enhance: Preserve formatting and language hints in federated code blocks.
 
 
 ## 2026.9.0
