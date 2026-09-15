@@ -11,7 +11,7 @@ import { contentDisposition } from '@/misc/content-disposition.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
-import { attachStreamCleanup, handleRangeRequest, setFileResponseHeaders, getSafeContentType, needsCleanup } from './FileServerUtils.js';
+import { attachStreamCleanup, handleRangeRequest, setFileResponseHeaders, setSafeContentTypeHeader, needsCleanup } from './FileServerUtils.js';
 import type { FileServerFileResolver } from './FileServerFileResolver.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
@@ -84,7 +84,7 @@ export class FileServerDriveHandler {
 
 				attachStreamCleanup(image.data, file.cleanup);
 
-				reply.header('Content-Type', getSafeContentType(image.type));
+				setSafeContentTypeHeader(reply, image.type);
 				reply.header('Content-Length', file.file.size);
 				reply.header('Cache-Control', 'max-age=31536000, immutable');
 				reply.header('Content-Disposition',

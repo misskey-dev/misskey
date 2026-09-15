@@ -7,7 +7,7 @@ import * as fs from 'node:fs';
 import sharp from 'sharp';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import type { Config } from '@/config.js';
-import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
+import { isBrowserSafeMime } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
 import { correctFilename } from '@/misc/correct-filename.js';
@@ -157,7 +157,7 @@ export class FileServerProxyHandler {
 			return this.imageProcessingService.convertToWebpStream(file.path, 2048, 2048);
 		}
 
-		if (!file.mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(file.mime)) {
+		if (!file.mime.startsWith('image/') || !isBrowserSafeMime(file.mime)) {
 			throw new StatusError('Rejected type', 403, 'Rejected type');
 		}
 

@@ -4,7 +4,8 @@
  */
 
 import * as fs from 'node:fs';
-import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
+import { FILE_TYPE_BROWSERSAFE, getBaseMime as _getBaseMime } from '@/const.js';
+export { getBaseMime, isBrowserSafeMime } from '@/const.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
 import type { IImageStreamable } from '@/core/ImageProcessingService.js';
 import type { FastifyReply } from 'fastify';
@@ -49,11 +50,46 @@ export function attachStreamCleanup(data: IImageStreamable['data'], cleanup: () 
 	}
 }
 
+// RFC 7231 の MIME token 相当の文字集合 (ヘッダインジェクション防止のため厳しめに制限)
+const MIME_TOKEN_RE = /^[\w.+-]+$/;
+
 /**
  * MIME タイプがブラウザセーフかどうかに応じて Content-Type を返す
+ * - パラメータ (例: `; charset=utf-8`) が付いていてもベース MIME で判定する
+ * - text/* で charset 未指定の場合は utf-8 を補う (iOS Safari 等の自動判定対策)
+ *   ただし UTF-8 以外のテキストファイル (Shift_JIS 等) は依然として化ける可能性あり (既知の制約)
+ * - パラメータ key/value は MIME token に合致しないものを捨て、ヘッダインジェクションを防ぐ
  */
 export function getSafeContentType(mime: string): string {
-	return FILE_TYPE_BROWSERSAFE.includes(mime) ? mime : 'application/octet-stream';
+	const segments = mime.split(';');
+	const base = _getBaseMime(mime);
+	if (!FILE_TYPE_BROWSERSAFE.includes(base)) return 'application/octet-stream';
+
+	const params: string[] = [];
+	let hasCharset = false;
+	for (const seg of segments.slice(1)) {
+		const eq = seg.indexOf('=');
+		if (eq < 0) continue;
+		const k = seg.slice(0, eq).trim().toLowerCase();
+		let v = seg.slice(eq + 1).trim();
+		// RFC 2045 の quoted-string (例: charset="utf-8") を受け入れる
+		if (v.length >= 2 && v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1);
+		if (!MIME_TOKEN_RE.test(k) || !MIME_TOKEN_RE.test(v)) continue;
+		if (k === 'charset') hasCharset = true;
+		params.push(`${k}=${v}`);
+	}
+	if (base.startsWith('text/') && !hasCharset) params.push('charset=utf-8');
+
+	return params.length > 0 ? `${base}; ${params.join('; ')}` : base;
+}
+
+/**
+ * Content-Type と X-Content-Type-Options: nosniff を一緒に設定する
+ * (text/plain などを inline 配信する経路で content sniffing による XSS を防ぐため)
+ */
+export function setSafeContentTypeHeader(reply: FastifyReply, mime: string): void {
+	reply.header('Content-Type', getSafeContentType(mime));
+	reply.header('X-Content-Type-Options', 'nosniff');
 }
 
 /**
@@ -91,7 +127,7 @@ export function setFileResponseHeaders(
 	reply: FastifyReply,
 	options: FileResponseOptions,
 ): void {
-	reply.header('Content-Type', getSafeContentType(options.mime));
+	setSafeContentTypeHeader(reply, options.mime);
 	reply.header('Cache-Control', options.cacheControl ?? 'max-age=31536000, immutable');
 	reply.header('Content-Disposition', contentDisposition('inline', options.filename));
 	if (options.size !== undefined) {
