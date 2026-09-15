@@ -81,7 +81,7 @@ const defaults: Settings = {
 
 // Increment when the ranking/seen semantics change so previously generated
 // snapshots and stale seen records cannot hide the corrected result set.
-const recommendationCacheVersion = 'v15';
+const recommendationCacheVersion = 'v16';
 
 type RecommendationContext = {
 	followingIds: string[];
@@ -468,15 +468,36 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		const followingIds = (await this.followingsRepository.find({ select: { followeeId: true }, where: { followerId: me.id } })).map(row => row.followeeId);
 		const twoHopContextLimit = Math.min(500, Math.max(80, settings.candidateScanLimit * 4));
-		const twoHopRows: { userId: string; socialProof: string }[] = followingIds.length === 0 ? [] : await this.followingsRepository.createQueryBuilder('following')
+		const reactionInterestLimit = Math.min(200, Math.max(80, settings.candidateScanLimit * 2));
+		const graphTwoHopRows: { userId: string; socialProof: string }[] = followingIds.length === 0 ? [] : await this.followingsRepository.createQueryBuilder('following')
 			.select('following.followeeId', 'userId').addSelect('COUNT(*)', 'socialProof')
 			.where('following.followerId IN (:...followingIds)', { followingIds }).andWhere('following.followeeId != :meId', { meId: me.id })
 			.andWhere('following.followeeId NOT IN (:...followingIds)', { followingIds }).groupBy('following.followeeId').orderBy('COUNT(*)', 'DESC').limit(twoHopContextLimit).getRawMany();
+		// Interest discovery must not depend on the follow graph. On servers where
+		// many users are locked, the graph can contain few useful public authors,
+		// while the reader's own reactions still provide a strong personal signal.
+		const reactionRows = await this.noteReactionsRepository.createQueryBuilder('reaction')
+			.innerJoin('reaction.note', 'target')
+			.select('target.userId', 'userId')
+			.addSelect('COUNT(*)', 'count')
+			.where('reaction.userId = :meId', { meId: me.id })
+			.andWhere('target.id >= :reactionOldestId', { reactionOldestId: this.idService.gen(Date.now() - 90 * 86400000) })
+			.andWhere('target.userId != :meId', { meId: me.id })
+			.groupBy('target.userId')
+			.orderBy('COUNT(*)', 'DESC')
+			.limit(reactionInterestLimit)
+			.getRawMany<{ userId: string; count: string }>();
+		const directIdSet = new Set(followingIds);
+		const combinedTwoHopRows = new Map<string, { userId: string; socialProof: string }>();
+		for (const row of reactionRows) {
+			if (!directIdSet.has(row.userId)) combinedTwoHopRows.set(row.userId, { userId: row.userId, socialProof: '0' });
+		}
+		for (const row of graphTwoHopRows) combinedTwoHopRows.set(row.userId, row);
+		const twoHopRows = [...combinedTwoHopRows.values()].slice(0, 500);
 		// Affinity queries stay bounded even though the retrieval pool is wider.
 		// Social-proof scoring remains available for every two-hop row.
 		const authorIds = [...new Set([me.id, ...followingIds, ...twoHopRows.slice(0, 80).map(row => row.userId)])];
-		const [reactionRows, favoriteRows, renoteRows] = authorIds.length === 0 ? [[], [], []] : await Promise.all([
-			this.noteReactionsRepository.createQueryBuilder('reaction').innerJoin('reaction.note', 'target').select('target.userId', 'userId').addSelect('COUNT(*)', 'count').where('reaction.userId = :meId', { meId: me.id }).andWhere('target.userId IN (:...authorIds)', { authorIds }).groupBy('target.userId').getRawMany<{ userId: string; count: string }>(),
+		const [favoriteRows, renoteRows] = authorIds.length === 0 ? [[], []] : await Promise.all([
 			this.noteFavoritesRepository.createQueryBuilder('favorite').innerJoin('favorite.note', 'target').select('target.userId', 'userId').addSelect('COUNT(*)', 'count').where('favorite.userId = :meId', { meId: me.id }).andWhere('target.userId IN (:...authorIds)', { authorIds }).groupBy('target.userId').getRawMany<{ userId: string; count: string }>(),
 			this.notesRepository.createQueryBuilder('ownRenote').innerJoin('ownRenote.renote', 'target').select('target.userId', 'userId').addSelect('COUNT(*)', 'count').where('ownRenote.userId = :meId', { meId: me.id }).andWhere('ownRenote.id >= :oldestId', { oldestId: this.idService.gen(Date.now() - 90 * 86400000) }).andWhere('target.userId IN (:...authorIds)', { authorIds }).groupBy('target.userId').getRawMany<{ userId: string; count: string }>(),
 		]);
