@@ -15,7 +15,6 @@ import { ApiError } from '@/server/api/error.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { IdService } from '@/core/IdService.js';
-import { UserFollowingService } from '@/core/UserFollowingService.js';
 
 type Settings = {
 	candidatePoolLimit: number;
@@ -153,7 +152,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queryService: QueryService,
 		private noteEntityService: NoteEntityService,
 		private idService: IdService,
-		private userFollowingService: UserFollowingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			if (!this.serverSettings.enableRecommendedTimeline) throw new ApiError(meta.errors.featureDisabled);
@@ -507,10 +505,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 		}
 
-		// Use the same cached followee source as the Home timeline. Apart from
-		// avoiding a duplicate relationship query, this guarantees that a pending
-		// relationship-cache refresh cannot make Home and Recommendations disagree.
-		const followingIds = (await this.userFollowingService.getFollowees(me.id)).map(row => row.followeeId);
+		const followingIds = (await this.followingsRepository.find({ select: { followeeId: true }, where: { followerId: me.id } })).map(row => row.followeeId);
 		const twoHopContextLimit = Math.min(500, Math.max(80, settings.candidateScanLimit * 4));
 		const reactionInterestLimit = Math.min(200, Math.max(80, settings.candidateScanLimit * 2));
 		const graphTwoHopRows: { userId: string; socialProof: string }[] = followingIds.length === 0 ? [] : await this.followingsRepository.createQueryBuilder('following')
