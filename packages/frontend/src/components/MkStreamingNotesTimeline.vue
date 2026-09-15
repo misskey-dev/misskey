@@ -88,7 +88,6 @@ import { DI } from '@/di.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 import { Paginator } from '@/utility/paginator.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 
 const recommendedTexts: Record<string, { newAvailable: string }> = {
 	'en-US': { newAvailable: 'New recommendations are available' },
@@ -328,12 +327,11 @@ if (!store.s.realtimeMode && props.src !== 'recommended') {
 }
 
 if (props.src === 'recommended') {
-	useInterval(async () => {
-		const result = await misskeyApi('notes/recommended-timeline-has-new', {
-			snapshotId: recommendedSnapshotId.value,
-			includeFollowing: true,
-		});
-		recommendedRefreshAvailable.value = result.hasNew;
+	// Recommendation candidates are discovered on demand. Showing the refresh
+	// affordance on a fixed interval avoids a separate server-side check every
+	// minute; no ranking occurs until the reader explicitly presses the button.
+	useInterval(() => {
+		recommendedRefreshAvailable.value = true;
 	}, 60_000, {
 		immediate: false,
 		afterMounted: true,

@@ -1068,34 +1068,18 @@ export class NoteCreateService implements OnApplicationShutdown {
 	@bindThis
 	private collectRecommendedTimelineCandidate(note: MiNote, data: Option): void {
 		if (note.channelId != null) return;
-		// Direct sources may legitimately include a followed account's Home or
-		// followers-only post. They are not necessarily stored in the shared pool,
-		// but they must still advance the refresh signal for eligible readers.
-		const shouldSignalRecommendationRefresh = this.meta.enableRecommendedTimeline || this.meta.collectRecommendedTimelineNotes;
-		if (!shouldSignalRecommendationRefresh && !this.meta.collectRecommendedTimelineNotes) return;
-		const pipeline = this.redisForTimelines.pipeline();
-		if (shouldSignalRecommendationRefresh) {
-			pipeline.incr('torikago:recommended:version');
-		}
-		if (note.visibility !== 'public' && note.visibility !== 'home') {
-			void pipeline.exec().catch(() => undefined);
-			return;
-		}
-		if (!this.meta.collectRecommendedTimelineNotes) {
-			void pipeline.exec().catch(() => undefined);
-			return;
-		}
+		if (note.visibility !== 'public' && note.visibility !== 'home') return;
+		if (!this.meta.collectRecommendedTimelineNotes) return;
 		const isPublicRenoteByHomeUser = note.visibility === 'home'
 			&& this.isRenote(data)
 			&& !this.isQuote(data)
 			&& data.renote?.visibility === 'public';
-		if (note.visibility !== 'public' && !(note.visibility === 'home' && note.tags.length > 0) && !isPublicRenoteByHomeUser) {
-			void pipeline.exec().catch(() => undefined);
-			return;
-		}
+		if (note.visibility !== 'public' && !(note.visibility === 'home' && note.tags.length > 0) && !isPublicRenoteByHomeUser) return;
 		const configuredLimit = this.meta.recommendedTimelineSettings?.candidatePoolLimit;
 		const candidatePoolLimit = typeof configuredLimit === 'number' && Number.isSafeInteger(Math.floor(configuredLimit)) ? Math.max(100, Math.floor(configuredLimit)) : 3000;
 
+		const pipeline = this.redisForTimelines.pipeline();
+		pipeline.incr('torikago:recommended:version');
 		pipeline.lpush('torikago:recommended:candidates', note.id);
 		pipeline.ltrim('torikago:recommended:candidates', 0, candidatePoolLimit - 1);
 		void pipeline.exec().catch(() => undefined);
