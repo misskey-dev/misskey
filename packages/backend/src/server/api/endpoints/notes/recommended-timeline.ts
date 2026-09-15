@@ -82,7 +82,7 @@ const defaults: Settings = {
 
 // Increment when the ranking/seen semantics change so previously generated
 // snapshots and stale seen records cannot hide the corrected result set.
-const recommendationCacheVersion = 'v17';
+const recommendationCacheVersion = 'v18';
 
 type RecommendationContext = {
 	followingIds: string[];
@@ -373,21 +373,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		]);
 		let directNotes = initialDirectNotes;
 		let twoHopNotes = initialTwoHopNotes;
+		const seen = new Set(await this.redisClient.zrangebyscore(`torikago:recommended:${recommendationCacheVersion}:seen:${me.id}`, Date.now() - settings.seenDays * 86400000, '+inf'));
 		const sourceTarget = (percent: number) => {
 			const total = settings.twoHopPercent + settings.followingPercent + settings.unknownPercent;
 			return percent === 0 ? 0 : Math.max(1, Math.ceil(resultLimit * percent / Math.max(total, 1)));
+		};
+		const hasUsableTarget = (note: typeof directNotes[number]) => {
+			const plainRenote = note.renote != null && (note.text == null || note.text === '') && (note.cw == null || note.cw === '');
+			return !seen.has(this.targetId(note)) && !excludedTargets.has(this.targetId(note)) && (includeRenotes || !plainRenote) && (!plainRenote || note.renote?.visibility === 'public');
 		};
 		// Most requests inspect only the recent week. When a quiet period leaves a
 		// personalised source below its configured share, widen only that source in
 		// stages. This avoids turning every recommendation request into a 90-day scan.
 		for (const days of [...new Set([30, settings.fallbackMaxAgeDays])].filter(days => days > 7)) {
 			const [olderDirect, olderTwoHop] = await Promise.all([
-				directNotes.length < sourceTarget(settings.followingPercent) ? fetchDirectNotes(days) : Promise.resolve([]),
-				twoHopNotes.length < sourceTarget(settings.twoHopPercent) ? fetchTwoHopNotes(days) : Promise.resolve([]),
+				directNotes.filter(hasUsableTarget).length < sourceTarget(settings.followingPercent) ? fetchDirectNotes(days) : Promise.resolve([]),
+				twoHopNotes.filter(hasUsableTarget).length < sourceTarget(settings.twoHopPercent) ? fetchTwoHopNotes(days) : Promise.resolve([]),
 			]);
 			directNotes = [...new Map([...directNotes, ...olderDirect].map(note => [note.id, note])).values()];
 			twoHopNotes = [...new Map([...twoHopNotes, ...olderTwoHop].map(note => [note.id, note])).values()];
-			if (directNotes.length >= sourceTarget(settings.followingPercent) && twoHopNotes.length >= sourceTarget(settings.twoHopPercent)) break;
+			if (directNotes.filter(hasUsableTarget).length >= sourceTarget(settings.followingPercent) && twoHopNotes.filter(hasUsableTarget).length >= sourceTarget(settings.twoHopPercent)) break;
 		}
 		const noteLists = [sharedNotes, directNotes, twoHopNotes];
 		const notes = [...new Map(noteLists.flat().map(note => [note.id, note])).values()].sort((a, b) => b.id.localeCompare(a.id));
@@ -395,7 +400,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		// files when evaluating the sensitive-file penalty as well.
 		const fileIds = [...new Set(notes.flatMap(note => [...note.fileIds, ...(note.renote?.fileIds ?? [])]))];
 		const sensitiveFileIds = new Set((await this.driveFilesRepository.find({ select: { id: true }, where: { id: In(fileIds), isSensitive: true } })).map(file => file.id));
-		const seen = new Set(await this.redisClient.zrangebyscore(`torikago:recommended:${recommendationCacheVersion}:seen:${me.id}`, Date.now() - settings.seenDays * 86400000, '+inf'));
 		const forcedWords = (this.serverSettings.recommendedTimelineForcedWords ?? []).map(word => word.toLocaleLowerCase());
 		const now = Date.now();
 		const normalizedAccounts = (accounts: string[]) => new Set(accounts.map(x => x.trim().replace(/^@/, '').toLocaleLowerCase()).filter(Boolean));
