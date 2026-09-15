@@ -240,7 +240,13 @@ async function chooseChannel(ev: PointerEvent): Promise<void> {
 		}),
 		(channels.length === 0 ? undefined : { type: 'divider' }),
 		{
-			type: 'link',
+			type: 'link' as const,
+			icon: 'ti ti-search',
+			text: i18n.ts.findChannel,
+			to: '/channels',
+		},
+		{
+			type: 'link' as const,
 			icon: 'ti ti-plus',
 			text: i18n.ts.createNew,
 			to: '/channels/new',

@@ -3017,6 +3017,10 @@ export interface Locale extends ILocale {
      */
     "createNew": string;
     /**
+     * チャンネルを探す
+     */
+    "findChannel": string;
+    /**
      * 任意
      */
     "optional": string;
