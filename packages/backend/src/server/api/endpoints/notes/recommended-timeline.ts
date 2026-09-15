@@ -81,7 +81,7 @@ const defaults: Settings = {
 
 // Increment when the ranking/seen semantics change so previously generated
 // snapshots and stale seen records cannot hide the corrected result set.
-const recommendationCacheVersion = 'v14';
+const recommendationCacheVersion = 'v15';
 
 type RecommendationContext = {
 	followingIds: string[];
@@ -311,13 +311,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		// intentionally small: ranking needs a varied shortlist, not every note
 		// written by every followed account.
 		const sourceNoteLimit = Math.min(settings.candidateScanLimit, Math.max(60, resultLimit * 3));
+		const directFetchLimit = Math.min(240, Math.max(sourceNoteLimit, resultLimit * 4));
 		// The two-hop graph is ordered by the number of followed accounts that
 		// connect the reader to each author. Query the wider, socially strongest
 		// cohort independently from the shared pool, while keeping a bounded scan.
 		const prioritizedTwoHopIds = twoHopIds;
 		const twoHopFetchLimit = Math.min(300, Math.max(sourceNoteLimit, resultLimit * 4));
-		const fetchDirectNotes = (days: number) => directIds.length === 0 ? Promise.resolve([]) : createVisibleQuery(sourceNoteLimit)
+		const fetchDirectNotes = (days: number) => directIds.length === 0 ? Promise.resolve([]) : createVisibleQuery(directFetchLimit)
 			.andWhere('note.userId = ANY(:directIds)', { directIds })
+			// Match Home timeline semantics: ordinary posts and self-replies belong
+			// in this source, while replies to other accounts must not crowd them out.
+			.andWhere('(note.replyId IS NULL OR note.replyUserId = note.userId)')
 			.andWhere('note.id >= :oldestId', { oldestId: this.idService.gen(Date.now() - days * 86400000) })
 			.getMany();
 		const fetchTwoHopNotes = (days: number) => prioritizedTwoHopIds.length === 0 ? Promise.resolve([]) : createVisibleQuery(twoHopFetchLimit)
