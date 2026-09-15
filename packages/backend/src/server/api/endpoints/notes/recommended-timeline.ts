@@ -81,7 +81,7 @@ const defaults: Settings = {
 
 // Increment when the ranking/seen semantics change so previously generated
 // snapshots and stale seen records cannot hide the corrected result set.
-const recommendationCacheVersion = 'v12';
+const recommendationCacheVersion = 'v13';
 
 type RecommendationContext = {
 	followingIds: string[];
@@ -193,12 +193,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// ranking. The existing IDs remain fixed, so the reader never sees items
 			// move or duplicate while loading older entries.
 			if (ps.untilId != null && pageIds.length < ps.limit) {
-				const existingNotes = resultIds.length === 0 ? [] : await this.notesRepository.find({ select: { id: true, renoteId: true, text: true, cw: true }, where: { id: In(resultIds) } });
+				const existingNotes = resultIds.length === 0 ? [] : await this.notesRepository.find({ select: { id: true, renoteId: true, userId: true, text: true, cw: true }, where: { id: In(resultIds) } });
 				const existingTargets = new Set(existingNotes.map(note => this.targetId(note)));
+				const existingAuthorCounts = new Map<string, number>();
+				for (const note of existingNotes) {
+					existingAuthorCounts.set(note.userId, (existingAuthorCounts.get(note.userId) ?? 0) + 1);
+				}
 				const cursorKey = `${resultKey}:candidate-cursor`;
 				const cursor = Number(await this.redisClient.get(cursorKey) ?? '0');
-			const batchSize = Math.min(60, Math.max(ps.limit * 2, 30));
-				const extraIds = await this.buildRecommendation(me, settings, existingTargets, Math.max(0, cursor) * settings.candidateScanLimit, batchSize, ps.snapshotId);
+				const batchSize = Math.min(60, Math.max(ps.limit * 2, 30));
+				const extraIds = await this.buildRecommendation(me, settings, existingTargets, Math.max(0, cursor) * settings.candidateScanLimit, batchSize, ps.snapshotId, existingAuthorCounts);
 				if (extraIds.length > 0) {
 					// Multiple widgets or Deck columns may share this snapshot. Append only
 					// when its length is unchanged, so concurrent end-of-list requests can
@@ -277,7 +281,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		};
 	}
 
-	private async buildRecommendation(me: MiLocalUser, settings: Settings, excludedTargets = new Set<string>(), candidateOffset = 0, resultLimit = settings.resultLimit, seed = ''): Promise<string[]> {
+	private async buildRecommendation(me: MiLocalUser, settings: Settings, excludedTargets = new Set<string>(), candidateOffset = 0, resultLimit = settings.resultLimit, seed = '', existingAuthorCounts = new Map<string, number>()): Promise<string[]> {
 		const candidateIds = await this.redisForTimelines.lrange('torikago:recommended:candidates', candidateOffset, candidateOffset + settings.candidateScanLimit - 1);
 		const context = await this.getRecommendationContext(me);
 		const followingIds = context.followingIds;
@@ -393,13 +397,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		// A plain renote and its original note represent one thing to the reader.
 		// Keep the stronger candidate before splitting forced and regular slots.
 		const uniqueScored = [...scored].sort((a, b) => b.quality - a.quality).filter((item, index, items) => items.findIndex(other => other.targetId === item.targetId) === index);
-		const forced = uniqueScored.filter(item => item.forced).slice(0, settings.forcedLimit);
+		const selectedAuthorCounts = new Map(existingAuthorCounts);
+		const forced: typeof uniqueScored = [];
+		for (const item of uniqueScored) {
+			if (!item.forced || forced.length >= settings.forcedLimit) continue;
+			if ((selectedAuthorCounts.get(item.authorId) ?? 0) >= settings.maxNotesPerAuthor) continue;
+			selectedAuthorCounts.set(item.authorId, (selectedAuthorCounts.get(item.authorId) ?? 0) + 1);
+			forced.push(item);
+		}
 		const forcedTargets = new Set(forced.map(item => item.targetId));
 		// Forced entries bypass the threshold, but every ordinary source uses the
 		// configured minimum score consistently, including followed accounts.
 		const eligible = uniqueScored.filter(item => item.forced || item.quality >= settings.minimumScore);
-		const selectionSettings = resultLimit === settings.resultLimit ? settings : { ...settings, resultLimit };
-		const selected = this.selectSources(eligible.filter(item => !item.forced && !forcedTargets.has(item.targetId)), selectionSettings, seed);
+		const selectionSettings = { ...settings, resultLimit: Math.max(0, resultLimit - forced.length) };
+		const selected = this.selectSources(eligible.filter(item => !item.forced && !forcedTargets.has(item.targetId)), selectionSettings, seed, selectedAuthorCounts);
+		for (const item of selected) {
+			selectedAuthorCounts.set(item.authorId, (selectedAuthorCounts.get(item.authorId) ?? 0) + 1);
+		}
 		// Source selection normally honours the configured ratios, but a depleted
 		// source can fall back to another list while iterating. Do not let that
 		// fallback erase the followed-account share when visible Home/followers
@@ -415,7 +429,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			for (const replacement of replacements) {
 				const replaceAt = selected.map(item => item.source === 'unknown' || item.source === 'twoHop').lastIndexOf(true);
 				if (replaceAt < 0) break;
+				const replaced = selected[replaceAt]!;
+				const replacedCount = selectedAuthorCounts.get(replaced.authorId) ?? 0;
+				selectedAuthorCounts.set(replaced.authorId, Math.max(0, replacedCount - 1));
+				if ((selectedAuthorCounts.get(replacement.authorId) ?? 0) >= settings.maxNotesPerAuthor) {
+					selectedAuthorCounts.set(replaced.authorId, replacedCount);
+					continue;
+				}
 				selected[replaceAt] = replacement;
+				selectedAuthorCounts.set(replacement.authorId, (selectedAuthorCounts.get(replacement.authorId) ?? 0) + 1);
 			}
 		}
 		// Home-eligible notes are scored and interleaved with every other source;
@@ -458,11 +480,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		return context;
 	}
 
-	private selectSources<T extends { id: string; source: string; authorId: string; targetId: string; quality: number }>(items: T[], settings: Settings, seed: string): T[] {
+	private selectSources<T extends { id: string; source: string; authorId: string; targetId: string; quality: number }>(items: T[], settings: Settings, seed: string, existingAuthorCounts = new Map<string, number>()): T[] {
 		const bySource = new Map(['following', 'twoHop', 'unknown'].map(source => [source, items.filter(item => item.source === source).sort((a, b) => b.quality - a.quality)]));
 		const percentages: Array<[string, number]> = [['twoHop', settings.twoHopPercent], ['following', settings.followingPercent], ['unknown', settings.unknownPercent]];
 		if (percentages.every(([, percent]) => percent === 0)) percentages[0]![1] = 100;
-		const out: T[] = []; const counts = new Map<string, number>(); const targets = new Set<string>();
+		const out: T[] = []; const counts = new Map(existingAuthorCounts); const targets = new Set<string>();
 		for (let i = 0; i < settings.resultLimit; i++) {
 			const wanted = [...percentages].sort((a, b) => ((out.filter(item => item.source === a[0]).length + 1) / Math.max(a[1], 1)) - ((out.filter(item => item.source === b[0]).length + 1) / Math.max(b[1], 1)))[0]![0];
 			const sources = [wanted, ...percentages.map(x => x[0]).filter(source => source !== wanted)];
