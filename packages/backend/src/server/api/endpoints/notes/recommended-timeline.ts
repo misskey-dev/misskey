@@ -5,6 +5,7 @@
 
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import ms from 'ms';
 import type Redis from 'ioredis';
 import type { DriveFilesRepository, FollowingsRepository, MiMeta, NoteFavoritesRepository, NoteReactionsRepository, NotesRepository } from '@/models/_.js';
 import type { MiLocalUser } from '@/models/User.js';
@@ -81,7 +82,7 @@ const defaults: Settings = {
 
 // Increment when the ranking/seen semantics change so previously generated
 // snapshots and stale seen records cannot hide the corrected result set.
-const recommendationCacheVersion = 'v16';
+const recommendationCacheVersion = 'v17';
 
 type RecommendationContext = {
 	followingIds: string[];
@@ -95,6 +96,14 @@ export const meta = {
 	tags: ['notes'],
 	requireCredential: true,
 	kind: 'read:account',
+
+	// A recommendation snapshot can perform several bounded database queries.
+	// Keep ordinary paging responsive, while preventing a client from creating
+	// an unlimited number of fresh snapshots in a short period.
+	limit: {
+		duration: ms('1minute'),
+		max: 60,
+	},
 	errors: {
 		featureDisabled: {
 			message: 'Recommended timeline is disabled.',
@@ -123,6 +132,7 @@ export const paramDef = {
 		previousIncludeFollowing: { type: 'boolean', default: true },
 		includeFollowing: { type: 'boolean', default: true },
 		withFiles: { type: 'boolean', default: false },
+		withRenotes: { type: 'boolean', default: true },
 		withSensitive: { type: 'boolean', default: true },
 	},
 	required: ['snapshotId'],
@@ -152,19 +162,29 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// accepting the former request parameters for older clients, but never let
 			// them create a separate discovery-only result set.
 			const resultKey = `torikago:recommended:${recommendationCacheVersion}:snapshot:${me.id}:${ps.snapshotId}:home`;
-			let resultIds = await this.redisClient.lrange(resultKey, 0, -1);
-			if (resultIds.length === 0) {
+			const snapshotReadyKey = `${resultKey}:ready`;
+			const [cachedResultIds, snapshotReady] = await Promise.all([
+				this.redisClient.lrange(resultKey, 0, -1),
+				this.redisClient.exists(snapshotReadyKey),
+			]);
+			let resultIds = cachedResultIds;
+			if (snapshotReady === 0) {
 				// The host has a known midnight load spike. Do not make a reader wait
 				// for a fresh ranking if the browser already has a usable snapshot:
 				// carry that fixed snapshot forward instead. Returning an empty array
 				// here used to render "No notes" for every reader during the protected window.
 				const previousResultKey = ps.previousSnapshotId == null ? null : `torikago:recommended:${recommendationCacheVersion}:snapshot:${me.id}:${ps.previousSnapshotId}:home`;
-				const previousResultIds = previousResultKey == null ? [] : await this.redisClient.lrange(previousResultKey, 0, -1);
-				if (this.isMidnightProtectionWindow() && previousResultKey != null && previousResultIds.length > 0) {
+				const previousReadyKey = previousResultKey == null ? null : `${previousResultKey}:ready`;
+				const [previousResultIds, previousSnapshotReady] = previousResultKey == null || previousReadyKey == null ? [[], 0] : await Promise.all([
+					this.redisClient.lrange(previousResultKey, 0, -1),
+					this.redisClient.exists(previousReadyKey),
+				]);
+				if (this.isMidnightProtectionWindow() && previousResultKey != null && previousSnapshotReady !== 0) {
 					const previousSeenIds = await this.redisClient.smembers(`${previousResultKey}:seen`);
-					const pipeline = this.redisClient.pipeline().del(resultKey);
-					pipeline.rpush(resultKey, ...previousResultIds);
+					const pipeline = this.redisClient.pipeline().del(resultKey, `${resultKey}:seen`, snapshotReadyKey);
+					if (previousResultIds.length > 0) pipeline.rpush(resultKey, ...previousResultIds);
 					pipeline.expire(resultKey, settings.snapshotHours * 3600);
+					pipeline.set(snapshotReadyKey, '1', 'EX', settings.snapshotHours * 3600);
 					pipeline.set(`${resultKey}:candidate-cursor`, '0', 'EX', settings.snapshotHours * 3600);
 					pipeline.set(`${resultKey}:version`, (await this.redisForTimelines.get('torikago:recommended:version')) ?? '0', 'EX', settings.snapshotHours * 3600);
 					if (previousSeenIds.length > 0) pipeline.sadd(`${resultKey}:seen`, ...previousSeenIds);
@@ -175,10 +195,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					// A first-time reader has no snapshot to reuse. Generate one rather
 					// than presenting an empty timeline; this is request-driven, not a
 					// midnight-wide background job.
-					resultIds = await this.buildRecommendation(me, settings, new Set(), 0, settings.resultLimit, ps.snapshotId);
-					const pipeline = this.redisClient.pipeline().del(resultKey);
+					resultIds = await this.buildRecommendation(me, settings, new Set(), 0, settings.resultLimit, ps.snapshotId, new Map(), ps.withRenotes);
+					const pipeline = this.redisClient.pipeline().del(resultKey, `${resultKey}:seen`, snapshotReadyKey);
 					if (resultIds.length > 0) pipeline.rpush(resultKey, ...resultIds);
 					pipeline.expire(resultKey, settings.snapshotHours * 3600);
+					// The marker deliberately exists even for an empty list. Otherwise an
+					// empty result is mistaken for a cache miss and rebuilt on every reload.
+					pipeline.set(snapshotReadyKey, '1', 'EX', settings.snapshotHours * 3600);
 					pipeline.set(`${resultKey}:candidate-cursor`, '0', 'EX', settings.snapshotHours * 3600);
 					pipeline.set(`${resultKey}:version`, (await this.redisForTimelines.get('torikago:recommended:version')) ?? '0', 'EX', settings.snapshotHours * 3600);
 					await pipeline.exec();
@@ -200,23 +223,32 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					existingAuthorCounts.set(note.userId, (existingAuthorCounts.get(note.userId) ?? 0) + 1);
 				}
 				const cursorKey = `${resultKey}:candidate-cursor`;
-				const cursor = Number(await this.redisClient.get(cursorKey) ?? '0');
+				let cursor = Number(await this.redisClient.get(cursorKey) ?? '0');
 				const batchSize = Math.min(60, Math.max(ps.limit * 2, 30));
-				const extraIds = await this.buildRecommendation(me, settings, existingTargets, Math.max(0, cursor) * settings.candidateScanLimit, batchSize, ps.snapshotId, existingAuthorCounts);
-				if (extraIds.length > 0) {
+				// A sparse candidate window must not make scrolling stop permanently.
+				// Try a few bounded windows and persist progress even when none produce
+				// a displayable note, so the next request continues farther back.
+				for (let attempt = 0; attempt < 3 && pageIds.length < ps.limit; attempt++) {
+					const extraIds = await this.buildRecommendation(me, settings, existingTargets, Math.max(0, cursor) * settings.candidateScanLimit, batchSize, ps.snapshotId, existingAuthorCounts, ps.withRenotes);
 					// Multiple widgets or Deck columns may share this snapshot. Append only
 					// when its length is unchanged, so concurrent end-of-list requests can
 					// never append the same ranking batch twice.
 					const appended = await this.redisClient.eval(`
 						if redis.call('LLEN', KEYS[1]) ~= tonumber(ARGV[1]) then return 0 end
-						redis.call('RPUSH', KEYS[1], unpack(ARGV, 4))
+						if #ARGV > 3 then redis.call('RPUSH', KEYS[1], unpack(ARGV, 4)) end
 						redis.call('SET', KEYS[2], ARGV[2], 'EX', ARGV[3])
 						redis.call('EXPIRE', KEYS[1], ARGV[3])
 						return 1
 					`, 2, resultKey, cursorKey, String(resultIds.length), String(cursor + 1), String(settings.snapshotHours * 3600), ...extraIds);
-					if (appended === 1) resultIds.push(...extraIds);
-					else resultIds = await this.redisClient.lrange(resultKey, 0, -1);
+					if (appended === 1) {
+						resultIds.push(...extraIds);
+						cursor++;
+					} else {
+						resultIds = await this.redisClient.lrange(resultKey, 0, -1);
+						break;
+					}
 					pageIds = resultIds.slice(offset, offset + ps.limit * 8);
+					if (extraIds.length > 0) break;
 				}
 			}
 			if (pageIds.length === 0) return [];
@@ -226,7 +258,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 			const files = await this.driveFilesRepository.find({
 				select: { id: true, isSensitive: true },
-				where: { id: In([...new Set(notes.flatMap(note => note.fileIds))]) },
+				where: { id: In([...new Set(notes.flatMap(note => [...note.fileIds, ...(note.renote?.fileIds ?? [])]))]) },
 			});
 			const sensitiveFileIds = new Set(files.filter(file => file.isSensitive).map(file => file.id));
 			const noteMap = new Map(notes.map(note => [note.id, note]));
@@ -245,7 +277,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					const targetId = this.targetId(note);
 					return snapshotSeen.has(targetId) || !globallySeen.has(targetId);
 				})
-				.filter(note => ps.withSensitive || !note.fileIds.some(id => sensitiveFileIds.has(id))).slice(0, ps.limit);
+				.filter(note => ps.withFiles !== true || [...note.fileIds, ...(note.renote?.fileIds ?? [])].length > 0)
+				.filter(note => ps.withSensitive || ![...note.fileIds, ...(note.renote?.fileIds ?? [])].some(id => sensitiveFileIds.has(id))).slice(0, ps.limit);
 			// A page returned to the client is the smallest reliable approximation of
 			// "seen". Never consume an entire snapshot merely because it was replaced.
 			await this.markSeen(me.id, resultKey, ordered.map(note => this.targetId(note)), settings);
@@ -281,7 +314,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		};
 	}
 
-	private async buildRecommendation(me: MiLocalUser, settings: Settings, excludedTargets = new Set<string>(), candidateOffset = 0, resultLimit = settings.resultLimit, seed = '', existingAuthorCounts = new Map<string, number>()): Promise<string[]> {
+	private async buildRecommendation(me: MiLocalUser, settings: Settings, excludedTargets = new Set<string>(), candidateOffset = 0, resultLimit = settings.resultLimit, seed = '', existingAuthorCounts = new Map<string, number>(), includeRenotes = true): Promise<string[]> {
 		const candidateIds = await this.redisForTimelines.lrange('torikago:recommended:candidates', candidateOffset, candidateOffset + settings.candidateScanLimit - 1);
 		const context = await this.getRecommendationContext(me, settings);
 		const followingIds = context.followingIds;
@@ -323,6 +356,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// in this source, while replies to other accounts must not crowd them out.
 			.andWhere('(note.replyId IS NULL OR note.replyUserId = note.userId)')
 			.andWhere('note.id >= :oldestId', { oldestId: this.idService.gen(Date.now() - days * 86400000) })
+			.skip(Math.max(0, candidateOffset))
 			.getMany();
 		const fetchTwoHopNotes = (days: number) => prioritizedTwoHopIds.length === 0 ? Promise.resolve([]) : createVisibleQuery(twoHopFetchLimit)
 			.andWhere('note.userId = ANY(:twoHopIds)', { twoHopIds: prioritizedTwoHopIds })
@@ -375,6 +409,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// A renote with no own text or CW is the only form that may be replaced
 			// with its original. Quote posts retain their wrapper and commentary.
 			const plainRenote = note.renote != null && (note.text == null || note.text === '') && (note.cw == null || note.cw === '');
+			if (plainRenote && !includeRenotes) return [];
 			// We only expose a renote's original when it is public. Non-public
 			// originals are skipped rather than leaking their content through a
 			// recommendation.

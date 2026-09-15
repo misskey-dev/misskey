@@ -132,6 +132,10 @@ const initialRecommendedSnapshotId = props.src === 'recommended'
 	? `${Date.now()}-${Math.random().toString(36).slice(2)}`
 	: '';
 const recommendedSnapshotId = ref(initialRecommendedSnapshotId);
+// Sent only when an explicit refresh replaces a usable recommendation view.
+// The server can reuse it during the short midnight protection window instead
+// of doing another expensive ranking pass.
+const previousRecommendedSnapshotId = ref<string | null>(null);
 const recommendedRefreshAvailable = ref(false);
 
 if (props.src === 'antenna') {
@@ -162,7 +166,9 @@ if (props.src === 'antenna') {
 	paginator = markRaw(new Paginator('notes/recommended-timeline', {
 		computedParams: computed(() => ({
 			snapshotId: recommendedSnapshotId.value,
+			previousSnapshotId: previousRecommendedSnapshotId.value ?? undefined,
 			includeFollowing: true,
+			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 			withSensitive: props.withSensitive,
 		})),
@@ -480,6 +486,9 @@ watch(() => [props.list, props.antenna, props.channel, props.role, props.withRen
 		disconnectChannel();
 		connectChannel();
 	}
+	// Renote inclusion changes which candidates are eligible, rather than only
+	// how an already-packed note is rendered. Give it a fresh fixed snapshot.
+	if (props.src === 'recommended') void reloadTimeline();
 });
 watch(() => props.withSensitive, () => paginator.reload());
 
@@ -497,6 +506,7 @@ function reloadTimeline() {
 			// that must own the transition, otherwise two responses append the same
 			// notes to the paginator.
 			skipRecommendedParameterReload = true;
+			previousRecommendedSnapshotId.value = recommendedSnapshotId.value;
 			recommendedSnapshotId.value = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 			recommendedRefreshAvailable.value = false;
 		}

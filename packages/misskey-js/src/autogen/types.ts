@@ -31545,6 +31545,8 @@ export interface operations {
                     /** @default false */
                     withFiles?: boolean;
                     /** @default true */
+                    withRenotes?: boolean;
+                    /** @default true */
                     withSensitive?: boolean;
                 };
             };
@@ -38169,4 +38171,3 @@ export interface operations {
         };
     };
 }
-
