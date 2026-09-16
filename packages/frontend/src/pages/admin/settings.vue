@@ -96,18 +96,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkFolder>
 				</SearchMarker>
 
-				<SearchMarker v-slot="slotProps" :keywords="['pinned', 'users']">
+				<SearchMarker v-slot="slotProps" :keywords="['explore', 'pinned', 'users']">
 					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 						<template #icon><SearchIcon><i class="ti ti-user-star"></i></SearchIcon></template>
-						<template #label><SearchLabel>{{ i18n.ts.pinnedUsers }}</SearchLabel></template>
-						<template v-if="pinnedUsersForm.modified.value" #footer>
-							<MkFormFooter :form="pinnedUsersForm"/>
+						<template #label><SearchLabel>{{ i18n.ts.explorePage }}</SearchLabel></template>
+						<template v-if="explorePageForm.modified.value" #footer>
+							<MkFormFooter :form="explorePageForm"/>
 						</template>
 
-						<MkTextarea v-model="pinnedUsersForm.state.pinnedUsers">
-							<template #label>{{ i18n.ts.pinnedUsers }}<span v-if="pinnedUsersForm.modifiedStates.pinnedUsers" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption><SearchText>{{ i18n.ts.pinnedUsersDescription }}</SearchText></template>
-						</MkTextarea>
+						<div class="_gaps_s">
+							<SearchMarker :keywords="['pinned', 'users']">
+								<MkTextarea v-model="explorePageForm.state.pinnedUsers">
+									<template #label><SearchLabel>{{ i18n.ts.pinnedUsers }}</SearchLabel><span v-if="explorePageForm.modifiedStates.pinnedUsers" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption><SearchText>{{ i18n.ts.pinnedUsersDescription }}</SearchText></template>
+								</MkTextarea>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['prefer', 'popular', 'user', 'factor']">
+								<MkRadios
+									v-model="explorePageForm.state.preferPopularUserFactor"
+									:options="[
+										{ value: 'follower', label: i18n.ts.followersCount },
+										{ value: 'pv', label: i18n.ts.pageViewCount },
+										{ value: 'none', label: i18n.ts.disabled },
+									]"
+								>
+									<template #label><SearchLabel>{{ i18n.ts.preferPopularUserFactor }}</SearchLabel><span v-if="explorePageForm.modifiedStates.preferPopularUserFactor" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption>{{ i18n.ts.preferPopularUserFactorDescription }}</template>
+								</MkRadios>
+							</SearchMarker>
+						</div>
 					</MkFolder>
 				</SearchMarker>
 
@@ -433,11 +451,13 @@ const infoForm = useForm({
 	fetchInstance(true);
 });
 
-const pinnedUsersForm = useForm({
+const explorePageForm = useForm({
 	pinnedUsers: meta.pinnedUsers.join('\n'),
+	preferPopularUserFactor: meta.preferPopularUserFactor,
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		pinnedUsers: state.pinnedUsers.split('\n'),
+		preferPopularUserFactor: state.preferPopularUserFactor,
 	});
 	fetchInstance(true);
 });
