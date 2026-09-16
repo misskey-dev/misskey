@@ -26,6 +26,12 @@ export const meta = {
 			id: '0d7ec6d2-e652-443e-a7bf-9ee9a0cd77b0',
 		},
 
+		incorrectTotp: {
+			message: 'The one-time password is incorrect or has expired.',
+			code: 'INCORRECT_TOTP',
+			id: '57e56c36-e07e-49ab-97fb-7dc8a5b4cd50',
+		},
+
 		twoFactorNotEnabled: {
 			message: '2fa not enabled.',
 			code: 'TWO_FACTOR_NOT_ENABLED',
@@ -76,13 +82,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (profile.twoFactorEnabled) {
 				if (token == null) {
-					throw new Error('authentication failed');
+					throw new ApiError(meta.errors.incorrectTotp);
 				}
 
 				try {
 					await this.userAuthService.twoFactorAuthenticate(profile, token);
 				} catch (_) {
-					throw new Error('authentication failed');
+					throw new ApiError(meta.errors.incorrectTotp);
 				}
 			}
 
