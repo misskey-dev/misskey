@@ -543,6 +543,7 @@ const extension_context_definition = {
 	Emoji: 'toot:Emoji',
 	featured: 'toot:featured',
 	discoverable: 'toot:discoverable',
+	suspended: 'toot:suspended',
 	// schema
 	schema: 'http://schema.org#',
 	PropertyValue: 'schema:PropertyValue',
