@@ -132,14 +132,9 @@ async function unregisterTOTP(): Promise<void> {
 	os.apiWithDialog('i/2fa/unregister', {
 		password: auth.result.password,
 		token: auth.result.token,
-	}).then(res => {
+	}).then(() => {
 		updateCurrentAccountPartial({
 			twoFactorEnabled: false,
-		});
-	}).catch(error => {
-		os.alert({
-			type: 'error',
-			text: error,
 		});
 	});
 }
