@@ -27,8 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				class="thumb"
 				:style="{ left: thumbPosition + 'px' }"
 				@mouseenter.passive="onMouseenter"
-				@mousedown="onMousedown"
-				@touchstart="onMousedown"
+				@pointerdown="onPointerdown"
 			>
 				<div class="thumbInner"></div>
 			</div>
@@ -179,7 +178,7 @@ function onMouseenter() {
 
 let lastClickTime: number | null = null;
 
-function onMousedown(ev: MouseEvent | TouchEvent) {
+function onPointerdown(ev: PointerEvent) {
 	if (props.disabled) return; // Prevent interaction if disabled
 
 	ev.preventDefault();
@@ -201,12 +200,19 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 	window.document.head.appendChild(style);
 
 	const thumbWidth = getThumbWidth();
+	const draggingPointerId = ev.pointerId;
+	try {
+		thumbEl.value?.setPointerCapture(draggingPointerId);
+	} catch {
+		// ignore
+	}
 
-	const onDrag = (ev: MouseEvent | TouchEvent) => {
+	const onDrag = (ev: PointerEvent) => {
+		if (ev.pointerId !== draggingPointerId) return;
 		ev.preventDefault();
 		let beforeValue = finalValue.value;
 		const containerRect = containerEl.value!.getBoundingClientRect();
-		const pointerX = 'touches' in ev && ev.touches.length > 0 ? ev.touches[0].clientX : 'clientX' in ev ? ev.clientX : 0;
+		const pointerX = ev.clientX;
 		const pointerPositionOnContainer = pointerX - (containerRect.left + (thumbWidth / 2));
 		rawValue.value = Math.min(1, Math.max(0, pointerPositionOnContainer / (containerEl.value!.offsetWidth - thumbWidth)));
 
@@ -217,13 +223,18 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 
 	let beforeValue = finalValue.value;
 
-	const onMouseup = () => {
+	const onPointerup = (ev: PointerEvent) => {
+		if (ev.pointerId !== draggingPointerId) return;
 		window.document.head.removeChild(style);
 		tooltipForDragShowing.value = false;
-		window.removeEventListener('mousemove', onDrag);
-		window.removeEventListener('touchmove', onDrag);
-		window.removeEventListener('mouseup', onMouseup);
-		window.removeEventListener('touchend', onMouseup);
+		window.removeEventListener('pointermove', onDrag);
+		window.removeEventListener('pointerup', onPointerup);
+		window.removeEventListener('pointercancel', onPointerup);
+		try {
+			thumbEl.value?.releasePointerCapture(draggingPointerId);
+		} catch {
+			// ignore
+		}
 
 		// 値が変わってたら通知
 		if (beforeValue !== finalValue.value) {
@@ -232,10 +243,9 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 		}
 	};
 
-	window.addEventListener('mousemove', onDrag);
-	window.addEventListener('touchmove', onDrag);
-	window.addEventListener('mouseup', onMouseup, { once: true });
-	window.addEventListener('touchend', onMouseup, { once: true });
+	window.addEventListener('pointermove', onDrag, { passive: false });
+	window.addEventListener('pointerup', onPointerup, { passive: true });
+	window.addEventListener('pointercancel', onPointerup, { passive: true });
 
 	if (lastClickTime == null) {
 		lastClickTime = Date.now();
@@ -374,6 +384,7 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 				width: $thumbWidth;
 				height: $thumbHeight;
 				cursor: grab;
+				touch-action: none;
 
 				&:hover {
 					> .thumbInner {
