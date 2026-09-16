@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-if="$i" v-click-anime :class="[$style.item, $style.account]" class="_button" @click="openAccountMenu">
 				<MkAvatar :user="$i" :class="$style.avatar"/><MkAcct :class="$style.acct" :user="$i"/>
 			</button>
-			<div :class="$style.post" @click="os.post()">
+			<div :class="$style.post" @click="post">
 				<MkButton :class="$style.postButton" gradate rounded>
 					<i class="ti ti-pencil ti-fw"></i>
 				</MkButton>
@@ -58,6 +58,10 @@ import { prefer } from '@/preferences.js';
 import { getAccountMenu } from '@/accounts.js';
 import { $i } from '@/i.js';
 import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
+import { postButtonHandler } from '@/utility/post-button-handler.js';
+import { useRouter } from '@/router.js';
+
+const router = useRouter();
 
 const WINDOW_THRESHOLD = 1400;
 
@@ -94,6 +98,10 @@ async function openAccountMenu(ev: PointerEvent) {
 	});
 
 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
+}
+
+function post() {
+	postButtonHandler(router.currentRef.value);
 }
 
 onMounted(() => {
