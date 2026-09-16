@@ -134,6 +134,7 @@ const security_v1 = {
 		'privateKey': { '@id': 'sec:privateKey', '@type': '@id' },
 		'privateKeyPem': 'sec:privateKeyPem',
 		'publicKey': { '@id': 'sec:publicKey', '@type': '@id' },
+		'additionalPublicKeys': { '@id': 'sec:publicKey', '@type': '@id' },
 		'publicKeyBase58': 'sec:publicKeyBase58',
 		'publicKeyPem': 'sec:publicKeyPem',
 		'publicKeyWif': 'sec:publicKeyWif',
@@ -543,6 +544,7 @@ const extension_context_definition = {
 	Emoji: 'toot:Emoji',
 	featured: 'toot:featured',
 	discoverable: 'toot:discoverable',
+	suspended: 'toot:suspended',
 	// schema
 	schema: 'http://schema.org#',
 	PropertyValue: 'schema:PropertyValue',
