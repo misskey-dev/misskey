@@ -17,6 +17,7 @@ import { NotificationService } from '@/core/NotificationService.js';
 import PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
 import { emojiRegex } from '@/misc/emoji-regex.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { RelayService } from '@/core/RelayService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -97,6 +98,7 @@ export class ReactionService {
 		private globalEventService: GlobalEventService,
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
+		private relayService: RelayService,
 		private notificationService: NotificationService,
 		private perUserReactionsChart: PerUserReactionsChart,
 	) {
@@ -280,6 +282,10 @@ export class ReactionService {
 				}
 			}
 
+			if (note.visibility === 'public' && this.meta.deliverReactionsToRelays) {
+				this.relayService.deliverToRelays(user, content);
+			}
+
 			trackPromise(dm.execute());
 		}
 		//#endregion
@@ -332,6 +338,11 @@ export class ReactionService {
 				dm.addDirectRecipe(reactee as MiRemoteUser);
 			}
 			dm.addFollowersRecipe();
+
+			if (note.visibility === 'public' && this.meta.deliverReactionsToRelays) {
+				this.relayService.deliverToRelays(user, content);
+			}
+
 			trackPromise(dm.execute());
 		}
 		//#endregion
