@@ -197,8 +197,18 @@ async function save() {
 
 	await nextTick(); // waitingがレンダリングされるまで待つ
 
-	renderer.changeResolution(imageBitmap.width, imageBitmap.height); // 本番レンダリングのためオリジナル画質に戻す
-	await renderer.render(layers); // toBlobの直前にレンダリングしないと何故か壊れる
+	try {
+		renderer.changeResolution(imageBitmap.width, imageBitmap.height); // 本番レンダリングのためオリジナル画質に戻す
+		await renderer.render(layers); // toBlobの直前にレンダリングしないと何故か壊れる
+	} catch (err) {
+		console.error(err);
+		os.alert({
+			type: 'error',
+			text: i18n.ts._imageEffector.failedToLoadImage,
+		});
+		closeWaiting();
+		return;
+	}
 	canvasEl.value.toBlob((blob) => {
 		emit('ok', new File([blob!], `image-${Date.now()}.png`, { type: 'image/png' }));
 		dialog.value?.close();
