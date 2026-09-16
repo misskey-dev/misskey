@@ -8,9 +8,9 @@ import Chart from '../../core.js';
 export const name = 'instance';
 
 export const schema = {
-	'requests.failed': {},
-	'requests.succeeded': {},
-	'requests.received': {},
+	'requests.failed': { range: 'small' },
+	'requests.succeeded': { range: 'small' },
+	'requests.received': { range: 'small' },
 	'notes.total': { accumulate: true },
 	'notes.inc': {},
 	'notes.dec': {},
