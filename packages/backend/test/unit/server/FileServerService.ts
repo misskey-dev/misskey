@@ -523,7 +523,7 @@ describe('FileServerService', () => {
 			expect(res.statusCode).toBe(206);
 			expect(res.headers['content-range']).toBe(`bytes 0-3/${dummyBuffer.length}`);
 			expect(res.headers['accept-ranges']).toBe('bytes');
-			expect(res.headers['content-length']).toBe(String(dummyBuffer.length));
+			expect(res.headers['content-length']).toBe('4');
 			expect(res.headers['content-type']).toBe('image/png');
 			expect(res.headers['cache-control']).toBe('max-age=31536000, immutable');
 		});
