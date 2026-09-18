@@ -85,7 +85,9 @@ export class FileServerDriveHandler {
 				attachStreamCleanup(image.data, file.cleanup);
 
 				reply.header('Content-Type', getSafeContentType(image.type));
-				reply.header('Content-Length', file.file.size);
+				if (request.headers.range == null) {
+					reply.header('Content-Length', file.file.size);
+				}
 				reply.header('Cache-Control', 'max-age=31536000, immutable');
 				reply.header('Content-Disposition',
 					contentDisposition(

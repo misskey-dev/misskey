@@ -13,7 +13,8 @@ export const baseConfig = defineConfig({
 			provider: 'v8',
 			reportsDirectory: 'coverage',
 			include: ['src/**/*.ts'],
-			exclude: ['src/**/*.test.ts'],
+			// 型定義ファイルは実行されるコードを持たないので、常に0%として混ざるのを防ぐ
+			exclude: ['src/**/*.test.ts', 'src/**/*.d.ts'],
 		},
 		restoreMocks: true,
 		testTimeout: 60000,
