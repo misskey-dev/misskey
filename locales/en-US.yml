@@ -3189,10 +3189,10 @@ _customEmojisManager:
       alertUpdateEmojisNothingDescription: "There are no updated Emojis."
       alertDeleteEmojisNothingDescription: "There are no Emojis to be deleted."
       confirmMovePage: "Would you like to move pages?"
-      confirmChangeView: ""
+      confirmChangeView: "Would you like to change view?"
       confirmUpdateEmojisDescription: "Update {count} Emoji(s). Are you sure to continue?"
       confirmDeleteEmojisDescription: "Delete checked {count} Emoji(s). Are you sure to continue?"
-      confirmResetDescription: ""
+      confirmResetDescription: "All changes made so far will be reset"
       confirmMovePageDesciption: "Changes have been made to the Emojis on this page.\nIf you leave the page without saving, all changes made on this page will be discarded."
       dialogSelectRoleTitle: "Search by role set in Emojis"
     _register:
