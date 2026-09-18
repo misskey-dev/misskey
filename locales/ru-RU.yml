@@ -2405,8 +2405,8 @@ _customEmojisManager:
   _gridCommon:
     copySelectionRows: "Скопировать выбранную строку"
     copySelectionRanges: "Скопировать выбранное"
-    deleteSelectionRows: "Удалить выбранное"
-    deleteSelectionRanges: "Удалить выбранные строки"
+    deleteSelectionRows: "Удалить выбранные строки"
+    deleteSelectionRanges: "Удалить строки в выделении"
     searchSettings: "Параметры поиска"
     searchSettingCaption: "Задать подробные критерии поиска"
     searchLimit: "Лимит поиска"
@@ -2418,6 +2418,23 @@ _customEmojisManager:
     showSuccessLogSwitch: "Показывать журнал удачных изменений"
     failureLogNothing: "Журнал ошибок пуст"
     logNothing: "Журнал пуст"
+  _remote:
+    selectionRowDetail: "Информация о выбранных строках"
+    importSelectionRows: "Импортировать выбранные строки"
+    importSelectionRangesRows: "Импортировать строки в выделении"
+    importEmojisButton: "Импортировать выбранные эмодзи"
+    confirmImportEmojisTitle: "Импортировать эмодзи"
+    confirmImportEmojisDescription: "Импортировать {count} эмодзи с внешнего сервера. Пожалуйста, обратите внимание на их лицензию. Продолжить?"
+  _local:
+    tabTitleList: "Зарегистрированные эмодзи"
+    tabTitleRegister: "Регистрация эмодзи"
+    _list:
+      emojisNothing: "Зарегистрированных эмодзи нет."
+      markAsDeleteTargetRows: "Пометить выбранные строки для удаления"
+      markAsDeleteTargetRanges: "Пометить строки в выделении для удаления"
+      alertUpdateEmojisNothingDescription: "Никакие эмодзи не были изменены"
+      alertDeleteEmojisNothingDescription: "Никакие эмодзи не были удалеы"
+      confirmMovePage: "Перенести страницу?"
 _remoteLookupErrors:
   _noSuchObject:
     title: "Не найдено"
