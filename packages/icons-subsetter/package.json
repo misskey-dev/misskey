@@ -11,14 +11,14 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "26.4.0",
+		"@types/node": "26.5.1",
 		"@types/wawoff2": "1.0.2",
-		"@typescript-eslint/eslint-plugin": "8.68.0",
-		"@typescript-eslint/parser": "8.68.0"
+		"@typescript-eslint/eslint-plugin": "8.70.0",
+		"@typescript-eslint/parser": "8.70.0"
 	},
 	"dependencies": {
 		"@tabler/icons-webfont": "3.35.0",
-		"harfbuzzjs": "1.6.0",
+		"harfbuzzjs": "1.6.1",
 		"tsx": "4.23.13",
 		"wawoff2": "2.0.1"
 	},

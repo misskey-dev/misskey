@@ -8,11 +8,11 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "26.4.0",
+		"@types/node": "26.5.1",
 		"@types/tinycolor2": "1.4.6",
-		"@typescript-eslint/eslint-plugin": "8.68.0",
-		"@typescript-eslint/parser": "8.68.0",
-		"eslint-plugin-vue": "10.10.0",
+		"@typescript-eslint/eslint-plugin": "8.70.0",
+		"@typescript-eslint/parser": "8.70.0",
+		"eslint-plugin-vue": "10.11.0",
 		"vue-eslint-parser": "10.4.1"
 	},
 	"files": [
