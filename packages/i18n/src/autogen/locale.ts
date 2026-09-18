@@ -5265,6 +5265,10 @@ export interface Locale extends ILocale {
      */
     "modified": string;
     /**
+     * 変更日時
+     */
+    "modifiedAt": string;
+    /**
      * 破棄
      */
     "discard": string;
@@ -5703,6 +5707,14 @@ export interface Locale extends ILocale {
      * スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、サムネイルが表示されなくなります。
      */
     "urlPreviewSensitiveListDescription": string;
+    /**
+     * 最終バックアップ
+     */
+    "latestBackupAt": string;
+    /**
+     * 最終同期
+     */
+    "latestSyncAt": string;
     /**
      * ピクセルアート拡大モード
      */
@@ -6312,9 +6324,17 @@ export interface Locale extends ILocale {
     };
     "_preferencesBackup": {
         /**
+         * バックアップと同期
+         */
+        "backupAndSync": string;
+        /**
          * 自動バックアップ
          */
         "autoBackup": string;
+        /**
+         * 設定を自動でサーバーに保存し、いつでも復元できるようにします
+         */
+        "autoBackup_description": string;
         /**
          * バックアップから復元
          */
@@ -6344,9 +6364,29 @@ export interface Locale extends ILocale {
          */
         "backupFound": string;
         /**
-         * 設定の強制バックアップ
+         * 今すぐバックアップ
          */
         "forceBackup": string;
+        /**
+         * デバイス間同期
+         */
+        "autoSync": string;
+        /**
+         * サーバーに保存された設定を自動で取得し、別のデバイスでの変更と同期できるようにします
+         */
+        "autoSync_description": string;
+        /**
+         * 今すぐ同期
+         */
+        "forceSync": string;
+        /**
+         * デバイス間の同期をオンにしますか？
+         */
+        "autoSyncAreYouSure": string;
+        /**
+         * 通信量が増えるため、他のデバイスとこのプロファイルを共有する予定がない場合はオンにしないでください。
+         */
+        "autoSyncAreYouSure_description": string;
     };
     "_accountSettings": {
         /**
