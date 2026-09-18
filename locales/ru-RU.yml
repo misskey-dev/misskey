@@ -132,7 +132,7 @@ sensitive: "Содержимое не для всех"
 add: "Добавить"
 reaction: "Реакции"
 reactions: "Реакции"
-emojiPicker: "Палитра эмодзи"
+emojiPicker: "Выбор эмодзи"
 pinnedEmojisForReactionSettingDescription: "Здесь можно закрепить эмодзи для реакций"
 pinnedEmojisSettingDescription: "Здесь можно закрепить эмодзи в общей палитре"
 emojiPickerDisplay: "Внешний вид палитры"
@@ -206,7 +206,7 @@ host: "Хост"
 selectSelf: "Выбрать себя"
 selectUser: "Выберите пользователя"
 recipient: "Кому"
-annotation: "Описание"
+annotation: "Примечание"
 federation: "Федерация"
 instances: "Инстанс"
 registeredAt: "Первое наблюдение"
@@ -1328,6 +1328,7 @@ thisContentsAreMarkedAsSigninRequiredByAuthor: "Автор сообщения у
 lockdown: "Доступ ограничен"
 pleaseSelectAccount: "Выберите свой аккаунт"
 availableRoles: "Доступные роли"
+acknowledgeNotesAndEnable: "Включайте только после понимания мер предосторожности"
 federationSpecified: "Сервер работает через белый список федерации. Связь с другими серверами ограничена"
 federationDisabled: "Федерация отключена для этого сервера. Вы не можете взаимодействовать с пользователями на других серверах."
 draft: "Черновик"
@@ -1348,9 +1349,12 @@ skip: "Пропустить"
 restore: "Восстановить"
 syncBetweenDevices: "Синхронизировать между устройствами"
 paste: "Вставить"
+emojiPalette: "Палитра эмодзи"
 postForm: "Форма отправки"
 textCount: "Количество символов"
 information: "Описание"
+emojiMute: "Скрыть эмодзи"
+emojiUnmute: "Показать эмодзи"
 inMinutes: "мин"
 inDays: "сут"
 schedule: "Отложить"
@@ -1364,6 +1368,9 @@ presets: "Шаблоны"
 zeroPadding: "Без отступов"
 nothingToConfigure: "Нечего менять"
 previewingThemeRestore: "Восстановить"
+chooseEmojiPalette: "Выберите палитру эмодзи"
+addToEmojiPalette: "Добавить к палитре эмодзи"
+emojiPaletteAlreadyAddedConfirm: "Этот эмодзи уже есть в этой палитре. Хотите добавить его снова?"
 _imageEditing:
   _vars:
     caption: "Описание файла"
@@ -1399,6 +1406,11 @@ _chat:
   members: "Участники"
   home: "Главная"
   send: "Отправить"
+_emojiPalette:
+  palettes: "Палитры"
+  enableSyncBetweenDevicesForPalettes: "Включить синхронизацию палитр эмодзи между устройствами"
+  paletteForMain: "Основная палитра"
+  paletteForReaction: "Палитра реакций"
 _settings:
   webhook: "Вебхук"
   preferencesBanner: "Вы можете настроить общее поведение клиента по вашим предпочтениям"
@@ -1425,6 +1437,7 @@ _initialTutorial:
   _note:
     description: "Посты в Misskey называются 'Заметками.' Заметки отсортированы в хронологическом порядке в ленте и обновляются в режиме реального времени."
   _reaction:
+    description: "На посты можно ставить разные реакции. Реакции позволяют вам передавать такие нюансы, которые не передать простым \"лайком\""
     reactToContinue: "Добавьте реакцию, чтобы продолжить."
   _postNote:
     _visibility:
@@ -2027,6 +2040,8 @@ _permissions:
   "write:gallery-likes": "Изменение списка понравившегося в галерее"
   "write:admin:reset-password": "Сбросить пароль пользователю"
   "write:admin:send-email": "Отправить письмо"
+  "write:admin:emoji": "Управлять эмодзи"
+  "read:admin:emoji": "Просматривать эмодзи"
   "write:chat": "Писать и удалять сообщения"
 _auth:
   shareAccessTitle: "Разрешения для приложений"
@@ -2133,6 +2148,7 @@ _postForm:
   quotePlaceholder: "Пояснение к цитате..."
   channelPlaceholder: "Отправить в канал"
   _howToUse:
+    toolbar_description: "Вы можете прикрепить файл или голосование, добавить примечание или хэштег, и вставить эмодзи или упоминание"
     visibility_title: "Видимость"
     menu_title: "Меню"
   _placeholders:
@@ -2385,6 +2401,23 @@ _hemisphere:
   caption: "Используется для некоторых настроек клиента для определения сезона."
 _reversi:
   total: "Всего"
+_customEmojisManager:
+  _gridCommon:
+    copySelectionRows: "Скопировать выбранную строку"
+    copySelectionRanges: "Скопировать выбранное"
+    deleteSelectionRows: "Удалить выбранное"
+    deleteSelectionRanges: "Удалить выбранные строки"
+    searchSettings: "Параметры поиска"
+    searchSettingCaption: "Задать подробные критерии поиска"
+    searchLimit: "Лимит поиска"
+    sortOrder: "Порядок сортировки"
+    registrationLogs: "Журнал регистрации"
+    registrationLogsCaption: "Журнал будет показан при изменении или удалении эмодзи. Он будет очищен при их изменении или удалении, перемещении на новую страницу или обновлении страницы."
+    alertEmojisRegisterFailedDescription: "Не удалось обновить или удалить эмодзи. Посмотрите журнал регистрации для подробностей"
+  _logs:
+    showSuccessLogSwitch: "Показывать журнал удачных изменений"
+    failureLogNothing: "Журнал ошибок пуст"
+    logNothing: "Журнал пуст"
 _remoteLookupErrors:
   _noSuchObject:
     title: "Не найдено"
