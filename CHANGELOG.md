@@ -7,6 +7,15 @@
 - Enhance: Scratchpadに導入していた非同期エラーへの対応をPlayやウィジェットにも実装
 
 ### Server
+- Feat: OpenTelemetryサポート
+  - 詳細な設定はconfigファイルを参照してください。
+  - Sentryとの併用も可能です。Sentry併用時は、PostgreSQL Query と Redis command は Sentry で計装されます。
+  - 以下の自動計装をサポートしています。（計装対象にする項目は設定可能）
+    - PostgreSQL query
+    - Redis command
+    - 全ての受信HTTPリクエスト
+    - 全ての送信HTTPリクエスト
+    - ジョブキュー（エンキュー元のトレースを含む）
 - Fix: キャッシュされていないリモートファイルへのRangeリクエストで、`Content-Length`が正しく設定されず、動画再生が始まらない問題を修正
 - Fix: チャートの記録の保持上限に達した場合、それ以降の記録に失敗し続ける問題を修正
 
