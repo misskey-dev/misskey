@@ -11,8 +11,8 @@
 		"./heap-snapshot": "./src/heap-snapshot/index.ts"
 	},
 	"scripts": {
-		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"lint": "pnpm typecheck && pnpm eslint",
+		"oxlint": "oxlint",
+		"lint": "pnpm typecheck && pnpm oxlint",
 		"test": "vitest run",
 		"typecheck": "tsc --noEmit"
 	},

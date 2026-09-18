@@ -12,7 +12,7 @@ Misskey の変更を commit / PR / merge する直前、または未commitでユ
 
 | 段 | 条件 | 実行 |
 | --- | --- | --- |
-| 1 (必須) | package の ESLint 対象ファイルを変更 | 存在する変更ファイルへ `eslint --quiet` を最後に 1 回 |
+| 1 (必須) | package の oxlint 対象ファイルを変更 | 存在する変更ファイルへ `oxlint --quiet` を最後に 1 回 |
 | 2 | 実装・挙動を変更 | 最も近い unit test を実行。型・生成物・DB に関係するときは対応する専用検証も実行 |
 | 3 (任意) | 明示依頼、広域変更、切り分けに必要 | package / repo 全体の lint、build、広域 test |
 
@@ -30,7 +30,7 @@ node scripts/check-shipping.mjs
 統合先を明示する場合は `--base <ref>`、または `MISSKEY_BASE_REF` を使う。
 script は次を行い、独立した検査を最後まで続けて exit 0 (合格) / 1 (違反) / 2 (検査不能) に集約する。
 
-- commit 済み・未commit・untracked の変更集合を NUL-safe に列挙し、変更ファイルだけへ package root から `eslint --quiet` を実行
+- commit 済み・未commit・untracked の変更集合を NUL-safe に列挙し、変更ファイルだけへ package root から `oxlint --quiet` を実行
 - SPDX 違反時はローカル変更の欠落だけ `check-spdx.mjs --fix` で補い、通常検査を再実行
 - SPDX の結果にかかわらず、`locales/ja-JP.yml` 以外の locale YAML 変更を検査
 

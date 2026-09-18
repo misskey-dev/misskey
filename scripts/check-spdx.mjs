@@ -95,7 +95,7 @@ function isTargetPath(file) {
 	if (!TARGET_EXTENSIONS.has(ext)) return false;
 
 	const name = basename(file);
-	if (name.includes('eslint')) return false;
+	if (name.includes('eslint') || name.includes('oxlint')) return false;
 	if (EXCLUDED_CONFIG_EXTENSIONS.has(ext) && name.endsWith(`.config${ext}`)) return false;
 
 	return isRegularFile(file);
