@@ -72,7 +72,7 @@
 	},
 	"devDependencies": {
 		"@misskey-dev/emoji-assets": "17.0.3",
-		"@misskey-dev/summaly": "5.5.1",
+		"@misskey-dev/summaly": "5.5.2",
 		"@playwright/test": "1.63.0",
 		"@rollup/plugin-json": "6.1.0",
 		"@rollup/pluginutils": "5.4.0",

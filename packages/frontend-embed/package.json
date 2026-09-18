@@ -25,7 +25,7 @@
 	},
 	"devDependencies": {
 		"@misskey-dev/emoji-assets": "17.0.3",
-		"@misskey-dev/summaly": "5.5.1",
+		"@misskey-dev/summaly": "5.5.2",
 		"@rollup/plugin-json": "6.1.0",
 		"@rollup/pluginutils": "5.4.0",
 		"@tabler/icons-webfont": "3.35.0",
