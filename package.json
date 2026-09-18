@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@11.26.0",
+	"packageManager": "pnpm@12.4.1",
 	"workspaces": [
 		"packages/backend",
 		"packages/frontend-shared",
@@ -71,7 +71,6 @@
 		"eslint": "9.39.5",
 		"globals": "17.12.0",
 		"ncp": "2.0.0",
-		"pnpm": "11.26.0",
 		"start-server-and-test": "3.0.12",
 		"typescript": "npm:@typescript/typescript6@6.0.2"
 	}
