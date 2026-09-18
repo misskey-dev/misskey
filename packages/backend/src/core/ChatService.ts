@@ -22,7 +22,7 @@ import { QueryService } from '@/core/QueryService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { MiChatRoomInvitation } from '@/models/ChatRoomInvitation.js';
-import { Packed } from '@/misc/json-schema.js';
+import type { PackedChatMessageLiteFor1on1, PackedChatMessageLiteForRoom } from '@/models/schema/chat-message.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { emojiRegex } from '@/misc/emoji-regex.js';
@@ -133,7 +133,7 @@ export class ChatService {
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
-	}): Promise<Packed<'ChatMessageLiteFor1on1'>> {
+	}): Promise<PackedChatMessageLiteFor1on1> {
 		if (fromUser.id === toUser.id) {
 			throw new Error('yourself');
 		}
@@ -244,7 +244,7 @@ export class ChatService {
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
-	}): Promise<Packed<'ChatMessageLiteForRoom'>> {
+	}): Promise<PackedChatMessageLiteForRoom> {
 		const memberships = (await this.chatRoomMembershipsRepository.findBy({ roomId: toRoom.id })).map(m => ({
 			userId: m.userId,
 			isMuted: m.isMuted,

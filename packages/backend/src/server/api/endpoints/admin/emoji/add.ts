@@ -4,12 +4,15 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { FILE_TYPE_IMAGE } from '@/const.js';
+import { packedEmojiDetailedSchema } from '@/models/schema/emoji.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -37,40 +40,19 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		ref: 'EmojiDetailed',
-	},
+	res: packedEmojiDetailedSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
-		fileId: { type: 'string', format: 'misskey:id' },
-		category: {
-			type: 'string',
-			nullable: true,
-			description: 'Use `null` to reset the category.',
-		},
-		aliases: {
-			type: 'array',
-			items: {
-				type: 'string',
-			},
-		},
-		license: { type: 'string', nullable: true },
-		isSensitive: { type: 'boolean' },
-		localOnly: { type: 'boolean' },
-		roleIdsThatCanBeUsedThisEmojiAsReaction: {
-			type: 'array',
-			items: {
-				type: 'string',
-			},
-		},
-	},
-	required: ['name', 'fileId'],
-} as const;
+export const paramDef = v.object({
+	name: v.pipe(v.string(), v.regex(/^[a-zA-Z0-9_]+$/)),
+	fileId: mi.misskeyId(),
+	category: v.nullish(v.pipe(v.string(), v.description('Use `null` to reset the category.'))),
+	aliases: v.optional(v.array(v.string())),
+	license: v.nullish(v.string()),
+	isSensitive: v.optional(v.boolean()),
+	localOnly: v.optional(v.boolean()),
+	roleIdsThatCanBeUsedThisEmojiAsReaction: v.optional(v.array(v.string())),
+});
 
 // TODO: ロジックをサービスに切り出す
 

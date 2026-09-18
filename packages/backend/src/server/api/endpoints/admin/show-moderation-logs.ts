@@ -4,12 +4,15 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { ModerationLogsRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { ModerationLogEntityService } from '@/core/entities/ModerationLogEntityService.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import { packedUserDetailedNotMeSchema } from '@/models/schema/user.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -18,60 +21,26 @@ export const meta = {
 	requireAdmin: true,
 	kind: 'read:admin:show-moderation-log',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			properties: {
-				id: {
-					type: 'string',
-					optional: false, nullable: false,
-					format: 'id',
-				},
-				createdAt: {
-					type: 'string',
-					optional: false, nullable: false,
-					format: 'date-time',
-				},
-				type: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-				info: {
-					type: 'object',
-					optional: false, nullable: false,
-				},
-				userId: {
-					type: 'string',
-					optional: false, nullable: false,
-					format: 'id',
-				},
-				user: {
-					type: 'object',
-					optional: false, nullable: false,
-					ref: 'UserDetailedNotMe',
-				},
-			},
-		},
-	},
+	res: v.array(v.object({
+		id: mi.idString(),
+		createdAt: mi.dateTimeString(),
+		type: v.string(),
+		info: mi.anyObject(),
+		userId: mi.idString(),
+		user: packedUserDetailedNotMeSchema,
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		type: { type: 'string', nullable: true },
-		userId: { type: 'string', format: 'misskey:id', nullable: true },
-		search: { type: 'string', nullable: true },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	limit: mi.limit({ max: 100, def: 10 }),
+	sinceId: v.optional(mi.misskeyId()),
+	untilId: v.optional(mi.misskeyId()),
+	sinceDate: v.optional(mi.integer()),
+	untilDate: v.optional(mi.integer()),
+	type: v.optional(v.nullable(v.string())),
+	userId: v.optional(v.nullable(mi.misskeyId())),
+	search: v.optional(v.nullable(v.string())),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

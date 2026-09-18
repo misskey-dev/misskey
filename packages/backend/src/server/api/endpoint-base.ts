@@ -4,20 +4,13 @@
  */
 
 import * as fs from 'node:fs';
-import _Ajv from 'ajv';
-import type { Schema, SchemaType } from '@/misc/json-schema.js';
+import * as v from 'valibot';
+import { toInvalidParamInfo } from '@/misc/schema/error.js';
+import type { AnyValibotSchema } from '@/misc/schema/introspect.js';
 import type { MiLocalUser } from '@/models/User.js';
 import type { MiAccessToken } from '@/models/AccessToken.js';
 import { ApiError } from './error.js';
 import type { IEndpointMeta } from './endpoints.js';
-
-const Ajv = _Ajv.default;
-
-const ajv = new Ajv({
-	useDefaults: true,
-});
-
-ajv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);
 
 export type Response = Record<string, any> | void;
 
@@ -26,16 +19,45 @@ type File = {
 	path: string;
 };
 
-// TODO: paramsの型をT['params']のスキーマ定義から推論する
-type Executor<T extends IEndpointMeta, Ps extends Schema> =
-	(params: SchemaType<Ps>, user: T['requireCredential'] extends true ? MiLocalUser : MiLocalUser | null, token: MiAccessToken | null, file?: File, cleanup?: () => any, ip?: string | null, headers?: Record<string, string> | null) =>
-		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
+type Executor<T extends IEndpointMeta, Ps extends AnyValibotSchema> =
+	(params: v.InferOutput<Ps>, user: T['requireCredential'] extends true ? MiLocalUser : MiLocalUser | null, token: MiAccessToken | null, file?: File, cleanup?: () => any, ip?: string | null, headers?: Record<string, string> | null) =>
+		Promise<T['res'] extends undefined ? Response : v.InferOutput<NonNullable<T['res']>>>;
 
-export abstract class Endpoint<T extends IEndpointMeta, Ps extends Schema> {
+/** paramDef による検証結果。成功時の `value` が `cb` に渡される値になる */
+type ValidationResult =
+	{ ok: true, value: unknown } |
+	{ ok: false, error: ApiError };
+
+type Validator = (params: unknown) => ValidationResult;
+
+function invalidParamError(info: Record<string, unknown>): ApiError {
+	return new ApiError({
+		message: 'Invalid param.',
+		code: 'INVALID_PARAM',
+		id: '3d81ceae-475f-4600-b2a8-2bc116157532',
+	}, info);
+}
+
+/**
+ * paramDef 用の validator。
+ *
+ * `v.safeParse()` の出力 (default 適用済みの **新しいオブジェクト**) をハンドラに渡す。
+ */
+function makeValidator(paramDef: AnyValibotSchema): Validator {
+	return (params: unknown) => {
+		const result = v.safeParse(paramDef, params);
+		if (!result.success) {
+			return { ok: false, error: invalidParamError(toInvalidParamInfo(result.issues)) };
+		}
+		return { ok: true, value: result.output };
+	};
+}
+
+export abstract class Endpoint<T extends IEndpointMeta, Ps extends AnyValibotSchema> {
 	public exec: (params: any, user: T['requireCredential'] extends true ? MiLocalUser : MiLocalUser | null, token: MiAccessToken | null, file?: File, ip?: string | null, headers?: Record<string, string> | null) => Promise<any>;
 
 	constructor(meta: T, paramDef: Ps, cb: Executor<T, Ps>) {
-		const validate = ajv.compile(paramDef);
+		const validate: Validator = makeValidator(paramDef);
 
 		this.exec = (params: any, user: T['requireCredential'] extends true ? MiLocalUser : MiLocalUser | null, token: MiAccessToken | null, file?: File, ip?: string | null, headers?: Record<string, string> | null) => {
 			let cleanup: undefined | (() => void) = undefined;
@@ -52,23 +74,14 @@ export abstract class Endpoint<T extends IEndpointMeta, Ps extends Schema> {
 				}));
 			}
 
-			const valid = validate(params);
-			if (!valid) {
+			const result = validate(params);
+			if (!result.ok) {
 				if (file) cleanup!();
 
-				const errors = validate.errors!;
-				const err = new ApiError({
-					message: 'Invalid param.',
-					code: 'INVALID_PARAM',
-					id: '3d81ceae-475f-4600-b2a8-2bc116157532',
-				}, {
-					param: errors[0].schemaPath,
-					reason: errors[0].message,
-				});
-				return Promise.reject(err);
+				return Promise.reject(result.error);
 			}
 
-			return cb(params as SchemaType<Ps>, user, token, file, cleanup, ip, headers);
+			return cb(result.value as v.InferOutput<Ps>, user, token, file, cleanup, ip, headers);
 		};
 	}
 }

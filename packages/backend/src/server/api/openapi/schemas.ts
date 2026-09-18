@@ -3,55 +3,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { deepClone } from '@/misc/clone.js';
-import type { Schema } from '@/misc/json-schema.js';
-import { refs } from '@/misc/json-schema.js';
+import { valibotToOpenApi } from '@/misc/schema/openapi.js';
+import { getRegisteredEntities } from '@/misc/schema/registry.js';
 
-export function convertSchemaToOpenApiSchema(schema: Schema, type: 'param' | 'res', includeSelfRef: boolean): any {
-	// optional, nullable, refはスキーマ定義に含まれないので分離しておく
-	const { optional, nullable, ref, selfRef, ...res1 }: any = schema;
-	const res = deepClone(res1);
+/**
+ * `components.schemas` の entity 部分を組み立てる。キー順は `defineEntity()` の登録順。
+ *
+ * NOTE: entity は `defineEntity()` の副作用で登録されるので、entity モジュールが
+ * どこからも import されていないと `components.schemas` から漏れる
+ * (`@/models/schema/_entities.js` の side-effect import が全 entity の読み込みを保証している)。
+ */
+function getEntitySchemas(includeSelfRef: boolean): Record<string, any> {
+	const result: Record<string, any> = {};
 
-	if (schema.type === 'object' && schema.properties) {
-		if (type === 'res') {
-			const required = Object.entries(schema.properties).filter(([k, v]) => !v.optional).map(([k]) => k);
-			if (required.length > 0) {
-			// 空配列は許可されない
-				res.required = required;
-			}
-		}
-
-		for (const k of Object.keys(schema.properties)) {
-			res.properties[k] = convertSchemaToOpenApiSchema(schema.properties[k], type, includeSelfRef);
-		}
+	for (const [key, schema] of getRegisteredEntities()) {
+		result[key] = valibotToOpenApi(schema, { use: 'res', includeSelfRef, rootName: key });
 	}
 
-	if (schema.type === 'array' && schema.items) {
-		res.items = convertSchemaToOpenApiSchema(schema.items, type, includeSelfRef);
-	}
-
-	for (const o of ['anyOf', 'oneOf', 'allOf'] as const) {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		if (o in schema) res[o] = schema[o]!.map(schema => convertSchemaToOpenApiSchema(schema, type, includeSelfRef));
-	}
-
-	if (type === 'res' && schema.ref && (!schema.selfRef || includeSelfRef)) {
-		const $ref = `#/components/schemas/${schema.ref}`;
-		if (schema.nullable) {
-			res.oneOf = [{ $ref }, { type: 'null' }];
-		} else {
-			res.$ref = $ref;
-		}
-		delete res.type;
-	} else if (schema.nullable) {
-		if (Array.isArray(schema.type) && !schema.type.includes('null')) {
-			res.type.push('null');
-		} else if (typeof schema.type === 'string') {
-			res.type = [res.type, 'null'];
-		}
-	}
-
-	return res;
+	return result;
 }
 
 export function getSchemas(includeSelfRef: boolean) {
@@ -83,8 +52,6 @@ export function getSchemas(includeSelfRef: boolean) {
 			required: ['error'],
 		},
 
-		...Object.fromEntries(
-			Object.entries(refs).map(([key, schema]) => [key, convertSchemaToOpenApiSchema(schema, 'res', includeSelfRef)]),
-		),
+		...getEntitySchemas(includeSelfRef),
 	};
 }

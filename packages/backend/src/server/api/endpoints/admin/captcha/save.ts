@@ -4,6 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { captchaErrorCodes, CaptchaService, supportedCaptchaProviders } from '@/core/CaptchaService.js';
 import { ApiError } from '@/server/api/error.js';
@@ -57,28 +58,13 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		provider: {
-			type: 'string',
-			enum: supportedCaptchaProviders,
-		},
-		captchaResult: {
-			type: 'string', nullable: true,
-		},
-		sitekey: {
-			type: 'string', nullable: true,
-		},
-		secret: {
-			type: 'string', nullable: true,
-		},
-		instanceUrl: {
-			type: 'string', nullable: true,
-		},
-	},
-	required: ['provider'],
-} as const;
+export const paramDef = v.object({
+	provider: v.picklist([...supportedCaptchaProviders]),
+	captchaResult: v.nullish(v.string()),
+	sitekey: v.nullish(v.string()),
+	secret: v.nullish(v.string()),
+	instanceUrl: v.nullish(v.string()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

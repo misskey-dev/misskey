@@ -6,7 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { NoteReactionsRepository } from '@/models/_.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedNoteReaction, PackedNoteReactionWithNote } from '@/models/schema/note-reaction.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -51,9 +52,9 @@ export class NoteReactionEntityService implements OnModuleInit {
 		me?: { id: MiUser['id'] } | null | undefined,
 		options?: object,
 		hints?: {
-			packedUser?: Packed<'UserLite'>
+			packedUser?: PackedUserLite
 		},
-	): Promise<Packed<'NoteReaction'>> {
+	): Promise<PackedNoteReaction> {
 		const _opts = Object.assign({
 		}, options);
 
@@ -72,7 +73,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 		reactions: MiNoteReaction[],
 		me?: { id: MiUser['id'] } | null | undefined,
 		options?: object,
-	): Promise<Packed<'NoteReaction'>[]> {
+	): Promise<PackedNoteReaction[]> {
 		const opts = Object.assign({
 		}, options);
 		const _users = reactions.map(({ user, userId }) => user ?? userId);
@@ -87,9 +88,9 @@ export class NoteReactionEntityService implements OnModuleInit {
 		me?: { id: MiUser['id'] } | null | undefined,
 		options?: object,
 		hints?: {
-			packedUser?: Packed<'UserLite'>
+			packedUser?: PackedUserLite
 		},
-	): Promise<Packed<'NoteReactionWithNote'>> {
+	): Promise<PackedNoteReactionWithNote> {
 		const _opts = Object.assign({
 		}, options);
 
@@ -109,7 +110,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 		reactions: MiNoteReaction[],
 		me?: { id: MiUser['id'] } | null | undefined,
 		options?: object,
-	): Promise<Packed<'NoteReactionWithNote'>[]> {
+	): Promise<PackedNoteReactionWithNote[]> {
 		const opts = Object.assign({
 		}, options);
 		const _users = reactions.map(({ user, userId }) => user ?? userId);

@@ -5,11 +5,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { RoleAssignmentsRepository, RolesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { packedUserDetailedSchema } from '@/models/schema/user.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -25,38 +28,18 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-			nullable: false,
-			properties: {
-				id: {
-					type: 'string',
-					format: 'misskey:id',
-				},
-				user: {
-					type: 'object',
-					ref: 'UserDetailed',
-				},
-			},
-			required: ['id', 'user'],
-		},
-	},
+	res: v.array(v.object({
+		// res側なのにformat: 'misskey:id' (リテラルが'id'でない) ため mi.idString() ではなく mi.format('misskey:id') を使用 (R12)
+		id: v.pipe(v.string(), mi.format('misskey:id')),
+		user: packedUserDetailedSchema,
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		roleId: { type: 'string', format: 'misskey:id' },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-	},
-	required: ['roleId'],
-} as const;
+export const paramDef = v.object({
+	roleId: mi.misskeyId(),
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

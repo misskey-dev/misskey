@@ -4,11 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AbuseUserReportsRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { AbuseUserReportEntityService } from '@/core/entities/AbuseUserReportEntityService.js';
+import { packedUserDetailedNotMeSchema } from '@/models/schema/user.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -17,95 +20,30 @@ export const meta = {
 	requireModerator: true,
 	kind: 'read:admin:abuse-user-reports',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			properties: {
-				id: {
-					type: 'string',
-					nullable: false, optional: false,
-					format: 'id',
-					example: 'xxxxxxxxxx',
-				},
-				createdAt: {
-					type: 'string',
-					nullable: false, optional: false,
-					format: 'date-time',
-				},
-				comment: {
-					type: 'string',
-					nullable: false, optional: false,
-				},
-				resolved: {
-					type: 'boolean',
-					nullable: false, optional: false,
-					example: false,
-				},
-				reporterId: {
-					type: 'string',
-					nullable: false, optional: false,
-					format: 'id',
-				},
-				targetUserId: {
-					type: 'string',
-					nullable: false, optional: false,
-					format: 'id',
-				},
-				assigneeId: {
-					type: 'string',
-					nullable: true, optional: false,
-					format: 'id',
-				},
-				reporter: {
-					type: 'object',
-					nullable: false, optional: false,
-					ref: 'UserDetailedNotMe',
-				},
-				targetUser: {
-					type: 'object',
-					nullable: false, optional: false,
-					ref: 'UserDetailedNotMe',
-				},
-				assignee: {
-					type: 'object',
-					nullable: true, optional: false,
-					ref: 'UserDetailedNotMe',
-				},
-				forwarded: {
-					type: 'boolean',
-					nullable: false, optional: false,
-				},
-				resolvedAs: {
-					type: 'string',
-					nullable: true, optional: false,
-					enum: ['accept', 'reject', null],
-				},
-				moderationNote: {
-					type: 'string',
-					nullable: false, optional: false,
-				},
-			},
-		},
-	},
+	res: v.array(v.object({
+		id: mi.example(mi.idString(), 'xxxxxxxxxx'),
+		createdAt: mi.dateTimeString(),
+		comment: v.string(),
+		resolved: mi.example(v.boolean(), false),
+		reporterId: mi.idString(),
+		targetUserId: mi.idString(),
+		assigneeId: v.nullable(mi.idString()),
+		reporter: packedUserDetailedNotMeSchema,
+		targetUser: packedUserDetailedNotMeSchema,
+		assignee: v.nullable(packedUserDetailedNotMeSchema),
+		forwarded: v.boolean(),
+		resolvedAs: mi.nullableEnum(['accept', 'reject', null]),
+		moderationNote: v.string(),
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		state: { type: 'string', nullable: true, default: null },
-		reporterOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
-		targetUserOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+	state: v.optional(v.nullable(v.string()), null),
+	reporterOrigin: v.optional(v.picklist(['combined', 'local', 'remote']), 'combined'),
+	targetUserOrigin: v.optional(v.picklist(['combined', 'local', 'remote']), 'combined'),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -7,7 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { RegistrationTicketsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedInviteCode } from '@/models/schema/invite-code.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiRegistrationTicket } from '@/models/RegistrationTicket.js';
 import { bindThis } from '@/decorators.js';
@@ -30,10 +31,10 @@ export class InviteCodeEntityService {
 		src: MiRegistrationTicket['id'] | MiRegistrationTicket,
 		me?: { id: MiUser['id'] } | null | undefined,
 		hints?: {
-			packedCreatedBy?: Packed<'UserLite'>,
-			packedUsedBy?: Packed<'UserLite'>,
+			packedCreatedBy?: PackedUserLite,
+			packedUsedBy?: PackedUserLite,
 		},
-	): Promise<Packed<'InviteCode'>> {
+	): Promise<PackedInviteCode> {
 		const target = typeof src === 'object' ? src : await this.registrationTicketsRepository.findOneOrFail({
 			where: {
 				id: src,

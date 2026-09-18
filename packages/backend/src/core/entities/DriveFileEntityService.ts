@@ -8,7 +8,9 @@ import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedDriveFile } from '@/models/schema/drive-file.js';
+import type { PackedDriveFolder } from '@/models/schema/drive-folder.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
@@ -191,7 +193,7 @@ export class DriveFileEntityService {
 	public async pack(
 		src: MiDriveFile['id'] | MiDriveFile,
 		options?: PackOptions,
-	): Promise<Packed<'DriveFile'>> {
+	): Promise<PackedDriveFile> {
 		const opts = Object.assign({
 			detail: false,
 			self: false,
@@ -199,7 +201,7 @@ export class DriveFileEntityService {
 
 		const file = typeof src === 'object' ? src : await this.driveFilesRepository.findOneByOrFail({ id: src });
 
-		return await awaitAll<Packed<'DriveFile'>>({
+		return await awaitAll<PackedDriveFile>({
 			id: file.id,
 			createdAt: this.idService.parse(file.id).date.toISOString(),
 			name: file.name,
@@ -226,10 +228,10 @@ export class DriveFileEntityService {
 		src: MiDriveFile['id'] | MiDriveFile,
 		options?: PackOptions,
 		hint?: {
-			packedUser?: Packed<'UserLite'>
-			packedFolder?: Packed<'DriveFolder'>
+			packedUser?: PackedUserLite
+			packedFolder?: PackedDriveFolder
 		},
-	): Promise<Packed<'DriveFile'> | null> {
+	): Promise<PackedDriveFile | null> {
 		const opts = Object.assign({
 			detail: false,
 			self: false,
@@ -238,7 +240,7 @@ export class DriveFileEntityService {
 		const file = typeof src === 'object' ? src : await this.driveFilesRepository.findOneBy({ id: src });
 		if (file == null) return null;
 
-		return await awaitAll<Packed<'DriveFile'>>({
+		return await awaitAll<PackedDriveFile>({
 			id: file.id,
 			createdAt: this.idService.parse(file.id).date.toISOString(),
 			name: file.name,
@@ -264,10 +266,10 @@ export class DriveFileEntityService {
 	public async packMany(
 		files: MiDriveFile[],
 		options?: PackOptions,
-	): Promise<Packed<'DriveFile'>[]> {
+	): Promise<PackedDriveFile[]> {
 		// -- ユーザ情報の事前取得 --
 
-		let userMap: Map<string, Packed<'UserLite'>> | null = null;
+		let userMap: Map<string, PackedUserLite> | null = null;
 		if (options?.withUser) {
 			const users = files
 				.map(({ user, userId }) => user ?? userId)
@@ -280,7 +282,7 @@ export class DriveFileEntityService {
 
 		// -- フォルダ情報の事前取得 --
 
-		let folderMap: Map<string, Packed<'DriveFolder'>> | null = null;
+		let folderMap: Map<string, PackedDriveFolder> | null = null;
 		if (options?.detail) {
 			const folders = files
 				.map(({ folder, folderId }) => folder ?? folderId)
@@ -307,11 +309,11 @@ export class DriveFileEntityService {
 	public async packManyByIdsMap(
 		fileIds: MiDriveFile['id'][],
 		options?: PackOptions,
-	): Promise<Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'> | null>> {
+	): Promise<Map<PackedDriveFile['id'], PackedDriveFile | null>> {
 		if (fileIds.length === 0) return new Map();
 		const files = await this.driveFilesRepository.findBy({ id: In(fileIds) });
 		const packedFiles = await this.packMany(files, options);
-		const map = new Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'> | null>(packedFiles.map(f => [f.id, f]));
+		const map = new Map<PackedDriveFile['id'], PackedDriveFile | null>(packedFiles.map(f => [f.id, f]));
 		for (const id of fileIds) {
 			if (!map.has(id)) map.set(id, null);
 		}
@@ -322,7 +324,7 @@ export class DriveFileEntityService {
 	public async packManyByIds(
 		fileIds: MiDriveFile['id'][],
 		options?: PackOptions,
-	): Promise<Packed<'DriveFile'>[]> {
+	): Promise<PackedDriveFile[]> {
 		if (fileIds.length === 0) return [];
 		const filesMap = await this.packManyByIdsMap(fileIds, options);
 		return fileIds.map(id => filesMap.get(id)).filter(x => x != null);

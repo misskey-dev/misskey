@@ -8,6 +8,8 @@ import * as mfm from 'mfm-js';
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import * as htmlParser from 'node-html-parser';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import * as Acct from '@/misc/acct.js';
@@ -30,10 +32,11 @@ import { CacheService } from '@/core/CacheService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { packedMeDetailedSchema } from '@/models/schema/user.js';
 import type { Config } from '@/config.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
-import { notificationRecieveConfig } from '@/models/json-schema/user.js';
+import { notificationRecieveConfigSchema } from '@/models/schema/user.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
 import { ApiError } from '../../error.js';
 
@@ -124,113 +127,93 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'MeDetailed',
-	},
+	res: packedMeDetailedSchema,
 } as const;
 
-const muteWords = { type: 'array', items: { oneOf: [
-	{ type: 'array', items: { type: 'string' } },
-	{ type: 'string' },
-] } } as const;
+// legacy の `{ type: 'array', items: { oneOf: [array<string>, string] } }` 相当。
+// items 側に `type` が無い oneOf なので v.union + mi.asOneOf() (cookbook R10)。
+const muteWords = v.array(v.pipe(
+	v.union([v.array(v.string()), v.string()]),
+	mi.asOneOf(),
+));
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { ...nameSchema, nullable: true },
-		description: { ...descriptionSchema, nullable: true },
-		followedMessage: { ...followedMessageSchema, nullable: true },
-		location: { ...locationSchema, nullable: true },
-		birthday: { ...birthdaySchema, nullable: true },
-		lang: { type: 'string', enum: [null, ...Object.keys(langmap)] as string[], nullable: true },
-		avatarId: { type: 'string', format: 'misskey:id', nullable: true },
-		avatarDecorations: { type: 'array', maxItems: 16, items: {
-			type: 'object',
-			properties: {
-				id: { type: 'string', format: 'misskey:id' },
-				angle: { type: 'number', nullable: true, maximum: 0.5, minimum: -0.5 },
-				flipH: { type: 'boolean', nullable: true },
-				offsetX: { type: 'number', nullable: true, maximum: 0.25, minimum: -0.25 },
-				offsetY: { type: 'number', nullable: true, maximum: 0.25, minimum: -0.25 },
-			},
-			required: ['id'],
-		} },
-		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
-		fields: {
-			type: 'array',
-			minItems: 0,
-			maxItems: 16,
-			items: {
-				type: 'object',
-				properties: {
-					name: { type: 'string' },
-					value: { type: 'string' },
-				},
-				required: ['name', 'value'],
-			},
-		},
-		isLocked: { type: 'boolean' },
-		isExplorable: { type: 'boolean' },
-		hideOnlineStatus: { type: 'boolean' },
-		publicReactions: { type: 'boolean' },
-		carefulBot: { type: 'boolean' },
-		autoAcceptFollowed: { type: 'boolean' },
-		noCrawle: { type: 'boolean' },
-		preventAiLearning: { type: 'boolean' },
-		requireSigninToViewContents: { type: 'boolean' },
-		makeNotesFollowersOnlyBefore: { type: 'integer', nullable: true },
-		makeNotesHiddenBefore: { type: 'integer', nullable: true },
-		isBot: { type: 'boolean' },
-		isCat: { type: 'boolean' },
-		injectFeaturedNote: { type: 'boolean' },
-		receiveAnnouncementEmail: { type: 'boolean' },
-		alwaysMarkNsfw: { type: 'boolean' },
-		autoSensitive: { type: 'boolean' },
-		followingVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
-		followersVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
-		chatScope: { type: 'string', enum: ['everyone', 'followers', 'following', 'mutual', 'none'] },
-		pinnedPageId: { type: 'string', format: 'misskey:id', nullable: true },
-		mutedWords: muteWords,
-		hardMutedWords: muteWords,
-		mutedInstances: { type: 'array', items: {
-			type: 'string',
-		} },
-		notificationRecieveConfig: {
-			type: 'object',
-			nullable: false,
-			properties: {
-				note: notificationRecieveConfig,
-				follow: notificationRecieveConfig,
-				mention: notificationRecieveConfig,
-				reply: notificationRecieveConfig,
-				renote: notificationRecieveConfig,
-				quote: notificationRecieveConfig,
-				reaction: notificationRecieveConfig,
-				pollEnded: notificationRecieveConfig,
-				scheduledNotePosted: notificationRecieveConfig,
-				scheduledNotePostFailed: notificationRecieveConfig,
-				receiveFollowRequest: notificationRecieveConfig,
-				followRequestAccepted: notificationRecieveConfig,
-				roleAssigned: notificationRecieveConfig,
-				chatRoomInvitationReceived: notificationRecieveConfig,
-				achievementEarned: notificationRecieveConfig,
-				app: notificationRecieveConfig,
-				test: notificationRecieveConfig,
-			},
-		},
-		emailNotificationTypes: { type: 'array', items: {
-			type: 'string',
-		} },
-		alsoKnownAs: {
-			type: 'array',
-			maxItems: 10,
-			uniqueItems: true,
-			items: { type: 'string' },
-		},
-	},
-} as const;
+export const paramDef = v.object({
+	name: v.nullish(nameSchema),
+	description: v.nullish(descriptionSchema),
+	followedMessage: v.nullish(followedMessageSchema),
+	location: v.nullish(locationSchema),
+	birthday: v.nullish(birthdaySchema),
+	lang: v.optional(mi.nullableEnum([null, ...Object.keys(langmap)])),
+	avatarId: v.nullish(mi.misskeyId()),
+	avatarDecorations: v.optional(v.pipe(
+		v.array(v.object({
+			id: mi.misskeyId(),
+			angle: v.nullish(v.pipe(v.number(), v.maxValue(0.5), v.minValue(-0.5))),
+			flipH: v.nullish(v.boolean()),
+			offsetX: v.nullish(v.pipe(v.number(), v.maxValue(0.25), v.minValue(-0.25))),
+			offsetY: v.nullish(v.pipe(v.number(), v.maxValue(0.25), v.minValue(-0.25))),
+		})),
+		v.maxLength(16),
+	)),
+	bannerId: v.nullish(mi.misskeyId()),
+	fields: v.optional(v.pipe(
+		v.array(v.object({
+			name: v.string(),
+			value: v.string(),
+		})),
+		v.minLength(0),
+		v.maxLength(16),
+	)),
+	isLocked: v.optional(v.boolean()),
+	isExplorable: v.optional(v.boolean()),
+	hideOnlineStatus: v.optional(v.boolean()),
+	publicReactions: v.optional(v.boolean()),
+	carefulBot: v.optional(v.boolean()),
+	autoAcceptFollowed: v.optional(v.boolean()),
+	noCrawle: v.optional(v.boolean()),
+	preventAiLearning: v.optional(v.boolean()),
+	requireSigninToViewContents: v.optional(v.boolean()),
+	makeNotesFollowersOnlyBefore: v.nullish(mi.integer()),
+	makeNotesHiddenBefore: v.nullish(mi.integer()),
+	isBot: v.optional(v.boolean()),
+	isCat: v.optional(v.boolean()),
+	injectFeaturedNote: v.optional(v.boolean()),
+	receiveAnnouncementEmail: v.optional(v.boolean()),
+	alwaysMarkNsfw: v.optional(v.boolean()),
+	autoSensitive: v.optional(v.boolean()),
+	followingVisibility: v.optional(v.picklist(['public', 'followers', 'private'])),
+	followersVisibility: v.optional(v.picklist(['public', 'followers', 'private'])),
+	chatScope: v.optional(v.picklist(['everyone', 'followers', 'following', 'mutual', 'none'])),
+	pinnedPageId: v.nullish(mi.misskeyId()),
+	mutedWords: v.optional(muteWords),
+	hardMutedWords: v.optional(muteWords),
+	mutedInstances: v.optional(v.array(v.string())),
+	notificationRecieveConfig: v.optional(v.object({
+		note: v.optional(notificationRecieveConfigSchema),
+		follow: v.optional(notificationRecieveConfigSchema),
+		mention: v.optional(notificationRecieveConfigSchema),
+		reply: v.optional(notificationRecieveConfigSchema),
+		renote: v.optional(notificationRecieveConfigSchema),
+		quote: v.optional(notificationRecieveConfigSchema),
+		reaction: v.optional(notificationRecieveConfigSchema),
+		pollEnded: v.optional(notificationRecieveConfigSchema),
+		scheduledNotePosted: v.optional(notificationRecieveConfigSchema),
+		scheduledNotePostFailed: v.optional(notificationRecieveConfigSchema),
+		receiveFollowRequest: v.optional(notificationRecieveConfigSchema),
+		followRequestAccepted: v.optional(notificationRecieveConfigSchema),
+		roleAssigned: v.optional(notificationRecieveConfigSchema),
+		chatRoomInvitationReceived: v.optional(notificationRecieveConfigSchema),
+		achievementEarned: v.optional(notificationRecieveConfigSchema),
+		app: v.optional(notificationRecieveConfigSchema),
+		test: v.optional(notificationRecieveConfigSchema),
+	})),
+	emailNotificationTypes: v.optional(v.array(v.string())),
+	alsoKnownAs: v.optional(v.pipe(
+		v.array(v.string()),
+		mi.uniqueArray(),
+		v.maxLength(10),
+	)),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

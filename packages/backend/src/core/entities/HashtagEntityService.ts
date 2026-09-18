@@ -4,7 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedHashtag } from '@/models/schema/hashtag.js';
 import type { } from '@/models/Blocking.js';
 import type { MiHashtag } from '@/models/Hashtag.js';
 import { bindThis } from '@/decorators.js';
@@ -18,7 +18,7 @@ export class HashtagEntityService {
 	@bindThis
 	public async pack(
 		src: MiHashtag,
-	): Promise<Packed<'Hashtag'>> {
+	): Promise<PackedHashtag> {
 		return {
 			tag: src.name,
 			mentionedUsersCount: src.mentionedUsersCount,

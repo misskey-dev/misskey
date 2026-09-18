@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedNote } from '@/models/schema/note.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
 import type { CommonProps } from '@/server/web/views/_.js';
 import { Layout } from '@/server/web/views/base.js';
@@ -11,7 +11,7 @@ import { isRenotePacked } from '@/misc/is-renote.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 
 export function NotePage(props: CommonProps<{
-	note: Packed<'Note'>;
+	note: PackedNote;
 	profile: MiUserProfile;
 }>) {
 	const title = props.note.user.name ? `${props.note.user.name} (@${props.note.user.username}${props.note.user.host ? `@${props.note.user.host}` : ''})` : `@${props.note.user.username}${props.note.user.host ? `@${props.note.user.host}` : ''}`

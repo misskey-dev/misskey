@@ -8,7 +8,7 @@ import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiSystemWebhook, SystemWebhooksRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
-import { Packed } from '@/misc/json-schema.js';
+import type { PackedSystemWebhook } from '@/models/schema/system-webhook.js';
 
 @Injectable()
 export class SystemWebhookEntityService {
@@ -24,7 +24,7 @@ export class SystemWebhookEntityService {
 		opts?: {
 			webhooks: Map<string, MiSystemWebhook>
 		},
-	): Promise<Packed<'SystemWebhook'>> {
+	): Promise<PackedSystemWebhook> {
 		const webhook = typeof src === 'object'
 			? src
 			: opts?.webhooks.get(src) ?? await this.systemWebhooksRepository.findOneByOrFail({ id: src });
@@ -43,7 +43,7 @@ export class SystemWebhookEntityService {
 	}
 
 	@bindThis
-	public async packMany(src: MiSystemWebhook['id'][] | MiSystemWebhook[]): Promise<Packed<'SystemWebhook'>[]> {
+	public async packMany(src: MiSystemWebhook['id'][] | MiSystemWebhook[]): Promise<PackedSystemWebhook[]> {
 		if (src.length === 0) {
 			return [];
 		}

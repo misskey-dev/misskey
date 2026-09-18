@@ -4,8 +4,22 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+
+const relationSchema = v.object({
+	id: mi.idString(),
+	isFollowing: v.boolean(),
+	hasPendingFollowRequestFromYou: v.boolean(),
+	hasPendingFollowRequestToYou: v.boolean(),
+	isFollowed: v.boolean(),
+	isBlocking: v.boolean(),
+	isBlocked: v.boolean(),
+	isMuted: v.boolean(),
+	isRenoteMuted: v.boolean(),
+});
 
 export const meta = {
 	tags: ['users'],
@@ -15,116 +29,26 @@ export const meta = {
 
 	description: 'Show the different kinds of relations between the authenticated user and the specified user(s).',
 
-	res: {
-		optional: false, nullable: false,
-		oneOf: [
-			{
-				type: 'object',
-				properties: {
-					id: {
-						type: 'string',
-						optional: false, nullable: false,
-						format: 'id',
-					},
-					isFollowing: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					hasPendingFollowRequestFromYou: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					hasPendingFollowRequestToYou: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					isFollowed: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					isBlocking: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					isBlocked: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					isMuted: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					isRenoteMuted: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-				},
-			},
-			{
-				type: 'array',
-				items: {
-					type: 'object',
-					optional: false, nullable: false,
-					properties: {
-						id: {
-							type: 'string',
-							optional: false, nullable: false,
-							format: 'id',
-						},
-						isFollowing: {
-							type: 'boolean',
-							optional: false, nullable: false,
-						},
-						hasPendingFollowRequestFromYou: {
-							type: 'boolean',
-							optional: false, nullable: false,
-						},
-						hasPendingFollowRequestToYou: {
-							type: 'boolean',
-							optional: false, nullable: false,
-						},
-						isFollowed: {
-							type: 'boolean',
-							optional: false, nullable: false,
-						},
-						isBlocking: {
-							type: 'boolean',
-							optional: false, nullable: false,
-						},
-						isBlocked: {
-							type: 'boolean',
-							optional: false, nullable: false,
-						},
-						isMuted: {
-							type: 'boolean',
-							optional: false, nullable: false,
-						},
-						isRenoteMuted: {
-							type: 'boolean',
-							optional: false, nullable: false,
-						},
-					},
-				},
-			},
-		],
-	},
+	// NOTE: 判別子の無い oneOf (単体 or 配列) なので v.union + asOneOf で現行出力 (oneOf) を維持する
+	res: v.pipe(
+		v.union([
+			relationSchema,
+			v.array(relationSchema),
+		]),
+		mi.asOneOf(),
+	),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: {
-			oneOf: [
-				{ type: 'string', format: 'misskey:id' },
-				{
-					type: 'array',
-					items: { type: 'string', format: 'misskey:id' },
-				},
-			],
-		},
-	},
-	required: ['userId'],
-} as const;
+export const paramDef = v.object({
+	// NOTE: 判別子の無い oneOf (単体 or 配列) なので v.union + asOneOf で現行出力 (oneOf) を維持する
+	userId: v.pipe(
+		v.union([
+			mi.misskeyId(),
+			v.array(mi.misskeyId()),
+		]),
+		mi.asOneOf(),
+	),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

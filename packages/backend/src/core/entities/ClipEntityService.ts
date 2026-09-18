@@ -7,7 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { ClipNotesRepository, ClipFavoritesRepository, ClipsRepository, MiUser } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedClip } from '@/models/schema/clip.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import type { } from '@/models/Blocking.js';
 import type { MiClip } from '@/models/Clip.js';
 import { bindThis } from '@/decorators.js';
@@ -36,9 +37,9 @@ export class ClipEntityService {
 		src: MiClip['id'] | MiClip,
 		me?: { id: MiUser['id'] } | null | undefined,
 		hint?: {
-			packedUser?: Packed<'UserLite'>
+			packedUser?: PackedUserLite
 		},
-	): Promise<Packed<'Clip'>> {
+	): Promise<PackedClip> {
 		const meId = me ? me.id : null;
 		const clip = typeof src === 'object' ? src : await this.clipsRepository.findOneByOrFail({ id: src });
 

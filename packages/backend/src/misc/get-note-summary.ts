@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Packed } from './json-schema.js';
+import type { PackedNote } from '@/models/schema/note.js';
 
 /**
  * 投稿を表す文字列を取得します。
  * @param {*} note (packされた)投稿
  */
-export const getNoteSummary = (note: Packed<'Note'>): string => {
+export const getNoteSummary = (note: PackedNote): string => {
 	if (note.deletedAt) {
 		return '(❌⛔)';
 	}

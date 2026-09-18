@@ -7,7 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedFollowing } from '@/models/schema/following.js';
+import type { PackedUserDetailedNotMe } from '@/models/schema/user.js';
 import type { } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiFollowing } from '@/models/Following.js';
@@ -79,10 +80,10 @@ export class FollowingEntityService {
 			populateFollower?: boolean;
 		},
 		hint?: {
-			packedFollowee?: Packed<'UserDetailedNotMe'>,
-			packedFollower?: Packed<'UserDetailedNotMe'>,
+			packedFollowee?: PackedUserDetailedNotMe,
+			packedFollower?: PackedUserDetailedNotMe,
 		},
-	): Promise<Packed<'Following'>> {
+	): Promise<PackedFollowing> {
 		const following = typeof src === 'object' ? src : await this.followingsRepository.findOneByOrFail({ id: src });
 
 		if (opts == null) opts = {};

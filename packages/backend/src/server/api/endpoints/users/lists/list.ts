@@ -4,11 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { UserListsRepository, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { ApiError } from '@/server/api/error.js';
 import { DI } from '@/di-symbols.js';
+import { packedUserListSchema } from '@/models/schema/user-list.js';
 
 export const meta = {
 	tags: ['lists', 'account'],
@@ -19,15 +22,7 @@ export const meta = {
 
 	description: 'Show all lists that the authenticated user has created.',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'UserList',
-		},
-	},
+	res: v.array(packedUserListSchema),
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',
@@ -47,13 +42,9 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	userId: v.optional(mi.misskeyId()),
+});
 
 @Injectable() // eslint-disable-next-line import/no-default-export
 export default class extends Endpoint<typeof meta, typeof paramDef> {

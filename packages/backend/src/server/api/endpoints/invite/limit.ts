@@ -5,6 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RegistrationTicketsRepository } from '@/models/_.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -18,23 +20,12 @@ export const meta = {
 	requiredRolePolicy: 'canInvite',
 	kind: 'read:invite-codes',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			remaining: {
-				type: 'integer',
-				optional: false, nullable: true,
-			},
-		},
-	},
+	res: v.object({
+		remaining: v.nullable(mi.integer()),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -6,7 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { FlashLikesRepository, FlashsRepository } from '@/models/_.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedFlash } from '@/models/schema/flash.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiFlash } from '@/models/Flash.js';
 import { bindThis } from '@/decorators.js';
@@ -30,10 +31,10 @@ export class FlashEntityService {
 		src: MiFlash['id'] | MiFlash,
 		me?: { id: MiUser['id'] } | null | undefined,
 		hint?: {
-			packedUser?: Packed<'UserLite'>,
+			packedUser?: PackedUserLite,
 			likedFlashIds?: MiFlash['id'][],
 		},
-	): Promise<Packed<'Flash'>> {
+	): Promise<PackedFlash> {
 		const meId = me ? me.id : null;
 		const flash = typeof src === 'object' ? src : await this.flashsRepository.findOneByOrFail({ id: src });
 

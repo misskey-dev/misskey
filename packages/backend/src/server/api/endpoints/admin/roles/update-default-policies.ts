@@ -4,6 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -17,17 +19,9 @@ export const meta = {
 	kind: 'write:admin:roles',
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		policies: {
-			type: 'object',
-		},
-	},
-	required: [
-		'policies',
-	],
-} as const;
+export const paramDef = v.object({
+	policies: mi.anyObject(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

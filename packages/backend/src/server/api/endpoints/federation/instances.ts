@@ -4,12 +4,15 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { InstancesRepository } from '@/models/_.js';
 import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import { packedFederationInstanceSchema } from '@/models/schema/federation-instance.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -18,54 +21,38 @@ export const meta = {
 	allowGet: true,
 	cacheSec: 3600,
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'FederationInstance',
-		},
-	},
+	res: v.array(packedFederationInstanceSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		host: { type: 'string', nullable: true, description: 'Omit or use `null` to not filter by host.' },
-		blocked: { type: 'boolean', nullable: true },
-		notResponding: { type: 'boolean', nullable: true },
-		suspended: { type: 'boolean', nullable: true },
-		silenced: { type: 'boolean', nullable: true },
-		federating: { type: 'boolean', nullable: true },
-		subscribing: { type: 'boolean', nullable: true },
-		publishing: { type: 'boolean', nullable: true },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
-		offset: { type: 'integer', default: 0 },
-		sort: {
-			type: 'string',
-			nullable: true,
-			enum: [
-				'+pubSub',
-				'-pubSub',
-				'+notes',
-				'-notes',
-				'+users',
-				'-users',
-				'+following',
-				'-following',
-				'+followers',
-				'-followers',
-				'+firstRetrievedAt',
-				'-firstRetrievedAt',
-				'+latestRequestReceivedAt',
-				'-latestRequestReceivedAt',
-				null,
-			],
-		},
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	host: v.optional(v.nullable(v.pipe(v.string(), v.description('Omit or use `null` to not filter by host.')))),
+	blocked: v.optional(v.nullable(v.boolean())),
+	notResponding: v.optional(v.nullable(v.boolean())),
+	suspended: v.optional(v.nullable(v.boolean())),
+	silenced: v.optional(v.nullable(v.boolean())),
+	federating: v.optional(v.nullable(v.boolean())),
+	subscribing: v.optional(v.nullable(v.boolean())),
+	publishing: v.optional(v.nullable(v.boolean())),
+	limit: mi.limit({ max: 100, def: 30 }),
+	offset: v.optional(mi.integer(), 0),
+	sort: v.optional(mi.nullableEnum([
+		'+pubSub',
+		'-pubSub',
+		'+notes',
+		'-notes',
+		'+users',
+		'-users',
+		'+following',
+		'-following',
+		'+followers',
+		'-followers',
+		'+firstRetrievedAt',
+		'-firstRetrievedAt',
+		'+latestRequestReceivedAt',
+		'-latestRequestReceivedAt',
+		null,
+	])),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

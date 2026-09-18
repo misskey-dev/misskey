@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { EmojisRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
@@ -33,26 +35,14 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			id: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'id',
-			},
-		},
-	},
+	res: v.object({
+		id: mi.idString(),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		emojiId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['emojiId'],
-} as const;
+export const paramDef = v.object({
+	emojiId: mi.misskeyId(),
+});
 
 // TODO: ロジックをサービスに切り出す
 

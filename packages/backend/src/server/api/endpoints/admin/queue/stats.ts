@@ -4,8 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, PostScheduledNoteQueue, InboxQueue, ObjectStorageQueue, SystemQueue, UserWebhookDeliverQueue, SystemWebhookDeliverQueue } from '@/core/QueueModule.js';
+import { packedQueueCountSchema } from '@/models/schema/queue.js';
+import type { PackedQueueCount } from '@/models/schema/queue.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -14,35 +17,15 @@ export const meta = {
 	requireModerator: true,
 	kind: 'read:admin:queue',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			deliver: {
-				optional: false, nullable: false,
-				ref: 'QueueCount',
-			},
-			inbox: {
-				optional: false, nullable: false,
-				ref: 'QueueCount',
-			},
-			db: {
-				optional: false, nullable: false,
-				ref: 'QueueCount',
-			},
-			objectStorage: {
-				optional: false, nullable: false,
-				ref: 'QueueCount',
-			},
-		},
-	},
+	res: v.object({
+		deliver: packedQueueCountSchema,
+		inbox: packedQueueCountSchema,
+		db: packedQueueCountSchema,
+		objectStorage: packedQueueCountSchema,
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
@@ -58,10 +41,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject('queue:systemWebhookDeliver') public systemWebhookDeliverQueue: SystemWebhookDeliverQueue,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const deliverJobCounts = await this.deliverQueue.getJobCounts();
-			const inboxJobCounts = await this.inboxQueue.getJobCounts();
-			const dbJobCounts = await this.dbQueue.getJobCounts();
-			const objectStorageJobCounts = await this.objectStorageQueue.getJobCounts();
+			// bullmq の getJobCounts() は要求可能な全 JobType をキーに持つ index signature 型を返し、
+			// res スキーマが宣言する 5 キーより広い (レスポンスにも余分なキーがそのまま含まれ得る)。
+			// legacy スキーマでは res の型が any に潰れていたため見えなかった相違で、
+			// ランタイム挙動を変えないようキャストで従来どおりの返却形を維持する。
+			const deliverJobCounts = await this.deliverQueue.getJobCounts() as PackedQueueCount;
+			const inboxJobCounts = await this.inboxQueue.getJobCounts() as PackedQueueCount;
+			const dbJobCounts = await this.dbQueue.getJobCounts() as PackedQueueCount;
+			const objectStorageJobCounts = await this.objectStorageQueue.getJobCounts() as PackedQueueCount;
 
 			return {
 				deliver: deliverJobCounts,

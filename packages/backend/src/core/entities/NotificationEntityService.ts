@@ -11,7 +11,9 @@ import type { FollowRequestsRepository, NotesRepository, MiUser, UsersRepository
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiGroupedNotification, MiNotification } from '@/models/Notification.js';
 import type { MiNote } from '@/models/Note.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedNote } from '@/models/schema/note.js';
+import type { PackedNotification } from '@/models/schema/notification.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import { bindThis } from '@/decorators.js';
 import { FilterUnionByProperty, groupedNotificationTypes } from '@/types.js';
 import { CacheService } from '@/core/CacheService.js';
@@ -74,10 +76,10 @@ export class NotificationEntityService implements OnModuleInit {
 			checkValidNotifier?: boolean;
 		},
 		hint?: {
-			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
-			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
+			packedNotes: Map<MiNote['id'], PackedNote>;
+			packedUsers: Map<MiUser['id'], PackedUserLite>;
 		},
-	): Promise<Packed<'Notification'> | null> {
+	): Promise<PackedNotification | null> {
 		const notification = src;
 
 		if (options.checkValidNotifier !== false && !(await this.#isValidNotifier(notification, meId))) return null;
@@ -122,7 +124,8 @@ export class NotificationEntityService implements OnModuleInit {
 				id: notification.id,
 				createdAt: new Date(notification.createdAt).toISOString(),
 				type: notification.type,
-				note: noteIfNeed,
+				// 上の `if (needsNote && !noteIfNeed) return null;` で非 undefined が保証されている
+				note: noteIfNeed!,
 				reactions,
 			});
 		} else if (notification.type === 'renote:grouped') {
@@ -143,7 +146,8 @@ export class NotificationEntityService implements OnModuleInit {
 				id: notification.id,
 				createdAt: new Date(notification.createdAt).toISOString(),
 				type: notification.type,
-				note: noteIfNeed,
+				// 上の `if (needsNote && !noteIfNeed) return null;` で非 undefined が保証されている
+				note: noteIfNeed!,
 				users,
 			});
 		}
@@ -163,6 +167,9 @@ export class NotificationEntityService implements OnModuleInit {
 			return null;
 		}
 
+		// NOTE: `notification.type` によるスプレッドの出し分けは TypeScript が判別 union と
+		// 相関付けられない (どの分岐が有効かを型で追えない) ため、組み立て結果をキャストする。
+		// 各スプレッドの条件は PackedNotification の対応する variant と 1:1 なのでランタイムは正しい。
 		return await awaitAll({
 			id: notification.id,
 			createdAt: new Date(notification.createdAt).toISOString(),
@@ -194,13 +201,13 @@ export class NotificationEntityService implements OnModuleInit {
 				header: notification.customHeader,
 				icon: notification.customIcon,
 			} : {}),
-		});
+		}) as PackedNotification;
 	}
 
 	async #packManyInternal <T extends MiNotification | MiGroupedNotification>	(
 		notifications: T[],
 		meId: MiUser['id'],
-	): Promise<T[]> {
+	): Promise<PackedNotification[]> {
 		if (notifications.length === 0) return [];
 
 		let validNotifications = notifications;
@@ -269,10 +276,10 @@ export class NotificationEntityService implements OnModuleInit {
 			checkValidNotifier?: boolean;
 		},
 		hint?: {
-			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
-			packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
+			packedNotes: Map<MiNote['id'], PackedNote>;
+			packedUsers: Map<MiUser['id'], PackedUserLite>;
 		},
-	): Promise<Packed<'Notification'> | null> {
+	): Promise<PackedNotification | null> {
 		return await this.#packInternal(src, meId, options, hint);
 	}
 
@@ -280,7 +287,7 @@ export class NotificationEntityService implements OnModuleInit {
 	public async packMany(
 		notifications: MiNotification[],
 		meId: MiUser['id'],
-	): Promise<MiNotification[]> {
+	): Promise<PackedNotification[]> {
 		return await this.#packManyInternal(notifications, meId);
 	}
 
@@ -288,7 +295,7 @@ export class NotificationEntityService implements OnModuleInit {
 	public async packGroupedMany(
 		notifications: MiGroupedNotification[],
 		meId: MiUser['id'],
-	): Promise<MiGroupedNotification[]> {
+	): Promise<PackedNotification[]> {
 		return await this.#packManyInternal(notifications, meId);
 	}
 
