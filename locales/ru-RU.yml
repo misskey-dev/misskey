@@ -2581,5 +2581,6 @@ _drafts:
   restore: "Восстановить"
 _qr:
   showTabTitle: "Отображение"
+  scanFile: "Отсканировать изображение с устройства"
   raw: "Текст"
   mfm: "MFM"
