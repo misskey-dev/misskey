@@ -35,7 +35,7 @@ export const meta = {
 
 export const paramDef = v.object({
 	listId: mi.misskeyId(),
-	name: v.optional(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100))),
+	name: v.optional(v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100))),
 	isPublic: v.optional(v.boolean()),
 });
 

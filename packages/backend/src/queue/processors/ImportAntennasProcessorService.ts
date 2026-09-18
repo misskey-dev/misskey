@@ -5,7 +5,6 @@
 
 import { Injectable, Inject } from '@nestjs/common';
 import * as v from 'valibot';
-import * as mi from '@/misc/schema/index.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import Logger from '@/logger.js';
@@ -18,7 +17,7 @@ import type * as Bull from 'bullmq';
 
 // NOTE: api.json には現れない (endpoint の paramDef ではなく、インポートファイルの検証用) スキーマ。
 const exportedAntennaSchema = v.object({
-	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)),
+	name: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100)),
 	src: v.picklist(['home', 'all', 'users', 'list', 'users_blacklist']),
 	userListAccts: v.nullish(v.array(v.string())),
 	keywords: v.array(v.array(v.string())),

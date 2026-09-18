@@ -35,7 +35,7 @@ export const meta = {
 
 export const paramDef = v.object({
 	score: mi.integer({ min: 0 }),
-	seed: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(1024)),
+	seed: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(1024)),
 	logs: v.array(v.array(v.number())),
 	gameMode: v.string(),
 	gameVersion: mi.integer(),

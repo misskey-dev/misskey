@@ -27,9 +27,9 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	title: v.pipe(v.string(), mi.minCodePoints(1)),
-	text: v.pipe(v.string(), mi.minCodePoints(1)),
-	imageUrl: v.nullable(v.pipe(v.string(), mi.minCodePoints(0))),
+	title: v.pipe(v.string(), v.minCodePoints(1)),
+	text: v.pipe(v.string(), v.minCodePoints(1)),
+	imageUrl: v.nullable(v.pipe(v.string(), v.minCodePoints(0))),
 	icon: v.optional(v.picklist(['info', 'warning', 'error', 'success']), 'info'),
 	display: v.optional(v.picklist(['normal', 'banner', 'dialog']), 'normal'),
 	forExistingUsers: v.optional(v.boolean(), false),

@@ -7,11 +7,8 @@ import { describe, expect, test } from 'vitest';
 import * as v from 'valibot';
 import {
 	MISSKEY_ID_REGEX,
-	countCodePoints,
 	integer,
 	limit,
-	maxCodePoints,
-	minCodePoints,
 	misskeyId,
 	nullableEnum,
 	paginationDateEntries,
@@ -73,18 +70,11 @@ describe('misc/schema:helpers', () => {
 		});
 	});
 
-	describe('countCodePoints()', () => {
-		test('サロゲートペアを 1 と数える', () => {
-			expect(countCodePoints('abc')).toBe(3);
-			expect(countCodePoints('👍')).toBe(1);
-			expect('👍'.length).toBe(2);
-			expect(countCodePoints('あ👍a')).toBe(3);
-		});
-	});
-
-	describe('minCodePoints() / maxCodePoints()', () => {
+	// 文字列長制約は valibot の v.minCodePoints / v.maxCodePoints に委譲しているので、
+	// 「AJV (JSON Schema) と同じくコードポイント数で数える」前提が崩れていないことだけ確認する
+	describe('v.minCodePoints() / v.maxCodePoints()', () => {
 		test('境界値 (ASCII)', () => {
-			const schema = v.pipe(v.string(), minCodePoints(1), maxCodePoints(3));
+			const schema = v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(3));
 			expect(v.safeParse(schema, '').success).toBe(false);
 			expect(v.safeParse(schema, 'a').success).toBe(true);
 			expect(v.safeParse(schema, 'abc').success).toBe(true);
@@ -92,17 +82,18 @@ describe('misc/schema:helpers', () => {
 		});
 
 		test('コードポイント数で数える (v.maxLength との挙動差)', () => {
-			const schema = v.pipe(v.string(), maxCodePoints(3));
+			const schema = v.pipe(v.string(), v.maxCodePoints(3));
 			expect(v.safeParse(schema, '👍👍👍').success).toBe(true);
 			expect(v.safeParse(schema, '👍👍👍👍').success).toBe(false);
 
 			// UTF-16 コードユニットで数える v.maxLength は同じ入力を弾いてしまう
+			expect('👍'.length).toBe(2);
 			expect(v.safeParse(v.pipe(v.string(), v.maxLength(3)), '👍👍👍').success).toBe(false);
 		});
 
 		test('minCodePoints もコードポイント数で数える', () => {
-			expect(v.safeParse(v.pipe(v.string(), minCodePoints(2)), '👍').success).toBe(false);
-			expect(v.safeParse(v.pipe(v.string(), minCodePoints(2)), '👍👍').success).toBe(true);
+			expect(v.safeParse(v.pipe(v.string(), v.minCodePoints(2)), '👍').success).toBe(false);
+			expect(v.safeParse(v.pipe(v.string(), v.minCodePoints(2)), '👍👍').success).toBe(true);
 		});
 	});
 

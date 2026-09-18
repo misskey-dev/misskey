@@ -38,7 +38,7 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	title: v.pipe(v.string(), mi.minCodePoints(1)),
+	title: v.pipe(v.string(), v.minCodePoints(1)),
 	description: v.optional(v.nullable(v.string())),
 	fileIds: v.pipe(v.array(mi.misskeyId()), mi.uniqueArray(), v.minLength(1), v.maxLength(32)),
 	isSensitive: v.optional(v.boolean(), false),

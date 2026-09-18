@@ -32,7 +32,7 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	query: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(256)),
+	query: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(256)),
 	limit: mi.limit({ max: 100, def: 10 }),
 	userId: v.optional(v.nullable(mi.misskeyId())),
 	roomId: v.optional(v.nullable(mi.misskeyId())),

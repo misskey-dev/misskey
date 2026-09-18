@@ -34,9 +34,9 @@ export const meta = {
 
 export const paramDef = v.object({
 	clipId: mi.misskeyId(),
-	name: v.optional(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100))),
+	name: v.optional(v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100))),
 	isPublic: v.optional(v.boolean()),
-	description: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(2048)))),
+	description: v.optional(v.nullable(v.pipe(v.string(), v.maxCodePoints(2048)))),
 });
 
 @Injectable()

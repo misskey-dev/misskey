@@ -40,7 +40,7 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	name: v.optional(v.pipe(v.string(), mi.maxCodePoints(200)), 'Untitled'),
+	name: v.optional(v.pipe(v.string(), v.maxCodePoints(200)), 'Untitled'),
 	parentId: v.optional(v.nullable(mi.misskeyId())),
 });
 

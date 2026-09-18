@@ -95,7 +95,7 @@ name: v.nullable(v.string()),
 { properties: { cw: { type: 'string', nullable: true, minLength: 1, maxLength: 100 } } }
 // (cw は required に含まれない = optional: true)
 // after
-cw: v.optional(v.nullable(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)))),
+cw: v.optional(v.nullable(v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100)))),
 ```
 
 **`v.exactOptional` は使わない** (valibot 1.x の `exactOptional` は「キー自体が存在しない」ことを要求する厳密版で、AJV 側にそこまで厳密な区別が無いため意味が変わる)。
@@ -193,15 +193,15 @@ v.literal('list')
 
 **pattern 文字列は `regex.source` がそのまま api.json に出る。** 検証上冗長なエスケープ (文字クラス内の `\/` 等) も legacy の pattern 文字列と一致させるため**削らずそのまま写す** (実例: `admin/drive/files.ts` の `/^[a-zA-Z0-9\/\-*]+$/` — `\/` を外すと semantically 同一でも api.json 差分になる)。
 | `minimum` / `maximum` | `v.minValue(n)` / `v.maxValue(n)` |
-| 文字列の `minLength` / `maxLength` | **`mi.minCodePoints(n)` / `mi.maxCodePoints(n)` 必須** |
+| 文字列の `minLength` / `maxLength` | **`v.minCodePoints(n)` / `v.maxCodePoints(n)` 必須** |
 
-文字列の長さ制約は **`v.minLength` / `v.maxLength` を素で使ってはいけない**。AJV は JSON Schema 仕様どおり `minLength`/`maxLength` を**Unicode コードポイント数**でカウントする一方、valibot の `v.minLength`/`v.maxLength` は文字列に対して **UTF-16 コードユニット数**でカウントする。サロゲートペア文字 (絵文字や一部の漢字など、コードポイントが U+10000 以上の文字) を含む入力で挙動が食い違う (例: 絵文字 1 文字 = コードポイント換算 1、UTF-16 換算 2)。これは境界値検証の意味を変えるバグなので、文字列長には必ず `mi.minCodePoints` / `mi.maxCodePoints` を使う。
+文字列の長さ制約は **`v.minLength` / `v.maxLength` を素で使ってはいけない**。AJV は JSON Schema 仕様どおり `minLength`/`maxLength` を**Unicode コードポイント数**でカウントする一方、valibot の `v.minLength`/`v.maxLength` は文字列に対して **UTF-16 コードユニット数**でカウントする。サロゲートペア文字 (絵文字や一部の漢字など、コードポイントが U+10000 以上の文字) を含む入力で挙動が食い違う (例: 絵文字 1 文字 = コードポイント換算 1、UTF-16 換算 2)。これは境界値検証の意味を変えるバグなので、文字列長には必ず valibot の `v.minCodePoints` / `v.maxCodePoints` (1.5.0 で追加) を使う。
 
 ```ts
 // before
 { type: 'string', minLength: 1, maxLength: 100 }
 // after
-v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100))
+v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100))
 ```
 
 `v.minLength` / `v.maxLength` を素の文字列に使っているのを見つけたら cookbook 違反として差し戻す (配列の要素数制約 R7 とは別物なので混同しない)。
@@ -242,7 +242,7 @@ v.pipe(v.array(mi.misskeyId()), mi.uniqueArray(), v.minLength(1), v.maxLength(16
 // (text, localOnly ともに required に含まれない)
 // after
 v.object({
-  text: v.optional(v.nullable(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(3000)))),
+  text: v.optional(v.nullable(v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(3000)))),
   localOnly: v.optional(v.boolean(), false),
 })
 ```
@@ -603,8 +603,6 @@ v.pipe(
 | `mi.idString()` | `() => GenericSchema<string>` | res 側 `format: 'id'` (注釈のみ、ランタイム検証なし) | `{ type: 'string', format: 'id' }` (R12) |
 | `mi.dateTimeString()` | `() => GenericSchema<string>` | res 側 `format: 'date-time'` (注釈のみ) | `{ type: 'string', format: 'date-time' }` (R12) |
 | `mi.urlString()` | `() => GenericSchema<string>` | res 側 `format: 'url'` (注釈のみ) | `{ type: 'string', format: 'url' }` (R12) |
-| `mi.minCodePoints(requirement: number)` | `(n) => check action` | 文字列長の下限を**コードポイント数**で検証 (`v.minLength` は使わない) | `minLength` (R6) |
-| `mi.maxCodePoints(requirement: number)` | `(n) => check action` | 文字列長の上限を**コードポイント数**で検証 | `maxLength` (R6) |
 | `mi.uniqueArray()` | `() => check action` | 配列要素の一意性を `Set` 同一性比較で検証 (プリミティブ要素専用) | `uniqueItems: true` (R7) |
 | `mi.nullableEnum(options: readonly (string \| null)[])` | `(options) => GenericSchema<string \| null>` | `null` を含む enum。ランタイムは `v.nullable(v.picklist(null除く))` と等価、OpenAPI は `options` を**渡した順序のまま** `enum` に出力 (戻り値は既に nullable なので `v.nullable()` で二重に包まない) | `{ nullable: true, enum: [null, ...] }` (R5) |
 | `mi.anyObject()` | `() => GenericSchema<Record<string, any>>` | `v.record(v.string(), v.any())`。`additionalProperties`/`properties` を出力しない | `properties` 無しの `object` (R1) |
@@ -643,7 +641,7 @@ v.pipe(
 
 - **既存スキーマの書き換えで** 検証の意味を **1 ビットでも**変える (境界値、`default` の適用条件、`required`/optional 判定、enum 許容値、のいずれか)
 - `v.intersect` の使用 (R9)
-- 文字列に対する素の `v.minLength` / `v.maxLength` (R6 — 必ず `mi.minCodePoints`/`mi.maxCodePoints`)
+- 文字列に対する素の `v.minLength` / `v.maxLength` (R6 — 必ず `v.minCodePoints`/`v.maxCodePoints`)
 - 規則に無い箇所への `v.any()` の新規追加 (既存の無検証箇所を `v.any()` に落とすのは R1 の対象内だが、**検証されていた箇所を新たに `v.any()` に緩める**のは禁止)
 - `transform` / `coerce` 系アクションの追加 (paramDef では OpenAPI コンバータが throw する。値の変形はスキーマではなくハンドラ内で行う)
 - `v.pipe()` の 2 番目以降にスキーマを置くこと (`v.pipe(v.string(), v.transform(Number), v.number())` のような形)。OpenAPI コンバータは pipe の先頭のみをスキーマとして扱い、中間スキーマは黙って無視されるため誤った spec が出る。pipe は「先頭スキーマ + アクションのみ」で構成する
@@ -657,7 +655,7 @@ v.pipe(
 「検証は書いたのに api.json に出てこない」「コンバータが throw した」で混乱しないための注記。いずれも規則の適用ミスではない。
 
 - **`if`/`then` (`notes/create.ts` のみ、R14)**: legacy の `if`/`then` を `v.pipe(obj, v.rawCheck(...))` に変換すると、**OpenAPI 出力から `if`/`then` 相当の記述が消える**。`openapi.ts` の `object` ケースは `entries`/`allOfRefs` しか見ておらず、pipe 上の `rawCheck` アクションは (kind が `'validation'` であって `'metadata'` ではないため) `mergeMetadata()` にも `applyActions()` にも一切拾われない (`object` 型は `applyActions` 自体を呼ばない)。つまり **ランタイム検証は保持されるが api.json 上の `if`/`then` は消える**。移行時に観測された差分で、`diff-api-json.mjs` の allowlist に登録して吸収済み。
-- **`v.check` / `v.rawCheck` 等のカスタム検証全般**: 上と同じ理由で、OpenAPI に対応するキーワードが無いカスタム検証アクションは**すべて出力されない** (`applyActions()` の `switch` に無い `type` は黙って無視される)。`mi.minCodePoints`/`mi.maxCodePoints`/`mi.uniqueArray()` のようにマーカー付きで特別扱いされているものだけが `minLength`/`maxLength`/`uniqueItems` として出力される。ランタイムの検証意味は保たれるので問題ないが、「spec 上その制約が見えなくなる」こと自体は許容された既知差分。
+- **`v.check` / `v.rawCheck` 等のカスタム検証全般**: 上と同じ理由で、OpenAPI に対応するキーワードが無いカスタム検証アクションは**すべて出力されない** (`applyActions()` の `switch` に無い `type` は黙って無視される)。valibot 標準の `v.minCodePoints`/`v.maxCodePoints` (`applyActions()` が `min_code_points`/`max_code_points` を拾う) と、マーカー付きで特別扱いしている `mi.uniqueArray()` だけが `minLength`/`maxLength`/`uniqueItems` として出力される。ランタイムの検証意味は保たれるので問題ないが、「spec 上その制約が見えなくなる」こと自体は許容された既知差分。
 - **オブジェクトキーの出力順序**: 気にしなくてよい。[`diff-api-json.mjs`](../../../../../packages/backend/scripts/diff-api-json.mjs) の `normalize()` は比較前にオブジェクトキーを再帰的にソートし、`required` 配列の要素もソートする (両者とも順序は意味を持たない)。
 - **それ以外の配列 (`enum` / `oneOf` / `anyOf` / `allOf` / `prefixItems` / `properties` 相当) の順序は保存される** — `diff-api-json.mjs` は `required` 以外の配列を並べ替えないので、**元の json-schema の配列順序を必ず維持する** (R5 の `mi.nullableEnum()` が null を含めた配列をそのままの順序で渡す理由もこれ)。`v.object({...})` の entries 挿入順もプロパティ出力順としてそのまま保存される (`openapi.ts` の object ケースのコメント参照)。
 - **未対応の valibot スキーマ種はコンバータが throw する**: `openapi.ts` の `convert()` は既知の `base.type` (`optional` / `nullable` / `string` / `number` / `object` / `array` / `union` / `variant` / `lazy` / `custom` 等 R1〜R13 で扱っているもの) だけを分岐しており、`default` 節で `throw new Error(`valibotToOpenApi: unsupported schema type '${base.type}'`)` する。**`v.date()` / `v.bigint()` / `v.file()` / `v.blob()` / `v.map()` / `v.set()` などこの文書のどの規則にも登場しないスキーマ型は使わない** (そもそも変換元の json-schema 側にこれらに対応する型が無いはずなので、通常は発生しない。もし変換対象に相当するものが見つかったらエスカレーションする)。

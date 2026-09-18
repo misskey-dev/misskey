@@ -48,7 +48,7 @@ export const meta = {
 
 export const paramDef = v.object({
 	antennaId: mi.misskeyId(),
-	name: v.optional(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100))),
+	name: v.optional(v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100))),
 	src: v.optional(v.picklist(['home', 'all', 'users', 'list', 'users_blacklist'])),
 	userListId: v.optional(v.nullable(mi.misskeyId())),
 	keywords: v.optional(v.array(v.array(v.string()))),

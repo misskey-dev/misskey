@@ -65,7 +65,7 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	text: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(2000)))),
+	text: v.optional(v.nullable(v.pipe(v.string(), v.maxCodePoints(2000)))),
 	fileId: v.optional(mi.misskeyId()),
 	toUserId: mi.misskeyId(),
 });

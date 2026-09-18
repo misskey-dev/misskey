@@ -21,7 +21,7 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	query: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)),
+	query: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100)),
 	...mi.paginationEntries({ max: 100, default: 5 }),
 	...mi.paginationDateEntries(),
 });

@@ -23,14 +23,14 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	url: v.pipe(v.string(), mi.minCodePoints(1)),
+	url: v.pipe(v.string(), v.minCodePoints(1)),
 	memo: v.string(),
 	place: v.string(),
 	priority: v.string(),
 	ratio: mi.integer(),
 	expiresAt: mi.integer(),
 	startsAt: mi.integer(),
-	imageUrl: v.pipe(v.string(), mi.minCodePoints(1)),
+	imageUrl: v.pipe(v.string(), v.minCodePoints(1)),
 	dayOfWeek: mi.integer(),
 	isSensitive: v.optional(v.boolean()),
 });

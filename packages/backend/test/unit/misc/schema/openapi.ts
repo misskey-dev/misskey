@@ -17,8 +17,6 @@ import {
 	idString,
 	integer,
 	limit,
-	maxCodePoints,
-	minCodePoints,
 	misskeyId,
 	nullableEnum,
 	omitKeywords,
@@ -84,8 +82,8 @@ describe('misc/schema:valibotToOpenApi', () => {
 				.toStrictEqual({ type: 'string', format: 'date-time', description: 'when' });
 		});
 
-		test('codePoints マーカー → minLength / maxLength', () => {
-			expect(valibotToOpenApi(v.pipe(v.string(), minCodePoints(1), maxCodePoints(100)), RES))
+		test('min_code_points / max_code_points → minLength / maxLength', () => {
+			expect(valibotToOpenApi(v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100)), RES))
 				.toStrictEqual({ type: 'string', minLength: 1, maxLength: 100 });
 		});
 

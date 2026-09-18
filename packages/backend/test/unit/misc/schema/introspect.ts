@@ -18,7 +18,6 @@ import {
 	isValibotSchema,
 	limit,
 	lookupEntityName,
-	maxCodePoints,
 	mergeMetadata,
 	misskeyId,
 	resAllowsEmpty,
@@ -32,13 +31,13 @@ describe('misc/schema:introspect', () => {
 		test('Valibot スキーマを判別する', () => {
 			expect(isValibotSchema(v.string())).toBe(true);
 			expect(isValibotSchema(v.object({ a: v.string() }))).toBe(true);
-			expect(isValibotSchema(v.pipe(v.string(), maxCodePoints(1)))).toBe(true);
+			expect(isValibotSchema(v.pipe(v.string(), v.maxCodePoints(1)))).toBe(true);
 			expect(isValibotSchema(v.optional(v.string()))).toBe(true);
 		});
 
 		test('プレーンオブジェクト / アクション / その他は false', () => {
 			expect(isValibotSchema({ type: 'object', properties: {} })).toBe(false);
-			expect(isValibotSchema(maxCodePoints(1))).toBe(false);
+			expect(isValibotSchema(v.maxCodePoints(1))).toBe(false);
 			expect(isValibotSchema(null)).toBe(false);
 			expect(isValibotSchema(undefined)).toBe(false);
 			expect(isValibotSchema('string')).toBe(false);

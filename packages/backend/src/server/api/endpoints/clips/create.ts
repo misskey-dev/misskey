@@ -5,7 +5,6 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as v from 'valibot';
-import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MiClip } from '@/models/_.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
@@ -34,9 +33,9 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)),
+	name: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100)),
 	isPublic: v.optional(v.boolean(), false),
-	description: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(2048)))),
+	description: v.optional(v.nullable(v.pipe(v.string(), v.maxCodePoints(2048)))),
 });
 
 @Injectable()

@@ -30,9 +30,9 @@ export const meta = {
 
 export const paramDef = v.object({
 	id: mi.misskeyId(),
-	title: v.optional(v.pipe(v.string(), mi.minCodePoints(1))),
-	text: v.optional(v.pipe(v.string(), mi.minCodePoints(1))),
-	imageUrl: v.optional(v.nullable(v.pipe(v.string(), mi.minCodePoints(0)))),
+	title: v.optional(v.pipe(v.string(), v.minCodePoints(1))),
+	text: v.optional(v.pipe(v.string(), v.minCodePoints(1))),
+	imageUrl: v.optional(v.nullable(v.pipe(v.string(), v.minCodePoints(0)))),
 	icon: v.optional(v.picklist(['info', 'warning', 'error', 'success'])),
 	display: v.optional(v.picklist(['normal', 'banner', 'dialog'])),
 	forExistingUsers: v.optional(v.boolean()),

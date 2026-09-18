@@ -44,10 +44,10 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(128)),
-	description: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(2048)))),
+	name: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(128)),
+	description: v.optional(v.nullable(v.pipe(v.string(), v.maxCodePoints(2048)))),
 	bannerId: v.optional(v.nullable(mi.misskeyId())),
-	color: v.optional(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(16))),
+	color: v.optional(v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(16))),
 	isSensitive: v.optional(v.nullable(v.boolean())),
 	allowRenoteToExternal: v.optional(v.nullable(v.boolean())),
 });

@@ -49,7 +49,7 @@ export const meta = {
 
 export const paramDef = v.object({
 	title: v.string(),
-	name: v.pipe(v.string(), v.regex(new RegExp(pageNameSchema.pattern)), mi.minCodePoints(1)),
+	name: v.pipe(v.string(), v.regex(new RegExp(pageNameSchema.pattern)), v.minCodePoints(1)),
 	summary: v.optional(v.nullable(v.string())),
 	content: v.array(mi.anyRecord()),
 	variables: v.array(mi.anyRecord()),

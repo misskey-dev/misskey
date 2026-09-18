@@ -46,7 +46,7 @@ export const meta = {
 
 export const paramDef = v.object({
 	folderId: mi.misskeyId(),
-	name: v.optional(v.pipe(v.string(), mi.maxCodePoints(200))),
+	name: v.optional(v.pipe(v.string(), v.maxCodePoints(200))),
 	parentId: v.optional(v.nullable(mi.misskeyId())),
 });
 

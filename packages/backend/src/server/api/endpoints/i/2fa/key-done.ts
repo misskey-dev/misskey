@@ -45,7 +45,7 @@ export const meta = {
 export const paramDef = v.object({
 	password: v.string(),
 	token: v.optional(v.nullable(v.string())),
-	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(30)),
+	name: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(30)),
 	credential: mi.anyObject(),
 });
 

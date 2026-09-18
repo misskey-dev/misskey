@@ -5,7 +5,6 @@
 
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import * as v from 'valibot';
-import * as mi from '@/misc/schema/index.js';
 import { id } from './util/id.js';
 import { MiDriveFile } from './DriveFile.js';
 
@@ -327,15 +326,15 @@ export type MiPartialRemoteUser = Partial<MiUser> & {
 /** `^\w{1,20}$` (ローカルユーザー名) */
 export const localUsernameSchema = v.pipe(v.string(), v.regex(/^\w{1,20}$/));
 
-export const passwordSchema = v.pipe(v.string(), mi.minCodePoints(1));
+export const passwordSchema = v.pipe(v.string(), v.minCodePoints(1));
 
-export const nameSchema = v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(50));
+export const nameSchema = v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(50));
 
-export const descriptionSchema = v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(1500));
+export const descriptionSchema = v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(1500));
 
-export const followedMessageSchema = v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(256));
+export const followedMessageSchema = v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(256));
 
-export const locationSchema = v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(50));
+export const locationSchema = v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(50));
 
 /** `YYYY-MM-DD` */
 export const birthdaySchema = v.pipe(v.string(), v.regex(/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/));

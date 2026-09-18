@@ -8,28 +8,8 @@ import { schemaMeta, openApi, skipInOpenApi } from './metadata.js';
 
 // #region markers
 
-/**
- * 文字列長を **Unicode コードポイント数** で数える check アクションのマーカー。
- *
- * AJV の `minLength`/`maxLength` はコードポイント数で数えるが、`v.minLength`/`v.maxLength` は
- * UTF-16 コードユニット数で数えるため挙動が違う (サロゲートペアで 2 倍になる)。
- * 検証の意味を変えないため、文字列長制約は必ず {@link minCodePoints}/{@link maxCodePoints} を使う。
- */
-export const CODE_POINTS_MARKER: unique symbol = Symbol('misskey:codePoints');
-
 /** {@link uniqueArray} が付けるマーカー。OpenAPI の `uniqueItems: true` として出力される */
 export const UNIQUE_ITEMS_MARKER: unique symbol = Symbol('misskey:uniqueItems');
-
-export type CodePointsMarker = {
-	readonly bound: 'min' | 'max';
-	readonly requirement: number;
-};
-
-/** アクションから {@link CODE_POINTS_MARKER} を読む */
-export function readCodePointsMarker(action: unknown): CodePointsMarker | undefined {
-	if (typeof action !== 'object' || action === null) return undefined;
-	return (action as Record<symbol, CodePointsMarker | undefined>)[CODE_POINTS_MARKER];
-}
 
 /** アクションが {@link UNIQUE_ITEMS_MARKER} を持つか */
 export function hasUniqueItemsMarker(action: unknown): boolean {
@@ -45,33 +25,6 @@ export function hasUniqueItemsMarker(action: unknown): boolean {
  * **この定数がプロジェクト唯一の正典** なので、各所で正規表現を書き写さないこと。
  */
 export const MISSKEY_ID_REGEX = /^[a-zA-Z0-9]+$/;
-
-/** Unicode コードポイント数を数える */
-export function countCodePoints(value: string): number {
-	return countCodePointsCapped(value, Infinity);
-}
-
-/**
- * Unicode コードポイント数を `cap + 1` まで数える (超えた時点で打ち切り)。
- *
- * `[...value].length` (spread) は呼び出しごとに全コードポイントの配列を確保するため、
- * リクエスト検証のホットパス (text / cw の長さ検査など) ではアロケーションなしの
- * ループで数える (AJV の `ucs2length` と同じ方式)。min/max 判定は上限+1 個まで
- * 数えれば決定できるので、長大な入力でも requirement 分しか走査しない。
- */
-function countCodePointsCapped(value: string, cap: number): number {
-	let count = 0;
-	for (let i = 0; i < value.length && count <= cap; i++) {
-		const c = value.charCodeAt(i);
-		// high surrogate + low surrogate のペアは 1 コードポイントと数える
-		if (c >= 0xD800 && c <= 0xDBFF && i + 1 < value.length) {
-			const d = value.charCodeAt(i + 1);
-			if (d >= 0xDC00 && d <= 0xDFFF) i++;
-		}
-		count++;
-	}
-	return count;
-}
 
 /**
  * `{ type: 'string', format: 'misskey:id' }` 相当。
@@ -133,38 +86,6 @@ export function dateTimeString() {
 /** res 側の `{ type: 'string', format: 'url' }` 相当 (ランタイム検証なし) */
 export function urlString() {
 	return v.pipe(v.string(), schemaMeta({ format: 'url' }));
-}
-
-/**
- * 文字列の `minLength` 相当 (**コードポイント数**)。
- *
- * @see {@link CODE_POINTS_MARKER}
- */
-export function minCodePoints(requirement: number) {
-	return Object.assign(
-		v.check<string, string>(
-			// requirement 個数えられた時点で成立が決まる (打ち切り)
-			(input) => countCodePointsCapped(input, requirement) >= requirement,
-			`Invalid length: Expected >=${requirement} code points`,
-		),
-		{ [CODE_POINTS_MARKER]: { bound: 'min', requirement } as CodePointsMarker },
-	);
-}
-
-/**
- * 文字列の `maxLength` 相当 (**コードポイント数**)。
- *
- * @see {@link CODE_POINTS_MARKER}
- */
-export function maxCodePoints(requirement: number) {
-	return Object.assign(
-		v.check<string, string>(
-			// requirement + 1 個目が見つかった時点で違反が決まる (打ち切り)
-			(input) => countCodePointsCapped(input, requirement) <= requirement,
-			`Invalid length: Expected <=${requirement} code points`,
-		),
-		{ [CODE_POINTS_MARKER]: { bound: 'max', requirement } as CodePointsMarker },
-	);
 }
 
 /**

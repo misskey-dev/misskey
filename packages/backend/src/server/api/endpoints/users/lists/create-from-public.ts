@@ -62,7 +62,7 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)),
+	name: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100)),
 	listId: mi.misskeyId(),
 });
 

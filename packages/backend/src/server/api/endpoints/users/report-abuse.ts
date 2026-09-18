@@ -43,7 +43,7 @@ export const meta = {
 
 export const paramDef = v.object({
 	userId: mi.misskeyId(),
-	comment: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(2048)),
+	comment: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(2048)),
 });
 
 @Injectable()

@@ -76,7 +76,7 @@ export const meta = {
 export const paramDef = v.object({
 	folderId: v.optional(v.nullable(mi.misskeyId()), null),
 	name: v.optional(v.nullable(v.string()), null),
-	comment: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(DB_MAX_IMAGE_COMMENT_LENGTH))), null),
+	comment: v.optional(v.nullable(v.pipe(v.string(), v.maxCodePoints(DB_MAX_IMAGE_COMMENT_LENGTH))), null),
 	isSensitive: v.optional(v.boolean(), false),
 	force: v.optional(v.boolean(), false),
 });

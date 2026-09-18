@@ -38,7 +38,7 @@ export const paramDef = v.object({
 	clipId: mi.misskeyId(),
 	...mi.paginationEntries({ max: 100, default: 10 }),
 	...mi.paginationDateEntries(),
-	search: v.optional(v.nullable(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)))),
+	search: v.optional(v.nullable(v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100)))),
 });
 
 @Injectable()

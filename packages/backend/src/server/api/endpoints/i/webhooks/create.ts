@@ -45,9 +45,9 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)),
-	url: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(1024)),
-	secret: v.optional(v.pipe(v.string(), mi.maxCodePoints(1024)), ''),
+	name: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100)),
+	url: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(1024)),
+	secret: v.optional(v.pipe(v.string(), v.maxCodePoints(1024)), ''),
 	on: v.array(v.picklist([...webhookEventTypes])),
 });
 

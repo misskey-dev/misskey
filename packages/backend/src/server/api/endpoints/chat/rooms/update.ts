@@ -33,8 +33,8 @@ export const meta = {
 
 export const paramDef = v.object({
 	roomId: mi.misskeyId(),
-	name: v.optional(v.pipe(v.string(), mi.maxCodePoints(256))),
-	description: v.optional(v.pipe(v.string(), mi.maxCodePoints(1024))),
+	name: v.optional(v.pipe(v.string(), v.maxCodePoints(256))),
+	description: v.optional(v.pipe(v.string(), v.maxCodePoints(1024))),
 });
 
 @Injectable()

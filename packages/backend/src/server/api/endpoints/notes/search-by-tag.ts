@@ -38,13 +38,13 @@ const filterEntries = {
 // NOTE: cookbook R9 に従い allOf に混在した anyOf を各分岐へ共通パートを分配した v.union に変換している
 export const paramDef = v.union([
 	v.object({
-		tag: v.pipe(v.string(), mi.minCodePoints(1)),
+		tag: v.pipe(v.string(), v.minCodePoints(1)),
 		...filterEntries,
 	}),
 	v.object({
 		query: v.pipe(
 			v.array(v.pipe(
-				v.array(v.pipe(v.string(), mi.minCodePoints(1))),
+				v.array(v.pipe(v.string(), v.minCodePoints(1))),
 				v.minLength(1),
 			)),
 			v.minLength(1),

@@ -31,8 +31,8 @@ export const meta = {
 export const paramDef = v.object({
 	id: mi.misskeyId(),
 	memo: v.optional(v.string()),
-	url: v.optional(v.pipe(v.string(), mi.minCodePoints(1))),
-	imageUrl: v.optional(v.pipe(v.string(), mi.minCodePoints(1))),
+	url: v.optional(v.pipe(v.string(), v.minCodePoints(1))),
+	imageUrl: v.optional(v.pipe(v.string(), v.minCodePoints(1))),
 	place: v.optional(v.string()),
 	priority: v.optional(v.string()),
 	ratio: v.optional(mi.integer()),

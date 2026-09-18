@@ -36,7 +36,7 @@ export const meta = {
 	},
 
 	res: v.object({
-		password: v.pipe(v.string(), mi.minCodePoints(8), mi.maxCodePoints(8)),
+		password: v.pipe(v.string(), v.minCodePoints(8), v.maxCodePoints(8)),
 	}),
 } as const;
 

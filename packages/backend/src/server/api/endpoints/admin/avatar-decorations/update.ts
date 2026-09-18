@@ -24,9 +24,9 @@ export const meta = {
 
 export const paramDef = v.object({
 	id: mi.misskeyId(),
-	name: v.optional(v.pipe(v.string(), mi.minCodePoints(1))),
+	name: v.optional(v.pipe(v.string(), v.minCodePoints(1))),
 	description: v.optional(v.string()),
-	url: v.optional(v.pipe(v.string(), mi.minCodePoints(1))),
+	url: v.optional(v.pipe(v.string(), v.minCodePoints(1))),
 	roleIdsThatCanBeUsedThisDecoration: v.optional(v.array(v.string())),
 	category: v.nullish(v.string()),
 });

@@ -50,7 +50,7 @@ export const meta = {
 
 export const paramDef = v.object({
 	isActive: v.boolean(),
-	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(255)),
+	name: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(255)),
 	method: v.picklist(['email', 'webhook']),
 	userId: v.optional(mi.misskeyId()),
 	systemWebhookId: v.optional(mi.misskeyId()),

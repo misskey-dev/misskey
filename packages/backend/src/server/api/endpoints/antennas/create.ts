@@ -49,7 +49,7 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)),
+	name: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100)),
 	src: v.picklist(['home', 'all', 'users', 'list', 'users_blacklist']),
 	userListId: v.optional(v.nullable(mi.misskeyId())),
 	keywords: v.array(v.array(v.string())),

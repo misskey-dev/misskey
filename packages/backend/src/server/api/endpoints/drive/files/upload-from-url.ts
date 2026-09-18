@@ -33,7 +33,7 @@ export const paramDef = v.object({
 	url: v.string(),
 	folderId: v.optional(v.nullable(mi.misskeyId()), null),
 	isSensitive: v.optional(v.boolean(), false),
-	comment: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(512))), null),
+	comment: v.optional(v.nullable(v.pipe(v.string(), v.maxCodePoints(512))), null),
 	marker: v.optional(v.nullable(v.string()), null),
 	force: v.optional(v.boolean(), false),
 });

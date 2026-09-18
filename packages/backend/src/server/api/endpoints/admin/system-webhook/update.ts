@@ -26,10 +26,10 @@ export const meta = {
 export const paramDef = v.object({
 	id: mi.misskeyId(),
 	isActive: v.boolean(),
-	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(255)),
+	name: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(255)),
 	on: v.array(v.picklist([...systemWebhookEventTypes])),
-	url: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(1024)),
-	secret: v.optional(v.pipe(v.string(), mi.maxCodePoints(1024)), ''),
+	url: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(1024)),
+	secret: v.optional(v.pipe(v.string(), v.maxCodePoints(1024)), ''),
 });
 
 @Injectable()

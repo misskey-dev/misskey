@@ -32,9 +32,9 @@ export const meta = {
 
 export const paramDef = v.object({
 	webhookId: mi.misskeyId(),
-	name: v.optional(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100))),
-	url: v.optional(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(1024))),
-	secret: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(1024)))),
+	name: v.optional(v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100))),
+	url: v.optional(v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(1024))),
+	secret: v.optional(v.nullable(v.pipe(v.string(), v.maxCodePoints(1024)))),
 	on: v.optional(v.array(v.picklist([...webhookEventTypes]))),
 	active: v.optional(v.boolean()),
 });

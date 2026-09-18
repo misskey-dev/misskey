@@ -62,7 +62,7 @@ export const paramDef = v.object({
 	folderId: v.optional(v.nullable(mi.misskeyId())),
 	name: v.optional(v.string()),
 	isSensitive: v.optional(v.boolean()),
-	comment: v.optional(v.nullable(v.pipe(v.string(), mi.maxCodePoints(512)))),
+	comment: v.optional(v.nullable(v.pipe(v.string(), v.maxCodePoints(512)))),
 });
 
 @Injectable()

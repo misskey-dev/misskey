@@ -6,7 +6,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import * as v from 'valibot';
-import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
@@ -35,8 +34,8 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	name: v.pipe(v.string(), mi.maxCodePoints(256)),
-	description: v.optional(v.pipe(v.string(), mi.maxCodePoints(1024))),
+	name: v.pipe(v.string(), v.maxCodePoints(256)),
+	description: v.optional(v.pipe(v.string(), v.maxCodePoints(1024))),
 });
 
 @Injectable()

@@ -184,8 +184,8 @@ export const paramDef = v.object({
 	draftId: mi.misskeyId(),
 	visibility: v.optional(v.picklist(['public', 'home', 'followers', 'specified'])),
 	visibleUserIds: v.optional(v.pipe(v.array(mi.misskeyId()), mi.uniqueArray())),
-	cw: v.nullish(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100))),
-	hashtag: v.nullish(v.pipe(v.string(), mi.maxCodePoints(200))),
+	cw: v.nullish(v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100))),
+	hashtag: v.nullish(v.pipe(v.string(), v.maxCodePoints(200))),
 	localOnly: v.optional(v.boolean()),
 	reactionAcceptance: v.optional(mi.nullableEnum([null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'])),
 	replyId: v.nullish(mi.misskeyId()),
@@ -194,11 +194,11 @@ export const paramDef = v.object({
 
 	// anyOf内にバリデーションを書いても最初の一つしかチェックされない
 	// See https://github.com/misskey-dev/misskey/pull/10082
-	text: v.nullish(v.pipe(v.string(), mi.minCodePoints(0), mi.maxCodePoints(MAX_NOTE_TEXT_LENGTH))),
+	text: v.nullish(v.pipe(v.string(), v.minCodePoints(0), v.maxCodePoints(MAX_NOTE_TEXT_LENGTH))),
 	fileIds: v.optional(v.pipe(v.array(mi.misskeyId()), mi.uniqueArray(), v.minLength(0), v.maxLength(16))),
 	poll: v.nullish(v.object({
 		choices: v.pipe(
-			v.array(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(50))),
+			v.array(v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(50))),
 			mi.uniqueArray(),
 			v.minLength(0),
 			v.maxLength(10),

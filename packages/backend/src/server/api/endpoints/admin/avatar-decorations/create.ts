@@ -30,9 +30,9 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	name: v.pipe(v.string(), mi.minCodePoints(1)),
+	name: v.pipe(v.string(), v.minCodePoints(1)),
 	description: v.string(),
-	url: v.pipe(v.string(), mi.minCodePoints(1)),
+	url: v.pipe(v.string(), v.minCodePoints(1)),
 	roleIdsThatCanBeUsedThisDecoration: v.optional(v.array(v.string())),
 	category: v.nullish(v.string()),
 });

@@ -5,7 +5,6 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as v from 'valibot';
-import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { RegistryApiService } from '@/core/RegistryApiService.js';
 
@@ -15,7 +14,7 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	key: v.pipe(v.string(), mi.minCodePoints(1)),
+	key: v.pipe(v.string(), v.minCodePoints(1)),
 	// json-schema 側も型未指定で無検証だったため、意味を変えないよう v.any() を維持
 	value: v.any(),
 	scope: v.optional(v.array(v.pipe(v.string(), v.regex(/^[a-zA-Z0-9_]+$/))), []),

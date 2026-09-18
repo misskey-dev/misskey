@@ -134,7 +134,7 @@ res: v.optional(packedNoteSchema),
 ```ts
 export const paramDef = v.object({
 	noteId: mi.misskeyId(),                                             // 必須 ID
-	text: v.optional(v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(500))),
+	text: v.optional(v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(500))),
 	count: mi.integer({ min: 0, max: 100 }),
 	isPublic: v.optional(v.boolean(), false),                           // default 付き
 	visibility: v.optional(v.picklist(['public', 'home', 'followers', 'specified'])),
@@ -154,12 +154,12 @@ export const paramDef = v.object({
 | 省略時に default | `v.optional(x, d)` |
 | `null` 可 + default | `v.optional(v.nullable(x), d)` — **`v.nullish(x, d)` は不可** (明示的に送られた `null` まで `d` に上書きしてしまう) |
 
-### 文字列長は必ず `mi.minCodePoints` / `mi.maxCodePoints`
+### 文字列長は必ず `v.minCodePoints` / `v.maxCodePoints`
 
 素の `v.minLength` / `v.maxLength` を**文字列に使ってはいけない**。Valibot の `minLength`/`maxLength` は UTF-16 コードユニット数で数えるため、サロゲートペア (絵文字など) で境界値の意味が変わる。**配列の要素数**には `v.minLength` / `v.maxLength` をそのまま使ってよい。
 
 ```ts
-text: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(500)),
+text: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(500)),
 ```
 
 ### ページネーション (sinceId / untilId / limit)
@@ -229,8 +229,8 @@ export const paramDef = v.union([
 | `mi.integer({ min?, max? })` | 整数 |
 | `mi.limit({ max, def? })` | ページネーションの `limit` 単体 |
 | `mi.paginationEntries({ max, default })` / `mi.paginationDateEntries()` | ページネーション断片 |
-| `mi.minCodePoints(n)` / `mi.maxCodePoints(n)` | 文字列長 (コードポイント数) |
 | `mi.uniqueArray()` | 配列要素の一意性 |
+| (`v.minCodePoints(n)` / `v.maxCodePoints(n)`) | 文字列長 (コードポイント数)。Valibot 本体の action |
 | `mi.nullableEnum([null, 'a', 'b'])` | `null` を含む enum |
 | `mi.idString()` / `mi.dateTimeString()` / `mi.urlString()` | res 側の `format` 注釈 (検証なし) |
 | `mi.example(schema, value)` / `mi.format(x)` / `mi.deprecated()` / `mi.openApi({...})` | OpenAPI メタデータ |

@@ -6,7 +6,7 @@
 /**
  * Misskey の paramDef / entity スキーマ (Valibot) の共通基盤。
  *
- * - {@link ./helpers.js}: Misskey 共通の DSL (`misskeyId()` / `limit()` / `maxCodePoints()` など)
+ * - {@link ./helpers.js}: Misskey 共通の DSL (`misskeyId()` / `limit()` / `uniqueArray()` など)
  * - {@link ./metadata.js}: OpenAPI 出力用メタデータ (`format()` / `example()` / `selfRef()` など)
  * - {@link ./registry.js}: entity レジストリ (`defineEntity()` / `composeEntity()`)
  * - {@link ./introspect.js}: Valibot スキーマの内省ユーティリティ (`unwrapPipe()` / `allowsAbsent()` など)
@@ -17,10 +17,7 @@
 
 export {
 	MISSKEY_ID_REGEX,
-	CODE_POINTS_MARKER,
 	UNIQUE_ITEMS_MARKER,
-	countCodePoints,
-	readCodePointsMarker,
 	hasUniqueItemsMarker,
 	misskeyId,
 	integer,
@@ -28,8 +25,6 @@ export {
 	idString,
 	dateTimeString,
 	urlString,
-	minCodePoints,
-	maxCodePoints,
 	uniqueArray,
 	nullableEnum,
 	anyObject,
@@ -38,7 +33,7 @@ export {
 	paginationEntries,
 	paginationDateEntries,
 } from './helpers.js';
-export type { CodePointsMarker, LimitOptions } from './helpers.js';
+export type { LimitOptions } from './helpers.js';
 
 export {
 	OPENAPI_SKIP,

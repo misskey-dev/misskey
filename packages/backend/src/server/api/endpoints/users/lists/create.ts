@@ -5,7 +5,6 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as v from 'valibot';
-import * as mi from '@/misc/schema/index.js';
 import type { UserListsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUserList } from '@/models/UserList.js';
@@ -39,7 +38,7 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	name: v.pipe(v.string(), mi.minCodePoints(1), mi.maxCodePoints(100)),
+	name: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100)),
 });
 
 @Injectable()

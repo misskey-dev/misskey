@@ -431,8 +431,8 @@ importers:
         specifier: 3.0.2
         version: 3.0.2
       valibot:
-        specifier: 1.4.2
-        version: 1.4.2(@typescript/typescript6@6.0.2)
+        specifier: 1.5.0
+        version: 1.5.0(@typescript/typescript6@6.0.2)
       vary:
         specifier: 1.1.2
         version: 1.1.2
@@ -8848,8 +8848,8 @@ packages:
       '@vue/composition-api':
         optional: true
 
-  valibot@1.4.2:
-    resolution: {integrity: sha512-gjdCvJ6d3RyHAneqxMYMW9QMCwYMb3jpOO0IyHZV1bnRHFBHrX3VkIILt5XYR0WhwHiH7Mty8ovuPZ/O3gamrg==}
+  valibot@1.5.0:
+    resolution: {integrity: sha512-nil6AkP2TChWL43Z5uJ6GTxX01CUA+g8LWUM+N/rB9NBbkUMaUsi9PUNzlUPgoKASgmx9f7eGOYpJ04/fSa6FQ==}
     peerDependencies:
       typescript: '>=5'
     peerDependenciesMeta:
@@ -17778,7 +17778,7 @@ snapshots:
       vue: 3.5.42(typescript@6.0.3)
       vue-demi: 0.14.10(vue@3.5.42(typescript@6.0.3))
 
-  valibot@1.4.2(@typescript/typescript6@6.0.2):
+  valibot@1.5.0(@typescript/typescript6@6.0.2):
     optionalDependencies:
       typescript: '@typescript/typescript6@6.0.2'
 

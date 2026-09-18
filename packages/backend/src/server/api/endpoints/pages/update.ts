@@ -56,7 +56,7 @@ export const meta = {
 export const paramDef = v.object({
 	pageId: mi.misskeyId(),
 	title: v.optional(v.string()),
-	name: v.optional(v.pipe(v.string(), v.regex(new RegExp(pageNameSchema.pattern)), mi.minCodePoints(1))),
+	name: v.optional(v.pipe(v.string(), v.regex(new RegExp(pageNameSchema.pattern)), v.minCodePoints(1))),
 	summary: v.optional(v.nullable(v.string())),
 	content: v.optional(v.array(mi.anyRecord())),
 	variables: v.optional(v.array(mi.anyRecord())),

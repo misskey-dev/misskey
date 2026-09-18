@@ -6,7 +6,7 @@
 import * as v from 'valibot';
 import { allowsAbsent, isValibotSchema, unwrapPipe } from './introspect.js';
 import { isSkippedInOpenApi, mergeMetadata } from './metadata.js';
-import { hasUniqueItemsMarker, readCodePointsMarker } from './helpers.js';
+import { hasUniqueItemsMarker } from './helpers.js';
 import { lookupEntityName } from './registry.js';
 import type { AnyValibotSchema } from './introspect.js';
 import type { CollectedMetadata, EntityName } from './metadata.js';
@@ -396,12 +396,6 @@ function applyActions(out: OpenApiSchemaObject, actions: readonly unknown[]): Op
 
 		const a = action as { kind?: unknown, type?: unknown, requirement?: unknown };
 
-		const codePoints = readCodePointsMarker(action);
-		if (codePoints != null) {
-			out[codePoints.bound === 'min' ? 'minLength' : 'maxLength'] = codePoints.requirement;
-			continue;
-		}
-
 		if (hasUniqueItemsMarker(action)) {
 			out.uniqueItems = true;
 			continue;
@@ -436,6 +430,14 @@ function applyActions(out: OpenApiSchemaObject, actions: readonly unknown[]): Op
 				break;
 			case 'max_length':
 				out[isArray ? 'maxItems' : 'maxLength'] = a.requirement;
+				break;
+			// NOTE: JSON Schema の minLength/maxLength はコードポイント数で数えるので、
+			//       文字列長は v.minLength/v.maxLength ではなく v.minCodePoints/v.maxCodePoints が対応する
+			case 'min_code_points':
+				out.minLength = a.requirement;
+				break;
+			case 'max_code_points':
+				out.maxLength = a.requirement;
 				break;
 			case 'length':
 				out[isArray ? 'minItems' : 'minLength'] = a.requirement;
