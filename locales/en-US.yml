@@ -3163,7 +3163,7 @@ _customEmojisManager:
     deleteSelectionRanges: "Delete rows in the selection"
     searchSettings: "Search settings"
     searchSettingCaption: "Set detailed search criteria."
-    searchLimit: ""
+    searchLimit: "Search limit"
     sortOrder: "Sort order"
     registrationLogs: "Registration log"
     registrationLogsCaption: "Logs will be displayed when updating or deleting Emojis. They will disappear after updating or deleting them, moving to a new page, or reloading."
