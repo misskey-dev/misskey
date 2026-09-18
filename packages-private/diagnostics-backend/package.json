@@ -16,7 +16,7 @@
 		"execa": "10.0.1"
 	},
 	"devDependencies": {
-		"@types/node": "26.4.0",
+		"@types/node": "26.5.1",
 		"@types/pg": "8.23.1",
 		"ioredis": "6.0.0",
 		"pg": "8.23.0",
