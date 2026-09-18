@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 					<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
-					<MkContainer :max-height="300" :foldable="true" class="other">
+					<MkContainer :maxHeight="300" :foldable="true" class="other">
 						<template #icon><i class="ti ti-clock"></i></template>
 						<template #header>{{ i18n.ts.recentPosts }}</template>
 						<MkPagination v-slot="{items}" :paginator="otherPostsPaginator">

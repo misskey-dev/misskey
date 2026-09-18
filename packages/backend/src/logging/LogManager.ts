@@ -359,7 +359,7 @@ export class LogManager {
 			processId: processInfo.processId,
 			isPrimary: processInfo.isPrimary,
 			workerId: processInfo.workerId,
-			...(traceContext ?? {}),
+			...traceContext,
 			...(normalizedAttributes ? { attributes: normalizedAttributes } : {}),
 			...(normalizedError ? { error: normalizedError } : {}),
 		} as LogRecord;
@@ -406,7 +406,7 @@ export class LogManager {
 			workerId: processInfo.workerId,
 			...(typeof normalizedRequestBody !== 'undefined' ? { requestBody: normalizedRequestBody } : {}),
 			...(typeof normalizedResponseBody !== 'undefined' ? { responseBody: normalizedResponseBody } : {}),
-			...(resolvedTraceContext ?? {}),
+			...resolvedTraceContext,
 		};
 
 		this.backend.writeAccess?.(record);

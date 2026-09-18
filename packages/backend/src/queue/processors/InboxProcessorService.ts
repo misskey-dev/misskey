@@ -303,7 +303,7 @@ export class InboxProcessorService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	async onApplicationShutdown(signal?: string) {
+	async onApplicationShutdown(signal?: string | undefined) {
 		await this.dispose();
 	}
 }

@@ -224,7 +224,7 @@ export class SnowfallEffect {
 		}
 	}
 
-	private setBuffer(name: string, value?: number[] | undefined) {
+	private setBuffer(name: string, value?: number[]) {
 		const { gl, buffers } = this;
 		const buffer = buffers[name];
 
@@ -253,7 +253,7 @@ export class SnowfallEffect {
 		}
 	}
 
-	private setUniform(name: string, value?: number | number[] | Float32Array<ArrayBufferLike> | undefined) {
+	private setUniform(name: string, value?: number | number[] | Float32Array<ArrayBufferLike>) {
 		const { gl, uniforms } = this;
 		const uniform = uniforms[name];
 		const setter = this.UNIFORM_SETTERS[uniform.type as keyof typeof this.UNIFORM_SETTERS];

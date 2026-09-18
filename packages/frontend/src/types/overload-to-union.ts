@@ -28,4 +28,4 @@ export type OverloadToUnion<T> = FlattenAndDedup<T extends {
 	((...args: A8) => R8) |
 	((...args: A9) => R9) |
 	((...args: A10) => R10)
-) : never>;
+	) : never>;

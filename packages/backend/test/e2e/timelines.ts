@@ -3111,7 +3111,7 @@ describe('Timelines', () => {
 				}, waitForPushToTlOptions);
 			});
 
-			test('閲覧中チャンネルとは別チャンネルのノートは含まれない', async() => {
+			test('閲覧中チャンネルとは別チャンネルのノートは含まれない', async () => {
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				const channel = await createChannel('channel', bob);
@@ -3128,7 +3128,7 @@ describe('Timelines', () => {
 				assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 			});
 
-			test('閲覧中チャンネルのノートにリノートが含まれる', async() => {
+			test('閲覧中チャンネルのノートにリノートが含まれる', async () => {
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				const channel = await createChannel('channel', bob);
@@ -3144,7 +3144,7 @@ describe('Timelines', () => {
 				}, waitForPushToTlOptions);
 			});
 
-			test('閲覧中チャンネルとは別チャンネルからのリノートが含まれる', async() => {
+			test('閲覧中チャンネルとは別チャンネルからのリノートが含まれる', async () => {
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				const channel = await createChannel('channel', bob);
@@ -3278,7 +3278,7 @@ describe('Timelines', () => {
 				}, waitForPushToTlOptions);
 			});
 
-			test('閲覧中チャンネルとは別チャンネルをミュートしているとき、そのチャンネルからのリノートは含まれない', async() => {
+			test('閲覧中チャンネルとは別チャンネルをミュートしているとき、そのチャンネルからのリノートは含まれない', async () => {
 				const [alice, bob] = await Promise.all([signup(), signup()]);
 
 				const channel = await createChannel('channel', bob);

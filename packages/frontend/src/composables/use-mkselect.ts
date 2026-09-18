@@ -18,7 +18,7 @@ export function useMkSelect<
 	TItemsValue = GetMkSelectValueTypesFromDef<UnwrapReadonlyItems<TItems>>,
 	ModelType = TInitialValue extends void
 		? TItemsValue
-		: (TItemsValue | TInitialValue)
+		: (TItemsValue | TInitialValue),
 >(opts: {
 	items: TItemsInput;
 	initialValue?: (TInitialValue | (OptionValue extends TItemsValue ? OptionValue : TInitialValue)) & (

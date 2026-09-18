@@ -28,7 +28,7 @@ export class InstanceEntityService {
 	@bindThis
 	public async pack(
 		instance: MiInstance,
-		me?: { id: MiUser['id']; } | null | undefined,
+		me?: { id: MiUser['id']; } | null,
 	): Promise<Packed<'FederationInstance'>> {
 		const iAmModerator = me ? await this.roleService.isModerator(me as MiUser) : false;
 		const softwareSuspended = this.utilityService.isDeliverSuspendedSoftware(instance);
@@ -66,7 +66,7 @@ export class InstanceEntityService {
 	@bindThis
 	public packMany(
 		instances: MiInstance[],
-		me?: { id: MiUser['id']; } | null | undefined,
+		me?: { id: MiUser['id']; } | null,
 	) {
 		return Promise.all(instances.map(x => this.pack(x, me)));
 	}

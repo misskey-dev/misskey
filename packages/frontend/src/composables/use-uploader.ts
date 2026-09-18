@@ -310,7 +310,7 @@ export function useUploader(options: {
 							image: item.file,
 						}, {
 							ok: (file) => {
-									const newObjectUrl = createItemObjectUrl(item, file);
+								const newObjectUrl = createItemObjectUrl(item, file);
 								items.value.splice(items.value.indexOf(item), 1, {
 									...item,
 									file: markRaw(file),

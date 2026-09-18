@@ -19,7 +19,7 @@ import fs from 'node:fs';
 import JSON5 from 'json5';
 import { RolldownMagicString } from 'rolldown';
 import type { TransformResult } from 'rolldown';
-import path from 'node:path'
+import path from 'node:path';
 import { hash, toBase62 } from '../vite.config';
 import { minimatch } from 'minimatch';
 import {
@@ -76,17 +76,17 @@ function initLogger(options: Options) {
 	logger.info = (msg, options) => {
 		msg = `[create-search-index] ${msg}`;
 		viteLogger.info(msg, options);
-	}
+	};
 
 	logger.warn = (msg, options) => {
 		msg = `[create-search-index] ${msg}`;
 		viteLogger.warn(msg, options);
-	}
+	};
 
 	logger.error = (msg, options) => {
 		msg = `[create-search-index] ${msg}`;
 		viteLogger.error(msg, options);
-	}
+	};
 }
 
 //region AST Utility
@@ -102,7 +102,7 @@ type WalkVueNode = RootNode | TemplateChildNode | SimpleExpressionNode;
 function walkVueElements<C extends {} | null>(nodes: WalkVueNode[], context: C, callback: (node: ElementNode, context: C) => C | undefined | void | false): void {
 	for (const node of nodes) {
 		let currentContext = context;
-		if (node.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error("Unexpected COMPOUND_EXPRESSION");
+		if (node.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error('Unexpected COMPOUND_EXPRESSION');
 		if (node.type === NodeTypes.ELEMENT) {
 			const result = callback(node, context);
 			if (result === false) return;
@@ -138,7 +138,7 @@ function findEndOfStartTagAttributes(node: ElementNode): number {
 		const nodeStart = node.loc.start.offset;
 		const firstChildStart = node.children[0].loc.start.offset;
 		const endOfStartTag = node.loc.source.lastIndexOf('>', firstChildStart - nodeStart);
-		if (endOfStartTag === -1) throw new Error("Bug: Failed to find end of start tag");
+		if (endOfStartTag === -1) throw new Error('Bug: Failed to find end of start tag');
 		return nodeStart + endOfStartTag;
 	} else {
 		// 子要素がない場合、自身の終了位置から逆算
@@ -152,7 +152,7 @@ function findEndOfStartTagAttributes(node: ElementNode): number {
  * TypeScriptコード生成
  */
 function generateJavaScriptCode(resolvedRootMarkers: SearchIndexItem[]): string {
-	return `import { i18n } from '@/i18n.js';\n`
+	return 'import { i18n } from \'@/i18n.js\';\n'
 		+ `export const searchIndexes = ${customStringify(resolvedRootMarkers)};\n`;
 }
 
@@ -189,12 +189,12 @@ function extractElementTextChecked(node: ElementNode, processingNodeName: string
 }
 
 function extractElementText2Inner(node: TemplateChildNode, processingNodeName: string, id: string): string | null {
-	if (node.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error("Unexpected COMPOUND_EXPRESSION");
+	if (node.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error('Unexpected COMPOUND_EXPRESSION');
 
 	switch (node.type) {
 		case NodeTypes.INTERPOLATION: {
 			const expr = node.content;
-			if (expr.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error(`Unexpected COMPOUND_EXPRESSION`);
+			if (expr.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error('Unexpected COMPOUND_EXPRESSION');
 			const exprResult = evalExpression(expr.content);
 			if (typeof exprResult !== 'string') {
 				logger.error(`Result of interpolation node is not string at line ${id}:${node.loc.start.line}`);
@@ -338,7 +338,7 @@ function extractUsageInfoFromTemplateAst(
 
 		// マーカーID取得
 		const markerIdProp = node.props?.find(p => p.name === 'markerId');
-		const markerId = markerIdProp?.type == NodeTypes.ATTRIBUTE ? markerIdProp.value?.content : null;
+		const markerId = markerIdProp?.type === NodeTypes.ATTRIBUTE ? markerIdProp.value?.content : null;
 
 		// SearchMarkerにマーカーIDがない場合はエラー
 		if (markerId == null) {
@@ -418,22 +418,22 @@ const propertyAccessProxySymbol = Symbol('propertyAccessProxySymbol');
 type AccessProxy = {
 	[propertyAccessProxySymbol]: string[],
 	[k: string]: AccessProxy,
-}
+};
 
 const propertyAccessProxyHandler: ProxyHandler<AccessProxy> = {
 	get(target: AccessProxy, p: string | symbol): any {
 		if (p in target) {
 			return (target as any)[p];
 		}
-		if (p == "toJSON" || p == Symbol.toPrimitive) {
+		if (p === 'toJSON' || p === Symbol.toPrimitive) {
 			return propertyAccessProxyToJSON;
 		}
-		if (typeof p == 'string') {
+		if (typeof p === 'string') {
 			return target[p] = propertyAccessProxy([...target[propertyAccessProxySymbol], p]);
 		}
 		return undefined;
-	}
-}
+	},
+};
 
 function propertyAccessProxyToJSON(this: AccessProxy, hint: string) {
 	const expression = this[propertyAccessProxySymbol].reduce((prev, current) => {
@@ -547,7 +547,7 @@ export class MarkerIdAssigner {
 			} else {
 				// ファイルパスと行番号からハッシュ値を生成
 				// この際実行環境で差が出ないようにファイルパスを正規化
-				const idKey = id.replace(/\\/g, '/').split('packages/frontend/')[1]
+				const idKey = id.replace(/\\/g, '/').split('packages/frontend/')[1];
 				const generatedMarkerId = toBase62(hash(`${idKey}:${node.loc.start.line}`));
 
 				// markerId attribute を追加
@@ -564,7 +564,7 @@ export class MarkerIdAssigner {
 			});
 
 			return nodeMarkerId;
-		})
+		});
 
 		// 2段階目: :children 属性の追加
 		// 最初に親マーカーごとに子マーカーIDを集約する処理を追加
@@ -604,13 +604,13 @@ export class MarkerIdAssigner {
 					}
 				}
 
-				const expression = JSON.stringify(newValue).replaceAll(/"/g, "'");
+				const expression = JSON.stringify(newValue).replaceAll(/"/g, '\'');
 				s.overwrite(childrenProp.exp!.loc.start.offset, childrenProp.exp!.loc.end.offset, expression);
 				logger.info(`Added ${childIds.length} child markerIds to existing :children in ${id}`);
 			} else {
 				// :children 属性がまだない場合、新規作成
 				const endOfParentStartTag = findEndOfStartTagAttributes(parentNode);
-				s.appendRight(endOfParentStartTag, ` :children="${JSON5.stringify(childIds).replace(/"/g, "'")}"`);
+				s.appendRight(endOfParentStartTag, ` :children="${JSON5.stringify(childIds).replace(/"/g, '\'')}"`);
 				logger.info(`Created new :children attribute with ${childIds.length} markerIds in ${id}`);
 			}
 		}
@@ -653,7 +653,7 @@ export default function pluginCreateSearchIndex(options: Options): PluginOption 
 	return [
 		createSearchIndex(options, assigner),
 		pluginCreateSearchIndexVirtualModule(options, assigner),
-	]
+	];
 }
 
 function createSearchIndex(options: Options, assigner: MarkerIdAssigner): Plugin {
@@ -662,7 +662,7 @@ function createSearchIndex(options: Options, assigner: MarkerIdAssigner): Plugin
 
 	function isTargetFile(id: string): boolean {
 		const relativePath = path.posix.relative(root, id);
-		return options.targetFilePaths.some(pat => minimatch(relativePath, pat))
+		return options.targetFilePaths.some(pat => minimatch(relativePath, pat));
 	}
 
 	return {
@@ -695,7 +695,7 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 
 	function isTargetFile(id: string): boolean {
 		const relativePath = path.posix.relative(root, id);
-		return options.targetFilePaths.some(pat => minimatch(relativePath, pat))
+		return options.targetFilePaths.some(pat => minimatch(relativePath, pat));
 	}
 
 	function parseSearchIndexFileId(id: string): string | null {
@@ -715,7 +715,7 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 		enforce: 'post',
 
 		async resolveId(id) {
-			if (id == allSearchIndexFile) {
+			if (id === allSearchIndexFile) {
 				return '\0' + allSearchIndexFile;
 			}
 
@@ -727,7 +727,7 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 		},
 
 		async load(id) {
-			if (id == '\0' + allSearchIndexFile) {
+			if (id === '\0' + allSearchIndexFile) {
 				const files = options.targetFilePaths.map((filePathPattern) => fs.globSync(filePathPattern)).flat();
 				let generatedFile = '';
 				let arrayElements = '';
@@ -759,6 +759,6 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 				return [...modules, ...updateMods];
 			}
 			return modules;
-		}
+		},
 	};
 }

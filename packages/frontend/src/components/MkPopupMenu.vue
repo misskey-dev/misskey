@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:items="items"
 		:align="align"
 		:width="width"
-		:max-height="maxHeight"
+		:maxHeight="maxHeight"
 		:asDrawer="type === 'drawer'"
 		:returnFocusTo="returnFocusTo"
 		:debugDisablePredictionCone="debugDisablePredictionCone"

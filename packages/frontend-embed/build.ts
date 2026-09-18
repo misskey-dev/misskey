@@ -21,15 +21,14 @@ async function viteBuild() {
 	});
 }
 
-
 async function buildAllLocale() {
-	const logger = createLogger()
+	const logger = createLogger();
 	const inliner = await LocaleInliner.create({
 		outputDir,
 		logger,
 		scriptsDir: 'scripts',
 		i18nFile: 'src/i18n.ts',
-	})
+	});
 
 	await inliner.loadFiles();
 
