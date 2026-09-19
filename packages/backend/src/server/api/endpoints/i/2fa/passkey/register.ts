@@ -10,7 +10,7 @@ import type { UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { ApiError } from '@/server/api/error.js';
-import { UserAuthService } from '@/core/UserAuthService.js';
+import { TotpService } from '@/core/TotpService.js';
 
 export const meta = {
 	requireCredential: true,
@@ -59,7 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userProfilesRepository: UserProfilesRepository,
 
 		private webAuthnService: WebAuthnService,
-		private userAuthService: UserAuthService,
+		private totpService: TotpService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const token = ps.token;
@@ -80,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 
 				try {
-					await this.userAuthService.twoFactorAuthenticate(profile, token);
+					await this.totpService.twoFactorAuthenticate(profile, token);
 				} catch (_) {
 					throw new Error('authentication failed');
 				}
