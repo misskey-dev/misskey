@@ -1471,7 +1471,20 @@ _chat:
   newline: "Новая строка"
   muteThisRoom: "Заглушить комнату"
   deleteRoom: "Удалить комнату"
+  chatNotAvailableForThisAccountOrServer: "Личные сообщения выключены для этого аккаунта или на этом сервере."
+  chatIsReadOnlyForThisAccountOrServer: "На этом сервере или для этого пользователя личные сообщения доступны только в режиме чтения. Вы не можете отправлять новые сообщения, создавать группы или присоединяться к ним."
+  chatNotAvailableInOtherAccount: "Функция чата выключена для другого пользователя."
   cannotChatWithTheUser: "Невозможно начать чат с данным пользователем"
+  cannotChatWithTheUser_description: "Чат недоступен либо пользователь не включил функцию чата."
+  youAreNotAMemberOfThisRoomButInvited: "Вы не являетесь участником этого чата, но вас в него пригласили. Пожалуйста, примите приглашение."
+  doYouAcceptInvitation: "Принять приглашение?"
+  chatWithThisUser: "Открыть личные сообщения"
+  thisUserAllowsChatOnlyFromFollowers: "Пользователь принимает сообщения только от подписчиков."
+  thisUserAllowsChatOnlyFromFollowing: "Пользователь принимает сообщения только от людей на которых они подписаны."
+  thisUserAllowsChatOnlyFromMutualFollowing: "Пользователь принимает сообщения только от взаимных подписчиков."
+  thisUserNotAllowedChatAnyone: "Пользователь не принимает личные сообщения."
+  chatAllowedUsers: "Кому разрешить присылать личные сообщения"
+  chatAllowedUsers_note: "Вы можете общаться с теми кому вы уже отправили хоть одно сообщение вне зависимости от этой настройки."
   _chatAllowedUsers:
     everyone: "Всем"
     followers: "Только подписчикам"
@@ -1486,6 +1499,8 @@ _emojiPalette:
 _settings:
   api: "API"
   webhook: "Вебхук"
+  serviceConnection: "Интеграция сервисов"
+  serviceConnectionBanner: "Настраивайте и управляйте токенами и вебхуками для интеграции с внешними приложениями или сервисами."
   preferencesBanner: "Вы можете настроить общее поведение клиента по вашим предпочтениям"
   timelineAndNote: "Лента и заметки"
   _chat:
@@ -1883,6 +1898,7 @@ _role:
     descriptionOfRateLimitFactor: "Меньшее значение — слабые ограничения, большее — сильные"
     canHideAds: "Может скрыть рекламу"
     canImportFollowing: "Можно импортировать подписчиков"
+    chatAvailability: "Чаты"
   _condition:
     isLocal: "Местный"
     isRemote: "Неместный"
@@ -2088,6 +2104,7 @@ _sfx:
   noteMy: "Собственные заметки"
   notification: "Уведомления"
   reaction: "При выборе реакции"
+  chatMessage: "Открыть личные сообщения"
 _soundSettings:
   driveFile: "Использовать аудиофайл с Диска."
   driveFileWarn: "Выбрать аудиофайл с Диска."
@@ -2174,6 +2191,7 @@ _permissions:
   "write:admin:emoji": "Управлять эмодзи"
   "read:admin:emoji": "Просматривать эмодзи"
   "write:chat": "Писать и удалять сообщения"
+  "read:chat": "Читать чаты"
 _auth:
   shareAccessTitle: "Разрешения для приложений"
   shareAccess: "Дать доступ для «{name}» к вашей учётной записи?"
@@ -2228,6 +2246,7 @@ _widgets:
     chooseList: "Выберите список"
   clicker: "Счётчик щелчков"
   birthdayFollowings: "Пользователи, у которых сегодня день рождения"
+  chat: "Открыть личные сообщения"
 _widgetOptions:
   height: "Высота"
   _button:
@@ -2420,6 +2439,7 @@ _notification:
   yourFollowRequestAccepted: "Ваш запрос на подписку одобрен."
   pollEnded: "Подведены окончательные итоги опроса"
   unreadAntennaNote: "Антенна {name}"
+  chatRoomInvitationReceived: "Вас пригласили в чат"
   emptyPushNotificationMessage: "Обновлены push-уведомления"
   achievementEarned: "Получено достижение"
   checkNotificationBehavior: "Проверить внешний вид уведомления"
@@ -2436,6 +2456,7 @@ _notification:
     pollEnded: "Окончания опросов"
     receiveFollowRequest: "Получен запрос на подписку"
     followRequestAccepted: "Запрос на подписку одобрен"
+    chatRoomInvitationReceived: "Пригласили в чат"
     achievementEarned: "Получение достижений"
     login: "Войти"
     app: "Уведомления из приложений"
@@ -2471,6 +2492,7 @@ _deck:
     mentions: "Упоминания"
     direct: "Личное"
     roleTimeline: "История Ролей"
+    chat: "Открыть личные сообщения"
 _dialog:
   charactersExceeded: "Превышено максимальное количество символов! У вас {current} / из   {max}"
   charactersBelow: "Это ниже минимального количества символов! У вас {current} / из {min}"
@@ -2520,6 +2542,7 @@ _moderationLogTypes:
   createSystemWebhook: "Создать Системный Вебхук"
   updateSystemWebhook: "Обновить Системый Вебхук"
   deleteSystemWebhook: "Удалить Системный Вебхук"
+  deleteChatRoom: "Удалить чат"
 _fileViewer:
   url: "Ссылка"
   attachedNotes: "Закреплённые заметки"
