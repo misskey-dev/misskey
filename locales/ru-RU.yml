@@ -1509,10 +1509,18 @@ _settings:
 _accountSettings:
   notesHavePassedSpecifiedPeriod: "Заметки после указанной даты"
   notesOlderThanSpecifiedDateAndTime: "Заметки после указанной даты"
+_abuseUserReport:
+  resolve: "Решить"
+  accept: "Принять"
+  reject: "Отказать"
+  resolveTutorial: "Если жалоба выглядит достоверной, выберите \"Принять\" что пометить её как решённую.\nЕсли жалоба выглядит недостоверной, нажмите \"Отказать\" что бы проигнорировать её."
 _delivery:
-  stop: "Заморожено"
+  status: "Статус отправки"
+  stop: "Остановить"
+  resume: "Продолжить отправку"
   _type:
     none: "Публикация"
+    manuallySuspended: "Остановлено вручную"
 _bubbleGame:
   _score:
     score: "Счёт"
