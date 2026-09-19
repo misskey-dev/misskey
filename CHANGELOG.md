@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Feat: デッキにクリップのカラムを追加できるように
 
 ### Client
 - Enhance: Scratchpadに導入していた非同期エラーへの対応をPlayやウィジェットにも実装
