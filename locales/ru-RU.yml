@@ -1247,6 +1247,7 @@ repositoryUrlOrTarballRequired: "Если репозиторий закрыт, �
 feedback: "Обратная связь"
 feedbackUrl: "Ссылка для обратной связи"
 impressum: "О владельце"
+impressumDescription: "В некоторых странах, например в Германии, раскрытие информации о владельце (Impressum) необходимо законом для коммерческих сайтов."
 privacyPolicy: "Политика Конфиденциальности"
 privacyPolicyUrl: "Ссылка на Политику Конфиденциальности"
 tosAndPrivacyPolicy: "Условия использования и политика конфиденциальности"
@@ -1341,7 +1342,7 @@ preferences: "Основное"
 accessibility: "Специальные возможности"
 preferencesProfile: "Настройки профиля"
 copyPreferenceId: "Копировать ID настройки"
-resetToDefaultValue: "Сбросить настройки до стандартных"
+resetToDefaultValue: "Восстановить значения по умолчанию"
 overrideByAccount: "Переопределить этим аккаунтом"
 untitled: "Без названия"
 noName: "Имя не указано"
@@ -1597,6 +1598,9 @@ _initialTutorial:
       localOnly: "Заметки с этим флагом не будут передаваться присоединённым серверам. Пользователи на других серверах не смогут увидеть её вне зависимости от настроек выше."
     _cw:
       title: "Спойлер"
+  _done:
+    title: "Вы прошли туториал! 🎉"
+    description: "Вещи показанные тут это лишь малая часть. Для более детального понимания Misskey загляните в {link}."
 _timelineDescription:
   home: "В персональной ленте располагаются заметки тех, на которых вы подписаны."
   local: "Местная лента показывает заметки всех пользователей этого экземпляра."
@@ -1849,6 +1853,12 @@ _achievements:
       title: "Brain Diver"
       description: "Опубликована ссылка на песню «Brain Diver»"
       flavor: "Мисски-Мисски Ла-Ту-Ма"
+    _smashTestNotificationButton:
+      title: "Избыточное тестирование"
+      description: "Вызовите тестовое уведомление много раз за очень короткий период времени"
+    _tutorialCompleted:
+      title: "Диплом начального курса Misskey"
+      description: "Закончите туториал"
     _bubbleGameExplodingHead:
       title: "🤯"
       description: "Самый большой объект в Bubble game"
