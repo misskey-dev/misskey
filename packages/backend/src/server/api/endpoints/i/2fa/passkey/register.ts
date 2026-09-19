@@ -10,7 +10,7 @@ import type { UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { ApiError } from '@/server/api/error.js';
-import { UserAuthService } from '@/core/UserAuthService.js';
+import { TotpService } from '@/core/TotpService.js';
 
 export const meta = {
 	requireCredential: true,
@@ -28,12 +28,6 @@ export const meta = {
 			message: 'Incorrect password.',
 			code: 'INCORRECT_PASSWORD',
 			id: '38769596-efe2-4faf-9bec-abbb3f2cd9ba',
-		},
-
-		twoFactorNotEnabled: {
-			message: '2fa not enabled.',
-			code: 'TWO_FACTOR_NOT_ENABLED',
-			id: 'bf32b864-449b-47b8-974e-f9a5468546f1',
 		},
 	},
 
@@ -59,7 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userProfilesRepository: UserProfilesRepository,
 
 		private webAuthnService: WebAuthnService,
-		private userAuthService: UserAuthService,
+		private totpService: TotpService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const token = ps.token;
@@ -80,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 
 				try {
-					await this.userAuthService.twoFactorAuthenticate(profile, token);
+					await this.totpService.twoFactorAuthenticate(profile, token);
 				} catch (_) {
 					throw new Error('authentication failed');
 				}
@@ -89,10 +83,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const passwordMatched = await bcrypt.compare(ps.password, profile.password ?? '');
 			if (!passwordMatched) {
 				throw new ApiError(meta.errors.incorrectPassword);
-			}
-
-			if (!profile.twoFactorEnabled) {
-				throw new ApiError(meta.errors.twoFactorNotEnabled);
 			}
 
 			return await this.webAuthnService.initiateRegistration(

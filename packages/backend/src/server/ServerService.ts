@@ -25,6 +25,7 @@ import { envOption } from '@/env.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
+import { AuthServerService } from './auth/AuthServerService.js';
 import { StreamingApiServerService } from './api/StreamingApiServerService.js';
 import { WellKnownServerService } from './WellKnownServerService.js';
 import { FileServerService } from './FileServerService.js';
@@ -59,6 +60,7 @@ export class ServerService implements OnApplicationShutdown {
 
 		private userEntityService: UserEntityService,
 		private apiServerService: ApiServerService,
+		private authServerService: AuthServerService,
 		private openApiServerService: OpenApiServerService,
 		private streamingApiServerService: StreamingApiServerService,
 		private activityPubServerService: ActivityPubServerService,
@@ -152,6 +154,7 @@ export class ServerService implements OnApplicationShutdown {
 			});
 		}
 
+		fastify.register(this.authServerService.createServer, { prefix: '/auth' });
 		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
 		fastify.register(this.openApiServerService.createServer);
 		fastify.register(this.fileServerService.createServer);

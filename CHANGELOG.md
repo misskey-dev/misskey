@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Enhance: パスキーの設定にワンタイムパスワードの設定が必要なくなりました（どちらか片方のみを設定することができます）
 
 ### Client
 - Enhance: Scratchpadに導入していた非同期エラーへの対応をPlayやウィジェットにも実装

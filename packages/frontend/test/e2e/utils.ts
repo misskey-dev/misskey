@@ -23,6 +23,7 @@ export {
 	locateMkTextarea,
 	postNote,
 	waitApiResponse,
+	waitSigninFinished,
 } from './shared.js';
 
 export const BASE_URL = 'http://localhost:61812';

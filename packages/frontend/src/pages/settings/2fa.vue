@@ -25,14 +25,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<div v-if="$i.twoFactorEnabled" class="_gaps_s">
 						<div>{{ i18n.ts._2fa.alreadyRegistered }}</div>
-						<template v-if="$i.securityKeysList!.length > 0">
+						<div class="_buttons">
 							<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
-							<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
-						</template>
-						<MkButton v-else danger @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
+							<MkButton danger @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
+						</div>
 					</div>
 
-					<div v-else-if="!$i.twoFactorEnabled" class="_gaps_s">
+					<div v-else class="_gaps_s">
 						<MkButton primary gradate @click="registerTOTP">{{ i18n.ts._2fa.registerTOTP }}</MkButton>
 						<MkLink url="https://misskey-hub.net/docs/for-users/stepped-guides/how-to-enable-2fa/" target="_blank"><i class="ti ti-help-circle"></i> {{ i18n.ts.learnMore }}</MkLink>
 					</div>
@@ -43,6 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkFolder>
 					<template #icon><i class="ti ti-key"></i></template>
 					<template #label><SearchLabel>{{ i18n.ts.securityKeyAndPasskey }}</SearchLabel></template>
+					<template #suffix><i v-if="$i.securityKeysList!.length > 0" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 					<div class="_gaps_s">
 						<MkInfo>
 							{{ i18n.ts._2fa.securityKeyInfo }}
@@ -50,10 +50,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<MkInfo v-if="!browserSupportsWebAuthn()" warn>
 							{{ i18n.ts._2fa.securityKeyNotSupported }}
-						</MkInfo>
-
-						<MkInfo v-else-if="browserSupportsWebAuthn() && !$i.twoFactorEnabled" warn>
-							{{ i18n.ts._2fa.registerTOTPBeforeKey }}
 						</MkInfo>
 
 						<template v-else>
@@ -72,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</SearchMarker>
 
 			<SearchMarker :keywords="['password', 'less', 'key', 'passkey', 'login', 'signin']">
-				<MkSwitch :disabled="!$i.twoFactorEnabled || $i.securityKeysList!.length === 0" :modelValue="usePasswordLessLogin" @update:modelValue="v => updatePasswordLessLogin(v)">
+				<MkSwitch :disabled="$i.securityKeysList!.length === 0" :modelValue="usePasswordLessLogin" @update:modelValue="v => updatePasswordLessLogin(v)">
 					<template #label><SearchLabel>{{ i18n.ts.passwordLessLogin }}</SearchLabel></template>
 					<template #caption><SearchText>{{ i18n.ts.passwordLessLoginDescription }}</SearchText></template>
 				</MkSwitch>
@@ -113,7 +109,7 @@ async function registerTOTP(): Promise<void> {
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
 
-	const twoFactorData = await os.apiWithDialog('i/2fa/register', {
+	const twoFactorData = await os.apiWithDialog('i/2fa/totp/register', {
 		password: auth.result.password,
 		token: auth.result.token,
 	});
@@ -129,7 +125,7 @@ async function unregisterTOTP(): Promise<void> {
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
 
-	os.apiWithDialog('i/2fa/unregister', {
+	os.apiWithDialog('i/2fa/totp/remove', {
 		password: auth.result.password,
 		token: auth.result.token,
 	}).then(res => {
@@ -168,7 +164,7 @@ async function unregisterKey(key: NonNullable<Misskey.entities.MeDetailedOnly['s
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
 
-	await os.apiWithDialog('i/2fa/remove-key', {
+	await os.apiWithDialog('i/2fa/passkey/remove', {
 		password: auth.result.password,
 		token: auth.result.token,
 		credentialId: key.id,
@@ -186,7 +182,7 @@ async function renameKey(key: NonNullable<Misskey.entities.MeDetailedOnly['secur
 	});
 	if (name.canceled) return;
 
-	await os.apiWithDialog('i/2fa/update-key', {
+	await os.apiWithDialog('i/2fa/passkey/update', {
 		name: name.result,
 		credentialId: key.id,
 	});
@@ -196,7 +192,7 @@ async function addSecurityKey() {
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
 
-	const registrationOptions = await os.apiWithDialog('i/2fa/register-key', {
+	const registrationOptions = await os.apiWithDialog('i/2fa/passkey/register', {
 		password: auth.result.password,
 		token: auth.result.token,
 	});
@@ -221,7 +217,7 @@ async function addSecurityKey() {
 	const auth2 = await os.authenticateDialog();
 	if (auth2.canceled) return;
 
-	await os.apiWithDialog('i/2fa/key-done', {
+	await os.apiWithDialog('i/2fa/passkey/done', {
 		password: auth2.result.password,
 		token: auth2.result.token,
 		name: name.result,
@@ -230,7 +226,7 @@ async function addSecurityKey() {
 }
 
 async function updatePasswordLessLogin(value: boolean) {
-	await os.apiWithDialog('i/2fa/password-less', {
+	await os.apiWithDialog('i/2fa/passkey/password-less', {
 		value,
 	});
 }
