@@ -97,15 +97,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				query.andWhere('user.host = :hostname', { hostname: ps.hostname.toLowerCase() });
 			}
 
+			// offset ページネーションでは並び順が確定的でないとページ間で重複・欠落が起きるため、
+			// 同値の場合の順序を user.id で確定させる
 			switch (ps.sort) {
-				case '+follower': query.orderBy('user.followersCount', 'DESC'); break;
-				case '-follower': query.orderBy('user.followersCount', 'ASC'); break;
+				case '+follower': query.orderBy('user.followersCount', 'DESC').addOrderBy('user.id', 'ASC'); break;
+				case '-follower': query.orderBy('user.followersCount', 'ASC').addOrderBy('user.id', 'ASC'); break;
 				case '+createdAt': query.orderBy('user.id', 'DESC'); break;
 				case '-createdAt': query.orderBy('user.id', 'ASC'); break;
-				case '+updatedAt': query.orderBy('user.updatedAt', 'DESC', 'NULLS LAST'); break;
-				case '-updatedAt': query.orderBy('user.updatedAt', 'ASC', 'NULLS FIRST'); break;
-				case '+lastActiveDate': query.orderBy('user.lastActiveDate', 'DESC', 'NULLS LAST'); break;
-				case '-lastActiveDate': query.orderBy('user.lastActiveDate', 'ASC', 'NULLS FIRST'); break;
+				case '+updatedAt': query.orderBy('user.updatedAt', 'DESC', 'NULLS LAST').addOrderBy('user.id', 'ASC'); break;
+				case '-updatedAt': query.orderBy('user.updatedAt', 'ASC', 'NULLS FIRST').addOrderBy('user.id', 'ASC'); break;
+				case '+lastActiveDate': query.orderBy('user.lastActiveDate', 'DESC', 'NULLS LAST').addOrderBy('user.id', 'ASC'); break;
+				case '-lastActiveDate': query.orderBy('user.lastActiveDate', 'ASC', 'NULLS FIRST').addOrderBy('user.id', 'ASC'); break;
 				default: query.orderBy('user.id', 'ASC'); break;
 			}
 
