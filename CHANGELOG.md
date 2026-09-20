@@ -5,6 +5,7 @@
 
 ### Client
 - Enhance: Scratchpadに導入していた非同期エラーへの対応をPlayやウィジェットにも実装
+- Fix: MFMでカスタム絵文字が正しく描画されないことがある問題を修正
 
 ### Server
 - Fix: キャッシュされていないリモートファイルへのRangeリクエストで、`Content-Length`が正しく設定されず、動画再生が始まらない問題を修正
