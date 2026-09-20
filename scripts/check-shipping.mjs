@@ -21,12 +21,11 @@
  */
 
 import { spawnSync } from 'node:child_process';
-import { statSync } from 'node:fs';
-import { join } from 'node:path';
+import { readFileSync, statSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { DEFAULT_INTEGRATION_REFS, findClosestMergeBase, gitLines, gitMergeBase, gitPaths } from './lib/git.mjs';
-
-const PNPM_COMMAND = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
 
 const LINT_TARGETS = [
 	{ root: 'packages/backend', pattern: /^packages\/backend\/(src|test-federation)\/.*\.ts$/ },
@@ -45,6 +44,47 @@ const LINT_TARGETS = [
 ];
 
 class OperationalError extends Error {}
+
+/**
+ * pnpm packageのbin entryから、Node.jsで直接実行するコマンドを組み立てる。
+ *
+ * @param {string} packageJsonPath
+ * @param {{ bin?: string | Record<string, string> }} packageJson
+ * @param {string} nodeExecutable
+ * @returns {{ command: string, args: string[] }}
+ */
+export function createPnpmCommand(packageJsonPath, packageJson, nodeExecutable = process.execPath) {
+	const bin = typeof packageJson.bin === 'string' ? packageJson.bin : packageJson.bin?.pnpm;
+	if (typeof bin !== 'string' || bin === '') {
+		throw new OperationalError('pnpm package に実行可能な bin entry がない');
+	}
+	return {
+		command: nodeExecutable,
+		args: [resolve(dirname(packageJsonPath), bin)],
+	};
+}
+
+/**
+ * リポジトリにinstallされたpnpm packageのCLIを解決する。
+ *
+ * @param {string} repoRoot
+ * @returns {{ command: string, args: string[] }}
+ */
+function resolvePnpmCommand(repoRoot) {
+	const packageJsonPath = join(repoRoot, 'node_modules', 'pnpm', 'package.json');
+	try {
+		const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+		const command = createPnpmCommand(packageJsonPath, packageJson);
+		if (!isRegularFile(command.args[0])) {
+			throw new OperationalError(`pnpm CLIが見つからない: ${command.args[0]}`);
+		}
+		return command;
+	} catch (error) {
+		if (error instanceof OperationalError) throw error;
+		const detail = error instanceof Error ? ` — ${error.message}` : '';
+		throw new OperationalError(`pnpm packageを読み込めない。pnpm installを実行すること${detail}`);
+	}
+}
 
 /**
  * 明示 ref または最も近い統合先から merge-base を選ぶ。
@@ -136,6 +176,7 @@ function normalizeStatus(status) {
 function runChangedFileLint(changedFiles, repoRoot) {
 	let ran = false;
 	/** @type {0 | 1 | 2} */ let status = 0;
+	/** @type {{ command: string, args: string[] } | undefined} */ let pnpmCommand;
 
 	for (const target of LINT_TARGETS) {
 		try {
@@ -146,7 +187,8 @@ function runChangedFileLint(changedFiles, repoRoot) {
 
 			ran = true;
 			console.log(`Lint: ${target.root} (${files.length} files)`);
-			const current = normalizeStatus(runCommand(PNPM_COMMAND, ['exec', 'eslint', '--quiet', '--', ...files], join(repoRoot, target.root)));
+			pnpmCommand ??= resolvePnpmCommand(repoRoot);
+			const current = normalizeStatus(runCommand(pnpmCommand.command, [...pnpmCommand.args, 'exec', 'eslint', '--quiet', '--', ...files], join(repoRoot, target.root)));
 			if (current > status) status = current;
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
@@ -258,4 +300,6 @@ function main() {
 	}
 }
 
-process.exitCode = main();
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+	process.exitCode = main();
+}
