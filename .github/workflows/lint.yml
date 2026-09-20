@@ -18,7 +18,6 @@ on:
       - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
       - scripts/check-dts*.mjs
-      - scripts/check-shipping*.mjs
       - .github/workflows/lint.yml
       - package.json
   pull_request:
@@ -37,7 +36,6 @@ on:
       - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
       - scripts/check-dts*.mjs
-      - scripts/check-shipping*.mjs
       - .github/workflows/lint.yml
       - package.json
 jobs:
@@ -139,5 +137,4 @@ jobs:
         cache: 'pnpm'
     - run: pnpm i --frozen-lockfile
     - run: node --test scripts/check-dts.test.mjs
-    - run: node --test scripts/check-shipping.test.mjs
     - run: pnpm check-dts

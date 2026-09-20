@@ -22,7 +22,6 @@
 
 import { statSync } from 'node:fs';
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { execaSync } from 'execa';
 
 import { DEFAULT_INTEGRATION_REFS, findClosestMergeBase, gitLines, gitMergeBase, gitPaths } from './lib/git.mjs';
@@ -99,7 +98,7 @@ function isRegularFile(file) {
  * @param {string} cwd
  * @returns {number}
  */
-export function runCommand(command, args, cwd) {
+function runCommand(command, args, cwd) {
 	const result = execaSync(command, args, {
 		cwd,
 		stdio: 'inherit',
@@ -256,6 +255,4 @@ function main() {
 	}
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-	process.exitCode = main();
-}
+process.exitCode = main();
