@@ -213,9 +213,11 @@ async function edit(name: string) {
 }
 
 function mute() {
+	// 確認ダイアログを開いている間に props が変わっても、ダイアログに出したものと同じ絵文字を対象にする
+	const targetEmojiCode = emojiCodeToMute.value;
 	const titleEmojiName = isLocal.value
 		? `:${customEmojiName.value}:`
-		: emojiCodeToMute.value;
+		: targetEmojiCode;
 	os.confirm({
 		type: 'question',
 		title: i18n.tsx.muteX({ x: titleEmojiName }),
@@ -223,14 +225,15 @@ function mute() {
 		if (canceled) {
 			return;
 		}
-		muteEmoji(emojiCodeToMute.value);
+		muteEmoji(targetEmojiCode);
 	});
 }
 
 function unmute() {
+	const targetEmojiCode = emojiCodeToMute.value;
 	const titleEmojiName = isLocal.value
 		? `:${customEmojiName.value}:`
-		: emojiCodeToMute.value;
+		: targetEmojiCode;
 	os.confirm({
 		type: 'question',
 		title: i18n.tsx.unmuteX({ x: titleEmojiName }),
@@ -238,7 +241,7 @@ function unmute() {
 		if (canceled) {
 			return;
 		}
-		unmuteEmoji(emojiCodeToMute.value);
+		unmuteEmoji(targetEmojiCode);
 	});
 }
 

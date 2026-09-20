@@ -100,6 +100,17 @@ export class UserPreview {
 		this.close();
 	}
 
+	public dispose() {
+		if (this.showTimer) window.clearTimeout(this.showTimer);
+		if (this.hideTimer) window.clearTimeout(this.hideTimer);
+		if (this.checkTimer) window.clearInterval(this.checkTimer);
+		this.showTimer = null;
+		this.hideTimer = null;
+		this.checkTimer = null;
+		this.close();
+		this.detach();
+	}
+
 	public attach() {
 		this.el.addEventListener('mouseover', this.onMouseover);
 		this.el.addEventListener('mouseleave', this.onMouseleave);
@@ -133,7 +144,7 @@ export const userPreviewDirective = {
 
 		if (binding.value == null) {
 			if (preview) {
-				preview.detach();
+				preview.dispose();
 				states.delete(el);
 			}
 			return;
@@ -149,7 +160,7 @@ export const userPreviewDirective = {
 	unmounted(el) {
 		const preview = states.get(el);
 		if (preview) {
-			preview.detach();
+			preview.dispose();
 			states.delete(el);
 		}
 	},
