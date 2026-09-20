@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, inject, ref } from 'vue';
+import { computed, defineAsyncComponent, inject, ref, watch } from 'vue';
 import { normalizeCustomEmojiName, isLocalCustomEmojiName, getCustomEmojiImagePath } from '@@/js/emoji-name.js';
 import type { MenuItem } from '@/types/menu.js';
 import { getProxiedImageUrl, getStaticImageUrl } from '@/utility/media-proxy.js';
@@ -70,7 +70,7 @@ const react = inject(DI.mfmEmojiReactCallback);
 
 const customEmojiName = computed(() => normalizeCustomEmojiName(props.name));
 const isLocal = computed(() => isLocalCustomEmojiName(customEmojiName.value, props.host));
-const emojiCodeToMute = makeEmojiMuteKey(props);
+const emojiCodeToMute = computed(() => makeEmojiMuteKey(props));
 const isMuted = checkEmojiMuted(emojiCodeToMute);
 const shouldMute = computed(() => !props.ignoreMuted && isMuted.value);
 
@@ -103,6 +103,12 @@ const url = computed(() => {
 
 const alt = computed(() => `:${customEmojiName.value}:`);
 const errored = ref(url.value == null);
+
+// url が差し替わったときに前の絵文字の読み込み失敗状態を引きずらないようにする
+// (errored が立っている間は <img> 自体が描画されないので load イベントでは復帰できない)
+watch(url, (v) => {
+	errored.value = v == null;
+});
 
 function onClick(ev: PointerEvent) {
 	if (props.menu) {
@@ -209,7 +215,7 @@ async function edit(name: string) {
 function mute() {
 	const titleEmojiName = isLocal.value
 		? `:${customEmojiName.value}:`
-		: emojiCodeToMute;
+		: emojiCodeToMute.value;
 	os.confirm({
 		type: 'question',
 		title: i18n.tsx.muteX({ x: titleEmojiName }),
@@ -217,14 +223,14 @@ function mute() {
 		if (canceled) {
 			return;
 		}
-		muteEmoji(emojiCodeToMute);
+		muteEmoji(emojiCodeToMute.value);
 	});
 }
 
 function unmute() {
 	const titleEmojiName = isLocal.value
 		? `:${customEmojiName.value}:`
-		: emojiCodeToMute;
+		: emojiCodeToMute.value;
 	os.confirm({
 		type: 'question',
 		title: i18n.tsx.unmuteX({ x: titleEmojiName }),
@@ -232,7 +238,7 @@ function unmute() {
 		if (canceled) {
 			return;
 		}
-		unmuteEmoji(emojiCodeToMute);
+		unmuteEmoji(emojiCodeToMute.value);
 	});
 }
 
