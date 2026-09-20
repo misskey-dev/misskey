@@ -5,36 +5,37 @@
 
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { resolve } from 'node:path';
-import { createPnpmCommand } from './check-shipping.mjs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { runCommand } from './check-shipping.mjs';
 
-test('runs the pnpm package CLI through Node instead of a platform shim', () => {
-	const command = createPnpmCommand(
-		'/repo/node_modules/pnpm/package.json',
-		{ bin: { pnpm: 'bin/pnpm.mjs' } },
-		'/runtime/node',
-	);
+const repoRoot = fileURLToPath(new URL('../', import.meta.url));
 
-	assert.deepEqual(command, {
-		command: '/runtime/node',
-		args: [resolve('/repo/node_modules/pnpm/bin/pnpm.mjs')],
+for (const status of [0, 1, 2]) {
+	test(`preserves subprocess exit code ${status}`, () => {
+		assert.equal(runCommand(process.execPath, ['-e', `process.exit(${status})`], repoRoot), status);
 	});
-	assert.equal(command.command.endsWith('.cmd'), false);
-});
+}
 
-test('supports a package with a string bin entry', () => {
-	const command = createPnpmCommand(
-		'/repo/node_modules/pnpm/package.json',
-		{ bin: 'bin/pnpm.mjs' },
-		'/runtime/node',
-	);
-
-	assert.deepEqual(command.args, [resolve('/repo/node_modules/pnpm/bin/pnpm.mjs')]);
-});
-
-test('rejects a pnpm package without a usable CLI entry', () => {
+test('reports a subprocess that cannot start as an operational error', () => {
 	assert.throws(
-		() => createPnpmCommand('/repo/node_modules/pnpm/package.json', { bin: {} }, '/runtime/node'),
-		/pnpm package.*bin entry/,
+		() => runCommand(process.execPath, [], join(repoRoot, 'missing-shipping-directory')),
+		/を実行できない:.*ENOENT/s,
 	);
+});
+
+test('runs local pnpm from a package directory without changing filename arguments', () => {
+	const cwd = join(repoRoot, 'packages', 'frontend');
+	const filenames = ['src/file with spaces.ts', 'src/notes & replies.ts'];
+	const script = [
+		"const assert = require('node:assert/strict');",
+		`assert.equal(process.cwd(), ${JSON.stringify(cwd)});`,
+		`assert.deepEqual(process.argv.slice(1), ${JSON.stringify(filenames)});`,
+	].join(' ');
+
+	assert.equal(runCommand('pnpm', ['exec', 'node', '-e', script, '--', ...filenames], cwd), 0);
+});
+
+test('runs a Windows pnpm.cmd shim', { skip: process.platform !== 'win32' }, () => {
+	assert.equal(runCommand(join(repoRoot, 'node_modules', '.bin', 'pnpm.cmd'), ['--version'], repoRoot), 0);
 });

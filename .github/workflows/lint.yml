@@ -18,6 +18,7 @@ on:
       - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
       - scripts/check-dts*.mjs
+      - scripts/check-shipping*.mjs
       - .github/workflows/lint.yml
       - package.json
   pull_request:
@@ -36,6 +37,7 @@ on:
       - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
       - scripts/check-dts*.mjs
+      - scripts/check-shipping*.mjs
       - .github/workflows/lint.yml
       - package.json
 jobs:
