@@ -8,7 +8,9 @@ import push from 'web-push';
 import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedChatMessage } from '@/models/schema/chat-message.js';
+import type { PackedNote } from '@/models/schema/note.js';
+import type { PackedNotification } from '@/models/schema/notification.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import type { MiMeta, MiSwSubscription, SwSubscriptionsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
@@ -16,13 +18,13 @@ import { RedisKVCache } from '@/misc/cache.js';
 
 // Defined also packages/sw/types.ts#L13
 type PushNotificationsTypes = {
-	'notification': Packed<'Notification'>;
+	'notification': PackedNotification;
 	'unreadAntennaNote': {
 		antenna: { id: string, name: string };
-		note: Packed<'Note'>;
+		note: PackedNote;
 	};
 	'readAllNotifications': undefined;
-	newChatMessage: Packed<'ChatMessage'>;
+	newChatMessage: PackedChatMessage;
 };
 
 // Reduce length because push message servers have character limits
@@ -35,7 +37,7 @@ function truncateBody<T extends keyof PushNotificationsTypes>(type: T, body: Pus
 			note: {
 				...body.note,
 				// textをgetNoteSummaryしたものに置き換える
-				text: getNoteSummary(('type' in body && body.type === 'renote') ? body.note.renote as Packed<'Note'> : body.note),
+				text: getNoteSummary(('type' in body && body.type === 'renote') ? body.note.renote as PackedNote : body.note),
 
 				cw: undefined,
 				reply: undefined,

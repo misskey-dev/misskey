@@ -4,11 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RenoteMutingsRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { RenoteMutingEntityService } from '@/core/entities/RenoteMutingEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedRenoteMutingSchema } from '@/models/schema/renote-muting.js';
 
 export const meta = {
 	tags: ['account'],
@@ -17,28 +20,13 @@ export const meta = {
 
 	kind: 'read:mutes',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'RenoteMuting',
-		},
-	},
+	res: v.array(packedRenoteMutingSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	...mi.paginationEntries({ max: 100, default: 30 }),
+	...mi.paginationDateEntries(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

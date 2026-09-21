@@ -4,6 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { CaptchaService, supportedCaptchaProviders } from '@/core/CaptchaService.js';
 
@@ -16,47 +17,29 @@ export const meta = {
 	// 実態はmetaの取得であるため
 	kind: 'read:admin:meta',
 
-	res: {
-		type: 'object',
-		properties: {
-			provider: {
-				type: 'string',
-				enum: supportedCaptchaProviders,
-			},
-			hcaptcha: {
-				type: 'object',
-				properties: {
-					siteKey: { type: 'string', nullable: true },
-					secretKey: { type: 'string', nullable: true },
-				},
-			},
-			mcaptcha: {
-				type: 'object',
-				properties: {
-					siteKey: { type: 'string', nullable: true },
-					secretKey: { type: 'string', nullable: true },
-					instanceUrl: { type: 'string', nullable: true },
-				},
-			},
-			recaptcha: {
-				type: 'object',
-				properties: {
-					siteKey: { type: 'string', nullable: true },
-					secretKey: { type: 'string', nullable: true },
-				},
-			},
-			turnstile: {
-				type: 'object',
-				properties: {
-					siteKey: { type: 'string', nullable: true },
-					secretKey: { type: 'string', nullable: true },
-				},
-			},
-		},
-	},
+	res: v.object({
+		provider: v.picklist([...supportedCaptchaProviders]),
+		hcaptcha: v.object({
+			siteKey: v.nullable(v.string()),
+			secretKey: v.nullable(v.string()),
+		}),
+		mcaptcha: v.object({
+			siteKey: v.nullable(v.string()),
+			secretKey: v.nullable(v.string()),
+			instanceUrl: v.nullable(v.string()),
+		}),
+		recaptcha: v.object({
+			siteKey: v.nullable(v.string()),
+			secretKey: v.nullable(v.string()),
+		}),
+		turnstile: v.object({
+			siteKey: v.nullable(v.string()),
+			secretKey: v.nullable(v.string()),
+		}),
+	}),
 } as const;
 
-export const paramDef = {} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

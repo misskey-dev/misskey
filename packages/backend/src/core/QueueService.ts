@@ -16,7 +16,7 @@ import { bindThis } from '@/decorators.js';
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 import { type SystemWebhookPayload } from '@/core/SystemWebhookService.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedQueueJob } from '@/models/schema/queue.js';
 import { type UserWebhookPayload } from './UserWebhookService.js';
 import type {
 	DbJobData,
@@ -804,7 +804,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	private packJobData(job: Bull.Job): Packed<'QueueJob'> {
+	private packJobData(job: Bull.Job): PackedQueueJob {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		const stacktrace = job.stacktrace ? job.stacktrace.filter(Boolean) : [];
 		stacktrace.reverse();

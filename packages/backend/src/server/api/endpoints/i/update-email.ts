@@ -6,6 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import bcrypt from 'bcryptjs';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -15,6 +16,7 @@ import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { UserAuthService } from '@/core/UserAuthService.js';
+import { packedMeDetailedSchema } from '@/models/schema/user.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -47,21 +49,14 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		ref: 'MeDetailed',
-	},
+	res: packedMeDetailedSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		password: { type: 'string' },
-		email: { type: 'string', nullable: true },
-		token: { type: 'string', nullable: true },
-	},
-	required: ['password'],
-} as const;
+export const paramDef = v.object({
+	password: v.string(),
+	email: v.optional(v.nullable(v.string())),
+	token: v.optional(v.nullable(v.string())),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

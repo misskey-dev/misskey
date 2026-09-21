@@ -4,12 +4,15 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import {
 	AbuseReportNotificationRecipientEntityService,
 } from '@/core/entities/AbuseReportNotificationRecipientEntityService.js';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 import { ApiError } from '@/server/api/error.js';
+import { packedAbuseReportNotificationRecipientSchema } from '@/models/schema/abuse-report-notification-recipient.js';
 
 export const meta = {
 	tags: ['admin', 'abuse-report', 'notification-recipient'],
@@ -19,10 +22,7 @@ export const meta = {
 	secure: true,
 	kind: 'read:admin:abuse-report:notification-recipient',
 
-	res: {
-		type: 'object',
-		ref: 'AbuseReportNotificationRecipient',
-	},
+	res: packedAbuseReportNotificationRecipientSchema,
 
 	errors: {
 		noSuchRecipient: {
@@ -35,16 +35,9 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		id: {
-			type: 'string',
-			format: 'misskey:id',
-		},
-	},
-	required: ['id'],
-} as const;
+export const paramDef = v.object({
+	id: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

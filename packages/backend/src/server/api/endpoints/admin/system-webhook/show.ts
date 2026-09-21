@@ -4,10 +4,13 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { SystemWebhookEntityService } from '@/core/entities/SystemWebhookEntityService.js';
 import { ApiError } from '@/server/api/error.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { packedSystemWebhookSchema } from '@/models/schema/system-webhook.js';
 
 export const meta = {
 	tags: ['admin', 'system-webhook'],
@@ -17,10 +20,7 @@ export const meta = {
 	secure: true,
 	kind: 'write:admin:system-webhook',
 
-	res: {
-		type: 'object',
-		ref: 'SystemWebhook',
-	},
+	res: packedSystemWebhookSchema,
 
 	errors: {
 		noSuchSystemWebhook: {
@@ -33,16 +33,9 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		id: {
-			type: 'string',
-			format: 'misskey:id',
-		},
-	},
-	required: ['id'],
-} as const;
+export const paramDef = v.object({
+	id: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

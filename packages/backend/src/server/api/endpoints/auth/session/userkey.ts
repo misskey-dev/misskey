@@ -4,10 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AppsRepository, AccessTokensRepository, AuthSessionsRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedUserDetailedNotMeSchema } from '@/models/schema/user.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -15,22 +17,10 @@ export const meta = {
 
 	requireCredential: false,
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			accessToken: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-
-			user: {
-				type: 'object',
-				optional: false, nullable: false,
-				ref: 'UserDetailedNotMe',
-			},
-		},
-	},
+	res: v.object({
+		accessToken: v.string(),
+		user: packedUserDetailedNotMeSchema,
+	}),
 
 	errors: {
 		noSuchApp: {
@@ -53,14 +43,10 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		appSecret: { type: 'string' },
-		token: { type: 'string' },
-	},
-	required: ['appSecret', 'token'],
-} as const;
+export const paramDef = v.object({
+	appSecret: v.string(),
+	token: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

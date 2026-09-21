@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { UserIpsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -15,34 +17,15 @@ export const meta = {
 	requireCredential: true,
 	requireAdmin: true,
 	kind: 'read:admin:user-ips',
-	res: {
-		type: 'array',
-		optional: false,
-		nullable: false,
-		items: {
-			type: 'object',
-			optional: false,
-			nullable: false,
-			properties: {
-				ip: { type: 'string' },
-				createdAt: {
-					type: 'string',
-					optional: false,
-					nullable: false,
-					format: 'date-time',
-				},
-			},
-		},
-	},
+	res: v.array(v.object({
+		ip: v.string(),
+		createdAt: mi.dateTimeString(),
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['userId'],
-} as const;
+export const paramDef = v.object({
+	userId: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -4,6 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 
@@ -16,18 +18,9 @@ export const meta = {
 	kind: 'write:admin:abuse-report:notification-recipient',
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		id: {
-			type: 'string',
-			format: 'misskey:id',
-		},
-	},
-	required: [
-		'id',
-	],
-} as const;
+export const paramDef = v.object({
+	id: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

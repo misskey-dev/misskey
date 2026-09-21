@@ -67,6 +67,7 @@ export class ApiServerService {
 				name: endpoint.name,
 				meta: endpoint.meta,
 				params: endpoint.params,
+				castableParams: endpoint.castableParams,
 				exec: this.moduleRef.get('ep:' + endpoint.name, { strict: false }).exec,
 			};
 

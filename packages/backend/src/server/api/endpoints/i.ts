@@ -4,10 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedMeDetailedSchema } from '@/models/schema/user.js';
 import { ApiError } from '../error.js';
 
 export const meta = {
@@ -16,11 +18,7 @@ export const meta = {
 	requireCredential: true,
 	kind: "read:account",
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'MeDetailed',
-	},
+	res: packedMeDetailedSchema,
 
 	errors: {
 		userIsDeleted: {
@@ -32,11 +30,7 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

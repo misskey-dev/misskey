@@ -4,11 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApiError } from '@/server/api/error.js';
+import { packedUserDetailedNotMeSchema } from '@/models/schema/user.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -24,20 +26,12 @@ export const meta = {
 			id: 'cb865949-8af5-4062-a88c-ef55e8786d1d',
 		},
 	},
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'UserDetailedNotMe',
-	},
+	res: packedUserDetailedNotMeSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		email: { type: 'string' },
-	},
-	required: ['email'],
-} as const;
+export const paramDef = v.object({
+	email: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

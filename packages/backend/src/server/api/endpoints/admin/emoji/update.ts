@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import type { DriveFilesRepository, MiEmoji } from '@/models/_.js';
@@ -36,48 +38,28 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	allOf: [
-		{
-			anyOf: [
-				{
-					type: 'object',
-					properties: {
-						id: { type: 'string', format: 'misskey:id' },
-					},
-					required: ['id'],
-				},
-				{
-					type: 'object',
-					properties: {
-						name: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
-					},
-					required: ['name'],
-				},
-			],
-		},
-		{
-			type: 'object',
-			properties: {
-				fileId: { type: 'string', format: 'misskey:id' },
-				category: {
-					type: 'string',
-					nullable: true,
-					description: 'Use `null` to reset the category.',
-				},
-				aliases: { type: 'array', items: {
-					type: 'string',
-				} },
-				license: { type: 'string', nullable: true },
-				isSensitive: { type: 'boolean' },
-				localOnly: { type: 'boolean' },
-				roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
-					type: 'string',
-				} },
-			},
-		},
-	],
-} as const;
+// legacy の `allOf: [{ anyOf: [...] }, { fileId, category, ... }]` の共通パート
+const updateEntries = {
+	fileId: v.optional(mi.misskeyId()),
+	category: v.nullish(v.pipe(v.string(), v.description('Use `null` to reset the category.'))),
+	aliases: v.optional(v.array(v.string())),
+	license: v.nullish(v.string()),
+	isSensitive: v.optional(v.boolean()),
+	localOnly: v.optional(v.boolean()),
+	roleIdsThatCanBeUsedThisEmojiAsReaction: v.optional(v.array(v.string())),
+};
+
+// NOTE: cookbook R9 に従い allOf に混在した anyOf を各分岐へ共通パートを分配した v.union に変換している
+export const paramDef = v.union([
+	v.object({
+		id: mi.misskeyId(),
+		...updateEntries,
+	}),
+	v.object({
+		name: v.pipe(v.string(), v.regex(/^[a-zA-Z0-9_]+$/)),
+		...updateEntries,
+	}),
+]);
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

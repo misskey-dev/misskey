@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { maximum } from '@/misc/prelude/array.js';
 import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -11,6 +13,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { packedUserDetailedSchema } from '@/models/schema/user.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -20,25 +23,10 @@ export const meta = {
 
 	description: 'Get a list of other users that the specified user frequently replies to.',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			properties: {
-				user: {
-					type: 'object',
-					optional: false, nullable: false,
-					ref: 'UserDetailed',
-				},
-				weight: {
-					type: 'number',
-					optional: false, nullable: false,
-				},
-			},
-		},
-	},
+	res: v.array(v.object({
+		user: packedUserDetailedSchema,
+		weight: v.number(),
+	})),
 
 	errors: {
 		noSuchUser: {
@@ -49,14 +37,10 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-	},
-	required: ['userId'],
-} as const;
+export const paramDef = v.object({
+	userId: mi.misskeyId(),
+	limit: mi.limit({ max: 100, def: 10 }),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

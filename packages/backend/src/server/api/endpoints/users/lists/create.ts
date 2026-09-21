@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import type { UserListsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUserList } from '@/models/UserList.js';
@@ -12,6 +13,7 @@ import { UserListEntityService } from '@/core/entities/UserListEntityService.js'
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { RoleService } from '@/core/RoleService.js';
+import { packedUserListSchema } from '@/models/schema/user-list.js';
 
 export const meta = {
 	tags: ['lists'],
@@ -24,11 +26,7 @@ export const meta = {
 
 	description: 'Create a new list of users.',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'UserList',
-	},
+	res: packedUserListSchema,
 
 	errors: {
 		tooManyUserLists: {
@@ -39,13 +37,9 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string', minLength: 1, maxLength: 100 },
-	},
-	required: ['name'],
-} as const;
+export const paramDef = v.object({
+	name: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(100)),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

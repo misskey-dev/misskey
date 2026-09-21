@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { IdService } from '@/core/IdService.js';
 import type { MiMeta, SwSubscriptionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -18,45 +19,21 @@ export const meta = {
 
 	description: 'Register to receive push notifications.',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			state: {
-				type: 'string',
-				optional: true, nullable: false,
-				enum: ['already-subscribed', 'subscribed'],
-			},
-			key: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			userId: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			endpoint: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			sendReadMessage: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-		},
-	},
+	res: v.object({
+		state: v.optional(v.picklist(['already-subscribed', 'subscribed'])),
+		key: v.nullable(v.string()),
+		userId: v.string(),
+		endpoint: v.string(),
+		sendReadMessage: v.boolean(),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		endpoint: { type: 'string' },
-		auth: { type: 'string' },
-		publickey: { type: 'string' },
-		sendReadMessage: { type: 'boolean', default: false },
-	},
-	required: ['endpoint', 'auth', 'publickey'],
-} as const;
+export const paramDef = v.object({
+	endpoint: v.string(),
+	auth: v.string(),
+	publickey: v.string(),
+	sendReadMessage: v.optional(v.boolean(), false),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

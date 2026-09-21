@@ -5,6 +5,8 @@
 
 import { URL } from 'node:url';
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { RelayService } from '@/core/RelayService.js';
 import { ApiError } from '../../../error.js';
@@ -24,41 +26,16 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			id: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'id',
-			},
-			inbox: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'url',
-			},
-			status: {
-				type: 'string',
-				optional: false, nullable: false,
-				default: 'requesting',
-				enum: [
-					'requesting',
-					'accepted',
-					'rejected',
-				],
-			},
-		},
-	},
+	res: v.object({
+		id: mi.idString(),
+		inbox: mi.urlString(),
+		status: v.pipe(v.picklist(['requesting', 'accepted', 'rejected']), mi.openApi({ default: 'requesting' })),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		inbox: { type: 'string' },
-	},
-	required: ['inbox'],
-} as const;
+export const paramDef = v.object({
+	inbox: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

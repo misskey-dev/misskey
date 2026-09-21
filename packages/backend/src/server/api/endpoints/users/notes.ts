@@ -5,6 +5,8 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { MiMeta, NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -17,19 +19,12 @@ import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointServ
 import { FanoutTimelineName } from '@/core/FanoutTimelineService.js';
 import { ApiError } from '@/server/api/error.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { packedNoteSchema } from '@/models/schema/note.js';
 
 export const meta = {
 	tags: ['users', 'notes'],
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Note',
-		},
-	},
+	res: v.array(packedNoteSchema),
 
 	errors: {
 		noSuchUser: {
@@ -52,23 +47,16 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-		withReplies: { type: 'boolean', default: false },
-		withRenotes: { type: 'boolean', default: true },
-		withChannelNotes: { type: 'boolean', default: false },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		allowPartial: { type: 'boolean', default: false }, // true is recommended but for compatibility false by default
-		withFiles: { type: 'boolean', default: false },
-	},
-	required: ['userId'],
-} as const;
+export const paramDef = v.object({
+	userId: mi.misskeyId(),
+	withReplies: v.optional(v.boolean(), false),
+	withRenotes: v.optional(v.boolean(), true),
+	withChannelNotes: v.optional(v.boolean(), false),
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+	allowPartial: v.optional(v.boolean(), false), // true is recommended but for compatibility false by default
+	withFiles: v.optional(v.boolean(), false),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -5,6 +5,8 @@
 
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { InboxQueue } from '@/core/QueueModule.js';
 
@@ -15,34 +17,16 @@ export const meta = {
 	requireModerator: true,
 	kind: 'read:admin:queue',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'array',
-			optional: false, nullable: false,
-			prefixItems: [
-				{
-					type: 'string',
-				},
-				{
-					type: 'number',
-				},
-			],
-			unevaluatedItems: false,
-		},
-		example: [[
-			'example.com',
-			12,
-		]],
-	},
+	res: mi.example(v.array(v.strictTuple([
+		v.string(),
+		v.number(),
+	])), [[
+		'example.com',
+		12,
+	]]),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -6,6 +6,7 @@
 import { createHash } from 'crypto';
 import ms from 'ms';
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { ApiError } from '../error.js';
@@ -34,27 +35,16 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		properties: {
-			type: {
-				type: 'string',
-			},
-			data: {
-				type: 'string',
-			},
-		},
-	},
+	res: v.object({
+		type: v.string(),
+		data: v.string(),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		url: { type: 'string' },
-		hash: { type: 'string' },
-	},
-	required: ['url', 'hash'],
-} as const;
+export const paramDef = v.object({
+	url: v.string(),
+	hash: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

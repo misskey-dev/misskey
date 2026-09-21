@@ -4,6 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { AchievementService } from '@/core/AchievementService.js';
 import { ACHIEVEMENT_TYPES } from '@/models/UserProfile.js';
@@ -14,13 +15,9 @@ export const meta = {
 	kind: 'write:account',
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string', enum: ACHIEVEMENT_TYPES },
-	},
-	required: ['name'],
-} as const;
+export const paramDef = v.object({
+	name: v.picklist([...ACHIEVEMENT_TYPES]),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

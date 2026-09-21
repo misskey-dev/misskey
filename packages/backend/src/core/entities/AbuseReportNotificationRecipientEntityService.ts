@@ -9,7 +9,9 @@ import { DI } from '@/di-symbols.js';
 import type { AbuseReportNotificationRecipientRepository, MiAbuseReportNotificationRecipient } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { Packed } from '@/misc/json-schema.js';
+import type { PackedAbuseReportNotificationRecipient } from '@/models/schema/abuse-report-notification-recipient.js';
+import type { PackedSystemWebhook } from '@/models/schema/system-webhook.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import { SystemWebhookEntityService } from '@/core/entities/SystemWebhookEntityService.js';
 
 @Injectable()
@@ -26,10 +28,10 @@ export class AbuseReportNotificationRecipientEntityService {
 	public async pack(
 		src: MiAbuseReportNotificationRecipient['id'] | MiAbuseReportNotificationRecipient,
 		opts?: {
-			users: Map<string, Packed<'UserLite'>>,
-			webhooks: Map<string, Packed<'SystemWebhook'>>,
+			users: Map<string, PackedUserLite>,
+			webhooks: Map<string, PackedSystemWebhook>,
 		},
-	): Promise<Packed<'AbuseReportNotificationRecipient'>> {
+	): Promise<PackedAbuseReportNotificationRecipient> {
 		const recipient = typeof src === 'object'
 			? src
 			: await this.abuseReportNotificationRecipientRepository.findOneByOrFail({ id: src });
@@ -56,7 +58,7 @@ export class AbuseReportNotificationRecipientEntityService {
 	@bindThis
 	public async packMany(
 		src: MiAbuseReportNotificationRecipient['id'][] | MiAbuseReportNotificationRecipient[],
-	): Promise<Packed<'AbuseReportNotificationRecipient'>[]> {
+	): Promise<PackedAbuseReportNotificationRecipient[]> {
 		const objs = src.filter((it): it is MiAbuseReportNotificationRecipient => typeof it === 'object');
 		const ids = src.filter((it): it is MiAbuseReportNotificationRecipient['id'] => typeof it === 'string');
 		if (ids.length > 0) {
@@ -66,13 +68,13 @@ export class AbuseReportNotificationRecipientEntityService {
 		}
 
 		const userIds = objs.map(it => it.userId).filter(x => x != null);
-		const users: Map<string, Packed<'UserLite'>> = (userIds.length > 0)
+		const users: Map<string, PackedUserLite> = (userIds.length > 0)
 			? await this.userEntityService.packMany(userIds)
 				.then(it => new Map(it.map(it => [it.id, it])))
 			: new Map();
 
 		const systemWebhookIds = objs.map(it => it.systemWebhookId).filter(x => x != null);
-		const systemWebhooks: Map<string, Packed<'SystemWebhook'>> = (systemWebhookIds.length > 0)
+		const systemWebhooks: Map<string, PackedSystemWebhook> = (systemWebhookIds.length > 0)
 			? await this.systemWebhookEntityService.packMany(systemWebhookIds)
 				.then(it => new Map(it.map(it => [it.id, it])))
 			: new Map();

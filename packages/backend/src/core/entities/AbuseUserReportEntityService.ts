@@ -10,7 +10,7 @@ import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedUserDetailedNotMe } from '@/models/schema/user.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -28,9 +28,9 @@ export class AbuseUserReportEntityService {
 	public async pack(
 		src: MiAbuseUserReport['id'] | MiAbuseUserReport,
 		hint?: {
-			packedReporter?: Packed<'UserDetailedNotMe'>,
-			packedTargetUser?: Packed<'UserDetailedNotMe'>,
-			packedAssignee?: Packed<'UserDetailedNotMe'>,
+			packedReporter?: PackedUserDetailedNotMe,
+			packedTargetUser?: PackedUserDetailedNotMe,
+			packedAssignee?: PackedUserDetailedNotMe,
 		},
 	) {
 		const report = typeof src === 'object' ? src : await this.abuseUserReportsRepository.findOneByOrFail({ id: src });

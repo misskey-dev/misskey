@@ -7,7 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedGalleryPost } from '@/models/schema/gallery-post.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import type { } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiGalleryPost } from '@/models/GalleryPost.js';
@@ -36,9 +37,9 @@ export class GalleryPostEntityService {
 		src: MiGalleryPost['id'] | MiGalleryPost,
 		me?: { id: MiUser['id'] } | null | undefined,
 		hint?: {
-			packedUser?: Packed<'UserLite'>
+			packedUser?: PackedUserLite
 		},
-	): Promise<Packed<'GalleryPost'>> {
+	): Promise<PackedGalleryPost> {
 		const meId = me ? me.id : null;
 		const post = typeof src === 'object' ? src : await this.galleryPostsRepository.findOneByOrFail({ id: src });
 

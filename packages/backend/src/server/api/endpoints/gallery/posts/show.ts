@@ -4,10 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { GalleryPostsRepository } from '@/models/_.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedGalleryPostSchema } from '@/models/schema/gallery-post.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -23,20 +26,12 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'GalleryPost',
-	},
+	res: packedGalleryPostSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		postId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['postId'],
-} as const;
+export const paramDef = v.object({
+	postId: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

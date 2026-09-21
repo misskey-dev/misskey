@@ -4,10 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { webhookEventTypes } from '@/models/Webhook.js';
 import type { WebhooksRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { packedUserWebhookSchema } from '@/models/schema/user-webhook.js';
 
 // TODO: UserWebhook schemaの適用
 export const meta = {
@@ -17,20 +19,10 @@ export const meta = {
 
 	kind: 'read:account',
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-			ref: 'UserWebhook',
-		},
-	},
+	res: v.array(packedUserWebhookSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

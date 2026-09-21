@@ -60,26 +60,20 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['<tag>'],
 	requireCredential: false,
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			// ...
-		},
-	},
+	res: v.object({
+		// ...
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+// paramDef は Valibot スキーマ。`as const` は不要 (型は Valibot が推論する)
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
@@ -96,10 +90,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 ```ts
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
 import { DI } from '@/di-symbols.js';
+import { packedNoteSchema } from '@/models/schema/note.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -117,20 +114,13 @@ export const meta = {
 			id: '17a0e0fa-3f3e-4f3e-9f3e-3f3e3f3e3f3e', // ← crypto.randomUUID() で生成し衝突確認
 		},
 	},
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Note',                 // packed entity を参照する場合
-	},
+	// packed entity はスキーマを直接 import する (spec 上は $ref に復元される)
+	res: packedNoteSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		noteId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['noteId'],
-} as const;
+export const paramDef = v.object({
+	noteId: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
@@ -160,11 +150,11 @@ async (ps, me, token, file, cleanup, ip, headers) => { ... }
 
 | 引数 | 型 | 用途 |
 |---|---|---|
-| `ps` | `SchemaType<typeof paramDef>` | AJV 検証済の入力 |
+| `ps` | `v.InferOutput<typeof paramDef>` | paramDef 検証済の入力 (default 適用済みの新しいオブジェクト) |
 | `me` | `MiLocalUser` (requireCredential: true) / `MiLocalUser \| null` (false) | ローカルユーザー。`requireCredential: false` のとき必ず null チェック |
 | `token` | `MiAccessToken \| null` | OAuth トークン (アプリ識別が要るとき) |
 | `file` | `{ name, path } \| undefined` | `requireFile: true` のときのみ確実に渡る。エンドポイント基底クラスが既に null チェック済 |
-| `cleanup` | `() => any \| undefined` | アップロードされた一時ファイルを削除するコールバック。**基底クラスが自動で呼ぶのは AJV バリデーション失敗時だけ**。正常終了や endpoint 内例外時は **呼ばれない** ので、`try { ... } finally { cleanup!(); }` で必ず呼ぶ責務がある ([drive/files/create.ts](../../../../../packages/backend/src/server/api/endpoints/drive/files/create.ts) の `finally { cleanup!(); }` が手本) |
+| `cleanup` | `() => any \| undefined` | アップロードされた一時ファイルを削除するコールバック。**基底クラスが自動で呼ぶのは paramDef の検証失敗時だけ**。正常終了や endpoint 内例外時は **呼ばれない** ので、`try { ... } finally { cleanup!(); }` で必ず呼ぶ責務がある ([drive/files/create.ts](../../../../../packages/backend/src/server/api/endpoints/drive/files/create.ts) の `finally { cleanup!(); }` が手本) |
 | `ip` | `string \| null \| undefined` | クライアント IP |
 | `headers` | `Record<string, string> \| null \| undefined` | リクエストヘッダ |
 
@@ -172,7 +162,7 @@ async (ps, me, token, file, cleanup, ip, headers) => { ... }
 
 ### 2.5 meta / paramDef の規約
 
-頻出 5 件 (`tags` / `requireCredential` / `kind` / `limit` / `errors`) の使い方や全フィールド一覧、`requiredRolePolicy` / `secure` / `cacheSec` / `allowGet` 等、それと `paramDef` の AJV 実用パターンは → [knowledge/api-meta-paramdef.md](../knowledge/api-meta-paramdef.md)。
+頻出 5 件 (`tags` / `requireCredential` / `kind` / `limit` / `errors`) の使い方や全フィールド一覧、`requiredRolePolicy` / `secure` / `cacheSec` / `allowGet` 等、それと `paramDef` / `res` (Valibot) の実用パターンは → [knowledge/api-meta-paramdef.md](../knowledge/api-meta-paramdef.md)。既存スキーマの変換規則とヘルパー網羅表は → [knowledge/valibot-cookbook.md](../knowledge/valibot-cookbook.md)。
 
 ### 2.6 エラー throw のバランス
 

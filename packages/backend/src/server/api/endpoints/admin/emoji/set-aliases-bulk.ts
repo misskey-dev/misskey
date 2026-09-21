@@ -4,6 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 
@@ -15,18 +17,10 @@ export const meta = {
 	kind: 'write:admin:emoji',
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		ids: { type: 'array', items: {
-			type: 'string', format: 'misskey:id',
-		} },
-		aliases: { type: 'array', items: {
-			type: 'string',
-		} },
-	},
-	required: ['ids', 'aliases'],
-} as const;
+export const paramDef = v.object({
+	ids: v.array(mi.misskeyId()),
+	aliases: v.array(v.string()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

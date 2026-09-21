@@ -7,7 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { BlockingsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedBlocking } from '@/models/schema/blocking.js';
+import type { PackedUserDetailedNotMe } from '@/models/schema/user.js';
 import type { MiBlocking } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
 import { bindThis } from '@/decorators.js';
@@ -30,9 +31,9 @@ export class BlockingEntityService {
 		src: MiBlocking['id'] | MiBlocking,
 		me?: { id: MiUser['id'] } | null | undefined,
 		hint?: {
-			blockee?: Packed<'UserDetailedNotMe'>,
+			blockee?: PackedUserDetailedNotMe,
 		},
-	): Promise<Packed<'Blocking'>> {
+	): Promise<PackedBlocking> {
 		const blocking = typeof src === 'object' ? src : await this.blockingsRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({

@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { DriveFilesRepository, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -26,175 +28,50 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			id: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'id',
-				example: 'xxxxxxxxxx',
-			},
-			createdAt: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'date-time',
-			},
-			userId: {
-				type: 'string',
-				optional: false, nullable: true,
-				format: 'id',
-				example: 'xxxxxxxxxx',
-			},
-			userHost: {
-				type: 'string',
-				optional: false, nullable: true,
-				description: 'The local host is represented with `null`.',
-			},
-			md5: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'md5',
-				example: '15eca7fba0480996e2245f5185bf39f2',
-			},
-			name: {
-				type: 'string',
-				optional: false, nullable: false,
-				example: '192.jpg',
-			},
-			type: {
-				type: 'string',
-				optional: false, nullable: false,
-				example: 'image/jpeg',
-			},
-			size: {
-				type: 'number',
-				optional: false, nullable: false,
-				example: 51469,
-			},
-			comment: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			blurhash: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			properties: {
-				type: 'object',
-				optional: false, nullable: false,
-				properties: {
-					width: {
-						type: 'number',
-						optional: true, nullable: false,
-					},
-					height: {
-						type: 'number',
-						optional: true, nullable: false,
-					},
-					orientation: {
-						type: 'number',
-						optional: true, nullable: false,
-					},
-					avgColor: {
-						type: 'string',
-						optional: true, nullable: false,
-					},
-				},
-			},
-			storedInternal: {
-				type: 'boolean',
-				optional: false, nullable: true,
-				example: true,
-			},
-			url: {
-				type: 'string',
-				optional: false, nullable: true,
-				format: 'url',
-			},
-			thumbnailUrl: {
-				type: 'string',
-				optional: false, nullable: true,
-				format: 'url',
-			},
-			webpublicUrl: {
-				type: 'string',
-				optional: false, nullable: true,
-				format: 'url',
-			},
-			accessKey: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			thumbnailAccessKey: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			webpublicAccessKey: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			uri: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			src: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			folderId: {
-				type: 'string',
-				optional: false, nullable: true,
-				format: 'id',
-				example: 'xxxxxxxxxx',
-			},
-			isSensitive: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			isLink: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			maybeSensitive: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			maybePorn: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			requestIp: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			requestHeaders: {
-				type: 'object',
-				optional: false, nullable: true,
-			},
-		},
-	},
+	res: v.object({
+		id: mi.example(mi.idString(), 'xxxxxxxxxx'),
+		createdAt: mi.dateTimeString(),
+		userId: v.nullable(mi.example(mi.idString(), 'xxxxxxxxxx')),
+		userHost: v.nullable(v.pipe(v.string(), v.description('The local host is represented with `null`.'))),
+		md5: v.pipe(v.string(), mi.format('md5'), mi.example('15eca7fba0480996e2245f5185bf39f2')),
+		name: mi.example(v.string(), '192.jpg'),
+		type: mi.example(v.string(), 'image/jpeg'),
+		size: mi.example(v.number(), 51469),
+		comment: v.nullable(v.string()),
+		blurhash: v.nullable(v.string()),
+		properties: v.object({
+			width: v.optional(v.number()),
+			height: v.optional(v.number()),
+			orientation: v.optional(v.number()),
+			avgColor: v.optional(v.string()),
+		}),
+		storedInternal: v.nullable(mi.example(v.boolean(), true)),
+		url: v.nullable(mi.urlString()),
+		thumbnailUrl: v.nullable(mi.urlString()),
+		webpublicUrl: v.nullable(mi.urlString()),
+		accessKey: v.nullable(v.string()),
+		thumbnailAccessKey: v.nullable(v.string()),
+		webpublicAccessKey: v.nullable(v.string()),
+		uri: v.nullable(v.string()),
+		src: v.nullable(v.string()),
+		folderId: v.nullable(mi.example(mi.idString(), 'xxxxxxxxxx')),
+		isSensitive: v.boolean(),
+		isLink: v.boolean(),
+		maybeSensitive: v.boolean(),
+		maybePorn: v.boolean(),
+		requestIp: v.nullable(v.string()),
+		requestHeaders: v.nullable(mi.anyObject()),
+	}),
 } as const;
 
-export const paramDef = {
-	anyOf: [
-		{
-			type: 'object',
-			properties: {
-				fileId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['fileId'],
-		},
-		{
-			type: 'object',
-			properties: {
-				url: { type: 'string' },
-			},
-			required: ['url'],
-		},
-	],
-} as const;
+export const paramDef = v.union([
+	v.object({
+		fileId: mi.misskeyId(),
+	}),
+	v.object({
+		url: v.string(),
+	}),
+]);
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

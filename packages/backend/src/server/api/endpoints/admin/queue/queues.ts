@@ -4,8 +4,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QUEUE_TYPES, QueueService } from '@/core/QueueService.js';
+import { packedQueueMetricsSchema } from '@/models/schema/queue.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -14,54 +16,18 @@ export const meta = {
 	requireModerator: true,
 	kind: 'read:admin:queue',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			properties: {
-				name: {
-					type: 'string',
-					optional: false, nullable: false,
-					enum: QUEUE_TYPES,
-				},
-				counts: {
-					type: 'object',
-					optional: false, nullable: false,
-					additionalProperties: {
-						type: 'number',
-					},
-				},
-				isPaused: {
-					type: 'boolean',
-					optional: false, nullable: false,
-				},
-				metrics: {
-					type: 'object',
-					optional: false, nullable: false,
-					properties: {
-						completed: {
-							optional: false, nullable: false,
-							ref: 'QueueMetrics',
-						},
-						failed: {
-							optional: false, nullable: false,
-							ref: 'QueueMetrics',
-						},
-					},
-				},
-			},
-		},
-	},
+	res: v.array(v.object({
+		name: v.picklist([...QUEUE_TYPES]),
+		counts: v.record(v.string(), v.number()),
+		isPaused: v.boolean(),
+		metrics: v.object({
+			completed: packedQueueMetricsSchema,
+			failed: packedQueueMetricsSchema,
+		}),
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

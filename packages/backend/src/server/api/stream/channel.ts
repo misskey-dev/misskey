@@ -9,7 +9,7 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
 import { isChannelRelated } from '@/misc/is-channel-related.js';
 import type { Awaitable } from '@/types.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedNote } from '@/models/schema/note.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import type Connection from './Connection.js';
 
@@ -65,7 +65,7 @@ export default abstract class Channel {
 		return this.connection.subscriber;
 	}
 
-	protected isNoteVisibleForMe(note: Packed<'Note'>): boolean {
+	protected isNoteVisibleForMe(note: PackedNote): boolean {
 		// This code must always be synchronized with the checks in QueryService.generateVisibilityQuery.
 		const meId = this.connection.user?.id ?? null;
 
@@ -105,7 +105,7 @@ export default abstract class Channel {
 	/*
 	 * ミュートとブロックされてるを処理する
 	 */
-	protected isNoteMutedOrBlocked(note: Packed<'Note'>): boolean {
+	protected isNoteMutedOrBlocked(note: PackedNote): boolean {
 		// 流れてきたNoteがインスタンスミュートしたインスタンスが関わる
 		if (isInstanceMuted(note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return true;
 

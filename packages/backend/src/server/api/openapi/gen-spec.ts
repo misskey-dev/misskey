@@ -4,9 +4,45 @@
  */
 
 import type { Config } from '@/config.js';
-import endpoints, { IEndpoint } from '../endpoints.js';
+import { resAllowsEmpty } from '@/misc/schema/introspect.js';
+import { valibotToOpenApi } from '@/misc/schema/openapi.js';
+import endpoints from '../endpoints.js';
 import { errors as basicErrors } from './errors.js';
-import { getSchemas, convertSchemaToOpenApiSchema } from './schemas.js';
+import { getSchemas } from './schemas.js';
+
+/**
+ * エラーレスポンスの description。basicErrors のステータス以外は meta.errors の
+ * httpStatusCode から動的に生えるため、既知のものは名前を付けておく
+ */
+const errorResponseDescriptions: Record<string, string> = {
+	'400': 'Client error',
+	'401': 'Authentication error',
+	'403': 'Forbidden error',
+	'404': 'Not found',
+	'413': 'Payload too large',
+	'418': 'I\'m Ai',
+	'422': 'Unprocessable entity',
+	'429': 'Too many requests',
+	'500': 'Internal server error',
+};
+
+function describeErrorStatus(status: string): string {
+	return errorResponseDescriptions[status] ?? (Number(status) >= 500 ? 'Server error' : 'Client error');
+}
+
+function makeErrorResponse(status: string, examples: Record<string, unknown>) {
+	return {
+		description: describeErrorStatus(status),
+		content: {
+			'application/json': {
+				schema: {
+					$ref: '#/components/schemas/Error',
+				},
+				examples,
+			},
+		},
+	};
+}
 
 export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 	const spec = {
@@ -40,22 +76,41 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 		},
 	};
 
-	// 書き換えたりするのでディープコピーしておく。そのまま編集するとメモリ上の値が汚れて次回以降の出力に影響する
-	const copiedEndpoints = JSON.parse(JSON.stringify(endpoints)) as IEndpoint[];
-	for (const endpoint of copiedEndpoints) {
-		const errors = {} as any;
+	// NOTE: endpoints 自体をディープコピーすることはできない (Valibot スキーマは関数を含むため
+	// JSON 往復で壊れる)。代わりに、endpoints から読み取った値を **変換後のプレーンな OpenAPI 構造**
+	// にしてからディープコピーして spec に載せる。こうしないと生成物が endpoints の meta を参照した
+	// ままになり、生成物を書き換えたときにメモリ上の値が汚れて次回以降の出力に影響する
+	for (const endpoint of endpoints) {
+		// meta.errors を「実際に返される HTTP ステータスコード」ごとに振り分ける。
+		// httpStatusCode を持たないエラーは ApiCallService が 400 として返すため 400 に入れる
+		const errorExamplesByStatus = new Map<string, Record<string, unknown>>();
 
 		if (endpoint.meta.errors) {
 			for (const e of Object.values(endpoint.meta.errors)) {
-				errors[e.code] = {
+				const status = String(e.httpStatusCode ?? 400);
+				const examples = errorExamplesByStatus.get(status) ?? {};
+				examples[e.code] = {
 					value: {
 						error: e,
 					},
 				};
+				errorExamplesByStatus.set(status, examples);
 			}
 		}
 
-		const resSchema = endpoint.meta.res ? convertSchemaToOpenApiSchema(endpoint.meta.res, 'res', includeSelfRef) : {};
+		// basicErrors のステータス (429 は rate limit のある endpoint のみ) と
+		// meta.errors 由来のステータスの和集合を、ステータスコード昇順で出力する
+		const errorStatuses = [...new Set([
+			...Object.keys(basicErrors).filter(status => status !== '429' || endpoint.meta.limit),
+			...errorExamplesByStatus.keys(),
+		])].sort((a, b) => Number(a) - Number(b));
+
+		const errorResponses = Object.fromEntries(errorStatuses.map(status => [status, makeErrorResponse(status, {
+			...errorExamplesByStatus.get(status),
+			...basicErrors[status as keyof typeof basicErrors],
+		})]));
+
+		const resSchema = endpoint.meta.res ? valibotToOpenApi(endpoint.meta.res, { use: 'res', includeSelfRef }) : {};
 
 		let desc = (endpoint.meta.description ? endpoint.meta.description : 'No description provided.') + '\n\n';
 
@@ -70,8 +125,13 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 		}
 
 		const requestType = endpoint.meta.requireFile ? 'multipart/form-data' : 'application/json';
-		const schema = { ...convertSchemaToOpenApiSchema(endpoint.params, 'param', false) };
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const schema: any = { ...valibotToOpenApi(endpoint.params, { use: 'param', includeSelfRef: false }) };
 
+		// `meta.requireFile` の endpoint (drive/files/create のみ) はリクエストが multipart/form-data で
+		// 運ばれ、`file` は paramDef ではなく ApiCallService が受け取る (paramDef には現れない) ため、
+		// spec 上の `file` プロパティはここで注入する。`schema` は valibotToOpenApi() が返した
+		// **変換後のプレーンな OpenAPI 構造** なので properties / required に直接足してよい。
 		if (endpoint.meta.requireFile) {
 			schema.properties = {
 				...schema.properties,
@@ -90,7 +150,7 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 		}
 
 		const hasBody = (schema.type === 'object' && schema.properties && Object.keys(schema.properties).length >= 1)
-			|| ['allOf', 'oneOf', 'anyOf'].some(o => (Array.isArray(schema[o]) && schema[o].length >= 0));
+			|| ['allOf', 'oneOf', 'anyOf'].some(o => (Array.isArray(schema[o]) && schema[o].length > 0));
 
 		const info = {
 			operationId: endpoint.name.replaceAll('/', '___'), // NOTE: スラッシュは使えない
@@ -133,83 +193,18 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 						description: 'OK (without any results)',
 					},
 				}),
-				...(endpoint.meta.res?.optional === true || endpoint.meta.res?.nullable === true ? {
+				...(resAllowsEmpty(endpoint.meta.res) ? {
 					'204': {
 						description: 'OK (without any results)',
 					},
 				} : {}),
-				'400': {
-					description: 'Client error',
-					content: {
-						'application/json': {
-							schema: {
-								$ref: '#/components/schemas/Error',
-							},
-							examples: { ...errors, ...basicErrors['400'] },
-						},
-					},
-				},
-				'401': {
-					description: 'Authentication error',
-					content: {
-						'application/json': {
-							schema: {
-								$ref: '#/components/schemas/Error',
-							},
-							examples: basicErrors['401'],
-						},
-					},
-				},
-				'403': {
-					description: 'Forbidden error',
-					content: {
-						'application/json': {
-							schema: {
-								$ref: '#/components/schemas/Error',
-							},
-							examples: basicErrors['403'],
-						},
-					},
-				},
-				'418': {
-					description: 'I\'m Ai',
-					content: {
-						'application/json': {
-							schema: {
-								$ref: '#/components/schemas/Error',
-							},
-							examples: basicErrors['418'],
-						},
-					},
-				},
-				...(endpoint.meta.limit ? {
-					'429': {
-						description: 'Too many requests',
-						content: {
-							'application/json': {
-								schema: {
-									$ref: '#/components/schemas/Error',
-								},
-								examples: basicErrors['429'],
-							},
-						},
-					},
-				} : {}),
-				'500': {
-					description: 'Internal server error',
-					content: {
-						'application/json': {
-							schema: {
-								$ref: '#/components/schemas/Error',
-							},
-							examples: basicErrors['500'],
-						},
-					},
-				},
+				...errorResponses,
 			},
 		};
 
-		spec.paths['/' + endpoint.name] = {
+		// ここまでで info はプレーンな OpenAPI 構造 (meta.errors 等の参照は含む) なので、
+		// spec に載せる前にディープコピーして endpoints 側との参照共有を切る
+		spec.paths['/' + endpoint.name] = structuredClone({
 			...(endpoint.meta.allowGet ? {
 				get: {
 					...info,
@@ -220,7 +215,7 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 				...info,
 				operationId: 'post___' + info.operationId,
 			},
-		};
+		});
 	}
 
 	return spec;
