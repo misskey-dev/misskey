@@ -172,9 +172,11 @@ async function renderChart() {
 					},
 					external: externalTooltipHandler,
 				},
+				/* eslint-disable */
 				...({ // TSを黙らすため
 					gradient,
 				}),
+				/* eslint-enable */
 			},
 		},
 		plugins: [chartVLine(vLineColor), chartLegend(legendEl.value)],

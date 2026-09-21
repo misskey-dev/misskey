@@ -178,12 +178,14 @@ onMounted(async () => {
 					},
 					external: externalTooltipHandler,
 					callbacks: {
-						label: context => `${context.dataset.label}: ${Math.abs(context.parsed.y)}`,
+						label: (context) => `${context.dataset.label}: ${Math.abs(context.parsed.y)}`,
 					},
 				},
+				/* eslint-disable */
 				...({ // TSを黙らすため
 					gradient,
 				}),
+				/* eslint-enable */
 			},
 		},
 		plugins: [chartVLine(vLineColor)],
@@ -269,9 +271,11 @@ onMounted(async () => {
 					},
 					external: externalTooltipHandler2,
 				},
+				/* eslint-disable */
 				...({ // TSを黙らすため
 					gradient,
 				}),
+				/* eslint-enable */
 			},
 		},
 		plugins: [chartVLine(vLineColor)],

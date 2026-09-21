@@ -10,7 +10,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import { UserAuthService } from "@/core/UserAuthService.js";
+import { UserAuthService } from '@/core/UserAuthService.js';
 
 export const meta = {
 	requireCredential: true,

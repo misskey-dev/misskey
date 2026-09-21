@@ -25,7 +25,7 @@ describe('クリップ', () => {
 	let bobFollowersNote: Misskey.entities.Note;
 	let bobSpecifiedNote: Misskey.entities.Note;
 
-	const compareBy = <T extends { id: string }, >(selector: (s: T) => string = (s: T): string => s.id) => (a: T, b: T): number => {
+	const compareBy = <T extends { id: string }>(selector: (s: T) => string = (s: T): string => s.id) => (a: T, b: T): number => {
 		return selector(a).localeCompare(selector(b));
 	};
 

@@ -335,7 +335,7 @@ export class HttpRequestService {
 			method: args.method ?? 'GET',
 			headers: {
 				'User-Agent': this.config.userAgent,
-				...(args.headers ?? {}),
+				...args.headers,
 			},
 			body: args.body,
 			size: args.size ?? 10 * 1024 * 1024,

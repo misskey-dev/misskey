@@ -37,7 +37,7 @@ import SearchIcon from './global/SearchIcon.vue';
 
 import type { App } from 'vue';
 
-export default function(app: App) {
+export default function (app: App) {
 	for (const [key, value] of Object.entries(components)) {
 		app.component(key, value);
 	}

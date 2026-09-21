@@ -46,7 +46,7 @@ export type SystemWebhookPayload<T extends SystemWebhookEventType> =
 	T extends 'userCreated' ? Packed<'UserLite'> :
 	T extends 'inactiveModeratorsWarning' ? InactiveModeratorsWarningPayload :
 	T extends 'inactiveModeratorsInvitationOnlyChanged' ? Record<string, never> :
-		never;
+	never;
 
 @Injectable()
 export class SystemWebhookService implements OnApplicationShutdown {

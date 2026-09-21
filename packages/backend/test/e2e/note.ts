@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Repository } from "typeorm";
+import type { Repository } from 'typeorm';
 
 process.env.NODE_ENV = 'test';
 

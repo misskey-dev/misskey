@@ -61,7 +61,7 @@ const validate = new Ajv().compile<ExportedAntenna>(exportedAntennaSchema);
 export class ImportAntennasProcessorService {
 	private logger: Logger;
 
-	constructor (
+	constructor(
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
