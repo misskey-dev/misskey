@@ -6,15 +6,13 @@
 	"type": "module",
 	"scripts": {
 		"build": "tsx src/generator.ts",
-		"eslint": "eslint src/**/*.ts",
+		"oxlint": "oxlint",
 		"typecheck": "tsc --noEmit",
-		"lint": "pnpm typecheck && pnpm eslint"
+		"lint": "pnpm typecheck && pnpm oxlint"
 	},
 	"devDependencies": {
 		"@types/node": "26.4.0",
-		"@types/wawoff2": "1.0.2",
-		"@typescript-eslint/eslint-plugin": "8.68.0",
-		"@typescript-eslint/parser": "8.68.0"
+		"@types/wawoff2": "1.0.2"
 	},
 	"dependencies": {
 		"@tabler/icons-webfont": "3.35.0",

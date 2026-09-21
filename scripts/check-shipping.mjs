@@ -127,7 +127,10 @@ function normalizeStatus(status) {
 }
 
 /**
- * 変更ファイルを package ごとに分け、対象限定 ESLint を実行する。
+ * 変更ファイルを package ごとに分け、対象限定 oxlint を実行する。
+ *
+ * oxlint は指定ファイルが全て ignorePatterns に該当すると exit 1 を返すため、
+ * `--no-error-on-unmatched-pattern` で lint 対象なしを違反扱いしない。
  *
  * @param {string[]} changedFiles
  * @param {string} repoRoot
@@ -146,7 +149,7 @@ function runChangedFileLint(changedFiles, repoRoot) {
 
 			ran = true;
 			console.log(`Lint: ${target.root} (${files.length} files)`);
-			const current = normalizeStatus(runCommand(PNPM_COMMAND, ['exec', 'eslint', '--quiet', '--', ...files], join(repoRoot, target.root)));
+			const current = normalizeStatus(runCommand(PNPM_COMMAND, ['exec', 'oxlint', '--quiet', '--no-error-on-unmatched-pattern', '--', ...files], join(repoRoot, target.root)));
 			if (current > status) status = current;
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);

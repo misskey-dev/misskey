@@ -4,8 +4,8 @@
 	"type": "module",
 	"scripts": {
 		"check": "tsx src/index.ts",
-		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"lint": "pnpm typecheck && pnpm eslint",
+		"oxlint": "oxlint",
+		"lint": "pnpm typecheck && pnpm oxlint",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
 		"typecheck": "tsc --noEmit"

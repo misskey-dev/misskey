@@ -44,7 +44,7 @@ export const Default = {
 
 ポイント:
 
-- 上 2 つの `eslint-disable` は Storybook のお作法で必須 (render の関数が return type を明示しないため / `default export` ではないため)
+- 上 2 つの `eslint-disable` は既存 story に揃えるための慣習。oxlint 移行後は `src/**/*.stories.impl.{ts,tsx}` が `packages/frontend/oxlint.config.ts` の `ignorePatterns` で lint 対象外なので、実際には効いていない (残しても害はないので既存ファイルに合わせる)
 - `satisfies StoryObj<typeof MkColoredTag>` が無いと `args` の型補完が効かなくなる
 
 ## 複数 story (variant 別)
