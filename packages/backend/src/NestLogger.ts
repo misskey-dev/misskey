@@ -3,76 +3,67 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { LoggerService } from '@nestjs/common';
+import { ConsoleLogger, LOG_LEVELS } from '@nestjs/common';
 import Logger from '@/logger.js';
+import type { LogLevel as NestLogLevel } from '@nestjs/common';
+import type { LogLevel as MisskeyLogLevel } from '@/logging/types.js';
 
 const logger = new Logger('core', 'cyan');
 const nestLogger = logger.createSubLogger('nest', 'green');
 
-// NestJSはcontextを可変長引数の末尾へ渡す。errorだけは (message, stack, context) の形も取り、
-// Nest 12のlifecycle hookのように Logger.error(reason, reason.stack) とcontext無しで呼ぶ経路もある。
-// stackもcontextもstringなので、ConsoleLoggerと同じ判定でstackを先に切り離してからcontextを取り出す。
-const stackFormat = /^(.)+\n\s+at .+:\d+:\d+/;
+const levelMap: Record<NestLogLevel, MisskeyLogLevel> = {
+	verbose: 'debug',
+	debug: 'debug',
+	log: 'info',
+	warn: 'warn',
+	error: 'error',
+	fatal: 'fatal',
+};
 
-function isStack(value: unknown): value is string {
-	return typeof value === 'string' && stackFormat.test(value);
-}
-
-/** 可変長引数の末尾がstringならcontextとして扱う。無指定の呼び出しではundefinedを返す。 */
-function takeContext(optionalParams: unknown[]): string | undefined {
-	const last = optionalParams.at(-1);
-	return typeof last === 'string' ? last : undefined;
-}
-
-function withContext(message: unknown, context: string | undefined): string {
-	return context == null ? String(message) : `${context}: ${message}`;
-}
-
-export class NestLogger implements LoggerService {
-	/**
-   * Write a 'log' level log.
-   */
-	log(message: any, ...optionalParams: any[]) {
-		nestLogger.info(withContext(message, takeContext(optionalParams)));
+export class NestLogger extends ConsoleLogger {
+	constructor() {
+		super({
+			// 整形はMisskey側のLogBackendが行うため、ConsoleLoggerによる着色は無効化する。
+			colors: false,
+			// ログ1件が複数行へ割れないよう、objectのinspectを1行へ収める。
+			compact: true,
+			logLevels: process.env.NODE_ENV === 'production'
+				? LOG_LEVELS.filter(level => level !== 'debug' && level !== 'verbose')
+				: [...LOG_LEVELS],
+		});
 	}
 
-	/**
-   * Write an 'error' level log.
-   */
-	error(message: any, ...optionalParams: any[]) {
-		const stack = optionalParams.find(isStack);
-		const context = takeContext(optionalParams.filter(param => !isStack(param)));
-		const text = withContext(message, context);
+	protected override printMessages(
+		messages: unknown[],
+		context = '',
+		logLevel: NestLogLevel = 'log',
+		_writeStreamType?: 'stdout' | 'stderr',
+		errorStack?: unknown,
+		params?: Record<string, any>,
+	): void {
+		for (const message of messages) {
+			// Errorはinspectするとstackが本文へ展開されるため、構造化したerrorへ寄せる
+			const body = message instanceof Error
+				? message.toString()
+				: String(this.stringifyMessage(message, logLevel));
 
-		if (message instanceof Error) {
-			nestLogger.error({ message: text, error: message });
-		} else if (stack != null) {
-			nestLogger.error({ message: text, error: { name: 'Error', message: String(message), stack } });
-		} else {
-			nestLogger.error(text);
+			const error = message instanceof Error
+				? message
+				: typeof errorStack === 'string'
+					? { name: 'Error', message: body, stack: errorStack }
+					: undefined;
+
+			nestLogger.write({
+				level: levelMap[logLevel],
+				message: context === '' ? body : `${context}: ${body}`,
+				...(error != null ? { error } : {}),
+				...(params != null ? { attributes: params } : {}),
+			});
 		}
 	}
 
-	/**
-   * Write a 'warn' level log.
-   */
-	warn(message: any, ...optionalParams: any[]) {
-		nestLogger.warn(withContext(message, takeContext(optionalParams)));
-	}
-
-	/**
-   * Write a 'debug' level log.
-   */
-	debug?(message: any, ...optionalParams: any[]) {
-		if (process.env.NODE_ENV === 'production') return;
-		nestLogger.debug(withContext(message, takeContext(optionalParams)));
-	}
-
-	/**
-   * Write a 'verbose' level log.
-   */
-	verbose?(message: any, ...optionalParams: any[]) {
-		if (process.env.NODE_ENV === 'production') return;
-		nestLogger.debug(withContext(message, takeContext(optionalParams)));
+	// ConsoleLogger.error()はprintMessages()の後にstackをprocess.stderrへ直接書く。
+	// stackはprintMessages()で構造化したerrorへ載せているため、ここでは何もしない。
+	protected override printStackTrace(): void {
 	}
 }
