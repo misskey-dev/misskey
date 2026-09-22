@@ -61,7 +61,7 @@ export class SigninService {
 			finished: true,
 			id: user.id,
 			i: user.token!,
-		} satisfies Misskey.entities.SigninFlowResponse;
+		} satisfies Misskey.entities.SigninContinueResponse;
 	}
 }
 

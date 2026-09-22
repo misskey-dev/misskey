@@ -67,7 +67,7 @@ function accepted() {
 	}
 }
 
-function onLogin(res: Misskey.entities.SigninFlowResponse & { finished: true }) {
+function onLogin(res: Misskey.entities.SigninContinueResponse & { finished: true }) {
 	login(res.i);
 }
 

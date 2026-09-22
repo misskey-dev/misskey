@@ -18,9 +18,10 @@ import { ApiLoggerService } from './api/ApiLoggerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
 import { AuthenticateService } from './api/AuthenticateService.js';
 import { RateLimiterService } from './api/RateLimiterService.js';
-import { SigninApiService } from './api/SigninApiService.js';
-import { SigninService } from './api/SigninService.js';
-import { SignupApiService } from './api/SignupApiService.js';
+import { AuthServerService } from './auth/AuthServerService.js';
+import { SigninApiService } from './auth/SigninApiService.js';
+import { SigninService } from './auth/SigninService.js';
+import { SignupApiService } from './auth/SignupApiService.js';
 import { StreamingApiServerService } from './api/StreamingApiServerService.js';
 import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
@@ -50,7 +51,6 @@ import { ChatRoomChannel } from './api/stream/channels/chat-room.js';
 import { ReversiChannel } from './api/stream/channels/reversi.js';
 import { ReversiGameChannel } from './api/stream/channels/reversi-game.js';
 import { NoteStreamingHidingService } from './api/stream/NoteStreamingHidingService.js';
-import { SigninWithPasskeyApiService } from './api/SigninWithPasskeyApiService.js';
 
 @Module({
 	imports: [
@@ -76,8 +76,8 @@ import { SigninWithPasskeyApiService } from './api/SigninWithPasskeyApiService.j
 		ApiServerService,
 		AuthenticateService,
 		RateLimiterService,
+		AuthServerService,
 		SigninApiService,
-		SigninWithPasskeyApiService,
 		SigninService,
 		SignupApiService,
 		StreamingApiServerService,

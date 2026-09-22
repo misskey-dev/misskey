@@ -14,12 +14,14 @@ import type { RequestInit, Headers, Response } from 'node-fetch';
 import * as htmlParser from 'node-html-parser';
 import { DataSource } from 'typeorm';
 import Fastify from 'fastify';
+import * as OTPAuth from 'otpauth';
 import { entities } from '@/postgres.js';
 import { loadConfig } from '@/config.js';
 import type * as misskey from 'misskey-js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
 import { ApiError } from '@/server/api/error.js';
+import type { AuthenticationResponseJSON, PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/server';
 
 export { server as startServer, jobQueue as startJobQueue } from '@/boot/common.js';
 
@@ -114,6 +116,126 @@ export const api = async <E extends keyof misskey.Endpoints, P extends misskey.E
 export const relativeFetch = async (path: string, init?: RequestInit | undefined) => {
 	return await fetch(new URL(path, `http://127.0.0.1:${port}/`).toString(), init);
 };
+
+//#region /auth (サインイン)
+
+/** `/auth` 配下のエラー応答。`/api` の `ApiError` とは違い `id` しか持たない */
+export type AuthApiErrorResponse = { error: { id: string } };
+
+/**
+ * `/auth` 配下のエンドポイントを叩く、{@link api} の兄弟。
+ * `/auth` は misskey-js の codegen に乗らないので、応答の型は呼び出し側が型引数で与える。
+ */
+export const authApi = async <T>(path: 'signin/init' | 'signin/continue', body: object): Promise<{
+	status: number,
+	headers: Headers,
+	body: T,
+}> => {
+	const res = await relativeFetch(`auth/${path}`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(body),
+		redirect: 'manual',
+	});
+
+	const resBody = res.headers.get('content-type')?.startsWith('application/json') === true
+		? await res.json() as T
+		: null;
+
+	return {
+		status: res.status,
+		headers: res.headers,
+		// FIXME: removing this non-null assertion: requires better typing around empty response.
+		body: resBody!,
+	};
+};
+
+/** サインインが完了した応答 */
+export type SigninFlowSuccess = Extract<misskey.entities.SigninContinueResponse, { finished: true }>;
+/** まだ完了しておらず、次の手段を要求している応答 */
+export type SigninFlowPending = Extract<misskey.entities.SigninContinueResponse, { finished: false }>;
+
+/** サインインが完了した応答であることを表明する (以降 `id` / `i` を読める) */
+export function assertSigninFinished(body: misskey.entities.SigninContinueResponse): asserts body is SigninFlowSuccess {
+	assert.strictEqual(body.finished, true, inspect(body));
+}
+
+/** サインインがまだ完了していない応答であることを表明する (以降 `next` を読める) */
+export function assertSigninPending(body: misskey.entities.SigninContinueResponse): asserts body is SigninFlowPending {
+	assert.strictEqual(body.finished, false, inspect(body));
+}
+
+/** パスキーを要求している応答であることを表明し、その challenge (`passkeyOptions`) を返す */
+export function assertPasskeyRequested(body: misskey.entities.SigninContinueResponse): PublicKeyCredentialRequestOptionsJSON {
+	assertSigninPending(body);
+	assert.ok(body.next === 'passkey' || body.next === 'totpOrPasskey', inspect(body));
+	return body.passkeyOptions;
+}
+
+/**
+ * サインインフローを最後まで駆動して結果を返す。トークンが欲しいだけのテスト向けで、
+ * 途中の応答やエラーを検査したいテストは {@link authApi} を直接使うこと。
+ */
+export const signinFlow = async (params: {
+	username: string,
+	password?: string,
+	/** TOTP の共有シークレット。渡すと TOTP のステップを自動で通す */
+	totpSecret?: string,
+	/**
+	 * パスキーのステップを通す credential を作る関数 (challenge はサーバー発行のものを使う)。
+	 * `password` を渡さずにこれだけを渡すとパスワードレスログインになる。
+	 */
+	credential?: (options: PublicKeyCredentialRequestOptionsJSON) => AuthenticationResponseJSON | Promise<AuthenticationResponseJSON>,
+}): Promise<SigninFlowSuccess> => {
+	const init = await authApi<misskey.entities.SigninInitResponse>('signin/init', {});
+	assert.strictEqual(init.status, 200, inspect(init.body));
+
+	const sessionId = init.body.sessionId;
+
+	const step = async (body: object): Promise<misskey.entities.SigninContinueResponse> => {
+		const res = await authApi<misskey.entities.SigninContinueResponse>('signin/continue', { sessionId, ...body });
+		assert.strictEqual(res.status, 200, inspect(res.body));
+		return res.body;
+	};
+
+	const totp = (): string => {
+		assert.ok(params.totpSecret != null, `signinFlow: TOTP が要求されたが totpSecret が渡されていない: ${params.username}`);
+		return OTPAuth.TOTP.generate({
+			secret: OTPAuth.Secret.fromBase32(params.totpSecret),
+			digits: 6,
+		});
+	};
+
+	let res = params.password === undefined && params.credential != null
+		? await step({ passkeyCredential: await params.credential(init.body.passkeyOptions) })
+		: await step({ username: params.username });
+
+	// 充足しうる手段はたかだか数個。フローが循環したときに無限ループしないよう上限を置く
+	for (let i = 0; i < 4 && !res.finished; i++) {
+		switch (res.next) {
+			case 'password':
+				assert.ok(params.password !== undefined, `signinFlow: パスワードが要求されたが渡されていない: ${params.username}`);
+				res = await step({ password: params.password });
+				break;
+			case 'totp':
+				res = await step({ token: totp() });
+				break;
+			case 'passkey':
+			case 'totpOrPasskey':
+				res = params.credential != null
+					? await step({ passkeyCredential: await params.credential(res.passkeyOptions) })
+					: await step({ token: totp() });
+				break;
+		}
+	}
+
+	assert.ok(res.finished, `signinFlow: サインインが完了しなかった: ${inspect(res)}`);
+	return res;
+};
+
+//#endregion
 
 export function randomString(chars = 'abcdefghijklmnopqrstuvwxyz0123456789', length = 16) {
 	let randomString = '';

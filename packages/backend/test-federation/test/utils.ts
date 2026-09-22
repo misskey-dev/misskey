@@ -12,12 +12,15 @@ const __dirname = dirname(__filename);
 export const ADMIN_PARAMS = { username: 'admin', password: 'admin' };
 const ADMIN_CACHE = new Map<Host, SigninResponse>();
 
+/** レートリミットに当たったときの再試行回数の上限。無限に再試行するとテストが理由も出さずに固まる */
+const SIGNIN_MAX_ATTEMPTS = 5;
+
 await Promise.all([
 	fetchAdmin('a.test'),
 	fetchAdmin('b.test'),
 ]);
 
-type SigninResponse = Omit<Misskey.entities.SigninFlowResponse & { finished: true }, 'finished'>;
+type SigninResponse = Omit<Extract<Misskey.entities.SigninContinueResponse, { finished: true }>, 'finished'>;
 
 export type LoginUser = SigninResponse & {
 	client: Misskey.api.APIClient;
@@ -56,27 +59,62 @@ export const WAIT_FOR_FEDERATION: WaitForOptions = { timeout: FEDERATION_TIMEOUT
 /** アカウント削除・凍結など、明らかに時間のかかる処理を待つ場合の {@link WAIT_FOR_FEDERATION} */
 export const WAIT_FOR_SLOW_FEDERATION: WaitForOptions = { timeout: 30000, interval: 500 };
 
+/** `/auth` 配下のエラー応答。`Misskey.api.APIClient` が投げる `APIError` に形を合わせてある */
+type AuthApiError = Error & { status: number, id?: string, code?: string };
+
+/** サインインは `/auth` 配下なので、`/api` 専用の `Misskey.api.APIClient` ではなく生の fetch で叩く */
+async function authRequest<T>(host: Host, path: 'signin/init' | 'signin/continue', body: object): Promise<T> {
+	const res = await fetch(`https://${host}/auth/${path}`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(body),
+	});
+
+	const json = await res.json() as T & { error?: { id?: string, code?: string } };
+
+	if (!res.ok) {
+		// eslint-disable-next-line no-throw-literal
+		throw Object.assign(new Error(`POST /auth/${path} on ${host} failed: ${res.status} ${JSON.stringify(json)}`), {
+			status: res.status,
+			id: json.error?.id,
+			code: json.error?.code,
+		}) satisfies AuthApiError;
+	}
+
+	return json;
+}
+
 async function signin(
 	host: Host,
-	params: Misskey.entities.SigninFlowRequest,
+	params: { username: string, password: string },
+	attempt = 1,
 ): Promise<SigninResponse> {
 	// wait for a second to prevent hit rate limit
 	await sleep(1000);
 
-	return await (new Misskey.api.APIClient({ origin: `https://${host}` }).request as Request)('signin-flow', params)
-		.then(res => {
-			strictEqual(res.finished, true);
-			if (params.username === ADMIN_PARAMS.username) ADMIN_CACHE.set(host, res);
-			return res;
-		})
-		.then(({ id, i }) => ({ id, i }))
-		.catch(async err => {
-			if (err.code === 'TOO_MANY_AUTHENTICATION_FAILURES') {
-				await sleep(Math.random() * 2000);
-				return await signin(host, params);
+	try {
+		const init = await authRequest<Misskey.entities.SigninInitResponse>(host, 'signin/init', {});
+		const sessionId = init.sessionId;
+
+		// 連合テストのアカウントは 2FA を設定しないので、ユーザー名 → パスワードで完了する
+		await authRequest<Misskey.entities.SigninContinueResponse>(host, 'signin/continue', { sessionId, username: params.username });
+		const res = await authRequest<Misskey.entities.SigninContinueResponse>(host, 'signin/continue', { sessionId, password: params.password });
+
+		if (!res.finished) throw new Error(`signin did not finish after the password step: ${JSON.stringify(res)}`);
+
+		const signinResponse = { id: res.id, i: res.i };
+		if (params.username === ADMIN_PARAMS.username) ADMIN_CACHE.set(host, signinResponse);
+		return signinResponse;
+	} catch (err) {
+		if ((err as AuthApiError).code === 'TOO_MANY_AUTHENTICATION_FAILURES') {
+			if (attempt >= SIGNIN_MAX_ATTEMPTS) {
+				throw new Error(`signin as ${params.username} on ${host} kept hitting the rate limit after ${SIGNIN_MAX_ATTEMPTS} attempts: ${(err as AuthApiError).message}`);
 			}
-			throw err;
-		});
+			await sleep(Math.random() * 2000);
+			return await signin(host, params, attempt + 1);
+		}
+		throw err;
+	}
 }
 
 async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse | undefined> {

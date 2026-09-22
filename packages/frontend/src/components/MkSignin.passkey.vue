@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<MkButton large primary rounded :disabled="queryingKey" style="margin: 0 auto;" @click="queryKey">{{ i18n.ts.retry }}</MkButton>
 
-		<MkButton v-if="isPerformingPasswordlessLogin !== true" transparent rounded :disabled="queryingKey" style="margin: 0 auto;" @click="emit('useTotp')">{{ i18n.ts.useTotp }}</MkButton>
+		<MkButton v-if="totpAvailable" transparent rounded :disabled="queryingKey" style="margin: 0 auto;" @click="emit('useTotp')">{{ i18n.ts.useTotp }}</MkButton>
 	</div>
 </div>
 </template>
@@ -32,7 +32,8 @@ import type { PublicKeyCredentialRequestOptionsJSON, AuthenticationResponseJSON 
 
 const props = defineProps<{
 	credentialRequest: PublicKeyCredentialRequestOptionsJSON;
-	isPerformingPasswordlessLogin?: boolean;
+	/** このセッションで TOTP も受理されるか (サーバーの next が totpOrPasskey のときだけ true) */
+	totpAvailable: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -57,7 +58,8 @@ async function queryKey() {
 }
 
 onMounted(() => {
-	queryKey();
+	// 利用者が OS のダイアログを閉じると reject される。画面上のボタンで再試行できる
+	queryKey().catch(() => {});
 });
 </script>
 
