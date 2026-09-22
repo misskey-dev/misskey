@@ -20,13 +20,11 @@
  *   2 = 引数、Git ref、コマンド起動などの理由で検査不能
  */
 
-import { spawnSync } from 'node:child_process';
 import { statSync } from 'node:fs';
 import { join } from 'node:path';
+import { execaSync } from 'execa';
 
 import { DEFAULT_INTEGRATION_REFS, findClosestMergeBase, gitLines, gitMergeBase, gitPaths } from './lib/git.mjs';
-
-const PNPM_COMMAND = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
 
 const LINT_TARGETS = [
 	{ root: 'packages/backend', pattern: /^packages\/backend\/(src|test-federation)\/.*\.ts$/ },
@@ -101,17 +99,16 @@ function isRegularFile(file) {
  * @returns {number}
  */
 function runCommand(command, args, cwd) {
-	const result = spawnSync(command, args, {
+	const result = execaSync(command, args, {
 		cwd,
 		stdio: 'inherit',
+		preferLocal: true,
+		reject: false,
 	});
-	if (result.error !== undefined) {
-		throw new OperationalError(`${command} を起動できない: ${result.error.message}`);
+	if (result.exitCode === undefined) {
+		throw new OperationalError(`${command} を実行できない: ${result.shortMessage}`);
 	}
-	if (result.status === null) {
-		throw new OperationalError(`${command} が signal ${result.signal ?? 'unknown'} で終了した`);
-	}
-	return result.status;
+	return result.exitCode;
 }
 
 /**
@@ -146,7 +143,7 @@ function runChangedFileLint(changedFiles, repoRoot) {
 
 			ran = true;
 			console.log(`Lint: ${target.root} (${files.length} files)`);
-			const current = normalizeStatus(runCommand(PNPM_COMMAND, ['exec', 'eslint', '--quiet', '--', ...files], join(repoRoot, target.root)));
+			const current = normalizeStatus(runCommand('pnpm', ['exec', 'eslint', '--quiet', '--', ...files], join(repoRoot, target.root)));
 			if (current > status) status = current;
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
