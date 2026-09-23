@@ -245,16 +245,11 @@ async function later(later: boolean) {
 
 .pageMain {
 	flex-grow: 1;
-	// JUICE: 下部固定(position: sticky)のpageFooterぶんの高さを確保しておかないと、
-	// 横長など縦方向が狭い画面でスクロール最下部にある要素(アイコン変更ボタン・
-	// 自己紹介欄の保存ボタン等)がフッターの裏に隠れてしまう
 	padding-bottom: 72px;
 }
 
 .pageFooter {
 	position: sticky;
-	// JUICE: MkButton等がposition:relative+z-index:1を持つため、
-	// 明示しないとpageMain側のボタンがこのstickyフッターより手前に描画されてしまう
 	z-index: 10;
 	bottom: 0;
 	left: 0;
