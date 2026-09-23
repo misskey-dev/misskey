@@ -4,7 +4,8 @@
 -
 
 ### Client
--
+- Fix: ユーザーページで引っ張って更新した際に、ユーザー情報も更新するように  
+  (Cherry-picked from https://github.com/shiroha-a/misskey-ts/commit/c946a42dbb71234dd9d9bbc14474853f0709431c)
 
 ### Server
 -
