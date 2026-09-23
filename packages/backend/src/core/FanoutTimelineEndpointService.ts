@@ -21,6 +21,7 @@ import { isReply } from '@/misc/is-reply.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { isChannelRelated } from '@/misc/is-channel-related.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 type NoteFilter = (note: MiNote) => boolean;
 
@@ -59,6 +60,7 @@ export class FanoutTimelineEndpointService {
 		private fanoutTimelineService: FanoutTimelineService,
 		private utilityService: UtilityService,
 		private channelMutingService: ChannelMutingService,
+		private userEntityService: UserEntityService,
 	) {
 	}
 
@@ -156,9 +158,10 @@ export class FanoutTimelineEndpointService {
 				filter = (note) => {
 					if (!ps.ignoreAuthorFromUserSuspension) {
 						if (note.user!.isSuspended) return false;
+						if (note.user!.isRemoteSuspended) return false;
 					}
-					if (note.userId !== note.renoteUserId && note.renote?.user?.isSuspended) return false;
-					if (note.userId !== note.replyUserId && note.reply?.user?.isSuspended) return false;
+					if (note.userId !== note.renoteUserId && note.renote?.user && this.userEntityService.isSuspendedEither(note.renote.user)) return false;
+					if (note.userId !== note.replyUserId && note.reply?.user && this.userEntityService.isSuspendedEither(note.reply.user)) return false;
 
 					return parentFilter(note);
 				};
