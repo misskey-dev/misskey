@@ -4,7 +4,8 @@
 -
 
 ### Client
--
+- Fix: 初期設定ダイアログの表示が一部乱れる問題を修正  
+  (Cherry-picked from https://github.com/Zel9278/misskey-juice/commit/25d65914f629936f33d7e41a1369eda1f6c4cd1d, https://github.com/Zel9278/misskey-juice/commit/6ff1ce752c4494f4889ec23ca5419645e3db98e0)
 
 ### Server
 -
