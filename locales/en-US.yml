@@ -1422,7 +1422,7 @@ append: "Append to end"
 prepend: "Append to beginning"
 urlPreviewSensitiveList: "URL to restrict thumbnail display"
 urlPreviewSensitiveListDescription: "Use spaces to specify AND conditions, and line breaks to specify OR conditions. Enclose text in slashes to use regular expressions. If a match is found, the thumbnail will be hidden."
-pixelatedZoom: "Pixalated Zoom"
+pixelatedZoom: "Pixelated Zoom"
 _imageEditing:
   _vars:
     caption: "File caption"
@@ -1601,7 +1601,7 @@ _accountSettings:
   makeNotesHiddenBeforeDescription: "While this feature is enabled, notes that are past the set date and time or have been visible only to you. When it is deactivated, the note publication status will also be restored."
   mayNotEffectForFederatedNotes: "Notes federated to a remote server may not be affected."
   mayNotEffectSomeSituations: "These restrictions are simplified. They may not apply in some situations, such as when viewing on a remote server or during moderation."
-  notesHavePassedSpecifiedPeriod: "Note that the specified time has passed"
+  notesHavePassedSpecifiedPeriod: "Notes after the specified date and time"
   notesOlderThanSpecifiedDateAndTime: "Notes before the specified date and time"
 _abuseUserReport:
   forward: "Forward"
@@ -2834,7 +2834,7 @@ _notification:
   exportOfXCompleted: "Export of {x} has been completed"
   login: "Someone logged in"
   createToken: "An access token has been created"
-  createTokenDescription: "If you have no idea, delete the access token through \"{text}\"."
+  createTokenDescription: "If you did not create this, delete it in \"{text}\"."
   _types:
     all: "All"
     note: "New notes"
@@ -3163,7 +3163,7 @@ _customEmojisManager:
     deleteSelectionRanges: "Delete rows in the selection"
     searchSettings: "Search settings"
     searchSettingCaption: "Set detailed search criteria."
-    searchLimit: ""
+    searchLimit: "Search limit"
     sortOrder: "Sort order"
     registrationLogs: "Registration log"
     registrationLogsCaption: "Logs will be displayed when updating or deleting Emojis. They will disappear after updating or deleting them, moving to a new page, or reloading."
@@ -3189,10 +3189,10 @@ _customEmojisManager:
       alertUpdateEmojisNothingDescription: "There are no updated Emojis."
       alertDeleteEmojisNothingDescription: "There are no Emojis to be deleted."
       confirmMovePage: "Would you like to move pages?"
-      confirmChangeView: ""
+      confirmChangeView: "Would you like to change view?"
       confirmUpdateEmojisDescription: "Update {count} Emoji(s). Are you sure to continue?"
       confirmDeleteEmojisDescription: "Delete checked {count} Emoji(s). Are you sure to continue?"
-      confirmResetDescription: ""
+      confirmResetDescription: "All changes made so far will be reset"
       confirmMovePageDesciption: "Changes have been made to the Emojis on this page.\nIf you leave the page without saving, all changes made on this page will be discarded."
       dialogSelectRoleTitle: "Search by role set in Emojis"
     _register:

@@ -22,6 +22,7 @@ import { ApiError } from './error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
+import type { Readable } from 'node:stream';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import type { IEndpointMeta, IEndpoint } from './endpoints.js';
@@ -31,6 +32,49 @@ const accessDenied = {
 	code: 'ACCESS_DENIED',
 	id: '56f35758-7dd5-468b-8439-5d6fb8ec9b8e',
 };
+
+/**
+ * multipartのpartを一時ファイルへ書き出す。
+ * クライアントの問題により書き出しできなかった場合はエラーを返し、サーバーの問題により書き出しできなかった場合は例外を投げる。
+ *
+ * ここで `stream.pipeline()` を使ってはいけない。EOFをpush済みだが 'end' はまだ発火していない状態のままdestroyされた
+ * readableに対し、`stream.pipeline()` は発火しない 'end' を待ち続けるため
+ */
+async function writeMultipartFileToTemp(file: Readable, path: string): Promise<Error | null> {
+	const dest = fs.createWriteStream(path);
+
+	// 片方が失敗するともう片方は完了しなくなるため、先に失敗した側だけを原因として記録する
+	let failed = false;
+	const reading = stream.finished(file, { writable: false }).then(() => null, (err: Error) => {
+		if (failed) return null; // 書き込み側の失敗に巻き込まれた
+		failed = true;
+		return err;
+	});
+	const writing = stream.finished(dest, { readable: false }).then(() => null, (err: Error) => {
+		if (failed) return null; // 読み込み側の失敗に巻き込まれた
+		failed = true;
+		file.destroy(); // partを待ち続けても意味がないので破棄
+		return err;
+	});
+
+	// end: falseにして、書き込み側を終わらせるのはpartの決着を見届けてから自分で行う。
+	// pipe()任せの自動end()はpartが 'end' を発火しないままdestroyされると呼ばれず、
+	// 書き込み側が永久に完了しない (空のpartの直後にlimitへ達した場合など)
+	file.pipe(dest, { end: false });
+
+	const readError = await reading;
+	if (failed) {
+		file.destroy();
+		dest.destroy();
+	} else {
+		dest.end();
+	}
+	const writeError = await writing;
+
+	if (readError != null) return readError;
+	if (writeError != null) throw writeError;
+	return null;
+}
 
 @Injectable()
 export class ApiCallService implements OnApplicationShutdown {
@@ -202,10 +246,19 @@ export class ApiCallService implements OnApplicationShutdown {
 		const [path, cleanup] = await createTemp();
 
 		try {
-			await stream.pipeline(multipartData.file, fs.createWriteStream(path));
+			const multipartError = await writeMultipartFileToTemp(multipartData.file, path);
+
+			// multipartを読み切れなかった場合
+			// クライアント起因なので400
+			if (multipartError != null) {
+				this.logger.debug(`Failed to read the multipart request body: ${multipartError.message}`);
+				reply.code(400);
+				reply.send();
+				return;
+			}
 
 			// ファイルサイズが制限を超えていた場合
-			// なお truncated はストリームを読み切ってからでないと機能しないため、stream.pipeline より後にある必要がある
+			// truncated はストリームを読み切ってからでないと機能しないため、書き出しより後にある必要がある
 			if (multipartData.file.truncated) {
 				reply.code(413);
 				reply.send();
