@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Feat: お知らせに自動アーカイブ日時を設定できるように
 
 ### Client
 -
