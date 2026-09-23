@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Feat: デッキにクリップのカラムを追加できるように
 
 ### Client
 -

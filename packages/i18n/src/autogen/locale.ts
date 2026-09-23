@@ -657,6 +657,10 @@ export interface Locale extends ILocale {
      */
     "selectAntenna": string;
     /**
+     * クリップを選択
+     */
+    "selectClip": string;
+    /**
      * アンテナを編集
      */
     "editAntenna": string;
@@ -11261,6 +11265,10 @@ export interface Locale extends ILocale {
              * チャンネル
              */
             "channel": string;
+            /**
+             * クリップ
+             */
+            "clip": string;
             /**
              * メンション
              */
