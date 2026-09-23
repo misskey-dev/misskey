@@ -283,18 +283,13 @@ async function updateMemo() {
 	isEditingMemo.value = false;
 }
 
-// **`watch([props.user], ...)` では発火しない。** props の値は plain object なので
-// watch source として無効で、再取得しても memo が古いまま残る。getter で渡す。
-// 編集中は上書きしない (入力中の内容を消してしまう)。
 watch(() => props.user, () => {
+	// 編集中は上書きしない (入力中の内容を消してしまう)
 	if (isEditingMemo.value) return;
 	memoDraft.value = props.user.memo;
 });
 
-// **reject させない。** `MkPullToRefresh` は `refresher()` の解決だけを見ており
-// (`components/MkPullToRefresh.vue:172` に catch が無い)、reject すると
-// `refreshFinished()` が呼ばれず引っ張った表示が戻らなくなる。`Paginator` 側も
-// ネットワーク断は握り潰す方針なので (`utility/paginator.ts` の doc)、それに揃える。
+// ここでは失敗は握りつぶす（Pull to Refreshがもどらなくなるので）
 async function reload() {
 	await Promise.allSettled([
 		props.refreshUser?.(),
