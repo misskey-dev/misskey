@@ -45,8 +45,12 @@ import { deepMerge } from '@/utility/merge.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 const tlComponent = useTemplateRef('tlComponent');
+
+// ホームタイムラインにはフォロー中のチャンネル以外の場合に折りたたみを無効化する。
+provide(DI.collapseSensitiveChannel, 'renote-only');
 
 type TimelinePageSrc = BasicTimelineType | `list:${string}`;
 

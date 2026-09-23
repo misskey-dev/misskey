@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, ref, useTemplateRef, computed } from 'vue';
+import { onMounted, watch, ref, useTemplateRef, computed, provide } from 'vue';
 import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -44,11 +44,15 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { hasWithReplies, isAvailableBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
+import { DI } from '@/di.js';
 
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
+
+// ホームタイムラインにはフォロー中のチャンネルし以外の場合に折りたたみを無効化する。
+provide(DI.collapseSensitiveChannel, 'renote-only');
 
 const timeline = useTemplateRef('timeline');
 
