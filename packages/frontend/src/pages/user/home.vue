@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</span>
 						</div>
 						<div v-if="iAmModerator" class="moderationNote">
-							<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
+							<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave @savingStateChange="(changed) => { isModerationNoteDirty = changed; }">
 								<template #label>{{ i18n.ts.moderationNote }}</template>
 								<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
 							</MkTextarea>
@@ -225,7 +225,7 @@ const emit = defineEmits<{
 
 const router = useRouter();
 
-const user = computed(() => props.user);
+const user = ref(props.user);
 const narrow = ref<null | boolean>(null);
 const rootEl = useTemplateRef('rootEl');
 const bannerEl = useTemplateRef('bannerEl');
@@ -235,9 +235,13 @@ const memoDraft = ref(props.user.memo);
 const isEditingMemo = ref(false);
 const moderationNote = ref(props.user.moderationNote ?? '');
 const editModerationNote = ref(false);
+const isModerationNoteDirty = ref(false);
 
-watch(moderationNote, async () => {
-	await misskeyApi('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
+watch(moderationNote, async (newValue) => {
+	// 再取得した値を同期しただけの場合は保存しない
+	if (newValue === (user.value.moderationNote ?? '')) return;
+	await misskeyApi('admin/update-user-note', { userId: user.value.id, text: newValue });
+	user.value = { ...user.value, moderationNote: newValue };
 });
 
 const style = computed(() => {
@@ -284,7 +288,9 @@ async function updateMemo() {
 }
 
 watch(() => props.user, () => {
+	user.value = props.user;
 	// 編集中は上書きしない (入力中の内容を消してしまう)
+	if (!isModerationNoteDirty.value) moderationNote.value = props.user.moderationNote ?? '';
 	if (isEditingMemo.value) return;
 	memoDraft.value = props.user.memo;
 });
