@@ -39,6 +39,7 @@ export class ImageCompositor<FNS extends Record<string, ImageCompositorFunction<
 	private canvas: HTMLCanvasElement | null = null;
 	private renderWidth: number;
 	private renderHeight: number;
+	private maxTextureSize: number;
 	private baseTexture: WebGLTexture;
 	private shaderCache: Map<string, WebGLProgram> = new Map();
 	private perLayerResultTextures: Map<string, WebGLTexture> = new Map();
@@ -58,9 +59,6 @@ export class ImageCompositor<FNS extends Record<string, ImageCompositorFunction<
 		this.renderWidth = options.renderWidth;
 		this.renderHeight = options.renderHeight;
 
-		this.canvas.width = this.renderWidth;
-		this.canvas.height = this.renderHeight;
-
 		const gl = this.canvas.getContext('webgl2', {
 			preserveDrawingBuffer: false,
 			alpha: true,
@@ -71,6 +69,14 @@ export class ImageCompositor<FNS extends Record<string, ImageCompositorFunction<
 
 		this.gl = gl;
 
+		const maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+		this.maxTextureSize = typeof maxTextureSize === 'number' && Number.isFinite(maxTextureSize) ? maxTextureSize : 4096;
+
+		this.assertTextureSize(this.renderWidth, this.renderHeight, 'render');
+
+		this.canvas.width = this.renderWidth;
+		this.canvas.height = this.renderHeight;
+
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
 		const VERTICES = new Float32Array([-1, -1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1]);
@@ -79,6 +85,7 @@ export class ImageCompositor<FNS extends Record<string, ImageCompositorFunction<
 		gl.bufferData(gl.ARRAY_BUFFER, VERTICES, gl.STATIC_DRAW);
 
 		if (options.image != null) {
+			this.assertTextureSize(options.image.width, options.image.height, 'image');
 			this.baseTexture = createTexture(gl);
 			gl.activeTexture(gl.TEXTURE0);
 			gl.bindTexture(gl.TEXTURE_2D, this.baseTexture);
@@ -118,6 +125,15 @@ export class ImageCompositor<FNS extends Record<string, ImageCompositorFunction<
 		for (const [id, fn] of Object.entries(options.functions)) {
 			const uniforms = this.extractUniformNamesFromShader(fn.shader);
 			this.registeredFunctions.set(id, { ...fn, id, uniforms });
+		}
+	}
+
+	private assertTextureSize(width: number, height: number, context: string) {
+		if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+			throw new Error(`Invalid ${context} size: ${width}x${height}`);
+		}
+		if (width > this.maxTextureSize || height > this.maxTextureSize) {
+			throw new Error(`Image ${context} size ${width}x${height} exceeds WebGL MAX_TEXTURE_SIZE ${this.maxTextureSize}`);
 		}
 	}
 
@@ -228,6 +244,8 @@ export class ImageCompositor<FNS extends Record<string, ImageCompositorFunction<
 	public registerTexture(key: string, image: ImageData | ImageBitmap | HTMLImageElement | HTMLCanvasElement) {
 		const gl = this.gl;
 
+		this.assertTextureSize(image.width, image.height, 'texture');
+
 		const existing = this.registeredTextures.get(key);
 		if (existing != null) {
 			gl.deleteTexture(existing.texture);
@@ -267,6 +285,8 @@ export class ImageCompositor<FNS extends Record<string, ImageCompositorFunction<
 
 	public changeResolution(width: number, height: number) {
 		if (this.renderWidth === width && this.renderHeight === height) return;
+
+		this.assertTextureSize(width, height, 'render');
 
 		this.renderWidth = width;
 		this.renderHeight = height;
