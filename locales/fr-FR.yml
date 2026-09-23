@@ -2370,6 +2370,9 @@ _dataSaver:
   _avatar:
     title: "Animation d'avatars"
     description: "Arrête l'animation d'avatars. Comme les images animées peuvent être plus volumineuses que les images normales, cela permet de réduire davantage le trafic de données."
+  _urlPreviewThumbnail:
+    title: "Cacher les aperçus des liens"
+    description: "Les miniatures d'aperçu des liens ne seront plus chargés."
   _code:
     title: "Mise en évidence du code"
     description: "Si la notation de mise en évidence du code est utilisée, par exemple dans la MFM, elle ne sera pas chargée tant qu'elle n'aura pas été tapée. La mise en évidence du code nécessite le chargement du fichier de définition de chaque langue à mettre en évidence, mais comme ces fichiers ne sont plus chargés automatiquement, on peut s'attendre à une réduction du trafic de données."

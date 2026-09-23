@@ -32,6 +32,7 @@ allowBuilds:
   vue-demi: true
   exifreader: false
   protobufjs: false
+  pnpm: true
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@misskey-dev/*'
@@ -54,6 +55,8 @@ minimumReleaseAgeExclude:
   - slacc-win32-x64-msvc
   - '@typescript/native-preview*'
   - undici@6.28.1 || 7.29.1 # そのうち消す
+  # Renovate security update: nodemailer@9.1.1
+  - nodemailer@9.1.1
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
