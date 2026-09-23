@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { claimZIndex } from '@/os.js';
 import { prefer } from '@/preferences.js';
 
@@ -49,8 +49,33 @@ function closePage() {
 }
 
 function onClosed() {
+	// When closing, remove our history entry if we're still on our hash
+	if (window.location.hash === `#folder-${props.pageId}`) {
+		window.history.back();
+	}
 	emit('closed');
 }
+
+function popstateHandler(): void {
+	// If the hash is no longer our folder hash, close the page
+	if (window.location.hash !== `#folder-${props.pageId}`) {
+		closePage();
+	}
+}
+
+onMounted(() => {
+	// Push a new history state with a unique hash when the folder page opens
+	const folderHash = `#folder-${props.pageId}`;
+	window.history.pushState(null, '', folderHash);
+	
+	// Listen for popstate events (browser back button)
+	window.addEventListener('popstate', popstateHandler);
+});
+
+onUnmounted(() => {
+	// Clean up the event listener
+	window.removeEventListener('popstate', popstateHandler);
+});
 
 </script>
 
