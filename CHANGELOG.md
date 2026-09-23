@@ -4,11 +4,14 @@
 -
 
 ### Client
--
+- Fix: Misskeyを一時的に閉じてから再度開いたときに、WebSocketが再接続されないことがある問題を修正  
+  (Cherry-picked from https://github.com/shiroha-a/misskey-ts/commit/8eda4aa2d02a7d737951553f2b6304fc6a4e4f7c)
 
 ### Server
 -
 
+### Misskey.js
+- Enhance: `Stream` に、WebSocket の再接続を行うための `reconnect()` メソッドを追加
 
 ## 2026.9.1
 
