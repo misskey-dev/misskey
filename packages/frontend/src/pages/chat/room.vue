@@ -31,12 +31,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton :class="$style.more" :wait="moreFetching" primary rounded @click="fetchMore">{{ i18n.ts.loadMore }}</MkButton>
 				</div>
 
-				<TransitionGroup
-					:enterActiveClass="prefer.s.animation ? $style.transition_x_enterActive : ''"
-					:leaveActiveClass="prefer.s.animation ? $style.transition_x_leaveActive : ''"
-					:enterFromClass="prefer.s.animation ? $style.transition_x_enterFrom : ''"
-					:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
-					:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
+				<MkTransitionGroup
+					:enterActiveClass="$style.transition_x_enterActive"
+					:leaveActiveClass="$style.transition_x_leaveActive"
+					:enterFromClass="$style.transition_x_enterFrom"
+					:leaveToClass="$style.transition_x_leaveTo"
+					:moveClass="$style.transition_x_move"
 					tag="div" class="_gaps"
 				>
 					<template v-for="item in timeline.toReversed()" :key="item.id">
@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<span>{{ item.prevText }} <i class="ti ti-chevron-down"></i></span>
 						</div>
 					</template>
-				</TransitionGroup>
+				</MkTransitionGroup>
 			</div>
 
 			<div v-if="user && (!user.canChat || user.host !== null)">
@@ -105,7 +105,6 @@ import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
-import { prefer } from '@/preferences.js';
 import MkButton from '@/components/MkButton.vue';
 import { useRouter } from '@/router.js';
 import { useMutationObserver } from '@/composables/use-mutation-observer.js';
