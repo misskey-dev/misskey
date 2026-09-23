@@ -1313,6 +1313,7 @@ noteOfThisUser: "このユーザーのノート一覧"
 clipNoteLimitExceeded: "これ以上このクリップにノートを追加できません。"
 performance: "パフォーマンス"
 modified: "変更あり"
+modifiedAt: "変更日時"
 discard: "破棄"
 thereAreNChanges: "{n}件の変更があります"
 signinWithPasskey: "パスキーでログイン"
@@ -1422,6 +1423,8 @@ append: "末尾に追加"
 prepend: "先頭に追加"
 urlPreviewSensitiveList: "サムネイルの表示を制限するURL"
 urlPreviewSensitiveListDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、サムネイルが表示されなくなります。"
+latestBackupAt: "最終バックアップ"
+latestSyncAt: "最終同期"
 pixelatedZoom: "ピクセルアート拡大モード"
 
 _imageEditing:
@@ -1591,7 +1594,9 @@ _preferencesProfile:
   useSyncBetweenDevicesOptionIfYouWantToSyncSetting: "複数のデバイスで同期したい設定項目が存在する場合は、個別に「複数のデバイスで同期」オプションを有効にしてください。"
 
 _preferencesBackup:
+  backupAndSync: "バックアップと同期"
   autoBackup: "自動バックアップ"
+  autoBackup_description: "設定を自動でサーバーに保存し、いつでも復元できるようにします"
   restoreFromBackup: "バックアップから復元"
   noBackupsFoundTitle: "バックアップが見つかりませんでした"
   noBackupsFoundDescription: "自動で作成されたバックアップは見つかりませんでしたが、バックアップファイルを手動で保存している場合、それをインポートして復元することはできます。"
@@ -1599,7 +1604,12 @@ _preferencesBackup:
   youNeedToNameYourProfileToEnableAutoBackup: "自動バックアップを有効にするにはプロファイル名の設定が必要です。"
   autoPreferencesBackupIsNotEnabledForThisDevice: "このデバイスで設定の自動バックアップは有効になっていません。"
   backupFound: "設定のバックアップが見つかりました"
-  forceBackup: "設定の強制バックアップ"
+  forceBackup: "今すぐバックアップ"
+  autoSync: "デバイス間同期"
+  autoSync_description: "サーバーに保存された設定を自動で取得し、別のデバイスでの変更と同期できるようにします"
+  forceSync: "今すぐ同期"
+  autoSyncAreYouSure: "デバイス間の同期をオンにしますか？"
+  autoSyncAreYouSure_description: "通信量が増えるため、他のデバイスとこのプロファイルを共有する予定がない場合はオンにしないでください。"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
