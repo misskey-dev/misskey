@@ -676,6 +676,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			target: values.target,
 			condFormula: values.condFormula,
 			isPublic: values.isPublic,
+			isPublicDisplayRequired: values.isPublicDisplayRequired ?? false,
 			isAdministrator: values.isAdministrator,
 			isModerator: values.isModerator,
 			isExplorable: values.isExplorable,

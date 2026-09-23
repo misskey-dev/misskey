@@ -53,8 +53,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div><MkSparkle><Mfm :plain="true" :text="user.followedMessage" :author="user" class="_selectable"/></MkSparkle></div>
 							</MkFukidashi>
 						</div>
-						<div v-if="user.roles.length > 0" class="roles">
-							<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color ?? '' }">
+						<div v-if="visibleProfileRoles.length > 0" class="roles">
+							<span v-for="role in visibleProfileRoles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color ?? '' }">
 								<MkA v-adaptive-bg :to="`/roles/${role.id}`">
 									<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
 									{{ role.name }}
@@ -222,6 +222,14 @@ const emit = defineEmits<{
 const router = useRouter();
 
 const user = ref(props.user);
+const visibleProfileRoles = computed(() => {
+	const roles = user.value.roles;
+	if ($i == null || $i.id !== user.value.id) return roles;
+
+	// 自分のプロフィールを自分で見た場合レスポンスに非表示ロールも含まれるので、別途除外する必要がある
+	const hiddenRoleIds = new Set($i.hiddenRoleIds ?? []);
+	return roles.filter(role => role.isPublicDisplayRequired === true || !hiddenRoleIds.has(role.id));
+});
 const narrow = ref<null | boolean>(null);
 const rootEl = useTemplateRef('rootEl');
 const bannerEl = useTemplateRef('bannerEl');
