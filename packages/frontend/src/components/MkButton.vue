@@ -22,8 +22,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, computed, onMounted, useTemplateRef } from 'vue';
-import MkA from '@/components/global/MkA.vue';
 import type { MkABehavior } from '@/components/global/MkA.vue';
+import MkA from '@/components/global/MkA.vue';
 
 const props = defineProps<{
 	type?: 'button' | 'submit' | 'reset' | 'a' | 'routerLink';
@@ -147,7 +147,7 @@ function onMousedown(evt: MouseEvent): void {
 	border-radius: 5px;
 	overflow: clip;
 	box-sizing: border-box;
-	transition: background 0.1s ease;
+	transition: background 0.1s ease, transform 0.1s ease;
 
 	&:hover {
 		text-decoration: none;
@@ -159,6 +159,7 @@ function onMousedown(evt: MouseEvent): void {
 
 	&:not(:disabled):active {
 		background: var(--MI_THEME-buttonHoverBg);
+		transform: scale(0.98);
 	}
 
 	&.iconOnly {
@@ -312,7 +313,7 @@ function onMousedown(evt: MouseEvent): void {
 	background: rgba(0, 0, 0, 0.1);
 	opacity: 1;
 	transform: scale(1);
-	transition: all 0.5s cubic-bezier(0,.5,0,1);
+	transition: opacity 0.5s cubic-bezier(0,.5,0,1), transform 0.5s cubic-bezier(0,.5,0,1);
 }
 
 .content {
