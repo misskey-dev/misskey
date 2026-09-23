@@ -24,6 +24,9 @@ export type StreamEvents = {
 	_disconnected_: void;
 } & BroadcastEvents;
 
+// 意図的な張り直しのときは、切断通知を抑止するために一定時間猶予を置く
+const intentionalReconnectGrace = 30 * 1000;
+
 export interface IStream extends EventEmitter<StreamEvents> {
 	state: 'initializing' | 'reconnecting' | 'connected';
 
@@ -37,6 +40,7 @@ export interface IStream extends EventEmitter<StreamEvents> {
 	send(typeOrPayload: string | Record<string, unknown> | unknown[], payload?: unknown): void;
 	ping(): void;
 	heartbeat(): void;
+	reconnect(): void;
 	close(): void;
 }
 
@@ -51,6 +55,8 @@ export default class Stream extends EventEmitter<StreamEvents> implements IStrea
 	private sharedConnections: SharedConnection[] = [];
 	private nonSharedConnections: NonSharedConnection[] = [];
 	private idCounter = 0;
+	private intentionalReconnect = false;
+	private reconnectGraceTimer: ReturnType<typeof setTimeout> | null = null;
 
 	constructor(origin: string, user: { token: string; } | null, options?: {
 		WebSocket?: Options['WebSocket'];
@@ -69,6 +75,7 @@ export default class Stream extends EventEmitter<StreamEvents> implements IStrea
 		this.onClose = this.onClose.bind(this);
 		this.onMessage = this.onMessage.bind(this);
 		this.send = this.send.bind(this);
+		this.reconnect = this.reconnect.bind(this);
 		this.close = this.close.bind(this);
 
 		// eslint-disable-next-line no-param-reassign
@@ -145,6 +152,8 @@ export default class Stream extends EventEmitter<StreamEvents> implements IStrea
 		const isReconnect = this.state === 'reconnecting';
 
 		this.state = 'connected';
+		this.intentionalReconnect = false;
+		this.clearReconnectGrace();
 		this.emit('_connected_');
 
 		// チャンネル再接続
@@ -158,10 +167,38 @@ export default class Stream extends EventEmitter<StreamEvents> implements IStrea
 	 * Callback of when close connection
 	 */
 	private onClose(): void {
-		if (this.state === 'connected') {
-			this.state = 'reconnecting';
-			this.emit('_disconnected_');
+		if (this.state !== 'connected') return;
+
+		this.state = 'reconnecting';
+
+		// Pool の購読状態は意図的な張り直しでもリセットする。再接続時に購読し直す。
+		for (const pool of this.sharedConnectionPools) pool.markDisconnected();
+
+		// 復帰時の張り直しは利用者にとって何も起きていないので通知しない。
+		// 出すとリロード / ダイアログ / バナーがアプリを前面に戻すたびに走る。
+		if (this.intentionalReconnect) {
+			this.armReconnectGrace();
+			return;
 		}
+
+		this.emit('_disconnected_');
+	}
+
+	// 猶予を過ぎても繋がらなければ、意図的な張り直しでも通常の切断として通知する。
+	private armReconnectGrace(): void {
+		this.clearReconnectGrace();
+		this.reconnectGraceTimer = setTimeout(() => {
+			this.reconnectGraceTimer = null;
+			if (this.state === 'connected') return;
+			this.intentionalReconnect = false;
+			this.emit('_disconnected_');
+		}, intentionalReconnectGrace);
+	}
+
+	private clearReconnectGrace(): void {
+		if (this.reconnectGraceTimer == null) return;
+		clearTimeout(this.reconnectGraceTimer);
+		this.reconnectGraceTimer = null;
 	}
 
 	/**
@@ -221,9 +258,21 @@ export default class Stream extends EventEmitter<StreamEvents> implements IStrea
 	}
 
 	/**
+	 * Reconnect to the server
+	 *
+	 * Intentionally reconnecting to the server will not notify the user of disconnection.
+	 */
+	public reconnect(): void {
+		this.intentionalReconnect = true;
+		this.onClose();
+		this.stream.reconnect();
+	}
+
+	/**
 	 * Close this connection
 	 */
 	public close(): void {
+		this.clearReconnectGrace();
 		this.stream.close();
 	}
 }
@@ -239,7 +288,6 @@ class Pool {
 	private isConnected = false;
 
 	constructor(stream: Stream, channel: string, id: string) {
-		this.onStreamDisconnected = this.onStreamDisconnected.bind(this);
 		this.inc = this.inc.bind(this);
 		this.dec = this.dec.bind(this);
 		this.connect = this.connect.bind(this);
@@ -248,11 +296,13 @@ class Pool {
 		this.channel = channel;
 		this.stream = stream;
 		this.id = id;
-
-		this.stream.on('_disconnected_', this.onStreamDisconnected);
 	}
 
-	private onStreamDisconnected(): void {
+	/**
+	 * Mark this pool as disconnected.
+	 * This is used when the connection is lost and the pool needs to be reconnected.
+	 */
+	public markDisconnected(): void {
 		this.isConnected = false;
 	}
 
@@ -293,7 +343,6 @@ class Pool {
 	}
 
 	private disconnect(): void {
-		this.stream.off('_disconnected_', this.onStreamDisconnected);
 		this.stream.send('disconnect', { id: this.id });
 		this.stream.removeSharedConnectionPool(this);
 	}
