@@ -62,6 +62,7 @@ const tab = ref(props.page);
 const user = ref<null | Misskey.entities.UserDetailed>(CTX_USER);
 const error = ref<any>(null);
 
+// 初回読込時専用（使える場合はサーバーコンテキストから取得する）
 function fetchUser(): void {
 	if (props.acct == null) return;
 
@@ -87,16 +88,7 @@ watch(() => props.acct, fetchUser, {
 	immediate: true,
 });
 
-/**
- * Refetches the user in place, for pull to refresh.
- *
- * `fetchUser` は先に `user.value = null` を置くので、`v-if="user"` の下にある
- * タブごと unmount される。pull to refresh から呼ぶと実行中の `MkPullToRefresh`
- * が破棄され、`refresher` の Promise を待っている表示が戻らない。
- *
- * SSR コンテキストへの短絡も通さない。あれは初回ハイドレーション用で、
- * 未ログインの訪問者に埋め込み済みの古いオブジェクトを返してしまう。
- */
+// 再読込時専用（強制fetch）
 async function refreshUser(): Promise<void> {
 	if (props.acct == null) return;
 

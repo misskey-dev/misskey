@@ -187,6 +187,7 @@ import MkSparkle from '@/components/MkSparkle.vue';
 import { prefer } from '@/preferences.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { isBirthday } from '@/utility/is-birthday.js';
+import type XTimeline_TypeReferenceOnly from './index.timeline.vue';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -229,9 +230,7 @@ const narrow = ref<null | boolean>(null);
 const rootEl = useTemplateRef('rootEl');
 const bannerEl = useTemplateRef('bannerEl');
 const memoTextareaEl = useTemplateRef('memoTextareaEl');
-// XTimeline は defineAsyncComponent なので expose の型が推論されない。
-// MkLazy の下にあるため表示前は null になりうる。
-const timelineEl = useTemplateRef<{ reload: () => Promise<void> }>('timelineEl');
+const timelineEl = useTemplateRef<InstanceType<typeof XTimeline_TypeReferenceOnly>>('timelineEl');
 const memoDraft = ref(props.user.memo);
 const isEditingMemo = ref(false);
 const moderationNote = ref(props.user.moderationNote ?? '');

@@ -55,10 +55,8 @@ const notesPaginator = markRaw(new Paginator('users/notes', {
 	})),
 }));
 
-// 内側の `MkNotesTimeline` は `pullToRefresh` を切ってあり、引っ張る操作は
-// 外側のページが持つ。そちらから表示中のタブを更新できるようにする。
 defineExpose({
-	reload: (): Promise<void> => (tab.value === 'featured' ? featuredPaginator : notesPaginator).reload(),
+	reload: () => (tab.value === 'featured' ? featuredPaginator : notesPaginator).reload(),
 });
 </script>
 
