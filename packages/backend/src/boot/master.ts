@@ -45,7 +45,7 @@ function greet(props: { version: string; format: LogFormat }) {
 		console.log(' ' + chalk.gray(v) + themeColor('                        |___|\n'.substring(v.length)));
 		//#endregion
 
-		console.log(' Misskey is an open-source decentralized microblogging platform.');
+		console.log(' wwwwwwwwwwwwwwwwwwww.');
 		console.log(chalk.rgb(255, 136, 0)(' If you like Misskey, please consider donating to support dev. https://misskey-hub.net/docs/donate/'));
 
 		console.log('');
