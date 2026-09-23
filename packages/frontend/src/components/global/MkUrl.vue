@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import { toUnicode as decodePunycode } from 'punycode.js';
 import { url as local } from '@@/js/config.js';
 import { maybeMakeRelative } from '@@/js/url.js';
@@ -51,10 +51,13 @@ const props = withDefaults(defineProps<{
 	showUrlPreview: true,
 });
 
-const maybeRelativeUrl = maybeMakeRelative(props.url, local);
-const self = maybeRelativeUrl !== props.url;
-const url = new URL(props.url);
-if (!['http:', 'https:'].includes(url.protocol)) throw new Error('invalid url');
+const maybeRelativeUrl = computed(() => maybeMakeRelative(props.url, local));
+const self = computed(() => maybeRelativeUrl.value !== props.url);
+const url = computed(() => {
+	const parsed = new URL(props.url);
+	if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('invalid url');
+	return parsed;
+});
 const el = ref();
 
 if (props.showUrlPreview && isEnabledUrlPreview.value) {
@@ -69,14 +72,14 @@ if (props.showUrlPreview && isEnabledUrlPreview.value) {
 	});
 }
 
-const schema = url.protocol;
-const hostname = decodePunycode(url.hostname);
-const port = url.port;
-const pathname = safeURIDecode(url.pathname);
-const query = safeURIDecode(url.search);
-const hash = safeURIDecode(url.hash);
-const attr = self ? 'to' : 'href';
-const target = self ? null : '_blank';
+const schema = computed(() => url.value.protocol);
+const hostname = computed(() => decodePunycode(url.value.hostname));
+const port = computed(() => url.value.port);
+const pathname = computed(() => safeURIDecode(url.value.pathname));
+const query = computed(() => safeURIDecode(url.value.search));
+const hash = computed(() => safeURIDecode(url.value.hash));
+const attr = computed(() => (self.value ? 'to' : 'href'));
+const target = computed(() => (self.value ? null : '_blank'));
 </script>
 
 <style lang="scss" module>

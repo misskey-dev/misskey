@@ -93,6 +93,24 @@ export class UserPreview {
 		this.close();
 	}
 
+	public setUser(user: string | Misskey.entities.UserDetailed) {
+		if (this.user === user) return;
+		this.user = user;
+		// 表示中のポップアップは古いユーザーのものなので閉じる
+		this.close();
+	}
+
+	public dispose() {
+		if (this.showTimer) window.clearTimeout(this.showTimer);
+		if (this.hideTimer) window.clearTimeout(this.hideTimer);
+		if (this.checkTimer) window.clearInterval(this.checkTimer);
+		this.showTimer = null;
+		this.hideTimer = null;
+		this.checkTimer = null;
+		this.close();
+		this.detach();
+	}
+
 	public attach() {
 		this.el.addEventListener('mouseover', this.onMouseover);
 		this.el.addEventListener('mouseleave', this.onMouseleave);
@@ -118,11 +136,31 @@ export const userPreviewDirective = {
 		states.set(el, preview);
 	},
 
-	unmounted(el, binding) {
-		if (binding.value == null) return;
+	updated(el, binding) {
+		if (binding.value === binding.oldValue) return;
+		if (isTouchUsing) return;
+
+		const preview = states.get(el);
+
+		if (binding.value == null) {
+			if (preview) {
+				preview.dispose();
+				states.delete(el);
+			}
+			return;
+		}
+
+		if (preview) {
+			preview.setUser(binding.value);
+		} else {
+			states.set(el, new UserPreview(el, binding.value));
+		}
+	},
+
+	unmounted(el) {
 		const preview = states.get(el);
 		if (preview) {
-			preview.detach();
+			preview.dispose();
 			states.delete(el);
 		}
 	},
