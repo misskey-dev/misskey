@@ -898,9 +898,10 @@ export class ChatService {
 
 		await this.chatMessagesRepository.createQueryBuilder().update()
 			.set({
-				reactions: () => `array_append("reactions", '${userId}/${reaction}')`,
+				reactions: () => `array_append("reactions", :pair)`,
 			})
 			.where('id = :id', { id: message.id })
+			.setParameter('pair', `${userId}/${reaction}`)
 			.execute();
 
 		if (room) {
@@ -942,9 +943,10 @@ export class ChatService {
 
 		await this.chatMessagesRepository.createQueryBuilder().update()
 			.set({
-				reactions: () => `array_remove("reactions", '${userId}/${reaction}')`,
+				reactions: () => `array_remove("reactions", :pair)`,
 			})
 			.where('id = :id', { id: message.id })
+			.setParameter('pair', `${userId}/${reaction}`)
 			.execute();
 
 		// TODO: 実際に削除が行われたときのみイベントを発行する
