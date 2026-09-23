@@ -4,7 +4,8 @@
 -
 
 ### Client
--
+- Fix: ユーザーの「概要」ページで引っ張って更新しても何も更新されない問題を修正  
+  (Cherry-picked from https://github.com/shiroha-a/misskey-ts/commit/c946a42dbb71234dd9d9bbc14474853f0709431c)
 
 ### Server
 -
