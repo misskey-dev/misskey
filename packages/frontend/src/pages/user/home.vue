@@ -144,7 +144,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</template>
 					<div v-if="!disableNotes">
 						<MkLazy>
-							<XTimeline :user="user"/>
+							<XTimeline ref="timelineEl" :user="user"/>
 						</MkLazy>
 					</div>
 				</div>
@@ -209,9 +209,12 @@ const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed;
+	/** Refetches the user in place. Supplied by the parent page. */
+	refreshUser?: () => Promise<void>;
 	/** Test only; MkNotesTimeline currently causes problems in vitest */
 	disableNotes?: boolean;
 }>(), {
+	refreshUser: undefined,
 	disableNotes: false,
 });
 
@@ -221,11 +224,14 @@ const emit = defineEmits<{
 
 const router = useRouter();
 
-const user = ref(props.user);
+const user = computed(() => props.user);
 const narrow = ref<null | boolean>(null);
 const rootEl = useTemplateRef('rootEl');
 const bannerEl = useTemplateRef('bannerEl');
 const memoTextareaEl = useTemplateRef('memoTextareaEl');
+// XTimeline は defineAsyncComponent なので expose の型が推論されない。
+// MkLazy の下にあるため表示前は null になりうる。
+const timelineEl = useTemplateRef<{ reload: () => Promise<void> }>('timelineEl');
 const memoDraft = ref(props.user.memo);
 const isEditingMemo = ref(false);
 const moderationNote = ref(props.user.moderationNote ?? '');
@@ -278,12 +284,23 @@ async function updateMemo() {
 	isEditingMemo.value = false;
 }
 
-watch([props.user], () => {
+// **`watch([props.user], ...)` では発火しない。** props の値は plain object なので
+// watch source として無効で、再取得しても memo が古いまま残る。getter で渡す。
+// 編集中は上書きしない (入力中の内容を消してしまう)。
+watch(() => props.user, () => {
+	if (isEditingMemo.value) return;
 	memoDraft.value = props.user.memo;
 });
 
+// **reject させない。** `MkPullToRefresh` は `refresher()` の解決だけを見ており
+// (`components/MkPullToRefresh.vue:172` に catch が無い)、reject すると
+// `refreshFinished()` が呼ばれず引っ張った表示が戻らなくなる。`Paginator` 側も
+// ネットワーク断は握り潰す方針なので (`utility/paginator.ts` の doc)、それに揃える。
 async function reload() {
-	// TODO
+	await Promise.allSettled([
+		props.refreshUser?.(),
+		timelineEl.value?.reload(),
+	]);
 }
 
 let bannerParallaxResizeObserver: ResizeObserver | null = null;

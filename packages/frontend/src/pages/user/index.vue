@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader v-model:tab="tab" :tabs="headerTabs" :actions="headerActions" :swipable="true">
 	<div v-if="user">
-		<XHome v-if="tab === 'home'" :user="user" @showMoreFiles="() => { tab = 'files'; }"/>
+		<XHome v-if="tab === 'home'" :user="user" :refreshUser="refreshUser" @showMoreFiles="() => { tab = 'files'; }"/>
 		<XNotes v-else-if="tab === 'notes'" :user="user"/>
 		<XFiles v-else-if="tab === 'files'" :user="user"/>
 		<XActivity v-else-if="tab === 'activity'" :user="user"/>
@@ -86,6 +86,23 @@ function fetchUser(): void {
 watch(() => props.acct, fetchUser, {
 	immediate: true,
 });
+
+/**
+ * Refetches the user in place, for pull to refresh.
+ *
+ * `fetchUser` は先に `user.value = null` を置くので、`v-if="user"` の下にある
+ * タブごと unmount される。pull to refresh から呼ぶと実行中の `MkPullToRefresh`
+ * が破棄され、`refresher` の Promise を待っている表示が戻らない。
+ *
+ * SSR コンテキストへの短絡も通さない。あれは初回ハイドレーション用で、
+ * 未ログインの訪問者に埋め込み済みの古いオブジェクトを返してしまう。
+ */
+async function refreshUser(): Promise<void> {
+	if (props.acct == null) return;
+
+	const { username, host } = Misskey.acct.parse(props.acct);
+	user.value = await misskeyApi('users/show', { username, host });
+}
 
 const headerActions = computed(() => []);
 
