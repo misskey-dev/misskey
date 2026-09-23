@@ -6,6 +6,7 @@
 import { describe, test } from 'vitest';
 import * as assert from 'assert';
 import httpSignature from '@peertube/http-signature';
+import { parseRequestSignature, verifyDraftSignature } from '@misskey-dev/node-http-message-signatures';
 
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
 import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
@@ -32,6 +33,28 @@ function cartesianProduct<T, U>(a: T[], b: U[]): [T, U][] {
 }
 
 describe('ap-request', () => {
+	test.each(['GET', 'POST'])('RSA %s signatures survive request parsing and queue serialization', async method => {
+		const keypair = await genRsaKeyPair();
+		const key = { keyId: 'https://example.com/users/alice#main-key', privateKeyPem: keypair.privateKey };
+		const args = { key, url: 'https://example.com/inbox?cursor=1', body: '{}', additionalHeaders: {} };
+		const signed = method === 'POST'
+			? await ApRequestCreator.createSignedPost(args)
+			: await ApRequestCreator.createSignedGet(args);
+		const parsed = parseRequestSignature({
+			...signed.request,
+			headers: { ...signed.request.headers, host: 'example.com' },
+		});
+		assert.strictEqual(parsed.version, 'draft');
+		if (parsed.version !== 'draft') throw new Error('Expected draft signature');
+		assert.strictEqual(parsed.value.keyId, key.keyId);
+		assert.strictEqual(parsed.value.params.algorithm, 'rsa-sha256');
+		const queued = JSON.parse(JSON.stringify(parsed.value));
+		assert.strictEqual(await verifyDraftSignature(queued, keypair.publicKey), true);
+		assert.strictEqual(httpSignature.verifySignature(queued, keypair.publicKey), true);
+		queued.signingString += 'changed';
+		assert.strictEqual(await verifyDraftSignature(queued, keypair.publicKey), false);
+	});
+
 	test('createSignedPost with verify', async () => {
 		const keypair = await genRsaKeyPair();
 		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
