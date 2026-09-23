@@ -5,18 +5,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <header :class="$style.root">
-	<div v-if="mock" :class="$style.name">
-		<MkUserName :user="note.user"/>
-	</div>
-	<MkA v-else v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
-		<MkUserName :user="note.user"/>
-	</MkA>
-	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
-	<div :class="$style.username"><MkAcct :user="note.user"/></div>
-	<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
-		<img v-for="(role, i) in note.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
-	</div>
-	<div :class="$style.info">
+	<template v-if="note && !note.deletedAt">
+		<MkNoteUserName :class="$style.name" :note="note" :link="!mock"/>
+		<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
+		<div :class="$style.username"><MkAcct :user="note.user"/></div>
+		<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
+			<img v-for="(role, i) in note.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
+		</div>
+	</template>
+	<template v-else>
+		<MkNoteUserName :class="$style.name" :note="note"/>
+	</template>
+	<div v-if="note" :class="$style.info">
 		<div v-if="mock">
 			<MkTime :time="note.createdAt" colored/>
 		</div>
@@ -39,11 +39,11 @@ import { inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { notePage } from '@/filters/note.js';
-import { userPage } from '@/filters/user.js';
+import MkNoteUserName from '@/components/MkNoteUserName.vue';
 import { DI } from '@/di.js';
 
 defineProps<{
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note | null;
 }>();
 
 const mock = inject(DI.mock, false);

@@ -5,15 +5,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<EmAvatar :class="$style.avatar" :user="note.user" link preview/>
+	<EmAvatar v-if="note != null && !note.deletedAt" :class="$style.avatar" :user="note.user" link preview/>
+	<div v-else :class="$style.avatar"></div>
 	<div :class="$style.main">
 		<EmNoteHeader :class="$style.header" :note="note" :mini="true"/>
 		<div>
-			<p v-if="note.cw != null" :class="$style.cw">
+			<p v-if="note?.cw != null" :class="$style.cw">
 				<EmMfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'" :emojiUrls="note.emojis"/>
 				<button style="display: block; width: 100%;" class="_buttonGray _buttonRounded" @click="showContent = !showContent">{{ showContent ? i18n.ts._cw.hide : i18n.ts._cw.show }}</button>
 			</p>
-			<div v-show="note.cw == null || showContent">
+			<div v-show="note?.cw == null || showContent">
 				<EmSubNoteContent :class="$style.text" :note="note"/>
 			</div>
 		</div>
@@ -31,7 +32,7 @@ import EmSubNoteContent from '@/components/EmSubNoteContent.vue';
 import EmMfm from '@/components/EmMfm.js';
 
 const props = defineProps<{
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note | null;
 }>();
 
 const showContent = ref(false);
