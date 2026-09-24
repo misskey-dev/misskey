@@ -378,7 +378,14 @@ export class Paginator<
 
 	public pushItems(oldItems: T[]): void {
 		if (oldItems.length === 0) return; // これやらないと余計なre-renderが走る
-		this.items.value.push(...oldItems);
+		const existingIds = new Set(this.items.value.map(x => x.id));
+		const itemsToAdd = oldItems.filter(x => {
+			if (existingIds.has(x.id)) return false;
+			existingIds.add(x.id);
+			return true;
+		});
+		if (itemsToAdd.length === 0) return;
+		this.items.value.push(...itemsToAdd);
 		if (this.useShallowRef) triggerRef(this.items);
 	}
 
