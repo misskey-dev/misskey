@@ -31,7 +31,6 @@ import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { Config } from '@/config.js';
-import { safeForSql } from '@/misc/safe-for-sql.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { notificationRecieveConfig } from '@/models/json-schema/user.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
@@ -564,7 +563,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	}
 
 	private async verifyLink(url: string, user: MiLocalUser) {
-		if (!safeForSql(url)) return;
+		if (!URL.canParse(url)) return;
 
 		try {
 			const html = await this.httpRequestService.getHtml(url);
@@ -583,8 +582,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				await this.userProfilesRepository.createQueryBuilder('profile').update()
 					.where('userId = :userId', { userId: user.id })
 					.set({
-						verifiedLinks: () => `array_append("verifiedLinks", '${url}')`, // ここでSQLインジェクションされそうなのでとりあえず safeForSql で弾いている
+						verifiedLinks: () => `array_append("verifiedLinks", :url)`,
 					})
+					.setParameter('url', url)
 					.execute();
 			}
 		} catch (_) {

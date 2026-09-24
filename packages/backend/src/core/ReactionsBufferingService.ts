@@ -171,10 +171,17 @@ export class ReactionsBufferingService implements OnApplicationShutdown {
 
 		// TODO: SQL一個にまとめたい
 		for (const [noteId, buffered] of bufferedMap) {
-			const sql = Object.entries(buffered.deltas)
-				.map(([reaction, count]) =>
-					`jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + ${count})::text::jsonb)`)
-				.join(' || ');
+			const deltas = Object.entries(buffered.deltas);
+			if (deltas.length === 0) continue;
+
+			const expressions: string[] = [];
+			const parameters: Record<string, string | number> = {};
+			for (const [i, [reaction, count]] of deltas.entries()) {
+				expressions.push(`jsonb_set("reactions", ARRAY[:reaction${i}], (COALESCE("reactions"->>:reaction${i}, '0')::int + :count${i})::text::jsonb)`);
+				parameters[`reaction${i}`] = reaction;
+				parameters[`count${i}`] = count;
+			}
+			const sql = expressions.join(' || ');
 
 			this.notesRepository.createQueryBuilder().update()
 				.set({
@@ -182,6 +189,7 @@ export class ReactionsBufferingService implements OnApplicationShutdown {
 					reactionAndUserPairCache: buffered.pairs.map(x => x.join('/')),
 				})
 				.where('id = :id', { id: noteId })
+				.setParameters(parameters)
 				.execute();
 		}
 	}
