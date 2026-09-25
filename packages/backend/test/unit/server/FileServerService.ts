@@ -90,10 +90,10 @@ describe('FileServerService', () => {
 	let createdFallbackAssets = false;
 	let fallbackAssetsDir = '';
 
-	function writeInternalFile(key: string) {
+	function writeInternalFile(key: string, data: Buffer = dummyBuffer) {
 		const dest = internalStorageService.resolvePath(key);
 		fs.mkdirSync(path.dirname(dest), { recursive: true });
-		fs.copyFileSync(dummyPath, dest);
+		fs.writeFileSync(dest, data);
 		storedPaths.push(dest);
 	}
 
@@ -371,10 +371,14 @@ describe('FileServerService', () => {
 			expect(res.headers['content-length']).toBe(String(dummySize));
 		});
 
+		/** Content-Range の総量と範囲は、応答対象のサムネイルのバイト列に基づく。 */
 		test('GET /files/:key thumbnail の Range で部分配信する', async () => {
 			const accessKey = randomString();
 			const thumbnailKey = randomString();
-			writeInternalFile(thumbnailKey);
+			const thumbnailBuffer = await sharp(dummyBuffer).resize(1, 1).png().toBuffer();
+			expect(thumbnailBuffer.length).not.toBe(dummySize);
+			writeInternalFile(accessKey);
+			writeInternalFile(thumbnailKey, thumbnailBuffer);
 			await insertDriveFile({
 				accessKey,
 				thumbnailAccessKey: thumbnailKey,
@@ -392,17 +396,22 @@ describe('FileServerService', () => {
 			});
 
 			expect(res.statusCode).toBe(206);
-			expect(res.headers['content-range']).toBe(`bytes 0-3/${dummySize}`);
+			expect(res.headers['content-range']).toBe(`bytes 0-3/${thumbnailBuffer.length}`);
 			expect(res.headers['accept-ranges']).toBe('bytes');
 			expect(res.headers['content-length']).toBe('4');
 			expect(res.headers['content-type']).toBe('image/png');
 			expect(res.headers['cache-control']).toBe('max-age=31536000, immutable');
+			expect(res.rawPayload).toEqual(thumbnailBuffer.subarray(0, 4));
 		});
 
-		test('GET /files/:key thumbnail のファイル名を整形する', async () => {
+		/** Content-Length は、内蔵ストレージに保存したサムネイルのバイト数と一致する。 */
+		test('GET /files/:key thumbnail のファイル名と配信サイズを検証する', async () => {
 			const accessKey = randomString();
 			const thumbnailKey = randomString();
-			writeInternalFile(thumbnailKey);
+			const thumbnailBuffer = await sharp(dummyBuffer).resize(1, 1).png().toBuffer();
+			expect(thumbnailBuffer.length).not.toBe(dummySize);
+			writeInternalFile(accessKey);
+			writeInternalFile(thumbnailKey, thumbnailBuffer);
 			await insertDriveFile({
 				accessKey,
 				thumbnailAccessKey: thumbnailKey,
@@ -420,12 +429,18 @@ describe('FileServerService', () => {
 			expect(res.headers['content-type']).toBe('image/png');
 			expect(res.headers['cache-control']).toBe('max-age=31536000, immutable');
 			expect(res.headers['content-disposition'] ?? '').toContain('sample-thumb.png');
+			expect(res.rawPayload).toEqual(thumbnailBuffer);
+			expect(res.headers['content-length']).toBe(String(thumbnailBuffer.length));
 		});
 
-		test('GET /files/:key webpublic のファイル名を整形する', async () => {
+		/** Content-Length は、Web公開用に変換して内蔵ストレージに保存した画像のバイト数と一致する。 */
+		test('GET /files/:key webpublic のファイル名と配信サイズを検証する', async () => {
 			const accessKey = randomString();
 			const webpublicKey = randomString();
-			writeInternalFile(webpublicKey);
+			const webpublicBuffer = await sharp(dummyBuffer).resize(1, 1).png().toBuffer();
+			expect(webpublicBuffer.length).not.toBe(dummySize);
+			writeInternalFile(accessKey);
+			writeInternalFile(webpublicKey, webpublicBuffer);
 			await insertDriveFile({
 				accessKey,
 				webpublicAccessKey: webpublicKey,
@@ -443,6 +458,8 @@ describe('FileServerService', () => {
 			expect(res.headers['content-type']).toBe('image/png');
 			expect(res.headers['cache-control']).toBe('max-age=31536000, immutable');
 			expect(res.headers['content-disposition'] ?? '').toContain('sample-web.png');
+			expect(res.rawPayload).toEqual(webpublicBuffer);
+			expect(res.headers['content-length']).toBe(String(webpublicBuffer.length));
 		});
 
 		test('GET /files/:key browsersafe でない MIME は octet-stream になる', async () => {
