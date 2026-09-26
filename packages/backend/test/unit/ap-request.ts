@@ -116,6 +116,13 @@ describe('ap-request', () => {
 		});
 		assert.ok(emptyQueryWithHash.signingString.split('\n').includes('(request-target): get /outbox?'));
 
+		const emptyQuery = await ApRequestCreator.createSignedGet({
+			key,
+			url: 'https://example.com/outbox?',
+			additionalHeaders: { 'User-Agent': 'UA' },
+		});
+		assert.ok(emptyQuery.signingString.split('\n').includes('(request-target): get /outbox?'));
+
 		const withoutQuery = await ApRequestCreator.createSignedGet({
 			key,
 			url: 'https://example.com/outbox',
