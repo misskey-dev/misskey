@@ -8,7 +8,7 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "26.5.1",
+		"@types/node": "26.6.2",
 		"@types/tinycolor2": "1.4.6",
 		"@typescript-eslint/eslint-plugin": "8.70.0",
 		"@typescript-eslint/parser": "8.70.0",
@@ -25,6 +25,6 @@
 		"misskey-js": "workspace:*",
 		"shiki": "4.4.3",
 		"tinycolor2": "1.6.0",
-		"vue": "3.5.42"
+		"vue": "3.5.43"
 	}
 }

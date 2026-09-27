@@ -21,7 +21,7 @@
 		"shiki": "4.4.3",
 		"tinycolor2": "1.6.0",
 		"uuid": "14.0.2",
-		"vue": "3.5.42"
+		"vue": "3.5.43"
 	},
 	"devDependencies": {
 		"@misskey-dev/emoji-assets": "17.0.3",
@@ -30,7 +30,7 @@
 		"@rollup/pluginutils": "5.4.0",
 		"@tabler/icons-webfont": "3.35.0",
 		"@testing-library/vue": "8.1.0",
-		"@types/node": "26.5.1",
+		"@types/node": "26.6.2",
 		"@types/punycode.js": "npm:@types/punycode@2.1.4",
 		"@types/tinycolor2": "1.4.6",
 		"@types/ws": "8.18.1",
@@ -38,7 +38,7 @@
 		"@typescript-eslint/parser": "8.70.0",
 		"@vitest/coverage-v8": "5.0.1",
 		"@vitejs/plugin-vue": "6.0.9",
-		"@vue/runtime-core": "3.5.42",
+		"@vue/runtime-core": "3.5.43",
 		"eslint-plugin-import": "2.32.0",
 		"eslint-plugin-vue": "10.11.0",
 		"intersection-observer": "0.12.2",
