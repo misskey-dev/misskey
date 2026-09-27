@@ -319,6 +319,7 @@ describe('FileServerService', () => {
 			expect(res.headers['cache-control']).toBe('max-age=31536000, immutable');
 			expect(res.headers['content-type']).toBe('image/png');
 			expect(res.headers['content-length']).toBe(String(dummySize));
+			expect(res.headers['accept-ranges']).toBe('bytes');
 			expect(res.headers['content-disposition'] ?? '').toMatch(/^inline;/);
 		});
 

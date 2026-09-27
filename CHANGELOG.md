@@ -1,7 +1,20 @@
-## 2026.9.1
+## Unreleased
 
 ### General
 -
+
+### Client
+-
+
+### Server
+-
+
+
+## 2026.9.1
+
+### General
+- Enhance: 翻訳の更新
+- Fix: セキュリティに関する修正
 
 ### Client
 - Enhance: Scratchpadに導入していた非同期エラーへの対応をPlayやウィジェットにも実装

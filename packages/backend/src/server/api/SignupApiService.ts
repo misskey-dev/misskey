@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import { IsNull } from 'typeorm';
+import { IsNull, LessThanOrEqual } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository, MiRegistrationTicket, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
@@ -19,6 +19,7 @@ import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { SigninService } from './SigninService.js';
+import type { FindOptionsWhere } from 'typeorm';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
@@ -136,6 +137,8 @@ export class SignupApiService {
 				return;
 			}
 
+			// ここでの検証はあくまで早期リジェクトのための事前チェックで、
+			// 実際の使用可否は消費直前の claimRegistrationTicket() が担保する
 			ticket = await this.registrationTicketsRepository.findOneBy({
 				code: invitationCode,
 			});
@@ -190,56 +193,116 @@ export class SignupApiService {
 			const salt = await bcrypt.genSalt(8);
 			const hash = await bcrypt.hash(password, salt);
 
-			const pendingUser = await this.userPendingsRepository.insertOne({
-				id: this.idService.gen(),
-				code,
-				email: emailAddress!,
-				username: username,
-				password: hash,
-			});
+			if (ticket && !await this.claimRegistrationTicket(ticket)) {
+				reply.code(400);
+				return;
+			}
 
-			const link = `${this.config.url}/signup-complete/${code}`;
-
-			this.emailService.sendEmail(emailAddress!, 'Signup',
-				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
-				`To complete signup, please click this link: ${link}`);
-
-			if (ticket) {
-				await this.registrationTicketsRepository.update(ticket.id, {
-					usedAt: new Date(),
-					pendingUserId: pendingUser.id,
+			try {
+				const pendingUser = await this.userPendingsRepository.insertOne({
+					id: this.idService.gen(),
+					code,
+					email: emailAddress!,
+					username: username,
+					password: hash,
 				});
+
+				const link = `${this.config.url}/signup-complete/${code}`;
+
+				this.emailService.sendEmail(emailAddress!, 'Signup',
+					`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
+					`To complete signup, please click this link: ${link}`);
+
+				if (ticket) {
+					await this.registrationTicketsRepository.update(ticket.id, {
+						pendingUserId: pendingUser.id,
+					});
+				}
+			} catch (err) {
+				// 確保したコードが無駄に消費されたままになるのを防ぐ
+				if (ticket) await this.releaseRegistrationTicket(ticket);
+				throw err;
 			}
 
 			reply.code(204);
 			return;
 		} else {
+			if (ticket && !await this.claimRegistrationTicket(ticket)) {
+				reply.code(400);
+				return;
+			}
+
 			try {
 				const { account, secret } = await this.signupService.signup({
 					username, password, host,
 				});
+
+				if (ticket) {
+					await this.registrationTicketsRepository.update(ticket.id, {
+						usedBy: account,
+						usedById: account.id,
+					});
+				}
 
 				const res = await this.userEntityService.pack(account, account, {
 					schema: 'MeDetailed',
 					includeSecrets: true,
 				});
 
-				if (ticket) {
-					await this.registrationTicketsRepository.update(ticket.id, {
-						usedAt: new Date(),
-						usedBy: account,
-						usedById: account.id,
-					});
-				}
-
 				return {
 					...res,
 					token: secret,
 				};
 			} catch (err) {
+				// 確保したコードが無駄に消費されたままになるのを防ぐ
+				// (アカウントと紐付け済みの場合は release 側の条件により戻らない)
+				if (ticket) await this.releaseRegistrationTicket(ticket);
 				throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
 			}
 		}
+	}
+
+	/**
+	 * 招待コードを使用中として確保する
+	 *
+	 * @returns 確保できた場合は true、既に他のリクエストが消費していた場合は false
+	 */
+	@bindThis
+	private async claimRegistrationTicket(ticket: MiRegistrationTicket): Promise<boolean> {
+		const where: FindOptionsWhere<MiRegistrationTicket>[] = [
+			{ id: ticket.id, usedById: IsNull(), usedAt: IsNull() },
+		];
+
+		// メアド認証が有効の場合、認証されないままメール送信から30分経過したコードは再び使用できる
+		if (this.meta.emailRequiredForSignup) {
+			where.push({
+				id: ticket.id,
+				usedById: IsNull(),
+				usedAt: LessThanOrEqual(new Date(Date.now() - (1000 * 60 * 30))),
+			});
+		}
+
+		const result = await this.registrationTicketsRepository.update(where, {
+			usedAt: new Date(),
+		});
+
+		return (result.affected ?? 0) > 0;
+	}
+
+	/**
+	 * {@link claimRegistrationTicket} で確保した招待コードを未使用に戻す
+	 *
+	 * 既にアカウントと紐付いた (= 消費が確定した) コードは戻さない
+	 */
+	@bindThis
+	private async releaseRegistrationTicket(ticket: MiRegistrationTicket): Promise<void> {
+		await this.registrationTicketsRepository.update({
+			id: ticket.id,
+			usedById: IsNull(),
+		}, {
+			usedAt: null,
+			pendingUserId: null,
+		});
 	}
 
 	@bindThis

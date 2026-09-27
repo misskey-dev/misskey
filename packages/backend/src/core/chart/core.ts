@@ -12,6 +12,7 @@
 import * as nestedProperty from 'nested-property';
 import { EntitySchema, LessThan, Between } from 'typeorm';
 import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/misc/prelude/time.js';
+import { sqlStringEscape } from '@/misc/sql-string-escape.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { MiRepository, miRepository } from '@/models/_.js';
@@ -502,11 +503,10 @@ export default abstract class Chart<T extends Schema> {
 					}
 				} else if (Array.isArray(v) && v.length > 0) { // ユニークインクリメント
 					const tempColumnName = UNIQUE_TEMP_COLUMN_PREFIX + k.replaceAll('.', COLUMN_DELIMITER) as string & keyof TempColumnsForUnique<T>;
-					// TODO: item をSQLエスケープ
-					const itemsForHour = v.filter(item => !(logHour[tempColumnName] as unknown as string[]).includes(item)).map(item => `"${item}"`);
-					const itemsForDay = v.filter(item => !(logDay[tempColumnName] as unknown as string[]).includes(item)).map(item => `"${item}"`);
-					if (itemsForHour.length > 0) queryForHour[tempColumnName] = () => `array_cat("${tempColumnName}", '{${itemsForHour.join(',')}}'::varchar[])`;
-					if (itemsForDay.length > 0) queryForDay[tempColumnName] = () => `array_cat("${tempColumnName}", '{${itemsForDay.join(',')}}'::varchar[])`;
+					const itemsForHour = v.filter(item => !(logHour[tempColumnName] as unknown as string[]).includes(item)).map(item => sqlStringEscape(item));
+					const itemsForDay = v.filter(item => !(logDay[tempColumnName] as unknown as string[]).includes(item)).map(item => sqlStringEscape(item));
+					if (itemsForHour.length > 0) queryForHour[tempColumnName] = () => `array_cat("${tempColumnName}", ARRAY[${itemsForHour.join(',')}]::varchar[])`;
+					if (itemsForDay.length > 0) queryForDay[tempColumnName] = () => `array_cat("${tempColumnName}", ARRAY[${itemsForDay.join(',')}]::varchar[])`;
 				}
 			}
 
