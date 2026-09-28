@@ -5,10 +5,9 @@
 
 import * as crypto from 'node:crypto';
 import { URL } from 'node:url';
-import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import * as htmlParser from 'node-html-parser';
-import { RsaKeyPair } from 'slacc';
+import { signAsDraftToRequest } from '@misskey-dev/node-http-message-signatures';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/User.js';
@@ -94,39 +93,15 @@ export class ApRequestCreator {
 	}
 
 	static async #signToRequest(request: Request, key: PrivateKey, includeHeaders: string[]): Promise<Signed> {
-		const signingString = this.#genSigningString(request, includeHeaders);
-		const sign = promisify(RsaKeyPair.prototype.sign).bind(RsaKeyPair.fromPem(key.privateKeyPem));
-		const signature = (await sign(Buffer.from(signingString))).toString('base64');
-		const signatureHeader = `keyId="${key.keyId}",algorithm="rsa-sha256",headers="${includeHeaders.join(' ')}",signature="${signature}"`;
-
-		request.headers = this.#objectAssignWithLcKey(request.headers, {
-			Signature: signatureHeader,
-		});
+		const result = await signAsDraftToRequest(request, key, includeHeaders);
+		request.headers = this.#lcObjectKey(request.headers);
 		// node-fetch will generate this for us. if we keep 'Host', it won't change with redirects!
 		delete request.headers['host'];
 
 		return {
 			request,
-			signingString,
-			signature,
-			signatureHeader,
+			...result,
 		};
-	}
-
-	static #genSigningString(request: Request, includeHeaders: string[]): string {
-		request.headers = this.#lcObjectKey(request.headers);
-
-		const results: string[] = [];
-
-		for (const key of includeHeaders.map(x => x.toLowerCase())) {
-			if (key === '(request-target)') {
-				results.push(`(request-target): ${request.method.toLowerCase()} ${new URL(request.url).pathname}`);
-			} else {
-				results.push(`${key}: ${request.headers[key]}`);
-			}
-		}
-
-		return results.join('\n');
 	}
 
 	static #lcObjectKey(src: Record<string, string>): Record<string, string> {
