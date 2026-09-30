@@ -603,6 +603,7 @@ export class NoteEntityService implements OnModuleInit {
 	@bindThis
 	public async fetchDiffs(noteIds: MiNote['id'][], meId: MiUser['id'] | null = null) {
 		if (noteIds.length === 0) return [];
+		if (meId == null && this.meta.ugcVisibilityForVisitor === 'none') return [];
 
 		const fetched = await this.notesRepository.find({
 			where: {
