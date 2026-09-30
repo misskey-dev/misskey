@@ -138,6 +138,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				} : {
 					id: In(ps.userIds),
 					isSuspended: false,
+					isRemoteSuspended: false,
 				});
 
 				// リクエストされた通りに並べ替え
@@ -170,7 +171,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					user = await this.usersRepository.findOneBy(q);
 				}
 
-				if (user == null || (!isModerator && user.isSuspended)) {
+				if (user == null || (!isModerator && this.userEntityService.isSuspendedEither(user))) {
 					throw new ApiError(meta.errors.noSuchUser);
 				}
 
