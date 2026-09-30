@@ -242,6 +242,7 @@ export default class Connection {
 			}
 		}
 
+		// TODO: ugcVisibilityForVisitor が local の場合の扱いを NoteEntityService.shouldHideNote と揃える
 		if (this.user == null && this.meta.ugcVisibilityForVisitor === 'none') return;
 
 		this.sendMessageToWs('noteUpdated', {
