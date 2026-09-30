@@ -270,6 +270,7 @@ export class QueryService {
 	public generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: MiUser['id'] } | null): void {
 		// This code must always be synchronized with the checks in NoteEntityService.isVisibleForMe and Stream abstract class Channel.isNoteVisibleForMe.
 		if (me == null) {
+			// TODO: ugcVisibilityForVisitor が local の場合の扱い (付随するリモートのノートを隠して表示するか) を検討する
 			if (this.meta.ugcVisibilityForVisitor === 'none') q.andWhere('1=0');
 
 			q.andWhere(new Brackets(qb => {

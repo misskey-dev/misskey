@@ -133,6 +133,7 @@ export class NoteEntityService implements OnModuleInit {
 		if (meId === packedNote.userId) return false;
 		// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
 
+		// TODO: ugcVisibilityForVisitor が local の場合も、付随するリモートのノートをリンクだけ残して内容を隠せるようにする
 		if (meId == null && this.meta.ugcVisibilityForVisitor === 'none') return true;
 
 		if (packedNote.user.requireSigninToViewContents && meId == null) {
