@@ -7,7 +7,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import fastifyStatic from '@fastify/static';
 import Fastify, { type FastifyInstance } from 'fastify';
-import { describe, expect, test, beforeAll, afterAll, afterEach } from 'vitest';
+import { describe, expect, test, beforeAll, afterAll, afterEach, vi } from 'vitest';
 import sharp from 'sharp';
 import { DataSource, type Repository } from 'typeorm';
 import { initTestDb, randomString } from '../../utils.js';
@@ -23,6 +23,7 @@ import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { loadConfig, type Config } from '@/config.js';
 import { MiDriveFile } from '@/models/DriveFile.js';
 import { FileServerService } from '@/server/FileServerService.js';
+import { FileServerFileResolver } from '@/server/file/FileServerFileResolver.js';
 
 const dummyPath = path.resolve('test/resources/dummy-for-file-server-service.png');
 const dummySize = fs.statSync(dummyPath).size;
@@ -80,6 +81,7 @@ describe('FileServerService', () => {
 	let idService: IdService;
 	let config: Config;
 	let fileServerService: FileServerService;
+	let fileResolver: FileServerFileResolver;
 	let externalFileServerService: FileServerService;
 	let remoteServer: FastifyInstance;
 	let remotePngUrl: string;
@@ -157,6 +159,7 @@ describe('FileServerService', () => {
 		const imageProcessingService = new ImageProcessingService();
 		const videoProcessingService = new VideoProcessingService(config, imageProcessingService);
 		internalStorageService = new InternalStorageService(config);
+		fileResolver = new FileServerFileResolver(driveFilesRepository as any, fileInfoService, downloadService, internalStorageService);
 		idService = new IdService(config);
 		fileServerService = new FileServerService(
 			config,
@@ -288,6 +291,16 @@ describe('FileServerService', () => {
 	});
 
 	describe('GET /files/:key', () => {
+		test.each(['../../sentinel.txt', 'nested/file.png', '..\\file.png', '..'])('resolver は DB 一致済みでも内蔵ストレージの %s をパス解決せず拒否する', async (accessKey) => {
+			await insertDriveFile({ accessKey, storedInternal: true, isLink: false });
+			const resolvePath = vi.spyOn(internalStorageService, 'resolvePath');
+
+			const result = await fileResolver.resolveFileByAccessKey(accessKey);
+
+			expect(result).toEqual({ kind: 'not-found' });
+			expect(resolvePath).not.toHaveBeenCalled();
+		});
+
 		test('GET /files/:key 404 のときダミー画像を返す', async () => {
 			const accessKey = randomString();
 
