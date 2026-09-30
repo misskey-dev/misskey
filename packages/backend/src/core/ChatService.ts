@@ -935,11 +935,17 @@ export class ChatService {
 			reaction = `:${name}:`;
 		}
 
-		// NOTE: 自分のリアクションを(あれば)削除するだけなので諸々の権限チェックは必要なし
-
 		const message = await this.chatMessagesRepository.findOneByOrFail({ id: messageId });
 
 		const room = message.toRoomId ? await this.chatRoomsRepository.findOneByOrFail({ id: message.toRoomId }) : null;
+
+		if (room) {
+			if (!(await this.isRoomMember(room, userId))) {
+				throw new Error('cannot unreact to others message');
+			}
+		} else if (message.fromUserId !== userId && message.toUserId !== userId) {
+			throw new Error('cannot unreact to others message');
+		}
 
 		await this.chatMessagesRepository.createQueryBuilder().update()
 			.set({
