@@ -53,13 +53,14 @@ export class NoteStreamingHidingService {
 
 		const renoteChain = this.collectRenoteChain(note);
 		const shouldHide = await Promise.all(renoteChain.map(n => this.noteEntityService.shouldHideNote(n, meId)));
+		const shouldHideReply = await Promise.all(renoteChain.map(n => n.reply ? this.noteEntityService.shouldHideNote(n.reply, meId) : false));
 
-		if (!shouldHide.some(h => h)) {
+		if (!shouldHide.some(h => h) && !shouldHideReply.some(h => h)) {
 			// 隠す必要がない場合は元のノートをそのまま返す
 			return note;
 		}
 
-		if (renoteChain.some(n => isRenotePacked(n) && !isQuotePacked(n))) {
+		if (shouldHide.some(h => h) && renoteChain.some(n => isRenotePacked(n) && !isQuotePacked(n))) {
 			// 純粋リノートの場合は配信をスキップする
 			return null;
 		}
@@ -70,6 +71,9 @@ export class NoteStreamingHidingService {
 		for (let i = 0; i < renoteChain.length; i++) {
 			if (shouldHide[i]) {
 				this.noteEntityService.hideNote(currentCloned);
+			}
+			if (shouldHideReply[i] && currentCloned.reply) {
+				this.noteEntityService.hideNote(currentCloned.reply);
 			}
 			currentCloned = currentCloned.renote!;
 		}
