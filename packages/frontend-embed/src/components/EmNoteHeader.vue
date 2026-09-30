@@ -5,15 +5,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <header :class="$style.root">
-	<EmA :class="$style.name" :to="userPage(note.user)">
-		<EmUserName :user="note.user"/>
-	</EmA>
-	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
-	<div :class="$style.username"><EmAcct :user="note.user"/></div>
-	<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
-		<img v-for="(role, i) in note.user.badgeRoles" :key="i" :class="$style.badgeRole" :src="role.iconUrl!"/>
-	</div>
-	<div :class="$style.info">
+	<template v-if="note && !note.deletedAt">
+		<EmA :class="$style.name" :to="userPage(note.user)">
+			<EmUserName :user="note.user"/>
+		</EmA>
+		<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
+		<div :class="$style.username"><EmAcct :user="note.user"/></div>
+		<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
+			<img v-for="(role, i) in note.user.badgeRoles" :key="i" :class="$style.badgeRole" :src="role.iconUrl!"/>
+		</div>
+	</template>
+	<template v-else>
+		<div :class="$style.name" style="opacity: 0.5;">
+			Unknown User
+		</div>
+	</template>
+	<div v-if="note" :class="$style.info">
 		<EmA :to="notePage(note)">
 			<EmTime :time="note.createdAt" colored/>
 		</EmA>
@@ -39,7 +46,7 @@ import EmAcct from '@/components/EmAcct.vue';
 import EmTime from '@/components/EmTime.vue';
 
 defineProps<{
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note | null;
 }>();
 </script>
 

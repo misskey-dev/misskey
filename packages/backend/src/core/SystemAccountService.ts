@@ -20,7 +20,11 @@ import { generateNativeUserToken } from '@/misc/token.js';
 import { IdService } from '@/core/IdService.js';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
 
-export const SYSTEM_ACCOUNT_TYPES = ['actor', 'relay', 'proxy'] as const;
+export const SYSTEM_ACCOUNT_TYPES = ['actor', 'relay', 'proxy', 'ghost'] as const;
+
+export const systemAccountName: Partial<Record<typeof SYSTEM_ACCOUNT_TYPES[number], string>> = {
+	ghost: 'Unknown User',
+};
 
 @Injectable()
 export class SystemAccountService implements OnApplicationShutdown {
@@ -62,9 +66,11 @@ export class SystemAccountService implements OnApplicationShutdown {
 				case 'metaUpdated': {
 					if (body.before != null && body.before.name !== body.after.name) {
 						for (const account of SYSTEM_ACCOUNT_TYPES) {
-							await this.updateCorrespondingUserProfile(account, {
-								name: body.after.name,
-							});
+							if (systemAccountName[account] == null) {
+								await this.updateCorrespondingUserProfile(account, {
+									name: body.after.name,
+								});
+							}
 						}
 					}
 					break;
@@ -98,7 +104,7 @@ export class SystemAccountService implements OnApplicationShutdown {
 		} else {
 			const created = await this.createCorrespondingUser(type, {
 				username: `system.${type}`, // NOTE: (できれば避けたいが) . が含まれるかどうかでシステムアカウントかどうかを判定している処理もあるので変えないように
-				name: this.meta.name,
+				name: systemAccountName[type] ?? this.meta.name,
 			});
 			this.cache.set(type, created);
 			return created;
