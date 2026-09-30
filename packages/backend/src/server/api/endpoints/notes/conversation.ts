@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { MiNote } from '@/models/Note.js';
-import type { NotesRepository } from '@/models/_.js';
+import type { MiMeta, NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -52,6 +52,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
+
 		private noteEntityService: NoteEntityService,
 		private getterService: GetterService,
 	) {
@@ -86,7 +89,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				await get(note.replyId);
 			}
 
-			return await this.noteEntityService.packMany(conversation, me);
+			const visibleConversation = me == null
+				? conversation.filter(n => {
+					if (this.serverSettings.ugcVisibilityForVisitor === 'none') return false;
+					if (this.serverSettings.ugcVisibilityForVisitor === 'local' && n.userHost != null) return false;
+					return true;
+				})
+				: conversation;
+
+			return await this.noteEntityService.packMany(visibleConversation, me);
 		});
 	}
 }

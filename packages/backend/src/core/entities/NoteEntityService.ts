@@ -133,6 +133,11 @@ export class NoteEntityService implements OnModuleInit {
 		if (meId === packedNote.userId) return false;
 		// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
 
+		if (meId == null) {
+			if (this.meta.ugcVisibilityForVisitor === 'none') return true;
+			if (this.meta.ugcVisibilityForVisitor === 'local' && packedNote.user.host != null) return true;
+		}
+
 		if (packedNote.user.requireSigninToViewContents && meId == null) {
 			return true;
 		}
