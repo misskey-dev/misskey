@@ -279,6 +279,8 @@ export class SignupApiService {
 				id: ticket.id,
 				usedById: IsNull(),
 				usedAt: LessThanOrEqual(new Date(Date.now() - (1000 * 60 * 30))),
+				// pendingUser は usedAt より後に作られるので、usedAt 起点だと pendingUser の有効期限内に再使用できてしまう
+				pendingUserId: IsNull(),
 			});
 		}
 
@@ -286,7 +288,32 @@ export class SignupApiService {
 			usedAt: new Date(),
 		});
 
-		return (result.affected ?? 0) > 0;
+		if ((result.affected ?? 0) > 0) return true;
+
+		// 期限切れの pendingUser に紐付いたままのコードは、紐付けを解除してから確保し直す
+		if (this.meta.emailRequiredForSignup) {
+			const stale = await this.registrationTicketsRepository.findOneBy({
+				id: ticket.id,
+				usedById: IsNull(),
+			});
+			if (stale?.pendingUserId != null) {
+				const pending = await this.userPendingsRepository.findOneBy({ id: stale.pendingUserId });
+				const pendingExpired = pending == null
+					|| this.idService.parse(pending.id).date.getTime() + (1000 * 60 * 30) < Date.now();
+				if (pendingExpired) {
+					const detached = await this.registrationTicketsRepository.update({
+						id: stale.id,
+						pendingUserId: stale.pendingUserId,
+						usedById: IsNull(),
+					}, { pendingUserId: null });
+					if ((detached.affected ?? 0) === 0) return false;
+					if (pending != null) await this.userPendingsRepository.delete({ id: pending.id });
+					return this.claimRegistrationTicket(ticket);
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
