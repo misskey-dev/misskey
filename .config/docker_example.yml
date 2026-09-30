@@ -247,8 +247,10 @@ id: 'aidx'
 # proxy, so you MUST configure the proxy to deny access to internal
 # networks (e.g. RFC 1918, loopback, link-local, and cloud metadata
 # addresses such as 169.254.169.254).
-# Hosts listed in `proxyBypassHosts` are not proxied and are checked by
-# Misskey as usual.
+# Hosts listed in `proxyBypassHosts` are connected to directly without
+# going through the proxy. Depending on the type of request, Misskey's
+# own private address check may not be applied to these connections,
+# so only list hosts you trust here.
 #
 #proxy: http://127.0.0.1:3128
 
