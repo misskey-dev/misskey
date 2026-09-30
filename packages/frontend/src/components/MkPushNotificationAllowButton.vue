@@ -50,6 +50,7 @@ import { apiWithDialog, promiseDialog, alert } from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { getAccounts } from '@/accounts.js';
+import { encodePushSubscriptionKey } from '@/utility/encode-push-subscription-key.js';
 
 defineProps<{
 	primary?: boolean;
@@ -104,8 +105,8 @@ async function subscribe() {
 			// Register
 			pushRegistrationInServer.value = await misskeyApi('sw/register', {
 				endpoint: subscription.endpoint,
-				auth: encode(subscription.getKey('auth')),
-				publickey: encode(subscription.getKey('p256dh')),
+				auth: encodePushSubscriptionKey(subscription.getKey('auth')),
+				publickey: encodePushSubscriptionKey(subscription.getKey('p256dh')),
 			});
 		}, async err => { // When subscribe failed
 			// 通知が許可されていなかったとき
@@ -125,26 +126,24 @@ async function subscribe() {
 async function unsubscribe() {
 	if (!pushSubscription.value) return;
 
-	const endpoint = pushSubscription.value.endpoint;
+	const params = {
+		endpoint: pushSubscription.value.endpoint,
+		auth: encodePushSubscriptionKey(pushSubscription.value.getKey('auth')),
+		publickey: encodePushSubscriptionKey(pushSubscription.value.getKey('p256dh')),
+	};
 	const accounts = await getAccounts();
 
 	pushRegistrationInServer.value = undefined;
 
 	if ($i && accounts.length >= 2) {
-		apiWithDialog('sw/unregister', {
-			endpoint,
-		}, $i.token);
+		// ブラウザの購読は他アカウントと共有しているので、このアカウントの登録のみ解除する
+		apiWithDialog('sw/unregister', params, $i.token);
 	} else {
+		// ブラウザの購読ごと解除するので、この購読に紐づく全アカウントの登録を解除する
 		pushSubscription.value.unsubscribe();
-		apiWithDialog('sw/unregister', {
-			endpoint,
-		}, null);
+		apiWithDialog('sw/unregister', params, null);
 		pushSubscription.value = null;
 	}
-}
-
-function encode(buffer: ArrayBuffer | null) {
-	return btoa(String.fromCharCode(...(buffer != null ? new Uint8Array(buffer) : [])));
 }
 
 /**
