@@ -377,6 +377,20 @@ id: 'aidx'
 #outgoingAddressFamily: ipv4
 
 # Proxy for HTTP/HTTPS
+#
+# IMPORTANT: When a proxy is configured, Misskey does NOT check whether
+# the destination of outgoing requests (remote ActivityPub objects,
+# media proxy, URL previews, file uploads from URL, webhooks, etc.) is
+# a private / loopback / link-local address, because the connection is
+# made to the proxy rather than to the destination itself.
+# `allowedPrivateNetworks` is also not applied to proxied requests.
+# In that case, filtering of destinations is entirely delegated to the
+# proxy, so you MUST configure the proxy to deny access to internal
+# networks (e.g. RFC 1918, loopback, link-local, and cloud metadata
+# addresses such as 169.254.169.254).
+# Hosts listed in `proxyBypassHosts` are not proxied and are checked by
+# Misskey as usual.
+#
 #proxy: http://127.0.0.1:3128
 
 proxyBypassHosts:
