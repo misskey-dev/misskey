@@ -270,7 +270,7 @@ export class QueryService {
 	public generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: MiUser['id'] } | null): void {
 		// This code must always be synchronized with the checks in NoteEntityService.isVisibleForMe and Stream abstract class Channel.isNoteVisibleForMe.
 		if (me == null) {
-			this.generateUgcVisibilityQueryForVisitor(q);
+			if (this.meta.ugcVisibilityForVisitor === 'none') q.andWhere('1=0');
 
 			q.andWhere(new Brackets(qb => {
 				qb
