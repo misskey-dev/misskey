@@ -22,6 +22,8 @@ import { SigninService } from './SigninService.js';
 import type { FindOptionsWhere } from 'typeorm';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
+const invitationCodeMailTimeoutMs = 1000 * 60 * 30;
+
 @Injectable()
 export class SignupApiService {
 	constructor(
@@ -162,7 +164,7 @@ export class SignupApiService {
 				}
 
 				// 認証しておらず、メール送信から30分以内ならエラー
-				if (ticket.usedAt && ticket.usedAt.getTime() + (1000 * 60 * 30) > Date.now()) {
+				if (ticket.usedAt && ticket.usedAt.getTime() + invitationCodeMailTimeoutMs > Date.now()) {
 					reply.code(400);
 					return;
 				}
@@ -278,7 +280,7 @@ export class SignupApiService {
 			where.push({
 				id: ticket.id,
 				usedById: IsNull(),
-				usedAt: LessThanOrEqual(new Date(Date.now() - (1000 * 60 * 30))),
+				usedAt: LessThanOrEqual(new Date(Date.now() - invitationCodeMailTimeoutMs)),
 				// pendingUser は usedAt より後に作られるので、usedAt 起点だと pendingUser の有効期限内に再使用できてしまう
 				pendingUserId: IsNull(),
 			});
@@ -299,7 +301,7 @@ export class SignupApiService {
 			if (stale?.pendingUserId != null) {
 				const pending = await this.userPendingsRepository.findOneBy({ id: stale.pendingUserId });
 				const pendingExpired = pending == null
-					|| this.idService.parse(pending.id).date.getTime() + (1000 * 60 * 30) < Date.now();
+					|| this.idService.parse(pending.id).date.getTime() + invitationCodeMailTimeoutMs < Date.now();
 				if (pendingExpired) {
 					const detached = await this.registrationTicketsRepository.update({
 						id: stale.id,
@@ -341,7 +343,7 @@ export class SignupApiService {
 		try {
 			const pendingUser = await this.userPendingsRepository.findOneByOrFail({ code });
 
-			if (this.idService.parse(pendingUser.id).date.getTime() + (1000 * 60 * 30) < Date.now()) {
+			if (this.idService.parse(pendingUser.id).date.getTime() + invitationCodeMailTimeoutMs < Date.now()) {
 				throw new FastifyReplyError(400, 'EXPIRED');
 			}
 
