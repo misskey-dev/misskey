@@ -145,11 +145,13 @@ describe('NestLogger', () => {
 
 		try {
 			new NestLogger().error(error, error.stack);
+
+			// mockRestore()はmockClear()を兼ねて呼び出し履歴も消すため、復元より先に検証する。
+			expect(write).not.toHaveBeenCalled();
 		} finally {
 			write.mockRestore();
 		}
 
-		expect(write).not.toHaveBeenCalled();
 		expect(records()[0]).toMatchObject({ message: 'Error: broken', error });
 	});
 
