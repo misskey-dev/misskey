@@ -45,7 +45,7 @@ export class EmailService {
 		const iconUrl = `${this.config.url}/static-assets/mi-white.png`;
 		const emailSettingUrl = `${this.config.url}/settings/email`;
 
-		const enableAuth = this.meta.smtpUser != null && this.meta.smtpUser.trim() !== '';
+		const enableAuth = this.meta.smtpUser != null && this.meta.smtpUser !== '';
 
 		const sanitizedHtml = sanitizeHtml(html);
 
