@@ -3380,6 +3380,8 @@ _search:
   serverHostPlaceholder: "例: misskey.example.com"
   postFrom: "投稿日時from"
   postTo: "投稿日時to"
+  date: "日付"
+  time: "時刻"
 
 _serverSetupWizard:
   installCompleted: "Misskeyのインストールが完了しました！"
