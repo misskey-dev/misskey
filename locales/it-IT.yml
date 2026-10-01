@@ -1422,6 +1422,7 @@ append: "Accodare"
 prepend: "Anteporre"
 urlPreviewSensitiveList: "URL da impedire alla vista delle anteprime"
 urlPreviewSensitiveListDescription: "Separando con uno spazio si indica E, separando con una linea si indica O. Circondando con barre / si indica una Espressione Regolare.\nLe URL che coincidono con le indicazioni non verranno visualizzate."
+pixelatedZoom: "Ingrandimento pixelato"
 _imageEditing:
   _vars:
     caption: "Didascalia dell'immagine"
