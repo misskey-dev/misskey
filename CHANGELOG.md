@@ -1,3 +1,19 @@
+## 2026.10.0
+
+### General
+- Enhance: 翻訳の更新
+
+### Client
+- Fix: ユーザーの「概要」ページで引っ張って更新しても何も更新されない問題を修正  
+  (Cherry-picked from https://github.com/shiroha-a/misskey-ts/commit/c946a42dbb71234dd9d9bbc14474853f0709431c)
+
+### Server
+- Fix: HTTP Signaturesの`(request-target)`にクエリ文字列が含まれない問題を修正
+- Fix: クリップから同じノートを繰り返し削除すると、ノートの被クリップ数が負の値を取る問題を修正
+- Fix: 添付ファイルの配信に関する挙動の修正
+- Fix: セキュリティに関する修正
+
+
 ## 2026.9.1
 
 ### General

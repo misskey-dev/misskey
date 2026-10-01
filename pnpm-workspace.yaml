@@ -57,6 +57,8 @@ minimumReleaseAgeExclude:
   - undici@6.28.1 || 7.29.1 # そのうち消す
   # Renovate security update: nodemailer@9.1.1
   - nodemailer@9.1.1
+  # Renovate security update: fastify@5.12.5
+  - fastify@5.12.5
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
