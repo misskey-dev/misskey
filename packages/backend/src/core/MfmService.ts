@@ -205,13 +205,13 @@ export class MfmService {
 
 				// block code (<pre><code>)
 				case 'PRE': {
-					if (node.childNodes.length === 1 && (node.childNodes[0] instanceof htmlParser.HTMLElement) && node.childNodes[0].tagName === 'CODE') {
-						text += '\n```\n';
-						text += getText(node.childNodes[0]);
-						text += '\n```\n';
-					} else if (node.childNodes.length === 1 && (node.childNodes[0] instanceof htmlParser.TextNode) && node.childNodes[0].textContent.startsWith('<code>') && node.childNodes[0].textContent.endsWith('</code>')) {
-						text += '\n```\n';
-						text += node.childNodes[0].textContent.slice(6, -7);
+					// PRE contents are raw text; parse the wrapper before decoding code entities.
+					const children = htmlParser.parse(node.innerHTML).childNodes.filter(child => !(child instanceof htmlParser.TextNode && child.textContent.trim() === ''));
+					const code = children[0];
+					if (children.length === 1 && code instanceof htmlParser.HTMLElement && code.tagName === 'CODE') {
+						const language = code.attributes.class?.split(/\s+/).find(name => name.startsWith('language-') && name.length > 9)?.slice(9) ?? '';
+						text += '\n```' + language + '\n';
+						text += getText(code);
 						text += '\n```\n';
 					} else {
 						analyzeChildren(node.childNodes);
