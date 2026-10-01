@@ -16,6 +16,36 @@ type SentryIntegrationsOption = NonNullable<NodeOptions['integrations']>;
 type SentryIntegrationFactory = Extract<SentryIntegrationsOption, (integrations: any[]) => any[]>;
 type SentryIntegration = Parameters<SentryIntegrationFactory>[0][number];
 type SentryNodeOptions = NodeOptions;
+type SentryDataCollection = NonNullable<NodeOptions['dataCollection']>;
+
+const DEFAULT_PII_DENYLIST = { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] };
+
+/**
+ * Sentry v10 で `sendDefaultPii` 未指定時に使われていた収集範囲
+ * v11 では `dataCollection` 未指定だと全て収集されるため、明示的に指定して従来の挙動を維持する
+ */
+export const V10_SENTRY_DATA_COLLECTION: SentryDataCollection = {
+	userInfo: false,
+	cookies: false,
+	httpHeaders: {
+		request: DEFAULT_PII_DENYLIST,
+		response: DEFAULT_PII_DENYLIST,
+	},
+	httpBodies: [],
+	urlQueryParams: DEFAULT_PII_DENYLIST,
+	genAI: { inputs: false, outputs: false },
+	databaseQueryData: false,
+	graphQL: { document: false, variables: false },
+	frameContextLines: 7,
+};
+
+/**
+ * v10 の `sendDefaultPii: true` は v11 のデフォルト (全収集) と同等なので、
+ * 既存の設定ファイルで有効化されている場合は従来の制限を適用しない。
+ */
+function isV10SendDefaultPiiEnabled(options: object): boolean {
+	return 'sendDefaultPii' in options && options.sendDefaultPii === true;
+}
 
 type BuildSentryIntegrationsOptions = {
 	disabledIntegrations?: string[];
@@ -53,10 +83,15 @@ export function buildSentryNodeOptions(
 		// Performance Monitoring
 		tracesSampleRate: 1.0, //  Capture 100% of the transactions
 
-		// Set sampling rate for profiling - this is relative to tracesSampleRate
-		profilesSampleRate: 1.0,
+		// Profile every sampled trace (session-based profiling; relative to tracesSampleRate)
+		profileSessionSampleRate: 1.0,
+		profileLifecycle: 'trace',
 
 		maxBreadcrumbs: 0,
+
+		...(isV10SendDefaultPiiEnabled(config.options) ? {} : {
+			dataCollection: V10_SENTRY_DATA_COLLECTION,
+		}),
 
 		...config.options,
 

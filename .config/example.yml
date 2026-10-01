@@ -308,7 +308,7 @@ id: 'aidx'
 #  # To check enabled names, set `options.debug: true` and see
 #  # "Integration installed: <name>" in the Sentry logs.
 #  #
-#  # As of 2026-07-07 / @sentry/node 10.62.0, useful names for Misskey include:
+#  # As of 2026-10-01 / @sentry/node 11.0.0, useful names for Misskey include:
 #  #   Postgres  ... DB queries (when pg is externalized)
 #  #   Redis     ... ioredis commands
 #  #   Fastify   ... inbound HTTP routes
@@ -328,6 +328,13 @@ id: 'aidx'
 #    # Internal allowlist example:
 #    #tracePropagationTargets:
 #    #  - 'internal-service.example'
+#    # By default, Misskey keeps the conservative data collection of
+#    # Sentry SDK v10 (no user info, cookies, HTTP bodies, DB query data, etc.).
+#    # To change what is collected, set `dataCollection` here (it replaces
+#    # Misskey's default as a whole). `sendDefaultPii` was removed in v11;
+#    # `sendDefaultPii: true` is still honored and enables Sentry's v11 defaults.
+#    #dataCollection:
+#    #  userInfo: true
 
 #sentryForFrontend:
 #  vueIntegration:

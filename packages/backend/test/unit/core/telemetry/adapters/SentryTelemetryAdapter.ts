@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, test, vi } from 'vitest';
-import { SentryTelemetryAdapter, buildSentryIntegrations, buildSentryNodeOptions } from '@/core/telemetry/adapters/SentryTelemetryAdapter.js';
+import { V10_SENTRY_DATA_COLLECTION, SentryTelemetryAdapter, buildSentryIntegrations, buildSentryNodeOptions } from '@/core/telemetry/adapters/SentryTelemetryAdapter.js';
 
 type TestIntegration = Parameters<ReturnType<typeof buildSentryIntegrations>>[0][number];
 
@@ -72,6 +72,45 @@ describe('SentryTelemetryAdapter', () => {
 		});
 
 		expect(options.tracePropagationTargets).toEqual(['^https://internal\\.example/']);
+	});
+
+	test('keeps the Sentry v10 data collection defaults by default', () => {
+		const options = buildSentryNodeOptions({
+			enableNodeProfiling: false,
+			options: {},
+		});
+
+		expect(options.dataCollection).toEqual(V10_SENTRY_DATA_COLLECTION);
+	});
+
+	test('does not restrict data collection when v10 sendDefaultPii is enabled', () => {
+		const options = buildSentryNodeOptions({
+			enableNodeProfiling: false,
+			options: { sendDefaultPii: true } as Record<string, unknown>,
+		});
+
+		expect(options.dataCollection).toBeUndefined();
+	});
+
+	test('allows explicit dataCollection to override the default', () => {
+		const options = buildSentryNodeOptions({
+			enableNodeProfiling: false,
+			options: {
+				dataCollection: { userInfo: true },
+			},
+		});
+
+		expect(options.dataCollection).toEqual({ userInfo: true });
+	});
+
+	test('uses session-based profiling tied to sampled traces', () => {
+		const options = buildSentryNodeOptions({
+			enableNodeProfiling: true,
+			options: {},
+		});
+
+		expect(options.profileSessionSampleRate).toBe(1.0);
+		expect(options.profileLifecycle).toBe('trace');
 	});
 });
 
