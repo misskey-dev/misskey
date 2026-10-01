@@ -12,7 +12,7 @@ import type { MiUserProfile, UserProfilesRepository, UsersRepository } from '@/m
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
-export class UserAuthService {
+export class TotpService {
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
