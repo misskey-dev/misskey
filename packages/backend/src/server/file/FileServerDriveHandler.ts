@@ -102,7 +102,8 @@ export class FileServerDriveHandler {
 				}).toString();
 
 				setFileResponseHeaders(reply, { mime: file.mime, filename });
-				return handleRangeRequest(reply, request.headers.range as string | undefined, file.file.size, file.path);
+				const size = (await fs.promises.stat(file.path)).size;
+				return handleRangeRequest(reply, request.headers.range as string | undefined, size, file.path);
 			} else {
 				setFileResponseHeaders(reply, { mime: file.file.type, filename: file.filename });
 				return handleRangeRequest(reply, request.headers.range as string | undefined, file.file.size, file.path);
