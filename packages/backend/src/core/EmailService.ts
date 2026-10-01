@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as nodemailer from 'nodemailer';
+import { createTransport } from 'nodemailer';
 import juice from 'juice';
 import sanitizeHtml from 'sanitize-html';
 import { Inject, Injectable } from '@nestjs/common';
@@ -45,21 +45,21 @@ export class EmailService {
 		const iconUrl = `${this.config.url}/static-assets/mi-white.png`;
 		const emailSettingUrl = `${this.config.url}/settings/email`;
 
-		const enableAuth = this.meta.smtpUser != null && this.meta.smtpUser !== '';
+		const enableAuth = this.meta.smtpUser != null && this.meta.smtpUser.trim() !== '';
 
 		const sanitizedHtml = sanitizeHtml(html);
 
-		const transporter = nodemailer.createTransport({
-			host: this.meta.smtpHost,
-			port: this.meta.smtpPort,
+		const transporter = createTransport({
+			host: this.meta.smtpHost ?? undefined,
+			port: this.meta.smtpPort ?? undefined,
 			secure: this.meta.smtpSecure,
 			ignoreTLS: !enableAuth,
 			proxy: this.config.proxySmtp,
 			auth: enableAuth ? {
-				user: this.meta.smtpUser,
-				pass: this.meta.smtpPass,
+				user: this.meta.smtpUser!,
+				pass: this.meta.smtpPass ?? undefined,
 			} : undefined,
-		} as any);
+		});
 
 		const htmlContent = `<!doctype html>
 <html>
