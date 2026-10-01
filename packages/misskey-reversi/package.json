@@ -25,8 +25,8 @@
 	},
 	"devDependencies": {
 		"@types/node": "26.6.2",
-		"@typescript-eslint/eslint-plugin": "8.70.0",
-		"@typescript-eslint/parser": "8.70.0",
+		"@typescript-eslint/eslint-plugin": "8.70.1",
+		"@typescript-eslint/parser": "8.70.1",
 		"esbuild": "0.28.2",
 		"execa": "10.0.1",
 		"nodemon": "3.1.14"

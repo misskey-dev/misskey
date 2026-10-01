@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@12.5.1",
+	"packageManager": "pnpm@12.6.0",
 	"workspaces": [
 		"packages/backend",
 		"packages/frontend-shared",
@@ -64,8 +64,8 @@
 		"@eslint/js": "9.39.5",
 		"@misskey-dev/eslint-plugin": "2.1.0",
 		"@types/node": "26.6.2",
-		"@typescript-eslint/eslint-plugin": "8.70.0",
-		"@typescript-eslint/parser": "8.70.0",
+		"@typescript-eslint/eslint-plugin": "8.70.1",
+		"@typescript-eslint/parser": "8.70.1",
 		"@typescript/native": "npm:typescript@7.0.2",
 		"cross-env": "10.1.0",
 		"eslint": "9.39.5",
