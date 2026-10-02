@@ -1529,6 +1529,17 @@ _emojiPalette:
   enableSyncBetweenDevicesForPalettes: "Enable palette sync between devices"
   paletteForMain: "Main palette"
   paletteForReaction: "Reaction palette"
+_unicodeEmojiCategory:
+  face: "Smileys & Emotion"
+  people: "People & Body"
+  animals_and_nature: "Animals & Nature"
+  food_and_drink: "Food & Drink"
+  activity: "Activity"
+  travel_and_places: "Travel & Places"
+  objects: "Objects"
+  symbols: "Symbols"
+  flags: "Flags"
+
 _settings:
   driveBanner: "You can manage and configure the drive, check usage, and configure file upload settings."
   pluginBanner: "You can extend client features with plugins. You can install plugins, configure and manage individually."

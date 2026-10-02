@@ -1536,6 +1536,17 @@ _emojiPalette:
   paletteForMain: "メインで使用するパレット"
   paletteForReaction: "リアクションで使用するパレット"
 
+_unicodeEmojiCategory:
+  face: "顔と感情"
+  people: "人と体"
+  animals_and_nature: "動物と自然"
+  food_and_drink: "食べ物と飲み物"
+  activity: "アクティビティ"
+  travel_and_places: "旅行と場所"
+  objects: "オブジェクト"
+  symbols: "記号"
+  flags: "旗"
+
 _settings:
   driveBanner: "ドライブの管理と設定、使用量の確認、ファイルをアップロードする際の設定を行えます。"
   pluginBanner: "プラグインを利用するとクライアントの機能を拡張することができます。プラグインのインストール、個別の設定と管理が行えます。"
