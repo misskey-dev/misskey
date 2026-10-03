@@ -6,6 +6,18 @@
 import type { Locale } from 'i18n';
 import type { I18n } from './i18n.js';
 
+type Tsx = I18n<Locale>['tsx'];
+
+/**
+ * {@link formatRelativeTime} で使う翻訳文字列
+ * locale-inliner でビルド時に埋め込まれるよう、呼び出し側で `i18n.tsx._ago` などを渡す
+ */
+export type RelativeTimeLocale = {
+	ago: Tsx['_ago'];
+	timeIn: Tsx['_timeIn'];
+	justNow: string;
+};
+
 /**
  * 日時をUNIXミリ秒に変換する。不正な値の場合は NaN を返す
  */
@@ -25,22 +37,22 @@ export function parseTime(time: Date | string | number | null): number {
  * 「n分前」「n日後」のような相対時刻の文字列を返す
  * @param ago 経過秒数 (未来の場合は負の値)
  */
-export function formatRelativeTime(i18n: I18n<Locale>, ago: number): string {
+export function formatRelativeTime(ago: number, locale: RelativeTimeLocale): string {
 	return (
-		ago >= 31536000 ? i18n.tsx._ago.yearsAgo({ n: Math.round(ago / 31536000).toString() }) :
-		ago >= 2592000 ? i18n.tsx._ago.monthsAgo({ n: Math.round(ago / 2592000).toString() }) :
-		ago >= 604800 ? i18n.tsx._ago.weeksAgo({ n: Math.round(ago / 604800).toString() }) :
-		ago >= 86400 ? i18n.tsx._ago.daysAgo({ n: Math.round(ago / 86400).toString() }) :
-		ago >= 3600 ? i18n.tsx._ago.hoursAgo({ n: Math.round(ago / 3600).toString() }) :
-		ago >= 60 ? i18n.tsx._ago.minutesAgo({ n: (~~(ago / 60)).toString() }) :
-		ago >= 10 ? i18n.tsx._ago.secondsAgo({ n: (~~(ago % 60)).toString() }) :
-		ago >= -3 ? i18n.ts._ago.justNow :
-		ago < -31536000 ? i18n.tsx._timeIn.years({ n: Math.round(-ago / 31536000).toString() }) :
-		ago < -2592000 ? i18n.tsx._timeIn.months({ n: Math.round(-ago / 2592000).toString() }) :
-		ago < -604800 ? i18n.tsx._timeIn.weeks({ n: Math.round(-ago / 604800).toString() }) :
-		ago < -86400 ? i18n.tsx._timeIn.days({ n: Math.round(-ago / 86400).toString() }) :
-		ago < -3600 ? i18n.tsx._timeIn.hours({ n: Math.round(-ago / 3600).toString() }) :
-		ago < -60 ? i18n.tsx._timeIn.minutes({ n: (~~(-ago / 60)).toString() }) :
-		i18n.tsx._timeIn.seconds({ n: (~~(-ago % 60)).toString() })
+		ago >= 31536000 ? locale.ago.yearsAgo({ n: Math.round(ago / 31536000).toString() }) :
+		ago >= 2592000 ? locale.ago.monthsAgo({ n: Math.round(ago / 2592000).toString() }) :
+		ago >= 604800 ? locale.ago.weeksAgo({ n: Math.round(ago / 604800).toString() }) :
+		ago >= 86400 ? locale.ago.daysAgo({ n: Math.round(ago / 86400).toString() }) :
+		ago >= 3600 ? locale.ago.hoursAgo({ n: Math.round(ago / 3600).toString() }) :
+		ago >= 60 ? locale.ago.minutesAgo({ n: (~~(ago / 60)).toString() }) :
+		ago >= 10 ? locale.ago.secondsAgo({ n: (~~(ago % 60)).toString() }) :
+		ago >= -3 ? locale.justNow :
+		ago < -31536000 ? locale.timeIn.years({ n: Math.round(-ago / 31536000).toString() }) :
+		ago < -2592000 ? locale.timeIn.months({ n: Math.round(-ago / 2592000).toString() }) :
+		ago < -604800 ? locale.timeIn.weeks({ n: Math.round(-ago / 604800).toString() }) :
+		ago < -86400 ? locale.timeIn.days({ n: Math.round(-ago / 86400).toString() }) :
+		ago < -3600 ? locale.timeIn.hours({ n: Math.round(-ago / 3600).toString() }) :
+		ago < -60 ? locale.timeIn.minutes({ n: (~~(-ago / 60)).toString() }) :
+		locale.timeIn.seconds({ n: (~~(-ago % 60)).toString() })
 	);
 }

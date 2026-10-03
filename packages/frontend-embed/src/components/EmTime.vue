@@ -34,6 +34,13 @@ const _time = parseTime(props.time);
 const invalid = Number.isNaN(_time);
 const absolute = !invalid ? dateTimeFormat.format(_time) : i18n.ts._ago.invalid;
 
+// 10秒ごとの再計算のたびに作り直さないよう、インスタンスごとに一度だけ作る
+const relativeTimeLocale = {
+	ago: i18n.tsx._ago,
+	timeIn: i18n.tsx._timeIn,
+	justNow: i18n.ts._ago.justNow,
+};
+
 const actualNow = useLowresTime();
 const now = computed(() => (props.origin ? props.origin.getTime() : actualNow.value));
 
@@ -44,7 +51,7 @@ const relative = computed<string>(() => {
 	if (props.mode === 'absolute') return ''; // absoluteではrelativeを使わないので計算しない
 	if (invalid) return i18n.ts._ago.invalid;
 
-	return formatRelativeTime(i18n, ago.value);
+	return formatRelativeTime(ago.value, relativeTimeLocale);
 });
 </script>
 
