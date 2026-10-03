@@ -2085,6 +2085,8 @@ _role:
   isConditionalRole: "これはコンディショナルロールです。"
   isPublic: "公開ロール"
   descriptionOfIsPublic: "ユーザーのプロフィールでこのロールが表示されます。"
+  isPublicDisplayRequired: "非表示を許可しない（常に表示）"
+  descriptionOfIsPublicDisplayRequired: "有効にすると、ユーザーはこの公開ロール/ロールバッジを非表示にできません。"
   options: "オプション"
   policies: "ポリシー"
   baseRole: "ベースロール"
@@ -3246,6 +3248,13 @@ _gridComponent:
     columnTypeNotSupport: "正規表現によるバリデーションはtype:textのカラムのみサポートします。"
     patternNotMatch: "この値は{pattern}のパターンに一致しません"
     notUnique: "この値は一意である必要があります"
+
+_roleDisplay:
+  title: "ロールの表示/非表示"
+  description: "自分に割り当てられているロールを確認したり、プロフィールやノート上で表示・公開するロールを選択したりできます。"
+  roleExplorableAlert: "このロールは、管理者により、{link}への表示とロールタイムラインの有効化が設定されています。プロフィール上で非表示にすることはできますが、あなたにこのロールが付与されていることが知られる可能性があります。"
+  displayToggle: "ロール/ロールバッジを表示する"
+  alwaysShownByAdmin: "管理者の設定により非表示にすることはできません。"
 
 _roleSelectDialog:
   notSelected: "選択されていません"

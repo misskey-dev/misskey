@@ -14,6 +14,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
+import type { MiRole } from '@/models/Role.js';
 import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import {
 	birthdaySchema,
@@ -51,6 +52,7 @@ import { ChatService } from '@/core/ChatService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { PageEntityService } from './PageEntityService.js';
+import type { RoleEntityService } from './RoleEntityService.js';
 import { toArray } from '@/misc/prelude/array.js';
 
 const Ajv = _Ajv.default;
@@ -88,6 +90,7 @@ export class UserEntityService implements OnModuleInit {
 	private apPersonService: ApPersonService;
 	private noteEntityService: NoteEntityService;
 	private pageEntityService: PageEntityService;
+	private roleEntityService: RoleEntityService;
 	private customEmojiService: CustomEmojiService;
 	private announcementService: AnnouncementService;
 	private roleService: RoleService;
@@ -144,6 +147,7 @@ export class UserEntityService implements OnModuleInit {
 		this.apPersonService = this.moduleRef.get('ApPersonService');
 		this.noteEntityService = this.moduleRef.get('NoteEntityService');
 		this.pageEntityService = this.moduleRef.get('PageEntityService');
+		this.roleEntityService = this.moduleRef.get('RoleEntityService');
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 		this.announcementService = this.moduleRef.get('AnnouncementService');
 		this.roleService = this.moduleRef.get('RoleService');
@@ -402,6 +406,30 @@ export class UserEntityService implements OnModuleInit {
 		return `${this.config.url}/users/${userId}`;
 	}
 
+	@bindThis
+	private prepareRoles<T extends Pick<MiRole, 'id' | 'isPublic' | 'displayOrder' | 'isPublicDisplayRequired'>>(roles: T[], user: MiUser, iAmModerator: boolean, hideByUserPreference = true): T[] {
+		const hiddenRoleIds = new Set(user.hiddenRoleIds);
+		return roles.filter(role => (role.isPublic || iAmModerator) && (role.isPublicDisplayRequired || iAmModerator || !hideByUserPreference || !hiddenRoleIds.has(role.id))).sort((a, b) => b.displayOrder - a.displayOrder);
+	}
+
+	@bindThis
+	private sanitizeHiddenRoleIds(roles: Pick<MiRole, 'id' | 'isPublic' | 'isPublicDisplayRequired'>[], user: MiUser): MiRole['id'][] {
+		const hideableRoleIds = new Set(roles
+			.filter(role => role.isPublic && !role.isPublicDisplayRequired)
+			.map(role => role.id));
+		const sanitizedRoleIds: MiRole['id'][] = [];
+		const seenRoleIds = new Set<MiRole['id']>();
+
+		for (const roleId of user.hiddenRoleIds) {
+			if (!hideableRoleIds.has(roleId) || seenRoleIds.has(roleId)) continue;
+
+			sanitizedRoleIds.push(roleId);
+			seenRoleIds.add(roleId);
+		}
+
+		return sanitizedRoleIds;
+	}
+
 	public async pack<S extends 'MeDetailed' | 'UserDetailedNotMe' | 'UserDetailed' | 'UserLite' = 'UserLite'>(
 		src: MiUser['id'] | MiUser,
 		me?: { id: MiUser['id']; } | null | undefined,
@@ -425,6 +453,7 @@ export class UserEntityService implements OnModuleInit {
 		const meId = me ? me.id : null;
 		const isMe = meId === user.id;
 		const iAmModerator = me ? await this.roleService.isModerator(me as MiUser) : false;
+		const userRoles = isDetailed ? this.roleService.getUserRoles(user.id) : null;
 
 		const profile = isDetailed
 			? (opts.userProfile ?? await this.userProfilesRepository.findOneByOrFail({ userId: user.id }))
@@ -514,10 +543,9 @@ export class UserEntityService implements OnModuleInit {
 			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
 			onlineStatus: this.getOnlineStatus(user),
 			// パフォーマンス上の理由で、明示的に設定しない場合はローカルユーザーのみ取得
-			badgeRoles: (this.meta.showRoleBadgesOfRemoteUsers || user.host == null) ? this.roleService.getUserBadgeRoles(user.id).then((rs) => rs
-				.filter((r) => r.isPublic || iAmModerator)
-				.sort((a, b) => b.displayOrder - a.displayOrder)
+			badgeRoles: (this.meta.showRoleBadgesOfRemoteUsers || user.host == null) ? this.roleService.getUserBadgeRoles(user.id).then((rs) => this.prepareRoles(rs, user, iAmModerator)
 				.map((r) => ({
+					id: r.id,
 					name: r.name,
 					iconUrl: r.iconUrl,
 					displayOrder: r.displayOrder,
@@ -560,16 +588,7 @@ export class UserEntityService implements OnModuleInit {
 				followingVisibility: profile!.followingVisibility,
 				chatScope: user.chatScope,
 				canChat: this.roleService.getUserPolicies(user.id).then(r => r.chatAvailability === 'available'),
-				roles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isPublic).sort((a, b) => b.displayOrder - a.displayOrder).map(role => ({
-					id: role.id,
-					name: role.name,
-					color: role.color,
-					iconUrl: role.iconUrl,
-					description: role.description,
-					isModerator: role.isModerator,
-					isAdministrator: role.isAdministrator,
-					displayOrder: role.displayOrder,
-				}))),
+				roles: userRoles!.then(roles => this.roleEntityService.packLiteMany(this.prepareRoles(roles, user, iAmModerator, !isMe))),
 				memo: memo,
 				moderationNote: iAmModerator ? (profile!.moderationNote ?? '') : undefined,
 			} : {}),
@@ -598,6 +617,7 @@ export class UserEntityService implements OnModuleInit {
 				preventAiLearning: profile!.preventAiLearning,
 				isExplorable: user.isExplorable,
 				isDeleted: user.isDeleted,
+				hiddenRoleIds: userRoles!.then(roles => this.sanitizeHiddenRoleIds(roles, user)),
 				twoFactorBackupCodesStock: profile?.twoFactorBackupSecret?.length === 5 ? 'full' : (profile?.twoFactorBackupSecret?.length ?? 0) > 0 ? 'partial' : 'none',
 				hideOnlineStatus: user.hideOnlineStatus,
 				hasUnreadSpecifiedNotes: false, // 後方互換性のため

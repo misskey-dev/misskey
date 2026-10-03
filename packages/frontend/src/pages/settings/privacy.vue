@@ -72,6 +72,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 		</SearchMarker>
 
+		<FormLink to="/settings/roles">
+			<template #icon><i class="ti ti-badges"></i></template>
+			<SearchLabel>{{ i18n.ts._roleDisplay.title }}</SearchLabel>
+		</FormLink>
+
 		<SearchMarker :keywords="['chat']">
 			<FormSection>
 				<template #label><SearchLabel>{{ i18n.ts.directMessage }}</SearchLabel></template>
@@ -223,6 +228,7 @@ import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
 import { definePage } from '@/page.js';
 import FormSlot from '@/components/form/slot.vue';
+import FormLink from '@/components/form/link.vue';
 import { formatDateTimeString } from '@/utility/format-time-string.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkInput from '@/components/MkInput.vue';
