@@ -98,6 +98,31 @@ describe('ThemeManager', () => {
 
 	afterEach(() => {
 		window.localStorage.clear();
+		vi.restoreAllMocks();
+	});
+
+	test.each(['success', 'skipped', 'rejected', 'thrown'])('ViewTransition %s still applies the theme and cleans up', async outcome => {
+		const { themeManager } = await loadThemeModule();
+		const changed = vi.fn();
+		themeManager.on('themeChanged', changed);
+		vi.spyOn(console, 'error').mockImplementation(() => {});
+		Object.defineProperty(document, 'startViewTransition', {
+			configurable: true,
+			value: (update: () => Promise<void>) => {
+				if (outcome === 'thrown') throw new Error('transition unavailable');
+				const done = outcome === 'rejected' ? Promise.reject(new Error('update failed')) : Promise.resolve().then(update);
+				return {
+					ready: outcome === 'success' ? Promise.resolve() : Promise.reject(new Error('animation skipped')),
+					updateCallbackDone: done,
+					finished: done.then(() => {}),
+				};
+			},
+		});
+		themeManager.updateTheme(primaryTheme);
+		await vi.waitFor(() => assert.strictEqual(changed.mock.calls.length, 1));
+		assert.strictEqual(document.documentElement.classList.contains('_themeChanging_'), false);
+		assert.strictEqual(document.documentElement.dataset.colorScheme, 'light');
+		assert.strictEqual(document.documentElement.style.getPropertyValue('--MI_THEME-accent'), themeManager.currentCompiledTheme?.accent);
 	});
 
 	test('通常テーマ適用後のプレビューは現在テーマのみを切り替え、キャッシュは保持する', async () => {
