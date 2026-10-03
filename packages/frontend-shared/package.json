@@ -22,6 +22,7 @@
 		"@misskey-dev/emoji-data": "17.0.3",
 		"i18n": "workspace:*",
 		"json5": "2.2.3",
+		"mfm-js": "0.26.0",
 		"misskey-js": "workspace:*",
 		"shiki": "4.4.3",
 		"tinycolor2": "1.6.0",
