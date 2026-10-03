@@ -59,6 +59,7 @@ export interface UseNoteOptions {
 	inTimeline?: boolean;
 	tl_withSensitive?: Ref<boolean>;
 	inChannel?: ExtractInjectedType<typeof DIType['inChannel']>;
+	collapseSensitiveChannel?: ExtractInjectedType<typeof DIType['collapseSensitiveChannel']>;
 	currentClip?: Ref<Misskey.entities.Clip | null> | null;
 	currentAntenna?: Ref<Misskey.entities.Antenna | null> | null;
 }
@@ -83,10 +84,24 @@ export function checkNoteWordMute(
 }
 
 export function checkBuiltinSoftMute(
-	noteToCheck: Misskey.entities.Note,
+	appearNote: Misskey.entities.Note,
+	isRenote: boolean,
 	checkForSensitiveMedia: boolean,
-): 'sensitiveMute' | false {
-	if (checkForSensitiveMedia && noteToCheck.files?.some((v) => v.isSensitive)) {
+	collapseSensitiveChannel: boolean | 'renote-only',
+): 'sensitiveMute' | 'sensitiveChannel' | false {
+	if (appearNote.channel?.isSensitive) {
+		if (prefer.s.collapseSensitiveChannel) {
+			switch (collapseSensitiveChannel) {
+				case true: return 'sensitiveChannel';
+				case 'renote-only':
+					if (isRenote) return 'sensitiveChannel';
+					break;
+				case false:
+					break;
+			}
+		}
+	}
+	if (checkForSensitiveMedia && appearNote.files?.some((v) => v.isSensitive)) {
 		return 'sensitiveMute' as never;
 	}
 
@@ -104,6 +119,7 @@ export function useNote(
 	const inChannel = options.inChannel ?? null;
 	const currentClip = options.currentClip ?? null;
 	const currentAntenna = options.currentAntenna ?? null;
+	const collapseSensitiveChannel = options.collapseSensitiveChannel ?? false;
 
 	// プラグインの割り込み処理
 	let rawNote = deepClone(props.note);
@@ -150,7 +166,7 @@ export function useNote(
 
 	// ミュート判定
 	// mutedはミュート解除の操作で書き換わるのでrefだが、hardMutedは解除できないのでリアクティブにしない
-	const muted = ref($i ? checkNoteWordMute(appearNote, $i, $i.mutedWords) || checkBuiltinSoftMute(appearNote, inTimeline && !tl_withSensitive.value) : false);
+	const muted = ref($i ? checkNoteWordMute(appearNote, $i, $i.mutedWords) || checkBuiltinSoftMute(appearNote, isRenote, inTimeline && !tl_withSensitive.value, collapseSensitiveChannel) : false);
 	const hardMuted = props.withHardMute && $i ? checkNoteWordMute(appearNote, $i, $i.hardMutedWords) : false;
 
 	// 導出値
