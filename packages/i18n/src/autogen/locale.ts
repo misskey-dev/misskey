@@ -12641,6 +12641,14 @@ export interface Locale extends ILocale {
          * 投稿日時to
          */
         "postTo": string;
+        /**
+         * 日付
+         */
+        "date": string;
+        /**
+         * 時刻
+         */
+        "time": string;
     };
     "_serverSetupWizard": {
         /**
