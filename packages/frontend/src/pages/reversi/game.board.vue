@@ -154,7 +154,7 @@ import { deepClone } from '@/utility/clone.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { userPage } from '@/filters/user.js';
+import { userPage } from '@@/js/user.js';
 import * as sound from '@/utility/sound.js';
 import * as os from '@/os.js';
 import { confetti } from '@/utility/confetti.js';
