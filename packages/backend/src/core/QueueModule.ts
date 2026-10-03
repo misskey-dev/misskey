@@ -9,6 +9,7 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { baseQueueOptions, QUEUE } from '@/queue/const.js';
 import { allSettled } from '@/misc/promise-tracker.js';
+import { instrumentQueue } from '@/core/telemetry/queue-instrumentation.js';
 import {
 	DeliverJobData,
 	EndedPollNotificationJobData,
@@ -32,7 +33,12 @@ export type UserWebhookDeliverQueue = Bull.Queue<UserWebhookDeliverJobData>;
 export type SystemWebhookDeliverQueue = Bull.Queue<SystemWebhookDeliverJobData>;
 
 function createQueue<T extends object>(queueName: string, config: Config): Bull.Queue<T> {
-	return new Bull.Queue<T>(queueName, baseQueueOptions(config, queueName));
+	const queue = new Bull.Queue<T>(queueName, baseQueueOptions(config, queueName));
+	// Queue のラップは、enqueue 時に OTel context をジョブデータへ埋め込むためのもの。
+	// Sentry 単独ではジョブ間の context 伝播を使わないので、OTel 未設定時は元の Queue を返す。
+	if (config.otelForBackend == null) return queue;
+
+	return instrumentQueue(queue);
 }
 
 const $system: Provider = {

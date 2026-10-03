@@ -5,16 +5,17 @@
 
 import type { TelemetryService } from '@/core/telemetry/TelemetryService.js';
 
-type QueueTelemetryService = Pick<TelemetryService, 'startSpan'>;
+type QueueTelemetryService = Pick<TelemetryService, 'startSpanWithTraceContext'>;
 
-/** Queueのprocessorを実行し、失敗処理をSpan内で行います。 */
-export function runQueueJob<T>(
+/** QueueのprocessorをTrace Context付きで実行し、失敗処理をSpan内で行います。 */
+export function runQueueJobWithTraceContext<T>(
 	telemetryService: QueueTelemetryService,
 	spanName: string,
+	jobData: object,
 	processJob: () => T | Promise<T>,
 	onError: (error: Error) => void,
 ): Promise<T> {
-	return telemetryService.startSpan(spanName, async (): Promise<T> => {
+	return telemetryService.startSpanWithTraceContext(spanName, jobData, async (): Promise<T> => {
 		try {
 			return await processJob();
 		} catch (error) {
