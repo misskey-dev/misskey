@@ -10,7 +10,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import { UserAuthService } from "@/core/UserAuthService.js";
+import { TotpService } from '@/core/TotpService.js';
 
 export const meta = {
 	requireCredential: true,
@@ -46,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private userProfilesRepository: UserProfilesRepository,
 
 		private userEntityService: UserEntityService,
-		private userAuthService: UserAuthService,
+		private totpService: TotpService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -58,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new Error('二段階認証の設定が開始されていません');
 			}
 
-			if (!await this.userAuthService.validateOtp(profile.userId, profile.twoFactorTempSecret, token)) {
+			if (!await this.totpService.validateOtp(profile.userId, profile.twoFactorTempSecret, token)) {
 				throw new Error('not verified');
 			}
 

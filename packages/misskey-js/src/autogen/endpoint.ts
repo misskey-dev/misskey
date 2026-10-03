@@ -403,18 +403,18 @@ import type {
 	HashtagsUsersRequest,
 	HashtagsUsersResponse,
 	IResponse,
-	I2faDoneRequest,
-	I2faDoneResponse,
-	I2faKeyDoneRequest,
-	I2faKeyDoneResponse,
-	I2faPasswordLessRequest,
-	I2faRegisterRequest,
-	I2faRegisterResponse,
-	I2faRegisterKeyRequest,
-	I2faRegisterKeyResponse,
-	I2faRemoveKeyRequest,
-	I2faUnregisterRequest,
-	I2faUpdateKeyRequest,
+	I2faPasskeyDoneRequest,
+	I2faPasskeyDoneResponse,
+	I2faPasskeyPasswordLessRequest,
+	I2faPasskeyRegisterRequest,
+	I2faPasskeyRegisterResponse,
+	I2faPasskeyRemoveRequest,
+	I2faPasskeyUpdateRequest,
+	I2faTotpDoneRequest,
+	I2faTotpDoneResponse,
+	I2faTotpRegisterRequest,
+	I2faTotpRegisterResponse,
+	I2faTotpRemoveRequest,
 	IAppsRequest,
 	IAppsResponse,
 	IAuthorizedAppsRequest,
@@ -929,14 +929,14 @@ export type Endpoints = {
 	'hashtags/trend': { req: EmptyRequest; res: HashtagsTrendResponse };
 	'hashtags/users': { req: HashtagsUsersRequest; res: HashtagsUsersResponse };
 	'i': { req: EmptyRequest; res: IResponse };
-	'i/2fa/done': { req: I2faDoneRequest; res: I2faDoneResponse };
-	'i/2fa/key-done': { req: I2faKeyDoneRequest; res: I2faKeyDoneResponse };
-	'i/2fa/password-less': { req: I2faPasswordLessRequest; res: EmptyResponse };
-	'i/2fa/register': { req: I2faRegisterRequest; res: I2faRegisterResponse };
-	'i/2fa/register-key': { req: I2faRegisterKeyRequest; res: I2faRegisterKeyResponse };
-	'i/2fa/remove-key': { req: I2faRemoveKeyRequest; res: EmptyResponse };
-	'i/2fa/unregister': { req: I2faUnregisterRequest; res: EmptyResponse };
-	'i/2fa/update-key': { req: I2faUpdateKeyRequest; res: EmptyResponse };
+	'i/2fa/passkey/done': { req: I2faPasskeyDoneRequest; res: I2faPasskeyDoneResponse };
+	'i/2fa/passkey/password-less': { req: I2faPasskeyPasswordLessRequest; res: EmptyResponse };
+	'i/2fa/passkey/register': { req: I2faPasskeyRegisterRequest; res: I2faPasskeyRegisterResponse };
+	'i/2fa/passkey/remove': { req: I2faPasskeyRemoveRequest; res: EmptyResponse };
+	'i/2fa/passkey/update': { req: I2faPasskeyUpdateRequest; res: EmptyResponse };
+	'i/2fa/totp/done': { req: I2faTotpDoneRequest; res: I2faTotpDoneResponse };
+	'i/2fa/totp/register': { req: I2faTotpRegisterRequest; res: I2faTotpRegisterResponse };
+	'i/2fa/totp/remove': { req: I2faTotpRemoveRequest; res: EmptyResponse };
 	'i/apps': { req: IAppsRequest; res: IAppsResponse };
 	'i/authorized-apps': { req: IAuthorizedAppsRequest; res: IAuthorizedAppsResponse };
 	'i/change-password': { req: IChangePasswordRequest; res: EmptyResponse };
