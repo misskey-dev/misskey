@@ -1,17 +1,5 @@
 ## Unreleased
 
-### General
--
-
-### Client
--
-
-### Server
--
-
-
-## 2026.10.0
-
 ### Note
 
 **Sentry SDKをv11に更新したため、Sentryを利用しているサーバーでは設定の変更が必要になる場合があります。**
@@ -24,8 +12,19 @@
 - 詳細は https://docs.sentry.io/platforms/javascript/migration/v10-to-v11/ を参照してください。
 
 ### General
-- Enhance: 翻訳の更新
 - Enhance: 依存関係の更新
+
+### Client
+-
+
+### Server
+-
+
+
+## 2026.10.0
+
+### General
+- Enhance: 翻訳の更新
 
 ### Client
 - Fix: ユーザーの「概要」ページで引っ張って更新しても何も更新されない問題を修正  
