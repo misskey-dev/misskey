@@ -61,6 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:is="popup.component"
 	v-for="popup in popups"
 	:key="popup.id"
+	:ref="(el: Component | null) => { popup.componentRef = el; }"
 	v-bind="popup.props"
 	v-on="popup.events"
 />
@@ -103,6 +104,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref, TransitionGroup } from 'vue';
+import type { Component } from 'vue';
 import * as Misskey from 'misskey-js';
 import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
