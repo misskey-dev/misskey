@@ -5,16 +5,20 @@
 
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Config } from '@/config.js';
+import type { LogRecordInput } from '@/logging/types.js';
 
 const mocks = vi.hoisted(() => {
 	return {
 		sentryCreate: vi.fn(),
 		setLogTraceContextProvider: vi.fn(),
+		logWrite: vi.fn<(input: LogRecordInput) => void>(),
 	};
 });
 
+// telemetry-registryは`@/logger.js`経由でlogManagerも参照するため、両方をmockする。
 vi.mock('@/logging/logging-runtime.js', () => ({
 	setLogTraceContextProvider: mocks.setLogTraceContextProvider,
+	logManager: { write: mocks.logWrite },
 }));
 
 vi.mock('@/core/telemetry/adapters/SentryTelemetryAdapter.js', () => ({
@@ -35,6 +39,7 @@ describe('telemetry-registry', () => {
 		vi.resetModules();
 		mocks.sentryCreate.mockReset();
 		mocks.setLogTraceContextProvider.mockReset();
+		mocks.logWrite.mockReset();
 		mocks.sentryCreate.mockResolvedValue({ shutdown: vi.fn(), captureMessage: vi.fn(), startSpan: vi.fn() });
 	});
 
@@ -64,7 +69,7 @@ describe('telemetry-registry', () => {
 
 		await initTelemetry(config({ sentryForBackend }));
 
-		expect(mocks.sentryCreate).toHaveBeenCalledWith(sentryForBackend);
+		expect(mocks.sentryCreate).toHaveBeenCalledWith(sentryForBackend, expect.any(Function));
 		expect(mocks.setLogTraceContextProvider).toHaveBeenCalledWith(expect.any(Function));
 		const provider = mocks.setLogTraceContextProvider.mock.calls[0][0] as () => unknown;
 		expect(provider()).toEqual({
@@ -73,6 +78,22 @@ describe('telemetry-registry', () => {
 			traceFlags: 0,
 		});
 		expect(getActiveTraceContext).toHaveBeenCalledOnce();
+	});
+
+	test('routes adapter warnings to the Misskey logger instead of the console', async () => {
+		const { initTelemetry } = await import('@/core/telemetry/telemetry-registry.js');
+
+		await initTelemetry(config({ sentryForBackend: { options: {}, enableNodeProfiling: false } }));
+
+		const warn = mocks.sentryCreate.mock.calls[0][1] as (message: string) => void;
+		warn('sentryForBackend.options.sendDefaultPii was removed');
+
+		expect(mocks.logWrite).toHaveBeenCalledOnce();
+		expect(mocks.logWrite.mock.calls[0][0]).toMatchObject({
+			level: 'warn',
+			message: 'sentryForBackend.options.sendDefaultPii was removed',
+			context: [{ name: 'telemetry', color: undefined }],
+		});
 	});
 
 	test('startSpan runs fn directly when no adapter is registered', async () => {

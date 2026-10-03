@@ -11,16 +11,16 @@
 	},
 	"devDependencies": {
 		"@types/estree": "1.0.9",
-		"@types/node": "26.4.0",
-		"@typescript-eslint/eslint-plugin": "8.68.0",
-		"@typescript-eslint/parser": "8.68.0",
-		"rollup": "4.63.1"
+		"@types/node": "26.6.2",
+		"@typescript-eslint/eslint-plugin": "8.70.1",
+		"@typescript-eslint/parser": "8.70.1",
+		"rollup": "4.63.4"
 	},
 	"dependencies": {
 		"i18n": "workspace:*",
-		"magic-string": "1.2.3",
+		"magic-string": "1.4.2",
 		"oxc-walker": "1.1.1",
-		"rolldown": "1.2.6",
-		"vite": "8.2.2"
+		"rolldown": "1.2.10",
+		"vite": "8.3.0"
 	}
 }

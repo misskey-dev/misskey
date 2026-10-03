@@ -16,6 +16,34 @@ type SentryIntegrationsOption = NonNullable<NodeOptions['integrations']>;
 type SentryIntegrationFactory = Extract<SentryIntegrationsOption, (integrations: any[]) => any[]>;
 type SentryIntegration = Parameters<SentryIntegrationFactory>[0][number];
 type SentryNodeOptions = NodeOptions;
+type SentryDataCollection = NonNullable<NodeOptions['dataCollection']>;
+
+/** 中継元のアドレスや利用者を特定できるHTTPヘッダー名の断片 */
+const PEER_IDENTIFYING_HEADER_SNIPPETS = ['forwarded', '-ip', 'remote-', 'via', '-user'];
+
+/**
+ * Misskeyが既定で適用する収集範囲
+ *
+ * Sentry v11 は `dataCollection` 未指定だと全て収集するため、利用者の情報が意図せず送信されないよう既定を絞る
+ * 緩める場合は設定ファイルの `dataCollection` で明示する
+ */
+export const DEFAULT_SENTRY_DATA_COLLECTION: SentryDataCollection = {
+	// IPやユーザーIDの自動付与はしない。調査に必要な識別子はTelemetryService側で明示的に渡す
+	userInfo: false,
+	// backendは認証にCookieを使わないため、収集しても調査の役に立たない
+	cookies: false,
+	// GETのAPI呼び出しはアクセストークンを`i`クエリパラメータでも受け取るため落とす
+	urlQueryParams: false,
+	httpHeaders: {
+		request: { deny: PEER_IDENTIFYING_HEADER_SNIPPETS },
+		response: { deny: PEER_IDENTIFYING_HEADER_SNIPPETS },
+	},
+	// リクエスト・レスポンス本文はノートやチャットの内容を含む
+	httpBodies: [],
+	// クエリのバインド値や書き込みペイロードは利用者の投稿内容を含む
+	databaseQueryData: false,
+	genAI: { inputs: false, outputs: false },
+};
 
 type BuildSentryIntegrationsOptions = {
 	disabledIntegrations?: string[];
@@ -44,7 +72,12 @@ export function buildSentryIntegrations(options: BuildSentryIntegrationsOptions)
 export function buildSentryNodeOptions(
 	config: SentryBackendConfig,
 	nodeProfilingIntegration?: () => SentryIntegration,
+	warn?: (message: string) => void,
 ): SentryNodeOptions {
+	if ('sendDefaultPii' in config.options) {
+		(warn ?? console.warn)('sentryForBackend.options.sendDefaultPii was removed in Sentry SDK v11 and is ignored. Use sentryForBackend.options.dataCollection instead (`dataCollection: {}` collects everything, as `sendDefaultPii: true` did).');
+	}
+
 	return {
 		// Do not send Sentry trace headers to remote ActivityPub/Webhook/etc. hosts by default.
 		// Admins can opt in for trusted internal services via sentryForBackend.options.
@@ -53,10 +86,13 @@ export function buildSentryNodeOptions(
 		// Performance Monitoring
 		tracesSampleRate: 1.0, //  Capture 100% of the transactions
 
-		// Set sampling rate for profiling - this is relative to tracesSampleRate
-		profilesSampleRate: 1.0,
+		// Profile every sampled trace (session-based profiling; relative to tracesSampleRate)
+		profileSessionSampleRate: 1.0,
+		profileLifecycle: 'trace',
 
 		maxBreadcrumbs: 0,
+
+		dataCollection: DEFAULT_SENTRY_DATA_COLLECTION,
 
 		...config.options,
 
@@ -64,6 +100,7 @@ export function buildSentryNodeOptions(
 			disabledIntegrations: config.disabledIntegrations,
 			enableNodeProfiling: config.enableNodeProfiling,
 			nodeProfilingIntegration,
+			warn,
 		}),
 	};
 }
@@ -74,11 +111,11 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 	) {
 	}
 
-	public static async create(config: SentryBackendConfig): Promise<SentryTelemetryAdapter> {
+	public static async create(config: SentryBackendConfig, warn?: (message: string) => void): Promise<SentryTelemetryAdapter> {
 		const Sentry = await import('@sentry/node');
 		const { nodeProfilingIntegration } = await import('@sentry/profiling-node');
 
-		Sentry.init(buildSentryNodeOptions(config, nodeProfilingIntegration));
+		Sentry.init(buildSentryNodeOptions(config, nodeProfilingIntegration, warn));
 
 		return new SentryTelemetryAdapter(Sentry);
 	}
