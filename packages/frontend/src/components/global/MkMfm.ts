@@ -314,7 +314,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 								style: 'margin-right: 0.25em;',
 							}),
 							h(MkTime, {
-								key: Math.random(),
 								time: unixtime * 1000,
 								mode: 'detail',
 							}),
@@ -355,7 +354,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 			case 'url': {
 				return [h(MkUrl, {
-					key: Math.random(),
 					url: token.props.url,
 					rel: 'nofollow noopener',
 					navigationBehavior: props.linkNavigationBehavior,
@@ -366,7 +364,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 				// スロット関数の中で genEl を呼ぶと再描画されるたびに子の VNode が作り直される
 				const linkChildren = genEl(token.children, scale, true);
 				return [h(MkLink, {
-					key: Math.random(),
 					url: token.props.url,
 					rel: 'nofollow noopener',
 					navigationBehavior: props.linkNavigationBehavior,
@@ -375,7 +372,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 			case 'mention': {
 				return [h(MkMention, {
-					key: Math.random(),
 					host: (token.props.host == null && props.author && props.author.host != null ? props.author.host : token.props.host) ?? host,
 					username: token.props.username,
 					navigationBehavior: props.linkNavigationBehavior,
@@ -384,7 +380,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 			case 'hashtag': {
 				return [h(MkA, {
-					key: Math.random(),
 					to: isNote ? `/tags/${encodeURIComponent(token.props.hashtag)}` : `/user-tags/${encodeURIComponent(token.props.hashtag)}`,
 					style: 'color:var(--MI_THEME-hashtag);',
 					behavior: props.linkNavigationBehavior,
@@ -393,7 +388,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 			case 'blockCode': {
 				return [h(MkCode, {
-					key: Math.random(),
 					code: token.props.code,
 					lang: token.props.lang ?? undefined,
 				})];
@@ -401,7 +395,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 			case 'inlineCode': {
 				return [h(MkCodeInline, {
-					key: Math.random(),
 					code: token.props.code,
 				})];
 			}
@@ -421,7 +414,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			case 'emojiCode': {
 				if (props.author?.host == null) {
 					return [h(MkCustomEmoji, {
-						key: Math.random(),
 						name: token.props.name,
 						normal: props.plain,
 						host: null,
@@ -436,7 +428,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						return [h('span', `:${token.props.name}:`)];
 					} else {
 						return [h(MkCustomEmoji, {
-							key: Math.random(),
 							name: token.props.name,
 							url: props.emojiUrls && props.emojiUrls[token.props.name],
 							normal: props.plain,
@@ -451,7 +442,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 			case 'unicodeEmoji': {
 				return [h(MkEmoji, {
-					key: Math.random(),
 					emoji: token.props.emoji,
 					menu: props.enableEmojiMenu,
 					menuReaction: props.enableEmojiMenuReaction,
@@ -468,7 +458,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 
 			case 'search': {
 				return [h(MkGoogle, {
-					key: Math.random(),
 					q: token.props.query,
 				})];
 			}
