@@ -37,20 +37,13 @@ import { ref, shallowRef, onMounted, onUnmounted, inject } from 'vue';
 import { postMessageToParentWindow } from '@/post-message.js';
 import { DI } from '@/di.js';
 import { defaultEmbedParams } from '@@/js/embed-page.js';
+import { safeURIDecode } from '@@/js/url.js';
 import EmNotePage from '@/pages/note.vue';
 import EmUserTimelinePage from '@/pages/user-timeline.vue';
 import EmClipPage from '@/pages/clip.vue';
 import EmTagPage from '@/pages/tag.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmLoading from '@/components/EmLoading.vue';
-
-function safeURIDecode(str: string): string {
-	try {
-		return decodeURIComponent(str);
-	} catch {
-		return str;
-	}
-}
 
 const page = window.location.pathname.split('/')[2];
 const contentId = safeURIDecode(window.location.pathname.split('/')[3]);

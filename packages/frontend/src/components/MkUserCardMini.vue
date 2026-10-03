@@ -19,7 +19,7 @@ import * as Misskey from 'misskey-js';
 import { onMounted, ref } from 'vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
-import { acct } from '@/filters/user.js';
+import { acct } from '@@/js/user.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;

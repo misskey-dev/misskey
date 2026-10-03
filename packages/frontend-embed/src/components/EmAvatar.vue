@@ -41,7 +41,7 @@ import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import EmImgWithBlurhash from './EmImgWithBlurhash.vue';
 import EmA from './EmA.vue';
-import { userPage } from '@/utils.js';
+import { userPage } from '@@/js/user.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
