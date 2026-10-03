@@ -140,8 +140,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<MkButton v-if="storagePersistenceSupported && !storagePersisted" @click="enableStoragePersistence">{{ i18n.ts._settings.settingsPersistence_title }}</MkButton>
-
-		<MkButton @click="forceCloudBackup">{{ i18n.ts._preferencesBackup.forceBackup }}</MkButton>
 	</div>
 </SearchMarker>
 </template>
@@ -167,7 +165,6 @@ import MkRolePreview from '@/components/MkRolePreview.vue';
 import { signout } from '@/signout.js';
 import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
-import { cloudBackup } from '@/preferences/utility.js';
 
 const $i = ensureSignin();
 
@@ -221,11 +218,6 @@ function hideAllTips() {
 
 function readAllChatMessages() {
 	os.apiWithDialog('chat/read-all', {});
-}
-
-async function forceCloudBackup() {
-	await cloudBackup();
-	os.success();
 }
 
 const headerActions = computed(() => []);

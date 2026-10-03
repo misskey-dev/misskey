@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { mergeProfiles } from './manager.js';
 import type { PreferencesProfile } from './manager.js';
 import type { MenuItem } from '@/types/menu.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
@@ -39,6 +40,38 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 			cloudBackup();
 		} else {
 			store.set('enablePreferencesAutoCloudBackup', false);
+
+			autoSyncEnabled.value = false;
+		}
+	});
+
+	const autoSyncEnabled = ref(store.s.enablePreferencesAutoCloudSync);
+
+	watch(autoSyncEnabled, async () => {
+		if (autoSyncEnabled.value) {
+			const confirm = await os.confirm({
+				type: 'warning',
+				title: i18n.ts._preferencesBackup.autoSyncAreYouSure,
+				text: i18n.ts._preferencesBackup.autoSyncAreYouSure_description,
+			});
+			if (confirm.canceled) {
+				autoSyncEnabled.value = false;
+				return;
+			}
+
+			try {
+				await cloudSync();
+				store.set('enablePreferencesAutoCloudSync', true);
+			} catch (err) {
+				autoSyncEnabled.value = false;
+				os.alert({
+					type: 'error',
+					title: i18n.ts.somethingHappened,
+				});
+				console.error(err);
+			}
+		} else {
+			store.set('enablePreferencesAutoCloudSync', false);
 		}
 	});
 
@@ -52,10 +85,42 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 			renameProfile();
 		},
 	}, {
-		type: 'switch',
-		icon: 'ti ti-cloud-up',
-		text: i18n.ts._preferencesBackup.autoBackup,
-		ref: autoBackupEnabled,
+		type: 'parent',
+		text: i18n.ts._preferencesBackup.backupAndSync,
+		caption: i18n.ts.latestBackupAt + ': ' + (store.s.latestPreferencesBackupAt !== 0 ? new Date(store.s.latestPreferencesBackupAt).toLocaleString() : '-'),
+		icon: 'ti ti-cloud',
+		children: [{
+			type: 'switch',
+			icon: 'ti ti-cloud-up',
+			text: i18n.ts._preferencesBackup.autoBackup,
+			caption: i18n.ts._preferencesBackup.autoBackup_description,
+			ref: autoBackupEnabled,
+		}, {
+			type: 'button',
+			icon: 'ti ti-cloud-up',
+			text: i18n.ts._preferencesBackup.forceBackup,
+			disabled: computed(() => !autoBackupEnabled.value),
+			action: () => {
+				cloudBackup();
+			},
+		}, {
+			type: 'divider',
+		}, {
+			type: 'switch',
+			icon: 'ti ti-cloud-down',
+			text: i18n.ts._preferencesBackup.autoSync,
+			caption: i18n.ts._preferencesBackup.autoSync_description,
+			ref: autoSyncEnabled,
+			disabled: computed(() => !autoBackupEnabled.value),
+		}, {
+			type: 'button',
+			icon: 'ti ti-cloud-down',
+			text: i18n.ts._preferencesBackup.forceSync,
+			disabled: computed(() => !autoSyncEnabled.value),
+			action: () => {
+				cloudSync();
+			},
+		}],
 	}, {
 		text: i18n.ts.export,
 		icon: 'ti ti-download',
@@ -139,17 +204,66 @@ function importProfile() {
 	input.click();
 }
 
+export async function cloudSync() {
+	if ($i == null) return;
+
+	const cloudProfile = await misskeyApi('i/registry/get', {
+		scope: ['client', 'preferences', 'backups'],
+		key: prefer.profile.name,
+	}).catch(err => {
+		if (err.code === 'NO_SUCH_KEY') {
+			return null;
+		}
+		throw err;
+	}) as PreferencesProfile | null;
+
+	if (cloudProfile == null) {
+		if (_DEV_) console.log('no backuped profile found, skipping sync');
+		return;
+	}
+
+	if (_DEV_) console.log('backuped profile found, syncing', cloudProfile);
+
+	miLocalStorage.setItem('preferences', JSON.stringify(mergeProfiles(prefer.profile, cloudProfile)));
+
+	prefer.reloadProfile();
+
+	store.set('latestPreferencesSyncAt', Date.now());
+}
+
+// TODO: Web Locks APIで良い感じにする
 export async function cloudBackup() {
 	if ($i == null) return;
 	if (!canAutoBackup()) {
 		throw new Error('cannot auto backup for this profile');
 	}
 
+	let currentProfile = prefer.profile;
+
+	if (_DEV_) console.log('cloud backup', currentProfile);
+
+	const backupedProfile = await misskeyApi('i/registry/get', {
+		scope: ['client', 'preferences', 'backups'],
+		key: prefer.profile.name,
+	}).catch(err => {
+		if (err.code === 'NO_SUCH_KEY') {
+			return null;
+		}
+		throw err;
+	}) as PreferencesProfile | null;
+
+	// 古い設定で新しいバックアップを上書きしないようにマージ
+	if (backupedProfile != null) {
+		currentProfile = mergeProfiles(currentProfile, backupedProfile);
+	}
+
 	await misskeyApi('i/registry/set', {
 		scope: ['client', 'preferences', 'backups'],
 		key: prefer.profile.name,
-		value: prefer.profile,
+		value: currentProfile,
 	});
+
+	store.set('latestPreferencesBackupAt', Date.now());
 }
 
 export async function listCloudBackups() {
@@ -186,7 +300,6 @@ export async function restoreFromCloudBackup() {
 
 	const select = await os.select({
 		title: i18n.ts._preferencesBackup.selectBackupToRestore,
-		text: 'ℹ️ ' + i18n.ts._preferencesProfile.shareSameProfileBetweenDevicesIsNotRecommended + ' ' + i18n.ts._preferencesProfile.useSyncBetweenDevicesOptionIfYouWantToSyncSetting,
 		items: backups.map(backup => ({
 			label: backup.name,
 			value: backup.name,
