@@ -212,6 +212,7 @@ import { $i } from '@/i.js';
 import * as sound from '@/utility/sound.js';
 import MkRange from '@/components/MkRange.vue';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
 
 type FrontendMonoDefinition = {
@@ -956,8 +957,8 @@ function attachGameEvents() {
 	});
 
 	game.addListener('changeStock', value => {
-		currentPick.value = JSON.parse(JSON.stringify(value[0]));
-		stock.value = JSON.parse(JSON.stringify(value.slice(1)));
+		currentPick.value = deepClone(value[0]);
+		stock.value = deepClone(value.slice(1));
 	});
 
 	game.addListener('changeHolding', value => {
