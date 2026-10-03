@@ -1158,6 +1158,9 @@ importers:
       i18n:
         specifier: workspace:*
         version: link:../i18n
+      idb-keyval:
+        specifier: 6.3.0
+        version: 6.3.0
       json5:
         specifier: 2.2.3
         version: 2.2.3

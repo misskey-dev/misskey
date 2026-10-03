@@ -12,6 +12,7 @@ import type { Locale } from 'i18n';
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification.js';
 import { swLang } from '@/scripts/lang.js';
 import * as swos from '@/scripts/operations.js';
+import { respondToShare } from '@/scripts/share.js';
 
 async function respondToNavigation(request: Request): Promise<Response> {
 	const controller = new AbortController();
@@ -89,6 +90,14 @@ globalThis.addEventListener('activate', ev => {
 });
 
 globalThis.addEventListener('fetch', ev => {
+	//#region /sw/share
+	const url = new URL(ev.request.url);
+	if (url.origin === globalThis.location.origin && url.pathname === '/sw/share' && ev.request.method === 'POST') {
+		ev.respondWith(respondToShare(ev.request));
+		return;
+	}
+
+	//#region others
 	let isHTMLRequest = false;
 	if (ev.request.headers.get('sec-fetch-dest') === 'document') {
 		isHTMLRequest = true;
@@ -100,6 +109,7 @@ globalThis.addEventListener('fetch', ev => {
 
 	if (!isHTMLRequest) return;
 	ev.respondWith(respondToNavigation(ev.request));
+	//#endregion
 });
 
 globalThis.addEventListener('push', ev => {
