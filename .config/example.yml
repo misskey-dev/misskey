@@ -328,11 +328,13 @@ id: 'aidx'
 #    # Internal allowlist example:
 #    #tracePropagationTargets:
 #    #  - 'internal-service.example'
-#    # By default, Misskey keeps the conservative data collection of
-#    # Sentry SDK v10 (no user info, cookies, HTTP bodies, DB query data, etc.).
-#    # To change what is collected, set `dataCollection` here (it replaces
-#    # Misskey's default as a whole). `sendDefaultPii` was removed in v11;
-#    # `sendDefaultPii: true` is still honored and enables Sentry's v11 defaults.
+#    # Sentry SDK v11 collects everything unless `dataCollection` is set, so
+#    # Misskey applies a restricted default: no user info, no cookies, no URL
+#    # query params (they may carry an access token), no HTTP bodies, no DB
+#    # query values, and peer-identifying request/response headers denied.
+#    # To change what is collected, set `dataCollection` here. It replaces
+#    # Misskey's default as a whole, so `dataCollection: {}` restores Sentry's
+#    # own defaults and collects everything.
 #    #dataCollection:
 #    #  userInfo: true
 

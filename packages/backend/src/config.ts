@@ -25,13 +25,7 @@ type RedisOptionsSource = Partial<IoRedisRedisOptions & BullMqRedisOptions> & Re
 type RedisOptionsResolved = IoRedisRedisOptions & BullMqRedisOptions & RedisOptionsRequiredFields;
 
 type SentryBackendConfig = {
-	options: Partial<Sentry.NodeOptions> & {
-		/**
-		 * Sentry v11 で削除されたオプション。既存の設定ファイルを壊さないため互換キーとして受け付ける。
-		 * @deprecated 代わりに `dataCollection` を指定する。`true` のときは v11 の既定 (全収集) が有効になる。
-		 */
-		sendDefaultPii?: boolean;
-	};
+	options: Partial<Sentry.NodeOptions>;
 	enableNodeProfiling: boolean;
 	disabledIntegrations?: string[];
 };

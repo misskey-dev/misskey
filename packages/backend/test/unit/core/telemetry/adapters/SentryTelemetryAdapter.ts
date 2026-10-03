@@ -4,9 +4,10 @@
  */
 
 import { describe, expect, test, vi } from 'vitest';
-import { V10_SENTRY_DATA_COLLECTION, SentryTelemetryAdapter, buildSentryIntegrations, buildSentryNodeOptions } from '@/core/telemetry/adapters/SentryTelemetryAdapter.js';
+import { DEFAULT_SENTRY_DATA_COLLECTION, SentryTelemetryAdapter, buildSentryIntegrations, buildSentryNodeOptions } from '@/core/telemetry/adapters/SentryTelemetryAdapter.js';
 
-type TestIntegration = Parameters<ReturnType<typeof buildSentryIntegrations>>[0][number];
+type SentryIntegrationFactory = ReturnType<typeof buildSentryIntegrations>;
+type TestIntegration = Parameters<SentryIntegrationFactory>[0][number];
 
 function testIntegration(name: string): TestIntegration {
 	return { name };
@@ -74,22 +75,67 @@ describe('SentryTelemetryAdapter', () => {
 		expect(options.tracePropagationTargets).toEqual(['^https://internal\\.example/']);
 	});
 
-	test('keeps the Sentry v10 data collection defaults by default', () => {
+	test('restricts data collection by default', () => {
 		const options = buildSentryNodeOptions({
 			enableNodeProfiling: false,
 			options: {},
 		});
 
-		expect(options.dataCollection).toEqual(V10_SENTRY_DATA_COLLECTION);
+		expect(options.dataCollection).toEqual(DEFAULT_SENTRY_DATA_COLLECTION);
 	});
 
-	test('does not restrict data collection when v10 sendDefaultPii is enabled', () => {
+	// Sentry v11は`dataCollection`未指定だと全て収集するため、既定が緩むと利用者の情報が意図せず送信される
+	test('pins the categories that must not be collected by default', () => {
+		expect(DEFAULT_SENTRY_DATA_COLLECTION).toEqual({
+			userInfo: false,
+			cookies: false,
+			urlQueryParams: false,
+			httpHeaders: {
+				request: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+				response: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+			},
+			httpBodies: [],
+			databaseQueryData: false,
+			genAI: { inputs: false, outputs: false },
+		});
+	});
+
+	test('warns that the removed sendDefaultPii option is ignored', () => {
+		const warn = vi.fn();
+
 		const options = buildSentryNodeOptions({
 			enableNodeProfiling: false,
-			options: { sendDefaultPii: true },
-		});
+			options: { sendDefaultPii: true } as Record<string, unknown>,
+		}, undefined, warn);
 
-		expect(options.dataCollection).toBeUndefined();
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('sendDefaultPii');
+		// 削除されたオプションでは既定を緩めない
+		expect(options.dataCollection).toEqual(DEFAULT_SENTRY_DATA_COLLECTION);
+	});
+
+	test('does not warn when sendDefaultPii is absent', () => {
+		const warn = vi.fn();
+
+		buildSentryNodeOptions({ enableNodeProfiling: false, options: {} }, undefined, warn);
+
+		expect(warn).not.toHaveBeenCalled();
+	});
+
+	// 呼び出し側が渡したロガーがintegrations側の警告にも届くこと(consoleへ逃げない)
+	test('forwards the warn callback to the integrations factory', () => {
+		const warn = vi.fn();
+
+		const options = buildSentryNodeOptions({
+			enableNodeProfiling: false,
+			disabledIntegrations: ['NoSuchIntegration'],
+			options: {},
+		}, undefined, warn);
+
+		(options.integrations as SentryIntegrationFactory)([testIntegration('Http')]);
+
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('NoSuchIntegration');
 	});
 
 	test('allows explicit dataCollection to override the default', () => {

@@ -1,7 +1,19 @@
 ## 2026.10.0
 
+### Note
+
+**Sentry SDKをv11に更新したため、Sentryを利用しているサーバーでは設定の変更が必要になる場合があります。**
+
+- Sentry v11で`sendDefaultPii`が削除され、収集する項目を個別に指定する`dataCollection`に置き換えられました。
+	- **`sentryForBackend.options.sendDefaultPii` / `sentryForFrontend.options.sendDefaultPii`を設定しているサーバーは対応が必要です。** このオプションは無視されるようになり、設定されている場合は起動時に警告を出力します。同じ収集範囲を維持するには`dataCollection: {}`に書き換えてください。
+	- 設定していない場合、対応は不要です。Sentry v11は`dataCollection`未指定時にすべてを収集しますが、Misskeyは利用者の情報が意図せず送信されないよう、収集範囲を絞った既定を適用します（ユーザー情報・Cookie・URLクエリパラメータ・HTTPボディ・DBクエリの値を送信せず、中継元を特定できるヘッダーを除外）。
+	- 収集範囲を変更する場合は`dataCollection`を明示してください。Misskeyの既定をすべて置き換えるため、`dataCollection: {}`と書くとSentry本来の既定（すべて収集）に戻ります。
+- `sentryForBackend.options.profilesSampleRate`を設定している場合、v11で削除されたため無視されます。プロファイリングの有効化は引き続き`sentryForBackend.enableNodeProfiling`で行います。
+- 詳細は https://docs.sentry.io/platforms/javascript/migration/v10-to-v11/ を参照してください。
+
 ### General
 - Enhance: 翻訳の更新
+- Enhance: 依存関係の更新
 
 ### Client
 - Fix: ユーザーの「概要」ページで引っ張って更新しても何も更新されない問題を修正  
