@@ -56,7 +56,7 @@ export class MiFollowing {
 		length: 32,
 		nullable: true,
 	})
-	public notify: 'normal' | null;
+	public notify: 'normal' | 'withFile' | null;
 
 	//#region Denormalized fields
 	@Index()

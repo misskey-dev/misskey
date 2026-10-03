@@ -29,7 +29,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		notify: { type: 'string', enum: ['normal', 'none'] },
+		notify: { type: 'string', enum: ['normal', 'withFile', 'none'] },
 		withReplies: { type: 'boolean' },
 	},
 } as const;
