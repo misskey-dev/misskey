@@ -229,9 +229,7 @@ export class UserFollowingService implements OnModuleInit {
 		followee: {
 			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox']
 		},
-		follower: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox']
-		},
+		follower: MiUser,
 		silent = false,
 		withReplies?: boolean,
 	): Promise<void> {
@@ -239,19 +237,26 @@ export class UserFollowingService implements OnModuleInit {
 
 		let alreadyFollowed = false as boolean;
 
-		await this.followingsRepository.insert({
-			id: this.idService.gen(),
-			followerId: follower.id,
-			followeeId: followee.id,
-			withReplies: withReplies,
+		await this.usersRepository.manager.transaction(async manager => {
+			const currentFollower = await manager.getRepository(this.usersRepository.target).findOneOrFail({
+				where: { id: follower.id },
+				lock: { mode: 'for_no_key_update' },
+			});
+			await manager.getRepository(this.followingsRepository.target).insert({
+				id: this.idService.gen(),
+				followerId: follower.id,
+				followeeId: followee.id,
+				withReplies: withReplies,
+				isFollowerSuspended: currentFollower.isSuspended,
 
-			// 非正規化
-			followerHost: follower.host,
-			followerInbox: this.userEntityService.isRemoteUser(follower) ? follower.inbox : null,
-			followerSharedInbox: this.userEntityService.isRemoteUser(follower) ? follower.sharedInbox : null,
-			followeeHost: followee.host,
-			followeeInbox: this.userEntityService.isRemoteUser(followee) ? followee.inbox : null,
-			followeeSharedInbox: this.userEntityService.isRemoteUser(followee) ? followee.sharedInbox : null,
+				// 非正規化
+				followerHost: follower.host,
+				followerInbox: this.userEntityService.isRemoteUser(follower) ? follower.inbox : null,
+				followerSharedInbox: this.userEntityService.isRemoteUser(follower) ? follower.sharedInbox : null,
+				followeeHost: followee.host,
+				followeeInbox: this.userEntityService.isRemoteUser(followee) ? followee.inbox : null,
+				followeeSharedInbox: this.userEntityService.isRemoteUser(followee) ? followee.sharedInbox : null,
+			});
 		}).catch(err => {
 			if (isDuplicateKeyValueError(err) && this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 				logger.info(`Insert duplicated ignore. ${follower.id} => ${followee.id}`);
@@ -734,6 +739,7 @@ export class UserFollowingService implements OnModuleInit {
 		return this.followingsRepository.createQueryBuilder('following')
 			.select('following.followeeId')
 			.where('following.followerId = :followerId', { followerId: userId })
+			.andWhere('following.isFollowerSuspended = false')
 			.getMany();
 	}
 
@@ -743,6 +749,7 @@ export class UserFollowingService implements OnModuleInit {
 			where: {
 				followerId,
 				followeeId,
+				isFollowerSuspended: false,
 			},
 		});
 	}
@@ -752,11 +759,13 @@ export class UserFollowingService implements OnModuleInit {
 		const count = await this.followingsRepository.createQueryBuilder('following')
 			.where(new Brackets(qb => {
 				qb.where('following.followerId = :aUserId', { aUserId })
-					.andWhere('following.followeeId = :bUserId', { bUserId });
+					.andWhere('following.followeeId = :bUserId', { bUserId })
+					.andWhere('following.isFollowerSuspended = false');
 			}))
 			.orWhere(new Brackets(qb => {
 				qb.where('following.followerId = :bUserId', { bUserId })
-					.andWhere('following.followeeId = :aUserId', { aUserId });
+					.andWhere('following.followeeId = :aUserId', { aUserId })
+					.andWhere('following.isFollowerSuspended = false');
 			}))
 			.getCount();
 
