@@ -1529,6 +1529,17 @@ _emojiPalette:
   enableSyncBetweenDevicesForPalettes: "在设备间同步表情符号托盘"
   paletteForMain: "主表情符号托盘"
   paletteForReaction: "回应时的表情符号托盘"
+_unicodeEmojiCategory:
+  face: "表情与情感"
+  people: "人物与身体"
+  animals_and_nature: "动物与自然"
+  food_and_drink: "食物与饮料"
+  activity: "活动"
+  travel_and_places: "旅行与地点"
+  objects: "物品"
+  symbols: "符号"
+  flags: "旗帜"
+
 _settings:
   driveBanner: "可在此管理和设置网盘、确认使用量及配置上传文件的设置。"
   pluginBanner: "使用插件可以扩展客户端的功能。可以在此安装、单独管理插件。"
