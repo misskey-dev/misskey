@@ -10,12 +10,27 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import { UserAuthService } from "@/core/UserAuthService.js";
+import { UserAuthService } from '@/core/UserAuthService.js';
+import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
 	requireCredential: true,
 
 	secure: true,
+
+	errors: {
+		notInitiated: {
+			message: '2fa setup has not been initiated.',
+			code: '2FA_SETUP_NOT_INITIATED',
+			id: '283f18c1-5b84-4699-a7a4-2beec808b74c',
+		},
+
+		verificationFailed: {
+			message: 'Verification failed. Please try again.',
+			code: 'VERIFICATION_FAILED',
+			id: '90a0971b-f73a-4993-b224-8307ba7421e7',
+		},
+	},
 
 	res: {
 		type: 'object',
@@ -55,11 +70,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
 			if (profile.twoFactorTempSecret == null) {
-				throw new Error('二段階認証の設定が開始されていません');
+				throw new ApiError(meta.errors.notInitiated);
 			}
 
-			if (!await this.userAuthService.validateOtp(profile.userId, profile.twoFactorTempSecret, token)) {
-				throw new Error('not verified');
+			try {
+				if (!await this.userAuthService.validateOtp(profile.userId, profile.twoFactorTempSecret, token)) {
+					throw new ApiError(meta.errors.verificationFailed);
+				}
+			} catch (e) {
+				if (e instanceof UserAuthService.AuthenticationFailedError) {
+					throw new ApiError(meta.errors.verificationFailed);
+				}
+				throw e;
 			}
 
 			const backupCodes = Array.from({ length: 5 }, () => new OTPAuth.Secret().base32);

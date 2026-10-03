@@ -13,6 +13,8 @@ import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class UserAuthService {
+	public static AuthenticationFailedError = class extends Error {};
+
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
@@ -33,7 +35,7 @@ export class UserAuthService {
 			});
 		} else {
 			if (!await this.validateOtp(profile.userId, profile.twoFactorSecret!, token)) {
-				throw new Error('authentication failed');
+				throw new UserAuthService.AuthenticationFailedError();
 			}
 		}
 	}
@@ -68,7 +70,7 @@ export class UserAuthService {
 		});
 
 		if (delta === null) {
-			throw new Error('authentication failed');
+			throw new UserAuthService.AuthenticationFailedError();
 		}
 
 		// 4. totp.counter() を用い、同じタイムスタンプから基準ステップを取得
