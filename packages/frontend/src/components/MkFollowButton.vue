@@ -195,6 +195,7 @@ onBeforeUnmount(() => {
 	font-size: 16px;
 	border-radius: 32px;
 	background: #fff;
+	transition: transform 0.1s ease;
 
 	&.full {
 		padding: 0 8px 0 12px;
@@ -221,6 +222,7 @@ onBeforeUnmount(() => {
 
 	&:active {
 		//background: mix($primary, #fff, 40);
+		transform: scale(0.98);
 	}
 
 	&.active {
