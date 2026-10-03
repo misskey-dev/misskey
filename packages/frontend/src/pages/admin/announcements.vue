@@ -25,7 +25,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i>
 						<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--MI_THEME-success);"></i>
 					</template>
-					<template #caption>{{ announcement.text }}</template>
+					<template #caption>
+						<span :class="$style.announcementText">{{ announcement.text }}</span>
+					</template>
+					<template #suffix>
+						<span v-if="announcement.autoArchiveAt" :class="$style.autoArchiveAt">
+							<i class="ti ti-calendar-time"></i> {{ i18n.ts._announcement.autoArchiveAt }}: <MkTime :key="announcement.autoArchiveAt" :time="announcement.autoArchiveAt" mode="absolute"/>
+						</span>
+					</template>
 					<template #footer>
 						<div class="_buttons">
 							<MkButton rounded primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
@@ -44,6 +51,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkTextarea>
 						<MkInput v-model="announcement.imageUrl" type="url">
 							<template #label>{{ i18n.ts.imageUrl }}</template>
+						</MkInput>
+						<MkInput v-model="announcement.autoArchiveAt" type="datetime-local">
+							<template #label>{{ i18n.ts._announcement.autoArchiveAt }}</template>
+							<template #caption>{{ i18n.ts._announcement.autoArchiveAtDescription }}</template>
 						</MkInput>
 						<MkRadios
 							v-model="announcement.icon"
@@ -92,6 +103,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { ApiWithDialogCustomErrors } from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -106,6 +118,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import { genId } from '@/utility/id.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
+import { formatDateTimeString } from '@/utility/format-time-string.js';
 
 const {
 	model: announcementsStatus,
@@ -121,19 +134,46 @@ const {
 const loading = ref(true);
 const loadingMore = ref(false);
 
-const announcements = ref<(Omit<Misskey.entities.AdminAnnouncementsListResponse[number], 'id' | 'createdAt' | 'updatedAt' | 'reads' | 'isActive'> & {
+const createAnnouncementErrors: ApiWithDialogCustomErrors = {
+	'2a892bd5-487d-46a2-a5fe-3d85ad51defe': {
+		title: i18n.ts._announcement.autoArchiveAt,
+		text: i18n.ts._announcement.autoArchiveAtMustBeInFuture,
+	},
+};
+
+type EditableAnnouncement = Omit<Misskey.entities.AdminAnnouncementsListResponse[number], 'id' | 'createdAt' | 'updatedAt' | 'reads' | 'isActive' | 'autoArchiveAt'> & {
 	id: string | null;
 	_id?: string;
 	isActive?: Misskey.entities.AdminAnnouncementsListResponse[number]['isActive'];
 	reads?: Misskey.entities.AdminAnnouncementsListResponse[number]['reads'];
-})[]>([]);
+	autoArchiveAt: string;
+	originalAutoArchiveAt: Misskey.entities.AdminAnnouncementsListResponse[number]['autoArchiveAt'];
+};
+
+const announcements = ref<EditableAnnouncement[]>([]);
+
+function toEditableAnnouncement(announcement: Misskey.entities.AdminAnnouncementsListResponse[number]): EditableAnnouncement {
+	return {
+		...announcement,
+		autoArchiveAt: announcement.autoArchiveAt ? formatDateTimeString(new Date(announcement.autoArchiveAt), 'yyyy-MM-ddTHH:mm') : '',
+		originalAutoArchiveAt: announcement.autoArchiveAt,
+	};
+}
+
+function toAutoArchiveAt(value: string, originalValue: Misskey.entities.AdminAnnouncementsListResponse[number]['autoArchiveAt']): number | null {
+	if (originalValue != null && value === formatDateTimeString(new Date(originalValue), 'yyyy-MM-ddTHH:mm')) {
+		return new Date(originalValue).getTime();
+	}
+
+	return value === '' ? null : new Date(value).getTime();
+}
 
 watch(announcementsStatus, (to) => {
 	loading.value = true;
 	misskeyApi('admin/announcements/list', {
 		status: to,
 	}).then(announcementResponse => {
-		announcements.value = announcementResponse;
+		announcements.value = announcementResponse.map(toEditableAnnouncement);
 		loading.value = false;
 	});
 }, { immediate: true });
@@ -150,6 +190,8 @@ function add() {
 		forExistingUsers: false,
 		silence: false,
 		needConfirmationToRead: false,
+		autoArchiveAt: '',
+		originalAutoArchiveAt: null,
 		userId: null,
 	});
 }
@@ -169,35 +211,53 @@ async function del(announcement: (typeof announcements)['value'][number]) {
 
 async function archive(announcement: (typeof announcements)['value'][number]) {
 	if (announcement.id == null) return;
-	const { _id, ...data } = announcement; // _idを消す
+	const { _id, id, autoArchiveAt, originalAutoArchiveAt, ...data } = announcement; // APIに不要な項目を消す
 	await os.apiWithDialog('admin/announcements/update', {
 		...data,
-		id: announcement.id, // TSを黙らすため
+		id,
 		isActive: false,
+		autoArchiveAt: toAutoArchiveAt(autoArchiveAt, originalAutoArchiveAt),
 	});
 	refresh();
 }
 
 async function unarchive(announcement: (typeof announcements)['value'][number]) {
 	if (announcement.id == null) return;
-	const { _id, ...data } = announcement; // _idを消す
+	const { _id, id, autoArchiveAt, originalAutoArchiveAt, ...data } = announcement; // APIに不要な項目を消す
+	const autoArchiveAtMs = toAutoArchiveAt(autoArchiveAt, originalAutoArchiveAt);
 	await os.apiWithDialog('admin/announcements/update', {
 		...data,
-		id: announcement.id, // TSを黙らすため
+		id,
 		isActive: true,
+		autoArchiveAt: autoArchiveAtMs != null && autoArchiveAtMs <= Date.now() ? null : autoArchiveAtMs,
 	});
 	refresh();
 }
 
 async function save(announcement: (typeof announcements)['value'][number]) {
-	const { _id, ...data } = announcement; // _idを消す
-	if (announcement.id == null) {
-		await os.apiWithDialog('admin/announcements/create', data);
+	const { _id, id, isActive, reads, autoArchiveAt, originalAutoArchiveAt, ...data } = announcement; // APIに不要な項目を消す
+	const autoArchiveAtMs = toAutoArchiveAt(autoArchiveAt, originalAutoArchiveAt);
+	if (id == null) {
+		if (autoArchiveAtMs != null && (Number.isNaN(autoArchiveAtMs) || autoArchiveAtMs <= Date.now())) {
+			await os.alert({
+				type: 'error',
+				title: i18n.ts._announcement.autoArchiveAt,
+				text: i18n.ts._announcement.autoArchiveAtMustBeInFuture,
+			});
+			return;
+		}
+
+		await os.apiWithDialog('admin/announcements/create', {
+			...data,
+			autoArchiveAt: autoArchiveAtMs,
+		}, undefined, createAnnouncementErrors);
 		refresh();
 	} else {
-		os.apiWithDialog('admin/announcements/update', {
+		await os.apiWithDialog('admin/announcements/update', {
 			...data,
-			id: announcement.id, // TSを黙らすため
+			id,
+			isActive,
+			autoArchiveAt: autoArchiveAtMs,
 		});
 	}
 }
@@ -208,7 +268,7 @@ function more() {
 		status: announcementsStatus.value,
 		untilId: announcements.value.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id!,
 	}).then(announcementResponse => {
-		announcements.value = announcements.value.concat(announcementResponse);
+		announcements.value = announcements.value.concat(announcementResponse.map(toEditableAnnouncement));
 		loadingMore.value = false;
 	});
 }
@@ -218,7 +278,7 @@ function refresh() {
 	misskeyApi('admin/announcements/list', {
 		status: announcementsStatus.value,
 	}).then(announcementResponse => {
-		announcements.value = announcementResponse;
+		announcements.value = announcementResponse.map(toEditableAnnouncement);
 		loading.value = false;
 	});
 }
@@ -238,3 +298,16 @@ definePage(() => ({
 	icon: 'ti ti-speakerphone',
 }));
 </script>
+
+<style lang="scss" module>
+.announcementText {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.autoArchiveAt {
+	white-space: nowrap;
+}
+</style>
