@@ -43,8 +43,8 @@ export const V10_SENTRY_DATA_COLLECTION: SentryDataCollection = {
  * v10 の `sendDefaultPii: true` は v11 のデフォルト (全収集) と同等なので、
  * 既存の設定ファイルで有効化されている場合は従来の制限を適用しない。
  */
-function isV10SendDefaultPiiEnabled(options: object): boolean {
-	return 'sendDefaultPii' in options && options.sendDefaultPii === true;
+function isV10SendDefaultPiiEnabled(options: SentryBackendConfig['options']): boolean {
+	return options.sendDefaultPii === true;
 }
 
 type BuildSentryIntegrationsOptions = {

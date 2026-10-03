@@ -86,7 +86,7 @@ describe('SentryTelemetryAdapter', () => {
 	test('does not restrict data collection when v10 sendDefaultPii is enabled', () => {
 		const options = buildSentryNodeOptions({
 			enableNodeProfiling: false,
-			options: { sendDefaultPii: true } as Record<string, unknown>,
+			options: { sendDefaultPii: true },
 		});
 
 		expect(options.dataCollection).toBeUndefined();
