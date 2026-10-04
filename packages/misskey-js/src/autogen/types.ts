@@ -4146,6 +4146,8 @@ export type components = {
             autoSensitive: boolean;
             carefulBot: boolean;
             autoAcceptFollowed: boolean;
+            followApprovalLocalSeconds: number | null;
+            followApprovalRemoteSeconds: number | null;
             noCrawle: boolean;
             preventAiLearning: boolean;
             isExplorable: boolean;
@@ -27889,6 +27891,8 @@ export interface operations {
                     publicReactions?: boolean;
                     carefulBot?: boolean;
                     autoAcceptFollowed?: boolean;
+                    followApprovalLocalSeconds?: number | null;
+                    followApprovalRemoteSeconds?: number | null;
                     noCrawle?: boolean;
                     preventAiLearning?: boolean;
                     requireSigninToViewContents?: boolean;
