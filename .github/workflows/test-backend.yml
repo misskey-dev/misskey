@@ -31,6 +31,10 @@ jobs:
         node-version-file:
           - .node-version
           - .github/min.node-version
+        include:
+          # カバレッジの収集は実行時間が伸びるので、メインのNodeバージョンでのみ行う
+          - node-version-file: .node-version
+            coverage: true
 
     services:
       postgres:
@@ -75,8 +79,9 @@ jobs:
     - name: Build
       run: pnpm build
     - name: Test
-      run: pnpm --filter backend test-and-coverage
+      run: pnpm --filter backend ${{ matrix.coverage && 'test-and-coverage' || 'test' }}
     - name: Upload to Codecov
+      if: ${{ matrix.coverage }}
       uses: codecov/codecov-action@v7
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -91,6 +96,10 @@ jobs:
         node-version-file:
           - .node-version
           - .github/min.node-version
+        include:
+          # カバレッジの収集は実行時間が伸びるので、メインのNodeバージョンでのみ行う
+          - node-version-file: .node-version
+            coverage: true
 
     services:
       postgres:
@@ -124,8 +133,9 @@ jobs:
       - name: Build
         run: pnpm build
       - name: Test
-        run: pnpm --filter backend test-and-coverage:e2e
+        run: pnpm --filter backend ${{ matrix.coverage && 'test-and-coverage:e2e' || 'test:e2e' }}
       - name: Upload to Codecov
+        if: ${{ matrix.coverage }}
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
