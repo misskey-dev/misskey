@@ -194,8 +194,8 @@ importers:
         specifier: 17.0.3
         version: 17.0.3
       '@misskey-dev/node-http-message-signatures':
-        specifier: 0.0.11
-        version: 0.0.11
+        specifier: 1.0.0
+        version: 1.0.0
       '@misskey-dev/sharp-read-bmp':
         specifier: 1.3.1
         version: 1.3.1(@types/node@26.4.0)
@@ -2289,8 +2289,8 @@ packages:
       eslint-plugin-import: '>= 2'
       globals: '>= 15'
 
-  '@misskey-dev/node-http-message-signatures@0.0.11':
-    resolution: {integrity: sha512-FcUK6BWgyV5j2W97A/hqZ5yBJ9m4dyxkYJ5+rWLtAx/yTpwEBbbwmHZnG/It/xs9l3gbgTMCut0LhWXk55a+sA==}
+  '@misskey-dev/node-http-message-signatures@1.0.0':
+    resolution: {integrity: sha512-BCv0W8kL+ATj5yEhabMqP5h5D2YezcfiKTkDtzm8s+J6wxUUp/RZQdjB7+JOSN35l4QFRs4xDGdvpUrDlngQ4A==}
     engines: {node: '>=18.4.0'}
 
   '@misskey-dev/sharp-read-bmp@1.3.1':
@@ -10237,7 +10237,7 @@ snapshots:
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.68.0(@typescript/typescript6@6.0.2)(eslint@9.39.5(supports-color@10.2.2))(supports-color@10.2.2))(eslint@9.39.5(supports-color@10.2.2))(supports-color@10.2.2)
       globals: 17.11.0
 
-  '@misskey-dev/node-http-message-signatures@0.0.11':
+  '@misskey-dev/node-http-message-signatures@1.0.0':
     dependencies:
       '@lapo/asn1js': 2.1.3
       rfc4648: 1.5.4
