@@ -129,12 +129,13 @@ describe.each(['00', '01'])('request-target signing at level %s', level => {
 			['/inbox?token=a%2Fb%26c', '/inbox?token=a%2Fb%26c'],
 		];
 		for (const [path, target] of cases) {
-			const url = `https://example.com${path}`;
+			const url = `https://example.com:8443${path}`;
 			const args = { level, key, url, body: '{}', additionalHeaders: {} };
 			const signed = method === 'POST' ? await createSignedPost(args) : await createSignedGet(args);
 			assert.strictEqual(signed.request.url, url);
+			assert.strictEqual(signed.request.headers.Host, 'example.com:8443');
 			assert.strictEqual(signed.signingString.split('\n')[0], `(request-target): ${method.toLowerCase()} ${target}`);
-			const parsed = parseRequestSignature({ ...signed.request, url: target });
+			const parsed = parseRequestSignature({ ...signed.request, url: target, headers: { ...signed.request.headers, Host: 'example.com:8443' } });
 			assert.strictEqual(parsed.version, 'draft');
 			if (parsed.version !== 'draft') throw new Error('Expected draft signature');
 			assert.strictEqual(await verifyDraftSignature(parsed.value, keypair.publicKey), true);
