@@ -459,7 +459,13 @@ export class ClientServerService {
 				requireSigninToViewContents: false,
 			});
 
-			return user && (await this.feedService.packFeed(user));
+			if (user == null) return null;
+
+			if (this.meta.ugcVisibilityForVisitor === 'none' || (this.meta.ugcVisibilityForVisitor === 'local' && user.host != null)) {
+				return null;
+			}
+
+			return await this.feedService.packFeed(user);
 		};
 
 		// Atom

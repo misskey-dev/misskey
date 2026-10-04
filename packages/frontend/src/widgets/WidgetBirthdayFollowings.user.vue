@@ -26,7 +26,7 @@ import * as Misskey from 'misskey-js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { useLowresTime } from '@/composables/use-lowres-time.js';
+import { useLowresTime } from '@@/js/use-lowres-time.js';
 import { userPage, acct } from '@/filters/user.js';
 
 const props = defineProps<{

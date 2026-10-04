@@ -245,7 +245,7 @@ export class ApInboxService {
 		// relay
 		const match = activity.id?.match(/follow-relay\/(\w+)/);
 		if (match) {
-			return await this.relayService.relayAccepted(match[1]);
+			return await this.relayService.relayAccepted(match[1], actor);
 		}
 
 		await this.userFollowingService.acceptFollowRequest(actor, follower);
@@ -610,7 +610,7 @@ export class ApInboxService {
 		// relay
 		const match = activity.id?.match(/follow-relay\/(\w+)/);
 		if (match) {
-			return await this.relayService.relayRejected(match[1]);
+			return await this.relayService.relayRejected(match[1], actor);
 		}
 
 		await this.userFollowingService.remoteReject(actor, follower);

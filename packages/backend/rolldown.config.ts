@@ -80,6 +80,9 @@ export default defineConfig((args) => {
 	const isWatchMode = args.watch != null && args.watch !== 'false';
 	const isE2E = args.e2e != null && args.e2e !== 'false';
 
+	// 外部モジュールの判定に使う正規表現。`@/` で始まるものは内部モジュールとみなす
+	const allExternalModulesRegex = /^(?!@\/|\0)[^.\/](?!:[\/\\])/;
+
 	// 通常のビルド時にexternalとするモジュール
 	const externalModules: ExternalOption = [
 		/^slacc-.*/,
@@ -126,7 +129,8 @@ export default defineConfig((args) => {
 				cleanDir: true,
 				format: 'esm',
 			},
-			external: externalModules,
+			// node_modulesまでバンドルしてしまうとカバレッジの収集に時間がかかるので全部外す
+			external: allExternalModulesRegex,
 		};
 	} else {
 		return {
@@ -159,7 +163,7 @@ export default defineConfig((args) => {
 				clearScreen: false,
 			},
 			// ビルドの高速化のために、watchモードのときは外部モジュールは全てバンドルしないようにする
-			external: isWatchMode ? /^(?!@\/|\0)[^.\/](?!:[\/\\])/ : externalModules,
+			external: isWatchMode ? allExternalModulesRegex : externalModules,
 		};
 	}
 });

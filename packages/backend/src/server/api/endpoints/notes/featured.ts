@@ -73,8 +73,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.untilId) {
 				noteIds = noteIds.filter(id => id < ps.untilId!);
 			}
-			noteIds = noteIds.slice(0, ps.limit);
-
 			if (noteIds.length === 0) {
 				return [];
 			}
@@ -98,6 +96,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			this.queryService.generateBlockedHostQueryForNote(query);
 			this.queryService.generateSuspendedUserQueryForNote(query);
+			if (me == null) this.queryService.generateUgcVisibilityQueryForVisitor(query);
 
 			const notes = (await query.getMany()).filter(note => {
 				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
@@ -108,7 +107,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			notes.sort((a, b) => a.id > b.id ? -1 : 1);
 
-			return await this.noteEntityService.packMany(notes, me);
+			return await this.noteEntityService.packMany(notes.slice(0, ps.limit), me);
 		});
 	}
 }
