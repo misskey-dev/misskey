@@ -19,9 +19,9 @@ import type Logger from '@/logger.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
 import { assertActivityMatchesUrl, FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
 import type { IObject } from './type.js';
-import type { PrivateKeyWithPem, PrivateKey } from '@misskey-dev/node-http-message-signatures';
+import type { PrivateKeyWithPem, PrivateKey, CustomSigningKey } from '@misskey-dev/node-http-message-signatures';
 
-export async function createSignedPost(args: { level: string; key: PrivateKey; url: string; body: string; digest?: string, additionalHeaders: Record<string, string> }) {
+export async function createSignedPost(args: { level: string; key: PrivateKey | CustomSigningKey; url: string; body: string; digest?: string, additionalHeaders: Record<string, string> }) {
 	const u = new URL(args.url);
 	const request = {
 		url: u.href,
@@ -50,7 +50,7 @@ export async function createSignedPost(args: { level: string; key: PrivateKey; u
 	};
 }
 
-export async function createSignedGet(args: { level: string; key: PrivateKey; url: string; additionalHeaders: Record<string, string> }) {
+export async function createSignedGet(args: { level: string; key: PrivateKey | CustomSigningKey; url: string; additionalHeaders: Record<string, string> }) {
 	const u = new URL(args.url);
 	const request = {
 		url: u.href,
