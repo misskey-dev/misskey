@@ -59,6 +59,7 @@ export function getSafeContentType(mime: string): string {
 /**
  * Range リクエストを処理してストリームを返す
  * Range ヘッダーがない場合は通常のストリームを返す
+ * Accept-Ranges / Content-Length ヘッダーもここで設定する
  */
 export function handleRangeRequest(
 	reply: FastifyReply,
@@ -66,21 +67,21 @@ export function handleRangeRequest(
 	size: number,
 	path: string,
 ): fs.ReadStream {
+	reply.header('Accept-Ranges', 'bytes');
 	if (rangeHeader && size > 0) {
 		const { stream, start, end, chunksize } = createRangeStream(rangeHeader, size, path);
 		reply.header('Content-Range', `bytes ${start}-${end}/${size}`);
-		reply.header('Accept-Ranges', 'bytes');
 		reply.header('Content-Length', chunksize);
 		reply.code(206);
 		return stream;
 	}
+	reply.header('Content-Length', size);
 	return fs.createReadStream(path);
 }
 
 export type FileResponseOptions = {
 	mime: string;
 	filename: string;
-	size?: number;
 	cacheControl?: string;
 };
 
@@ -94,9 +95,6 @@ export function setFileResponseHeaders(
 	reply.header('Content-Type', getSafeContentType(options.mime));
 	reply.header('Cache-Control', options.cacheControl ?? 'max-age=31536000, immutable');
 	reply.header('Content-Disposition', contentDisposition('inline', options.filename));
-	if (options.size !== undefined) {
-		reply.header('Content-Length', options.size);
-	}
 }
 
 /**
