@@ -93,10 +93,7 @@ export class ApRequestCreator {
 	}
 
 	static async #signToRequest(request: Request, key: PrivateKey, includeHeaders: string[]): Promise<Signed> {
-		const url = new URL(request.url);
-		const query = url.search || (url.href.split('#', 1)[0].endsWith('?') ? '?' : '');
-		// The signature library drops queries from absolute URLs; sign the wire request-target.
-		const result = await signAsDraftToRequest({ ...request, url: `${url.pathname}${query}` }, key, includeHeaders);
+		const result = await signAsDraftToRequest(request, key, includeHeaders);
 		request.headers = this.#lcObjectKey(request.headers);
 		// node-fetch will generate this for us. if we keep 'Host', it won't change with redirects!
 		delete request.headers['host'];
