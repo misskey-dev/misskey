@@ -6,7 +6,7 @@
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { IsNull } from 'typeorm';
-import { genEd25519KeyPair, importPrivateKey, PrivateKey, PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
+import { genEd25519KeyPair, type CustomSigningKey, type PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 import * as nodeCrypto from 'crypto';
 import type { MiUser } from '@/models/User.js';
 import type { UserKeypairsRepository } from '@/models/_.js';
@@ -16,12 +16,15 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { webcrypto } from 'node:crypto';
+import * as slacc from 'slacc';
+import { createSlaccSigningKey } from '@misskey-dev/node-http-message-signatures/node/slacc';
+
+type CachedSigningKey = { identity: string; key: CustomSigningKey };
 
 @Injectable()
 export class UserKeypairService implements OnApplicationShutdown {
 	private keypairEntityCache: RedisKVCache<MiUserKeypair>;
-	private privateKeyObjectCache: MemoryKVCache<webcrypto.CryptoKey>;
+	private privateKeyObjectCache: MemoryKVCache<CachedSigningKey>;
 
 	constructor(
 		@Inject(DI.redis)
@@ -41,7 +44,7 @@ export class UserKeypairService implements OnApplicationShutdown {
 			toRedisConverter: (value) => JSON.stringify(value),
 			fromRedisConverter: (value) => JSON.parse(value),
 		});
-		this.privateKeyObjectCache = new MemoryKVCache<webcrypto.CryptoKey>(1000 * 60 * 60 * 1);
+		this.privateKeyObjectCache = new MemoryKVCache<CachedSigningKey>(1000 * 60 * 60 * 1, 10000);
 
 		this.redisForSub.on('message', this.onMessage);
 	}
@@ -81,8 +84,8 @@ export class UserKeypairService implements OnApplicationShutdown {
 	}
 
 	/**
-	 * Get private key [Only PrivateKey for ap request]
-	 * Using cache due to performance reasons of `crypto.subtle.importKey`
+	 * Get a cached native signing key for AP requests
+	 * Reuse the native handle while key material, key ID, and wire version match.
 	 * @param userIdOrHint user id, MiUserKeypair, or PrivateKeyWithPem
 	 * @param preferType
 	 * 		If ed25519-like(`ed25519`, `01`, `11`) is specified, ed25519 keypair will be returned if exists.
@@ -93,49 +96,28 @@ export class UserKeypairService implements OnApplicationShutdown {
 	public async getLocalUserPrivateKey(
 		userIdOrHint: MiUser['id'] | MiUserKeypair | PrivateKeyWithPem,
 		preferType?: string,
-	): Promise<PrivateKey> {
-		if (typeof userIdOrHint === 'object' && 'privateKeyPem' in userIdOrHint) {
-			// userIdOrHint is PrivateKeyWithPem
-			return {
-				keyId: userIdOrHint.keyId,
-				privateKey: await this.privateKeyObjectCache.fetch(userIdOrHint.keyId, async () => {
-					return await importPrivateKey(userIdOrHint.privateKeyPem);
-				}),
-			};
-		}
-
-		const userId = typeof userIdOrHint === 'string' ? userIdOrHint : userIdOrHint.userId;
-		const getKeypair = () => typeof userIdOrHint === 'string' ? this.getUserKeypair(userId) : userIdOrHint;
-
-		if (preferType && ['01', '11', 'ed25519'].includes(preferType.toLowerCase())) {
-			const keyId = `${this.userEntityService.genLocalUserUri(userId)}#ed25519-key`;
-			const fetched = await this.privateKeyObjectCache.fetchMaybe(keyId, async () => {
-				const keypair = await getKeypair();
-				if (keypair.ed25519PublicKey != null && keypair.ed25519PrivateKey != null) {
-					return await importPrivateKey(keypair.ed25519PrivateKey);
-				}
-				return;
-			});
-			if (fetched) {
-				return {
-					keyId,
-					privateKey: fetched,
-				};
-			}
-		}
-
-		const keyId = `${this.userEntityService.genLocalUserUri(userId)}#main-key`;
-		return {
-			keyId,
-			privateKey: await this.privateKeyObjectCache.fetch(keyId, async () => {
-				const keypair = await getKeypair();
-				return await importPrivateKey(keypair.privateKey);
-			}),
-		};
+	): Promise<CustomSigningKey> {
+		const pem = typeof userIdOrHint === 'object' && 'privateKeyPem' in userIdOrHint
+			? userIdOrHint : await this.getLocalUserPrivateKeyPem(userIdOrHint, preferType);
+		// PEM includes the algorithm OID; identity binds material, key ID, and wire version.
+		const identity = nodeCrypto.createHash('sha256').update(JSON.stringify(['draft', pem.keyId, pem.privateKeyPem])).digest('hex');
+		const cached = this.privateKeyObjectCache.get(pem.keyId);
+		if (cached?.identity === identity) return cached.key;
+		const keyType = nodeCrypto.createPrivateKey(pem.privateKeyPem).asymmetricKeyType;
+		if (keyType !== 'rsa' && keyType !== 'ed25519') throw new Error('Unsupported actor signing key');
+		const key = createSlaccSigningKey(slacc, {
+			keyId: pem.keyId, version: 'draft', privateKey: pem.privateKeyPem,
+			algorithm: keyType === 'ed25519' ? 'ed25519' : 'rsa-v1_5-sha256',
+		});
+		this.privateKeyObjectCache.set(pem.keyId, { identity, key });
+		return key;
 	}
 
 	@bindThis
 	public async refresh(userId: MiUser['id']): Promise<void> {
+		const uri = this.userEntityService.genLocalUserUri(userId);
+		this.privateKeyObjectCache.delete(`${uri}#main-key`);
+		this.privateKeyObjectCache.delete(`${uri}#ed25519-key`);
 		return await this.keypairEntityCache.refresh(userId);
 	}
 
@@ -188,7 +170,7 @@ export class UserKeypairService implements OnApplicationShutdown {
 			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
 			switch (type) {
 				case 'userKeypairUpdated': {
-					this.refresh(body.userId);
+					await this.refresh(body.userId);
 					break;
 				}
 			}
