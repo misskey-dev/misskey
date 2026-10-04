@@ -119,6 +119,8 @@ export class InboxProcessorService implements OnApplicationShutdown {
 					}
 					throw new Error(`Error in actor ${getApId(activity.actor)} - ${err.statusCode}`);
 				}
+				// それ以外の予期しないエラーは握り潰さず、通常の再試行対象にする
+				throw err;
 			}
 		}
 
