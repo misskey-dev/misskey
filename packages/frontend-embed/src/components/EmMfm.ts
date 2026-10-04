@@ -299,12 +299,15 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						]);
 					}
 					case 'clickable': {
-						return h('span', { onClick(ev: PointerEvent): void {
-							ev.stopPropagation();
-							ev.preventDefault();
-							const clickEv = typeof token.props.args.ev === 'string' ? token.props.args.ev : '';
-							emit('clickEv', clickEv);
-						} }, genEl(token.children, scale));
+						return h('span', {
+							style: 'user-select: none;',
+							onClick(ev: PointerEvent): void {
+								ev.stopPropagation();
+								ev.preventDefault();
+								const clickEv = typeof token.props.args.ev === 'string' ? token.props.args.ev : '';
+								emit('clickEv', clickEv);
+							},
+						}, genEl(token.children, scale));
 					}
 				}
 				if (style === undefined) {
@@ -337,11 +340,13 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			}
 
 			case 'link': {
+				// スロット関数の中で genEl を呼ぶと再描画されるたびに子の VNode が作り直される
+				const linkChildren = genEl(token.children, scale, true);
 				return [h(EmLink, {
 					key: Math.random(),
 					url: token.props.url,
 					rel: 'nofollow noopener',
-				}, genEl(token.children, scale, true))];
+				}, { default: () => linkChildren })];
 			}
 
 			case 'mention': {
@@ -357,7 +362,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					key: Math.random(),
 					to: isNote ? `/tags/${encodeURIComponent(token.props.hashtag)}` : `/user-tags/${encodeURIComponent(token.props.hashtag)}`,
 					style: 'color:var(--MI_THEME-hashtag);',
-				}, `#${token.props.hashtag}`)];
+				}, { default: () => `#${token.props.hashtag}` })];
 			}
 
 			case 'blockCode': {
