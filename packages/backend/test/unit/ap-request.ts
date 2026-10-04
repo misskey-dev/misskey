@@ -45,7 +45,7 @@ test.each(['GET', 'POST'])('RSA %s signatures survive request parsing and queue 
 	const key = { keyId: 'https://example.com/users/alice#main-key', privateKeyPem: keypair.privateKey };
 	const args = { level: '00', key, url: 'https://example.com/inbox?cursor=1', body: '{}', additionalHeaders: {} };
 	const signed = method === 'POST' ? await createSignedPost(args) : await createSignedGet(args);
-	const parsed = parseRequestSignature(signed.request);
+	const parsed = parseRequestSignature({ ...signed.request, url: '/inbox?cursor=1' });
 	assert.strictEqual(parsed.version, 'draft');
 	if (parsed.version !== 'draft') throw new Error('Expected draft signature');
 	assert.strictEqual(parsed.value.keyId, key.keyId);
@@ -111,6 +111,35 @@ describe('ap-request get', () => {
 			const verify = await verifyDraftSignature(parsed.value as any, keypair.publicKey);
 			assert.deepStrictEqual(verify, true);
 		});
+	});
+});
+
+describe.each(['00', '01'])('request-target signing at level %s', level => {
+	test.each(['GET', 'POST'])('%s preserves queries and omits fragments', async method => {
+		const keypair = await getKeyPair(level);
+		const key = { keyId: 'x', privateKeyPem: keypair.privateKey };
+		const cases = [
+			['/users/alice?page=2', '/users/alice?page=2'],
+			['/inbox?token=abc', '/inbox?token=abc'],
+			['/users/alice?page=2#ignored', '/users/alice?page=2'],
+			['/outbox?#ignored', '/outbox?'],
+			['/outbox?', '/outbox?'],
+			['/outbox', '/outbox'],
+			['/outbox#ignored?', '/outbox'],
+			['/inbox?token=a%2Fb%26c', '/inbox?token=a%2Fb%26c'],
+		];
+		for (const [path, target] of cases) {
+			const url = `https://example.com${path}`;
+			const args = { level, key, url, body: '{}', additionalHeaders: {} };
+			const signed = method === 'POST' ? await createSignedPost(args) : await createSignedGet(args);
+			assert.strictEqual(signed.request.url, url);
+			assert.strictEqual(signed.signingString.split('\n')[0], `(request-target): ${method.toLowerCase()} ${target}`);
+			const parsed = parseRequestSignature({ ...signed.request, url: target });
+			assert.strictEqual(parsed.version, 'draft');
+			if (parsed.version !== 'draft') throw new Error('Expected draft signature');
+			assert.strictEqual(await verifyDraftSignature(parsed.value, keypair.publicKey), true);
+			assert.strictEqual(verify(level === '00' ? 'RSA-SHA256' : null, Buffer.from(signed.signingString), keypair.publicKey, Buffer.from(signed.signature, 'base64')), true);
+		}
 	});
 });
 

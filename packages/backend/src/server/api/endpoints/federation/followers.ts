@@ -8,6 +8,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { FollowingsRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -47,11 +48,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private followingEntityService: FollowingEntityService,
 		private queryService: QueryService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.followingsRepository.createQueryBuilder('following'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('following.followeeHost = :host', { host: ps.host })
 				.andWhere('following.isFollowerSuspended = false');
+
+			if (!await this.roleService.isModerator(me)) {
+				this.queryService.generateFollowingRelationVisibilityQuery(query, 'followers', me);
+			}
 
 			const followings = await query
 				.limit(ps.limit)

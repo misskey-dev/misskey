@@ -43,7 +43,7 @@ import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { i18n } from '@/i18n.js';
-import { useLowresTime, TIME_UPDATE_INTERVAL } from '@/composables/use-lowres-time.js';
+import { useLowresTime, TIME_UPDATE_INTERVAL } from '@@/js/use-lowres-time.js';
 
 const name = 'calendar';
 
