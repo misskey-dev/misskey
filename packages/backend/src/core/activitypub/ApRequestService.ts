@@ -38,10 +38,8 @@ export async function createSignedPost(args: { level: string; key: PrivateKey; u
 	const digestHeader = args.digest ?? await genRFC3230DigestHeader(args.body, 'SHA-256');
 	request.headers['Digest'] = digestHeader;
 
-	const query = u.search || (u.href.split('#', 1)[0].endsWith('?') ? '?' : '');
-	// The signature library drops queries from absolute URLs; sign the wire request-target.
 	const result = await signAsDraftToRequest(
-		{ ...request, url: `${u.pathname}${query}` },
+		request,
 		args.key,
 		['(request-target)', 'date', 'host', 'digest'],
 	);
@@ -66,10 +64,8 @@ export async function createSignedGet(args: { level: string; key: PrivateKey; ur
 	};
 
 	// TODO: httpMessageSignaturesImplementationLevelによって新規格で通信をするようにする
-	const query = u.search || (u.href.split('#', 1)[0].endsWith('?') ? '?' : '');
-	// The signature library drops queries from absolute URLs; sign the wire request-target.
 	const result = await signAsDraftToRequest(
-		{ ...request, url: `${u.pathname}${query}` },
+		request,
 		args.key,
 		['(request-target)', 'date', 'host'],
 	);
