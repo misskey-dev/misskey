@@ -6,7 +6,7 @@
 import { verify } from 'crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
-import { DataSource, In, Not } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, InstancesRepository, MiMeta, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
@@ -26,7 +26,6 @@ import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
 import { MiUserProfile } from '@/models/UserProfile.js';
-import { MiUserPublickey } from '@/models/UserPublickey.js';
 import type UsersChart from '@/core/chart/charts/users.js';
 import type InstanceChart from '@/core/chart/charts/instance.js';
 import type { HashtagService } from '@/core/HashtagService.js';
@@ -50,7 +49,9 @@ import type { ApResolverService, Resolver } from '../ApResolverService.js';
 import type { ApLoggerService } from '../ApLoggerService.js';
 
 import type { ApImageService } from './ApImageService.js';
-import type { IActor, IKey, IObject, ICollection, IOrderedCollection } from '../type.js';
+import type { IActor, IObject, ICollection, IOrderedCollection } from '../type.js';
+
+import { extractActorPublicKeys, storeActorPublicKeys } from '../misc/actor-public-keys.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
@@ -380,6 +381,7 @@ export class ApPersonService implements OnModuleInit {
 		if (object.id == null) throw new Error('invalid object.id: ' + object.id);
 
 		const person = this.validateActor(object, uri);
+		const publicKeys = extractActorPublicKeys(person, value => this.utilityService.punyHost(value));
 
 		this.logger.info(`Creating the Person: ${person.id}`);
 
@@ -481,17 +483,8 @@ export class ApPersonService implements OnModuleInit {
 					userHost: host,
 				}));
 
-				if (person.publicKey) {
-					const publicKeys = new Map<string, IKey>();
-					(person.additionalPublicKeys ?? []).forEach(key => publicKeys.set(key.id, key));
-					(Array.isArray(person.publicKey) ? person.publicKey : [person.publicKey]).forEach(key => publicKeys.set(key.id, key));
-
-					this.logger.debug(`Create the Person: Saving public keys for user ${user.id}`, { keyIds: Array.from(publicKeys.keys()) });
-					await transactionalEntityManager.save(Array.from(publicKeys.values(), key => new MiUserPublickey({
-						keyId: key.id,
-						userId: user!.id,
-						keyPem: key.publicKeyPem,
-					})));
+				if (publicKeys != null) {
+					await storeActorPublicKeys(transactionalEntityManager, user.id, publicKeys);
 				}
 			});
 		} catch (e) {
@@ -578,6 +571,7 @@ export class ApPersonService implements OnModuleInit {
 		const object = hint ?? await resolver.resolve(uri);
 
 		const person = this.validateActor(object, uri);
+		const publicKeys = extractActorPublicKeys(person, value => this.utilityService.punyHost(value));
 
 		this.logger.info(`Updating the Person: ${person.id}`);
 
@@ -684,29 +678,9 @@ export class ApPersonService implements OnModuleInit {
 		}
 		//#endregion
 
-		try {
-			// Deleteアクティビティ受信時にもここが走ってsaveがuserforeign key制約エラーを吐くことがある
-			// とりあえずtry-catchで囲っておく
-			const publicKeys = new Map<string, IKey>();
-			if (person.publicKey) {
-				(person.additionalPublicKeys ?? []).forEach(key => publicKeys.set(key.id, key));
-				(Array.isArray(person.publicKey) ? person.publicKey : [person.publicKey]).forEach(key => publicKeys.set(key.id, key));
-
-				await this.userPublickeysRepository.save(Array.from(publicKeys.values(), key => ({
-					keyId: key.id,
-					userId: exist.id,
-					keyPem: key.publicKeyPem,
-				})));
-
-				this.userPublickeysRepository.delete({
-					keyId: Not(In(Array.from(publicKeys.keys()))),
-					userId: exist.id,
-				}).catch(err => {
-					this.logger.error('something happened while deleting remote user public keys:', { userId: exist.id, err });
-				});
-			}
-		} catch (err) {
-			this.logger.error('something happened while updating remote user public keys:', { userId: exist.id, err });
+		if (publicKeys != null) {
+			// Commit the complete key refresh before publishing remoteUserUpdated below.
+			await this.db.transaction(manager => storeActorPublicKeys(manager, exist.id, publicKeys));
 		}
 
 		let _description: string | null = null;

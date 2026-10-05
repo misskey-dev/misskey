@@ -186,6 +186,7 @@ export interface IActor extends IObject {
 	sharedInbox?: string;	// 後方互換性のため
 	publicKey?: IKey | IKey[];
 	additionalPublicKeys?: IKey[];
+	assertionMethod?: (IMultikey | string)[];
 	followers?: string | ICollection | IOrderedCollection;
 	following?: string | ICollection | IOrderedCollection;
 	featured?: string | IOrderedCollection;
@@ -258,6 +259,13 @@ export interface IKey extends IObject {
 	id: string;
 	owner: string;
 	publicKeyPem: string;
+}
+
+export interface IMultikey extends IObject {
+	type: 'Multikey';
+	id: string;
+	controller: string;
+	publicKeyMultibase: string;
 }
 
 export const validDocumentTypes = ['Audio', 'Document', 'Image', 'Page', 'Video'];
