@@ -79,13 +79,13 @@ describe('native actor signing key cache', () => {
 		const first = await service.getLocalUserPrivateKey('alice', 'ed25519');
 		entity.ed25519PrivateKey = pem(rotatedEd);
 		entity.ed25519PublicKey = publicPem(rotatedEd);
-		const rotated = await service.getLocalUserPrivateKey(entity, '01');
+		const rotated = await service.getLocalUserPrivateKey(entity, '02');
 		expect(rotated).not.toBe(first);
 		const signed = await sign(rotated);
 		expect(verify(null, Buffer.from(signed.signingString), rotatedEd.publicKey, Buffer.from(signed.signature, 'base64'))).toBe(true);
 		entity.ed25519PrivateKey = null;
 		entity.ed25519PublicKey = null;
-		const fallback = await service.getLocalUserPrivateKey(entity, '11');
+		const fallback = await service.getLocalUserPrivateKey(entity, '02');
 		expect(fallback.keyId).toBe('https://example.com/users/alice#main-key');
 		const rsaSigned = await sign(fallback);
 		expect(verify('sha256', Buffer.from(rsaSigned.signingString), rsa.publicKey, Buffer.from(rsaSigned.signature, 'base64'))).toBe(true);

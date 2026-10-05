@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { ASSERTION_METHOD_DRAFT_LEVEL } from '@/core/activitypub/misc/http-signature-capabilities.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -92,12 +93,8 @@ export class NodeinfoServerService {
 					localComments: 0,
 				},
 				metadata: {
-					/**
-					 * '00': Draft, RSA only
-					 * '01': Draft, Ed25519 suported
-					 * '11': RFC 9421, Ed25519 supported
-					 */
-					httpMessageSignaturesImplementationLevel: '01',
+					// Draft signatures with assertionMethod discovery; x1 is the withdrawn proposal.
+					httpMessageSignaturesImplementationLevel: ASSERTION_METHOD_DRAFT_LEVEL,
 
 					nodeName: meta.name,
 					nodeDescription: meta.description,

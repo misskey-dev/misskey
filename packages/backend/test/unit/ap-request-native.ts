@@ -25,7 +25,7 @@ describe.each(['rsa', 'ed25519'] as const)('native %s AP signing', type => {
 			['/outbox?', '/outbox?'],
 			['/outbox', '/outbox'],
 		]) {
-			const args = { level: type === 'rsa' ? '00' : '01', key, url: 'https://example.com:8443' + path, body: '{}', additionalHeaders: {} };
+			const args = { level: type === 'rsa' ? '00' : '02', key, url: 'https://example.com:8443' + path, body: '{}', additionalHeaders: {} };
 			const signed = method === 'POST' ? await createSignedPost(args) : await createSignedGet(args);
 			expect(signed.signingString.split('\n')).toContain(`(request-target): ${method.toLowerCase()} ${target}`);
 			expect(signed.signingString.split('\n')).toContain('host: example.com:8443');
