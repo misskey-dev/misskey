@@ -50,6 +50,32 @@ describe('standard Actor Multikey publication', () => {
 		expect(extractActorPublicKeys(rendered, host)?.keys).toEqual([{ keyId: actorId + '#main-key', keyPem: publicPem }]);
 	});
 
+	test('publishes both existing keys through assertionMethod with stable IDs', async () => {
+		const keypair = { publicKey: publicPem, ed25519PublicKey: ed.publicKey.export({ type: 'spki', format: 'pem' }).toString(), privateKey: rsa.privateKey.export({ type: 'pkcs8', format: 'pem' }).toString() };
+		const getUserKeypair = vi.fn().mockResolvedValue(keypair);
+		const renderer: ApRendererService = Object.assign(Object.create(ApRendererService.prototype), {
+			config: { url: 'https://remote.example' }, meta: {},
+			userEntityService: { genLocalUserUri: () => actorId, getIdenticonUrl: () => 'https://remote.example/identicon' },
+			userKeypairService: { getUserKeypair },
+			userProfilesRepository: { findOneByOrFail: async () => ({ fields: [], description: null }) },
+		});
+		Object.defineProperty(renderer, 'getEmojis', { value: async () => [] });
+		const user = { id: 'alice', username: 'alice', emojis: [], tags: [], avatarId: null, bannerId: null } as unknown as MiLocalUser;
+		const rendered = renderer.addContext(await renderer.renderPerson(user)) as IActor;
+		expect(rendered.assertionMethod).toEqual([
+			{ id: actorId + '#main-key', type: 'Multikey', controller: actorId, publicKeyMultibase: encodeActorPublicMultikey(publicPem) },
+			{ id: actorId + '#ed25519-key', type: 'Multikey', controller: actorId, publicKeyMultibase: encodeActorPublicMultikey(keypair.ed25519PublicKey) },
+		]);
+		expect(rendered.publicKey).toMatchObject({ id: actorId + '#main-key', owner: actorId, publicKeyPem: publicPem });
+		expect(rendered).not.toHaveProperty('additionalPublicKeys');
+		expect(JSON.stringify(rendered)).not.toContain('PRIVATE KEY');
+		expect(getUserKeypair).toHaveBeenCalledTimes(1);
+		expect(extractActorPublicKeys(rendered, host)?.keys).toEqual([
+			{ keyId: actorId + '#main-key', keyPem: publicPem },
+			{ keyId: actorId + '#ed25519-key', keyPem: keypair.ed25519PublicKey },
+		]);
+	});
+
 	test('preloads the official context and preserves Multikey controller and typed material', async () => {
 		const ld = new JsonLd(mock<HttpRequestService>());
 		ld.freeze();

@@ -15,6 +15,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { parseHttpSignatureImplementationLevel } from '@/core/activitypub/misc/http-signature-capabilities.js';
 import { REMOTE_SERVER_CACHE_TTL } from '@/const.js';
 
 type NodeInfo = {
@@ -122,14 +123,7 @@ export class FetchInstanceMetadataService {
 				updates.openRegistrations = info.openRegistrations;
 				updates.maintainerName = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.name ?? null) : null : null;
 				updates.maintainerEmail = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.email ?? null) : null : null;
-				if (info.metadata && info.metadata.httpMessageSignaturesImplementationLevel && (
-					info.metadata.httpMessageSignaturesImplementationLevel === '01' ||
-					info.metadata.httpMessageSignaturesImplementationLevel === '11'
-				)) {
-					updates.httpMessageSignaturesImplementationLevel = info.metadata.httpMessageSignaturesImplementationLevel;
-				} else {
-					updates.httpMessageSignaturesImplementationLevel = '00';
-				}
+				updates.httpMessageSignaturesImplementationLevel = parseHttpSignatureImplementationLevel(info.metadata?.httpMessageSignaturesImplementationLevel);
 			}
 
 			if (name) updates.name = name;
