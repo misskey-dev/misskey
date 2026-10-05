@@ -226,6 +226,9 @@ importers:
       '@sentry/profiling-node':
         specifier: 10.72.0
         version: 10.72.0(@opentelemetry/core@2.9.0(@opentelemetry/api@1.9.1))(supports-color@10.2.2)
+      '@scure/base':
+        specifier: 2.4.0
+        version: 2.4.0
       '@simplewebauthn/server':
         specifier: 13.3.3
         version: 13.3.3
@@ -1425,6 +1428,9 @@ importers:
         version: 3.1.14
 
 packages:
+
+  '@scure/base@2.4.0':
+    resolution: {integrity: sha512-thZ1TuJwFwBblOhgsjDKvvGirBxNp+wSvY/DR6tJBJOTDhdAAcHJ8Vbr2eFnqaxeca4+t0i9KBf+uHYGWwZORg==}
 
   '@adobe/css-tools@4.4.4':
     resolution: {integrity: sha512-Elp+iwUx5rN5+Y8xLt5/GRoG20WGoDCQ/1Fb+1LiGtvwbDavuSk0jhD/eZdckHAuzcDzccnkv+rEjyWfRx18gg==}
@@ -9297,6 +9303,8 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
+
+  '@scure/base@2.4.0': {}
 
   '@adobe/css-tools@4.4.4': {}
 

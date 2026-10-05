@@ -18,6 +18,7 @@ import { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import * as slacc from 'slacc';
 import { createSlaccSigningKey } from '@misskey-dev/node-http-message-signatures/node/slacc';
+import { supportsDraftEd25519 } from '@/core/activitypub/misc/http-signature-capabilities.js';
 
 type CachedSigningKey = { identity: string; key: CustomSigningKey };
 
@@ -58,7 +59,7 @@ export class UserKeypairService implements OnApplicationShutdown {
 	 * Get private key [Only PrivateKeyWithPem for queue data etc.]
 	 * @param userIdOrHint user id or MiUserKeypair
 	 * @param preferType
-	 *		If ed25519-like(`ed25519`, `01`, `11`) is specified, ed25519 keypair will be returned if exists.
+	 *		If explicit `ed25519` or draft assertionMethod capability `02` is specified, use an existing Ed25519 key.
 	 *		Otherwise, main keypair will be returned.
 	 * @returns
 	 */
@@ -69,7 +70,7 @@ export class UserKeypairService implements OnApplicationShutdown {
 	): Promise<PrivateKeyWithPem> {
 		const keypair = typeof userIdOrHint === 'string' ? await this.getUserKeypair(userIdOrHint) : userIdOrHint;
 		if (
-			preferType && ['01', '11', 'ed25519'].includes(preferType.toLowerCase()) &&
+			(supportsDraftEd25519(preferType) || preferType === 'ed25519') &&
 			keypair.ed25519PublicKey != null && keypair.ed25519PrivateKey != null
 		) {
 			return {
@@ -88,7 +89,7 @@ export class UserKeypairService implements OnApplicationShutdown {
 	 * Reuse the native handle while key material, key ID, and wire version match.
 	 * @param userIdOrHint user id, MiUserKeypair, or PrivateKeyWithPem
 	 * @param preferType
-	 * 		If ed25519-like(`ed25519`, `01`, `11`) is specified, ed25519 keypair will be returned if exists.
+	 * 		If explicit `ed25519` or draft assertionMethod capability `02` is specified, use an existing Ed25519 key.
 	 *		Otherwise, main keypair will be returned. (ignored if userIdOrHint is PrivateKeyWithPem)
 	 * @returns
 	 */
