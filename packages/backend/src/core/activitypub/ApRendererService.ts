@@ -32,6 +32,8 @@ import { escapeHtml } from '@/misc/escape-html.js';
 import { JsonLdService } from './JsonLdService.js';
 import { ApMfmService } from './ApMfmService.js';
 import { CONTEXT } from './misc/contexts.js';
+import { encodeActorPublicMultikey } from './misc/actor-public-keys.js';
+import type { IMultikey } from './type.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 
 @Injectable()
@@ -307,6 +309,12 @@ export class ApRendererService {
 	}
 
 	@bindThis
+	public renderMultikey(user: MiLocalUser, publicKey: string, postfix: string): IMultikey {
+		const controller = this.userEntityService.genLocalUserUri(user.id);
+		return { id: controller + postfix, type: 'Multikey', controller, publicKeyMultibase: encodeActorPublicMultikey(publicKey) };
+	}
+
+	@bindThis
 	public async renderLike(noteReaction: MiNoteReaction, note: { uri: string | null }): Promise<ILike> {
 		const reaction = noteReaction.reaction;
 
@@ -567,6 +575,7 @@ export class ApRendererService {
 			manuallyApprovesFollowers: user.isLocked,
 			discoverable: user.isExplorable,
 			publicKey: this.renderKey(user, keypair, '#main-key'),
+			assertionMethod: [this.renderMultikey(user, keypair.publicKey, '#main-key')],
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
 			suspended: user.isSuspended,

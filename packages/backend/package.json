@@ -72,6 +72,7 @@
 		"@peertube/http-signature": "1.7.0",
 		"@sentry/node": "10.72.0",
 		"@sentry/profiling-node": "10.72.0",
+		"@scure/base": "2.4.0",
 		"@simplewebauthn/server": "13.3.3",
 		"@smithy/node-http-handler": "4.11.3",
 		"@zip.js/zip.js": "2.8.60",

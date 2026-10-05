@@ -134,6 +134,8 @@ const security_v1 = {
 		'privateKey': { '@id': 'sec:privateKey', '@type': '@id' },
 		'privateKeyPem': 'sec:privateKeyPem',
 		'publicKey': { '@id': 'sec:publicKey', '@type': '@id' },
+		// Historical signed documents only; not an Actor key discovery/output field.
+		'additionalPublicKeys': { '@id': 'sec:publicKey', '@type': '@id' },
 		'publicKeyBase58': 'sec:publicKeyBase58',
 		'publicKeyPem': 'sec:publicKeyPem',
 		'publicKeyWif': 'sec:publicKeyWif',
@@ -526,9 +528,125 @@ const activitystreams = {
 	},
 } satisfies JsonLd;
 
+// Official Controlled Identifiers v1 context; preloaded for offline normalization.
+const cid_v1 = {
+	'@context': {
+		'@protected': true,
+		'id': '@id',
+		'type': '@type',
+		'alsoKnownAs': {
+			'@id': 'https://www.w3.org/ns/activitystreams#alsoKnownAs',
+			'@type': '@id',
+		},
+		'assertionMethod': {
+			'@id': 'https://w3id.org/security#assertionMethod',
+			'@type': '@id',
+			'@container': '@set',
+		},
+		'authentication': {
+			'@id': 'https://w3id.org/security#authenticationMethod',
+			'@type': '@id',
+			'@container': '@set',
+		},
+		'capabilityDelegation': {
+			'@id': 'https://w3id.org/security#capabilityDelegationMethod',
+			'@type': '@id',
+			'@container': '@set',
+		},
+		'capabilityInvocation': {
+			'@id': 'https://w3id.org/security#capabilityInvocationMethod',
+			'@type': '@id',
+			'@container': '@set',
+		},
+		'controller': {
+			'@id': 'https://w3id.org/security#controller',
+			'@type': '@id',
+		},
+		'keyAgreement': {
+			'@id': 'https://w3id.org/security#keyAgreementMethod',
+			'@type': '@id',
+			'@container': '@set',
+		},
+		'service': {
+			'@id': 'https://www.w3.org/ns/did#service',
+			'@type': '@id',
+			'@context': {
+				'@protected': true,
+				'id': '@id',
+				'type': '@type',
+				'serviceEndpoint': {
+					'@id': 'https://www.w3.org/ns/did#serviceEndpoint',
+					'@type': '@id',
+				},
+			},
+		},
+		'verificationMethod': {
+			'@id': 'https://w3id.org/security#verificationMethod',
+			'@type': '@id',
+		},
+		'Multikey': {
+			'@id': 'https://w3id.org/security#Multikey',
+			'@context': {
+				'@protected': true,
+				'id': '@id',
+				'type': '@type',
+				'controller': {
+					'@id': 'https://w3id.org/security#controller',
+					'@type': '@id',
+				},
+				'revoked': {
+					'@id': 'https://w3id.org/security#revoked',
+					'@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+				},
+				'expires': {
+					'@id': 'https://w3id.org/security#expiration',
+					'@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+				},
+				'publicKeyMultibase': {
+					'@id': 'https://w3id.org/security#publicKeyMultibase',
+					'@type': 'https://w3id.org/security#multibase',
+				},
+				'secretKeyMultibase': {
+					'@id': 'https://w3id.org/security#secretKeyMultibase',
+					'@type': 'https://w3id.org/security#multibase',
+				},
+			},
+		},
+		'JsonWebKey': {
+			'@id': 'https://w3id.org/security#JsonWebKey',
+			'@context': {
+				'@protected': true,
+				'id': '@id',
+				'type': '@type',
+				'controller': {
+					'@id': 'https://w3id.org/security#controller',
+					'@type': '@id',
+				},
+				'revoked': {
+					'@id': 'https://w3id.org/security#revoked',
+					'@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+				},
+				'expires': {
+					'@id': 'https://w3id.org/security#expiration',
+					'@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+				},
+				'publicKeyJwk': {
+					'@id': 'https://w3id.org/security#publicKeyJwk',
+					'@type': '@json',
+				},
+				'secretKeyJwk': {
+					'@id': 'https://w3id.org/security#secretKeyJwk',
+					'@type': '@json',
+				},
+			},
+		},
+	},
+} satisfies JsonLd;
+
 const context_iris = [
 	'https://www.w3.org/ns/activitystreams',
 	'https://w3id.org/security/v1',
+	'https://www.w3.org/ns/cid/v1',
 ];
 
 const extension_context_definition = {
@@ -574,5 +692,6 @@ export const CONTEXT: (string | Context)[] = [...context_iris, extension_context
 export const PRELOADED_CONTEXTS: Record<string, JsonLd> = {
 	'https://w3id.org/identity/v1': id_v1,
 	'https://w3id.org/security/v1': security_v1,
+	'https://www.w3.org/ns/cid/v1': cid_v1,
 	'https://www.w3.org/ns/activitystreams': activitystreams,
 };
