@@ -1164,6 +1164,9 @@ importers:
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
+      punycode.js:
+        specifier: 2.3.1
+        version: 2.3.1
       shiki:
         specifier: 4.4.3
         version: 4.4.3
@@ -1177,6 +1180,9 @@ importers:
       '@types/node':
         specifier: 26.4.0
         version: 26.4.0
+      '@types/punycode.js':
+        specifier: npm:@types/punycode@2.1.4
+        version: '@types/punycode@2.1.4'
       '@types/tinycolor2':
         specifier: 1.4.6
         version: 1.4.6
