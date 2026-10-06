@@ -353,8 +353,8 @@ importers:
         specifier: 9.0.2
         version: 9.0.2
       nodemailer:
-        specifier: 9.1.1
-        version: 9.1.1
+        specifier: 10.0.9
+        version: 10.0.9
       os-utils:
         specifier: 0.0.14
         version: 0.0.14
@@ -6983,9 +6983,9 @@ packages:
   node-html-parser@9.0.2:
     resolution: {integrity: sha512-XhM0CTeF4Hkw3el7VCyasGJCEvp500Xf0s1J3ZigYfTOkVqZRQRY3EiAw1CbJzNrxaKSDthXiT9c/4CBwIJyfw==}
 
-  nodemailer@9.1.1:
-    resolution: {integrity: sha512-izw9mVKFix6YSnC9eLgV6g1opl9DUlRio9ZNcq+Wu9Ujn2UwF+8Nl0B8nz22kEC+CTZCvinkxwJ0DeFbb6NwcQ==}
-    engines: {node: '>=6.0.0'}
+  nodemailer@10.0.9:
+    resolution: {integrity: sha512-BF0qcyplCwp+jMk6HCjFykBz/YhhZSsxrARhOldLwFWH+8kGjQsd2WIMIZhqEuyXRoGFi0ONbDeWDMDoL8MhLw==}
+    engines: {node: '>=20.0.0'}
 
   nodemon@3.1.14:
     resolution: {integrity: sha512-jakjZi93UtB3jHMWsXL68FXSAosbLfY0In5gtKq3niLSkrWznrVBzXFNOEMJUfc9+Ke7SHWoAZsiMkNP3vq6Jw==}
@@ -15759,7 +15759,7 @@ snapshots:
       css-select: 5.2.2
       entities: 8.0.0
 
-  nodemailer@9.1.1: {}
+  nodemailer@10.0.9: {}
 
   nodemon@3.1.14:
     dependencies:
