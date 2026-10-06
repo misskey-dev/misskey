@@ -80,7 +80,8 @@ export class MiUser {
 	})
 	public movedAt: Date | null;
 
-	@Column('simple-array', {
+	@Column('text', {
+		array: true,
 		nullable: true,
 		comment: 'URIs the user is known as too',
 	})
