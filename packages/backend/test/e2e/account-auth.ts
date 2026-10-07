@@ -114,11 +114,13 @@ describe('アカウントの認証', () => {
 
 		test('二要素認証が有効な場合、誤ったTOTPトークンではログイントークンを再生成できない', async () => {
 			await sendEnvUpdateRequest({ key: 'MISSKEY_TEST_CHECK_DUPLICATED_TOTP', value: '1' });
+			const validToken = otpToken(aliceTwoFactorSecret);
+			const incorrectToken = `${validToken[0] === '0' ? '1' : '0'}${validToken.slice(1)}`;
 			await failedApiCall({
 				endpoint: 'i/regenerate-token',
 				parameters: {
 					password: 'test',
-					token: '12345',	// 6桁に満たないTOTPトークン
+					token: incorrectToken,	// 形式は正しいが誤ったTOTPトークン
 				},
 				user: alice,
 			}, {
