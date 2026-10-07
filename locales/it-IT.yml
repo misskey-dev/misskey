@@ -1267,7 +1267,7 @@ emailVerificationFailedError: "La verifica dell'indirizzo e-mail non è andata a
 cwNotationRequired: "Devi indicare perché il contenuto è indicato come esplicito."
 doReaction: "Reagisci"
 code: "Codice"
-reloadRequiredToApplySettings: "Per applicare le impostazioni, occorre ricaricare."
+reloadRequiredToApplySettings: "Ricarica le impostazioni. "
 remainingN: "Rimangono: {n}"
 overwriteContentConfirm: "Vuoi davvero sostituire l'attuale contenuto?"
 seasonalScreenEffect: "Abilita gli effetti speciali stagionali"
