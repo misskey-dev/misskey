@@ -8,8 +8,8 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { setTimeout } from 'node:timers/promises';
 import * as OTPAuth from 'otpauth';
-import { describe, beforeAll, test, expect } from 'vitest';
-import { api, failedApiCall, initTestDb, signup, successfulApiCall } from '../utils.js';
+import { describe, beforeAll, test, expect, beforeEach } from 'vitest';
+import { api, failedApiCall, initTestDb, signup, successfulApiCall, sendEnvUpdateRequest } from '../utils.js';
 import type * as misskey from 'misskey-js';
 import { MiUser } from '@/models/_.js';
 
@@ -44,6 +44,10 @@ describe('アカウントの認証', () => {
 	}, 1000 * 60 * 2);
 
 	describe('i/regenerate-token', () => {
+		beforeEach(async () => {
+			await sendEnvUpdateRequest({ key: 'MISSKEY_TEST_CHECK_DUPLICATED_TOTP', value: '' });
+		});
+
 		test.each([
 			{ label: '二要素認証が無効', getUser: () => bob, getToken: () => undefined },
 			{ label: '二要素認証が有効', getUser: () => alice, getToken: () => otpToken(aliceTwoFactorSecret) },
@@ -108,7 +112,31 @@ describe('アカウントの認証', () => {
 			assert.strictEqual(me.body.id, bob.id);
 		});
 
-		test('二要素認証が有効な場合、コードなしではログイントークンを再生成できない', async () => {
+		test('二要素認証が有効な場合、誤ったTOTPトークンではログイントークンを再生成できない', async () => {
+			await sendEnvUpdateRequest({ key: 'MISSKEY_TEST_CHECK_DUPLICATED_TOTP', value: '1' });
+			await failedApiCall({
+				endpoint: 'i/regenerate-token',
+				parameters: {
+					password: 'test',
+					token: '12345',	// 6桁に満たないTOTPトークン
+				},
+				user: alice,
+			}, {
+				status: 500,
+				code: 'INTERNAL_ERROR',
+				id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac',
+			});
+
+			// キャッシュ無効化の反映に猶予を置いてから、既存トークンが有効なことを確認する。
+			await setTimeout(2000);
+			const me = await api('i', {}, alice);
+			assert.strictEqual(me.status, 200);
+			assert.strictEqual(me.body.id, alice.id);
+
+			await sendEnvUpdateRequest({ key: 'MISSKEY_TEST_CHECK_DUPLICATED_TOTP', value: '' });
+		});
+
+		test('二要素認証が有効な場合、TOTPトークンなしではログイントークンを再生成できない', async () => {
 			await failedApiCall({
 				endpoint: 'i/regenerate-token',
 				parameters: { password: 'test' },
