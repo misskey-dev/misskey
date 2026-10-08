@@ -11346,6 +11346,10 @@ export interface Locale extends ILocale {
          * 最小文字数を下回っています！ 現在 {current} / 制限 {min}
          */
         "charactersBelow": ParameterizedString<"current" | "min">;
+        /**
+         * {min}より前の日時は指定できません
+         */
+        "datetimeBelowMin": ParameterizedString<"min">;
     };
     "_disabledTimeline": {
         /**
