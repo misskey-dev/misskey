@@ -1601,6 +1601,22 @@ _preferencesBackup:
   backupFound: "設定のバックアップが見つかりました"
   forceBackup: "設定の強制バックアップ"
 
+_followApproval:
+  groupTitle: "フォロー承認"
+  inactiveDescription: "すべてのフォローが承認制になるため、期間による設定は適用されません。フォローの承認制を解除すると、以下の設定が再び適用されます。"
+  title: "新しいアカウントからのフォローを承認制にする"
+  autoAcceptDescription: "フォローを承認制にしている場合や、新しいアカウントからのフォローを保留する場合にも、あなたがフォローしている相手は自動承認します。"
+  description: "指定した期間が経過していない相手からのフォローを、フォローリクエストとして保留します。既存のフォロワーには影響しません。フォローしている相手の自動承認が有効な場合、その相手は自動承認されます。"
+  local: "ローカルユーザーからのフォロー"
+  localDescription: "このサーバーでのアカウント作成からの期間で判定します。"
+  remote: "リモートユーザーからのフォロー"
+  remoteDescription: "相手のサーバーでの作成日時ではなく、このサーバーが初めてそのアカウントを認識してからの期間で判定します。"
+  useDefault: "既定値を使う（現在は無効）"
+  custom: "期間を指定する"
+  period: "承認が必要な期間"
+  unit: "単位"
+  invalidPeriod: "期間が正しくありません。1秒以上の期間を、指定できる範囲内で入力してください。"
+
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
   requireSigninToViewContentsDescription1: "あなたが作成した全てのノートなどのコンテンツを表示するのにログインを必須にします。クローラーに情報が収集されるのを防ぐ効果が期待できます。"
