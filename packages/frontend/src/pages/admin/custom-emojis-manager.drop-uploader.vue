@@ -63,7 +63,6 @@ import { uploadFile } from '@/utility/drive.js';
 import { extractDroppedItems, flattenDroppedFiles } from '@/utility/file-drop.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { prefer } from '@/preferences.js';
 import { instance } from '@/instance.js';
 import { $i } from '@/i.js';
 
@@ -83,6 +82,10 @@ type UploadItem = {
 	error: string | null;
 };
 
+const props = defineProps<{
+	folderId: string | null;
+}>();
+
 const fileInput = useTemplateRef('fileInput');
 const isDragOver = ref(false);
 const items = ref<UploadItem[]>([]);
@@ -99,6 +102,9 @@ const failedCount = computed(() => items.value.filter(it => it.status === 'faile
 const reservedNames = new Set<string>();
 let nextId = 0;
 let runningCount = 0;
+// 画面を離れたら待機中の項目は開始せず、実行中のアップロード・登録リクエストも中断する
+const abortController = new AbortController();
+const uploadAborts = new Set<() => void>();
 
 function isNameTaken(name: string): boolean {
 	return customEmojisMap.has(name) || reservedNames.has(name);
@@ -115,7 +121,8 @@ function generateRandomName(): string {
 
 function enqueue(files: File[]) {
 	for (const file of files) {
-		if (!file.type.startsWith('image/')) continue;
+		// MIME type が取れないファイルもあるため、判定できたものだけ弾いて残りはサーバー側の検証に任せる
+		if (file.type !== '' && !file.type.startsWith('image/')) continue;
 		items.value.push({
 			id: nextId++,
 			file,
@@ -132,7 +139,7 @@ function enqueue(files: File[]) {
 }
 
 function pump() {
-	while (runningCount < CONCURRENCY) {
+	while (runningCount < CONCURRENCY && !abortController.signal.aborted) {
 		const item = items.value.find(it => it.status === 'waiting');
 		if (item == null) return;
 		runningCount++;
@@ -168,24 +175,29 @@ async function processItem(item: UploadItem) {
 	}
 
 	let fileId: string;
+	const upload = uploadFile(item.file, {
+		folderId: props.folderId,
+		onProgress: ({ loaded, total }) => {
+			item.progress = total > 0 ? loaded / total : 0;
+		},
+	});
+	uploadAborts.add(upload.abort);
 	try {
-		const driveFile = await uploadFile(item.file, {
-			folderId: prefer.s.uploadFolder,
-			onProgress: ({ loaded, total }) => {
-				item.progress = total > 0 ? loaded / total : 0;
-			},
-		}).filePromise;
-		fileId = driveFile.id;
+		fileId = (await upload.filePromise).id;
 	} catch {
 		reservedNames.delete(item.name);
 		fail(item, i18n.ts.failedToUpload);
 		return;
+	} finally {
+		uploadAborts.delete(upload.abort);
 	}
+	if (abortController.signal.aborted) return;
 
 	item.status = 'registering';
 	try {
-		await misskeyApi('admin/emoji/add', { name: item.name, fileId });
+		await misskeyApi('admin/emoji/add', { name: item.name, fileId }, undefined, abortController.signal);
 	} catch (err) {
+		if (abortController.signal.aborted) return;
 		// 一覧のキャッシュが古く、サーバー側で名前の重複が判明した場合
 		const code = (err as { code?: string } | null)?.code;
 		if (code === 'DUPLICATE_NAME' && useRandomName.value) {
@@ -193,7 +205,7 @@ async function processItem(item: UploadItem) {
 			item.renamed = true;
 			reservedNames.add(item.name);
 			try {
-				await misskeyApi('admin/emoji/add', { name: item.name, fileId });
+				await misskeyApi('admin/emoji/add', { name: item.name, fileId }, undefined, abortController.signal);
 			} catch (retryErr) {
 				reservedNames.delete(item.name);
 				fail(item, errorToString(retryErr));
@@ -251,6 +263,8 @@ function onFileInputChanged(ev: Event) {
 }
 
 onBeforeUnmount(() => {
+	abortController.abort();
+	for (const abort of uploadAborts) abort();
 	for (const item of items.value) URL.revokeObjectURL(item.previewUrl);
 });
 </script>
