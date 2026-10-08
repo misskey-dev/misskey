@@ -76,6 +76,7 @@ type UploadItem = {
 	file: File;
 	previewUrl: string;
 	name: string;
+	category: string;
 	renamed: boolean;
 	status: ItemStatus;
 	progress: number;
@@ -84,6 +85,7 @@ type UploadItem = {
 
 const props = defineProps<{
 	folderId: string | null;
+	directoryToCategory: boolean;
 }>();
 
 const fileInput = useTemplateRef('fileInput');
@@ -119,8 +121,8 @@ function generateRandomName(): string {
 	return name;
 }
 
-function enqueue(files: File[]) {
-	for (const file of files) {
+function enqueue(entries: { file: File; category: string; }[]) {
+	for (const { file, category } of entries) {
 		// MIME type が取れないファイルもあるため、判定できたものだけ弾いて残りはサーバー側の検証に任せる
 		if (file.type !== '' && !file.type.startsWith('image/')) continue;
 		items.value.push({
@@ -129,6 +131,7 @@ function enqueue(files: File[]) {
 			previewUrl: URL.createObjectURL(file),
 			// 「絵文字の登録」タブでファイルを選択したときと同じ変換をする
 			name: file.name.replace(/(\.[a-zA-Z0-9]+)+$/, '').replaceAll('-', '_').replaceAll(' ', '_'),
+			category,
 			renamed: false,
 			status: 'waiting',
 			progress: 0,
@@ -195,7 +198,7 @@ async function processItem(item: UploadItem) {
 
 	item.status = 'registering';
 	try {
-		await misskeyApi('admin/emoji/add', { name: item.name, fileId }, undefined, abortController.signal);
+		await addEmoji(item, fileId);
 	} catch (err) {
 		if (abortController.signal.aborted) return;
 		// 一覧のキャッシュが古く、サーバー側で名前の重複が判明した場合
@@ -205,7 +208,7 @@ async function processItem(item: UploadItem) {
 			item.renamed = true;
 			reservedNames.add(item.name);
 			try {
-				await misskeyApi('admin/emoji/add', { name: item.name, fileId }, undefined, abortController.signal);
+				await addEmoji(item, fileId);
 			} catch (retryErr) {
 				reservedNames.delete(item.name);
 				fail(item, errorToString(retryErr));
@@ -219,6 +222,14 @@ async function processItem(item: UploadItem) {
 	}
 
 	item.status = 'done';
+}
+
+function addEmoji(item: UploadItem, fileId: string) {
+	return misskeyApi('admin/emoji/add', {
+		name: item.name,
+		category: item.category === '' ? null : item.category,
+		fileId,
+	}, undefined, abortController.signal);
 }
 
 function fail(item: UploadItem, reason: string) {
@@ -249,7 +260,19 @@ function onDragOver(ev: DragEvent) {
 async function onDrop(ev: DragEvent) {
 	isDragOver.value = false;
 	const droppedFiles = flattenDroppedFiles(await extractDroppedItems(ev));
-	enqueue(droppedFiles.map(it => it.file));
+	// ディレクトリの読み取り中に画面を離れた場合は、プレビュー用 URL を作らずに終える
+	if (abortController.signal.aborted) return;
+	enqueue(droppedFiles.map(it => ({
+		file: it.file,
+		category: props.directoryToCategory ? pathToCategory(it.path) : '',
+	})));
+}
+
+// "/dir/sub/file.png" → "dir/sub"、ディレクトリなしでドロップされたファイルは空文字
+function pathToCategory(path: string): string {
+	const relativePath = path.replace(/^\//, '');
+	const lastSlash = relativePath.lastIndexOf('/');
+	return lastSlash === -1 ? '' : relativePath.slice(0, lastSlash);
 }
 
 function onDropAreaClicked() {
@@ -258,7 +281,7 @@ function onDropAreaClicked() {
 
 function onFileInputChanged(ev: Event) {
 	const input = ev.target as HTMLInputElement;
-	if (input.files) enqueue(Array.from(input.files));
+	if (input.files) enqueue(Array.from(input.files, file => ({ file, category: '' })));
 	input.value = '';
 }
 
