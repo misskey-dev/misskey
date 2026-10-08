@@ -3314,6 +3314,17 @@ _customEmojisManager:
       confirmRegisterEmojisDescription: "リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は{count}件までです）"
       confirmClearEmojisDescription: "編集内容を破棄し、リストに表示されている絵文字をクリアします。よろしいですか？"
       confirmUploadEmojisDescription: "ドラッグ＆ドロップされた{count}個のファイルをドライブにアップロードします。実行しますか？"
+    _dropUpload:
+      dropHere: "画像をドロップして絵文字を登録"
+      dropHereCaption: "ファイル名が絵文字の名前になります。クリックでファイルを選択"
+      useRandomNameOnInvalid: "名前が使えないときはランダムな名前で登録"
+      progress: "{done}/{total}件 処理済み（失敗 {failed}件）"
+      waiting: "待機中"
+      registering: "登録中"
+      invalidName: "絵文字の名前として使えないファイル名です"
+      duplicateName: "同じ名前の絵文字が既に存在します"
+      renamedTo: "{name} として登録"
+      clearFinished: "完了した項目を消す"
 
 _embedCodeGen:
   title: "埋め込みコードをカスタマイズ"

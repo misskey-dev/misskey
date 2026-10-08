@@ -12428,6 +12428,48 @@ export interface Locale extends ILocale {
                  */
                 "confirmUploadEmojisDescription": ParameterizedString<"count">;
             };
+            "_dropUpload": {
+                /**
+                 * 画像をドロップして絵文字を登録
+                 */
+                "dropHere": string;
+                /**
+                 * ファイル名が絵文字の名前になります。クリックでファイルを選択
+                 */
+                "dropHereCaption": string;
+                /**
+                 * 名前が使えないときはランダムな名前で登録
+                 */
+                "useRandomNameOnInvalid": string;
+                /**
+                 * {done}/{total}件 処理済み（失敗 {failed}件）
+                 */
+                "progress": ParameterizedString<"done" | "total" | "failed">;
+                /**
+                 * 待機中
+                 */
+                "waiting": string;
+                /**
+                 * 登録中
+                 */
+                "registering": string;
+                /**
+                 * 絵文字の名前として使えないファイル名です
+                 */
+                "invalidName": string;
+                /**
+                 * 同じ名前の絵文字が既に存在します
+                 */
+                "duplicateName": string;
+                /**
+                 * {name} として登録
+                 */
+                "renamedTo": ParameterizedString<"name">;
+                /**
+                 * 完了した項目を消す
+                 */
+                "clearFinished": string;
+            };
         };
     };
     "_embedCodeGen": {
