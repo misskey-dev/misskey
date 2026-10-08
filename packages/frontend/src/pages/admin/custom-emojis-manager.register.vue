@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_spacer">
 	<div class="_gaps">
-		<XDropUploader :folderId="selectedFolderId"/>
+		<XDropUploader :folderId="selectedFolderId" :directoryToCategory="directoryToCategory"/>
 
 		<MkFolder>
 			<template #icon><i class="ti ti-settings"></i></template>
