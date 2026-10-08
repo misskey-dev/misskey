@@ -34,6 +34,7 @@ export type Keys = (
 	'latestPreferencesUpdate' |
 	'hidePreferencesRestoreSuggestion' |
 	'isSafeMode' |
+	'customEmojisManagerDropUploadUseRandomName' |
 	`miux:${string}` |
 	`ui:folder:${string}` |
 	`themes:${string}` | // DEPRECATED

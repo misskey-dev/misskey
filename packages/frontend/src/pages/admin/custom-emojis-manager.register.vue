@@ -6,6 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_spacer">
 	<div class="_gaps">
+		<XDropUploader/>
+
 		<MkFolder>
 			<template #icon><i class="ti ti-settings"></i></template>
 			<template #label>{{ i18n.ts._customEmojisManager._local._register.uploadSettingTitle }}</template>
@@ -82,6 +84,7 @@ import { validators } from '@/components/grid/cell-validators.js';
 import { chooseDriveFile, chooseFileFromPcAndUpload } from '@/utility/drive.js';
 import { extractDroppedItems, flattenDroppedFiles } from '@/utility/file-drop.js';
 import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
+import XDropUploader from '@/pages/admin/custom-emojis-manager.drop-uploader.vue';
 import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 
