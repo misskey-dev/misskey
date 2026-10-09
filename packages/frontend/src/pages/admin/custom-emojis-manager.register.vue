@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_spacer">
 	<div class="_gaps">
-		<XDropUploader :folderId="selectedFolderId" :directoryToCategory="directoryToCategory"/>
+		<XDropUploader :folderId="selectedFolderId" :directoryToCategory="directoryToCategory" @editRequested="onDropEditRequested"/>
 
 		<MkFolder>
 			<template #icon><i class="ti ti-settings"></i></template>
@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import * as Misskey from 'misskey-js';
 import { computed, onMounted, ref, useCssModule } from 'vue';
-import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
+import type { DroppedEmojiFile, RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
 import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import type { DroppedFile } from '@/utility/file-drop.js';
 import type { GridSetting } from '@/components/grid/grid.js';
@@ -314,6 +314,27 @@ async function onFileSelectClicked() {
 	});
 
 	gridItems.value.push(...driveFiles.map(fromDriveFile));
+}
+
+// ドロップされたファイルを「アップロード」ボタンと同じダイアログに通し、一覧で編集してから登録できるようにする
+async function onDropEditRequested(entries: DroppedEmojiFile[]) {
+	const driveFiles = await os.launchUploader(entries.map(it => it.file), {
+		folderId: selectedFolderId.value,
+	}).catch(() => []);
+
+	// ダイアログでファイルを除外・改名できるので、カテゴリはファイル名で対応付け、見つからなければ空にする
+	// (圧縮で拡張子が変わることがあるため、拡張子は除いて比べる)
+	const stripExtension = (name: string) => name.replace(/\.[^.]+$/, '');
+	const remaining = [...entries];
+	gridItems.value.push(...driveFiles.map(driveFile => {
+		const item = fromDriveFile(driveFile);
+		const index = remaining.findIndex(it => stripExtension(it.file.name) === stripExtension(driveFile.name));
+		if (index !== -1) {
+			item.category = remaining[index].category;
+			remaining.splice(index, 1);
+		}
+		return item;
+	}));
 }
 
 async function onDriveSelectClicked() {

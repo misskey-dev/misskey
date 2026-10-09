@@ -3317,6 +3317,7 @@ _customEmojisManager:
     _dropUpload:
       dropHere: "画像をドロップして絵文字を登録"
       dropHereCaption: "ファイル名が絵文字の名前になります。クリックでファイルを選択"
+      editBeforeRegister: "一覧で内容を編集してから登録する"
       useRandomNameOnInvalid: "名前が使えないときはランダムな名前で登録"
       progress: "{done}/{total}件 処理済み（失敗 {failed}件）"
       waiting: "待機中"
