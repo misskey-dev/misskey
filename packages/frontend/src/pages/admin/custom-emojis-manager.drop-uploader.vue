@@ -5,7 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<MkSwitch v-model="useRandomName" :class="$style.switch">
+	<MkSwitch v-model="editBeforeRegister" :class="$style.switch">
+		<template #label>{{ i18n.ts._customEmojisManager._local._dropUpload.editBeforeRegister }}</template>
+	</MkSwitch>
+	<MkSwitch v-model="useRandomName" :disabled="editBeforeRegister" :class="$style.switch">
 		<template #label>{{ i18n.ts._customEmojisManager._local._dropUpload.useRandomNameOnInvalid }}</template>
 	</MkSwitch>
 
@@ -56,17 +59,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, useTemplateRef, watch } from 'vue';
+import type { DroppedEmojiFile } from '@/pages/admin/custom-emojis-manager.impl.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { uploadFile } from '@/utility/drive.js';
 import { extractDroppedItems, flattenDroppedFiles } from '@/utility/file-drop.js';
-import { customEmojisMap } from '@/custom-emojis.js';
+import { customEmojis } from '@/custom-emojis.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { instance } from '@/instance.js';
 import { $i } from '@/i.js';
 
-const CONCURRENCY = 3;
+// ドロップした順に絵文字が登録されるよう、1 件ずつ処理する
+const CONCURRENCY = 1;
 const EMOJI_NAME_REGEX = /^[a-zA-Z0-9_]+$/;
 
 type ItemStatus = 'waiting' | 'uploading' | 'registering' | 'done' | 'failed';
@@ -88,13 +93,21 @@ const props = defineProps<{
 	directoryToCategory: boolean;
 }>();
 
+const emit = defineEmits<{
+	(ev: 'editRequested', entries: DroppedEmojiFile[]): void;
+}>();
+
 const fileInput = useTemplateRef('fileInput');
 const isDragOver = ref(false);
 const items = ref<UploadItem[]>([]);
 const useRandomName = ref(miLocalStorage.getItem('customEmojisManagerDropUploadUseRandomName') === 'true');
+const editBeforeRegister = ref(miLocalStorage.getItem('customEmojisManagerDropUploadEditBeforeRegister') === 'true');
 
 watch(useRandomName, (value) => {
 	miLocalStorage.setItem('customEmojisManagerDropUploadUseRandomName', value ? 'true' : 'false');
+});
+watch(editBeforeRegister, (value) => {
+	miLocalStorage.setItem('customEmojisManagerDropUploadEditBeforeRegister', value ? 'true' : 'false');
 });
 
 const finishedCount = computed(() => items.value.filter(it => it.status === 'done' || it.status === 'failed').length);
@@ -109,7 +122,7 @@ const abortController = new AbortController();
 const uploadAborts = new Set<() => void>();
 
 function isNameTaken(name: string): boolean {
-	return customEmojisMap.has(name) || reservedNames.has(name);
+	return reservedNames.has(name) || customEmojis.value.some(it => it.name === name);
 }
 
 function generateRandomName(): string {
@@ -121,10 +134,19 @@ function generateRandomName(): string {
 	return name;
 }
 
-function enqueue(entries: { file: File; category: string; }[]) {
+function onFilesSelected(entries: DroppedEmojiFile[]) {
+	// MIME type が取れないファイルもあるため、判定できたものだけ弾いて残りはサーバー側の検証に任せる
+	const images = entries.filter(({ file }) => file.type === '' || file.type.startsWith('image/'));
+	if (images.length === 0) return;
+	if (editBeforeRegister.value) {
+		emit('editRequested', images);
+	} else {
+		enqueue(images);
+	}
+}
+
+function enqueue(entries: DroppedEmojiFile[]) {
 	for (const { file, category } of entries) {
-		// MIME type が取れないファイルもあるため、判定できたものだけ弾いて残りはサーバー側の検証に任せる
-		if (file.type !== '' && !file.type.startsWith('image/')) continue;
 		items.value.push({
 			id: nextId++,
 			file,
@@ -262,7 +284,7 @@ async function onDrop(ev: DragEvent) {
 	const droppedFiles = flattenDroppedFiles(await extractDroppedItems(ev));
 	// ディレクトリの読み取り中に画面を離れた場合は、プレビュー用 URL を作らずに終える
 	if (abortController.signal.aborted) return;
-	enqueue(droppedFiles.map(it => ({
+	onFilesSelected(droppedFiles.map(it => ({
 		file: it.file,
 		category: props.directoryToCategory ? pathToCategory(it.path) : '',
 	})));
@@ -281,7 +303,7 @@ function onDropAreaClicked() {
 
 function onFileInputChanged(ev: Event) {
 	const input = ev.target as HTMLInputElement;
-	if (input.files) enqueue(Array.from(input.files, file => ({ file, category: '' })));
+	if (input.files) onFilesSelected(Array.from(input.files, file => ({ file, category: '' })));
 	input.value = '';
 }
 

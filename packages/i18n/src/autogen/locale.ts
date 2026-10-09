@@ -12471,6 +12471,10 @@ export interface Locale extends ILocale {
                  */
                 "dropHereCaption": string;
                 /**
+                 * 一覧で内容を編集してから登録する
+                 */
+                "editBeforeRegister": string;
+                /**
                  * 名前が使えないときはランダムな名前で登録
                  */
                 "useRandomNameOnInvalid": string;
