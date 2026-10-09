@@ -65,6 +65,36 @@ describe('MfmService', () => {
 			assert.deepStrictEqual(mfmService.fromHtml('<pre><code>a\nb</code></pre>'), '```\na\nb\n```');
 		});
 
+		test.each([
+			['class="language-javascript"', 'javascript'],
+			['title="Example" data-example="true"', null],
+			['class="highlight language-c++ extra"', 'c++'],
+			['class="language-unknown"', 'unknown'],
+			['class="language-"', null],
+			['class="language- language-typescript"', 'typescript'],
+			['class="language-js&#10;extra"', 'js'],
+		])('block code attributes: %s', (attributes, lang) => {
+			const html = `<pre><code ${attributes}>\n  &lt;h1&gt;&amp;lt;&lt;/h1&gt;\n\tvalue\n</code></pre>`;
+			const code = '\n  <h1>&lt;</h1>\n\tvalue\n';
+			const result = mfmService.fromHtml(html);
+
+			assert.strictEqual(result, '```' + (lang ?? '') + '\n' + code + '\n```');
+			assert.deepStrictEqual(mfm.parse(result), [{ type: 'blockCode', props: { code, lang } }]);
+		});
+
+		test('block code with wrapper attributes, surrounding whitespace, and nested markup', () => {
+			const html = '<pre class="highlight">\n<!-- example -->\t<CODE class="language-html"><span>one</span><br>two</CODE>\n</pre>';
+			assert.strictEqual(mfmService.fromHtml(html), '```html\none\ntwo\n```');
+		});
+
+		test.each([
+			['<pre>plain text</pre>', 'plain text'],
+			['<pre>&lt;code&gt;literal&lt;/code&gt;</pre>', '<code>literal</code>'],
+			['<pre>before<code class="language-js">code</code>after</pre>', 'before<code class="language-js">code</code>after'],
+		])('preserves pre contents without a sole code wrapper: %s', (html, expected) => {
+			assert.strictEqual(mfmService.fromHtml(html), expected);
+		});
+
 		test('inline code', () => {
 			assert.deepStrictEqual(mfmService.fromHtml('<code>a</code>'), '`a`');
 		});
