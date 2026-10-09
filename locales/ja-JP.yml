@@ -3325,6 +3325,7 @@ _customEmojisManager:
       invalidName: "絵文字の名前として使えないファイル名です"
       duplicateName: "同じ名前の絵文字が既に存在します"
       renamedTo: "{name} として登録"
+      addedToList: "一覧に追加しました"
       clearFinished: "完了した項目を消す"
 
 _embedCodeGen:

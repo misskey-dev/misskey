@@ -12470,6 +12470,10 @@ export interface Locale extends ILocale {
                  */
                 "renamedTo": ParameterizedString<"name">;
                 /**
+                 * 一覧に追加しました
+                 */
+                "addedToList": string;
+                /**
                  * 完了した項目を消す
                  */
                 "clearFinished": string;
