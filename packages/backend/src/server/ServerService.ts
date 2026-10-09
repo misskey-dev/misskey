@@ -227,6 +227,7 @@ export class ServerService implements OnApplicationShutdown {
 					usernameLower: username.toLowerCase(),
 					host: (host == null) || (host === this.config.host) ? IsNull() : host,
 					isSuspended: false,
+					isRemoteSuspended: false,
 				},
 			});
 
