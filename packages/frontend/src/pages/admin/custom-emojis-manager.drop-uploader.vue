@@ -40,6 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.itemBody">
 					<div :class="$style.itemName">:{{ item.name }}:</div>
 					<div v-if="item.status === 'failed'" :class="[$style.itemStatus, $style.failed]">{{ item.error }}</div>
+					<div v-else-if="item.addToList && item.status === 'done'" :class="$style.itemStatus">{{ i18n.ts._customEmojisManager._local._dropUpload.addedToList }}</div>
 					<div v-else-if="item.renamed" :class="$style.itemStatus">{{ i18n.tsx._customEmojisManager._local._dropUpload.renamedTo({ name: item.name }) }}</div>
 					<div v-if="item.status === 'uploading'" :class="$style.itemBar">
 						<div :class="$style.itemBarValue" :style="{ width: `${item.progress * 100}%` }"></div>
@@ -58,6 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import type * as Misskey from 'misskey-js';
 import { computed, onBeforeUnmount, ref, useTemplateRef, watch } from 'vue';
 import type { DroppedEmojiFile } from '@/pages/admin/custom-emojis-manager.impl.js';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -82,6 +84,8 @@ type UploadItem = {
 	previewUrl: string;
 	name: string;
 	category: string;
+	// true なら登録せず、アップロード結果を「絵文字の登録」タブの一覧に追加する
+	addToList: boolean;
 	renamed: boolean;
 	status: ItemStatus;
 	progress: number;
@@ -94,7 +98,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'editRequested', entries: DroppedEmojiFile[]): void;
+	(ev: 'uploaded', result: { driveFile: Misskey.entities.DriveFile; category: string; }): void;
 }>();
 
 const fileInput = useTemplateRef('fileInput');
@@ -137,12 +141,7 @@ function generateRandomName(): string {
 function onFilesSelected(entries: DroppedEmojiFile[]) {
 	// MIME type が取れないファイルもあるため、判定できたものだけ弾いて残りはサーバー側の検証に任せる
 	const images = entries.filter(({ file }) => file.type === '' || file.type.startsWith('image/'));
-	if (images.length === 0) return;
-	if (editBeforeRegister.value) {
-		emit('editRequested', images);
-	} else {
-		enqueue(images);
-	}
+	if (images.length > 0) enqueue(images);
 }
 
 function enqueue(entries: DroppedEmojiFile[]) {
@@ -154,6 +153,7 @@ function enqueue(entries: DroppedEmojiFile[]) {
 			// 「絵文字の登録」タブでファイルを選択したときと同じ変換をする
 			name: file.name.replace(/(\.[a-zA-Z0-9]+)+$/, '').replaceAll('-', '_').replaceAll(' ', '_'),
 			category,
+			addToList: editBeforeRegister.value,
 			renamed: false,
 			status: 'waiting',
 			progress: 0,
@@ -178,6 +178,15 @@ function pump() {
 async function processItem(item: UploadItem) {
 	item.status = 'uploading';
 
+	if (item.addToList) {
+		// 名前の検証は一覧側で行うので、アップロードだけして渡す
+		const driveFile = await uploadToDrive(item);
+		if (driveFile == null) return;
+		emit('uploaded', { driveFile, category: item.category });
+		item.status = 'done';
+		return;
+	}
+
 	if (!EMOJI_NAME_REGEX.test(item.name) || isNameTaken(item.name)) {
 		const reason = !EMOJI_NAME_REGEX.test(item.name)
 			? i18n.ts._customEmojisManager._local._dropUpload.invalidName
@@ -191,32 +200,12 @@ async function processItem(item: UploadItem) {
 	}
 	reservedNames.add(item.name);
 
-	// uploadFile はサイズ超過時にダイアログを出すため、一括処理ではここで弾いて一覧に理由を表示する
-	const maxFileSize = Math.min(instance.maxFileSize, ($i?.policies.maxFileSizeMb ?? 0) * 1024 * 1024);
-	if (item.file.size > maxFileSize) {
+	const driveFile = await uploadToDrive(item);
+	if (driveFile == null) {
 		reservedNames.delete(item.name);
-		fail(item, i18n.ts.cannotUploadBecauseExceedsFileSizeLimit);
 		return;
 	}
-
-	let fileId: string;
-	const upload = uploadFile(item.file, {
-		folderId: props.folderId,
-		onProgress: ({ loaded, total }) => {
-			item.progress = total > 0 ? loaded / total : 0;
-		},
-	});
-	uploadAborts.add(upload.abort);
-	try {
-		fileId = (await upload.filePromise).id;
-	} catch {
-		reservedNames.delete(item.name);
-		fail(item, i18n.ts.failedToUpload);
-		return;
-	} finally {
-		uploadAborts.delete(upload.abort);
-	}
-	if (abortController.signal.aborted) return;
+	const fileId = driveFile.id;
 
 	item.status = 'registering';
 	try {
@@ -244,6 +233,33 @@ async function processItem(item: UploadItem) {
 	}
 
 	item.status = 'done';
+}
+
+/** 失敗したときは項目を失敗にして null を返す。画面を離れた場合も null */
+async function uploadToDrive(item: UploadItem): Promise<Misskey.entities.DriveFile | null> {
+	// uploadFile はサイズ超過時にダイアログを出すため、一括処理ではここで弾いて一覧に理由を表示する
+	const maxFileSize = Math.min(instance.maxFileSize, ($i?.policies.maxFileSizeMb ?? 0) * 1024 * 1024);
+	if (item.file.size > maxFileSize) {
+		fail(item, i18n.ts.cannotUploadBecauseExceedsFileSizeLimit);
+		return null;
+	}
+
+	const upload = uploadFile(item.file, {
+		folderId: props.folderId,
+		onProgress: ({ loaded, total }) => {
+			item.progress = total > 0 ? loaded / total : 0;
+		},
+	});
+	uploadAborts.add(upload.abort);
+	try {
+		const driveFile = await upload.filePromise;
+		return abortController.signal.aborted ? null : driveFile;
+	} catch {
+		fail(item, i18n.ts.failedToUpload);
+		return null;
+	} finally {
+		uploadAborts.delete(upload.abort);
+	}
 }
 
 function addEmoji(item: UploadItem, fileId: string) {
