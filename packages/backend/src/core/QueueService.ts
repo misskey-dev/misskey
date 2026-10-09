@@ -14,7 +14,6 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
-import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 import { type SystemWebhookPayload } from '@/core/SystemWebhookService.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { type UserWebhookPayload } from './UserWebhookService.js';
@@ -38,7 +37,7 @@ import type {
 	SystemWebhookDeliverQueue,
 	UserWebhookDeliverQueue,
 } from './QueueModule.js';
-import type httpSignature from '@peertube/http-signature';
+import { genRFC3230DigestHeader, type ParsedSignature } from '@misskey-dev/node-http-message-signatures';
 import type * as Bull from 'bullmq';
 
 export const QUEUE_TYPES = [
@@ -144,21 +143,21 @@ export class QueueService {
 	}
 
 	@bindThis
-	public deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean) {
+	public async deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean, forceMainKey = false) {
 		if (content == null) return null;
 		if (to == null) return null;
 
 		const contentBody = JSON.stringify(content);
-		const digest = ApRequestCreator.createDigest(contentBody);
 
 		const data: DeliverJobData = {
 			user: {
 				id: user.id,
 			},
 			content: contentBody,
-			digest,
+			digest: await genRFC3230DigestHeader(contentBody, 'SHA-256'),
 			to,
 			isSharedInbox,
+			forceMainKey,
 		};
 
 		const label = to.replace('https://', '').replace('/inbox', '');
@@ -184,13 +183,17 @@ export class QueueService {
 	 * @param user `{ id: string; }` この関数ではThinUserに変換しないので前もって変換してください
 	 * @param content IActivity | null
 	 * @param inboxes `Map<string, boolean>` / key: to (inbox url), value: isSharedInbox (whether it is sharedInbox)
+	 * @param forceMainKey force to use main (rsa) key
 	 * @returns void
 	 */
 	@bindThis
-	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>) {
+	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>, forceMainKey = false) {
 		if (content == null) return null;
+		inboxes.delete(null as unknown as string); // remove null inboxes
+		if (inboxes.size === 0) return null;
+
 		const contentBody = JSON.stringify(content);
-		const digest = ApRequestCreator.createDigest(contentBody);
+		const digest = await genRFC3230DigestHeader(contentBody, 'SHA-256');
 
 		const opts = {
 			attempts: this.config.deliverJobMaxAttempts ?? 12,
@@ -215,7 +218,8 @@ export class QueueService {
 				digest,
 				to: d[0],
 				isSharedInbox: d[1],
-			} as DeliverJobData,
+				forceMainKey,
+			} satisfies DeliverJobData,
 			opts,
 		})));
 
@@ -223,7 +227,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public inbox(activity: IActivity, signature: httpSignature.IParsedSignature) {
+	public inbox(activity: IActivity, signature: ParsedSignature | null) {
 		const data = {
 			activity: activity,
 			signature,
