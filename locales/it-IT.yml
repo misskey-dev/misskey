@@ -1593,6 +1593,18 @@ _preferencesBackup:
 _followApproval:
   groupTitle: "Approvazione dei Follow"
   inactiveDescription: "Poiché i Follow sono soggetti ad approvazione, non si applicano le impostazioni basate sul periodo. Disattivando il sistema di approvazione, verranno nuovamente applicate le seguenti impostazioni."
+  title: "Le richieste di follow da parte di nuovi account richiedono l'approvazione."
+  autoAcceptDescription: "Anche se attivi \"Richiedi approvazione per le richieste di follow\" o \"Richiedi approvazione per le richieste di follow da nuovi account\", le richieste di follow provenienti da account che già segui verranno approvate automaticamente."
+  description: "Le richieste di follow da profili registrati prima del tempo specificato verranno non verranno approvate. Questo non influisce sui Follower esistenti; se è attiva l'opzione “Accetta automaticamente le richieste di follow da chi mi segue”, le richieste di follow da quei profili verranno approvate automaticamente."
+  local: "Richieste da profili locali"
+  localDescription: "Si calcola la durata relativamente alla data di iscrizione del profilo in questo server."
+  remote: "Richieste da profili remoti"
+  remoteDescription: "Si calcola la durata in base a quando il profilo remoto è stato federato su questo server la prima volta; non si calcola la data di iscrizione sul server remoto."
+  useDefault: "Utilizzare il valore predefinito (attualmente disabilitato)"
+  custom: "Periodo specifico"
+  period: "Periodo richiesto per l'iscrizione"
+  unit: "Unità"
+  invalidPeriod: "Periodo sbagliato. Indicare da 1 secondo fino al limite consentito."
 _accountSettings:
   requireSigninToViewContents: "Per vedere il contenuto, è necessaria l'iscrizione"
   requireSigninToViewContentsDescription1: "Richiedere l'iscrizione per visualizzare tutte le Note e gli altri contenuti che hai creato. Probabilmente l'effetto è impedire la raccolta di informazioni da parte dei bot crawler."
