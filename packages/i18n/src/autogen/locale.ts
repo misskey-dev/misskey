@@ -3621,6 +3621,10 @@ export interface Locale extends ILocale {
      */
     "squareAvatars": string;
     /**
+     * URLプレビューを常にコンパクト表示にする
+     */
+    "forceCompactUrlPreview": string;
+    /**
      * 送信
      */
     "sent": string;

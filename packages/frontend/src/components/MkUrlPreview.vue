@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<template v-if="player.url && playerEnabled">
+<div v-if="player.url && playerEnabled">
 	<div
 		:class="$style.player"
 		:style="player.width ? `padding: ${(player.height || 0) / player.width * 100}% 0 0` : `padding: ${(player.height || 0)}px 0 0`"
@@ -25,8 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i class="ti ti-x"></i> {{ i18n.ts.disablePlayer }}
 		</MkButton>
 	</div>
-</template>
-<template v-else-if="tweetId && tweetExpanded">
+</div>
+<div v-else-if="tweetId && tweetExpanded">
 	<div ref="twitter">
 		<iframe
 			ref="tweet"
@@ -42,10 +42,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i class="ti ti-x"></i> {{ i18n.ts.close }}
 		</MkButton>
 	</div>
-</template>
+</div>
 <div v-else>
-	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="maybeRelativeUrl" rel="nofollow noopener" :target="target" :title="url">
-		<div v-if="thumbnail && !sensitive" :class="$style.thumbnail" :style="prefer.s.dataSaver.urlPreviewThumbnail ? '' : { backgroundImage: `url('${thumbnail}')` }">
+	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.small]: small, [$style.large]: isLargeImage }]" :[attr]="maybeRelativeUrl" rel="nofollow noopener" :target="target" :title="url">
+		<div v-if="thumbnail && !sensitive" :class="$style.thumbnail" :style="displayThumbnail ? { backgroundImage: `url('${displayThumbnail}')` } : ''">
 		</div>
 		<article :class="$style.body">
 			<header :class="$style.header">
@@ -99,12 +99,14 @@ import { maybeMakeRelative } from '@@/js/url.js';
 const props = withDefaults(defineProps<{
 	url: string;
 	detail?: boolean;
-	compact?: boolean;
+	small?: boolean;
 	showActions?: boolean;
+	forceCompactCard?: boolean;
 }>(), {
 	detail: false,
-	compact: false,
+	small: false,
 	showActions: true,
+	forceCompactCard: false,
 });
 
 const MOBILE_THRESHOLD = 500;
@@ -119,9 +121,33 @@ const summalyResult = ref<SummalyResult | null>(null);
 const title = computed(() => summalyResult.value?.title ?? null);
 const description = computed(() => summalyResult.value?.description ?? null);
 const thumbnail = computed(() => summalyResult.value?.thumbnail ?? null);
+const thumbnailStyle = computed(() => summalyResult.value?.thumbnailStyle ?? null);
 const icon = computed(() => summalyResult.value?.icon ?? null);
 const sitename = computed(() => summalyResult.value?.sitename ?? null);
 const sensitive = computed(() => summalyResult.value?.sensitive ?? false);
+const isLargeImage = computed(() =>
+	thumbnail.value != null &&
+	tweetId.value == null &&
+	!sensitive.value &&
+	thumbnailStyle.value === 'summary_large_image' &&
+	!prefer.s.forceCompactUrlPreview &&
+	!props.forceCompactCard,
+);
+const displayThumbnail = computed(() => {
+	if (!thumbnail.value || prefer.s.dataSaver.urlPreviewThumbnail) return null;
+	if (!isLargeImage.value) return thumbnail.value;
+	// large card: preview=1 を thumbnail=1 (1280x720, GIFアニメ解除) に切り替える
+	// thumbnail を理解しない外部プロキシでも GIF アニメが止まるよう static=1 もフォールバックとして併記
+	try {
+		const u = new URL(thumbnail.value);
+		u.searchParams.delete('preview');
+		u.searchParams.set('thumbnail', '1');
+		u.searchParams.set('static', '1');
+		return u.toString();
+	} catch {
+		return thumbnail.value;
+	}
+});
 const player = computed(() => summalyResult.value?.player ?? { url: null, width: null, height: null });
 const playerEnabled = ref(false);
 const tweetId = ref<string | null>(null);
@@ -250,13 +276,28 @@ onUnmounted(() => {
 		}
 	}
 
-	&.compact {
+	&.small {
 		> .body {
 			> .header .title, .text, .footer {
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
 			}
+		}
+	}
+
+	&.large {
+		> .thumbnail {
+			position: relative;
+			width: 100%;
+			height: auto;
+			aspect-ratio: 1.91;
+		}
+
+		> .body {
+			left: 0;
+			width: 100%;
+			padding: 16px;
 		}
 	}
 }
@@ -344,7 +385,7 @@ onUnmounted(() => {
 	.link {
 		font-size: 10px;
 
-		&.compact {
+		&.small {
 			> .thumbnail {
 				position: absolute;
 				width: 56px;
@@ -363,6 +404,21 @@ onUnmounted(() => {
 				> .footer {
 					margin-top: 2px;
 				}
+			}
+		}
+
+		&.large {
+			> .thumbnail {
+				position: relative;
+				width: 100%;
+				height: auto;
+				aspect-ratio: 1.91;
+			}
+
+			> .body {
+				left: 0;
+				width: 100%;
+				padding: 4px 8px;
 			}
 		}
 	}
