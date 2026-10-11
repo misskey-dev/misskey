@@ -23,6 +23,7 @@
 		"@misskey-dev/emoji-data": "17.0.3",
 		"i18n": "workspace:*",
 		"json5": "2.2.3",
+		"mfm-js": "0.26.0",
 		"misskey-js": "workspace:*",
 		"punycode.js": "2.3.1",
 		"shiki": "4.4.3",
