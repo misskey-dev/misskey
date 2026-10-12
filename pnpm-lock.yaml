@@ -1169,8 +1169,8 @@ importers:
         specifier: 10.4.1
         version: 10.4.1(eslint@9.39.5(supports-color@5.5.0))(supports-color@5.5.0)
       vue-tsc:
-        specifier: 3.3.12
-        version: 3.3.12(typescript@6.0.3)
+        specifier: 3.3.11
+        version: 3.3.11(typescript@6.0.3)
 
   packages/frontend-builder:
     dependencies:
@@ -1321,8 +1321,8 @@ importers:
         specifier: 10.4.1
         version: 10.4.1(eslint@9.39.5(supports-color@10.2.2))(supports-color@10.2.2)
       vue-tsc:
-        specifier: 3.3.12
-        version: 3.3.12(typescript@6.0.3)
+        specifier: 3.3.11
+        version: 3.3.11(typescript@6.0.3)
 
   packages/frontend-shared:
     dependencies:
@@ -9102,8 +9102,8 @@ packages:
     peerDependencies:
       vue: '>=2'
 
-  vue-tsc@3.3.12:
-    resolution: {integrity: sha512-kbpaz18O9jPVkXVHD1BEjpUXM6WhXSu+62L1sGGr6Wbzd8GbvkBQWjoj3KZ/C0aq2MZllce7UdtWzwCIYsBMGA==}
+  vue-tsc@3.3.11:
+    resolution: {integrity: sha512-gOb0B9rtU2+f1dszwPqSH5kAieIF9ReeLhD3kSRNHv5WZZUQz/JdVXW0RTdqhNTMlQkqKzrTTviqKr/4FYZraQ==}
     hasBin: true
     peerDependencies:
       typescript: '>=5.0.0'
@@ -17944,10 +17944,10 @@ snapshots:
     dependencies:
       vue: 3.5.43(typescript@6.0.3)
 
-  vue-tsc@3.3.12(typescript@6.0.3):
+  vue-tsc@3.3.11(typescript@6.0.3):
     dependencies:
       '@volar/typescript': 2.4.28(typescript@6.0.3)
-      '@vue/language-core': 3.3.12
+      '@vue/language-core': 3.3.11
       typescript: 6.0.3
 
   vue@3.5.43(@typescript/typescript6@6.0.2):
