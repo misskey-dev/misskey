@@ -9,6 +9,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "26.6.2",
+		"@types/punycode.js": "npm:@types/punycode@2.1.4",
 		"@types/tinycolor2": "1.4.6",
 		"@typescript-eslint/eslint-plugin": "8.70.1",
 		"@typescript-eslint/parser": "8.70.1",
@@ -22,7 +23,9 @@
 		"@misskey-dev/emoji-data": "17.0.3",
 		"i18n": "workspace:*",
 		"json5": "2.2.3",
+		"mfm-js": "0.26.0",
 		"misskey-js": "workspace:*",
+		"punycode.js": "2.3.1",
 		"shiki": "4.4.3",
 		"tinycolor2": "1.6.0",
 		"vue": "3.5.43"
