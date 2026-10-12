@@ -1161,6 +1161,9 @@ importers:
       json5:
         specifier: 2.2.3
         version: 2.2.3
+      mfm-js:
+        specifier: 0.26.0
+        version: 0.26.0
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
