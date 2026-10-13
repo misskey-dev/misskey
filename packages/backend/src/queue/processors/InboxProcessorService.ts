@@ -5,7 +5,7 @@
 
 import { URL } from 'node:url';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import httpSignature from '@peertube/http-signature';
+import { verifyDraftSignature } from '@misskey-dev/node-http-message-signatures';
 import * as Bull from 'bullmq';
 import type Logger from '@/logger.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -133,7 +133,7 @@ export class InboxProcessorService implements OnApplicationShutdown {
 		}
 
 		// HTTP-Signatureの検証
-		const httpSignatureValidated = httpSignature.verifySignature(signature, authUser.key.keyPem);
+		const httpSignatureValidated = await verifyDraftSignature(signature, authUser.key.keyPem);
 
 		// また、signatureのsignerは、activity.actorと一致する必要がある
 		if (!httpSignatureValidated || authUser.user.uri !== getApId(activity.actor)) {

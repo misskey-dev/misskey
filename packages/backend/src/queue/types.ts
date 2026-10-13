@@ -13,7 +13,7 @@ import type { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { SystemWebhookPayload } from '@/core/SystemWebhookService.js';
 import type { UserWebhookPayload } from '@/core/UserWebhookService.js';
-import type httpSignature from '@peertube/http-signature';
+import type { ParsedDraftSignature } from '@misskey-dev/node-http-message-signatures';
 
 export type DeliverJobData = {
 	/** Actor */
@@ -30,7 +30,7 @@ export type DeliverJobData = {
 
 export type InboxJobData = {
 	activity: IActivity;
-	signature: httpSignature.IParsedSignature;
+	signature: ParsedDraftSignature['value'];
 };
 
 export type RelationshipJobData = {
