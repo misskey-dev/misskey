@@ -7,6 +7,7 @@ const CLOCK_SKEW_THRESHOLD = 20_000;
 const MAX_ROUND_TRIP_TIME = 2_000;
 const MAX_CLOCK_CHANGE = 1_000;
 const DATE_HEADER_PRECISION = 1_000;
+const REQUEST_TIMEOUT = 3_000;
 
 export type ClockSkewMeasurement = {
 	serverTime: unknown;
@@ -38,11 +39,13 @@ let serverAhead = 0;
 let deviceAhead = 0;
 const pendingDirections: (-1 | 0 | 1)[] = [];
 
-/** Enables observation after the main UI mounts, without sending extra requests. */
+/** Enables observation after the main UI mounts and fills missing startup samples. */
 export function initClockSkewCheck(): void {
 	if (enabled) return;
 	enabled = true;
 	for (const direction of pendingDirections.splice(0)) void acceptMeasurement(direction);
+	// Give requests already in flight a chance to provide the required samples.
+	window.setTimeout(() => { void completeStartupMeasurements(); }, 1_000);
 }
 
 /** Observes fresh POST API responses, allowing for the Date header's second precision. */
@@ -76,5 +79,27 @@ async function acceptMeasurement(direction: -1 | 0 | 1): Promise<void> {
 		await alert({ type: 'warning', title: i18n.ts._clockSkewWarning.title, text: i18n.ts._clockSkewWarning.description });
 	} catch {
 		// Warning failures must not affect API calls or become unhandled rejections.
+	}
+}
+
+/** Falls back to existing ping calls only when normal API traffic supplies too few samples. */
+async function completeStartupMeasurements(): Promise<void> {
+	if (finished) return;
+	try {
+		const { misskeyApi } = await import('@/utility/misskey-api.js');
+		for (let attempt = 0; attempt < 3 && !finished; attempt++) {
+			const controller = new AbortController();
+			const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+			try {
+				// The API wrapper observes Date; the response body is deliberately unused.
+				await misskeyApi('ping', {}, null, controller.signal);
+			} catch {
+				// Offline and aborted requests must not interfere with startup.
+			} finally {
+				window.clearTimeout(timeout);
+			}
+		}
+	} catch {
+		// Failure to load the API wrapper must not become an unhandled rejection.
 	}
 }

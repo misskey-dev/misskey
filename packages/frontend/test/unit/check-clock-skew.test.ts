@@ -17,12 +17,13 @@ function measure(offset: number, roundTripTime = 100) {
 }
 
 beforeEach(() => {
+	vi.useFakeTimers();
 	vi.resetModules();
 	vi.clearAllMocks();
 	vi.spyOn(Date, 'now').mockReturnValue(start);
 	vi.spyOn(performance, 'now').mockReturnValue(0);
 });
-afterEach(() => { vi.restoreAllMocks(); vi.useRealTimers(); });
+afterEach(() => { vi.clearAllTimers(); vi.restoreAllMocks(); vi.useRealTimers(); });
 
 describe('clock skew measurements', () => {
 	it.each([0, 19_999, -19_999])('does not warn for offset %i', offset => {
@@ -111,4 +112,42 @@ it('observes API headers without extra requests or changing the returned body', 
 	initClockSkewCheck();
 	await vi.waitFor(() => expect(alert).toHaveBeenCalledOnce());
 	expect(fetch).toHaveBeenCalledTimes(2);
+});
+
+describe('startup fallback requests', () => {
+	it('measures a cached anonymous startup using Date headers without credentials', async () => {
+		const fetch = vi.spyOn(window, 'fetch').mockImplementation(async () => new Response(JSON.stringify({ pong: 0 }), {
+			status: 200, headers: { Date: new Date(start + 30_000).toUTCString() },
+		}));
+		const { initClockSkewCheck } = await import('@/utility/check-clock-skew.js');
+		initClockSkewCheck(); initClockSkewCheck();
+		await vi.advanceTimersByTimeAsync(1_000);
+		expect(fetch).toHaveBeenCalledTimes(2);
+		expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/ping'), expect.objectContaining({ body: '{"i":null}', signal: expect.any(AbortSignal) }));
+		expect(alert).toHaveBeenCalledOnce();
+		expect(vi.getTimerCount()).toBe(0);
+	});
+	it('sends no extra requests when normal traffic completes the check', async () => {
+		const { initClockSkewCheck, observeClockSkew } = await import('@/utility/check-clock-skew.js');
+		const fetch = vi.spyOn(window, 'fetch');
+		for (let i = 0; i < 3; i++) await observeClockSkew(new Headers({ Date: new Date(start).toUTCString() }), measure(0));
+		initClockSkewCheck(); await vi.advanceTimersByTimeAsync(1_000);
+		expect(fetch).not.toHaveBeenCalled(); expect(alert).not.toHaveBeenCalled();
+	});
+	it('bounds failed requests and aborts each after three seconds', async () => {
+		const fetch = vi.spyOn(window, 'fetch').mockImplementation((_input, options) => new Promise((_resolve, reject) => {
+			options!.signal!.addEventListener('abort', () => reject(new Error('aborted')), { once: true });
+		}));
+		const { initClockSkewCheck } = await import('@/utility/check-clock-skew.js');
+		initClockSkewCheck(); await vi.advanceTimersByTimeAsync(10_000);
+		expect(fetch).toHaveBeenCalledTimes(3); expect(alert).not.toHaveBeenCalled();
+		expect(vi.getTimerCount()).toBe(0);
+	});
+	it('silently finishes when Date is missing or the network fails', async () => {
+		const fetch = vi.spyOn(window, 'fetch').mockRejectedValueOnce(new Error('offline')).mockImplementation(async () => new Response('{"pong":0}'));
+		const { initClockSkewCheck } = await import('@/utility/check-clock-skew.js');
+		initClockSkewCheck(); await vi.advanceTimersByTimeAsync(1_000);
+		expect(fetch).toHaveBeenCalledTimes(3); expect(alert).not.toHaveBeenCalled();
+		expect(vi.getTimerCount()).toBe(0);
+	});
 });
