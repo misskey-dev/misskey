@@ -18,11 +18,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			><code :class="$style.codeBlockFallbackCode">Loading...</code></pre>
 		</template>
 		<XCode
-			v-if="show && lang"
+			v-if="show && (lang || diffBase != null)"
 			class="_selectable"
 			:code="code"
 			:diffBase="diffBase"
-			:lang="lang"
+			:lang="lang || 'text'"
 			:withOuterStyle="withOuterStyle"
 			:maxHeight="props.maxHeight"
 		/>

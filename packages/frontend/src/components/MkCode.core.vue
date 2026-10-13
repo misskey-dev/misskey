@@ -18,8 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, shallowRef, watch } from 'vue';
 import { bundledLanguagesInfo } from 'shiki/langs';
-import type { transformerNotationDiff as transformerNotationDiff_typeReferenceOnly } from '@shikijs/transformers';
 import type { diffLines as diffLines_typeReferenceOnly } from 'diff';
+import type { ShikiTransformer } from 'shiki/core';
 import type { BundledLanguage } from 'shiki/langs';
 import { getHighlighter, getTheme } from '@/utility/code-highlighter.js';
 import { store } from '@/store.js';
@@ -40,50 +40,67 @@ const props = withDefaults(defineProps<{
 const maxHeight = computed(() => props.maxHeight != null ? `${props.maxHeight}px` : null);
 
 const highlighter = await getHighlighter();
-const transformerNotationDiff = shallowRef<typeof transformerNotationDiff_typeReferenceOnly | null>(null);
 const diffLines = shallowRef<typeof diffLines_typeReferenceOnly | null>(null);
 
 const darkMode = store.r.darkMode;
-const codeLang = ref<BundledLanguage | 'aiscript'>('js');
+const codeLang = ref<BundledLanguage | 'aiscript' | 'text'>('js');
 
 const [lightThemeName, darkThemeName] = await Promise.all([
 	getTheme('light', true),
 	getTheme('dark', true),
 ]);
 
-const code = computed(() => {
-	if (props.diffBase != null && diffLines.value != null) {
-		const diffedLines = diffLines.value(props.diffBase, props.code);
-		const diffed = diffedLines.map((part) => {
-			if (part.added) {
-				return part.value.split('\n').map(line => line ? `${line} // [!code ++]` : line).join('\n');
-			} else if (part.removed) {
-				return part.value.split('\n').map(line => line ? `${line} // [!code --]` : line).join('\n');
-			} else {
-				return part.value;
-			}
-		}).join('');
-		return diffed;
-	} else {
-		return props.code;
+const diffed = computed(() => {
+	if (props.diffBase == null || diffLines.value == null) return null;
+
+	// 行単位で組み立てることで、末尾に改行がない削除行と追加行が同じ行に連結されないようにする
+	const lines: string[] = [];
+	const lineTypes: ('add' | 'remove' | null)[] = [];
+	for (const part of diffLines.value(props.diffBase, props.code)) {
+		const partLines = part.value.split('\n');
+		if (part.value.endsWith('\n')) partLines.pop();
+		const type = part.added ? 'add' : part.removed ? 'remove' : null;
+		for (const line of partLines) {
+			lines.push(line);
+			lineTypes.push(type);
+		}
 	}
+	return { code: lines.join('\n'), lineTypes };
 });
 
-const html = computed(() => highlighter.codeToHtml(code.value, {
+// コメント記法に依存せず行にクラスを付与するため、言語指定の無いプレーンテキストでも差分を表示できる
+function transformerDiff(lineTypes: ('add' | 'remove' | null)[]): ShikiTransformer {
+	return {
+		name: 'misskey:diff',
+		pre(node) {
+			this.addClassToHast(node, 'has-diff');
+		},
+		line(node, line) {
+			const type = lineTypes[line - 1];
+			if (type != null) this.addClassToHast(node, ['diff', type]);
+		},
+	};
+}
+
+const html = computed(() => highlighter.codeToHtml(diffed.value?.code ?? props.code, {
 	lang: codeLang.value,
 	themes: {
 		fallback: 'dark-plus',
 		light: lightThemeName,
 		dark: darkThemeName,
 	},
-	transformers: props.diffBase != null && transformerNotationDiff.value != null
-		? [transformerNotationDiff.value({})]
-		: [],
+	transformers: diffed.value != null ? [transformerDiff(diffed.value.lineTypes)] : [],
 	defaultColor: false,
 	cssVariablePrefix: '--shiki-',
 }));
 
 async function fetchLanguage(to: string): Promise<void> {
+	// Shiki 組み込みのプレーンテキスト (言語ファイルの読み込み不要)
+	if (['text', 'txt', 'plaintext', 'plain'].includes(to)) {
+		codeLang.value = 'text';
+		return;
+	}
+
 	const language = to as BundledLanguage;
 
 	// Check for the loaded languages, and load the language if it's not loaded yet.
@@ -107,10 +124,6 @@ async function fetchLanguage(to: string): Promise<void> {
 
 watch(() => props.diffBase, async (to) => {
 	if (to != null) {
-		if (transformerNotationDiff.value == null) {
-			const { transformerNotationDiff: tf } = await import('@shikijs/transformers');
-			transformerNotationDiff.value = tf;
-		}
 		if (diffLines.value == null) {
 			const { diffLines: dl } = await import('diff');
 			diffLines.value = dl;
