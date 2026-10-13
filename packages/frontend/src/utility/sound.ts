@@ -239,6 +239,11 @@ export async function getSoundDuration(file: string): Promise<number> {
 				audioEl.remove();
 			}
 		}, 100);
+		audioEl.addEventListener('error', () => {
+			resolve(0);
+			window.clearInterval(si);
+			audioEl.remove();
+		}, { once: true });
 	});
 }
 

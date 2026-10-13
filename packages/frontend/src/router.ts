@@ -31,6 +31,14 @@ mainRouter.addListener('replace', ctx => {
 	window.history.replaceState({ }, '', ctx.fullPath);
 });
 
+mainRouter.addListener('forceReplace', ctx => {
+	window.location.replace(ctx.fullPath);
+});
+
+mainRouter.addListener('forcePush', ctx => {
+	window.location.href = ctx.fullPath;
+});
+
 mainRouter.addListener('change', ctx => {
 	if (_DEV_) console.log('mainRouter: change', ctx.fullPath);
 	analytics.page({

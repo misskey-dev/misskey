@@ -14,6 +14,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { deepEqual } from '@/utility/deep-equal.js';
+import { deepClone } from '@/utility/clone.js';
 
 // NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
 
@@ -122,7 +123,8 @@ export function getInitialPrefValue<K extends keyof PREF>(k: K): ValueOf<K> {
 	if (typeof _default === 'function') { // factory
 		return _default() as ValueOf<K>;
 	} else {
-		return _default as unknown as ValueOf<K>;
+		// 参照渡しになるのを防ぐためclone
+		return deepClone(_default as unknown as ValueOf<K>);
 	}
 }
 
@@ -546,6 +548,8 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 
 	public renameProfile(name: string) {
 		this.profile.name = name;
+		// TODO: バックアップのキーが名前ベースであることを考えると名前=IDであるから、idも再生成する方が自然かもしれない
+		// (将来名前ではなくIDをキーにするようになったとした場合、名前を変えたのにバックアップのキーが変わらないことになってしまう)
 		this.save();
 	}
 

@@ -27,11 +27,14 @@ void main() {
 	//float y_ratio = max(in_resolution.y / in_resolution.x, 1.0);
 
 	float angle = -(u_angle * PI);
+	float aspect = in_resolution.x / max(in_resolution.y, 1.0);
 	vec2 centeredUv = in_uv - vec2(0.5, 0.5) - u_offset;
-	vec2 rotatedUV = vec2(
-		centeredUv.x * cos(angle) - centeredUv.y * sin(angle),
-		centeredUv.x * sin(angle) + centeredUv.y * cos(angle)
-	) + u_offset;
+	vec2 scaledUv = vec2(centeredUv.x * aspect, centeredUv.y);
+	vec2 rotatedScaledUv = vec2(
+		scaledUv.x * cos(angle) - scaledUv.y * sin(angle),
+		scaledUv.x * sin(angle) + scaledUv.y * cos(angle)
+	);
+	vec2 rotatedUV = vec2(rotatedScaledUv.x / aspect, rotatedScaledUv.y) + u_offset;
 
 	bool isInside = false;
 	if (u_ellipse) {

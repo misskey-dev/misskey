@@ -424,17 +424,17 @@ export const ACHIEVEMENT_BADGES = {
 		frame: 'bronze',
 	},
 	'passedSinceAccountCreated1': {
-		img: '/fluent-emoji/0031-20e3.png',
+		img: '/fluent-emoji/31-20e3.png',
 		bg: null,
 		frame: 'bronze',
 	},
 	'passedSinceAccountCreated2': {
-		img: '/fluent-emoji/0032-20e3.png',
+		img: '/fluent-emoji/32-20e3.png',
 		bg: null,
 		frame: 'silver',
 	},
 	'passedSinceAccountCreated3': {
-		img: '/fluent-emoji/0033-20e3.png',
+		img: '/fluent-emoji/33-20e3.png',
 		bg: null,
 		frame: 'gold',
 	},

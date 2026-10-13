@@ -11,31 +11,54 @@ packages:
   - packages/misskey-js/generator
   - packages/misskey-reversi
   - packages/misskey-bubble-game
-onlyBuiltDependencies:
-  - '@nestjs/core'
-  - '@parcel/watcher'
-  - '@sentry/profiling-node'
-  - '@sentry-internal/node-cpu-profiler'
-  - '@swc/core'
-  - '@tensorflow/tfjs-node'
-  - bufferutil
-  - canvas
-  - core-js
-  - cypress
-  - esbuild
-  - msgpackr-extract
-  - msw
-  - nice-napi
-  - re2
-  - sharp
-  - utf-8-validate
-  - vue-demi
-ignorePatchFailures: false
+  - packages-private/*
+allowBuilds:
+  '@nestjs/core': true
+  '@parcel/watcher': true
+  '@sentry/profiling-node': true
+  '@sentry-internal/node-cpu-profiler': true
+  '@sentry/node-cpu-profiler': true
+  bufferutil: true
+  canvas: true
+  core-js: true
+  esbuild: true
+  msgpackr-extract: true
+  msw: true
+  nice-napi: true
+  re2: true
+  sharp: true
+  utf-8-validate: true
+  vue-demi: true
+  exifreader: false
+  protobufjs: false
+  pnpm: true
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
+  - '@misskey-dev/*'
   - '@syuilo/aiscript'
-  - '@fastify/express' # 脆弱性対応。そのうち消すこと
-  - 'lodash' # 脆弱性対応。そのうち消すこと
-  - 'tar' # 脆弱性対応。そのうち消すこと
-  # Renovate security update: pnpm@10.28.2
-  - pnpm@10.28.2
+  - buraha
+  - mfm-js
+  - slacc
+  - slacc-android-arm-eabi
+  - slacc-android-arm64
+  - slacc-darwin-arm64
+  - slacc-darwin-universal
+  - slacc-darwin-x64
+  - slacc-freebsd-x64
+  - slacc-linux-arm-gnueabihf
+  - slacc-linux-arm64-gnu
+  - slacc-linux-arm64-musl
+  - slacc-linux-x64-gnu
+  - slacc-linux-x64-musl
+  - slacc-win32-arm64-msvc
+  - slacc-win32-x64-msvc
+overrides:
+  '@aiscript-dev/aiscript-languageserver': '-'
+  chokidar: 5.0.0
+  lodash: 4.18.1
+  undici@^7: 7.29.1
+  undici@^6: 6.28.1
+  '@tabler/icons-webfont>sharp': '-'
+engineStrict: true
+saveExact: true
+shellEmulator: true

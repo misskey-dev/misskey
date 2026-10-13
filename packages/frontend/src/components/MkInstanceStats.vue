@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, computed, useTemplateRef } from 'vue';
+import { onMounted, onUnmounted, computed, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
 import type { MkSelectItem, ItemOption } from '@/components/MkSelect.vue';
 import type { ChartSrc } from '@/components/MkChart.vue';
@@ -73,6 +73,7 @@ import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
 import MkRetentionLineChart from '@/components/MkRetentionLineChart.vue';
 import { initChart } from '@/utility/init-chart.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
+import { themeManager } from '@/theme.js';
 
 initChart();
 
@@ -162,8 +163,12 @@ const {
 	]),
 	initialValue: 'active-users',
 });
+
 const subDoughnutEl = useTemplateRef('subDoughnutEl');
 const pubDoughnutEl = useTemplateRef('pubDoughnutEl');
+
+let subDoughnutChartInstance: Chart | null = null;
+let pubDoughnutChartInstance: Chart | null = null;
 
 const { handler: externalTooltipHandler1 } = useChartTooltip({
 	position: 'middle',
@@ -186,7 +191,7 @@ function createDoughnut(chartEl: HTMLCanvasElement, tooltip: ReturnType<typeof u
 			labels: data.map(x => x.name),
 			datasets: [{
 				backgroundColor: data.map(x => x.color),
-				borderColor: getComputedStyle(window.document.documentElement).getPropertyValue('--MI_THEME-panel'),
+				borderColor: themeManager.currentCompiledTheme!.panel,
 				borderWidth: 2,
 				hoverOffset: 0,
 				data: data.map(x => x.value),
@@ -245,7 +250,9 @@ onMounted(() => {
 			value: fedStats.otherFollowersCount,
 		});
 
-		if (subDoughnutEl.value != null) createDoughnut(subDoughnutEl.value, externalTooltipHandler1, subs);
+		if (subDoughnutEl.value != null) {
+			subDoughnutChartInstance = createDoughnut(subDoughnutEl.value, externalTooltipHandler1, subs);
+		}
 
 		const pubs: ChartData = fedStats.topPubInstances.map(x => ({
 			name: x.host,
@@ -262,8 +269,15 @@ onMounted(() => {
 			value: fedStats.otherFollowingCount,
 		});
 
-		if (pubDoughnutEl.value != null) createDoughnut(pubDoughnutEl.value, externalTooltipHandler2, pubs);
+		if (pubDoughnutEl.value != null) {
+			pubDoughnutChartInstance = createDoughnut(pubDoughnutEl.value, externalTooltipHandler2, pubs);
+		}
 	});
+});
+
+onUnmounted(() => {
+	subDoughnutChartInstance?.destroy();
+	pubDoughnutChartInstance?.destroy();
 });
 </script>
 

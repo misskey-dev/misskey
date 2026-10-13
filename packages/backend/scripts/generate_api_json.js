@@ -18,11 +18,15 @@ async function main() {
 		throw new Error('`built` directory does not exist.');
 	}
 
+	// バックエンド本体を動作させるにあたって必要
+	// （エントリーポイントから↓のファイルをimportしてるわけではないので別途importが必要）
+	await import('reflect-metadata');
+
 	/** @type {import('../src/config.js')} */
-	const { loadConfig } = await import('../src-js/config.js');
+	const { loadConfig } = await import('../built/config.js');
 
 	/** @type {import('../src/server/api/openapi/gen-spec.js')} */
-	const { genOpenapiSpec } = await import('../src-js/server/api/openapi/gen-spec.js');
+	const { genOpenapiSpec } = await import('../built/gen-spec.js');
 
 	const config = loadConfig();
 	const spec = genOpenapiSpec(config, true);

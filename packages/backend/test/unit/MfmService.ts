@@ -5,6 +5,7 @@
 
 import * as assert from 'assert';
 import * as mfm from 'mfm-js';
+import { beforeAll, describe, test } from 'vitest';
 import { Test } from '@nestjs/testing';
 
 import { CoreModule } from '@/core/CoreModule.js';

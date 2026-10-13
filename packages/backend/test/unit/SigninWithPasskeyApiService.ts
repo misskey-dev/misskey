@@ -4,12 +4,12 @@
  */
 
 import { IncomingHttpHeaders } from 'node:http';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockDeep } from 'vitest-mock-extended';
 import { Test, TestingModule } from '@nestjs/testing';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { AuthenticationResponseJSON } from '@simplewebauthn/types';
+import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import { HttpHeader } from 'fastify/types/utils.js';
-import { MockMetadata, ModuleMocker } from 'jest-mock';
 import { MiUser } from '@/models/User.js';
 import { MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
@@ -21,8 +21,6 @@ import { RateLimiterService } from '@/server/api/RateLimiterService.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { SigninService } from '@/server/api/SigninService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-
-const moduleMocker = new ModuleMocker(global);
 
 class FakeLimiter {
 	public async limit() {
@@ -95,9 +93,7 @@ describe('SigninWithPasskeyApiService', () => {
 			],
 		}).useMocker((token) => {
 			if (typeof token === 'function') {
-				const mockMetadata = moduleMocker.getMetadata(token) as MockMetadata<any, any>;
-				const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-				return new Mock();
+				return mockDeep<typeof token>();
 			}
 		}).compile();
 		passkeyApiService = app.get<SigninWithPasskeyApiService>(SigninWithPasskeyApiService);
@@ -112,7 +108,7 @@ describe('SigninWithPasskeyApiService', () => {
 		FakeWebauthnVerify = async () => {
 			return uid;
 		};
-		jest.spyOn(webAuthnService, 'verifySignInWithPasskeyAuthentication').mockImplementation(FakeWebauthnVerify);
+		vi.spyOn(webAuthnService, 'verifySignInWithPasskeyAuthentication').mockImplementation(FakeWebauthnVerify);
 
 		const dummyUser = {
 			id: uid, username: uid, usernameLower: uid.toLowerCase(), uri: null, host: null,
@@ -141,8 +137,11 @@ describe('SigninWithPasskeyApiService', () => {
 		});
 	});
 	describe('Try Passkey Auth', () => {
+		// context is generated server-side by randomUUID(), and the API rejects anything that is not a UUID
+		const dummyContext = '882042b6-bb28-4d79-8d63-f869488ef4ef';
+
 		it('Should Success', async () => {
-			const req = new DummyFastifyRequest({ context: 'auth-context', credential: { dummy: [] } }) as ApiFastifyRequestType;
+			const req = new DummyFastifyRequest({ context: dummyContext, credential: { dummy: [] } }) as ApiFastifyRequestType;
 			const res = new DummyFastifyReply() as FastifyReply;
 			const res_body = await passkeyApiService.signin(req, res);
 			expect((res_body as any).signinResponse).toBeDefined();
@@ -156,10 +155,18 @@ describe('SigninWithPasskeyApiService', () => {
 			expect((res_body as any).error?.id).toStrictEqual('1658cc2e-4495-461f-aee4-d403cdf073c1');
 		});
 
-		it('Should return 403 When Challenge Verify fail', async () => {
+		it('Should return 400 With Malformed Auth Context', async () => {
 			const req = new DummyFastifyRequest({ context: 'misskey-1234', credential: { dummy: [] } }) as ApiFastifyRequestType;
 			const res = new DummyFastifyReply() as FastifyReply;
-			jest.spyOn(webAuthnService, 'verifySignInWithPasskeyAuthentication')
+			const res_body = await passkeyApiService.signin(req, res);
+			expect(res.statusCode).toBe(400);
+			expect((res_body as any).error?.id).toStrictEqual('1658cc2e-4495-461f-aee4-d403cdf073c1');
+		});
+
+		it('Should return 403 When Challenge Verify fail', async () => {
+			const req = new DummyFastifyRequest({ context: dummyContext, credential: { dummy: [] } }) as ApiFastifyRequestType;
+			const res = new DummyFastifyReply() as FastifyReply;
+			vi.spyOn(webAuthnService, 'verifySignInWithPasskeyAuthentication')
 				.mockImplementation(async () => {
 					throw new IdentifiableError('THIS_ERROR_CODE_SHOULD_BE_FORWARDED');
 				});
@@ -169,7 +176,7 @@ describe('SigninWithPasskeyApiService', () => {
 		});
 
 		it('Should return 403 When The user not Enabled Passwordless login', async () => {
-			const req = new DummyFastifyRequest({ context: 'misskey-1234', credential: { dummy: [] } }) as ApiFastifyRequestType;
+			const req = new DummyFastifyRequest({ context: dummyContext, credential: { dummy: [] } }) as ApiFastifyRequestType;
 			const res = new DummyFastifyReply() as FastifyReply;
 			const userId = await FakeWebauthnVerify();
 			const data = { userId: userId, usePasswordLessLogin: false };
