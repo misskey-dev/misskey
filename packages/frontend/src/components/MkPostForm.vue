@@ -72,12 +72,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkInfo>
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<div v-show="useCw" :class="$style.cwOuter">
-		<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
+		<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @focus="emojiTarget = 'cw'" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
 		<div v-if="maxCwTextLength - cwTextLength < 20" :class="['_acrylic', $style.cwTextCount, { [$style.cwTextOver]: cwTextLength > maxCwTextLength }]">{{ maxCwTextLength - cwTextLength }}</div>
 	</div>
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
 		<div v-if="targetChannel" :class="$style.colorBar" :style="{ background: targetChannel.color }"></div>
-		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-testid="post-form-text" @keydown="onKeydown" @keyup="onKeyup" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"></textarea>
+		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-testid="post-form-text" @focus="emojiTarget = 'text'" @keydown="onKeydown" @keyup="onKeyup" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"></textarea>
 		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
@@ -219,6 +219,7 @@ const recentHashtags = ref(JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]'
 const imeText = ref('');
 const showingOptions = ref(false);
 const textAreaReadOnly = ref(false);
+const emojiTarget = ref<'text' | 'cw'>('text');
 const justEndedComposition = ref(false);
 const renoteTargetNote: ShallowRef<PostFormProps['renote'] | null> = shallowRef(props.renote);
 const replyTargetNote: ShallowRef<PostFormProps['reply'] | null> = shallowRef(props.reply);
@@ -1172,7 +1173,6 @@ function insertMention() {
 }
 
 async function insertEmoji(ev: PointerEvent) {
-	textAreaReadOnly.value = true;
 	const target = ev.currentTarget ?? ev.target;
 	if (target == null) return;
 
@@ -1182,24 +1182,33 @@ async function insertEmoji(ev: PointerEvent) {
 	// See: https://github.com/misskey-dev/misskey/pull/14282
 	//      https://github.com/misskey-dev/misskey/issues/14274
 
-	let pos = textareaEl.value?.selectionStart ?? 0;
-	let posEnd = textareaEl.value?.selectionEnd ?? text.value.length;
+	const isCwTarget = emojiTarget.value === 'cw';
+	const input = isCwTarget ? cwInputEl.value : textareaEl.value;
+	if (input == null) return;
+	if (!isCwTarget) textAreaReadOnly.value = true;
+
+	let value = isCwTarget ? (cw.value ?? '') : text.value;
+	let pos = input.selectionStart ?? 0;
+	let posEnd = input.selectionEnd ?? value.length;
 	emojiPicker.show(
 		target as HTMLElement,
 		emoji => {
-			const textBefore = text.value.substring(0, pos);
-			const textAfter = text.value.substring(posEnd);
-			text.value = textBefore + emoji + textAfter;
+			const valueBefore = value.substring(0, pos);
+			const valueAfter = value.substring(posEnd);
+			value = valueBefore + emoji + valueAfter;
+			if (isCwTarget) {
+				cw.value = value;
+			} else {
+				text.value = value;
+			}
 			pos += emoji.length;
 			posEnd += emoji.length;
 		},
 		() => {
 			textAreaReadOnly.value = false;
 			nextTick(() => {
-				if (textareaEl.value) {
-					textareaEl.value.focus();
-					textareaEl.value.setSelectionRange(pos, posEnd);
-				}
+				input.focus();
+				input.setSelectionRange(pos, posEnd);
 			});
 		},
 	);
