@@ -397,6 +397,9 @@ importers:
       '@peertube/http-signature':
         specifier: 1.7.0
         version: 1.7.0
+      '@scure/base':
+        specifier: 2.4.0
+        version: 2.4.0
       '@sentry/node':
         specifier: 11.4.0
         version: 11.4.0(@babel/core@7.29.7(supports-color@8.1.1))(rollup@4.64.0)
@@ -3568,6 +3571,9 @@ packages:
   '@rushstack/ts-command-line@5.3.16':
     resolution: {integrity: sha512-k1L7MQQEuQ1v0rsQ8pRzoZ3NRsrvSifBguWlLnl2a5iWGTTW9E0/G/B39291eAf3zF45wheybuJ2onwB/PPsfA==}
     engines: {node: '>=20.9.0'}
+
+  '@scure/base@2.4.0':
+    resolution: {integrity: sha512-thZ1TuJwFwBblOhgsjDKvvGirBxNp+wSvY/DR6tJBJOTDhdAAcHJ8Vbr2eFnqaxeca4+t0i9KBf+uHYGWwZORg==}
 
   '@sec-ant/readable-stream@0.4.1':
     resolution: {integrity: sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==}
@@ -11180,6 +11186,8 @@ snapshots:
       string-argv: 0.3.2
     transitivePeerDependencies:
       - '@types/node'
+
+  '@scure/base@2.4.0': {}
 
   '@sec-ant/readable-stream@0.4.1': {}
 
