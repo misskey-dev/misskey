@@ -202,6 +202,13 @@ export class ApDbResolverService implements OnApplicationShutdown {
 			}
 		}
 
+		// A completed remote Delete can leave a tombstone only in this worker's URI cache.
+		// Re-resolve only after confirming that its database identity no longer exists.
+		if (user.isDeleted && keyId && await this.usersRepository.findOneBy({ id: user.id }) == null) {
+			this.cacheService.uriPersonCache.delete(uri);
+			user = await this.apPersonService.resolvePerson(uri, undefined, true) as MiRemoteUser;
+		}
+
 		if (user.isDeleted) {
 			this.logger.warn(`getAuthUserFromApId: User is deleted uri=${uri} userId=${user.id} keyId=${keyId}`);
 			return { user: null, key: null };

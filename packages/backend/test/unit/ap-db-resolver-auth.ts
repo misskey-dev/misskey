@@ -32,7 +32,11 @@ function fixture(ownerChanges: Partial<MiUser> = {}, cachedDeleted = true) {
 	const cachedActor = cachedDeleted ? { ...owner, id: 'deleted-alice', uri: actorUri, isDeleted: true } : owner;
 	const key = new MiUserPublickey({ userId: owner.id, keyId, keyPem: publicKeyPem });
 	const users = mock<UsersRepository>();
-	users.findOneBy.mockImplementation(async where => !Array.isArray(where) && owner.id === where.id && owner.uri === where.uri && owner.isDeleted === where.isDeleted ? owner : null);
+	users.findOneBy.mockImplementation(async where => {
+		if (Array.isArray(where)) return null;
+		if (where.id === cachedActor.id && where.uri == null && where.isDeleted == null) return cachedActor;
+		return owner.id === where.id && owner.uri === where.uri && owner.isDeleted === where.isDeleted ? owner : null;
+	});
 	const keys = mock<UserPublickeysRepository>();
 	keys.findOneBy.mockResolvedValue(key);
 	keys.find.mockResolvedValue([key]);
@@ -40,6 +44,7 @@ function fixture(ownerChanges: Partial<MiUser> = {}, cachedDeleted = true) {
 	person.resolvePerson.mockResolvedValue(cachedActor);
 	const cache = mock<CacheService>();
 	cache.findUserById.mockResolvedValue(owner);
+	cache.uriPersonCache = { delete: vi.fn() } as unknown as CacheService['uriPersonCache'];
 	const utility = mock<UtilityService>();
 	utility.punyHost.mockImplementation(uri => new URL(uri).host);
 	const logger = mock<Logger>();
@@ -67,6 +72,36 @@ describe('AP authentication with a cached deleted actor', () => {
 		expect(person.resolvePerson).toHaveBeenCalledTimes(1);
 	});
 
+	test('re-resolves a cached deleted actor only after its database identity was physically removed', async () => {
+		const { resolver, owner, cachedActor, users, keys, person, cache } = fixture();
+		keys.findOneBy.mockResolvedValue(null); // The deleted owner's key was removed by ON DELETE CASCADE.
+		users.findOneBy.mockResolvedValue(null);
+		person.resolvePerson.mockResolvedValueOnce(cachedActor).mockResolvedValueOnce(owner);
+		const auth = await resolver.getAuthUserFromApId(actorUri, keyId);
+		expect(users.findOneBy).toHaveBeenCalledWith({ id: cachedActor.id });
+		expect(cache.uriPersonCache.delete).toHaveBeenCalledWith(actorUri);
+		expect(person.resolvePerson).toHaveBeenCalledTimes(2);
+		expect(auth?.user?.id).toBe(owner.id);
+		expect(auth?.key?.keyPem).toBe(publicKeyPem);
+		expect(cachedActor.isDeleted).toBe(true);
+	});
+
+	test('does not clear a deleted identity that still exists in the database', async () => {
+		const { resolver, person, cache } = fixture({ isDeleted: true });
+		expect(await resolver.getAuthUserFromApId(actorUri, keyId)).toEqual({ user: null, key: null });
+		expect(cache.uriPersonCache.delete).not.toHaveBeenCalled();
+		expect(person.resolvePerson).toHaveBeenCalledTimes(1);
+	});
+
+	test('still rejects a deleted actor returned after re-resolution', async () => {
+		const { resolver, users, keys, person } = fixture();
+		keys.findOneBy.mockResolvedValue(null);
+		users.findOneBy.mockResolvedValue(null);
+		expect(await resolver.getAuthUserFromApId(actorUri, keyId)).toEqual({ user: null, key: null });
+		expect(person.resolvePerson).toHaveBeenCalledTimes(2);
+		expect(keys.find).not.toHaveBeenCalled();
+	});
+
 	test('does not authenticate a key owner that is still deleted', async () => {
 		const { resolver, keys } = fixture({ isDeleted: true });
 		expect(await resolver.getAuthUserFromApId(actorUri, keyId)).toEqual({ user: null, key: null });
@@ -86,10 +121,11 @@ describe('AP authentication with a cached deleted actor', () => {
 	});
 
 	test('does not authenticate a deleted actor when the requested key is absent', async () => {
-		const { resolver, keys, users } = fixture();
+		const { resolver, keys, users, cachedActor, person } = fixture();
 		keys.findOneBy.mockResolvedValue(null);
 		expect(await resolver.getAuthUserFromApId(actorUri, keyId)).toEqual({ user: null, key: null });
-		expect(users.findOneBy).not.toHaveBeenCalled();
+		expect(users.findOneBy).toHaveBeenCalledWith({ id: cachedActor.id });
+		expect(person.resolvePerson).toHaveBeenCalledTimes(1);
 		expect(keys.find).not.toHaveBeenCalled();
 	});
 
