@@ -30,9 +30,9 @@ describe('HTML descriptions as plain text', () => {
 		expect(htmlToPlainText(html)).toBe(expected);
 	});
 
-	it.each(['紹介<br><span>説明 &amp; 補足</span>', '<div><br></div>'])('renders plain metadata with correct escaping and fallback for %s', html => {
+	it.each(['紹介<br><span>説明 &amp; 補足</span>', '<div><br></div>'])('renders plain metadata with correct escaping and fallback for %s', async html => {
 		const description = htmlToPlainText(html);
-		const rendered = BasePage({
+		const rendered = await BasePage({
 			config: { url: 'https://example.test' } as Config,
 			version: 'test', langs: [], instanceName: 'Test', instanceUrl: 'https://example.test',
 			icon: null, appleTouchIcon: null, themeColor: null,
