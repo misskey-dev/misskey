@@ -8,7 +8,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { mainRouter } from '@/router.js';
-import { acct } from '@/filters/user';
+import { acct } from '@@/js/user.js';
 
 export async function lookup(router?: Router) {
 	const _router = router ?? mainRouter;
