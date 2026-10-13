@@ -18,7 +18,7 @@
 -
 
 ### Server
--
+- Enhance: Preserve formatting and language hints in federated code blocks.
 
 
 ## 2026.10.0
