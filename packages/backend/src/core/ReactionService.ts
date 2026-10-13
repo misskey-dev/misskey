@@ -197,15 +197,15 @@ export class ReactionService {
 		if (this.meta.enableReactionsBuffering) {
 			await this.reactionsBufferingService.create(note.id, user.id, reaction, note.reactionAndUserPairCache);
 		} else {
-			const sql = `jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + 1)::text::jsonb)`;
 			await this.notesRepository.createQueryBuilder().update()
 				.set({
-					reactions: () => sql,
+					reactions: () => `jsonb_set("reactions", ARRAY[:reaction], (COALESCE("reactions"->>:reaction, '0')::int + 1)::text::jsonb)`,
 					...(note.reactionAndUserPairCache.length < PER_NOTE_REACTION_USER_PAIR_CACHE_MAX ? {
-						reactionAndUserPairCache: () => `array_append("reactionAndUserPairCache", '${user.id}/${reaction}')`,
+						reactionAndUserPairCache: () => `array_append("reactionAndUserPairCache", :pair)`,
 					} : {}),
 				})
 				.where('id = :id', { id: note.id })
+				.setParameters({ reaction, pair: `${user.id}/${reaction}` })
 				.execute();
 		}
 
@@ -308,13 +308,13 @@ export class ReactionService {
 		if (this.meta.enableReactionsBuffering) {
 			await this.reactionsBufferingService.delete(note.id, user.id, exist.reaction);
 		} else {
-			const sql = `jsonb_set("reactions", '{${exist.reaction}}', (COALESCE("reactions"->>'${exist.reaction}', '0')::int - 1)::text::jsonb)`;
 			await this.notesRepository.createQueryBuilder().update()
 				.set({
-					reactions: () => sql,
-					reactionAndUserPairCache: () => `array_remove("reactionAndUserPairCache", '${user.id}/${exist.reaction}')`,
+					reactions: () => `jsonb_set("reactions", ARRAY[:reaction], (COALESCE("reactions"->>:reaction, '0')::int - 1)::text::jsonb)`,
+					reactionAndUserPairCache: () => `array_remove("reactionAndUserPairCache", :pair)`,
 				})
 				.where('id = :id', { id: note.id })
+				.setParameters({ reaction: exist.reaction, pair: `${user.id}/${exist.reaction}` })
 				.execute();
 		}
 
