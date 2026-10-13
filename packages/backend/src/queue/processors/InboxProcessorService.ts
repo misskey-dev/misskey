@@ -61,7 +61,12 @@ export class InboxProcessorService implements OnApplicationShutdown {
 
 	@bindThis
 	public async process(job: Bull.Job<InboxJobData>): Promise<string> {
-		const signature = job.data.signature;
+		const signature = job.data.signature ?
+			'version' in job.data.signature ? job.data.signature.value : job.data.signature
+			: null;
+		if (Array.isArray(signature)) {
+			throw new Bull.UnrecoverableError('skip: RFC9421 HTTP Message Signatures are not supported for inbox verification yet');
+		}
 		let activity = job.data.activity;
 		let actorUri = getApId(activity.actor);
 
