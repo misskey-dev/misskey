@@ -2917,6 +2917,7 @@ _deck:
     antenna: "Antenne"
     list: "Liste"
     channel: "Canali"
+    clip: "Clip"
     mentions: "Menzioni"
     direct: "Note Dirette"
     roleTimeline: "Timeline Ruolo"
