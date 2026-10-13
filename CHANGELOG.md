@@ -1,3 +1,15 @@
+## Unreleased
+
+### General
+-
+
+### Client
+-
+
+### Server
+- Fix: サーバーの紹介にHTMLを使うとリンクプレビューの説明文にHTMLタグが表示される問題を修正
+
+
 ## 2026.10.1
 
 ### Note
