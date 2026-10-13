@@ -32,7 +32,8 @@ function sanitize(text: string): string {
 		} catch {
 			return '[URL]';
 		}
-	}).replace(/\b(Bearer\s+)[^\s"',;}]+/gi, '$1[REDACTED]')
+	}).replace(/\bcookie[ \t]*:[ \t]*[^\r\n]*/gi, 'cookie=[REDACTED]')
+		.replace(/\b(Bearer\s+)[^\s"',;}]+/gi, '$1[REDACTED]')
 		.replace(/(["']?)\b(token|password|authorization|cookie|i)\1\s*[:=]\s*("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|(?:Bearer|Basic)\s+[^\s,;}]+|[^\s,;}]+)/gi, '$2=[REDACTED]')
 		.slice(0, MAX_TEXT);
 }

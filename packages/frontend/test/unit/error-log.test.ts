@@ -179,3 +179,15 @@ it('records an Error without a stack trace', () => {
 	recordClientError('error', error);
 	expect(clientErrorLogs.value[0].stack).toBe('');
 });
+
+it.each(['Cookie', 'cookie', 'COOKIE'])('redacts the entire %s header without consuming subsequent lines', header => {
+	const error = new Error(`Request failed\n${header}: theme=light; sid=secret-session; csrf=secret-csrf\r\nStatus: 500`);
+	recordClientError('error', error);
+	loadClientErrorLogs();
+	expect(clientErrorLogs.value[0].message).toBe('Request failed\ncookie=[REDACTED]\r\nStatus: 500');
+	expect(clientErrorLogs.value[0].stack).toContain('Status: 500');
+	for (const secret of ['light', 'secret-session', 'secret-csrf']) {
+		expect(JSON.stringify(clientErrorLogs.value)).not.toContain(secret);
+		expect(miLocalStorage.getItem('clientErrorLogs')).not.toContain(secret);
+	}
+});
