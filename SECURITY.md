@@ -65,7 +65,7 @@ The following are generally **not** considered vulnerabilities. Some of them may
 - **Denial of service via many requests to endpoints meant to be called frequently** (e.g. typeahead suggestions), unless the processing is unreasonably heavy for its purpose, or the requests expose or change more than the endpoint is intended to.
 - **Vulnerabilities in dependencies (including the Docker base image and OS packages) that are fixed simply by updating them**, even if exploitable through Misskey. Maintainers update dependencies regularly, so there is usually no need to report them unless they are critical (e.g. remote code execution through Misskey). Scanner output (e.g. Trivy, Dockle) alone is never considered a vulnerability.
 - **Server misconfiguration** (e.g. loosening `allowedPrivateNetworks`), and insecure defaults that do not lead to an exploitable condition.
-- **Insecure values in example configuration files** (e.g. `compose_example.yml`, `.config/example.yml`). Administrators are expected to review them; please report such values via Issues.
+- **Insecure values in example configuration files** (e.g. `compose_example.yml`, `.config/example.yml`). Administrators are expected to review them and adjust them appropriately before setting up their server; please report such values via Issues.
 
 ### Privilege escalation and permission issues
 
@@ -102,7 +102,7 @@ To help us triage your report quickly, please include:
 ## Testing Guidelines
 
 - **Do not test against servers you do not own** (e.g. public Misskey servers) without permission from their administrators. Please use your own local or test environment.
-- If you are testing a vulnerability related to federation, please do so only on your own local or isolated test environment, not on public servers.
+- If you are testing a vulnerability related to federation, please do so only on your own local or isolated test environment, not on the servers connected to the public federation.
 - Do not access, modify, or delete other users' data, and do not perform tests that may disrupt services.
 
 ## Reports Using AI Tools / Automated Scanners
@@ -122,7 +122,7 @@ After a fix is released, we publish the security advisory in the following steps
 1. **Advance notice**: About one week after the fixed version is released, we publish a brief advisory without technical details.
 2. **Full disclosure**: Once a reasonable number of servers, especially those with a large number of users, have updated to the fixed version, and we judge that the potential impact has become sufficiently small in terms of the number of users actually affected, we publish the full details.
 
-Please do not disclose the vulnerability publicly until the full advisory has been published.
+Please do not disclose the details of the vulnerability publicly until the full advisory has been published.
 
 ## Credits and Bug Bounty
 
@@ -134,4 +134,4 @@ Please do not disclose the vulnerability publicly until the full advisory has be
 If you can also create a patch to fix the vulnerability, please create a PR on the private fork.
 
 > [!note]
-> There is a GitHub bug that prevents merging if a PR not following the develop branch of upstream, so please keep follow the develop branch.
+> If a pull request does not have a linear history relative to the current `develop` branch, it may not merge successfully. If conflicts occur, please resolve them by rebasing rather than creating a merge commit.
