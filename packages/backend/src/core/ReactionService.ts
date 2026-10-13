@@ -140,7 +140,9 @@ export class ReactionService {
 					});
 
 				if (emoji) {
-					if (emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0 || (await this.roleService.getUserRoles(user.id)).some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id))) {
+					const canUseLocalOnlyEmoji = !emoji.localOnly || (note.userHost === reacterHost && (note.renoteUserHost == null || note.renoteUserHost === reacterHost));
+
+					if (canUseLocalOnlyEmoji && (emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0 || (await this.roleService.getUserRoles(user.id)).some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id)))) {
 						reaction = reacterHost ? `:${name}@${reacterHost}:` : `:${name}:`;
 
 						// センシティブ
