@@ -1577,6 +1577,7 @@ _deck:
     antenna: "الهوائيات"
     list: "القوائم"
     channel: "القنوات"
+    clip: "مِشبك"
     mentions: "الإشارات"
     direct: "مباشرة"
 _webhookSettings:
