@@ -189,8 +189,18 @@ export class ApDbResolverService implements OnApplicationShutdown {
 			}
 		}
 
-		const user = await this.apPersonService.resolvePerson(uri, undefined, true) as MiRemoteUser;
+		let user = await this.apPersonService.resolvePerson(uri, undefined, true) as MiRemoteUser;
 		this.logger.debug(`getAuthUserFromApId: User resolved uri=${uri} userId=${user.id} keyId=${keyId}`);
+
+		// The URI cache may still refer to a deleted identity after the actor was recreated.
+		// Match the requested key to its live stored owner before rejecting that cached entry.
+		if (user.isDeleted && keyId) {
+			const key = await this.userPublickeysRepository.findOneBy({ keyId });
+			if (key != null) {
+				const owner = await this.usersRepository.findOneBy({ id: key.userId, uri, isDeleted: false });
+				if (owner?.host != null) user = owner as MiRemoteUser;
+			}
+		}
 
 		if (user.isDeleted) {
 			this.logger.warn(`getAuthUserFromApId: User is deleted uri=${uri} userId=${user.id} keyId=${keyId}`);
