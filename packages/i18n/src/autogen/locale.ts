@@ -13436,4 +13436,22 @@ export interface Locale extends ILocale {
          */
         "mfm": string;
     };
+    "_clientErrorLog": {
+        /**
+         * エラーログ
+         */
+        "title": string;
+        /**
+         * すべてコピー
+         */
+        "copyAll": string;
+        /**
+         * すべて削除
+         */
+        "deleteAll": string;
+        /**
+         * エラーログをすべて削除しますか？
+         */
+        "deleteConfirm": string;
+    };
 }
