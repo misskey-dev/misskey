@@ -79,3 +79,103 @@ describe('client error logs', () => {
 		expect(clientErrorLogs.value.map(log => log.type)).toEqual(['error', 'unhandledrejection', 'vue']);
 	});
 });
+
+it.each(['token', 'password', 'authorization', 'cookie', 'i'])('redacts quoted JSON key %s', key => {
+	const secret = `secret-${key}`;
+	for (const message of [JSON.stringify({ [key]: secret }), `{'${key}': '${secret} with spaces'}`, `${key}=${secret}`]) recordClientError('error', new Error(message));
+	loadClientErrorLogs();
+	expect(JSON.stringify(clientErrorLogs.value)).not.toContain(secret);
+	expect(miLocalStorage.getItem('clientErrorLogs')).not.toContain(secret);
+	expect(clientErrorLogs.value.every(log => log.message.includes('[REDACTED]'))).toBe(true);
+});
+
+it('redacts escaped quoted values and bearer tokens while retaining unrelated fields', () => {
+	recordClientError('error', new Error(JSON.stringify({ token: 'a"b secret', password: 'a\\b secret' })));
+	recordClientError('error', 'Bearer secret-bearer');
+	expect(JSON.stringify(clientErrorLogs.value)).not.toContain('secret');
+	expect(clientErrorLogs.value[1].message).toBe('Bearer [REDACTED]');
+	const message = '{"userId":"user-123","email":"a@example.test"} hi: foo path/to/user-123';
+	recordClientError('error', message);
+	expect(clientErrorLogs.value[2].message).toBe(message);
+});
+
+it('replaces invalid URLs and bounds long messages', () => {
+	recordClientError('error', 'https://[invalid');
+	expect(clientErrorLogs.value[0].message).toBe('[URL]');
+	recordClientError('error', 'a'.repeat(9_000));
+	expect(clientErrorLogs.value[1].message).toHaveLength(8_192);
+});
+
+it('keeps distinct stable identifiers for logs generated in the same millisecond', () => {
+	vi.spyOn(Date.prototype, 'toISOString').mockReturnValue('2026-10-13T00:00:00.000Z');
+	recordClientError('error', 'same'); recordClientError('error', 'same');
+	const ids = clientErrorLogs.value.map(log => log.id);
+	expect(new Set(ids).size).toBe(2);
+	loadClientErrorLogs();
+	expect(clientErrorLogs.value.map(log => log.id)).toEqual(ids);
+	recordClientError('error', 'new');
+	expect(clientErrorLogs.value.slice(0, 2).map(log => log.id)).toEqual(ids);
+});
+
+it('migrates old logs and duplicate identifiers without discarding contents', () => {
+	const entry = { date: '2026-10-13T00:00:00.000Z', version: '1', type: 'error', message: 'old', stack: '' };
+	miLocalStorage.setItem('clientErrorLogs', JSON.stringify([entry, entry])); loadClientErrorLogs();
+	const ids = clientErrorLogs.value.map(log => log.id);
+	expect(new Set(ids).size).toBe(2);
+	loadClientErrorLogs(); expect(clientErrorLogs.value.map(log => log.id)).toEqual(ids);
+	miLocalStorage.setItem('clientErrorLogs', JSON.stringify([clientErrorLogs.value[0], clientErrorLogs.value[0]])); loadClientErrorLogs();
+	expect(clientErrorLogs.value[0].id).toBe(ids[0]); expect(clientErrorLogs.value[1].id).not.toBe(ids[0]);
+});
+
+it('keeps restored logs visible if persisting migrated identifiers fails', () => {
+	miLocalStorage.setItem('clientErrorLogs', JSON.stringify([{ date: '2026-10-13T00:00:00.000Z', version: '1', type: 'error', message: 'old', stack: '' }]));
+	vi.spyOn(miLocalStorage, 'setItem').mockImplementation(() => { throw new Error('quota'); }); loadClientErrorLogs();
+	expect(clientErrorLogs.value[0].message).toBe('old'); expect(clientErrorLogs.value[0].id).toMatch(/^[a-f0-9]{32}$/);
+});
+
+it('rejects non-array saved data', () => {
+	miLocalStorage.setItem('clientErrorLogs', '{}'); loadClientErrorLogs(); expect(clientErrorLogs.value).toEqual([]);
+});
+
+it('avoids recursive logging from Error getters', () => {
+	const error = new Error('outer');
+	Object.defineProperty(error, 'message', { get: () => { recordClientError('error', 'inner'); return 'outer'; } });
+	recordClientError('error', error); expect(clientErrorLogs.value.map(log => log.message)).toEqual(['outer']);
+});
+
+it('retains Vue errors in the console without an existing handler', () => {
+	const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+	const app = createApp({}); const error = new Error('vue'); attachClientErrorLog(app); app.config.errorHandler!(error, null, 'test');
+	expect(consoleError).toHaveBeenCalledWith(error); expect(clientErrorLogs.value[0].type).toBe('vue');
+});
+
+it('records browser source location and synchronizes relevant storage events', () => {
+	const addListener = vi.spyOn(window, 'addEventListener').mockImplementation(() => {}); initClientErrorLog();
+	const errorHandler = addListener.mock.calls.find(([name]) => name === 'error')![1] as (event: ErrorEvent) => void;
+	errorHandler(new ErrorEvent('error', { message: 'Script error.', filename: 'https://example.test/app.js?token=secret', lineno: 12, colno: 34 }));
+	expect(clientErrorLogs.value[0].message).toBe('Script error. at https://example.test/app.js:12:34');
+	expect(JSON.stringify(clientErrorLogs.value)).not.toContain('secret');
+	errorHandler(new ErrorEvent('error', { message: 'No location' })); expect(clientErrorLogs.value[1].message).toBe('No location');
+	const storageHandler = addListener.mock.calls.find(([name]) => (name as string) === 'storage')![1] as (event: StorageEvent) => void;
+	const getItem = vi.spyOn(miLocalStorage, 'getItem'); storageHandler(new StorageEvent('storage', { key: 'unrelated' })); expect(getItem).not.toHaveBeenCalled();
+	storageHandler(new StorageEvent('storage', { key: 'clientErrorLogs' })); expect(getItem).toHaveBeenCalledOnce();
+	miLocalStorage.removeItem('clientErrorLogs'); storageHandler(new StorageEvent('storage', { key: null })); expect(clientErrorLogs.value).toEqual([]);
+});
+
+it.each([
+	'Authorization: Bearer super-secret-token',
+	'Authorization: Basic super-secret-token',
+	'{"authorization":"Bearer super-secret-token"}',
+	"{'authorization': 'Bearer super-secret-token'}",
+])('redacts authentication scheme values in %s', message => {
+	recordClientError('error', new Error(message));
+	expect(JSON.stringify(clientErrorLogs.value)).not.toContain('super-secret-token');
+	expect(miLocalStorage.getItem('clientErrorLogs')).not.toContain('super-secret-token');
+});
+
+it('records an Error without a stack trace', () => {
+	const error = new Error('no stack');
+	delete error.stack;
+	recordClientError('error', error);
+	expect(clientErrorLogs.value[0].stack).toBe('');
+});

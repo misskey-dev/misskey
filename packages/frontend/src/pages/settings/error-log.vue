@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkButton :disabled="logs.length === 0" @click="copy(logs)">{{ i18n.ts._clientErrorLog.copyAll }}</MkButton>
 		<MkButton danger :disabled="logs.length === 0" @click="clear">{{ i18n.ts._clientErrorLog.deleteAll }}</MkButton>
 	</div>
-	<article v-for="(log, index) in logs" :key="`${log.date}:${index}`" class="_panel _gaps_s" :class="$style.entry">
+	<article v-for="log in logs" :key="log.id" class="_panel _gaps_s" :class="$style.entry">
 		<div :class="$style.meta">
 			<MkTime :time="log.date" mode="detail"/>
 			<span :class="$style.type">{{ log.type }}</span>
@@ -37,6 +37,7 @@ import * as os from '@/os.js';
 loadClientErrorLogs();
 const logs = computed(() => [...clientErrorLogs.value].reverse());
 
+/** Copies sanitized entries and only reports success after the clipboard write completes. */
 async function copy(entries: ClientErrorLog[]): Promise<void> {
 	try {
 		await navigator.clipboard.writeText(JSON.stringify(entries, null, 2));
@@ -46,6 +47,7 @@ async function copy(entries: ClientErrorLog[]): Promise<void> {
 	}
 }
 
+/** Confirms bulk deletion and reports storage failures to the user. */
 async function clear(): Promise<void> {
 	const { canceled } = await os.confirm({ type: 'warning', text: i18n.ts._clientErrorLog.deleteConfirm });
 	if (canceled) return;

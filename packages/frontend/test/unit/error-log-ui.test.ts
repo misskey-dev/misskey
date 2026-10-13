@@ -4,6 +4,7 @@
  */
 
 import { beforeEach, expect, it, vi } from 'vitest';
+import { defineComponent, ref } from 'vue';
 import { fireEvent, render, screen, waitFor, cleanup } from '@testing-library/vue';
 import ErrorLog from '@/pages/settings/error-log.vue';
 import { clearClientErrorLogs, clientErrorLogs, recordClientError } from '@/error-log.js';
@@ -32,7 +33,10 @@ beforeEach(() => {
 });
 
 function open() {
-	return render(ErrorLog, { global: { stubs: { MkTime: true, MkFolder: { template: '<div><slot name="label" /><slot /></div>' } } } });
+	return render(ErrorLog, { global: { stubs: { MkTime: true, MkFolder: defineComponent({
+		setup: () => ({ opened: ref(false) }),
+		template: '<div><button data-testid="folder-toggle" @click="opened = !opened">Details</button><div v-if="opened" data-testid="folder-body"><slot /></div></div>',
+	}) } } });
 }
 
 it('disables actions for empty logs and renders, copies and deletes saved logs', async () => {
@@ -59,4 +63,30 @@ it('reports failed copies and keeps logs when deletion is canceled', async () =>
 	expect(os.toast).not.toHaveBeenCalled();
 	await fireEvent.click(screen.getByText('Delete all'));
 	expect(clientErrorLogs.value).toHaveLength(1);
+});
+
+it('keeps expanded details when another log with the same timestamp is prepended', async () => {
+	vi.spyOn(Date.prototype, 'toISOString').mockReturnValue('2026-10-13T00:00:00.000Z');
+	recordClientError('error', new Error('old error'));
+	const oldId = clientErrorLogs.value[0].id;
+	const { container } = open();
+	const article = container.querySelector('article')!;
+	await fireEvent.click(article.querySelector('[data-testid="folder-toggle"]')!);
+	expect(article.querySelector('[data-testid="folder-body"]')).not.toBeNull();
+	recordClientError('error', 'new error');
+	await waitFor(() => expect(container.querySelectorAll('article')).toHaveLength(2));
+	expect(container.querySelectorAll('article')[1]).toBe(article);
+	expect(article.querySelector('[data-testid="folder-body"]')).not.toBeNull();
+	expect(clientErrorLogs.value[0].id).toBe(oldId);
+	vi.restoreAllMocks();
+});
+
+it('reports deletion failure without removing the displayed log', async () => {
+	recordClientError('error', 'test error');
+	const { miLocalStorage } = await import('@/local-storage.js');
+	const removeItem = vi.spyOn(miLocalStorage, 'removeItem').mockImplementation(() => { throw new Error('denied'); });
+	open(); await fireEvent.click(screen.getByText('Delete all'));
+	await waitFor(() => expect(os.alert).toHaveBeenCalled());
+	expect(clientErrorLogs.value).toHaveLength(1);
+	removeItem.mockRestore();
 });
