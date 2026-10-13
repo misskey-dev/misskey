@@ -2920,6 +2920,7 @@ _deck:
     antenna: "天线"
     list: "列表"
     channel: "频道"
+    clip: "便签"
     mentions: "提及"
     direct: "指定用户"
     roleTimeline: "角色时间线"
