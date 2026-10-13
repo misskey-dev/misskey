@@ -12,6 +12,7 @@
 - 詳細は https://docs.sentry.io/platforms/javascript/migration/v10-to-v11/ を参照してください。
 
 ### General
+- Feat: お知らせに自動アーカイブ日時を設定できるように
 - Enhance: 依存関係の更新
 
 ### Client
