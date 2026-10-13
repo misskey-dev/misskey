@@ -57,17 +57,15 @@ Other issues, such as those that only affect the local environment of a develope
 
 The following are generally **not** considered vulnerabilities. Some of them may still be reported as regular bugs via Issues.
 
-- **Behavior in non-production environments.** Bypassing checks (e.g. rate limits or CAPTCHA) when Misskey is not running in production mode is intended. However, if such checks are not correctly applied in a production environment, it is in scope.
-- **The "Lockdown" features** (e.g. "Require sign-in to view contents", "Make past notes followers-only"). These features are currently designed to simply *hide* content, and do not guarantee strict protection. If you find a way to bypass these features, please report it via Issues. Maintainers will determine whether it is a bug or intended behavior.
-- **Behavior of remote servers.** Remote servers not respecting visibility settings, deletion requests, etc. is a limitation of federation. (However, a malicious remote server being able to tamper with local data or affect local users through crafted activities **is** in scope.)
-- **Behavior of plugins installed by the user.** Plugins run with the privileges the user grants them by design.
-- **Vulnerabilities in the AiScript runtime itself.** Please report them to the [AiScript repository](https://github.com/aiscript-dev/aiscript). Escaping the sandbox of Play, plugins, etc. due to Misskey's own implementation **is** in scope; please determine which side the issue lies on before reporting.
-- **Denial of service by sending many requests to endpoints that are expected to be called frequently** (e.g. typeahead suggestions), unless:
-  - the processing is unreasonably heavy for its intended use, or
-  - sending many requests allows an attacker to obtain or modify information beyond what the endpoint is intended to expose or change.
-- **Vulnerabilities in dependencies without a demonstrated attack path** in Misskey (e.g. output of a dependency scanner alone). This also applies to the base image and OS packages of the Docker image (e.g. output of Trivy or Dockle alone).
-- **Issues caused by server misconfiguration** (e.g. loosening `allowedPrivateNetworks`). Insecure defaults are generally not considered vulnerabilities unless they lead to an exploitable condition.
-- **Issues in example configuration files** (e.g. `compose_example.yml`, `.config/example.yml`). These are templates that administrators are expected to review and adjust; please report insecure example values as regular bugs via Issues.
+- **Behavior in non-production environments.** Checks (e.g. rate limits, CAPTCHA) may be bypassed when not running in production mode. Checks not applied correctly in production **are** in scope.
+- **Bypasses of the "Lockdown" features** (e.g. "Require sign-in to view contents"). These features only *hide* content and do not guarantee strict protection. Please report bypasses via Issues; maintainers will decide whether they are bugs.
+- **Remote servers not respecting visibility settings, deletion requests, etc.** This is a limitation of federation. (Tampering with local data or affecting local users through crafted activities **is** in scope.)
+- **Behavior of plugins installed by the user.** Plugins run with the privileges the user grants them.
+- **Vulnerabilities in the AiScript runtime itself.** Please report them to the [AiScript repository](https://github.com/aiscript-dev/aiscript). Sandbox escapes caused by Misskey's own implementation **are** in scope.
+- **Denial of service via many requests to endpoints meant to be called frequently** (e.g. typeahead suggestions), unless the processing is unreasonably heavy for its purpose, or the requests expose or change more than the endpoint is intended to.
+- **Vulnerabilities in dependencies (including the Docker base image and OS packages) that are fixed simply by updating them**, even if exploitable through Misskey. Maintainers update dependencies regularly, so there is usually no need to report them unless they are critical (e.g. remote code execution through Misskey). Scanner output (e.g. Trivy, Dockle) alone is never considered a vulnerability.
+- **Server misconfiguration** (e.g. loosening `allowedPrivateNetworks`), and insecure defaults that do not lead to an exploitable condition.
+- **Insecure values in example configuration files** (e.g. `compose_example.yml`, `.config/example.yml`). Administrators are expected to review them; please report such values via Issues.
 
 ### Privilege escalation and permission issues
 
