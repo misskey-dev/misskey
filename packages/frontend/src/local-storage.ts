@@ -4,6 +4,7 @@
  */
 
 export type Keys = (
+	'clientErrorLogs' |
 	'v' |
 	'lastVersion' |
 	'instance' |

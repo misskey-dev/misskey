@@ -32,7 +32,10 @@ import { $i } from '@/i.js';
 import { launchPlugins } from '@/plugin.js';
 import { initTelemetry } from '@/telemetry.js';
 
+import { initClientErrorLog, attachClientErrorLog } from '@/error-log.js';
+
 export async function common(createVue: () => Promise<App<Element>>) {
+	initClientErrorLog();
 	console.info(`Misskey v${version}`);
 
 	if (_DEV_) {
@@ -288,6 +291,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	})();
 
 	await initTelemetry(instance, app);
+	attachClientErrorLog(app);
 
 	try {
 		await launchPlugins();
