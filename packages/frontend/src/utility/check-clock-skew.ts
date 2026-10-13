@@ -3,25 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { alert } from '@/os.js';
-import { i18n } from '@/i18n.js';
-
 const CLOCK_SKEW_THRESHOLD = 20_000;
 const MAX_ROUND_TRIP_TIME = 2_000;
 const MAX_CLOCK_CHANGE = 1_000;
-const REQUEST_TIMEOUT = 3_000;
+const DATE_HEADER_PRECISION = 1_000;
 
 export type ClockSkewMeasurement = {
 	serverTime: unknown;
 	startWallTime: number;
 	endWallTime: number;
 	roundTripTime: number;
+	precision?: number;
 };
 
 /** 1 means the server is ahead; -1 means the device is ahead; 0 means no significant skew. */
 export function getClockSkewDirection(measurement: ClockSkewMeasurement): -1 | 0 | 1 | null {
-	const { serverTime, startWallTime, endWallTime, roundTripTime } = measurement;
+	const { serverTime, startWallTime, endWallTime, roundTripTime, precision = 0 } = measurement;
 	if (typeof serverTime !== 'number' || !Number.isSafeInteger(serverTime) || serverTime < 0 || serverTime > 8.64e15) return null;
 	if (![startWallTime, endWallTime, roundTripTime].every(Number.isFinite)) return null;
 	if (roundTripTime < 0 || roundTripTime > MAX_ROUND_TRIP_TIME) return null;
@@ -30,54 +27,54 @@ export function getClockSkewDirection(measurement: ClockSkewMeasurement): -1 | 0
 	const offset = serverTime - (startWallTime + roundTripTime / 2);
 	// The response's timestamp was generated somewhere within the round trip.
 	// Only warn if the entire possible offset interval exceeds the threshold.
-	if (Math.abs(offset) - roundTripTime / 2 < CLOCK_SKEW_THRESHOLD) return 0;
+	if (Math.abs(offset) - roundTripTime / 2 - precision < CLOCK_SKEW_THRESHOLD) return 0;
 	return offset > 0 ? 1 : -1;
 }
 
-let checked = false;
+let enabled = false;
+let finished = false;
+let samples = 0;
+let serverAhead = 0;
+let deviceAhead = 0;
+const pendingDirections: (-1 | 0 | 1)[] = [];
 
-/** Called once after the main UI has mounted; never blocks or rejects the boot process. */
-export async function checkClockSkew(): Promise<void> {
-	if (checked) return;
-	checked = true;
+/** Enables observation after the main UI mounts, without sending extra requests. */
+export function initClockSkewCheck(): void {
+	if (enabled) return;
+	enabled = true;
+	for (const direction of pendingDirections.splice(0)) void acceptMeasurement(direction);
+}
 
-	let serverAhead = 0;
-	let deviceAhead = 0;
-
-	for (let attempt = 0; attempt < 3; attempt++) {
-		const controller = new AbortController();
-		const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
-		const startWallTime = Date.now();
-		const startMonotonicTime = performance.now();
-
-		try {
-			const response = await misskeyApi('ping', {}, null, controller.signal);
-			const roundTripTime = performance.now() - startMonotonicTime;
-			const endWallTime = Date.now();
-			const direction = getClockSkewDirection({
-				serverTime: response?.pong,
-				startWallTime,
-				endWallTime,
-				roundTripTime,
-			});
-			if (direction === 1) serverAhead++;
-			if (direction === -1) deviceAhead++;
-		} catch {
-			// Offline, aborted or malformed requests should not interrupt startup.
-		} finally {
-			window.clearTimeout(timeout);
-		}
+/** Observes fresh POST API responses, allowing for the Date header's second precision. */
+export async function observeClockSkew(headers: Headers, measurement: Omit<ClockSkewMeasurement, 'serverTime' | 'precision'>): Promise<void> {
+	if (finished) return;
+	const date = headers.get('Date');
+	// Cached responses may describe an earlier request, rather than the current server time.
+	if (headers.has('Age') || date == null || !/^[A-Za-z]{3}, \d{2} [A-Za-z]{3} \d{4} \d{2}:\d{2}:\d{2} GMT$/.test(date)) return;
+	const direction = getClockSkewDirection({ ...measurement, serverTime: Date.parse(date), precision: DATE_HEADER_PRECISION });
+	if (direction == null) return;
+	if (!enabled) {
+		if (pendingDirections.length < 3) pendingDirections.push(direction);
+		return;
 	}
+	await acceptMeasurement(direction);
+}
 
-	if (serverAhead < 2 && deviceAhead < 2) return;
-
+async function acceptMeasurement(direction: -1 | 0 | 1): Promise<void> {
+	if (finished) return;
+	samples++;
+	if (direction === 1) serverAhead++;
+	if (direction === -1) deviceAhead++;
+	if (serverAhead < 2 && deviceAhead < 2) {
+		if (samples >= 3) finished = true;
+		return;
+	}
+	finished = true;
 	try {
-		await alert({
-			type: 'warning',
-			title: i18n.ts._clockSkewWarning.title,
-			text: i18n.ts._clockSkewWarning.description,
-		});
+		// Lazy imports keep the shared API wrapper independent of UI initialization.
+		const [{ alert }, { i18n }] = await Promise.all([import('@/os.js'), import('@/i18n.js')]);
+		await alert({ type: 'warning', title: i18n.ts._clockSkewWarning.title, text: i18n.ts._clockSkewWarning.description });
 	} catch {
-		// A failed warning must not turn into an unhandled startup rejection.
+		// Warning failures must not affect API calls or become unhandled rejections.
 	}
 }

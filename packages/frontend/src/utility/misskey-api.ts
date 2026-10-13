@@ -7,6 +7,7 @@ import * as Misskey from 'misskey-js';
 import { ref } from 'vue';
 import { apiUrl } from '@@/js/config.js';
 import { $i } from '@/i.js';
+import { observeClockSkew } from '@/utility/check-clock-skew.js';
 export const pendingApiRequestsCount = ref(0);
 
 // Implements Misskey.api.ApiClient.request
@@ -34,6 +35,8 @@ export function misskeyApi<
 		if (token !== undefined) data.i = token;
 
 		// Send request
+		const startWallTime = Date.now();
+		const startMonotonicTime = performance.now();
 		window.fetch(`${apiUrl}/${endpoint}`, {
 			method: 'POST',
 			body: JSON.stringify(data),
@@ -44,6 +47,9 @@ export function misskeyApi<
 			},
 			signal,
 		}).then(async (res) => {
+			void observeClockSkew(res.headers, {
+				startWallTime, endWallTime: Date.now(), roundTripTime: performance.now() - startMonotonicTime,
+			});
 			const body = res.status === 204 ? null : await res.json();
 
 			if (res.status === 200) {

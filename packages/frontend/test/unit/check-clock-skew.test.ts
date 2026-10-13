@@ -4,11 +4,10 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { alert } from '@/os.js';
 import { getClockSkewDirection } from '@/utility/check-clock-skew.js';
 
-vi.mock('@/utility/misskey-api.js', () => ({ misskeyApi: vi.fn() }));
+vi.mock('@/i.js', () => ({ $i: null }));
 vi.mock('@/os.js', () => ({ alert: vi.fn(async () => {}) }));
 vi.mock('@/i18n.js', () => ({ updateI18n: vi.fn(), i18n: { ts: { _clockSkewWarning: { title: '時刻のずれ', description: '端末とサーバーの時刻に差があります。' } } } }));
 const start = 1_700_000_000_000;
@@ -53,46 +52,63 @@ describe('clock skew measurements', () => {
 	});
 });
 
-describe('startup clock check', () => {
-	it.each([30_000, -30_000])('warns only once for skew %i without credentials', async offset => {
-		vi.mocked(misskeyApi).mockResolvedValue({ pong: start + offset });
-		const { checkClockSkew } = await import('@/utility/check-clock-skew.js');
-		await Promise.all([checkClockSkew(), checkClockSkew()]); await checkClockSkew();
-		expect(misskeyApi).toHaveBeenCalledTimes(3);
-		expect(misskeyApi).toHaveBeenCalledWith('ping', {}, null, expect.any(AbortSignal));
-		expect(alert).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ type: 'warning', title: '時刻のずれ' }));
+describe('API response clock check', () => {
+	async function setup() {
+		const module = await import('@/utility/check-clock-skew.js');
+		module.initClockSkewCheck();
+		return (offset: number, extraHeaders = {}, roundTripTime = 0) => module.observeClockSkew(
+			new Headers({ Date: new Date(start + offset).toUTCString(), ...extraHeaders }),
+			{ startWallTime: start, endWallTime: start + roundTripTime, roundTripTime },
+		);
+	}
+
+	it.each([30_000, -30_000])('warns once after two agreeing responses for skew %i', async offset => {
+		const observe = await setup();
+		await observe(offset); expect(alert).not.toHaveBeenCalled();
+		await Promise.all([observe(offset), observe(offset), observe(offset)]);
+		expect(alert).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ type: 'warning' }));
 	});
-	it.each([[start, start, start], [start + 30_000, start, start], [start + 30_000, start - 30_000, start]])('requires two matching significant differences (%j)', async (a, b, c) => {
-		for (const pong of [a, b, c]) vi.mocked(misskeyApi).mockResolvedValueOnce({ pong });
-		const { checkClockSkew } = await import('@/utility/check-clock-skew.js'); await checkClockSkew();
+	it.each([[0, 0, 0], [30_000, 0, 0], [30_000, -30_000, 0]])('requires two matching differences (%j)', async (a, b, c) => {
+		const observe = await setup();
+		for (const offset of [a, b, c, 30_000, 30_000]) await observe(offset);
 		expect(alert).not.toHaveBeenCalled();
 	});
-	it('warns if two samples agree and one request fails', async () => {
-		vi.mocked(misskeyApi).mockRejectedValueOnce(new Error('offline')).mockResolvedValueOnce({ pong: start + 30_000 }).mockResolvedValueOnce({ pong: start + 30_000 });
-		const { checkClockSkew } = await import('@/utility/check-clock-skew.js'); await checkClockSkew();
-		expect(alert).toHaveBeenCalledOnce();
-	});
-	it('silently discards malformed responses and network failures', async () => {
-		vi.mocked(misskeyApi).mockResolvedValueOnce(null).mockResolvedValueOnce({ pong: 'invalid' }).mockRejectedValueOnce(new Error('offline'));
-		const { checkClockSkew } = await import('@/utility/check-clock-skew.js'); await expect(checkClockSkew()).resolves.toBeUndefined();
+	it.each([20_000, -20_000])('allows for second precision near the boundary (%i)', async offset => {
+		const observe = await setup(); await observe(offset); await observe(offset);
 		expect(alert).not.toHaveBeenCalled();
 	});
-	it('aborts each request after three seconds and clears timers', async () => {
-		vi.useFakeTimers();
-		vi.mocked(misskeyApi).mockImplementation((_endpoint, _data, _token, signal) => new Promise((_resolve, reject) => {
-			signal!.addEventListener('abort', () => reject(new Error('aborted')), { once: true });
-		}));
-		const { checkClockSkew } = await import('@/utility/check-clock-skew.js'); const checking = checkClockSkew();
-		await vi.advanceTimersByTimeAsync(8_999);
-		expect(misskeyApi).toHaveBeenCalledTimes(3); expect(vi.mocked(misskeyApi).mock.calls[2][3]?.aborted).toBe(false);
-		await vi.advanceTimersByTimeAsync(1); await expect(checking).resolves.toBeUndefined();
-		expect(vi.mocked(misskeyApi).mock.calls.every(call => call[3]?.aborted)).toBe(true);
-		expect(vi.getTimerCount()).toBe(0); expect(alert).not.toHaveBeenCalled();
+	it('ignores missing, invalid and cached headers and slow measurements', async () => {
+		const { observeClockSkew } = await import('@/utility/check-clock-skew.js');
+		const observe = await setup();
+		for (const headers of [new Headers(), new Headers({ Date: 'invalid' }), new Headers({ Date: '2026-10-13' })]) {
+			await observeClockSkew(headers, measure(30_000));
+		}
+		await observe(30_000, { Age: '10' }); await observe(30_000, {}, 2_001);
+		await observe(30_000); expect(alert).not.toHaveBeenCalled();
+		await observe(30_000); expect(alert).toHaveBeenCalledOnce();
 	});
-	it('clears successful request timers and handles dialog failures', async () => {
-		vi.useFakeTimers(); vi.mocked(misskeyApi).mockResolvedValue({ pong: start + 30_000 });
-		vi.mocked(alert).mockRejectedValueOnce(new Error('dialog failed'));
-		const { checkClockSkew } = await import('@/utility/check-clock-skew.js'); await expect(checkClockSkew()).resolves.toBeUndefined();
-		expect(vi.getTimerCount()).toBe(0);
+	it('does not observe responses before the main UI is ready', async () => {
+		const { observeClockSkew } = await import('@/utility/check-clock-skew.js');
+		for (let i = 0; i < 3; i++) await observeClockSkew(new Headers({ Date: new Date(start + 30_000).toUTCString() }), measure(0));
+		expect(alert).not.toHaveBeenCalled();
 	});
+	it('silently handles dialog failures', async () => {
+		const observe = await setup(); vi.mocked(alert).mockRejectedValueOnce(new Error('dialog failed'));
+		await observe(30_000); await expect(observe(30_000)).resolves.toBeUndefined();
+		await observe(30_000); expect(alert).toHaveBeenCalledOnce();
+	});
+});
+
+it('observes API headers without extra requests or changing the returned body', async () => {
+	const { initClockSkewCheck } = await import('@/utility/check-clock-skew.js');
+	const { misskeyApi } = await import('@/utility/misskey-api.js');
+	const fetch = vi.spyOn(window, 'fetch').mockImplementation(async () => new Response(JSON.stringify({ pong: 123 }), {
+		status: 200, headers: { Date: new Date(start + 30_000).toUTCString() },
+	}));
+	await expect(misskeyApi('ping', {}, null)).resolves.toEqual({ pong: 123 });
+	await expect(misskeyApi('ping', {}, null)).resolves.toEqual({ pong: 123 });
+	expect(alert).not.toHaveBeenCalled();
+	initClockSkewCheck();
+	await vi.waitFor(() => expect(alert).toHaveBeenCalledOnce());
+	expect(fetch).toHaveBeenCalledTimes(2);
 });

@@ -29,7 +29,7 @@ import { prefer } from '@/preferences.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { isBirthday } from '@/utility/is-birthday.js';
-import { checkClockSkew } from '@/utility/check-clock-skew.js';
+import { initClockSkewCheck } from '@/utility/check-clock-skew.js';
 
 export async function mainBoot() {
 	const { isClientUpdated, lastVersion } = await common(async () => {
@@ -412,5 +412,5 @@ export async function mainBoot() {
 	window.document.addEventListener('keydown', makeHotkey(keymap), { passive: false });
 
 	initializeSw();
-	void checkClockSkew();
+	initClockSkewCheck();
 }
