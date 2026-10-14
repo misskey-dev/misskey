@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XReloadSuggestion v-if="shouldSuggestReload"/>
 			<XPreferenceRestore v-if="shouldSuggestRestoreBackup"/>
 			<XThemePreviewing v-if="isThemePreviewMode"/>
+			<XClockSkewWarning/>
 			<XAnnouncements v-if="$i"/>
 			<XStatusBars/>
 			<div :class="$style.columnsWrapper">
@@ -86,6 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import XClockSkewWarning from './_common_/ClockSkewWarning.vue';
 import { defineAsyncComponent, ref, useTemplateRef } from 'vue';
 import XCommon from './_common_/common.vue';
 import { genId } from '@/utility/id.js';

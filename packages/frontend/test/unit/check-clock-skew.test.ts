@@ -20,6 +20,7 @@ beforeEach(() => {
 	vi.useFakeTimers();
 	vi.resetModules();
 	vi.clearAllMocks();
+	sessionStorage.clear();
 	vi.spyOn(Date, 'now').mockReturnValue(start);
 	vi.spyOn(performance, 'now').mockReturnValue(0);
 });
@@ -65,17 +66,21 @@ describe('API response clock check', () => {
 
 	it.each([30_000, -30_000])('warns once after two agreeing responses for skew %i', async offset => {
 		const observe = await setup();
-		await observe(offset); expect(alert).not.toHaveBeenCalled();
+		await observe(offset); expect((await import('@/utility/check-clock-skew.js')).clockSkewWarningVisible.value).toBe(false);
+		expect(alert).not.toHaveBeenCalled();
 		await Promise.all([observe(offset), observe(offset), observe(offset)]);
-		expect(alert).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ type: 'warning' }));
+		expect((await import('@/utility/check-clock-skew.js')).clockSkewWarningVisible.value).toBe(true);
+		expect(alert).not.toHaveBeenCalled();
 	});
 	it.each([[0, 0, 0], [30_000, 0, 0], [30_000, -30_000, 0]])('requires two matching differences (%j)', async (a, b, c) => {
 		const observe = await setup();
 		for (const offset of [a, b, c, 30_000, 30_000]) await observe(offset);
+		expect((await import('@/utility/check-clock-skew.js')).clockSkewWarningVisible.value).toBe(false);
 		expect(alert).not.toHaveBeenCalled();
 	});
 	it.each([20_000, -20_000])('allows for second precision near the boundary (%i)', async offset => {
 		const observe = await setup(); await observe(offset); await observe(offset);
+		expect((await import('@/utility/check-clock-skew.js')).clockSkewWarningVisible.value).toBe(false);
 		expect(alert).not.toHaveBeenCalled();
 	});
 	it('ignores missing, invalid and cached headers and slow measurements', async () => {
@@ -85,18 +90,15 @@ describe('API response clock check', () => {
 			await observeClockSkew(headers, measure(30_000));
 		}
 		await observe(30_000, { Age: '10' }); await observe(30_000, {}, 2_001);
-		await observe(30_000); expect(alert).not.toHaveBeenCalled();
-		await observe(30_000); expect(alert).toHaveBeenCalledOnce();
+		await observe(30_000); expect((await import('@/utility/check-clock-skew.js')).clockSkewWarningVisible.value).toBe(false);
+		expect(alert).not.toHaveBeenCalled();
+		await observe(30_000); expect((await import('@/utility/check-clock-skew.js')).clockSkewWarningVisible.value).toBe(true);
 	});
 	it('does not observe responses before the main UI is ready', async () => {
 		const { observeClockSkew } = await import('@/utility/check-clock-skew.js');
 		for (let i = 0; i < 3; i++) await observeClockSkew(new Headers({ Date: new Date(start + 30_000).toUTCString() }), measure(0));
+		expect((await import('@/utility/check-clock-skew.js')).clockSkewWarningVisible.value).toBe(false);
 		expect(alert).not.toHaveBeenCalled();
-	});
-	it('silently handles dialog failures', async () => {
-		const observe = await setup(); vi.mocked(alert).mockRejectedValueOnce(new Error('dialog failed'));
-		await observe(30_000); await expect(observe(30_000)).resolves.toBeUndefined();
-		await observe(30_000); expect(alert).toHaveBeenCalledOnce();
 	});
 });
 
@@ -108,9 +110,10 @@ it('observes API headers without extra requests or changing the returned body', 
 	}));
 	await expect(misskeyApi('ping', {}, null)).resolves.toEqual({ pong: 123 });
 	await expect(misskeyApi('ping', {}, null)).resolves.toEqual({ pong: 123 });
-	expect(alert).not.toHaveBeenCalled();
+	expect((await import('@/utility/check-clock-skew.js')).clockSkewWarningVisible.value).toBe(false);
+		expect(alert).not.toHaveBeenCalled();
 	initClockSkewCheck();
-	await vi.waitFor(() => expect(alert).toHaveBeenCalledOnce());
+	expect((await import('@/utility/check-clock-skew.js')).clockSkewWarningVisible.value).toBe(true);
 	expect(fetch).toHaveBeenCalledTimes(2);
 });
 
@@ -124,7 +127,7 @@ describe('startup fallback requests', () => {
 		await vi.advanceTimersByTimeAsync(1_000);
 		expect(fetch).toHaveBeenCalledTimes(2);
 		expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/ping'), expect.objectContaining({ body: '{"i":null}', signal: expect.any(AbortSignal) }));
-		expect(alert).toHaveBeenCalledOnce();
+		expect((await import('@/utility/check-clock-skew.js')).clockSkewWarningVisible.value).toBe(true);
 		expect(vi.getTimerCount()).toBe(0);
 	});
 	it('sends no extra requests when normal traffic completes the check', async () => {
@@ -132,7 +135,8 @@ describe('startup fallback requests', () => {
 		const fetch = vi.spyOn(window, 'fetch');
 		for (let i = 0; i < 3; i++) await observeClockSkew(new Headers({ Date: new Date(start).toUTCString() }), measure(0));
 		initClockSkewCheck(); await vi.advanceTimersByTimeAsync(1_000);
-		expect(fetch).not.toHaveBeenCalled(); expect(alert).not.toHaveBeenCalled();
+		expect(fetch).not.toHaveBeenCalled(); expect((await import('@/utility/check-clock-skew.js')).clockSkewWarningVisible.value).toBe(false);
+		expect(alert).not.toHaveBeenCalled();
 	});
 	it('bounds failed requests and aborts each after three seconds', async () => {
 		const fetch = vi.spyOn(window, 'fetch').mockImplementation((_input, options) => new Promise((_resolve, reject) => {
@@ -140,14 +144,53 @@ describe('startup fallback requests', () => {
 		}));
 		const { initClockSkewCheck } = await import('@/utility/check-clock-skew.js');
 		initClockSkewCheck(); await vi.advanceTimersByTimeAsync(10_000);
-		expect(fetch).toHaveBeenCalledTimes(3); expect(alert).not.toHaveBeenCalled();
+		expect(fetch).toHaveBeenCalledTimes(3); expect((await import('@/utility/check-clock-skew.js')).clockSkewWarningVisible.value).toBe(false);
+		expect(alert).not.toHaveBeenCalled();
 		expect(vi.getTimerCount()).toBe(0);
 	});
 	it('silently finishes when Date is missing or the network fails', async () => {
 		const fetch = vi.spyOn(window, 'fetch').mockRejectedValueOnce(new Error('offline')).mockImplementation(async () => new Response('{"pong":0}'));
 		const { initClockSkewCheck } = await import('@/utility/check-clock-skew.js');
 		initClockSkewCheck(); await vi.advanceTimersByTimeAsync(1_000);
-		expect(fetch).toHaveBeenCalledTimes(3); expect(alert).not.toHaveBeenCalled();
+		expect(fetch).toHaveBeenCalledTimes(3); expect((await import('@/utility/check-clock-skew.js')).clockSkewWarningVisible.value).toBe(false);
+		expect(alert).not.toHaveBeenCalled();
 		expect(vi.getTimerCount()).toBe(0);
+	});
+});
+
+describe('banner dismissal', () => {
+	it('hides the warning and preserves dismissal across reloads without fallback requests', async () => {
+		const module = await import('@/utility/check-clock-skew.js');
+		module.clockSkewWarningVisible.value = true;
+		module.dismissClockSkewWarning();
+		expect(module.clockSkewWarningVisible.value).toBe(false);
+		vi.resetModules();
+		const reloaded = await import('@/utility/check-clock-skew.js');
+		const fetch = vi.spyOn(window, 'fetch');
+		reloaded.initClockSkewCheck();
+		for (let i = 0; i < 3; i++) await reloaded.observeClockSkew(new Headers({ Date: new Date(start + 30_000).toUTCString() }), measure(0));
+		await vi.advanceTimersByTimeAsync(10_000);
+		expect(reloaded.clockSkewWarningVisible.value).toBe(false);
+		expect(fetch).not.toHaveBeenCalled();
+	});
+	it.each(['0', 'true', 'invalid'])('ignores invalid stored dismissal %s', async value => {
+		sessionStorage.setItem('clockSkewWarningDismissed', value);
+		const module = await import('@/utility/check-clock-skew.js'); module.initClockSkewCheck();
+		for (let i = 0; i < 2; i++) await module.observeClockSkew(new Headers({ Date: new Date(start + 30_000).toUTCString() }), measure(0));
+		expect(module.clockSkewWarningVisible.value).toBe(true);
+	});
+	it('keeps dismissal effective when session storage cannot be written', async () => {
+		const module = await import('@/utility/check-clock-skew.js'); module.initClockSkewCheck();
+		module.clockSkewWarningVisible.value = true;
+		vi.spyOn(sessionStorage, 'setItem').mockImplementation(() => { throw new Error('blocked'); });
+		expect(() => module.dismissClockSkewWarning()).not.toThrow();
+		await module.observeClockSkew(new Headers({ Date: new Date(start + 30_000).toUTCString() }), measure(0));
+		expect(module.clockSkewWarningVisible.value).toBe(false);
+	});
+	it('checks the clock when session storage cannot be read', async () => {
+		vi.spyOn(sessionStorage, 'getItem').mockImplementation(() => { throw new Error('blocked'); });
+		const module = await import('@/utility/check-clock-skew.js'); module.initClockSkewCheck();
+		for (let i = 0; i < 2; i++) await module.observeClockSkew(new Headers({ Date: new Date(start + 30_000).toUTCString() }), measure(0));
+		expect(module.clockSkewWarningVisible.value).toBe(true);
 	});
 });

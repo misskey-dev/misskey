@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ref } from 'vue';
+
 const CLOCK_SKEW_THRESHOLD = 20_000;
 const MAX_ROUND_TRIP_TIME = 2_000;
 const MAX_CLOCK_CHANGE = 1_000;
@@ -32,6 +34,18 @@ export function getClockSkewDirection(measurement: ClockSkewMeasurement): -1 | 0
 	return offset > 0 ? 1 : -1;
 }
 
+const DISMISSAL_KEY = 'clockSkewWarningDismissed';
+export const clockSkewWarningVisible = ref(false);
+
+export function dismissClockSkewWarning(): void {
+	clockSkewWarningVisible.value = false;
+	finished = true;
+	pendingDirections.length = 0;
+	try {
+		sessionStorage.setItem(DISMISSAL_KEY, '1');
+	} catch { /* Keep the warning hidden for this page even if storage is unavailable. */ }
+}
+
 let enabled = false;
 let finished = false;
 let samples = 0;
@@ -43,6 +57,13 @@ const pendingDirections: (-1 | 0 | 1)[] = [];
 export function initClockSkewCheck(): void {
 	if (enabled) return;
 	enabled = true;
+	try {
+		if (sessionStorage.getItem(DISMISSAL_KEY) === '1') {
+			finished = true;
+			pendingDirections.length = 0;
+			return;
+		}
+	} catch { /* Storage restrictions must not prevent the clock check. */ }
 	for (const direction of pendingDirections.splice(0)) void acceptMeasurement(direction);
 	// Give requests already in flight a chance to provide the required samples.
 	window.setTimeout(() => { void completeStartupMeasurements(); }, 1_000);
@@ -73,13 +94,7 @@ async function acceptMeasurement(direction: -1 | 0 | 1): Promise<void> {
 		return;
 	}
 	finished = true;
-	try {
-		// Lazy imports keep the shared API wrapper independent of UI initialization.
-		const [{ alert }, { i18n }] = await Promise.all([import('@/os.js'), import('@/i18n.js')]);
-		await alert({ type: 'warning', title: i18n.ts._clockSkewWarning.title, text: i18n.ts._clockSkewWarning.description });
-	} catch {
-		// Warning failures must not affect API calls or become unhandled rejections.
-	}
+	clockSkewWarningVisible.value = true;
 }
 
 /** Falls back to existing ping calls only when normal API traffic supplies too few samples. */

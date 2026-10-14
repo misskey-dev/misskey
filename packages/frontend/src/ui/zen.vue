@@ -6,6 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<div :class="$style.contents">
+		<XClockSkewWarning/>
 		<!--
 			デッキUIが設定されている場合はデッキUIに戻れるようにする (ただし?zenが明示された場合は表示しない)
 			See https://github.com/misskey-dev/misskey/issues/10905
@@ -22,6 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import XClockSkewWarning from './_common_/ClockSkewWarning.vue';
 import { computed, provide, ref } from 'vue';
 import { instanceName, ui } from '@@/js/config.js';
 import XCommon from './_common_/common.vue';
