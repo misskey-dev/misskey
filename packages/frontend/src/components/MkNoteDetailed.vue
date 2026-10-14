@@ -184,17 +184,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</button>
 			</footer>
 		</article>
-		<div :class="$style.tabs">
-			<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' }]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
-			<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
-			<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
+		<div :class="$style.tabsWrapper">
+			<div :class="$style.tabs">
+				<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'replies' }]" @click="tab = 'replies'"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts.replies }}</button>
+				<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'renotes' }]" @click="tab = 'renotes'"><i class="ti ti-repeat"></i> {{ i18n.ts.renotes }}</button>
+				<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'quotes' }]" @click="tab = 'quotes'"><i class="ti ti-quote"></i> {{ i18n.ts.quotes }}</button>
+				<button class="_button" :class="[$style.tab, { [$style.tabActive]: tab === 'reactions' }]" @click="tab = 'reactions'"><i class="ti ti-icons"></i> {{ i18n.ts.reactions }}</button>
+			</div>
 		</div>
 		<div>
 			<div v-if="tab === 'replies'">
-				<div v-if="!repliesLoaded" style="padding: 16px">
-					<MkButton style="margin: 0 auto;" primary rounded @click="loadReplies">{{ i18n.ts.loadReplies }}</MkButton>
+				<div v-if="!showReplies" style="padding: 16px">
+					<MkButton style="margin: 0 auto;" primary rounded @click="showReplies = true">{{ i18n.ts.loadReplies }}</MkButton>
 				</div>
-				<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true"/>
+				<MkPagination v-else :paginator="repliesPaginator" :forceDisableInfiniteScroll="true">
+					<template #default="{ items }">
+						<MkNoteSub v-for="item, index in items" :key="item.id" :note="item" :class="{ [$style.replyBorder]: (index > 0) }" :detail="true"/>
+					</template>
+				</MkPagination>
 			</div>
 			<div v-else-if="tab === 'renotes'" :class="$style.tab_renotes">
 				<MkPagination :paginator="renotesPaginator" :forceDisableInfiniteScroll="true">
@@ -204,6 +211,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkUserCardMini :user="item.user" :withChart="false"/>
 							</MkA>
 						</div>
+					</template>
+				</MkPagination>
+			</div>
+			<div v-else-if="tab === 'quotes'" >
+				<div v-if="!showQuotes" style="padding: 16px">
+					<MkButton style="margin: 0 auto;" primary rounded @click="showQuotes = true">{{ i18n.ts.loadQuotes }}</MkButton>
+				</div>
+				<MkPagination v-else :paginator="quotesPaginator" :forceDisableInfiniteScroll="true">
+					<template #default="{ items }">
+						<MkNoteSub v-for="note in items" :key="note.id" :note="note" :class="$style.quote" :detail="true"/>
 					</template>
 				</MkPagination>
 			</div>
@@ -269,7 +286,7 @@ import MkButton from '@/components/MkButton.vue';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
-	initialTab?: 'replies' | 'renotes' | 'reactions';
+	initialTab?: 'replies' | 'quotes' | 'renotes' | 'reactions';
 }>(), {
 	initialTab: 'replies',
 });
@@ -333,7 +350,23 @@ provide(DI.mfmEmojiReactCallback, reactViaMfmEmoji);
 const tab = ref(props.initialTab);
 const reactionTabType = ref<string | null>(null);
 
+const showReplies = ref(false);
+const repliesPaginator = markRaw(new Paginator('notes/replies', {
+	limit: 10,
+	params: {
+		noteId: appearNote.id,
+	},
+}));
+
 const renotesPaginator = markRaw(new Paginator('notes/renotes', {
+	limit: 10,
+	params: {
+		noteId: appearNote.id,
+	},
+}));
+
+const showQuotes = ref(false);
+const quotesPaginator = markRaw(new Paginator('notes/quotes', {
 	limit: 10,
 	params: {
 		noteId: appearNote.id,
@@ -347,19 +380,6 @@ const reactionsPaginator = markRaw(new Paginator('notes/reactions', {
 		type: reactionTabType.value,
 	})),
 }));
-
-const replies = ref<Misskey.entities.Note[]>([]);
-const repliesLoaded = ref(false);
-
-function loadReplies() {
-	repliesLoaded.value = true;
-	misskeyApi('notes/children', {
-		noteId: appearNote.id,
-		limit: 30,
-	}).then(res => {
-		replies.value = res;
-	});
-}
 
 const conversation = ref<Misskey.entities.Note[]>([]);
 const conversationLoaded = ref(false);
@@ -637,21 +657,34 @@ const keymap = {
 	}
 }
 
-.reply:not(:first-child) {
+.replyBorder {
 	border-top: solid 0.5px var(--MI_THEME-divider);
+}
+
+.tabsWrapper {
+	overflow-x: auto;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
 }
 
 .tabs {
 	border-top: solid 0.5px var(--MI_THEME-divider);
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
-	display: flex;
+	min-width: max-content;
+	display: grid;
+	grid-auto-flow: column;
+	grid-template-columns: repeat(4, 1fr);
 }
 
 .tab {
-	flex: 1;
+	display: block;
 	padding: 12px 8px;
 	border-top: solid 2px transparent;
 	border-bottom: solid 2px transparent;
+	white-space: nowrap;
 }
 
 .tabActive {
