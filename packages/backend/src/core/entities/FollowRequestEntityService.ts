@@ -10,7 +10,7 @@ import type { } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiFollowRequest } from '@/models/FollowRequest.js';
 import { bindThis } from '@/decorators.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -28,8 +28,8 @@ export class FollowRequestEntityService {
 		src: MiFollowRequest['id'] | MiFollowRequest,
 		me?: { id: MiUser['id'] } | null | undefined,
 		hint?: {
-			packedFollower?: Packed<'UserLite'>,
-			packedFollowee?: Packed<'UserLite'>,
+			packedFollower?: PackedUserLite,
+			packedFollowee?: PackedUserLite,
 		},
 	) {
 		const request = typeof src === 'object' ? src : await this.followRequestsRepository.findOneByOrFail({ id: src });

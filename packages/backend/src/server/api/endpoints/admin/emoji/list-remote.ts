@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { EmojisRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
@@ -11,6 +13,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import { packedEmojiDetailedSchema } from '@/models/schema/emoji.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -19,34 +22,15 @@ export const meta = {
 	requiredRolePolicy: 'canManageCustomEmojis',
 	kind: 'read:admin:emoji',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			ref: 'EmojiDetailed',
-		},
-	},
+	res: v.array(packedEmojiDetailedSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		query: { type: 'string', nullable: true, default: null },
-		host: {
-			type: 'string',
-			nullable: true,
-			default: null,
-			description: 'Use `null` to represent the local host.',
-		},
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	query: v.optional(v.nullable(v.string()), null),
+	host: v.optional(v.pipe(v.nullable(v.string()), v.description('Use `null` to represent the local host.')), null),
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

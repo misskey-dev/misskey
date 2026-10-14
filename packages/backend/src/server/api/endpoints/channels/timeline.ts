@@ -4,6 +4,9 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { Brackets } from 'typeorm';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { ChannelsRepository, MiMeta, NotesRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
@@ -14,23 +17,15 @@ import { IdService } from '@/core/IdService.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { packedNoteSchema } from '@/models/schema/note.js';
 import { ApiError } from '../../error.js';
-import { Brackets } from 'typeorm';
 
 export const meta = {
 	tags: ['notes', 'channels'],
 
 	requireCredential: false,
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Note',
-		},
-	},
+	res: v.array(packedNoteSchema),
 
 	errors: {
 		noSuchChannel: {
@@ -41,19 +36,12 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		channelId: { type: 'string', format: 'misskey:id' },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		allowPartial: { type: 'boolean', default: false }, // true is recommended but for compatibility false by default
-	},
-	required: ['channelId'],
-} as const;
+export const paramDef = v.object({
+	channelId: mi.misskeyId(),
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+	allowPartial: v.optional(v.boolean(), false), // true is recommended but for compatibility false by default
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -5,6 +5,8 @@
 
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { WebhookTestService } from '@/core/WebhookTestService.js';
 import { ApiError } from '@/server/api/error.js';
@@ -32,27 +34,14 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		webhookId: {
-			type: 'string',
-			format: 'misskey:id',
-		},
-		type: {
-			type: 'string',
-			enum: systemWebhookEventTypes,
-		},
-		override: {
-			type: 'object',
-			properties: {
-				url: { type: 'string', nullable: false },
-				secret: { type: 'string', nullable: false },
-			},
-		},
-	},
-	required: ['webhookId', 'type'],
-} as const;
+export const paramDef = v.object({
+	webhookId: mi.misskeyId(),
+	type: v.picklist([...systemWebhookEventTypes]),
+	override: v.optional(v.object({
+		url: v.optional(v.string()),
+		secret: v.optional(v.string()),
+	})),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

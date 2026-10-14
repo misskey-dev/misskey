@@ -5,6 +5,8 @@
 
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
@@ -15,54 +17,17 @@ export const meta = {
 
 	requireCredential: false,
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			properties: {
-				id: {
-					type: 'string',
-					optional: false, nullable: false,
-					format: 'id',
-					example: 'xxxxxxxxxx',
-				},
-				name: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-				description: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-				url: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-				roleIdsThatCanBeUsedThisDecoration: {
-					type: 'array',
-					optional: false, nullable: false,
-					items: {
-						type: 'string',
-						optional: false, nullable: false,
-						format: 'id',
-					},
-				},
-				category: {
-					type: 'string',
-					optional: true, nullable: true,
-				},
-			},
-		},
-	},
+	res: v.array(v.object({
+		id: mi.example(mi.idString(), 'xxxxxxxxxx'),
+		name: v.string(),
+		description: v.string(),
+		url: v.string(),
+		roleIdsThatCanBeUsedThisDecoration: v.array(mi.idString()),
+		category: v.nullish(v.string()),
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -4,7 +4,7 @@
  */
 
 import { MiNote } from '@/models/Note.js';
-import { Packed } from '@/misc/json-schema.js';
+import type { PackedNote } from '@/models/schema/note.js';
 
 /**
  * {@link note}が{@link channelIds}のチャンネルに関連するかどうかを判定し、関連する場合はtrueを返します。
@@ -14,7 +14,7 @@ import { Packed } from '@/misc/json-schema.js';
  * @param channelIds 確認対象のチャンネルID一覧
  * @param ignoreAuthor trueの場合、ノートの所属チャンネルが{@link channelIds}に含まれていても無視します（デフォルトはfalse）
  */
-export function isChannelRelated(note: MiNote | Packed<'Note'>, channelIds: Set<string>, ignoreAuthor = false): boolean {
+export function isChannelRelated(note: MiNote | PackedNote, channelIds: Set<string>, ignoreAuthor = false): boolean {
 	// ノートの所属チャンネルが確認対象のチャンネルID一覧に含まれている場合
 	if (!ignoreAuthor && note.channelId && channelIds.has(note.channelId)) {
 		return true;

@@ -15,7 +15,7 @@ import type {
 	MiNote,
 	NotesRepository,
 } from '@/models/_.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedChannel } from '@/models/schema/channel.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiChannel } from '@/models/Channel.js';
 import { bindThis } from '@/decorators.js';
@@ -56,7 +56,7 @@ export class ChannelEntityService {
 			muting?: Set<MiChannel['id']>;
 			pinnedNotes?: Map<MiNote['id'], MiNote>;
 		},
-	): Promise<Packed<'Channel'>> {
+	): Promise<PackedChannel> {
 		const channel = typeof src === 'object' ? src : await this.channelsRepository.findOneByOrFail({ id: src });
 
 		let bannerFile: MiDriveFile | null = null;
@@ -138,7 +138,7 @@ export class ChannelEntityService {
 		src: MiChannel['id'][] | MiChannel[],
 		me?: { id: MiUser['id'] } | null | undefined,
 		detailed?: boolean,
-	): Promise<Packed<'Channel'>[]> {
+	): Promise<PackedChannel[]> {
 		// IDのみの要素がある場合、DBからオブジェクトを取得して補う
 		const channels = src.filter(it => typeof it === 'object') as MiChannel[];
 		channels.push(

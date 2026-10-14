@@ -4,40 +4,28 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedUserDetailedNotMeSchema } from '@/models/schema/user.js';
 
 export const meta = {
 	tags: ['federation'],
 
 	requireCredential: false,
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'UserDetailedNotMe',
-		},
-	},
+	res: v.array(packedUserDetailedNotMeSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		host: { type: 'string' },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-	},
-	required: ['host'],
-} as const;
+export const paramDef = v.object({
+	host: v.string(),
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

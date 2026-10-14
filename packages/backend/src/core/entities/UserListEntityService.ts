@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedUserList } from '@/models/schema/user-list.js';
 import type { } from '@/models/Blocking.js';
 import type { MiUserList } from '@/models/UserList.js';
 import { bindThis } from '@/decorators.js';
@@ -30,7 +30,7 @@ export class UserListEntityService {
 	@bindThis
 	public async pack(
 		src: MiUserList['id'] | MiUserList,
-	): Promise<Packed<'UserList'>> {
+	): Promise<PackedUserList> {
 		const userList = typeof src === 'object' ? src : await this.userListsRepository.findOneByOrFail({ id: src });
 
 		const users = await this.userListMembershipsRepository.findBy({

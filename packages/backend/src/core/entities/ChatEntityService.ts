@@ -7,7 +7,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { MiUser, ChatMessagesRepository, MiChatMessage, ChatRoomsRepository, MiChatRoom, MiChatRoomInvitation, ChatRoomInvitationsRepository, MiChatRoomMembership, ChatRoomMembershipsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedChatMessage, PackedChatMessageLiteFor1on1, PackedChatMessageLiteForRoom } from '@/models/schema/chat-message.js';
+import type { PackedChatRoomInvitation } from '@/models/schema/chat-room-invitation.js';
+import type { PackedChatRoomMembership } from '@/models/schema/chat-room-membership.js';
+import type { PackedChatRoom } from '@/models/schema/chat-room.js';
+import type { PackedDriveFile } from '@/models/schema/drive-file.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import type { } from '@/models/Blocking.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
@@ -42,12 +47,12 @@ export class ChatEntityService {
 		me?: { id: MiUser['id'] },
 		options?: {
 			_hint_?: {
-				packedFiles?: Map<MiChatMessage['fileId'], Packed<'DriveFile'> | null>;
-				packedUsers?: Map<MiChatMessage['id'], Packed<'UserLite'>>;
-				packedRooms?: Map<MiChatMessage['toRoomId'], Packed<'ChatRoom'> | null>;
+				packedFiles?: Map<MiChatMessage['fileId'], PackedDriveFile | null>;
+				packedUsers?: Map<MiChatMessage['id'], PackedUserLite>;
+				packedRooms?: Map<MiChatMessage['toRoomId'], PackedChatRoom | null>;
 			};
 		},
-	): Promise<Packed<'ChatMessage'>> {
+	): Promise<PackedChatMessage> {
 		const packedUsers = options?._hint_?.packedUsers;
 		const packedFiles = options?._hint_?.packedFiles;
 		const packedRooms = options?._hint_?.packedRooms;
@@ -55,7 +60,7 @@ export class ChatEntityService {
 		const message = typeof src === 'object' ? src : await this.chatMessagesRepository.findOneByOrFail({ id: src });
 
 		// userは削除されている可能性があるのでnull許容
-		const reactions: { user: Packed<'UserLite'> | null; reaction: string; }[] = [];
+		const reactions: { user: PackedUserLite | null; reaction: string; }[] = [];
 
 		for (const record of message.reactions) {
 			const [userId, reaction] = record.split('/');
@@ -77,7 +82,7 @@ export class ChatEntityService {
 			toRoom: message.toRoomId ? (packedRooms?.get(message.toRoomId) ?? (await this.packRoom(message.toRoom ?? message.toRoomId, me))) : undefined,
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? (await this.driveFileEntityService.pack(message.file ?? message.fileId))) : null,
-			reactions: reactions.filter((r): r is { user: Packed<'UserLite'>; reaction: string; } => r.user != null),
+			reactions: reactions.filter((r): r is { user: PackedUserLite; reaction: string; } => r.user != null),
 		};
 	}
 
@@ -127,10 +132,10 @@ export class ChatEntityService {
 		src: MiChatMessage['id'] | MiChatMessage,
 		options?: {
 			_hint_?: {
-				packedFiles: Map<MiChatMessage['fileId'], Packed<'DriveFile'> | null>;
+				packedFiles: Map<MiChatMessage['fileId'], PackedDriveFile | null>;
 			};
 		},
-	): Promise<Packed<'ChatMessageLiteFor1on1'>> {
+	): Promise<PackedChatMessageLiteFor1on1> {
 		const packedFiles = options?._hint_?.packedFiles;
 
 		const message = typeof src === 'object' ? src : await this.chatMessagesRepository.findOneByOrFail({ id: src });
@@ -175,18 +180,18 @@ export class ChatEntityService {
 		src: MiChatMessage['id'] | MiChatMessage,
 		options?: {
 			_hint_?: {
-				packedFiles: Map<MiChatMessage['fileId'], Packed<'DriveFile'> | null>;
-				packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
+				packedFiles: Map<MiChatMessage['fileId'], PackedDriveFile | null>;
+				packedUsers: Map<MiUser['id'], PackedUserLite>;
 			};
 		},
-	): Promise<Packed<'ChatMessageLiteForRoom'>> {
+	): Promise<PackedChatMessageLiteForRoom> {
 		const packedFiles = options?._hint_?.packedFiles;
 		const packedUsers = options?._hint_?.packedUsers;
 
 		const message = typeof src === 'object' ? src : await this.chatMessagesRepository.findOneByOrFail({ id: src });
 
 		// userは削除されている可能性があるのでnull許容
-		const reactions: { user: Packed<'UserLite'> | null; reaction: string; }[] = [];
+		const reactions: { user: PackedUserLite | null; reaction: string; }[] = [];
 
 		for (const record of message.reactions) {
 			const [userId, reaction] = record.split('/');
@@ -205,7 +210,7 @@ export class ChatEntityService {
 			toRoomId: message.toRoomId!,
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? (await this.driveFileEntityService.pack(message.file ?? message.fileId))) : null,
-			reactions: reactions.filter((r): r is { user: Packed<'UserLite'>; reaction: string; } => r.user != null),
+			reactions: reactions.filter((r): r is { user: PackedUserLite; reaction: string; } => r.user != null),
 		};
 	}
 
@@ -240,12 +245,12 @@ export class ChatEntityService {
 		me?: { id: MiUser['id'] },
 		options?: {
 			_hint_?: {
-				packedOwners: Map<MiChatRoom['id'], Packed<'UserLite'>>;
+				packedOwners: Map<MiChatRoom['id'], PackedUserLite>;
 				myMemberships?: Map<MiChatRoom['id'], MiChatRoomMembership | null | undefined>;
 				myInvitations?: Map<MiChatRoom['id'], MiChatRoomInvitation | null | undefined>;
 			};
 		},
-	): Promise<Packed<'ChatRoom'>> {
+	): Promise<PackedChatRoom> {
 		const room = typeof src === 'object' ? src : await this.chatRoomsRepository.findOneByOrFail({ id: src });
 
 		const membership = me && me.id !== room.ownerId ? (options?._hint_?.myMemberships?.get(room.id) ?? (await this.chatRoomMembershipsRepository.findOneBy({ roomId: room.id, userId: me.id }))) : null;
@@ -310,11 +315,11 @@ export class ChatEntityService {
 		me: { id: MiUser['id'] },
 		options?: {
 			_hint_?: {
-				packedRooms: Map<MiChatRoomInvitation['roomId'], Packed<'ChatRoom'>>;
-				packedUsers: Map<MiChatRoomInvitation['id'], Packed<'UserLite'>>;
+				packedRooms: Map<MiChatRoomInvitation['roomId'], PackedChatRoom>;
+				packedUsers: Map<MiChatRoomInvitation['id'], PackedUserLite>;
 			};
 		},
-	): Promise<Packed<'ChatRoomInvitation'>> {
+	): Promise<PackedChatRoomInvitation> {
 		const invitation = typeof src === 'object' ? src : await this.chatRoomInvitationsRepository.findOneByOrFail({ id: src });
 
 		return {
@@ -345,11 +350,11 @@ export class ChatEntityService {
 			populateUser?: boolean;
 			populateRoom?: boolean;
 			_hint_?: {
-				packedRooms: Map<MiChatRoomMembership['roomId'], Packed<'ChatRoom'>>;
-				packedUsers: Map<MiChatRoomMembership['id'], Packed<'UserLite'>>;
+				packedRooms: Map<MiChatRoomMembership['roomId'], PackedChatRoom>;
+				packedUsers: Map<MiChatRoomMembership['id'], PackedUserLite>;
 			};
 		},
-	): Promise<Packed<'ChatRoomMembership'>> {
+	): Promise<PackedChatRoomMembership> {
 		const membership = typeof src === 'object' ? src : await this.chatRoomMembershipsRepository.findOneByOrFail({ id: src });
 
 		return {

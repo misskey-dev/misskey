@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import type { SwSubscriptionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -16,33 +17,16 @@ export const meta = {
 
 	description: 'Check push notification registration exists.',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: true,
-		properties: {
-			userId: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			endpoint: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			sendReadMessage: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-		},
-	},
+	res: v.nullable(v.object({
+		userId: v.string(),
+		endpoint: v.string(),
+		sendReadMessage: v.boolean(),
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		endpoint: { type: 'string' },
-	},
-	required: ['endpoint'],
-} as const;
+export const paramDef = v.object({
+	endpoint: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -5,12 +5,15 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { ChatService } from '@/core/ChatService.js';
 import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
 import { IdService } from '@/core/IdService.js';
+import { packedChatRoomInvitationSchema } from '@/models/schema/chat-room-invitation.js';
 
 export const meta = {
 	tags: ['chat'],
@@ -19,15 +22,7 @@ export const meta = {
 
 	kind: 'read:chat',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'ChatRoomInvitation',
-		},
-	},
+	res: v.array(packedChatRoomInvitationSchema),
 
 	errors: {
 		noSuchRoom: {
@@ -38,18 +33,11 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		roomId: { type: 'string', format: 'misskey:id' },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-	},
-	required: ['roomId'],
-} as const;
+export const paramDef = v.object({
+	roomId: mi.misskeyId(),
+	...mi.paginationEntries({ max: 100, default: 30 }),
+	...mi.paginationDateEntries(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

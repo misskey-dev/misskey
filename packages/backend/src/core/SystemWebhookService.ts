@@ -15,7 +15,7 @@ import { QueueService } from '@/core/QueueService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
-import { Packed } from '@/misc/json-schema.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import { AbuseReportResolveType } from '@/models/AbuseUserReport.js';
 import { ModeratorInactivityRemainingTime } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
@@ -23,13 +23,13 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 export type AbuseReportPayload = {
 	id: string;
 	targetUserId: string;
-	targetUser: Packed<'UserLite'> | null;
+	targetUser: PackedUserLite | null;
 	targetUserHost: string | null;
 	reporterId: string;
-	reporter: Packed<'UserLite'> | null;
+	reporter: PackedUserLite | null;
 	reporterHost: string | null;
 	assigneeId: string | null;
-	assignee: Packed<'UserLite'> | null;
+	assignee: PackedUserLite | null;
 	resolved: boolean;
 	forwarded: boolean;
 	comment: string;
@@ -43,7 +43,7 @@ export type InactiveModeratorsWarningPayload = {
 
 export type SystemWebhookPayload<T extends SystemWebhookEventType> =
 	T extends 'abuseReport' | 'abuseReportResolved' ? AbuseReportPayload :
-	T extends 'userCreated' ? Packed<'UserLite'> :
+	T extends 'userCreated' ? PackedUserLite :
 	T extends 'inactiveModeratorsWarning' ? InactiveModeratorsWarningPayload :
 	T extends 'inactiveModeratorsInvitationOnlyChanged' ? Record<string, never> :
 		never;

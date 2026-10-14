@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { HashtagsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -14,25 +16,14 @@ export const meta = {
 
 	requireCredential: false,
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'string',
-			optional: false, nullable: false,
-		},
-	},
+	res: v.array(v.string()),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		query: { type: 'string' },
-		offset: { type: 'integer', default: 0 },
-	},
-	required: ['query'],
-} as const;
+export const paramDef = v.object({
+	limit: mi.limit({ max: 100, def: 10 }),
+	query: v.string(),
+	offset: v.optional(mi.integer(), 0),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

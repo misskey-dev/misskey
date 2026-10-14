@@ -7,7 +7,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { EntityNotFoundError } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedDriveFile } from '@/models/schema/drive-file.js';
+import type { PackedNoteDraft } from '@/models/schema/note-draft.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiUser, MiNote, MiNoteDraft } from '@/models/_.js';
 import type { NoteDraftsRepository, ChannelsRepository } from '@/models/_.js';
@@ -46,7 +48,7 @@ export class NoteDraftEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async packAttachedFiles(fileIds: MiNote['fileIds'], packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>): Promise<Packed<'DriveFile'>[]> {
+	public async packAttachedFiles(fileIds: MiNote['fileIds'], packedFiles: Map<MiNote['fileIds'][number], PackedDriveFile | null>): Promise<PackedDriveFile[]> {
 		const missingIds = [];
 		for (const id of fileIds) {
 			if (!packedFiles.has(id)) missingIds.push(id);
@@ -69,11 +71,11 @@ export class NoteDraftEntityService implements OnModuleInit {
 			skipHide?: boolean;
 			withReactionAndUserPairCache?: boolean;
 			_hint_?: {
-				packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>;
-				packedUsers: Map<MiUser['id'], Packed<'UserLite'>>
+				packedFiles: Map<MiNote['fileIds'][number], PackedDriveFile | null>;
+				packedUsers: Map<MiUser['id'], PackedUserLite>
 			};
 		},
-	): Promise<Packed<'NoteDraft'>> {
+	): Promise<PackedNoteDraft> {
 		const opts = Object.assign({
 			detail: true,
 		}, options);
@@ -102,7 +104,7 @@ export class NoteDraftEntityService implements OnModuleInit {
 			}
 		}
 
-		const packed: Packed<'NoteDraft'> = await awaitAll({
+		const packed: PackedNoteDraft = await awaitAll({
 			id: noteDraft.id,
 			createdAt: this.idService.parse(noteDraft.id).date.toISOString(),
 			scheduledAt: noteDraft.scheduledAt?.getTime() ?? null,

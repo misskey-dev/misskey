@@ -4,11 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { packedDriveFileSchema } from '@/models/schema/drive-file.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -17,37 +20,18 @@ export const meta = {
 	requireModerator: true,
 	kind: 'read:admin:drive',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'DriveFile',
-		},
-	},
+	res: v.array(packedDriveFileSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		userId: { type: 'string', format: 'misskey:id', nullable: true },
-		type: { type: 'string', nullable: true, pattern: /^[a-zA-Z0-9\/\-*]+$/.toString().slice(1, -1) },
-		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'local' },
-		hostname: {
-			type: 'string',
-			nullable: true,
-			default: null,
-			description: 'The local host is represented with `null`.',
-		},
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+	userId: v.nullish(mi.misskeyId()),
+	// `\/` のエスケープは検証上冗長だが、pattern 文字列 (regex.source) を legacy と一致させるため維持
+	type: v.nullish(v.pipe(v.string(), v.regex(/^[a-zA-Z0-9\/\-*]+$/))),
+	origin: v.optional(v.picklist(['combined', 'local', 'remote']), 'local'),
+	hostname: v.optional(v.pipe(v.nullable(v.string()), v.description('The local host is represented with `null`.')), null),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

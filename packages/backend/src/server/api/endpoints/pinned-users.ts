@@ -5,34 +5,24 @@
 
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import type { MiMeta, UsersRepository } from '@/models/_.js';
 import * as Acct from '@/misc/acct.js';
 import type { MiUser } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedUserDetailedSchema } from '@/models/schema/user.js';
 
 export const meta = {
 	tags: ['users'],
 
 	requireCredential: false,
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'UserDetailed',
-		},
-	},
+	res: v.array(packedUserDetailedSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -6,6 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import * as Redis from 'ioredis';
+import * as v from 'valibot';
 import { LoggerService } from '@/core/LoggerService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -25,11 +26,7 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

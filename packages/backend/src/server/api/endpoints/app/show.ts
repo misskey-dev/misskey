@@ -4,10 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AppsRepository } from '@/models/_.js';
 import { AppEntityService } from '@/core/entities/AppEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedAppSchema } from '@/models/schema/app.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -21,20 +24,12 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'App',
-	},
+	res: packedAppSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		appId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['appId'],
-} as const;
+export const paramDef = v.object({
+	appId: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

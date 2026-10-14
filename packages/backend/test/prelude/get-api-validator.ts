@@ -3,14 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import Ajv from 'ajv';
-import { Schema } from '@/misc/json-schema.js';
+import * as v from 'valibot';
+import type { AnyValibotSchema } from '@/misc/schema/introspect.js';
 
-export const getValidator = (paramDef: Schema) => {
-	const ajv = new Ajv.default({
-		useDefaults: true,
-	});
-	ajv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);
-
-	return ajv.compile(paramDef);
-};
+/**
+ * paramDef を「入力が妥当か」を boolean で返す関数に変換する。
+ */
+export const getValidator = (paramDef: AnyValibotSchema): ((params: unknown) => boolean) =>
+	(params: unknown) => v.safeParse(paramDef, params).success;

@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AccessTokensRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
@@ -18,31 +20,18 @@ export const meta = {
 
 	secure: true,
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			token: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-		},
-	},
+	res: v.object({
+		token: v.string(),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		session: { type: 'string', nullable: true },
-		name: { type: 'string', nullable: true },
-		description: { type: 'string', nullable: true },
-		iconUrl: { type: 'string', nullable: true },
-		permission: { type: 'array', uniqueItems: true, items: {
-			type: 'string',
-		} },
-	},
-	required: ['session', 'permission'],
-} as const;
+export const paramDef = v.object({
+	session: v.nullable(v.string()),
+	name: v.optional(v.nullable(v.string())),
+	description: v.optional(v.nullable(v.string())),
+	iconUrl: v.optional(v.nullable(v.string())),
+	permission: v.pipe(v.array(v.string()), mi.uniqueArray()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

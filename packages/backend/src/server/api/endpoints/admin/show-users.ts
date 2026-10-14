@@ -4,12 +4,15 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { RoleService } from '@/core/RoleService.js';
+import { packedUserDetailedSchema } from '@/models/schema/user.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -18,35 +21,18 @@ export const meta = {
 	requireModerator: true,
 	kind: 'read:admin:show-user',
 
-	res: {
-		type: 'array',
-		nullable: false, optional: false,
-		items: {
-			type: 'object',
-			nullable: false, optional: false,
-			ref: 'UserDetailed',
-		},
-	},
+	res: v.array(packedUserDetailedSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		offset: { type: 'integer', default: 0 },
-		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt', '+lastActiveDate', '-lastActiveDate'] },
-		state: { type: 'string', enum: ['all', 'alive', 'available', 'admin', 'moderator', 'adminOrModerator', 'suspended'], default: 'all' },
-		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
-		username: { type: 'string', nullable: true, default: null },
-		hostname: {
-			type: 'string',
-			nullable: true,
-			default: null,
-			description: 'The local host is represented with `null`.',
-		},
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	limit: mi.limit({ max: 100, def: 10 }),
+	offset: v.optional(mi.integer(), 0),
+	sort: v.optional(v.picklist(['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt', '+lastActiveDate', '-lastActiveDate'])),
+	state: v.optional(v.picklist(['all', 'alive', 'available', 'admin', 'moderator', 'adminOrModerator', 'suspended']), 'all'),
+	origin: v.optional(v.picklist(['combined', 'local', 'remote']), 'combined'),
+	username: v.optional(v.nullable(v.string()), null),
+	hostname: v.optional(v.pipe(v.nullable(v.string()), v.description('The local host is represented with `null`.')), null),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -4,10 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedDriveFileSchema } from '@/models/schema/drive-file.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -18,24 +20,12 @@ export const meta = {
 
 	description: 'Search for a drive file by a hash of the contents.',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'DriveFile',
-		},
-	},
+	res: v.array(packedDriveFileSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		md5: { type: 'string' },
-	},
-	required: ['md5'],
-} as const;
+export const paramDef = v.object({
+	md5: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

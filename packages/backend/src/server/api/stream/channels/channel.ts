@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable, Scope } from '@nestjs/common';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedNote } from '@/models/schema/note.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteStreamingHidingService } from '../NoteStreamingHidingService.js';
 import { bindThis } from '@/decorators.js';
@@ -43,7 +43,7 @@ export class ChannelChannel extends Channel {
 	}
 
 	@bindThis
-	private async onNote(note: Packed<'Note'>) {
+	private async onNote(note: PackedNote) {
 		if (note.channelId !== this.channelId) return;
 
 		if (note.user.requireSigninToViewContents && this.user == null) return;
@@ -73,7 +73,7 @@ export class ChannelChannel extends Channel {
 	/*
 	 * ミュートとブロックされてるを処理する
 	 */
-	protected override isNoteMutedOrBlocked(note: Packed<'Note'>): boolean {
+	protected override isNoteMutedOrBlocked(note: PackedNote): boolean {
 		// 流れてきたNoteがインスタンスミュートしたインスタンスが関わる
 		if (isInstanceMuted(note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return true;
 

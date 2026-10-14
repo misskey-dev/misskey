@@ -5,10 +5,13 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFoldersRepository } from '@/models/_.js';
 import { DriveFolderEntityService } from '@/core/entities/DriveFolderEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedDriveFolderSchema } from '@/models/schema/drive-folder.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -17,25 +20,13 @@ export const meta = {
 
 	kind: 'read:drive',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'DriveFolder',
-		},
-	},
+	res: v.array(packedDriveFolderSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string' },
-		parentId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
-	},
-	required: ['name'],
-} as const;
+export const paramDef = v.object({
+	name: v.string(),
+	parentId: v.optional(v.nullable(mi.misskeyId()), null),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

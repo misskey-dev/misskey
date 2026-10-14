@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository, MiRole, RolesRepository } from '@/models/_.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedEmojiDetailed, PackedEmojiDetailedAdmin, PackedEmojiSimple } from '@/models/schema/emoji.js';
 import type { MiEmoji } from '@/models/Emoji.js';
 import { bindThis } from '@/decorators.js';
 
@@ -24,7 +24,7 @@ export class EmojiEntityService {
 	@bindThis
 	public async packSimple(
 		src: MiEmoji['id'] | MiEmoji,
-	): Promise<Packed<'EmojiSimple'>> {
+	): Promise<PackedEmojiSimple> {
 		const emoji = typeof src === 'object' ? src : await this.emojisRepository.findOneByOrFail({ id: src });
 
 		return {
@@ -49,7 +49,7 @@ export class EmojiEntityService {
 	@bindThis
 	public async packDetailed(
 		src: MiEmoji['id'] | MiEmoji,
-	): Promise<Packed<'EmojiDetailed'>> {
+	): Promise<PackedEmojiDetailed> {
 		const emoji = typeof src === 'object' ? src : await this.emojisRepository.findOneByOrFail({ id: src });
 
 		return {
@@ -70,7 +70,7 @@ export class EmojiEntityService {
 	@bindThis
 	public packDetailedMany(
 		emojis: (MiEmoji['id'] | MiEmoji)[],
-	): Promise<Packed<'EmojiDetailed'>[]> {
+	): Promise<PackedEmojiDetailed[]> {
 		return Promise.all(emojis.map(x => this.packDetailed(x)));
 	}
 
@@ -80,7 +80,7 @@ export class EmojiEntityService {
 		hint?: {
 			roles?: Map<MiRole['id'], MiRole>
 		},
-	): Promise<Packed<'EmojiDetailedAdmin'>> {
+	): Promise<PackedEmojiDetailedAdmin> {
 		const emoji = typeof src === 'object' ? src : await this.emojisRepository.findOneByOrFail({ id: src });
 
 		const roles = Array.of<MiRole>();
@@ -131,7 +131,7 @@ export class EmojiEntityService {
 		hint?: {
 			roles?: Map<MiRole['id'], MiRole>
 		},
-	): Promise<Packed<'EmojiDetailedAdmin'>[]> {
+	): Promise<PackedEmojiDetailedAdmin[]> {
 		// IDのみの要素をピックアップし、DBからレコードを取り出して他の値を補完する
 		const emojiEntities = emojis.filter(x => typeof x === 'object') as MiEmoji[];
 		const emojiIdOnlyList = emojis.filter(x => typeof x === 'string') as string[];

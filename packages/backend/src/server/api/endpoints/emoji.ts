@@ -5,10 +5,12 @@
 
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import type { EmojisRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedEmojiDetailedSchema } from '@/models/schema/emoji.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -17,22 +19,12 @@ export const meta = {
 	allowGet: true,
 	cacheSec: 3600,
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'EmojiDetailed',
-	},
+	res: packedEmojiDetailedSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: {
-			type: 'string',
-		},
-	},
-	required: ['name'],
-} as const;
+export const paramDef = v.object({
+	name: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

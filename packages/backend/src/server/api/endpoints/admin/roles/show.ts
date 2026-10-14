@@ -4,11 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RolesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
+import { packedRoleSchema } from '@/models/schema/role.js';
 
 export const meta = {
 	tags: ['admin', 'role'],
@@ -25,22 +28,12 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Role',
-	},
+	res: packedRoleSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		roleId: { type: 'string', format: 'misskey:id' },
-	},
-	required: [
-		'roleId',
-	],
-} as const;
+export const paramDef = v.object({
+	roleId: mi.misskeyId(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

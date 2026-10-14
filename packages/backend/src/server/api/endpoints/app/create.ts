@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AppsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
@@ -11,31 +13,22 @@ import { unique } from '@/misc/prelude/array.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { AppEntityService } from '@/core/entities/AppEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedAppSchema } from '@/models/schema/app.js';
 
 export const meta = {
 	tags: ['app'],
 
 	requireCredential: false,
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'App',
-	},
+	res: packedAppSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string' },
-		description: { type: 'string' },
-		permission: { type: 'array', uniqueItems: true, items: {
-			type: 'string',
-		} },
-		callbackUrl: { type: 'string', nullable: true },
-	},
-	required: ['name', 'description', 'permission'],
-} as const;
+export const paramDef = v.object({
+	name: v.string(),
+	description: v.string(),
+	permission: v.pipe(v.array(v.string()), mi.uniqueArray()),
+	callbackUrl: v.optional(v.nullable(v.string())),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

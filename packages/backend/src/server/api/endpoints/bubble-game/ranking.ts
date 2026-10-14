@@ -5,10 +5,13 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { BubbleGameRecordsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { packedUserLiteSchema } from '@/models/schema/user.js';
 
 export const meta = {
 	allowGet: true,
@@ -17,38 +20,16 @@ export const meta = {
 	errors: {
 	},
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			properties: {
-				id: {
-					type: 'string', format: 'misskey:id',
-					optional: false, nullable: false,
-				},
-				score: {
-					type: 'integer',
-					optional: false, nullable: false,
-				},
-				user: {
-					type: 'object',
-					optional: true, nullable: false,
-					ref: 'UserLite',
-				},
-			},
-		},
-	},
+	res: v.array(v.object({
+		id: v.pipe(v.string(), mi.format('misskey:id')),
+		score: mi.integer(),
+		user: v.optional(packedUserLiteSchema),
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		gameMode: { type: 'string' },
-	},
-	required: ['gameMode'],
-} as const;
+export const paramDef = v.object({
+	gameMode: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

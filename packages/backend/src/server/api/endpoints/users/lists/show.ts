@@ -4,11 +4,20 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { UserListsRepository, UserListFavoritesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedUserListSchema } from '@/models/schema/user-list.js';
 import { ApiError } from '../../../error.js';
+
+// legacy の `allOf: [{ ref: 'UserList' }, { likedCount, isLiked }]` の inline パート
+const userListExtraSchema = v.object({
+	likedCount: v.optional(v.number()),
+	isLiked: v.optional(v.boolean()),
+});
 
 export const meta = {
 	tags: ['lists', 'account'],
@@ -19,30 +28,15 @@ export const meta = {
 
 	description: 'Show the properties of a list.',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		allOf: [
-			{
-				type: 'object',
-				ref: 'UserList',
-			},
-			{
-				type: 'object',
-				optional: false, nullable: false,
-				properties: {
-					likedCount: {
-						type: 'number',
-						optional: true, nullable: false,
-					},
-					isLiked: {
-						type: 'boolean',
-						optional: true, nullable: false,
-					},
-				},
-			},
-		],
-	},
+	// NOTE: endpoint の res 側の allOf 合成には mi.composeEntity() (entity 登録が必須) が使えないので、
+	// マージ済み object に allOfParts メタデータだけを直接載せて現行の `allOf` 出力を維持する
+	res: v.pipe(
+		v.object({
+			...packedUserListSchema.entries,
+			...userListExtraSchema.entries,
+		}),
+		mi.schemaMeta({ allOfParts: ['UserList', userListExtraSchema] }),
+	),
 
 	errors: {
 		noSuchList: {
@@ -53,14 +47,10 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		listId: { type: 'string', format: 'misskey:id' },
-		forPublic: { type: 'boolean', default: false },
-	},
-	required: ['listId'],
-} as const;
+export const paramDef = v.object({
+	listId: mi.misskeyId(),
+	forPublic: v.optional(v.boolean(), false),
+});
 
 @Injectable() // eslint-disable-next-line import/no-default-export
 export default class extends Endpoint<typeof meta, typeof paramDef> {

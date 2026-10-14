@@ -7,6 +7,7 @@ import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
 import * as QRCode from 'qrcode';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -27,28 +28,19 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		nullable: false,
-		optional: false,
-		properties: {
-			qr: { type: 'string' },
-			url: { type: 'string' },
-			secret: { type: 'string' },
-			label: { type: 'string' },
-			issuer: { type: 'string' },
-		},
-	},
+	res: v.object({
+		qr: v.string(),
+		url: v.string(),
+		secret: v.string(),
+		label: v.string(),
+		issuer: v.string(),
+	}),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		password: { type: 'string' },
-		token: { type: 'string', nullable: true },
-	},
-	required: ['password'],
-} as const;
+export const paramDef = v.object({
+	password: v.string(),
+	token: v.optional(v.nullable(v.string())),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

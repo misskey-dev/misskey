@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RolesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -26,32 +28,28 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		roleId: { type: 'string', format: 'misskey:id' },
-		name: { type: 'string' },
-		description: { type: 'string' },
-		color: { type: 'string', nullable: true },
-		iconUrl: { type: 'string', nullable: true },
-		target: { type: 'string', enum: ['manual', 'conditional'] },
-		condFormula: { type: 'object' },
-		isPublic: { type: 'boolean' },
-		isModerator: { type: 'boolean' },
-		isAdministrator: { type: 'boolean' },
-		isExplorable: { type: 'boolean' },
-		asBadge: { type: 'boolean' },
-		preserveAssignmentOnMoveAccount: { type: 'boolean' },
-		canEditMembersByModerator: { type: 'boolean' },
-		displayOrder: { type: 'number' },
-		policies: {
-			type: 'object',
-		},
-	},
-	required: [
-		'roleId',
-	],
-} as const;
+export const paramDef = v.object({
+	roleId: mi.misskeyId(),
+	name: v.optional(v.string()),
+	description: v.optional(v.string()),
+	color: v.optional(v.nullable(v.string())),
+	iconUrl: v.optional(v.nullable(v.string())),
+	target: v.optional(v.picklist(['manual', 'conditional'])),
+	// legacy 側も `{ type: 'object' }` (properties 無し) の TS 型は any に潰れていた。
+	// mi.anyObject() (Record<string, any>) にすると RoleService.update() の
+	// Partial<MiRole>.condFormula (RoleCondFormulaValue union) に代入できずコンパイルエラーになるため、
+	// 型は legacy と同じ any のまま api.json 上だけ { type: 'object' } に合わせる (cookbook R1 の例外)
+	condFormula: v.optional(v.pipe(v.any(), mi.openApi({ type: 'object' }))),
+	isPublic: v.optional(v.boolean()),
+	isModerator: v.optional(v.boolean()),
+	isAdministrator: v.optional(v.boolean()),
+	isExplorable: v.optional(v.boolean()),
+	asBadge: v.optional(v.boolean()),
+	preserveAssignmentOnMoveAccount: v.optional(v.boolean()),
+	canEditMembersByModerator: v.optional(v.boolean()),
+	displayOrder: v.optional(v.number()),
+	policies: v.optional(mi.anyObject()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

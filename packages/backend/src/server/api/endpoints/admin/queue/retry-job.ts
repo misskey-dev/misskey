@@ -4,6 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { QUEUE_TYPES, QueueService } from '@/core/QueueService.js';
@@ -16,14 +17,10 @@ export const meta = {
 	kind: 'write:admin:queue',
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		queue: { type: 'string', enum: QUEUE_TYPES },
-		jobId: { type: 'string' },
-	},
-	required: ['queue', 'jobId'],
-} as const;
+export const paramDef = v.object({
+	queue: v.picklist([...QUEUE_TYPES]),
+	jobId: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

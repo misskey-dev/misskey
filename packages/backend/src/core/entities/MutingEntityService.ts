@@ -7,7 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { MutingsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedMuting } from '@/models/schema/muting.js';
+import type { PackedUserDetailedNotMe } from '@/models/schema/user.js';
 import type { } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiMuting } from '@/models/Muting.js';
@@ -31,9 +32,9 @@ export class MutingEntityService {
 		src: MiMuting['id'] | MiMuting,
 		me?: { id: MiUser['id'] } | null | undefined,
 		hints?: {
-			packedMutee?: Packed<'UserDetailedNotMe'>,
+			packedMutee?: PackedUserDetailedNotMe,
 		},
-	): Promise<Packed<'Muting'>> {
+	): Promise<PackedMuting> {
 		const muting = typeof src === 'object' ? src : await this.mutingsRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({
