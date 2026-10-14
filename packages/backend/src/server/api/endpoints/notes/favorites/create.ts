@@ -13,6 +13,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { DI } from '@/di-symbols.js';
 import { AchievementService } from '@/core/AchievementService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -56,6 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 		private getterService: GetterService,
 		private achievementService: AchievementService,
+		private noteEntityService: NoteEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Get favoritee
@@ -63,6 +65,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 				throw err;
 			});
+
+			// check visibility
+			if (!await this.noteEntityService.isVisibleForMe(note, me.id)) {
+				throw new ApiError(meta.errors.noSuchNote);
+			}
 
 			// if already favorited
 			const exist = await this.noteFavoritesRepository.exists({

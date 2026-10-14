@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { Brackets } from 'typeorm';
 import * as v from 'valibot';
 import * as mi from '@/misc/schema/index.js';
 import type { AnnouncementsRepository, AnnouncementReadsRepository } from '@/models/_.js';
@@ -29,6 +30,7 @@ export const meta = {
 		icon: v.picklist(['info', 'warning', 'error', 'success']),
 		display: v.picklist(['normal', 'banner', 'dialog']),
 		isActive: v.boolean(),
+		autoArchiveAt: v.nullable(mi.dateTimeString()),
 		forExistingUsers: v.boolean(),
 		silence: v.boolean(),
 		needConfirmationToRead: v.boolean(),
@@ -58,12 +60,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const now = new Date();
 			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate);
 
 			if (ps.status === 'archived') {
-				query.andWhere('announcement.isActive = false');
+				query.andWhere(new Brackets(qb => {
+					qb.where('announcement.isActive = false');
+					qb.orWhere('announcement.autoArchiveAt <= :now', { now });
+				}));
 			} else if (ps.status === 'active') {
 				query.andWhere('announcement.isActive = true');
+				query.andWhere(new Brackets(qb => {
+					qb.where('announcement.autoArchiveAt IS NULL');
+					qb.orWhere('announcement.autoArchiveAt > :now', { now });
+				}));
 			}
 
 			if (ps.userId) {
@@ -91,7 +101,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				imageUrl: announcement.imageUrl,
 				icon: announcement.icon,
 				display: announcement.display,
-				isActive: announcement.isActive,
+				isActive: announcement.isActive && (announcement.autoArchiveAt == null || announcement.autoArchiveAt > now),
+				autoArchiveAt: announcement.autoArchiveAt?.toISOString() ?? null,
 				forExistingUsers: announcement.forExistingUsers,
 				silence: announcement.silence,
 				needConfirmationToRead: announcement.needConfirmationToRead,

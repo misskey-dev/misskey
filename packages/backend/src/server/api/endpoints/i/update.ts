@@ -34,7 +34,6 @@ import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.j
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { packedMeDetailedSchema } from '@/models/schema/user.js';
 import type { Config } from '@/config.js';
-import { safeForSql } from '@/misc/safe-for-sql.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { notificationRecieveConfigSchema } from '@/models/schema/user.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
@@ -137,6 +136,9 @@ const muteWords = v.array(v.pipe(
 	mi.asOneOf(),
 ));
 
+/** 上限は30日程度にしておく */
+const FOLLOW_APPROVAL_MAX_SECONDS = 30 * 24 * 60 * 60;
+
 export const paramDef = v.object({
 	name: v.nullish(nameSchema),
 	description: v.nullish(descriptionSchema),
@@ -170,6 +172,8 @@ export const paramDef = v.object({
 	publicReactions: v.optional(v.boolean()),
 	carefulBot: v.optional(v.boolean()),
 	autoAcceptFollowed: v.optional(v.boolean()),
+	followApprovalLocalSeconds: v.nullish(mi.integer({ min: 0, max: FOLLOW_APPROVAL_MAX_SECONDS })),
+	followApprovalRemoteSeconds: v.nullish(mi.integer({ min: 0, max: FOLLOW_APPROVAL_MAX_SECONDS })),
 	noCrawle: v.optional(v.boolean()),
 	preventAiLearning: v.optional(v.boolean()),
 	requireSigninToViewContents: v.optional(v.boolean()),
@@ -335,6 +339,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (typeof ps.isBot === 'boolean') updates.isBot = ps.isBot;
 			if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
 			if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
+			if (ps.followApprovalLocalSeconds !== undefined) profileUpdates.followApprovalLocalSeconds = ps.followApprovalLocalSeconds;
+			if (ps.followApprovalRemoteSeconds !== undefined) profileUpdates.followApprovalRemoteSeconds = ps.followApprovalRemoteSeconds;
 			if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
 			if (typeof ps.preventAiLearning === 'boolean') profileUpdates.preventAiLearning = ps.preventAiLearning;
 			if (typeof ps.requireSigninToViewContents === 'boolean') updates.requireSigninToViewContents = ps.requireSigninToViewContents;
@@ -529,9 +535,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// Publish meUpdated event
 			this.globalEventService.publishMainStream(user.id, 'meUpdated', iObj);
 
-			// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
+			// 鍵垢を解除したとき、期間による承認条件も考慮してフォローリクエストを承認
 			if (user.isLocked && ps.isLocked === false) {
-				this.userFollowingService.acceptAllFollowRequests(user);
+				await this.userFollowingService.acceptAllFollowRequests(user);
 			}
 
 			// フォロワーにUpdateを配信
@@ -547,7 +553,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	}
 
 	private async verifyLink(url: string, user: MiLocalUser) {
-		if (!safeForSql(url)) return;
+		if (!URL.canParse(url)) return;
 
 		try {
 			const html = await this.httpRequestService.getHtml(url);
@@ -566,8 +572,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				await this.userProfilesRepository.createQueryBuilder('profile').update()
 					.where('userId = :userId', { userId: user.id })
 					.set({
-						verifiedLinks: () => `array_append("verifiedLinks", '${url}')`, // ここでSQLインジェクションされそうなのでとりあえず safeForSql で弾いている
+						verifiedLinks: () => 'array_append("verifiedLinks", :url)',
 					})
+					.setParameter('url', url)
 					.execute();
 			}
 		} catch (_) {

@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Config } from '@/config.js';
+import Logger from '@/logger.js';
 import { setLogTraceContextProvider } from '@/logging/logging-runtime.js';
 import { SentryTelemetryAdapter } from './adapters/SentryTelemetryAdapter.js';
+import type { Config } from '@/config.js';
 import type { TelemetryAdapter, TelemetryCaptureMessageOptions } from './adapters/TelemetryAdapter.js';
+
+const logger = new Logger('telemetry');
 
 /**
  * NestのDIコンテナが構築される前(boot処理内)で初期化する必要があるため、
@@ -17,7 +20,8 @@ const adapters: TelemetryAdapter[] = [];
 
 export async function initTelemetry(config: Config): Promise<void> {
 	if (config.sentryForBackend) {
-		const adapter = await SentryTelemetryAdapter.create(config.sentryForBackend);
+		// 設定の不備はconsoleではなくMisskeyのロガーへ出す。configureLoggingはこの時点で完了している。
+		const adapter = await SentryTelemetryAdapter.create(config.sentryForBackend, message => logger.warn(message));
 		adapters.push(adapter);
 		// Telemetryの初期化後に登録し、初期化前のBootstrapログは従来どおり出力する。
 		setLogTraceContextProvider(() => adapter.getActiveTraceContext?.());

@@ -8,6 +8,7 @@ import * as v from 'valibot';
 import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -15,6 +16,14 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 	kind: 'write:admin:announcements',
+
+	errors: {
+		invalidAutoArchiveAt: {
+			message: 'Invalid auto archive date.',
+			code: 'INVALID_AUTO_ARCHIVE_AT',
+			id: '2a892bd5-487d-46a2-a5fe-3d85ad51defe',
+		},
+	},
 
 	res: v.object({
 		id: mi.example(mi.idString(), 'xxxxxxxxxx'),
@@ -36,6 +45,7 @@ export const paramDef = v.object({
 	silence: v.optional(v.boolean(), false),
 	needConfirmationToRead: v.optional(v.boolean(), false),
 	userId: v.optional(v.nullable(mi.misskeyId()), null),
+	autoArchiveAt: v.optional(v.nullable(mi.integer()), null),
 });
 
 @Injectable()
@@ -44,6 +54,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private announcementService: AnnouncementService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const autoArchiveAt = ps.autoArchiveAt != null ? new Date(ps.autoArchiveAt) : null;
+			if (ps.autoArchiveAt != null && (ps.autoArchiveAt <= Date.now() || Number.isNaN(autoArchiveAt?.getTime()))) {
+				throw new ApiError(meta.errors.invalidAutoArchiveAt);
+			}
+
 			const { packed } = await this.announcementService.create({
 				updatedAt: null,
 				title: ps.title,
@@ -56,6 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				silence: ps.silence,
 				needConfirmationToRead: ps.needConfirmationToRead,
 				userId: ps.userId,
+				autoArchiveAt,
 			}, me);
 
 			return packed;

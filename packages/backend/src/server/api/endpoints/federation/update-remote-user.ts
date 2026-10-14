@@ -4,6 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import ms from 'ms';
 import * as v from 'valibot';
 import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -13,7 +14,13 @@ import { GetterService } from '@/server/api/GetterService.js';
 export const meta = {
 	tags: ['federation'],
 
-	requireCredential: false,
+	requireCredential: true,
+	kind: 'read:account',
+
+	limit: {
+		duration: ms('1hour'),
+		max: 30,
+	},
 } as const;
 
 export const paramDef = v.object({
@@ -28,6 +35,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps) => {
 			const user = await this.getterService.getRemoteUser(ps.userId);
+
 			await this.apPersonService.updatePerson(user.uri!);
 		});
 	}

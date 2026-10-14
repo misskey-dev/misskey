@@ -15,6 +15,7 @@ import { getNoteSummary } from '@/misc/get-note-summary.js';
 import type { MiMeta, MiSwSubscription, SwSubscriptionsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { RedisKVCache } from '@/misc/cache.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 
 // Defined also packages/sw/types.ts#L13
 type PushNotificationsTypes = {
@@ -64,6 +65,8 @@ export class PushNotificationService implements OnApplicationShutdown {
 
 		@Inject(DI.swSubscriptionsRepository)
 		private swSubscriptionsRepository: SwSubscriptionsRepository,
+
+		private httpRequestService: HttpRequestService,
 	) {
 		this.subscriptionsCache = new RedisKVCache<MiSwSubscription[]>(this.redisClient, 'userSwSubscriptions', {
 			lifetime: 1000 * 60 * 60 * 1, // 1h
@@ -72,6 +75,21 @@ export class PushNotificationService implements OnApplicationShutdown {
 			toRedisConverter: (value) => JSON.stringify(value),
 			fromRedisConverter: (value) => JSON.parse(value),
 		});
+	}
+
+	@bindThis
+	public isValidEndpoint(endpoint: string): boolean {
+		let url: URL;
+		try {
+			url = new URL(endpoint);
+		} catch {
+			return false;
+		}
+
+		if (url.protocol !== 'https:') return false;
+		if (url.username !== '' || url.password !== '') return false;
+
+		return true;
 	}
 
 	@bindThis
@@ -90,6 +108,8 @@ export class PushNotificationService implements OnApplicationShutdown {
 				'readAllNotifications',
 			].includes(type) && !subscription.sendReadMessage) continue;
 
+			if (!this.isValidEndpoint(subscription.endpoint)) continue;
+
 			const pushSubscription = {
 				endpoint: subscription.endpoint,
 				keys: {
@@ -104,7 +124,7 @@ export class PushNotificationService implements OnApplicationShutdown {
 				userId,
 				dateTime: Date.now(),
 			}), {
-				proxy: this.config.proxy,
+				agent: this.httpRequestService.getAgentForHttps(new URL(subscription.endpoint)),
 			}).catch((err: any) => {
 				//swLogger.info(err.statusCode);
 				//swLogger.info(err.headers);

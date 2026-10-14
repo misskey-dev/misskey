@@ -144,6 +144,8 @@ export const packedMeDetailedOnlySchema = v.object({
 	autoSensitive: v.boolean(),
 	carefulBot: v.boolean(),
 	autoAcceptFollowed: v.boolean(),
+	followApprovalLocalSeconds: v.nullable(v.number()),
+	followApprovalRemoteSeconds: v.nullable(v.number()),
 	noCrawle: v.boolean(),
 	preventAiLearning: v.boolean(),
 	isExplorable: v.boolean(),
