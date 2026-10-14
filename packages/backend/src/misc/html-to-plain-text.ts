@@ -3,11 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { parse } from 'node-html-parser';
+import sanitizeHtml from 'sanitize-html';
+
+const textSeparators = ['br', 'p', 'div', 'li', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'hr'];
 
 /** Converts HTML descriptions into text while preserving word boundaries. */
 export function htmlToPlainText(html: string): string {
-	const document = parse(html);
-	document.querySelectorAll('script, style, template').forEach(node => node.remove());
-	return document.structuredText.replace(/\s+/gu, ' ').trim();
+	const text = sanitizeHtml(html, {
+		allowedTags: textSeparators,
+		allowedAttributes: {},
+		nonTextTags: ['script', 'style', 'template', 'textarea'],
+	}).replace(/<[^>]+>/gu, ' ');
+
+	// sanitize-html escapes these characters after decoding the input entities.
+	return text.replace(/&lt;/gu, '<').replace(/&gt;/gu, '>').replace(/&amp;/gu, '&')
+		.replace(/\s+/gu, ' ').trim();
 }
