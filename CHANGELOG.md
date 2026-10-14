@@ -11,6 +11,9 @@
 - `sentryForBackend.options.profilesSampleRate`を設定している場合、v11で削除されたため無視されます。プロファイリングの有効化は引き続き`sentryForBackend.enableNodeProfiling`で行います。
 - 詳細は https://docs.sentry.io/platforms/javascript/migration/v10-to-v11/ を参照してください。
 
+### Note
+- Node.js v22のサポートを終了しました。Node.js v22では動作しません。Node.js v24, v26をご利用ください。
+
 ### General
 - Feat: お知らせに自動アーカイブ日時を設定できるように
 - Enhance: 依存関係の更新
@@ -19,6 +22,7 @@
 - Feat: デッキにクリップのカラムを追加できるように
 
 ### Server
+- Enhance: 動画処理のパフォーマンスを改善
 - Fix: ローカル限定絵文字でリモートノートのリノートにリアクションできてしまう問題を修正
 
 
