@@ -16,6 +16,7 @@ export function htmlToPlainText(html: string): string {
 	}).replace(/<[^>]+>/gu, ' ');
 
 	// sanitize-html escapes these characters after decoding the input entities.
-	return text.replace(/&lt;/gu, '<').replace(/&gt;/gu, '>').replace(/&amp;/gu, '&')
+	return text.replace(/&lt;br\s*\/?&gt;/giu, ' ')
+		.replace(/&lt;/gu, '<').replace(/&gt;/gu, '>').replace(/&amp;/gu, '&')
 		.replace(/\s+/gu, ' ').trim();
 }

@@ -24,7 +24,8 @@ describe('HTML descriptions as plain text', () => {
 		['<strong>紹介</strong><span style="color:red">文</span>', '紹介文'],
 		['<a href="https://example.test/">リンク</a>', 'リンク'],
 		['A &amp; B &quot;C&quot; &#39;D&#39; &#x1F680;&nbsp;E', 'A & B "C" \'D\' 🚀 E'],
-		['文字としての &lt;br&gt;', '文字としての <br>'],
+		['紹介&lt;br&gt;説明&lt;BR /&gt;補足', '紹介 説明 補足'],
+		['文字としての &lt;b&gt;紹介&lt;/b&gt;', '文字としての <b>紹介</b>'],
 		['&amp;lt;br&amp;gt;', '&lt;br&gt;'],
 		['<span title="1 > 0">紹介</span><br data-label="a > b">説明', '紹介 説明'],
 		['<h2>紹介</h2><blockquote>説明</blockquote>', '紹介 説明'],
@@ -44,6 +45,7 @@ describe('HTML descriptions as plain text', () => {
 
 	it.each([
 		['紹介<br><span>説明 &amp; 補足</span>', '紹介 説明 & 補足'],
+		['紹介&lt;br&gt;説明&lt;BR /&gt;補足', '紹介 説明 補足'],
 		['<div><br></div>', defaultDescription],
 		[null, undefined],
 	])('renders instance metadata through ClientServerService for %s', async (html, expected) => {
