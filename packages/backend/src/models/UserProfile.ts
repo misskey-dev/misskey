@@ -173,6 +173,12 @@ export class MiUserProfile {
 	})
 	public autoAcceptFollowed: boolean;
 
+	@Column('integer', { nullable: true })
+	public followApprovalLocalSeconds: number | null;
+
+	@Column('integer', { nullable: true })
+	public followApprovalRemoteSeconds: number | null;
+
 	@Column('boolean', {
 		default: false,
 		comment: 'Whether reject index by crawler.',
