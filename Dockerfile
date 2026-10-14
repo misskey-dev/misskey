@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1.23
 
-ARG NODE_VERSION=22.22.2-bookworm
+ARG NODE_VERSION=26.4.0-trixie
 
 # build assets & compile TypeScript
 
@@ -40,7 +40,6 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 
 COPY --link . ./
 
-RUN git submodule update --init
 RUN pnpm build
 RUN rm -rf .git/
 

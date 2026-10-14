@@ -154,7 +154,7 @@ import { deepClone } from '@/utility/clone.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { userPage } from '@/filters/user.js';
+import { userPage } from '@@/js/user.js';
 import * as sound from '@/utility/sound.js';
 import * as os from '@/os.js';
 import { confetti } from '@/utility/confetti.js';
@@ -303,7 +303,11 @@ if (!props.game.isEnded) {
 				props.connection!.send('claimTimeIsUp', {});
 			}
 		}
-	}, TIMER_INTERVAL_SEC * 1000, { immediate: false, afterMounted: true });
+	}, TIMER_INTERVAL_SEC * 1000, {
+		immediate: false,
+		afterMounted: true,
+		keepRunningWhenHidden: true, // 対局の制限時間管理のため、バックグラウンドでも止めない
+	});
 }
 
 async function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {

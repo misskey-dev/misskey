@@ -22,8 +22,8 @@ class EmojiPicker {
 	}
 
 	public init() {
-		watch([prefer.r.emojiPaletteForMain, prefer.r.emojiPalettes], () => {
-			this.emojisRef.value = prefer.s.emojiPaletteForMain == null ? prefer.s.emojiPalettes[0].emojis : prefer.s.emojiPalettes.find(palette => palette.id === prefer.s.emojiPaletteForMain)?.emojis ?? [];
+		watch([prefer.r.emojiPaletteForMain, prefer.r.emojiPalettes], ([newId, newPalettes]) => {
+			this.emojisRef.value = newId == null ? newPalettes[0].emojis : newPalettes.find(palette => palette.id === newId)?.emojis ?? [];
 		}, {
 			immediate: true,
 		});

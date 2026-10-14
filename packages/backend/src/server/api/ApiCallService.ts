@@ -16,11 +16,13 @@ import type { MiMeta, UserIpsRepository } from '@/models/_.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
+import { TelemetryService } from '@/core/telemetry/TelemetryService.js';
 import type { Config } from '@/config.js';
 import { ApiError } from './error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
+import type { Readable } from 'node:stream';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import type { IEndpointMeta, IEndpoint } from './endpoints.js';
@@ -31,12 +33,54 @@ const accessDenied = {
 	id: '56f35758-7dd5-468b-8439-5d6fb8ec9b8e',
 };
 
+/**
+ * multipartのpartを一時ファイルへ書き出す。
+ * クライアントの問題により書き出しできなかった場合はエラーを返し、サーバーの問題により書き出しできなかった場合は例外を投げる。
+ *
+ * ここで `stream.pipeline()` を使ってはいけない。EOFをpush済みだが 'end' はまだ発火していない状態のままdestroyされた
+ * readableに対し、`stream.pipeline()` は発火しない 'end' を待ち続けるため
+ */
+async function writeMultipartFileToTemp(file: Readable, path: string): Promise<Error | null> {
+	const dest = fs.createWriteStream(path);
+
+	// 片方が失敗するともう片方は完了しなくなるため、先に失敗した側だけを原因として記録する
+	let failed = false;
+	const reading = stream.finished(file, { writable: false }).then(() => null, (err: Error) => {
+		if (failed) return null; // 書き込み側の失敗に巻き込まれた
+		failed = true;
+		return err;
+	});
+	const writing = stream.finished(dest, { readable: false }).then(() => null, (err: Error) => {
+		if (failed) return null; // 読み込み側の失敗に巻き込まれた
+		failed = true;
+		file.destroy(); // partを待ち続けても意味がないので破棄
+		return err;
+	});
+
+	// end: falseにして、書き込み側を終わらせるのはpartの決着を見届けてから自分で行う。
+	// pipe()任せの自動end()はpartが 'end' を発火しないままdestroyされると呼ばれず、
+	// 書き込み側が永久に完了しない (空のpartの直後にlimitへ達した場合など)
+	file.pipe(dest, { end: false });
+
+	const readError = await reading;
+	if (failed) {
+		file.destroy();
+		dest.destroy();
+	} else {
+		dest.end();
+	}
+	const writeError = await writing;
+
+	if (readError != null) return readError;
+	if (writeError != null) throw writeError;
+	return null;
+}
+
 @Injectable()
 export class ApiCallService implements OnApplicationShutdown {
 	private logger: Logger;
 	private userIpHistories: Map<MiUser['id'], Set<string>>;
 	private userIpHistoriesClearIntervalId: NodeJS.Timeout;
-	private Sentry: typeof import('@sentry/node') | null = null;
 
 	constructor(
 		@Inject(DI.meta)
@@ -52,6 +96,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		private rateLimiterService: RateLimiterService,
 		private roleService: RoleService,
 		private apiLoggerService: ApiLoggerService,
+		private telemetryService: TelemetryService,
 	) {
 		this.logger = this.apiLoggerService.logger;
 		this.userIpHistories = new Map<MiUser['id'], Set<string>>();
@@ -59,12 +104,6 @@ export class ApiCallService implements OnApplicationShutdown {
 		this.userIpHistoriesClearIntervalId = setInterval(() => {
 			this.userIpHistories.clear();
 		}, 1000 * 60 * 60);
-
-		if (this.config.sentryForBackend) {
-			import('@sentry/node').then((Sentry) => {
-				this.Sentry = Sentry;
-			});
-		}
 	}
 
 	#sendApiError(reply: FastifyReply, err: ApiError): void {
@@ -115,35 +154,31 @@ export class ApiCallService implements OnApplicationShutdown {
 			throw err;
 		} else {
 			const errId = randomUUID();
-			this.logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
-				ep: ep.name,
-				ps: data,
-				e: {
-					message: err.message,
-					code: err.name,
-					stack: err.stack,
-					id: errId,
+			this.logger.write({
+				level: 'error',
+				eventName: 'api.endpoint.failed',
+				message: `Internal error occurred in ${ep.name}: ${err.message}`,
+				attributes: {
+					'api.endpoint': ep.name,
+					'error.id': errId,
+					'api.params': data,
 				},
+				error: err,
 			});
 
-			if (this.Sentry != null) {
-				this.Sentry.captureMessage(`Internal error occurred in ${ep.name}: ${err.message}`, {
-					level: 'error',
-					user: {
-						id: userId,
+			this.telemetryService.captureMessage(`Internal error occurred in ${ep.name}: ${err.message}`, {
+				level: 'error',
+				userId,
+				extra: {
+					ep: ep.name,
+					e: {
+						message: err.message,
+						code: err.name,
+						stack: err.stack,
+						id: errId,
 					},
-					extra: {
-						ep: ep.name,
-						ps: data,
-						e: {
-							message: err.message,
-							code: err.name,
-							stack: err.stack,
-							id: errId,
-						},
-					},
-				});
-			}
+				},
+			});
 
 			throw new ApiError(null, {
 				e: {
@@ -160,7 +195,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		endpoint: IEndpoint & { exec: any },
 		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
-	): void {
+	): Promise<void> {
 		const body = request.method === 'GET'
 			? request.query
 			: request.body;
@@ -171,10 +206,11 @@ export class ApiCallService implements OnApplicationShutdown {
 			: body?.['i'];
 		if (token != null && typeof token !== 'string') {
 			reply.code(400);
-			return;
+			return Promise.resolve();
 		}
-		this.authenticateService.authenticate(token).then(([user, app]) => {
-			this.call(endpoint, user, app, body, null, request).then((res) => {
+
+		return this.telemetryService.startSpan('API: ' + endpoint.name, () => this.authenticateService.authenticate(token).then(([user, app]) => {
+			const call = this.call(endpoint, user, app, body, null, request).then((res) => {
 				if (request.method === 'GET' && endpoint.meta.cacheSec && !token && !user) {
 					reply.header('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
 				}
@@ -186,9 +222,11 @@ export class ApiCallService implements OnApplicationShutdown {
 			if (user) {
 				this.logIp(request, user);
 			}
+
+			return call;
 		}).catch(err => {
 			this.#sendAuthenticationError(reply, err);
-		});
+		}));
 	}
 
 	@bindThis
@@ -205,48 +243,63 @@ export class ApiCallService implements OnApplicationShutdown {
 			reply.send();
 			return;
 		}
-
 		const [path, cleanup] = await createTemp();
-		await stream.pipeline(multipartData.file, fs.createWriteStream(path));
 
-		// ファイルサイズが制限を超えていた場合
-		// なお truncated はストリームを読み切ってからでないと機能しないため、stream.pipeline より後にある必要がある
-		if (multipartData.file.truncated) {
-			cleanup();
-			reply.code(413);
-			reply.send();
-			return;
-		}
+		try {
+			const multipartError = await writeMultipartFileToTemp(multipartData.file, path);
 
-		const fields = {} as Record<string, unknown>;
-		for (const [k, v] of Object.entries(multipartData.fields)) {
-			fields[k] = typeof v === 'object' && 'value' in v ? v.value : undefined;
-		}
-
-		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1 (case sensitive)
-		const token = request.headers.authorization?.startsWith('Bearer ')
-			? request.headers.authorization.slice(7)
-			: fields['i'];
-		if (token != null && typeof token !== 'string') {
-			reply.code(400);
-			return;
-		}
-		this.authenticateService.authenticate(token).then(([user, app]) => {
-			this.call(endpoint, user, app, fields, {
-				name: multipartData.filename,
-				path: path,
-			}, request).then((res) => {
-				this.send(reply, res);
-			}).catch((err: ApiError) => {
-				this.#sendApiError(reply, err);
-			});
-
-			if (user) {
-				this.logIp(request, user);
+			// multipartを読み切れなかった場合
+			// クライアント起因なので400
+			if (multipartError != null) {
+				this.logger.debug(`Failed to read the multipart request body: ${multipartError.message}`);
+				reply.code(400);
+				reply.send();
+				return;
 			}
-		}).catch(err => {
-			this.#sendAuthenticationError(reply, err);
-		});
+
+			// ファイルサイズが制限を超えていた場合
+			// truncated はストリームを読み切ってからでないと機能しないため、書き出しより後にある必要がある
+			if (multipartData.file.truncated) {
+				reply.code(413);
+				reply.send();
+				return;
+			}
+
+			const fields = {} as Record<string, unknown>;
+			for (const [k, v] of Object.entries(multipartData.fields)) {
+				fields[k] = typeof v === 'object' && 'value' in v ? v.value : undefined;
+			}
+
+			// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1 (case sensitive)
+			const token = request.headers.authorization?.startsWith('Bearer ')
+				? request.headers.authorization.slice(7)
+				: fields['i'];
+			if (token != null && typeof token !== 'string') {
+				reply.code(400);
+				return;
+			}
+
+			return await this.telemetryService.startSpan('API: ' + endpoint.name, () => this.authenticateService.authenticate(token).then(([user, app]) => {
+				const call = this.call(endpoint, user, app, fields, {
+					name: multipartData.filename,
+					path: path,
+				}, request).then((res) => {
+					this.send(reply, res);
+				}).catch((err: ApiError) => {
+					this.#sendApiError(reply, err);
+				});
+
+				if (user) {
+					this.logIp(request, user);
+				}
+
+				return call;
+			}).catch(err => {
+				this.#sendAuthenticationError(reply, err);
+			}));
+		} finally {
+			cleanup();
+		}
 	}
 
 	@bindThis
@@ -440,16 +493,10 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		// API invoking
-		if (this.Sentry != null) {
-			return await this.Sentry.startSpan({
-				name: 'API: ' + ep.name,
-			}, () => ep.exec(data, user, token, file, request.ip, request.headers)
-				.catch((err: Error) => this.#onExecError(ep, data, err, user?.id)));
-		} else {
-			return await ep.exec(data, user, token, file, request.ip, request.headers)
-				.catch((err: Error) => this.#onExecError(ep, data, err, user?.id));
-		}
+		// The API span starts in handleRequest/handleMultipartRequest so it also covers
+		// authentication, rate limiting, and parameter validation.
+		return await ep.exec(data, user, token, file, request.ip, request.headers)
+			.catch((err: Error) => this.#onExecError(ep, data, err, user?.id));
 	}
 
 	@bindThis

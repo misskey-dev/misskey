@@ -600,6 +600,90 @@ TypeScriptでjsonをimportすると、tscでコンパイルするときにその
 コンポーネント自身がmarginを設定するのは問題の元となることはよく知られている
 marginはそのコンポーネントを使う側が設定する
 
+### 命名規則
+
+本来それが略称であっても、通常それでひとつのワードとして用いられるものは、略称として扱わない。
+
+#### 例: IP address
+
+Good: `ipAddress` / `IpAddress`
+
+Bad: `IPAddress`
+
+#### 例: User ID
+
+Good: `userId` / `UserId`
+
+Bad: `userID` / `UserID`
+
+#### 例: XMLなHTTPのRequest
+
+Good: `xmlHttpRequest` / `XmlHttpRequest`
+
+Bad: `XMLHttpRequest` / `XMLHTTPRequest`
+
+### 関数化の基準
+
+汎用性が低く(例えばそれを関数化したとしてもその呼び出しが元の場所一か所しか存在しない)、内容も短い処理(例えば10行以下)は、かえって読みにくくなるため、関数化しない。
+
+また、関数化する場合でも、呼び出しがある特定のスコープに限られる場合は、そのスコープ内に閉じ込めた方が分かりやすく簡潔になる場合がある(ただし本来その処理に不要であっても、構造上親のスコープにある関係のない変数や引数にもアクセスできるようになるため、必ずしもそうすれば設計上綺麗になるというわけでもない。状況に応じて判断すべし)。
+
+Bad:
+
+``` ts
+function withBrankets(x) {
+	return `(${x})`;
+}
+
+function formatPercent(x) {
+	return `${x}%`;
+}
+
+function formatValue(x) {
+	return withBrankets(formatPercent(x));
+}
+
+function showData(a, b) {
+	console.log(formatValue(a));
+	console.log(formatValue(b));
+}
+```
+
+Good:
+
+``` ts
+function formatValue(x) {
+	return `(${x}%)`;
+}
+
+function showData(a, b) {
+	console.log(formatValue(a));
+	console.log(formatValue(b));
+}
+```
+
+or
+
+``` ts
+function showData(a, b) {
+	function formatValue(x) {
+		return `(${x}%)`;
+	}
+
+	console.log(formatValue(a));
+	console.log(formatValue(b));
+}
+```
+
+or
+
+``` ts
+function showData(a, b) {
+	console.log(`(${a}%)`);
+	console.log(`(${b}%)`);
+}
+```
+
 ## その他
 ### HTMLのクラス名で follow という単語は使わない
 広告ブロッカーで誤ってブロックされる
@@ -647,3 +731,9 @@ Misskeyのドメイン知識から関心が分離されているということ�
 
 そのため、実装をなるべくMisskeyのドメイン知識から独立したものにすれば、Misskeyのコードベースの複雑性を上げることなく機能実装を行うことができ、お得であると言えます。
 もちろんそれにこだわって、些細な実装でもそのように分離してしまうとかえって認知負荷が増えたり、実装量が増えてメリットをデメリットが上回る場合もあるので、ケースバイケースではあります。
+
+### AIに誤解されにくいコードを書こう
+
+AI(LLM)によるレビューやコーディング補助時にハルシネーションのもとになるので、AIが誤解・混乱しそうなコードは避けるかコメントを残そう。
+
+AIにとって分かりやすいコードは、結果的に人間にとっても分かりやすいコードに繋がります。
