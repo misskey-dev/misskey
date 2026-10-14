@@ -33,6 +33,7 @@ allowBuilds:
   exifreader: false
   node-av: false # napiバイナリで足りるため不要
   protobufjs: false
+  pnpm: true
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@misskey-dev/*'
@@ -53,8 +54,6 @@ minimumReleaseAgeExclude:
   - slacc-linux-x64-musl
   - slacc-win32-arm64-msvc
   - slacc-win32-x64-msvc
-  - '@typescript/native-preview*'
-  - undici@6.28.1 || 7.29.1 # そのうち消す
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   'node-av>werift': '-' # node-av の WebRTC でしか使われない optional dependency で使用しないためインストール抑止。今後のバージョンで公式に optional peer dependency に移行するため、タイミングを見て消す

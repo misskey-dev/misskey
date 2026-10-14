@@ -8,6 +8,9 @@ export default defineConfig((args) => {
 	const isWatchMode = args.watch != null && args.watch !== 'false';
 	const isE2E = args.e2e != null && args.e2e !== 'false';
 
+	// 外部モジュールの判定に使う正規表現。`@/` で始まるものは内部モジュールとみなす
+	const allExternalModulesRegex = /^(?!@\/|\0)[^.\/](?!:[\/\\])/;
+
 	// 通常のビルド時にexternalとするモジュール
 	const externalModules: ExternalOption = [
 		/^slacc-.*/,
@@ -15,9 +18,9 @@ export default defineConfig((args) => {
 		'class-validator',
 		/^@sentry\/.*/,
 		/^@sentry-internal\/.*/,
-		'@nestjs/websockets/socket-module',
-		'@nestjs/microservices/microservices-module',
-		'@nestjs/microservices',
+		// @nestjs/coreはmicroservices / websocketsをoptional peerとして動的importするが、
+		// Misskeyはどちらも使わないためインストールしていない
+		/^@nestjs\/(?:microservices|websockets)(?:\/.*)?$/,
 		/^@napi-rs\/.*/,
 		'mock-aws-s3',
 		'aws-sdk',
@@ -58,7 +61,8 @@ export default defineConfig((args) => {
 			experimental: {
 				nativeMagicString: true,
 			},
-			external: externalModules,
+			// node_modulesまでバンドルしてしまうとカバレッジの収集に時間がかかるので全部外す
+			external: allExternalModulesRegex,
 		};
 	} else {
 		return {
@@ -94,7 +98,7 @@ export default defineConfig((args) => {
 				nativeMagicString: true,
 			},
 			// ビルドの高速化のために、watchモードのときは外部モジュールは全てバンドルしないようにする
-			external: isWatchMode ? /^(?!@\/|\0)[^.\/](?!:[\/\\])/ : externalModules,
+			external: isWatchMode ? allExternalModulesRegex : externalModules,
 		};
 	}
 });

@@ -31,8 +31,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
-import { notePage } from '@/utils.js';
-import { userPage } from '@/utils.js';
+import { notePage } from '@@/js/note.js';
+import { userPage } from '@@/js/user.js';
 import EmA from '@/components/EmA.vue';
 import EmUserName from '@/components/EmUserName.vue';
 import EmAcct from '@/components/EmAcct.vue';

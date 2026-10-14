@@ -2767,6 +2767,7 @@ _deck:
     antenna: "Antenas"
     list: "Listas"
     channel: "Canais"
+    clip: "Clipe"
     mentions: "Menções"
     direct: "Notas diretas"
     roleTimeline: "Linha do tempo do cargo"
