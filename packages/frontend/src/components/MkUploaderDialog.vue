@@ -166,17 +166,17 @@ async function done() {
 	dialog.value?.close();
 }
 
-async function chooseFile(ev: MouseEvent) {
+async function chooseFile(ev: PointerEvent) {
 	const newFiles = await os.chooseFileFromPc({ multiple: true });
 	uploader.addFiles(newFiles);
 }
 
-function showPerItemMenu(item: UploaderItem, ev: MouseEvent) {
+function showPerItemMenu(item: UploaderItem, ev: PointerEvent) {
 	const menu = uploader.getMenu(item);
 	os.popupMenu(menu, ev.currentTarget ?? ev.target);
 }
 
-function showPerItemMenuViaContextmenu(item: UploaderItem, ev: MouseEvent) {
+function showPerItemMenuViaContextmenu(item: UploaderItem, ev: PointerEvent) {
 	const menu = uploader.getMenu(item);
 	os.contextMenu(menu, ev);
 }

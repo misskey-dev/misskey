@@ -970,6 +970,7 @@ renotes: "Herdelen"
 followingOrFollower: "Gevolgd of volger"
 confirmShowRepliesAll: "Dit is een onomkeerbare operatie. Weet je zeker dat reacties op anderen van iedereen die je volgt, wil weergeven in je tijdlijn?"
 information: "Over"
+previewingThemeRestore: "Herstellen"
 _imageEditing:
   _vars:
     filename: "Bestandsnaam"
@@ -1017,6 +1018,8 @@ _widgets:
   jobQueue: "Job Queue"
   _userList:
     chooseList: "Kies een lijst."
+_widgetOptions:
+  height: "Hoogte"
 _cw:
   show: "Laad meer"
 _visibility:
@@ -1068,6 +1071,7 @@ _deck:
     antenna: "Antennes"
     list: "Lijsten"
     channel: "Kanalen"
+    clip: "Clip aanmaken"
     mentions: "Vermeldingen"
     direct: "Directe notities"
 _webhookSettings:

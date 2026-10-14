@@ -16,12 +16,12 @@ import probeImageSize from 'probe-image-size';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import * as blurhash from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
-import { AiService } from '@/core/AiService.js';
+import { SensitiveMediaDetectionService } from '@/core/SensitiveMediaDetectionService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
-import type { PredictionType } from 'nsfwjs';
+import type { Prediction } from '@/core/SensitiveMediaDetectionService.js';
 
 export type FileInfo = {
 	size: number;
@@ -54,7 +54,7 @@ export class FileInfoService {
 	private logger: Logger;
 
 	constructor(
-		private aiService: AiService,
+		private sensitiveMediaDetectionService: SensitiveMediaDetectionService,
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('file-info');
@@ -192,7 +192,7 @@ export class FileInfoService {
 		let sensitive = false;
 		let porn = false;
 
-		function judgePrediction(result: readonly PredictionType[]): [sensitive: boolean, porn: boolean] {
+		function judgePrediction(result: readonly Prediction[]): [sensitive: boolean, porn: boolean] {
 			let sensitive = false;
 			let porn = false;
 
@@ -248,7 +248,8 @@ export class FileInfoService {
 					.format('image2')
 					.output(join(outDir, '%d.png'))
 					.outputOptions(['-vsync', '0']); // 可変フレームレートにすることで穴埋めをさせない
-				const results: ReturnType<typeof judgePrediction>[] = [];
+				// 判定対象フレームを選定して正規化済みバッファとして集め、外部サービスへまとめて送る。
+				const frameBuffers: Buffer[] = [];
 				let frameIndex = 0;
 				let targetIndex = 0;
 				let nextIndex = 1;
@@ -260,22 +261,26 @@ export class FileInfoService {
 						}
 						targetIndex = nextIndex;
 						nextIndex += index; // fibonacci sequence によってフレーム数制限を掛ける
-						const result = await this.aiService.detectSensitive(path);
-						if (result) {
-							results.push(judgePrediction(result));
-						}
+						frameBuffers.push(await fs.promises.readFile(path));
 					} finally {
 						fs.promises.unlink(path);
 					}
 				}
-				sensitive = results.filter(x => x[0]).length >= Math.ceil(results.length * sensitiveThreshold);
-				porn = results.filter(x => x[1]).length >= Math.ceil(results.length * sensitiveThresholdForPorn);
+				const predictions = await this.sensitiveMediaDetectionService.detectSensitiveMany(frameBuffers);
+				const results = predictions.filter((x): x is Prediction[] => x != null).map(x => judgePrediction(x));
+				// 判定に成功したフレームが 0 件のとき（接続先未設定・通信失敗等）は、
+				// Math.ceil(0) との比較が 0 >= 0 で真になり全動画がセンシティブ扱いになってしまうため、
+				// 1 件以上判定できたときのみ集約する（失敗時は非センシティブ扱い: misskey-dev/misskey#16804）。
+				if (results.length > 0) {
+					sensitive = results.filter(x => x[0]).length >= Math.ceil(results.length * sensitiveThreshold);
+					porn = results.filter(x => x[1]).length >= Math.ceil(results.length * sensitiveThresholdForPorn);
+				}
 			} finally {
 				disposeOutDir();
 			}
 		} else if (isMimeImage(mime, 'sharp-convertible-image-with-bmp')) {
 			/*
-			 * tfjs-node は限られた画像形式しか受け付けないため、sharp で PNG に変換する
+			 * 判定サービス側のデコーダは限られた画像形式しか受け付けないため、sharp で PNG に変換する
 			 * せっかくなので内部処理で使われる最大サイズの299x299に事前にリサイズする
 			 */
 			const png = await (await sharpBmp(source, mime))
@@ -286,7 +291,7 @@ export class FileInfoService {
 				.flatten({ background: { r: 119, g: 119, b: 119 } }) // 透過部分を18%グレーで塗りつぶす
 				.png()
 				.toBuffer();
-			const result = await this.aiService.detectSensitive(png);
+			const result = await this.sensitiveMediaDetectionService.detectSensitive(png);
 			if (result) {
 				[sensitive, porn] = judgePrediction(result);
 			}
@@ -484,25 +489,13 @@ export class FileInfoService {
 	 * Calculate blurhash string of image
 	 */
 	@bindThis
-	private getBlurhash(path: string, type: string): Promise<string> {
-		return new Promise(async (resolve, reject) => {
-			(await sharpBmp(path, type))
-				.raw()
-				.ensureAlpha()
-				.resize(64, 64, { fit: 'inside' })
-				.toBuffer((err, buffer, info) => {
-					if (err) return reject(err);
-
-					let hash;
-
-					try {
-						hash = blurhash.encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
-					} catch (e) {
-						return reject(e);
-					}
-
-					resolve(hash);
-				});
-		});
+	private async getBlurhash(path: string, type: string): Promise<string> {
+		const sharp = await sharpBmp(path, type);
+		const { data: buffer, info } = await sharp
+			.raw()
+			.ensureAlpha()
+			.resize(64, 64, { fit: 'inside' })
+			.toBuffer({ resolveWithObject: true });
+		return blurhash.encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
 	}
 }

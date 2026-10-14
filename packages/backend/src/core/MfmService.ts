@@ -308,7 +308,7 @@ export class MfmService {
 						try {
 							const date = new Date(parseInt(text, 10) * 1000);
 							return `<time datetime="${escapeHtml(date.toISOString())}">${escapeHtml(date.toISOString())}</time>`;
-						} catch (err) {
+						} catch (_) {
 							return fnDefault(node);
 						}
 					}
@@ -376,7 +376,7 @@ export class MfmService {
 				try {
 					const url = new URL(node.props.url);
 					return `<a href="${escapeHtml(url.href)}">${toHtml(node.children)}</a>`;
-				} catch (err) {
+				} catch (_) {
 					return `[${toHtml(node.children)}](${escapeHtml(node.props.url)})`;
 				}
 			},
@@ -390,7 +390,7 @@ export class MfmService {
 				try {
 					const url = new URL(href);
 					return `<a href="${escapeHtml(url.href)}" class="u-url mention">${escapeHtml(acct)}</a>`;
-				} catch (err) {
+				} catch (_) {
 					return escapeHtml(acct);
 				}
 			},
@@ -419,7 +419,7 @@ export class MfmService {
 				try {
 					const url = new URL(node.props.url);
 					return `<a href="${escapeHtml(url.href)}">${escapeHtml(node.props.url)}</a>`;
-				} catch (err) {
+				} catch (_) {
 					return escapeHtml(node.props.url);
 				}
 			},

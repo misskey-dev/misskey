@@ -17,11 +17,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</FormSlot>
 
-	<MkInput v-model="name" :max="30" manualSave data-cy-user-setup-user-name>
+	<MkInput v-model="name" :max="30" manualSave data-testid="user-setup-user-name">
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextarea v-model="description" :max="500" tall manualSave data-cy-user-setup-user-description>
+	<MkTextarea v-model="description" :max="500" tall manualSave data-testid="user-setup-user-description">
 		<template #label>{{ i18n.ts._profile.description }}</template>
 	</MkTextarea>
 
@@ -66,7 +66,7 @@ watch(description, () => {
 	});
 });
 
-async function setAvatar(ev) {
+async function setAvatar(ev: PointerEvent) {
 	const files = await os.chooseFileFromPc({ multiple: false });
 	const file = files[0];
 

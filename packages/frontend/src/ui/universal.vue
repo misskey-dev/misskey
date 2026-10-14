@@ -14,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div>
 				<XReloadSuggestion v-if="shouldSuggestReload"/>
 				<XPreferenceRestore v-if="shouldSuggestRestoreBackup"/>
+				<XThemePreviewing v-if="isThemePreviewMode"/>
 				<XAnnouncements v-if="$i"/>
 				<XStatusBars :class="$style.statusbars"/>
 			</div>
@@ -40,8 +41,10 @@ import type { PageMetadata } from '@/page.js';
 import XMobileFooterMenu from '@/ui/_common_/mobile-footer-menu.vue';
 import XPreferenceRestore from '@/ui/_common_/PreferenceRestore.vue';
 import XReloadSuggestion from '@/ui/_common_/ReloadSuggestion.vue';
+import XThemePreviewing from '@/ui/_common_/ThemePreviewing.vue';
 import XTitlebar from '@/ui/_common_/titlebar.vue';
 import XSidebar from '@/ui/_common_/navbar.vue';
+import { isPreviewMode as isThemePreviewMode } from '@/theme.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
@@ -103,9 +106,9 @@ if (window.innerWidth > 1024) {
 	}
 }
 
-const onContextmenu = (ev) => {
-	if (isLink(ev.target)) return;
-	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
+function onContextmenu(ev: PointerEvent) {
+	if (isLink(ev.target as HTMLElement)) return;
+	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes((ev.target as HTMLElement).tagName) || (ev.target as HTMLElement).attributes.getNamedItem('contenteditable') != null) return;
 	if (window.getSelection()?.toString() !== '') return;
 	const path = mainRouter.getCurrentFullPath();
 	os.contextMenu([{
@@ -118,7 +121,7 @@ const onContextmenu = (ev) => {
 			os.pageWindow(path);
 		},
 	}], ev);
-};
+}
 </script>
 
 <style lang="scss" module>

@@ -6,7 +6,7 @@
 import { Injectable } from '@nestjs/common';
 import Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import type { KEYWORD } from 'color-convert/conversions.js';
+import type { Keyword } from 'color-convert';
 
 @Injectable()
 export class LoggerService {
@@ -15,7 +15,7 @@ export class LoggerService {
 	}
 
 	@bindThis
-	public getLogger(domain: string, color?: KEYWORD | undefined) {
+	public getLogger(domain: string, color?: Keyword | undefined) {
 		return new Logger(domain, color);
 	}
 }

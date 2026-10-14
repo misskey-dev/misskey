@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer :naked="widgetProps.transparent" :showHeader="false" data-cy-mkw-aichan class="mkw-aichan">
+<MkContainer :naked="widgetProps.transparent" :showHeader="false" data-testid="mkw-aichan" class="mkw-aichan">
 	<iframe ref="live2d" :class="$style.root" src="https://misskey-dev.github.io/mascot-web/?scale=1.5&y=1.1&eyeY=100" @click="touched"></iframe>
 </MkContainer>
 </template>
@@ -12,14 +12,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onUnmounted, useTemplateRef } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
+import { i18n } from '@/i18n.js';
 import type { WidgetComponentProps, WidgetComponentEmits, WidgetComponentExpose } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 
-const name = 'ai';
+const name = 'aichan';
 
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 } satisfies FormWithDefault;

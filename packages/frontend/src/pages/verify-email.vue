@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-else key="success" class="_gaps_m" style="padding: 32px;">
 					<div :class="$style.mainText">{{ i18n.ts.emailVerified }}</div>
 					<div>
-						<MkButton large rounded link to="/" linkBehavior="browser" style="margin: 0 auto;">
+						<MkButton large rounded type="routerLink" to="/" linkBehavior="browser" style="margin: 0 auto;">
 							{{ i18n.ts.goToMisskey }}
 						</MkButton>
 					</div>

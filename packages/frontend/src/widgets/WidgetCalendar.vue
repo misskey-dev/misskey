@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { _panel: !widgetProps.transparent }]" data-cy-mkw-calendar>
+<div :class="[$style.root, { _panel: !widgetProps.transparent }]" data-testid="mkw-calendar">
 	<div :class="[$style.calendar, { [$style.isHoliday]: isHoliday }]">
 		<p :class="$style.monthAndYear">
 			<span :class="$style.year">{{ i18n.tsx.yearX({ year }) }}</span>
@@ -43,13 +43,14 @@ import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { i18n } from '@/i18n.js';
-import { useLowresTime, TIME_UPDATE_INTERVAL } from '@/composables/use-lowres-time.js';
+import { useLowresTime, TIME_UPDATE_INTERVAL } from '@@/js/use-lowres-time.js';
 
 const name = 'calendar';
 
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 } satisfies FormWithDefault;

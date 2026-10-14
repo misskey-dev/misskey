@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-rss class="mkw-rss">
+<MkContainer :showHeader="widgetProps.showHeader" data-testid="mkw-rss" class="mkw-rss">
 	<template #icon><i class="ti ti-rss"></i></template>
 	<template #header>RSS</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="configure"><i class="ti ti-settings"></i></button></template>
@@ -24,29 +24,35 @@ import { ref, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url as base } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
+import { tryParseUrl } from '@@/js/url.js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
-import MkContainer from '@/components/MkContainer.vue';
 import { i18n } from '@/i18n.js';
+import MkContainer from '@/components/MkContainer.vue';
 
 const name = 'rss';
 
 const widgetPropsDef = {
 	url: {
 		type: 'string',
+		label: i18n.ts._widgetOptions._rss.url,
 		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
+		manualSave: true,
 	},
 	refreshIntervalSec: {
 		type: 'number',
+		label: i18n.ts._widgetOptions._rss.refreshIntervalSec,
 		default: 60,
 	},
 	maxEntries: {
 		type: 'number',
+		label: i18n.ts._widgetOptions._rss.maxEntries,
 		default: 15,
 	},
 	showHeader: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 } satisfies FormWithDefault;
@@ -68,27 +74,29 @@ const fetching = ref(true);
 const fetchEndpoint = computed(() => {
 	const url = new URL('/api/fetch-rss', base);
 	url.searchParams.set('url', widgetProps.url);
-	return url;
+	return url.toString();
 });
-const intervalClear = ref<(() => void) | undefined>();
+let intervalClear: (() => void) | null | undefined = null;
 
 const tick = () => {
-	if (window.document.visibilityState === 'hidden' && rawItems.value.length !== 0) return;
-
 	window.fetch(fetchEndpoint.value, {})
 		.then(res => res.json())
 		.then((feed: Misskey.entities.FetchRssResponse) => {
-			rawItems.value = feed.items;
+			rawItems.value = feed.items.filter((item) => {
+				if (!item.link) return false;
+				const itemUrl = tryParseUrl(item.link, base);
+				return itemUrl != null && ['http:', 'https:'].includes(itemUrl.protocol);
+			});
 			fetching.value = false;
 		});
 };
 
-watch(() => fetchEndpoint, tick);
+watch(fetchEndpoint, tick);
 watch(() => widgetProps.refreshIntervalSec, () => {
-	if (intervalClear.value) {
-		intervalClear.value();
+	if (intervalClear != null) {
+		intervalClear();
 	}
-	intervalClear.value = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
+	intervalClear = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
 		immediate: true,
 		afterMounted: true,
 	});

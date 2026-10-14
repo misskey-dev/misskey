@@ -19,13 +19,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<div class="_gaps_m">
-			<MkRadios v-model="botProtectionForm.state.provider">
-				<option value="none">{{ i18n.ts.none }} ({{ i18n.ts.notRecommended }})</option>
-				<option value="hcaptcha">hCaptcha</option>
-				<option value="mcaptcha">mCaptcha</option>
-				<option value="recaptcha">reCAPTCHA</option>
-				<option value="turnstile">Turnstile</option>
-				<option value="testcaptcha">testCaptcha</option>
+			<MkRadios
+				v-model="botProtectionForm.state.provider"
+				:options="[
+					{ value: 'none', label: `${i18n.ts.none} (${i18n.ts.notRecommended})` },
+					{ value: 'hcaptcha', label: 'hCaptcha' },
+					{ value: 'mcaptcha', label: 'mCaptcha' },
+					{ value: 'recaptcha', label: 'reCAPTCHA' },
+					{ value: 'turnstile', label: 'Turnstile' },
+					{ value: 'testcaptcha', label: 'testCaptcha' },
+				]"
+			>
 			</MkRadios>
 
 			<template v-if="botProtectionForm.state.provider === 'hcaptcha'">

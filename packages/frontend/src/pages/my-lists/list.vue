@@ -59,7 +59,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { userPage } from '@/filters/user.js';
+import { userPage } from '@@/js/user.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -99,35 +99,46 @@ function fetchList() {
 }
 
 function addUser() {
-	os.selectUser().then(user => {
+	os.selectUser({ includeSelf: true }).then(user => {
 		if (!list.value) return;
+		const listId = list.value.id;
 		os.apiWithDialog('users/lists/push', {
-			listId: list.value.id,
+			listId,
 			userId: user.id,
 		}).then(() => {
+			if (list.value?.id === listId && !list.value.userIds?.includes(user.id)) {
+				list.value.userIds?.push(user.id);
+			}
 			membershipsPaginator.reload();
+			userListsCache.delete();
 		});
 	});
 }
 
-async function removeUser(item, ev) {
+async function removeUser(item: Misskey.entities.UsersListsGetMembershipsResponse[number], ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.remove,
 		icon: 'ti ti-x',
 		danger: true,
 		action: async () => {
 			if (!list.value) return;
+			const listId = list.value.id;
 			misskeyApi('users/lists/pull', {
-				listId: list.value.id,
+				listId,
 				userId: item.userId,
 			}).then(() => {
+				if (list.value?.id === listId) {
+					const index = list.value.userIds?.indexOf(item.userId) ?? -1;
+					if (index !== -1) list.value.userIds?.splice(index, 1);
+				}
 				membershipsPaginator.removeItem(item.id);
+				userListsCache.delete();
 			});
 		},
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function showMembershipMenu(item, ev) {
+async function showMembershipMenu(item: Misskey.entities.UsersListsGetMembershipsResponse[number], ev: PointerEvent) {
 	const withRepliesRef = ref(item.withReplies);
 
 	os.popupMenu([{

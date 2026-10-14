@@ -4,13 +4,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media"/>
-	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
+<div :class="$style.root">
+	<XBanner v-for="media in medias.nonPreviewable" :key="media.id" :media="media"/>
+	<div v-if="count > 0" :class="$style.container">
 		<div
 			ref="gallery"
 			:class="[
 				$style.medias,
+				...(prefer.s.showMediaListByGridInWideArea ? [$style.gridInWideArea] : []),
 				count === 1 ? [$style.n1, {
 					[$style.n116_9]: prefer.s.mediaListWithOneImageAppearance === '16_9',
 					[$style.n11_1]: prefer.s.mediaListWithOneImageAppearance === '1_1',
@@ -18,9 +19,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 				}] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
 			]"
 		>
-			<template v-for="media in mediaList.filter(media => previewable(media))">
-				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media"/>
-				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
+			<template v-for="media in medias.previewable">
+				<XAudio
+					v-if="media.type.startsWith('audio')"
+					:key="`audio:${media.id}`"
+					:class="$style.media"
+					:audio="media"
+					@mediaClick="onMediaClick(media)"
+				/>
+				<XVideo
+					v-if="media.type.startsWith('video')"
+					:key="`video:${media.id}`"
+					:ref="(comp) => { mediaComponents.set(media.id, comp as InstanceType<typeof XVideo> | null); }"
+					:class="$style.media"
+					:video="media"
+					@mediaClick="onMediaClick(media)"
+				/>
+				<XImage
+					v-else-if="media.type.startsWith('image')"
+					:key="`image:${media.id}`"
+					:ref="(comp) => { mediaComponents.set(media.id, comp as InstanceType<typeof XImage> | null); }"
+					:marker="`${markerId}:${media.id}`"
+					:disableImageLink="true"
+					:class="$style.media"
+					:image="media"
+					:raw="raw"
+					@mediaClick="onMediaClick(media)"
+				/>
 			</template>
 		</div>
 	</div>
@@ -28,37 +53,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, useTemplateRef } from 'vue';
+import { computed, markRaw, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import PhotoSwipeLightbox from 'photoswipe/lightbox';
-import PhotoSwipe from 'photoswipe';
-import 'photoswipe/style.css';
-import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
+import type { Content } from '@/components/MkLightbox.item.vue';
+import type { MediaComponentExposes } from '@/types/media-component.js';
 import XBanner from '@/components/MkMediaBanner.vue';
+import XAudio from '@/components/MkMediaAudio.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os.js';
-import { focusParent } from '@/utility/focus.js';
 import { prefer } from '@/preferences.js';
+import { isPreviewable, getType } from '@/utility/lightbox.js';
+import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
+	user?: Misskey.entities.User | null; // DriveFileのuserはnullになることがある。その場合に使用する所有者情報
 	raw?: boolean;
 }>();
 
 const gallery = useTemplateRef('gallery');
-const pswpZIndex = os.claimZIndex('middle');
-window.document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
-const count = computed(() => props.mediaList.filter(media => previewable(media)).length);
-let lightbox: PhotoSwipeLightbox | null = null;
-
-let activeEl: HTMLElement | null = null;
-
-const popstateHandler = (): void => {
-	if (lightbox?.pswp && lightbox.pswp.isOpen === true) {
-		lightbox.pswp.close();
+const medias = computed(() => {
+	const previewable: Misskey.entities.DriveFile[] = [];
+	const nonPreviewable: Misskey.entities.DriveFile[] = [];
+	for (const file of props.mediaList) {
+		if (isPreviewable(file.type)) {
+			previewable.push(file);
+		} else {
+			nonPreviewable.push(file);
+		}
 	}
-};
+
+	return {
+		previewable,
+		nonPreviewable,
+	};
+});
+const mediaComponents = new Map<string, MediaComponentExposes | null>();
+const count = computed(() => medias.value.previewable.length);
+const markerId = genId();
 
 async function calcAspectRatio() {
 	if (!gallery.value) return;
@@ -95,130 +128,59 @@ onMounted(() => {
 	calcAspectRatio();
 
 	if (gallery.value == null) return; // TSを黙らすため
-
-	lightbox = new PhotoSwipeLightbox({
-		dataSource: props.mediaList
-			.filter(media => {
-				if (media.type === 'image/svg+xml') return true; // svgのwebpublicはpngなのでtrue
-				return media.type.startsWith('image') && FILE_TYPE_BROWSERSAFE.includes(media.type);
-			})
-			.map(media => {
-				const item = {
-					src: media.url,
-					w: media.properties.width,
-					h: media.properties.height,
-					alt: media.comment ?? media.name,
-					comment: media.comment ?? media.name,
-				};
-				if (media.properties.orientation != null && media.properties.orientation >= 5) {
-					[item.w, item.h] = [item.h, item.w];
-				}
-				return item;
-			}),
-		gallery: gallery.value,
-		mainClass: 'pswp',
-		children: '.image',
-		thumbSelector: '.image',
-		loop: false,
-		padding: window.innerWidth > 500 ? {
-			top: 32,
-			bottom: 90,
-			left: 32,
-			right: 32,
-		} : {
-			top: 0,
-			bottom: 78,
-			left: 0,
-			right: 0,
-		},
-		imageClickAction: 'close',
-		tapAction: 'close',
-		bgOpacity: 1,
-		showAnimationDuration: 100,
-		hideAnimationDuration: 100,
-		returnFocus: false,
-		pswpModule: PhotoSwipe,
-	});
-
-	lightbox.addFilter('itemData', (itemData) => {
-		// element is children
-		const { element } = itemData;
-
-		const id = element?.dataset.id;
-		const file = props.mediaList.find(media => media.id === id);
-		if (!file) return itemData;
-
-		itemData.src = file.url;
-		itemData.w = Number(file.properties.width);
-		itemData.h = Number(file.properties.height);
-		if (file.properties.orientation != null && file.properties.orientation >= 5) {
-			[itemData.w, itemData.h] = [itemData.h, itemData.w];
-		}
-		itemData.msrc = file.thumbnailUrl ?? undefined;
-		itemData.alt = file.comment ?? file.name;
-		itemData.comment = file.comment ?? file.name;
-		itemData.thumbCropped = true;
-
-		return itemData;
-	});
-
-	lightbox.on('uiRegister', () => {
-		lightbox?.pswp?.ui?.registerElement({
-			name: 'altText',
-			className: 'pswp__alt-text-container',
-			appendTo: 'wrapper',
-			onInit: (el, pswp) => {
-				const textBox = window.document.createElement('p');
-				textBox.className = 'pswp__alt-text _acrylic';
-				el.appendChild(textBox);
-
-				pswp.on('change', () => {
-					textBox.textContent = pswp.currSlide?.data.comment;
-				});
-			},
-		});
-	});
-
-	lightbox.on('afterInit', () => {
-		activeEl = window.document.activeElement instanceof HTMLElement ? window.document.activeElement : null;
-		focusParent(activeEl, true, true);
-		lightbox?.pswp?.element?.focus({
-			preventScroll: true,
-		});
-		window.history.pushState(null, '', '#pswp');
-	});
-
-	lightbox.on('destroy', () => {
-		focusParent(activeEl, true, false);
-		activeEl = null;
-		if (window.location.hash === '#pswp') {
-			window.history.back();
-		}
-	});
-
-	window.addEventListener('popstate', popstateHandler);
-
-	lightbox.init();
 });
 
 onUnmounted(() => {
-	window.removeEventListener('popstate', popstateHandler);
-	lightbox?.destroy();
-	lightbox = null;
-	activeEl = null;
+	mediaComponents.clear();
 });
 
-const previewable = (file: Misskey.entities.DriveFile): boolean => {
-	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
-	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
-	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
-};
-
-const openGallery = () => {
-	if (props.mediaList.filter(media => previewable(media)).length > 0) {
-		lightbox?.loadAndOpen(0);
+function onMediaClick(file: Misskey.entities.DriveFile) {
+	if (prefer.s.imageNewTab) {
+		window.open(file.url, '_blank');
+		return;
 	}
-};
+	openGallery(file.id);
+}
+
+async function openGallery(id?: string) {
+	if (id == null) {
+		const firstImage = medias.value.previewable[0];
+		if (firstImage == null) return;
+		id = firstImage.id;
+	}
+
+	const getElementByMarker = (marker: string) => {
+		if (gallery.value == null) return null;
+		const found = gallery.value.querySelector(`[data-marker="${marker}"]`) as HTMLElement | null;
+		if (found == null) return null;
+		return markRaw(found);
+	};
+
+	const contents = medias.value.previewable.map<Content>(media => ({
+		id: media.id,
+		type: getType(media.type),
+		url: media.url,
+		thumbnailUrl: media.thumbnailUrl,
+		width: media.properties.width,
+		height: media.properties.height,
+		filename: media.name,
+		file: media,
+		sourceElement: getElementByMarker(`${markerId}:${media.id}`),
+	}));
+
+	const initiallyRevealedContentIds = contents
+		.filter(content => mediaComponents.get(content.id)?.isRevealed() === true)
+		.map(content => content.id);
+
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
+		defaultIndex: contents.findIndex(conten => conten.id === id),
+		contents: contents,
+		initiallyRevealedContentIds,
+		user: props.user,
+	}, {
+		closed: () => dispose(),
+	});
+}
 
 defineExpose({
 	openGallery,
@@ -226,6 +188,10 @@ defineExpose({
 </script>
 
 <style lang="scss" module>
+.root {
+	container-type: inline-size;
+}
+
 .container {
 	position: relative;
 	width: 100%;
@@ -307,43 +273,20 @@ defineExpose({
 .media {
 	overflow: hidden; // clipにするとバグる
 	border-radius: 8px;
+	cursor: zoom-in;
 }
 
-:global(.pswp) {
-	--pswp-root-z-index: var(--mk-pswp-root-z-index, 2000700) !important;
-	--pswp-bg: var(--MI_THEME-modalBg) !important;
-}
-</style>
+@container (min-width: 500px) {
+	.medias.gridInWideArea {
+		display: grid;
+		aspect-ratio: auto;
+		grid-template-columns: repeat(4, 1fr);
+		grid-template-rows: auto;
+		grid-gap: 8px;
 
-<style lang="scss">
-.pswp__bg {
-	background: var(--MI_THEME-modalBg);
-	backdrop-filter: var(--MI-modalBgFilter);
-}
-
-.pswp__alt-text-container {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-
-	position: absolute;
-	bottom: 20px;
-	left: 50%;
-	transform: translateX(-50%);
-
-	width: 75%;
-	max-width: 800px;
-}
-
-.pswp__alt-text {
-	color: var(--MI_THEME-fg);
-	margin: 0 auto;
-	text-align: center;
-	padding: var(--MI-margin);
-	border-radius: var(--MI-radius);
-	max-height: 8em;
-	overflow-y: auto;
-	text-shadow: var(--MI_THEME-bg) 0 0 10px, var(--MI_THEME-bg) 0 0 3px, var(--MI_THEME-bg) 0 0 3px;
-	white-space: pre-line;
+		> .media {
+			aspect-ratio: 1 / 1;
+		}
+	}
 }
 </style>

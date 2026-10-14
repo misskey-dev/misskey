@@ -27,7 +27,7 @@ const props = withDefaults(defineProps<{
 	noGap?: boolean;
 	extractor?: ExtractorFunction<P, Misskey.entities.UserDetailed>;
 }>(), {
-	extractor: (item) => item,
+	extractor: (item: any) => item as Misskey.entities.UserDetailed,
 });
 </script>
 

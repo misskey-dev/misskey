@@ -21,7 +21,7 @@ export class MiMeta {
 	})
 	public rootUserId: MiUser['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'SET NULL',
 		nullable: true,
 	})
@@ -291,6 +291,26 @@ export class MiMeta {
 		default: false,
 	})
 	public enableSensitiveMediaDetectionForVideos: boolean;
+
+	@Column('varchar', {
+		length: 1024, nullable: true,
+	})
+	public sensitiveMediaDetectionApiUrl: string | null;
+
+	@Column('varchar', {
+		length: 1024, nullable: true,
+	})
+	public sensitiveMediaDetectionApiKey: string | null;
+
+	@Column('integer', {
+		default: 60000,
+	})
+	public sensitiveMediaDetectionTimeout: number;
+
+	@Column('integer', {
+		default: 4,
+	})
+	public sensitiveMediaDetectionMaxImagesPerRequest: number;
 
 	@Column('boolean', {
 		default: false,
@@ -653,6 +673,11 @@ export class MiMeta {
 	public urlPreviewUserAgent: string | null;
 
 	@Column('varchar', {
+		length: 3072, array: true, default: '{}',
+	})
+	public urlPreviewSensitiveList: string[];
+
+	@Column('varchar', {
 		length: 128,
 		default: 'none',
 	})
@@ -725,7 +750,11 @@ export class MiMeta {
 	@Column('jsonb', {
 		default: { },
 	})
-	public clientOptions: Record<string, any>;
+	public clientOptions: {
+		entrancePageStyle: 'classic' | 'simple';
+		showTimelineForVisitor: boolean;
+		showActivitiesForVisitor: boolean;
+	};
 }
 
 export type SoftwareSuspension = {

@@ -36,7 +36,7 @@ import { pleaseLogin } from '@/utility/please-login.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { useLowresTime } from '@/composables/use-lowres-time.js';
+import { useLowresTime } from '@@/js/use-lowres-time.js';
 
 const props = defineProps<{
 	noteId: string;
@@ -90,7 +90,8 @@ const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 const vote = async (id: number) => {
 	if (props.readOnly || closed.value || isVoted.value) return;
 
-	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+	if (!isLoggedIn) return;
 
 	const { canceled } = await os.confirm({
 		type: 'question',

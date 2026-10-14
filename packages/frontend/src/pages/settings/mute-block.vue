@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/mute-block" :label="i18n.ts.muteAndBlock" icon="ti ti-ban" :keywords="['mute', 'block']">
 	<div class="_gaps_m">
-		<MkFeatureBanner icon="/client-assets/prohibited_3d.png" color="#ff2600">
+		<MkFeatureBanner icon="/fluent-emoji/1f6ab.png" color="#ff2600">
 			<SearchText>{{ i18n.ts._settings.muteAndBlockBanner }}</SearchText>
 		</MkFeatureBanner>
 
@@ -173,11 +173,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, watch, markRaw } from 'vue';
+import * as Misskey from 'misskey-js';
 import XEmojiMute from './mute-block.emoji-mute.vue';
 import XInstanceMute from './mute-block.instance-mute.vue';
 import XWordMute from './mute-block.word-mute.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import { userPage } from '@/filters/user.js';
+import { userPage } from '@@/js/user.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
@@ -218,7 +219,7 @@ watch([
 	suggestReload();
 });
 
-async function unrenoteMute(user, ev) {
+async function unrenoteMute(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.renoteUnmute,
 		icon: 'ti ti-x',
@@ -229,7 +230,7 @@ async function unrenoteMute(user, ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function unmute(user, ev) {
+async function unmute(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.unmute,
 		icon: 'ti ti-x',
@@ -240,7 +241,7 @@ async function unmute(user, ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function unblock(user, ev) {
+async function unblock(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.unblock,
 		icon: 'ti ti-x',

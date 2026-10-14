@@ -25,7 +25,6 @@ export default [
 			},
 		},
 		rules: {
-			'@typescript-eslint/no-unused-vars': 'off',
 			'import/order': ['warn', {
 				groups: [
 					'builtin',

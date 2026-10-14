@@ -29,6 +29,8 @@ import { emojiRegex } from '@/misc/emoji-regex.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
+export class ChatMessageAccessError extends Error {}
+
 const MAX_ROOM_MEMBERS = 50;
 const MAX_REACTIONS_PER_MESSAGE = 100;
 const isCustomEmojiRegexp = /^:([\w+-]+)(?:@\.)?:$/;
@@ -573,6 +575,27 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async hasPermissionToViewRoomInfo(meId: MiUser['id'], room: MiChatRoom) {
+		if (room.ownerId === meId) {
+			return true;
+		}
+
+		if (await this.isRoomMember(room, meId)) {
+			return true;
+		}
+
+		if (await this.chatRoomInvitationsRepository.findOneBy({ roomId: room.id, userId: meId })) {
+			return true;
+		}
+
+		if (await this.roleService.isModerator({ id: meId })) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@bindThis
 	public async hasPermissionToDeleteRoom(meId: MiUser['id'], room: MiChatRoom) {
 		if (room.ownerId === meId) {
 			return true;
@@ -623,7 +646,10 @@ export class ChatService {
 
 	@bindThis
 	public async findRoomById(roomId: MiChatRoom['id']) {
-		return this.chatRoomsRepository.findOne({ where: { id: roomId }, relations: ['owner'] });
+		return this.chatRoomsRepository.findOne({
+			where: { id: roomId },
+			relations: { owner: true },
+		});
 	}
 
 	@bindThis
@@ -850,33 +876,35 @@ export class ChatService {
 			}
 		}
 
-		const message = await this.chatMessagesRepository.findOneByOrFail({ id: messageId });
+		const message = await this.chatMessagesRepository.findOneBy({ id: messageId });
+		if (message == null) throw new ChatMessageAccessError('no such message');
 
 		if (message.fromUserId === userId) {
-			throw new Error('cannot react to own message');
+			throw new ChatMessageAccessError('cannot react to own message');
 		}
 
 		if (message.toRoomId === null && message.toUserId !== userId) {
-			throw new Error('cannot react to others message');
+			throw new ChatMessageAccessError('cannot react to others message');
+		}
+
+		const room = message.toRoomId ? await this.chatRoomsRepository.findOneByOrFail({ id: message.toRoomId }) : null;
+
+		if (room) {
+			if (!(await this.isRoomMember(room, userId))) {
+				throw new ChatMessageAccessError('cannot react to others message');
+			}
 		}
 
 		if (message.reactions.length >= MAX_REACTIONS_PER_MESSAGE) {
 			throw new Error('too many reactions');
 		}
 
-		const room = message.toRoomId ? await this.chatRoomsRepository.findOneByOrFail({ id: message.toRoomId }) : null;
-
-		if (room) {
-			if (!await this.isRoomMember(room, userId)) {
-				throw new Error('cannot react to others message');
-			}
-		}
-
 		await this.chatMessagesRepository.createQueryBuilder().update()
 			.set({
-				reactions: () => `array_append("reactions", '${userId}/${reaction}')`,
+				reactions: () => `array_append("reactions", :pair)`,
 			})
 			.where('id = :id', { id: message.id })
+			.setParameter('pair', `${userId}/${reaction}`)
 			.execute();
 
 		if (room) {
@@ -910,17 +938,25 @@ export class ChatService {
 			reaction = `:${name}:`;
 		}
 
-		// NOTE: 自分のリアクションを(あれば)削除するだけなので諸々の権限チェックは必要なし
-
-		const message = await this.chatMessagesRepository.findOneByOrFail({ id: messageId });
+		const message = await this.chatMessagesRepository.findOneBy({ id: messageId });
+		if (message == null) throw new ChatMessageAccessError('no such message');
 
 		const room = message.toRoomId ? await this.chatRoomsRepository.findOneByOrFail({ id: message.toRoomId }) : null;
 
+		if (room) {
+			if (!(await this.isRoomMember(room, userId))) {
+				throw new ChatMessageAccessError('cannot unreact to others message');
+			}
+		} else if (message.fromUserId !== userId && message.toUserId !== userId) {
+			throw new ChatMessageAccessError('cannot unreact to others message');
+		}
+
 		await this.chatMessagesRepository.createQueryBuilder().update()
 			.set({
-				reactions: () => `array_remove("reactions", '${userId}/${reaction}')`,
+				reactions: () => `array_remove("reactions", :pair)`,
 			})
 			.where('id = :id', { id: message.id })
+			.setParameter('pair', `${userId}/${reaction}`)
 			.execute();
 
 		// TODO: 実際に削除が行われたときのみイベントを発行する

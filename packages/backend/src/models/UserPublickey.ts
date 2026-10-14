@@ -12,7 +12,7 @@ export class MiUserPublickey {
 	@PrimaryColumn(id())
 	public userId: MiUser['id'];
 
-	@OneToOne(type => MiUser, {
+	@OneToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

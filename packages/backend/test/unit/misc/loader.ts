@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { expect, describe, it } from 'vitest';
 import { DebounceLoader } from '@/misc/loader.js';
 
 class Mock {

@@ -17,7 +17,7 @@ export class MiUserProfile {
 	@PrimaryColumn(id())
 	public userId: MiUser['id'];
 
-	@OneToOne(type => MiUser, {
+	@OneToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -173,6 +173,12 @@ export class MiUserProfile {
 	})
 	public autoAcceptFollowed: boolean;
 
+	@Column('integer', { nullable: true })
+	public followApprovalLocalSeconds: number | null;
+
+	@Column('integer', { nullable: true })
+	public followApprovalRemoteSeconds: number | null;
+
 	@Column('boolean', {
 		default: false,
 		comment: 'Whether reject index by crawler.',
@@ -215,7 +221,7 @@ export class MiUserProfile {
 	})
 	public pinnedPageId: MiPage['id'] | null;
 
-	@OneToOne(type => MiPage, {
+	@OneToOne(() => MiPage, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()

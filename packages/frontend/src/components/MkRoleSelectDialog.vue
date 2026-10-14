@@ -55,9 +55,9 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkLoading from '@/components/global/MkLoading.vue';
 
 const emit = defineEmits<{
-	(ev: 'done', value: Misskey.entities.Role[]),
-	(ev: 'close'),
-	(ev: 'closed'),
+	(ev: 'done', value: Misskey.entities.Role[]): void;
+	(ev: 'close'): void;
+	(ev: 'closed'): void;
 }>();
 
 const props = withDefaults(defineProps<{

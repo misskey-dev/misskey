@@ -14,7 +14,7 @@ export async function lookupUser() {
 	});
 	if (canceled || result == null) return;
 
-	const show = (user) => {
+	const show = (user: Misskey.entities.UserDetailed) => {
 		os.pageWindow(`/admin/user/${user.id}`);
 	};
 
@@ -36,7 +36,7 @@ export async function lookupUser() {
 			notFound();
 		}
 	});
-	idPromise.then(show).catch(err => {
+	idPromise.then(show).catch(_ => {
 		notFound();
 	});
 }
@@ -48,20 +48,13 @@ export async function lookupUserByEmail() {
 	});
 	if (canceled || result == null) return;
 
-	try {
-		const user = await os.apiWithDialog('admin/accounts/find-by-email', { email: result });
-
+	os.apiWithDialog('admin/accounts/find-by-email', { email: result }, undefined, {
+		'cb865949-8af5-4062-a88c-ef55e8786d1d': {
+			text: i18n.ts.noSuchUser,
+		},
+	}).then(user => {
 		os.pageWindow(`/admin/user/${user.id}`);
-	} catch (err: any) {
-		if (err.code === 'USER_NOT_FOUND') {
-			os.alert({
-				type: 'error',
-				text: i18n.ts.noSuchUser,
-			});
-		} else {
-			throw err;
-		}
-	}
+	}, () => undefined);
 }
 
 export async function lookupFile() {
@@ -71,12 +64,8 @@ export async function lookupFile() {
 	});
 	if (canceled) return;
 
-	const show = (file) => {
-		os.pageWindow(`/admin/file/${file.id}`);
-	};
-
 	misskeyApi('admin/drive/show-file', q.startsWith('http://') || q.startsWith('https://') ? { url: q.trim() } : { fileId: q.trim() }).then(file => {
-		show(file);
+		os.pageWindow(`/admin/file/${file.id}`);
 	}).catch(err => {
 		if (err.code === 'NO_SUCH_FILE') {
 			os.alert({

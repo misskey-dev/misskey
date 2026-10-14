@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/drive" :label="i18n.ts.drive" :keywords="['drive']" icon="ti ti-cloud">
 	<div class="_gaps_m">
-		<MkFeatureBanner icon="/client-assets/cloud_3d.png" color="#0059ff">
+		<MkFeatureBanner icon="/fluent-emoji/2601.png" color="#0059ff">
 			<SearchText>{{ i18n.ts._settings.driveBanner }}</SearchText>
 		</MkFeatureBanner>
 
@@ -296,8 +296,9 @@ if (prefer.s.uploadFolder) {
 }
 
 function chooseUploadFolder() {
-	selectDriveFolder(null).then(async folder => {
-		prefer.commit('uploadFolder', folder[0] ? folder[0].id : null);
+	selectDriveFolder(null).then(async ({ canceled, folders }) => {
+		if (canceled) return;
+		prefer.commit('uploadFolder', folders[0] ? folders[0].id : null);
 		os.success();
 		if (prefer.s.uploadFolder) {
 			uploadFolder.value = await misskeyApi('drive/folders/show', {

@@ -58,7 +58,7 @@ const description = ref(props.post?.description ?? null);
 const title = ref(props.post?.title ?? '');
 const isSensitive = ref(props.post?.isSensitive ?? false);
 
-function chooseFile(evt) {
+function chooseFile(evt: MouseEvent) {
 	selectFile({
 		anchorElement: evt.currentTarget ?? evt.target,
 		multiple: true,
@@ -67,7 +67,7 @@ function chooseFile(evt) {
 	});
 }
 
-function remove(file) {
+function remove(file: NonNullable<Misskey.entities.GalleryPost['files']>[number]) {
 	files.value = files.value.filter(f => f.id !== file.id);
 }
 

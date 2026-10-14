@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <span :class="$style.container">
 	<span ref="content" :class="$style.content" :style="{ maxWidth: `${100 / minScale}%` }">
-		<slot/>
+		<slot></slot>
 	</span>
 </span>
 </template>
@@ -23,8 +23,8 @@ const observer = new ResizeObserver((entries) => {
 		transform: string;
 	}[] = [];
 	for (const entry of entries) {
-		const content = (entry.target[contentSymbol] ? entry.target : entry.target.firstElementChild) as HTMLSpanElement;
-		const props: Required<Props> = content[contentSymbol];
+		const content = ((entry.target as any)[contentSymbol] ? entry.target : entry.target.firstElementChild) as HTMLSpanElement;
+		const props: Required<Props> = (content as any)[contentSymbol];
 		const container = content.parentElement as HTMLSpanElement;
 		const contentWidth = content.getBoundingClientRect().width;
 		const containerWidth = container.getBoundingClientRect().width;
@@ -37,29 +37,41 @@ const observer = new ResizeObserver((entries) => {
 </script>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { onBeforeUnmount, useTemplateRef, watch } from 'vue';
 
 const props = withDefaults(defineProps<Props>(), {
 	minScale: 0,
 });
 
-const content = ref<HTMLSpanElement>();
+const content = useTemplateRef('content');
+
+function unobserve(el: HTMLSpanElement | null) {
+	if (el != null) {
+		delete (el as any)[contentSymbol];
+		observer.unobserve(el);
+		if (el.parentElement) {
+			observer.unobserve(el.parentElement);
+		}
+	}
+}
+
+function observe(el: HTMLSpanElement | null) {
+	if (el != null) {
+		(el as any)[contentSymbol] = props;
+		observer.observe(el);
+		if (el.parentElement) {
+			observer.observe(el.parentElement);
+		}
+	}
+}
 
 watch(content, (value, oldValue) => {
-	if (oldValue) {
-		delete oldValue[contentSymbol];
-		observer.unobserve(oldValue);
-		if (oldValue.parentElement) {
-			observer.unobserve(oldValue.parentElement);
-		}
-	}
-	if (value) {
-		value[contentSymbol] = props;
-		observer.observe(value);
-		if (value.parentElement) {
-			observer.observe(value.parentElement);
-		}
-	}
+	unobserve(oldValue);
+	observe(value);
+});
+
+onBeforeUnmount(() => {
+	unobserve(content.value);
 });
 </script>
 

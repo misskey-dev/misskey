@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" preferType="dialog" :zPriority="'middle'" @click="modal?.close()" @closed="$emit('closed')">
+<MkModal ref="modal" preferType="dialog" :zPriority="'middle'" @click="modal?.close()" @closed="emit('closed')">
 	<div :class="$style.root">
 		<div :class="$style.title"><MkSparkle>{{ i18n.ts.misskeyUpdated }}</MkSparkle></div>
 		<div :class="$style.version">✨{{ version }}🚀</div>
@@ -26,11 +26,19 @@ import { confetti } from '@/utility/confetti.js';
 
 const modal = useTemplateRef('modal');
 
+const emit = defineEmits<{
+	(ev: 'closed'): void;
+}>();
+
 const isBeta = version.includes('-beta') || version.includes('-alpha') || version.includes('-rc');
 
 function whatIsNew() {
 	modal.value?.close();
-	window.open(`https://misskey-hub.net/docs/releases/#_${version.replace(/\./g, '')}`, '_blank');
+	if (isBeta) {
+		window.open(`https://github.com/misskey-dev/misskey/releases/tag/${version}`, '_blank');
+	} else {
+		window.open(`https://misskey-hub.net/docs/releases/#_${version.replace(/\./g, '')}`, '_blank');
+	}
 }
 
 onMounted(() => {

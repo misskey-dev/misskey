@@ -54,7 +54,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 			packedUser?: Packed<'UserLite'>
 		},
 	): Promise<Packed<'NoteReaction'>> {
-		const opts = Object.assign({
+		const _opts = Object.assign({
 		}, options);
 
 		const reaction = typeof src === 'object' ? src : await this.noteReactionsRepository.findOneByOrFail({ id: src });
@@ -90,7 +90,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 			packedUser?: Packed<'UserLite'>
 		},
 	): Promise<Packed<'NoteReactionWithNote'>> {
-		const opts = Object.assign({
+		const _opts = Object.assign({
 		}, options);
 
 		const reaction = typeof src === 'object' ? src : await this.noteReactionsRepository.findOneByOrFail({ id: src });
