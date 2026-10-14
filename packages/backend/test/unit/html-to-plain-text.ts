@@ -29,6 +29,7 @@ describe('HTML descriptions as plain text', () => {
 		['&amp;lt;br&amp;gt;', '&lt;br&gt;'],
 		['<span title="1 > 0">紹介</span><br data-label="a > b">説明', '紹介 説明'],
 		['<h2>紹介</h2><blockquote>説明</blockquote>', '紹介 説明'],
+		['<section>one</section><section>two</section>', 'one two'],
 		['<table><tr><td>紹介</td><td>説明</td></tr></table>', '紹介 説明'],
 		['<table><tr><th>見出し</th><th>補足</th></tr><tr><td>紹介</td><td>説明</td></tr></table>', '見出し 補足 紹介 説明'],
 		['紹介<option>hidden</option>文', '紹介文'],
@@ -45,6 +46,7 @@ describe('HTML descriptions as plain text', () => {
 
 	it.each([
 		['紹介<br><span>説明 &amp; 補足</span>', '紹介 説明 & 補足'],
+		['<section>one</section><section>two</section>', 'one two'],
 		['紹介&lt;br&gt;説明&lt;BR /&gt;補足', '紹介 説明 補足'],
 		['<div><br></div>', defaultDescription],
 		[null, undefined],

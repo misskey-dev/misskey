@@ -5,7 +5,7 @@
 
 import sanitizeHtml from 'sanitize-html';
 
-const textSeparators = ['br', 'p', 'div', 'li', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'hr', 'td', 'th'];
+const textSeparators = ['br', 'p', 'div', 'li', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'hr', 'td', 'th', 'section'];
 
 /** Converts HTML descriptions into text while preserving word boundaries. */
 export function htmlToPlainText(html: string): string {
