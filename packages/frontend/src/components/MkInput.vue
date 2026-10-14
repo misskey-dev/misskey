@@ -77,8 +77,8 @@ const props = defineProps<{
 	inputmode?: InputHTMLAttributes['inputmode'];
 	step?: InputHTMLAttributes['step'];
 	datalist?: string[];
-	min?: number;
-	max?: number;
+	min?: InputHTMLAttributes['min'];
+	max?: InputHTMLAttributes['max'];
 	inline?: boolean;
 	debounce?: boolean | number;
 	throttle?: boolean | number;
