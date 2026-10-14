@@ -13,6 +13,12 @@ export type OtelBackendRuntimeConfig = OtelBackendConfig & {
 	serviceVersion: string;
 };
 
+/** otelForBackend.endpoint とは別に、同じspanを送るOTLP送信先(Sentry併用時のSentry OTLP endpointなど)。 */
+export type OtlpExportTarget = {
+	url: string;
+	headers: Record<string, string>;
+};
+
 export interface TelemetryCaptureMessageOptions {
 	/** 現在はエラー通知用途だけに絞る。追加する場合は各adapterでの扱いを揃えること。 */
 	level: 'error';

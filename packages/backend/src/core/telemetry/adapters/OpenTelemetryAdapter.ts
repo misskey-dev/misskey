@@ -15,7 +15,7 @@ import type { LogTraceContext } from '@/logging/types.js';
 import type { Span, SpanStatusCode, Tracer } from '@opentelemetry/api';
 import type { Resource, ResourceDetector } from '@opentelemetry/resources';
 import type { ParentBasedSampler, Sampler } from '@opentelemetry/sdk-trace-base';
-import type { OtelBackendRuntimeConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
+import type { OtelBackendRuntimeConfig, OtlpExportTarget, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
 import type { QueueTraceContextCarrier, QueueTraceContextDeps } from '../queue-trace-context.js';
 
 const DEFAULT_SHUTDOWN_TIMEOUT = 5000;
@@ -58,7 +58,7 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 	) {
 	}
 
-	public static async create(config: OtelBackendRuntimeConfig): Promise<OpenTelemetryAdapter> {
+	public static async create(config: OtelBackendRuntimeConfig, additionalExportTargets: readonly OtlpExportTarget[] = []): Promise<OpenTelemetryAdapter> {
 		const [
 			{ context, diag, DiagLogLevel, propagation, ROOT_CONTEXT, SpanKind, SpanStatusCode, trace },
 			{ W3CTraceContextPropagator },
@@ -86,8 +86,13 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 			...(config.headers != null ? { headers: config.headers } : {}),
 		});
 		const spanProcessor = new BatchSpanProcessor(exporter);
+		// Sentry併用時など、同じspan実体を別のOTLP送信先へも流す。
+		const additionalSpanProcessors = additionalExportTargets.map(target => new BatchSpanProcessor(new OTLPTraceExporter({
+			url: target.url,
+			headers: target.headers,
+		})));
 
-		// SDK 2.xではSpanProcessorをprovider生成時に渡す。ここでOTel単体用のproviderを作る。
+		// SDK 2.xではSpanProcessorをprovider生成時に渡す。tracingを所有するproviderはMisskey側の1つだけにする。
 		const provider = new NodeTracerProvider({
 			resource: createResource(config, {
 				defaultResource,
@@ -103,7 +108,7 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 				ParentBasedSampler,
 				TraceIdRatioBasedSampler,
 			}) } : {}),
-			spanProcessors: [spanProcessor],
+			spanProcessors: [spanProcessor, ...additionalSpanProcessors],
 		});
 
 		// HTTP送信には注入しないが、将来のQueue連結でpropagation APIを使える状態にする。

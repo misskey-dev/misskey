@@ -29,22 +29,26 @@ export async function initTelemetry(config: Config): Promise<void> {
 	// 設定の不備はconsoleではなくMisskeyのロガーへ出す。configureLoggingはこの時点で完了している。
 	const warn = (message: string) => logger.warn(message);
 
-	// SentryとOTelを同時に使う場合はproviderを分けず、Sentry側へOTLP processorを追加する。
-	let adapter: TelemetryAdapter | undefined;
 	if (config.sentryForBackend && otelForBackend) {
-		adapter = await SentryTelemetryAdapter.createWithOtlpExport(config.sentryForBackend, otelForBackend, warn);
+		// Sentry SDK v11の推奨構成に従い、tracingはMisskeyのOTel provider 1つが所有する。
+		// spanはotelForBackendの送信先とSentryのOTLP endpointの両方へexportし、
+		// Sentry側はエラー通知をactiveなOTel spanへ紐付けるだけにする。
+		const sentryOtlpTarget = await SentryTelemetryAdapter.getOtlpExportTarget(config.sentryForBackend, warn);
+		adapters.push(await OpenTelemetryAdapter.create(otelForBackend, sentryOtlpTarget != null ? [sentryOtlpTarget] : []));
+		adapters.push(await SentryTelemetryAdapter.createLinkedToOpenTelemetry(config.sentryForBackend, otelForBackend, warn));
 	} else if (config.sentryForBackend) {
 		// Sentry単体時は既存のSentry adapterだけを登録する。
-		adapter = await SentryTelemetryAdapter.create(config.sentryForBackend, warn);
+		adapters.push(await SentryTelemetryAdapter.create(config.sentryForBackend, warn));
 	} else if (otelForBackend) {
 		// OTel単体時だけMisskey自身でNodeTracerProviderを立てる。
-		adapter = await OpenTelemetryAdapter.create(otelForBackend);
+		adapters.push(await OpenTelemetryAdapter.create(otelForBackend));
 	}
 
-	if (adapter != null) {
-		adapters.push(adapter);
-		// Telemetryの初期化後に登録し、初期化前のBootstrapログは従来どおり出力する。
-		setLogTraceContextProvider(() => adapter.getActiveTraceContext?.());
+	// Telemetryの初期化後に登録し、初期化前のBootstrapログは従来どおり出力する。
+	// 併用時もtrace contextはtracingを所有する先頭のadapter(OTel)から取る。
+	const traceContextAdapter = adapters.find(adapter => adapter.getActiveTraceContext != null);
+	if (traceContextAdapter != null) {
+		setLogTraceContextProvider(() => traceContextAdapter.getActiveTraceContext?.());
 	}
 }
 
@@ -61,7 +65,7 @@ export function startSpan<T>(name: string, fn: () => T): T {
 	if (adapters.length === 0) return fn();
 	if (adapters.length === 1) return adapters[0].startSpan(name, fn);
 
-	// 将来複数adapterを登録する場合でも同じ処理を入れ子にラップし、呼び出し側のAPIは1回のstartSpanに保つ。
+	// Sentry併用時など複数adapterを登録する場合も同じ処理を入れ子にラップし、呼び出し側のAPIは1回のstartSpanに保つ。
 	const wrapped = adapters.reduceRight<() => T>(
 		(inner, adapter) => () => adapter.startSpan(name, inner),
 		fn,
