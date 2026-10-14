@@ -366,22 +366,22 @@ describe('Streaming', () => {
 	});
 
 	test('張り直しに成功すれば猶予を過ぎても通知しない', async () => {
-		const stream = createFrozenStream();
-		let disconnected = 0;
-		stream.on('_disconnected_', () => { disconnected++; });
-
-		const first = await nthSocket(0);
-		first.acceptConnection();
-		first.dieWithoutCloseEvent();
-
-		stream.reconnect();
-
-		const second = await nthSocket(1);
-		second.acceptConnection();
-
+		// 猶予タイマーは reconnect() 時に張られるので、それより前に偽タイマーへ切り替える。
 		vi.useFakeTimers();
 		try {
-			vi.advanceTimersByTime(120 * 1000);
+			const stream = createFrozenStream();
+			let disconnected = 0;
+			stream.on('_disconnected_', () => { disconnected++; });
+
+			await vi.advanceTimersByTimeAsync(0);
+			FrozenWebSocket.instances[0].acceptConnection();
+			FrozenWebSocket.instances[0].dieWithoutCloseEvent();
+
+			stream.reconnect();
+			await vi.advanceTimersByTimeAsync(0);
+			FrozenWebSocket.instances[1].acceptConnection();
+
+			await vi.advanceTimersByTimeAsync(120 * 1000);
 			expect(disconnected).toEqual(0);
 		} finally {
 			vi.useRealTimers();
