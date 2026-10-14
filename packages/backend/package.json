@@ -104,7 +104,7 @@
 		"jsonld": "9.0.0",
 		"juice": "12.2.0",
 		"meilisearch": "0.62.0",
-		"mfm-js": "0.26.0",
+		"mfm-js": "0.27.0",
 		"mime-types": "3.0.2",
 		"misskey-js": "workspace:*",
 		"misskey-reversi": "workspace:*",
