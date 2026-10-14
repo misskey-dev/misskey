@@ -5,14 +5,14 @@
 
 import sanitizeHtml from 'sanitize-html';
 
-const textSeparators = ['br', 'p', 'div', 'li', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'hr'];
+const textSeparators = ['br', 'p', 'div', 'li', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'hr', 'td', 'th'];
 
 /** Converts HTML descriptions into text while preserving word boundaries. */
 export function htmlToPlainText(html: string): string {
 	const text = sanitizeHtml(html, {
 		allowedTags: textSeparators,
 		allowedAttributes: {},
-		nonTextTags: ['script', 'style', 'template', 'textarea'],
+		nonTextTags: ['script', 'style', 'template', 'textarea', 'option', 'xmp'],
 	}).replace(/<[^>]+>/gu, ' ');
 
 	// sanitize-html escapes these characters after decoding the input entities.
