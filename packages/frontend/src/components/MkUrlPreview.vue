@@ -130,6 +130,7 @@ const isLargeImage = computed(() =>
 	tweetId.value == null &&
 	!sensitive.value &&
 	thumbnailStyle.value === 'summary_large_image' &&
+	!prefer.s.dataSaver.urlPreviewThumbnail &&
 	!prefer.s.forceCompactUrlPreview &&
 	!props.forceCompactCard,
 );
