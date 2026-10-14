@@ -3,12 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Config } from '@/config.js';
+import Logger from '@/logger.js';
 import { setLogTraceContextProvider } from '@/logging/logging-runtime.js';
 import { OpenTelemetryAdapter } from './adapters/OpenTelemetryAdapter.js';
 import { SentryTelemetryAdapter } from './adapters/SentryTelemetryAdapter.js';
+import type { Config } from '@/config.js';
 import type { OtelBackendRuntimeConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './adapters/TelemetryAdapter.js';
 import type { QueueTraceContextCarrier } from './queue-trace-context.js';
+
+const logger = new Logger('telemetry');
 
 /**
  * NestのDIコンテナが構築される前(boot処理内)で初期化する必要があるため、
@@ -23,13 +26,16 @@ export async function initTelemetry(config: Config): Promise<void> {
 		serviceVersion: config.version,
 	};
 
+	// 設定の不備はconsoleではなくMisskeyのロガーへ出す。configureLoggingはこの時点で完了している。
+	const warn = (message: string) => logger.warn(message);
+
 	// SentryとOTelを同時に使う場合はproviderを分けず、Sentry側へOTLP processorを追加する。
 	let adapter: TelemetryAdapter | undefined;
 	if (config.sentryForBackend && otelForBackend) {
-		adapter = await SentryTelemetryAdapter.createWithOtlpExport(config.sentryForBackend, otelForBackend);
+		adapter = await SentryTelemetryAdapter.createWithOtlpExport(config.sentryForBackend, otelForBackend, warn);
 	} else if (config.sentryForBackend) {
 		// Sentry単体時は既存のSentry adapterだけを登録する。
-		adapter = await SentryTelemetryAdapter.create(config.sentryForBackend);
+		adapter = await SentryTelemetryAdapter.create(config.sentryForBackend, warn);
 	} else if (otelForBackend) {
 		// OTel単体時だけMisskey自身でNodeTracerProviderを立てる。
 		adapter = await OpenTelemetryAdapter.create(otelForBackend);

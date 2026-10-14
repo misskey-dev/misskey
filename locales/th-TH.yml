@@ -2876,6 +2876,7 @@ _deck:
     antenna: "เสาอากาศ"
     list: "รายการ"
     channel: "ช่อง"
+    clip: "คลิป"
     mentions: "กล่าวถึงคุณ"
     direct: "ไดเร็กต์"
     roleTimeline: "บทบาทไทม์ไลน์"

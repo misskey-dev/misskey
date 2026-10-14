@@ -5,9 +5,10 @@
 
 import { describe, expect, test, vi } from 'vitest';
 import { normalizeSentryBackendConfig } from '@/config.js';
-import { SentryTelemetryAdapter, buildSentryIntegrations, buildSentryNodeOptions, buildSentryOtlpInitOptions } from '@/core/telemetry/adapters/SentryTelemetryAdapter.js';
+import { DEFAULT_SENTRY_DATA_COLLECTION, SentryTelemetryAdapter, buildSentryIntegrations, buildSentryNodeOptions, buildSentryOtlpInitOptions } from '@/core/telemetry/adapters/SentryTelemetryAdapter.js';
 
-type TestIntegration = Parameters<ReturnType<typeof buildSentryIntegrations>>[0][number];
+type SentryIntegrationFactory = ReturnType<typeof buildSentryIntegrations>;
+type TestIntegration = Parameters<SentryIntegrationFactory>[0][number];
 type TestSpanProcessor = NonNullable<ReturnType<typeof buildSentryOtlpInitOptions>['openTelemetrySpanProcessors']>[number];
 
 function testIntegration(name: string): TestIntegration {
@@ -176,6 +177,109 @@ describe('SentryTelemetryAdapter', () => {
 
 		expect(warn).toHaveBeenCalledWith(expect.stringContaining('otelForBackend.sampleRate is ignored'));
 		expect(warn).toHaveBeenCalledWith(expect.stringContaining('otelForBackend.resourceAttributes is ignored'));
+	});
+
+	// OTel併存時もSentry単体時と同じ警告経路・既定の収集範囲を使うこと
+	test('applies Sentry-only defaults and warnings in OTel coexistence mode', () => {
+		const warn = vi.fn();
+
+		const result = buildSentryOtlpInitOptions({
+			sentryConfig: {
+				enableNodeProfiling: false,
+				options: { sendDefaultPii: true } as Record<string, unknown>,
+			},
+			otelConfig: { serviceVersion: '2026.1.0' },
+			otlpProcessor: { name: 'otlpProcessor' },
+			warn,
+		});
+
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('sendDefaultPii');
+		expect(result.dataCollection).toEqual(DEFAULT_SENTRY_DATA_COLLECTION);
+	});
+
+	test('restricts data collection by default', () => {
+		const options = buildSentryNodeOptions({
+			enableNodeProfiling: false,
+			options: {},
+		});
+
+		expect(options.dataCollection).toEqual(DEFAULT_SENTRY_DATA_COLLECTION);
+	});
+
+	// Sentry v11は`dataCollection`未指定だと全て収集するため、既定が緩むと利用者の情報が意図せず送信される
+	test('pins the categories that must not be collected by default', () => {
+		expect(DEFAULT_SENTRY_DATA_COLLECTION).toEqual({
+			userInfo: false,
+			cookies: false,
+			urlQueryParams: false,
+			httpHeaders: {
+				request: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+				response: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+			},
+			httpBodies: [],
+			databaseQueryData: false,
+			genAI: { inputs: false, outputs: false },
+		});
+	});
+
+	test('warns that the removed sendDefaultPii option is ignored', () => {
+		const warn = vi.fn();
+
+		const options = buildSentryNodeOptions({
+			enableNodeProfiling: false,
+			options: { sendDefaultPii: true } as Record<string, unknown>,
+		}, undefined, warn);
+
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('sendDefaultPii');
+		// 削除されたオプションでは既定を緩めない
+		expect(options.dataCollection).toEqual(DEFAULT_SENTRY_DATA_COLLECTION);
+	});
+
+	test('does not warn when sendDefaultPii is absent', () => {
+		const warn = vi.fn();
+
+		buildSentryNodeOptions({ enableNodeProfiling: false, options: {} }, undefined, warn);
+
+		expect(warn).not.toHaveBeenCalled();
+	});
+
+	// 呼び出し側が渡したロガーがintegrations側の警告にも届くこと(consoleへ逃げない)
+	test('forwards the warn callback to the integrations factory', () => {
+		const warn = vi.fn();
+
+		const options = buildSentryNodeOptions({
+			enableNodeProfiling: false,
+			disabledIntegrations: ['NoSuchIntegration'],
+			options: {},
+		}, undefined, warn);
+
+		(options.integrations as SentryIntegrationFactory)([testIntegration('Http')]);
+
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('NoSuchIntegration');
+	});
+
+	test('allows explicit dataCollection to override the default', () => {
+		const options = buildSentryNodeOptions({
+			enableNodeProfiling: false,
+			options: {
+				dataCollection: { userInfo: true },
+			},
+		});
+
+		expect(options.dataCollection).toEqual({ userInfo: true });
+	});
+
+	test('uses session-based profiling tied to sampled traces', () => {
+		const options = buildSentryNodeOptions({
+			enableNodeProfiling: true,
+			options: {},
+		});
+
+		expect(options.profileSessionSampleRate).toBe(1.0);
+		expect(options.profileLifecycle).toBe('trace');
 	});
 });
 

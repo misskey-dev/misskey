@@ -91,9 +91,9 @@ export default defineConfig((args) => {
 		/^@sentry\/.*/,
 		/^@sentry-internal\/.*/,
 		/^@opentelemetry\/.*/,
-		'@nestjs/websockets/socket-module',
-		'@nestjs/microservices/microservices-module',
-		'@nestjs/microservices',
+		// @nestjs/coreはmicroservices / websocketsをoptional peerとして動的importするが、
+		// Misskeyはどちらも使わないためインストールしていない
+		/^@nestjs\/(?:microservices|websockets)(?:\/.*)?$/,
 		/^@napi-rs\/.*/,
 		'mock-aws-s3',
 		'aws-sdk',
