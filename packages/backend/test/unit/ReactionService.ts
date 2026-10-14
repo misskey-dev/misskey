@@ -144,7 +144,9 @@ describe('ReactionService', () => {
 						update: () => ({
 							set: () => ({
 								where: () => ({
-									execute: vi.fn().mockResolvedValue(undefined),
+									setParameters: () => ({
+										execute: vi.fn().mockResolvedValue(undefined),
+									}),
 								}),
 							}),
 						}),

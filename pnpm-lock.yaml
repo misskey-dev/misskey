@@ -503,8 +503,8 @@ importers:
         specifier: 0.62.0
         version: 0.62.0
       mfm-js:
-        specifier: 0.26.0
-        version: 0.26.0
+        specifier: 0.27.0
+        version: 0.27.0
       mime-types:
         specifier: 3.0.2
         version: 3.0.2
@@ -907,8 +907,8 @@ importers:
         specifier: 1.61.1
         version: 1.61.1
       mfm-js:
-        specifier: 0.26.0
-        version: 0.26.0
+        specifier: 0.27.0
+        version: 0.27.0
       misskey-bubble-game:
         specifier: workspace:*
         version: link:../misskey-bubble-game
@@ -1224,8 +1224,8 @@ importers:
         specifier: 2.2.3
         version: 2.2.3
       mfm-js:
-        specifier: 0.26.0
-        version: 0.26.0
+        specifier: 0.27.0
+        version: 0.27.0
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
@@ -1336,8 +1336,8 @@ importers:
         specifier: 2.2.3
         version: 2.2.3
       mfm-js:
-        specifier: 0.26.0
-        version: 0.26.0
+        specifier: 0.27.0
+        version: 0.27.0
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
@@ -2485,9 +2485,6 @@ packages:
 
   '@misskey-dev/emoji-assets@17.0.3':
     resolution: {integrity: sha512-Uiy+R4rghBML5k2nZFLr2w4RUwqDrDnTWZ6lXGYtnEr0DRcW41pQyS2RUUm/pFjYr/DjNntcoysdhqinpa9P/Q==}
-
-  '@misskey-dev/emoji-data@17.0.0':
-    resolution: {integrity: sha512-grMnsmTm7VSah5heS1fIfOfoQmIpzo6ZU5AV5yRxCy7ivtWhFU3fpMfXZyKsH9G9/HZiLRsClKtyjHKMlxjt7g==}
 
   '@misskey-dev/emoji-data@17.0.3':
     resolution: {integrity: sha512-RmW0C2A1Zxn7DTYVCOhMDyCyyXYJLBc5GIEuhcufaqF0Gxw9+gIwaitCI3OUWnR928XnDwvvaizhJSjvIEF+2Q==}
@@ -6810,8 +6807,8 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
-  mfm-js@0.26.0:
-    resolution: {integrity: sha512-JEbaa1GBJBcpsk9/6tGaOgo1WewUhL9cIFl3VhIZ2a/89X83hzwxwVZOEebFaWdOufwFxnti44QMR/TWcAxSzg==}
+  mfm-js@0.27.0:
+    resolution: {integrity: sha512-UgnCx6foer9OsD/WoEjVWELL5IaJ8ShBHz6XwEvQZmRon3ccz7Cdrejfk7sj2jSHhnqQOIKNLUvMsWcILafNfw==}
 
   micromark-core-commonmark@2.0.3:
     resolution: {integrity: sha512-RDBrHEMSxVFLg6xvnXmb1Ayr2WzLAWjeSATAoxwKYJV94TeNavgoIdA0a9ytzDSVzBy2YKFK+emCPOEibLeCrg==}
@@ -10363,8 +10360,6 @@ snapshots:
   '@misskey-dev/browser-image-resizer@2024.1.0': {}
 
   '@misskey-dev/emoji-assets@17.0.3': {}
-
-  '@misskey-dev/emoji-data@17.0.0': {}
 
   '@misskey-dev/emoji-data@17.0.3': {}
 
@@ -15367,9 +15362,9 @@ snapshots:
 
   merge2@1.4.1: {}
 
-  mfm-js@0.26.0:
+  mfm-js@0.27.0:
     dependencies:
-      '@misskey-dev/emoji-data': 17.0.0
+      '@misskey-dev/emoji-data': 17.0.3
 
   micromark-core-commonmark@2.0.3:
     dependencies:
