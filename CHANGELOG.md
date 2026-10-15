@@ -17,6 +17,8 @@
 
 ### Client
 - Feat: デッキにクリップのカラムを追加できるように
+- Fix: リアルタイム通信の接続が瞬間的に切れすぐに復旧した場合には再接続を促すダイアログが表示されないように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/172)
 
 ### Server
 - Fix: ローカル限定絵文字でリモートノートのリノートにリアクションできてしまう問題を修正
