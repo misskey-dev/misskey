@@ -3,16 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { BroadcastChannel } from 'broadcast-channel';
 import { createVisibilityAwareInterval } from '@@/js/interval.js';
 import type { StorageProvider } from '@/preferences/manager.js';
-import { cloudBackup } from '@/preferences/utility.js';
+import { cloudBackup, cloudSync } from '@/preferences/utility.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { isSameScope, PreferencesManager } from '@/preferences/manager.js';
 import { store } from '@/store.js';
 import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { TAB_ID } from '@/tab-id.js';
 
 // クラウド同期用グループ名
 const syncGroup = 'default';
@@ -38,11 +36,12 @@ const io: StorageProvider = {
 			const cloudData = await misskeyApi('i/registry/get', {
 				scope: ['client', 'preferences', 'sync'],
 				key: syncGroup + ':' + ctx.key,
-			}) as [any, any][];
+			}) as [any, any, any][];
 			const target = cloudData.find(([scope]) => isSameScope(scope, ctx.scope));
 			if (target == null) return null;
 			return {
 				value: target[1],
+				meta: target[2] ?? {},
 			};
 		} catch (err: any) {
 			if (err.code === 'NO_SUCH_KEY') { // TODO: いちいちエラーキャッチするのは面倒なのでキーが無くてもエラーにならない maybe-get のようなエンドポイントをバックエンドに実装する
@@ -54,12 +53,12 @@ const io: StorageProvider = {
 	},
 
 	cloudSet: async (ctx) => {
-		let cloudData: [any, any][] = [];
+		let cloudData: [any, any, any][] = [];
 		try {
 			cloudData = await misskeyApi('i/registry/get', {
 				scope: ['client', 'preferences', 'sync'],
 				key: syncGroup + ':' + ctx.key,
-			}) as [any, any][];
+			}) as [any, any, any][];
 		} catch (err: any) {
 			if (err.code === 'NO_SUCH_KEY') { // TODO: いちいちエラーキャッチするのは面倒なのでキーが無くてもエラーにならない maybe-get のようなエンドポイントをバックエンドに実装する
 				cloudData = [];
@@ -71,9 +70,9 @@ const io: StorageProvider = {
 		const i = cloudData.findIndex(([scope]) => isSameScope(scope, ctx.scope));
 
 		if (i === -1) {
-			cloudData.push([ctx.scope, ctx.value]);
+			cloudData.push([ctx.scope, ctx.value, ctx.meta]);
 		} else {
-			cloudData[i] = [ctx.scope, ctx.value];
+			cloudData[i] = [ctx.scope, ctx.value, ctx.meta];
 		}
 
 		await misskeyApi('i/registry/set', {
@@ -88,10 +87,10 @@ const io: StorageProvider = {
 		const fetchings = ctx.needs.map(need => io.cloudGet(need).then(res => [need.key, res] as const));
 		const cloudDatas = await Promise.all(fetchings);
 
-		const res = {} as Partial<Record<string, any>>;
+		const res = {} as Partial<Record<string, { value: any; meta: any; }>>;
 		for (const cloudData of cloudDatas) {
 			if (cloudData[1] != null) {
-				res[cloudData[0]] = cloudData[1].value;
+				res[cloudData[0]] = cloudData[1];
 			}
 		}
 
@@ -102,41 +101,10 @@ const io: StorageProvider = {
 export const prefer = new PreferencesManager(io, $i);
 
 //#region タブ間同期
-let latestPreferencesUpdate: {
-	tabId: string;
-	timestamp: number;
-} | null = null;
-
-const preferencesChannel = new BroadcastChannel<{
-	type: 'preferencesUpdate';
-	tabId: string;
-	timestamp: number;
-}>('preferences');
-
-prefer.on('committed', () => {
-	latestPreferencesUpdate = {
-		tabId: TAB_ID,
-		timestamp: Date.now(),
-	};
-	preferencesChannel.postMessage({
-		type: 'preferencesUpdate',
-		tabId: TAB_ID,
-		timestamp: latestPreferencesUpdate.timestamp,
-	});
-});
-
-preferencesChannel.addEventListener('message', (msg) => {
-	if (msg.type === 'preferencesUpdate') {
-		if (msg.tabId === TAB_ID) return;
-		if (latestPreferencesUpdate != null) {
-			if (msg.timestamp <= latestPreferencesUpdate.timestamp) return;
-		}
+window.addEventListener('storage', (ev) => {
+	if (ev.key === 'preferences') {
 		prefer.reloadProfile();
-		if (_DEV_) console.log('prefer:received update from other tab');
-		latestPreferencesUpdate = {
-			tabId: msg.tabId,
-			timestamp: msg.timestamp,
-		};
+		if (_DEV_) console.log('prefer: received update from other tab');
 	}
 });
 //#endregion
@@ -155,6 +123,13 @@ createVisibilityAwareInterval(() => {
 	});
 }, 1000 * 60 * 3);
 //#endregion
+
+store.loaded.then(() => {
+	if (store.s.enablePreferencesAutoCloudSync) {
+		// TODO: 前回同期してから10分以上経過している場合のみ
+		cloudSync();
+	}
+});
 
 if (_DEV_) {
 	(window as any).prefer = prefer;
