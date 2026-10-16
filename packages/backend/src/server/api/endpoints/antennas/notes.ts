@@ -13,7 +13,7 @@ import { DI } from '@/di-symbols.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { ApiError } from '../../error.js';
@@ -70,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 		private fanoutTimelineService: FanoutTimelineService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private channelMutingService: ChannelMutingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -94,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			trackPromise(this.antennasRepository.update(antenna.id, antenna));
 
 			if (needPublishEvent) {
-				this.globalEventService.publishInternalEvent('antennaUpdated', antenna);
+				this.globalEventPublishService.publishInternalEvent('antennaUpdated', antenna);
 			}
 
 			let noteIds = await this.fanoutTimelineService.get(`antennaTimeline:${antenna.id}`, untilId, sinceId);

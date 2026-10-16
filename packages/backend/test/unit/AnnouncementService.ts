@@ -23,7 +23,7 @@ import { DI } from '@/di-symbols.js';
 import { genAidx } from '@/misc/id/aidx.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
@@ -35,7 +35,7 @@ describe('AnnouncementService', () => {
 	let usersRepository: UsersRepository;
 	let announcementsRepository: AnnouncementsRepository;
 	let announcementReadsRepository: AnnouncementReadsRepository;
-	let globalEventService: Mocked<GlobalEventService>;
+	let globalEventPublishService: Mocked<GlobalEventPublishService>;
 	let moderationLogService: Mocked<ModerationLogService>;
 	let queueService: Mocked<QueueService>;
 
@@ -74,7 +74,7 @@ describe('AnnouncementService', () => {
 			],
 		})
 			.useMocker((token) => {
-				if (token === GlobalEventService) {
+				if (token === GlobalEventPublishService) {
 					return {
 						publishMainStream: vi.fn(),
 						publishBroadcastStream: vi.fn(),
@@ -95,7 +95,7 @@ describe('AnnouncementService', () => {
 		usersRepository = app.get<UsersRepository>(DI.usersRepository);
 		announcementsRepository = app.get<AnnouncementsRepository>(DI.announcementsRepository);
 		announcementReadsRepository = app.get<AnnouncementReadsRepository>(DI.announcementReadsRepository);
-		globalEventService = app.get<GlobalEventService>(GlobalEventService) as Mocked<GlobalEventService>;
+		globalEventPublishService = app.get<GlobalEventPublishService>(GlobalEventPublishService) as Mocked<GlobalEventPublishService>;
 		moderationLogService = app.get<ModerationLogService>(ModerationLogService) as Mocked<ModerationLogService>;
 		queueService = app.get<QueueService>(QueueService) as Mocked<QueueService>;
 	});
@@ -193,9 +193,9 @@ describe('AnnouncementService', () => {
 			expect(result.raw.title).toBe('Title');
 			expect(result.packed.title).toBe('Title');
 
-			expect(globalEventService.publishBroadcastStream).toHaveBeenCalled();
-			expect(globalEventService.publishBroadcastStream.mock.lastCall![0]).toBe('announcementCreated');
-			expect((globalEventService.publishBroadcastStream.mock.lastCall![1] as any).announcement).toBe(result.packed);
+			expect(globalEventPublishService.publishBroadcastStream).toHaveBeenCalled();
+			expect(globalEventPublishService.publishBroadcastStream.mock.lastCall![0]).toBe('announcementCreated');
+			expect((globalEventPublishService.publishBroadcastStream.mock.lastCall![1] as any).announcement).toBe(result.packed);
 			expect(moderationLogService.log).toHaveBeenCalled();
 		});
 
@@ -211,11 +211,11 @@ describe('AnnouncementService', () => {
 			expect(result.raw.title).toBe('Title');
 			expect(result.packed.title).toBe('Title');
 
-			expect(globalEventService.publishBroadcastStream).not.toHaveBeenCalled();
-			expect(globalEventService.publishMainStream).toHaveBeenCalled();
-			expect(globalEventService.publishMainStream.mock.lastCall![0]).toBe(user.id);
-			expect(globalEventService.publishMainStream.mock.lastCall![1]).toBe('announcementCreated');
-			expect((globalEventService.publishMainStream.mock.lastCall![2] as any).announcement).toBe(result.packed);
+			expect(globalEventPublishService.publishBroadcastStream).not.toHaveBeenCalled();
+			expect(globalEventPublishService.publishMainStream).toHaveBeenCalled();
+			expect(globalEventPublishService.publishMainStream.mock.lastCall![0]).toBe(user.id);
+			expect(globalEventPublishService.publishMainStream.mock.lastCall![1]).toBe('announcementCreated');
+			expect((globalEventPublishService.publishMainStream.mock.lastCall![2] as any).announcement).toBe(result.packed);
 			expect(moderationLogService.log).toHaveBeenCalled();
 		});
 
@@ -228,7 +228,7 @@ describe('AnnouncementService', () => {
 			}, me);
 
 			expect(result.raw.isActive).toBe(false);
-			expect(globalEventService.publishBroadcastStream).not.toHaveBeenCalled();
+			expect(globalEventPublishService.publishBroadcastStream).not.toHaveBeenCalled();
 			expect(queueService.scheduleAnnouncementArchive).not.toHaveBeenCalled();
 		});
 

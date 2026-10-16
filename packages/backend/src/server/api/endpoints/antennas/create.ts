@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import type { UserListsRepository, AntennasRepository } from '@/models/_.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -90,7 +90,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private antennaEntityService: AntennaEntityService,
 		private roleService: RoleService,
 		private idService: IdService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			if (ps.keywords.flat().every(x => x === '') && ps.excludeKeywords.flat().every(x => x === '')) {
@@ -137,7 +137,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				excludeNotesInSensitiveChannel: ps.excludeNotesInSensitiveChannel,
 			});
 
-			this.globalEventService.publishInternalEvent('antennaCreated', antenna);
+			this.globalEventPublishService.publishInternalEvent('antennaCreated', antenna);
 
 			return await this.antennaEntityService.pack(antenna);
 		});

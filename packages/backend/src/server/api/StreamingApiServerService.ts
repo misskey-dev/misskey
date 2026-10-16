@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common';
 import * as WebSocket from 'ws';
 import type { MiAccessToken } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
 import type { MiLocalUser } from '@/models/User.js';
 import { UserService } from '@/core/UserService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
@@ -25,7 +25,7 @@ export class StreamingApiServerService {
 	constructor(
 		private moduleRef: ModuleRef,
 		private authenticateService: AuthenticateService,
-		private globalEventReceiverService: GlobalEventReceiverService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 		private usersService: UserService,
 	) {
 	}
@@ -98,7 +98,7 @@ export class StreamingApiServerService {
 
 		const globalEv = new EventEmitter();
 
-		this.globalEventReceiverService.onMessage((message) => {
+		this.globalEventSubscribeService.onMessage((message) => {
 			globalEv.emit('message', message);
 		});
 

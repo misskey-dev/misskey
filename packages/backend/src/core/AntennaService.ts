@@ -7,11 +7,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { In } from 'typeorm';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { GlobalEvents } from '@/core/GlobalEventPublishService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -39,14 +39,14 @@ export class AntennaService implements OnApplicationShutdown {
 
 		private cacheService: CacheService,
 		private utilityService: UtilityService,
-		private globalEventService: GlobalEventService,
-		private globalEventReceiverService: GlobalEventReceiverService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 		private fanoutTimelineService: FanoutTimelineService,
 	) {
 		this.antennasFetched = false;
 		this.antennas = [];
 
-		this.globalEventReceiverService.onInternalEvent(this.onRedisMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onRedisMessage);
 	}
 
 	@bindThis
@@ -99,7 +99,7 @@ export class AntennaService implements OnApplicationShutdown {
 
 		for (const antenna of matchedAntennas) {
 			this.fanoutTimelineService.push(`antennaTimeline:${antenna.id}`, note.id, 200, redisPipeline);
-			this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
+			this.globalEventPublishService.publishAntennaStream(antenna.id, 'note', note);
 		}
 
 		redisPipeline.exec();
@@ -246,13 +246,13 @@ export class AntennaService implements OnApplicationShutdown {
 
 		// announce update to event
 		for (const newAntenna of await this.antennasRepository.findBy({ id: In(antennaIds) })) {
-			this.globalEventService.publishInternalEvent('antennaUpdated', newAntenna);
+			this.globalEventPublishService.publishInternalEvent('antennaUpdated', newAntenna);
 		}
 	}
 
 	@bindThis
 	public dispose(): void {
-		this.globalEventReceiverService.offInternalEvent(this.onRedisMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onRedisMessage);
 	}
 
 	@bindThis

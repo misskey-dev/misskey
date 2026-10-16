@@ -6,7 +6,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import _Ajv from 'ajv';
 import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import Logger from '@/logger.js';
 import type { AntennasRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -67,7 +67,7 @@ export class ImportAntennasProcessorService {
 
 		private queueLoggerService: QueueLoggerService,
 		private idService: IdService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('import-antennas');
 	}
@@ -100,7 +100,7 @@ export class ImportAntennasProcessorService {
 					excludeNotesInSensitiveChannel: antenna.excludeNotesInSensitiveChannel,
 				});
 				this.logger.succ('Antenna created: ' + result.id);
-				this.globalEventService.publishInternalEvent('antennaCreated', result);
+				this.globalEventPublishService.publishInternalEvent('antennaCreated', result);
 			}
 		} catch (err: any) {
 			this.logger.error(err);

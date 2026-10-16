@@ -8,8 +8,8 @@ import { MiUser, type WebhooksRepository } from '@/models/_.js';
 import { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
-import { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
+import { GlobalEvents } from '@/core/GlobalEventPublishService.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { QueueService } from '@/core/QueueService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
@@ -34,10 +34,10 @@ export class UserWebhookService implements OnApplicationShutdown {
 		@Inject(DI.webhooksRepository)
 		private webhooksRepository: WebhooksRepository,
 
-		private globalEventReceiverService: GlobalEventReceiverService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 		private queueService: QueueService,
 	) {
-		this.globalEventReceiverService.onInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	@bindThis
@@ -142,7 +142,7 @@ export class UserWebhookService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.globalEventReceiverService.offInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 	}
 
 	@bindThis

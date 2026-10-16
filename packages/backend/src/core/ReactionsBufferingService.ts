@@ -8,11 +8,11 @@ import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
 import type { MiUser, NotesRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { PER_NOTE_REACTION_USER_PAIR_CACHE_MAX } from '@/const.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import type { GlobalEvents } from '@/core/GlobalEventPublishService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 const REDIS_DELTA_PREFIX = 'reactionsBufferDeltas';
@@ -30,9 +30,9 @@ export class ReactionsBufferingService implements OnApplicationShutdown {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
-		private globalEventReceiverService: GlobalEventReceiverService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 	) {
-		this.globalEventReceiverService.onInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	@bindThis
@@ -205,7 +205,7 @@ export class ReactionsBufferingService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.globalEventReceiverService.offInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 	}
 
 	@bindThis

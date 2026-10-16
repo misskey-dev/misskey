@@ -8,7 +8,7 @@ import { isInstanceMuted, isUserFromMutedInstance } from '@/misc/is-instance-mut
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import type { JsonObject } from '@/misc/json-value.js';
-import type { MainEventTypes, EventTypesToEventPayload } from '@/core/GlobalEventService.js';
+import type { MainEventTypes, EventTypesToEventPayload } from '@/core/GlobalEventPublishService.js';
 import Channel, { type ChannelRequest } from '../channel.js';
 import { REQUEST } from '@nestjs/core';
 

@@ -348,7 +348,7 @@ export type StreamEventEmitter = UnionToIntersection<EventEmitterDictionary[keyo
 export type StreamChannels = GlobalEvents[keyof GlobalEvents]['name'];
 
 @Injectable()
-export class GlobalEventService {
+export class GlobalEventPublishService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,

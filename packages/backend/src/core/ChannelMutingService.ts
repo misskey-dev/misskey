@@ -9,9 +9,9 @@ import { Brackets, In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { ChannelMutingRepository, ChannelsRepository, MiChannel, MiChannelMuting, MiUser } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
-import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEvents, GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
 import { RedisKVCache } from '@/misc/cache.js';
 
 @Injectable()
@@ -29,8 +29,8 @@ export class ChannelMutingService {
 		private channelMutingRepository: ChannelMutingRepository,
 
 		private idService: IdService,
-		private globalEventService: GlobalEventService,
-		private globalEventReceiverService: GlobalEventReceiverService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 	) {
 		this.mutingChannelsCache = new RedisKVCache<Set<string>>(this.redisClient, 'channelMutingChannels', {
 			lifetime: 1000 * 60 * 30, // 30m
@@ -43,7 +43,7 @@ export class ChannelMutingService {
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
 
-		this.globalEventReceiverService.onInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	/**
@@ -156,7 +156,7 @@ export class ChannelMutingService {
 			expiresAt: params.expiresAt,
 		});
 
-		this.globalEventService.publishInternalEvent('muteChannel', {
+		this.globalEventPublishService.publishInternalEvent('muteChannel', {
 			userId: params.requestUserId,
 			channelId: params.targetChannelId,
 		});
@@ -176,7 +176,7 @@ export class ChannelMutingService {
 			channelId: params.targetChannelId,
 		});
 
-		this.globalEventService.publishInternalEvent('unmuteChannel', {
+		this.globalEventPublishService.publishInternalEvent('unmuteChannel', {
 			userId: params.requestUserId,
 			channelId: params.targetChannelId,
 		});

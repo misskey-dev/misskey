@@ -11,7 +11,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { resetDb } from '@/misc/reset-db.js';
 import { MetaService } from '@/core/MetaService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 
 export const meta = {
 	tags: ['non-productive'],
@@ -42,7 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private loggerService: LoggerService,
 		private metaService: MetaService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			if (process.env.NODE_ENV !== 'test') throw new Error('NODE_ENV is not a test');
@@ -56,7 +56,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// DIコンテナで管理しているmetaのインスタンスには上記のリセット処理が届かないため、
 			// 初期値を流して明示的にリフレッシュする
 			const meta = await this.metaService.fetch(true);
-			this.globalEventService.publishInternalEvent('metaUpdated', { after: meta });
+			this.globalEventPublishService.publishInternalEvent('metaUpdated', { after: meta });
 
 			logger.info('---- Database reset complete.');
 

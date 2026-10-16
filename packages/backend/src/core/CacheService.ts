@@ -11,8 +11,8 @@ import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
+import type { GlobalEvents } from '@/core/GlobalEventPublishService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -50,7 +50,7 @@ export class CacheService implements OnApplicationShutdown {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
-		private globalEventReceiverService: GlobalEventReceiverService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 		private userEntityService: UserEntityService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
@@ -131,7 +131,7 @@ export class CacheService implements OnApplicationShutdown {
 
 		// NOTE: チャンネルのフォロー状況キャッシュはChannelFollowingServiceで行っている
 
-		this.globalEventReceiverService.onInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	@bindThis
@@ -191,7 +191,7 @@ export class CacheService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.globalEventReceiverService.offInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 		this.userByIdCache.dispose();
 		this.localUserByNativeTokenCache.dispose();
 		this.localUserByIdCache.dispose();

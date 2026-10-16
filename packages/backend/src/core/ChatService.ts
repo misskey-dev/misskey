@@ -10,7 +10,7 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { QueueService } from '@/core/QueueService.js';
 import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -82,7 +82,7 @@ export class ChatService {
 		private userEntityService: UserEntityService,
 		private chatEntityService: ChatEntityService,
 		private idService: IdService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private apRendererService: ApRendererService,
 		private queueService: QueueService,
 		private pushNotificationService: PushNotificationService,
@@ -217,12 +217,12 @@ export class ChatService {
 
 		if (this.userEntityService.isLocalUser(fromUser)) {
 			// 自分のストリーム
-			this.globalEventService.publishChatUserStream(fromUser.id, toUser.id, 'message', packedMessage);
+			this.globalEventPublishService.publishChatUserStream(fromUser.id, toUser.id, 'message', packedMessage);
 		}
 
 		if (this.userEntityService.isLocalUser(toUser)) {
 			// 相手のストリーム
-			this.globalEventService.publishChatUserStream(toUser.id, fromUser.id, 'message', packedMessage);
+			this.globalEventPublishService.publishChatUserStream(toUser.id, fromUser.id, 'message', packedMessage);
 		}
 
 		// 3秒経っても既読にならなかったらイベント発行
@@ -233,7 +233,7 @@ export class ChatService {
 				if (marker == null) return; // 既読
 
 				const packedMessageForTo = await this.chatEntityService.packMessageDetailed(inserted, toUser);
-				this.globalEventService.publishMainStream(toUser.id, 'newChatMessage', packedMessageForTo);
+				this.globalEventPublishService.publishMainStream(toUser.id, 'newChatMessage', packedMessageForTo);
 				this.pushNotificationService.pushNotification(toUser.id, 'newChatMessage', packedMessageForTo);
 			}, 3000);
 		}
@@ -275,7 +275,7 @@ export class ChatService {
 
 		const packedMessage = await this.chatEntityService.packMessageLiteForRoom(inserted);
 
-		this.globalEventService.publishChatRoomStream(toRoom.id, 'message', packedMessage);
+		this.globalEventPublishService.publishChatRoomStream(toRoom.id, 'message', packedMessage);
 
 		const redisPipeline = this.redisClient.pipeline();
 		for (const membership of membershipsOtherThanMe) {
@@ -303,7 +303,7 @@ export class ChatService {
 				const marker = markers[i][1];
 				if (marker == null) continue;
 
-				this.globalEventService.publishMainStream(membershipsOtherThanMe[i].userId, 'newChatMessage', packedMessageForTo);
+				this.globalEventPublishService.publishMainStream(membershipsOtherThanMe[i].userId, 'newChatMessage', packedMessageForTo);
 				this.pushNotificationService.pushNotification(membershipsOtherThanMe[i].userId, 'newChatMessage', packedMessageForTo);
 			}
 		}, 3000);
@@ -377,15 +377,15 @@ export class ChatService {
 				this.usersRepository.findOneByOrFail({ id: message.toUserId }),
 			]);
 
-			if (this.userEntityService.isLocalUser(fromUser)) this.globalEventService.publishChatUserStream(message.fromUserId, message.toUserId, 'deleted', message.id);
-			if (this.userEntityService.isLocalUser(toUser)) this.globalEventService.publishChatUserStream(message.toUserId, message.fromUserId, 'deleted', message.id);
+			if (this.userEntityService.isLocalUser(fromUser)) this.globalEventPublishService.publishChatUserStream(message.fromUserId, message.toUserId, 'deleted', message.id);
+			if (this.userEntityService.isLocalUser(toUser)) this.globalEventPublishService.publishChatUserStream(message.toUserId, message.fromUserId, 'deleted', message.id);
 
 			if (this.userEntityService.isLocalUser(fromUser) && this.userEntityService.isRemoteUser(toUser)) {
 				//const activity = this.apRendererService.addContext(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${message.id}`), fromUser));
 				//this.queueService.deliver(fromUser, activity, toUser.inbox);
 			}
 		} else if (message.toRoomId) {
-			this.globalEventService.publishChatRoomStream(message.toRoomId, 'deleted', message.id);
+			this.globalEventPublishService.publishChatRoomStream(message.toRoomId, 'deleted', message.id);
 		}
 	}
 
@@ -908,17 +908,17 @@ export class ChatService {
 			.execute();
 
 		if (room) {
-			this.globalEventService.publishChatRoomStream(room.id, 'react', {
+			this.globalEventPublishService.publishChatRoomStream(room.id, 'react', {
 				messageId: message.id,
 				user: await this.userEntityService.pack(userId),
 				reaction,
 			});
 		} else {
-			this.globalEventService.publishChatUserStream(message.fromUserId, message.toUserId!, 'react', {
+			this.globalEventPublishService.publishChatUserStream(message.fromUserId, message.toUserId!, 'react', {
 				messageId: message.id,
 				reaction,
 			});
-			this.globalEventService.publishChatUserStream(message.toUserId!, message.fromUserId, 'react', {
+			this.globalEventPublishService.publishChatUserStream(message.toUserId!, message.fromUserId, 'react', {
 				messageId: message.id,
 				reaction,
 			});
@@ -962,17 +962,17 @@ export class ChatService {
 		// TODO: 実際に削除が行われたときのみイベントを発行する
 
 		if (room) {
-			this.globalEventService.publishChatRoomStream(room.id, 'unreact', {
+			this.globalEventPublishService.publishChatRoomStream(room.id, 'unreact', {
 				messageId: message.id,
 				user: await this.userEntityService.pack(userId),
 				reaction,
 			});
 		} else {
-			this.globalEventService.publishChatUserStream(message.fromUserId, message.toUserId!, 'unreact', {
+			this.globalEventPublishService.publishChatUserStream(message.fromUserId, message.toUserId!, 'unreact', {
 				messageId: message.id,
 				reaction,
 			});
-			this.globalEventService.publishChatUserStream(message.toUserId!, message.fromUserId, 'unreact', {
+			this.globalEventPublishService.publishChatUserStream(message.toUserId!, message.fromUserId, 'unreact', {
 				messageId: message.id,
 				reaction,
 			});

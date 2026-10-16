@@ -13,7 +13,7 @@ import type { UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNotification } from '@/models/Notification.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
 import { IdService } from '@/core/IdService.js';
@@ -40,7 +40,7 @@ export class NotificationService implements OnApplicationShutdown {
 
 		private notificationEntityService: NotificationEntityService,
 		private idService: IdService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private pushNotificationService: PushNotificationService,
 		private cacheService: CacheService,
 		private userListService: UserListService,
@@ -72,7 +72,7 @@ export class NotificationService implements OnApplicationShutdown {
 
 	@bindThis
 	private postReadAllNotifications(userId: MiUser['id']) {
-		this.globalEventService.publishMainStream(userId, 'readAllNotifications');
+		this.globalEventPublishService.publishMainStream(userId, 'readAllNotifications');
 		this.pushNotificationService.pushNotification(userId, 'readAllNotifications', undefined);
 	}
 
@@ -183,7 +183,7 @@ export class NotificationService implements OnApplicationShutdown {
 		if (packed == null) return null;
 
 		// Publish notification event
-		this.globalEventService.publishMainStream(notifieeId, 'notification', packed);
+		this.globalEventPublishService.publishMainStream(notifieeId, 'notification', packed);
 
 		// 2秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
 		// テスト通知の場合は即時発行
@@ -192,7 +192,7 @@ export class NotificationService implements OnApplicationShutdown {
 			const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${notifieeId}`);
 			if (latestReadNotificationId && (latestReadNotificationId >= redisId)) return;
 
-			this.globalEventService.publishMainStream(notifieeId, 'unreadNotification', packed);
+			this.globalEventPublishService.publishMainStream(notifieeId, 'unreadNotification', packed);
 			this.pushNotificationService.pushNotification(notifieeId, 'notification', packed);
 
 			if (type === 'follow') this.emailNotificationFollow(notifieeId, await this.usersRepository.findOneByOrFail({ id: notifierId! }));
@@ -239,7 +239,7 @@ export class NotificationService implements OnApplicationShutdown {
 			this.redisClient.del(`notificationTimeline:${userId}`),
 			this.redisClient.del(`latestReadNotification:${userId}`),
 		]);
-		this.globalEventService.publishMainStream(userId, 'notificationFlushed');
+		this.globalEventPublishService.publishMainStream(userId, 'notificationFlushed');
 	}
 
 	@bindThis

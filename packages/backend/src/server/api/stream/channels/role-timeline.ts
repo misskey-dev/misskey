@@ -10,7 +10,7 @@ import { NoteStreamingHidingService } from '../NoteStreamingHidingService.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import { DI } from '@/di-symbols.js';
 import type { RolesRepository } from '@/models/_.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import type { GlobalEvents } from '@/core/GlobalEventPublishService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type ChannelRequest } from '../channel.js';
 import { REQUEST } from '@nestjs/core';

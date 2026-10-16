@@ -6,12 +6,12 @@
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import type { AvatarDecorationsRepository, MiAvatarDecoration, MiUser } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
 import { MemorySingleCache } from '@/misc/cache.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import type { GlobalEvents } from '@/core/GlobalEventPublishService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 @Injectable()
@@ -24,12 +24,12 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 
 		private idService: IdService,
 		private moderationLogService: ModerationLogService,
-		private globalEventService: GlobalEventService,
-		private globalEventReceiverService: GlobalEventReceiverService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 	) {
 		this.cache = new MemorySingleCache<MiAvatarDecoration[]>(1000 * 60 * 30); // 30s
 
-		this.globalEventReceiverService.onInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	@bindThis
@@ -54,7 +54,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 			...options,
 		});
 
-		this.globalEventService.publishInternalEvent('avatarDecorationCreated', created);
+		this.globalEventPublishService.publishInternalEvent('avatarDecorationCreated', created);
 
 		if (moderator) {
 			this.moderationLogService.log(moderator, 'createAvatarDecoration', {
@@ -77,7 +77,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 		});
 
 		const updated = await this.avatarDecorationsRepository.findOneByOrFail({ id: avatarDecoration.id });
-		this.globalEventService.publishInternalEvent('avatarDecorationUpdated', updated);
+		this.globalEventPublishService.publishInternalEvent('avatarDecorationUpdated', updated);
 
 		if (moderator) {
 			this.moderationLogService.log(moderator, 'updateAvatarDecoration', {
@@ -93,7 +93,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 		const avatarDecoration = await this.avatarDecorationsRepository.findOneByOrFail({ id });
 
 		await this.avatarDecorationsRepository.delete({ id: avatarDecoration.id });
-		this.globalEventService.publishInternalEvent('avatarDecorationDeleted', avatarDecoration);
+		this.globalEventPublishService.publishInternalEvent('avatarDecorationDeleted', avatarDecoration);
 
 		if (moderator) {
 			this.moderationLogService.log(moderator, 'deleteAvatarDecoration', {
@@ -113,7 +113,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.globalEventReceiverService.offInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 	}
 
 	@bindThis

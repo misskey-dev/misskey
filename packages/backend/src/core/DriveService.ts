@@ -22,7 +22,7 @@ import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { ImageProcessingService } from '@/core/ImageProcessingService.js';
 import type { IImage } from '@/core/ImageProcessingService.js';
@@ -123,7 +123,7 @@ export class DriveService {
 		private s3Service: S3Service,
 		private imageProcessingService: ImageProcessingService,
 		private videoProcessingService: VideoProcessingService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private queueService: QueueService,
 		private roleService: RoleService,
 		private moderationLogService: ModerationLogService,
@@ -663,8 +663,8 @@ export class DriveService {
 		if (user) {
 			this.driveFileEntityService.pack(file, { self: true }).then(packedFile => {
 				// Publish driveFileCreated event
-				this.globalEventService.publishMainStream(user.id, 'driveFileCreated', packedFile);
-				this.globalEventService.publishDriveStream(user.id, 'fileCreated', packedFile);
+				this.globalEventPublishService.publishMainStream(user.id, 'driveFileCreated', packedFile);
+				this.globalEventPublishService.publishDriveStream(user.id, 'fileCreated', packedFile);
 			});
 		}
 
@@ -710,7 +710,7 @@ export class DriveService {
 
 		// Publish fileUpdated event
 		if (file.userId) {
-			this.globalEventService.publishDriveStream(file.userId, 'fileUpdated', fileObj);
+			this.globalEventPublishService.publishDriveStream(file.userId, 'fileUpdated', fileObj);
 		}
 
 		if (await this.roleService.isModerator(updater) && (file.userId !== updater.id)) {
@@ -840,7 +840,7 @@ export class DriveService {
 		}
 
 		if (file.userId) {
-			this.globalEventService.publishDriveStream(file.userId, 'fileDeleted', file.id);
+			this.globalEventPublishService.publishDriveStream(file.userId, 'fileDeleted', file.id);
 		}
 
 		if (deleter && await this.roleService.isModerator(deleter) && (file.userId !== deleter.id)) {

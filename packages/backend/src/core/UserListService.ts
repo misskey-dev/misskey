@@ -11,12 +11,12 @@ import type { MiUser } from '@/models/User.js';
 import type { MiUserList } from '@/models/UserList.js';
 import type { MiUserListMembership } from '@/models/UserListMembership.js';
 import { IdService } from '@/core/IdService.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { GlobalEvents } from '@/core/GlobalEventPublishService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { RedisKVCache } from '@/misc/cache.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -40,8 +40,8 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,
-		private globalEventService: GlobalEventService,
-		private globalEventReceiverService: GlobalEventReceiverService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 		private queueService: QueueService,
 		private systemAccountService: SystemAccountService,
 	) {
@@ -56,7 +56,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
 
-		this.globalEventReceiverService.onInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	async onModuleInit() {
@@ -105,8 +105,8 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 			withReplies: options.withReplies ?? false,
 		} as MiUserListMembership);
 
-		this.globalEventService.publishInternalEvent('userListMemberAdded', { userListId: list.id, memberId: target.id });
-		this.globalEventService.publishUserListStream(list.id, 'userAdded', await this.userEntityService.pack(target));
+		this.globalEventPublishService.publishInternalEvent('userListMemberAdded', { userListId: list.id, memberId: target.id });
+		this.globalEventPublishService.publishUserListStream(list.id, 'userAdded', await this.userEntityService.pack(target));
 
 		// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
 		if (this.userEntityService.isRemoteUser(target)) {
@@ -122,8 +122,8 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 			userListId: list.id,
 		});
 
-		this.globalEventService.publishInternalEvent('userListMemberRemoved', { userListId: list.id, memberId: target.id });
-		this.globalEventService.publishUserListStream(list.id, 'userRemoved', await this.userEntityService.pack(target));
+		this.globalEventPublishService.publishInternalEvent('userListMemberRemoved', { userListId: list.id, memberId: target.id });
+		this.globalEventPublishService.publishUserListStream(list.id, 'userRemoved', await this.userEntityService.pack(target));
 	}
 
 	@bindThis
@@ -146,7 +146,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public dispose(): void {
-		this.globalEventReceiverService.offInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 		this.membersCache.dispose();
 	}
 

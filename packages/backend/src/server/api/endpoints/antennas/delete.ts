@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AntennasRepository } from '@/models/_.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
@@ -40,7 +40,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const antenna = await this.antennasRepository.findOneBy({
@@ -54,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			await this.antennasRepository.delete(antenna.id);
 
-			this.globalEventService.publishInternalEvent('antennaDeleted', antenna);
+			this.globalEventPublishService.publishInternalEvent('antennaDeleted', antenna);
 		});
 	}
 }

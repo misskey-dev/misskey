@@ -7,10 +7,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import { MiMeta } from '@/models/Meta.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
+import type { GlobalEvents } from '@/core/GlobalEventPublishService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
@@ -24,8 +24,8 @@ export class MetaService implements OnApplicationShutdown {
 		private db: DataSource,
 
 		private featuredService: FeaturedService,
-		private globalEventService: GlobalEventService,
-		private globalEventReceiverService: GlobalEventReceiverService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -38,7 +38,7 @@ export class MetaService implements OnApplicationShutdown {
 			}, 1000 * 60 * 5);
 		}
 
-		this.globalEventReceiverService.onInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	@bindThis
@@ -138,7 +138,7 @@ export class MetaService implements OnApplicationShutdown {
 			});
 		}
 
-		this.globalEventService.publishInternalEvent('metaUpdated', { before, after: updated });
+		this.globalEventPublishService.publishInternalEvent('metaUpdated', { before, after: updated });
 
 		return updated;
 	}
@@ -146,7 +146,7 @@ export class MetaService implements OnApplicationShutdown {
 	@bindThis
 	public dispose(): void {
 		clearInterval(this.intervalId);
-		this.globalEventReceiverService.offInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 	}
 
 	@bindThis

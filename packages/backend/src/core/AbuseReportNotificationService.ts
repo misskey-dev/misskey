@@ -8,8 +8,8 @@ import { Brackets, In, IsNull, Not } from 'typeorm';
 import sanitizeHtml from 'sanitize-html';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
-import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
+import { GlobalEvents, GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import type {
 	AbuseReportNotificationRecipientRepository,
 	MiAbuseReportNotificationRecipient,
@@ -39,11 +39,11 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		private systemWebhookService: SystemWebhookService,
 		private emailService: EmailService,
 		private moderationLogService: ModerationLogService,
-		private globalEventService: GlobalEventService,
-		private globalEventReceiverService: GlobalEventReceiverService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 		private userEntityService: UserEntityService,
 	) {
-		this.globalEventReceiverService.onInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	/**
@@ -51,7 +51,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 	 * 通知先ユーザは{@link getModeratorIds}の取得結果に依る.
 	 *
 	 * @see RoleService.getModeratorIds
-	 * @see GlobalEventService.publishAdminStream
+	 * @see GlobalEventPublishService.publishAdminStream
 	 */
 	@bindThis
 	public async notifyAdminStream(abuseReports: MiAbuseUserReport[]) {
@@ -66,7 +66,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 
 		for (const moderatorId of moderatorIds) {
 			for (const abuseReport of abuseReports) {
-				this.globalEventService.publishAdminStream(
+				this.globalEventPublishService.publishAdminStream(
 					moderatorId,
 					'newAbuseUserReport',
 					{
@@ -415,7 +415,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.globalEventReceiverService.offInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 	}
 
 	@bindThis

@@ -9,7 +9,7 @@ import type { FollowingsRepository, MiMeta, MiUser, UsersRepository } from '@/mo
 import { QueueService } from '@/core/QueueService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
@@ -30,7 +30,7 @@ export class DeleteAccountService {
 		private userEntityService: UserEntityService,
 		private apRendererService: ApRendererService,
 		private queueService: QueueService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private moderationLogService: ModerationLogService,
 		private systemAccountService: SystemAccountService,
 	) {
@@ -99,6 +99,6 @@ export class DeleteAccountService {
 			isDeleted: true,
 		});
 
-		this.globalEventService.publishInternalEvent('userChangeDeletedState', { id: user.id, isDeleted: true });
+		this.globalEventPublishService.publishInternalEvent('userChangeDeletedState', { id: user.id, isDeleted: true });
 	}
 }

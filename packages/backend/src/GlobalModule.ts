@@ -13,7 +13,7 @@ import { Config, loadConfig } from './config.js';
 import { createPostgresDataSource } from './postgres.js';
 import { RepositoryModule } from './models/RepositoryModule.js';
 import { allSettled } from './misc/promise-tracker.js';
-import { GlobalEventReceiverService } from './core/GlobalEventReceiverService.js';
+import { GlobalEventSubscribeService } from './core/GlobalEventSubscribeService.js';
 import type { Provider, OnApplicationShutdown } from '@nestjs/common';
 
 const $config: Provider = {
@@ -99,7 +99,7 @@ const $redisForReactions: Provider = {
 
 const $meta: Provider = {
 	provide: DI.meta,
-	useFactory: async (db: DataSource, eventReceiver: GlobalEventReceiverService) => {
+	useFactory: async (db: DataSource, eventReceiver: GlobalEventSubscribeService) => {
 		const meta = await db.transaction(async transactionalEntityManager => {
 			// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
 			const metas = await transactionalEntityManager.find(MiMeta, {
@@ -144,14 +144,14 @@ const $meta: Provider = {
 
 		return meta;
 	},
-	inject: [DI.db, GlobalEventReceiverService],
+	inject: [DI.db, GlobalEventSubscribeService],
 };
 
 @Global()
 @Module({
 	imports: [RepositoryModule],
-	providers: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, GlobalEventReceiverService],
-	exports: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, GlobalEventReceiverService, RepositoryModule],
+	providers: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, GlobalEventSubscribeService],
+	exports: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, GlobalEventSubscribeService, RepositoryModule],
 })
 export class GlobalModule implements OnApplicationShutdown {
 	constructor(

@@ -7,8 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { MiUser, SystemWebhooksRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
-import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
+import { GlobalEvents, GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { MiSystemWebhook, type SystemWebhookEventType } from '@/models/SystemWebhook.js';
 import { IdService } from '@/core/IdService.js';
 import { QueueService } from '@/core/QueueService.js';
@@ -60,10 +60,10 @@ export class SystemWebhookService implements OnApplicationShutdown {
 		private idService: IdService,
 		private queueService: QueueService,
 		private moderationLogService: ModerationLogService,
-		private globalEventService: GlobalEventService,
-		private globalEventReceiverService: GlobalEventReceiverService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 	) {
-		this.globalEventReceiverService.onInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	@bindThis
@@ -124,7 +124,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 		});
 
 		const webhook = await this.systemWebhooksRepository.findOneByOrFail({ id });
-		this.globalEventService.publishInternalEvent('systemWebhookCreated', webhook);
+		this.globalEventPublishService.publishInternalEvent('systemWebhookCreated', webhook);
 		this.moderationLogService
 			.log(updater, 'createSystemWebhook', {
 				systemWebhookId: webhook.id,
@@ -160,7 +160,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 		});
 
 		const afterEntity = await this.systemWebhooksRepository.findOneByOrFail({ id: beforeEntity.id });
-		this.globalEventService.publishInternalEvent('systemWebhookUpdated', afterEntity);
+		this.globalEventPublishService.publishInternalEvent('systemWebhookUpdated', afterEntity);
 		this.moderationLogService
 			.log(updater, 'updateSystemWebhook', {
 				systemWebhookId: beforeEntity.id,
@@ -179,7 +179,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 		const webhook = await this.systemWebhooksRepository.findOneByOrFail({ id });
 		await this.systemWebhooksRepository.delete(id);
 
-		this.globalEventService.publishInternalEvent('systemWebhookDeleted', webhook);
+		this.globalEventPublishService.publishInternalEvent('systemWebhookDeleted', webhook);
 		this.moderationLogService
 			.log(updater, 'deleteSystemWebhook', {
 				systemWebhookId: webhook.id,
@@ -244,7 +244,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.globalEventReceiverService.offInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 	}
 
 	@bindThis

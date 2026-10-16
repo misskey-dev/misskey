@@ -11,11 +11,11 @@ import bcrypt from 'bcryptjs';
 import { MiLocalUser, MiUser } from '@/models/User.js';
 import { MiSystemAccount, MiUsedUsername, MiUserKeypair, MiUserProfile, type UsersRepository, type SystemAccountsRepository } from '@/models/_.js';
 import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import type { GlobalEvents } from '@/core/GlobalEventPublishService.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
 import { generateNativeUserToken } from '@/misc/token.js';
 import { IdService } from '@/core/IdService.js';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
@@ -43,11 +43,11 @@ export class SystemAccountService implements OnApplicationShutdown {
 		private userProfilesRepository: UserProfilesRepository,
 
 		private idService: IdService,
-		private globalEventReceiverService: GlobalEventReceiverService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 	) {
 		this.cache = new MemoryKVCache<MiLocalUser>(1000 * 60 * 10); // 10m
 
-		this.globalEventReceiverService.onInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	@bindThis
@@ -197,7 +197,7 @@ export class SystemAccountService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.globalEventReceiverService.offInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 		this.cache.dispose();
 	}
 

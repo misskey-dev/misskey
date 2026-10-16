@@ -8,7 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/_.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { ApiError } from '@/server/api/error.js';
@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private webAuthnService: WebAuthnService,
 		private userAuthService: UserAuthService,
 		private userEntityService: UserEntityService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const token = ps.token;
@@ -110,7 +110,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Publish meUpdated event
-			this.globalEventService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
+			this.globalEventPublishService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
 				schema: 'MeDetailed',
 				includeSecrets: true,
 			}));

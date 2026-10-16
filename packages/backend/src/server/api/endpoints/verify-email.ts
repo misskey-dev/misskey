@@ -8,7 +8,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { ApiError } from '../error.js';
 
 export const meta = {
@@ -40,7 +40,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private userProfilesRepository: UserProfilesRepository,
 
 		private userEntityService: UserEntityService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 	) {
 		super(meta, paramDef, async (ps) => {
 			const profile = await this.userProfilesRepository.findOneBy({
@@ -56,7 +56,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				emailVerifyCode: null,
 			});
 
-			this.globalEventService.publishMainStream(profile.userId, 'meUpdated', await this.userEntityService.pack(profile.userId, { id: profile.userId }, {
+			this.globalEventPublishService.publishMainStream(profile.userId, 'meUpdated', await this.userEntityService.pack(profile.userId, { id: profile.userId }, {
 				schema: 'MeDetailed',
 				includeSecrets: true,
 			}));

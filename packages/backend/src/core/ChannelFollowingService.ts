@@ -9,9 +9,9 @@ import { DI } from '@/di-symbols.js';
 import type { ChannelFollowingsRepository, ChannelsRepository, MiUser } from '@/models/_.js';
 import { MiChannel } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
-import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEvents, GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
 import type { MiLocalUser } from '@/models/User.js';
 import { RedisKVCache } from '@/misc/cache.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
@@ -32,8 +32,8 @@ export class ChannelFollowingService implements OnModuleInit {
 		private channelFollowingsRepository: ChannelFollowingsRepository,
 
 		private idService: IdService,
-		private globalEventService: GlobalEventService,
-		private globalEventReceiverService: GlobalEventReceiverService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 	) {
 		this.userFollowingChannelsCache = new RedisKVCache<Set<string>>(this.redisClient, 'userFollowingChannels', {
 			lifetime: 1000 * 60 * 30, // 30m
@@ -46,7 +46,7 @@ export class ChannelFollowingService implements OnModuleInit {
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
 
-		this.globalEventReceiverService.onInternalEvent(this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	onModuleInit() {
@@ -114,7 +114,7 @@ export class ChannelFollowingService implements OnModuleInit {
 			throw e;
 		}
 
-		this.globalEventService.publishInternalEvent('followChannel', {
+		this.globalEventPublishService.publishInternalEvent('followChannel', {
 			userId: requestUser.id,
 			channelId: targetChannel.id,
 		});
@@ -130,7 +130,7 @@ export class ChannelFollowingService implements OnModuleInit {
 			followeeId: targetChannel.id,
 		});
 
-		this.globalEventService.publishInternalEvent('unfollowChannel', {
+		this.globalEventPublishService.publishInternalEvent('unfollowChannel', {
 			userId: requestUser.id,
 			channelId: targetChannel.id,
 		});

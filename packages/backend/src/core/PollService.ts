@@ -9,7 +9,7 @@ import type { NotesRepository, UsersRepository, PollsRepository, PollVotesReposi
 import type { MiNote } from '@/models/Note.js';
 import { RelayService } from '@/core/RelayService.js';
 import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
@@ -34,7 +34,7 @@ export class PollService {
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private relayService: RelayService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private userBlockingService: UserBlockingService,
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
@@ -83,7 +83,7 @@ export class PollService {
 		const index = choice + 1; // In SQL, array index is 1 based
 		await this.pollsRepository.query('UPDATE poll SET votes[$1] = votes[$1] + 1 WHERE "noteId" = $2', [index, poll.noteId]);
 
-		this.globalEventService.publishNoteStream(note, 'pollVoted', {
+		this.globalEventPublishService.publishNoteStream(note, 'pollVoted', {
 			choice: choice,
 			userId: user.id,
 		});

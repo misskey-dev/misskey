@@ -9,7 +9,7 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import Logger from '@/logger.js';
 import { deepClone } from '@/misc/clone.js';
-import type { GlobalEvents, StreamChannels } from '@/core/GlobalEventService.js';
+import type { GlobalEvents, StreamChannels } from '@/core/GlobalEventPublishService.js';
 
 export type GlobalEventMessage = {
 	channel: StreamChannels;
@@ -19,10 +19,10 @@ export type GlobalEventMessage = {
 type InternalEventPayload = GlobalEvents['internal']['payload'];
 
 /**
- * GlobalEventService で publish されたイベントを受信し、パースしてから emit する。
+ * GlobalEventPublishService で publish されたイベントを受信し、パースしてから emit する。
  */
 @Injectable()
-export class GlobalEventReceiverService {
+export class GlobalEventSubscribeService {
 	private logger = new Logger('globalEvent');
 	private messageListeners = new Set<(message: GlobalEventMessage) => void>();
 	private internalEventListeners = new Set<(payload: InternalEventPayload) => void>();
