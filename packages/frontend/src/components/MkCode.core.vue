@@ -9,49 +9,98 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[$style.codeBlockRoot, {
 		[$style.codeEditor]: codeEditor,
 		[$style.outerStyle]: !codeEditor && withOuterStyle,
+		[$style.withMaxHeight]: maxHeight != null,
 		[$style.dark]: darkMode,
 		[$style.light]: !darkMode,
 	}]" v-html="html"></div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, shallowRef, watch } from 'vue';
 import { bundledLanguagesInfo } from 'shiki/langs';
+import type { diffLines as diffLines_typeReferenceOnly } from 'diff';
+import type { ShikiTransformer } from 'shiki/core';
 import type { BundledLanguage } from 'shiki/langs';
 import { getHighlighter, getTheme } from '@/utility/code-highlighter.js';
 import { store } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	code: string;
+	diffBase?: string;
 	lang?: string;
 	codeEditor?: boolean;
 	withOuterStyle?: boolean;
+	maxHeight?: number | null;
 }>(), {
 	codeEditor: false,
 	withOuterStyle: true,
+	maxHeight: null,
 });
 
+const maxHeight = computed(() => props.maxHeight != null ? `${props.maxHeight}px` : null);
+
 const highlighter = await getHighlighter();
+const diffLines = shallowRef<typeof diffLines_typeReferenceOnly | null>(null);
+
 const darkMode = store.r.darkMode;
-const codeLang = ref<BundledLanguage | 'aiscript'>('js');
+const codeLang = ref<BundledLanguage | 'aiscript' | 'text'>('js');
 
 const [lightThemeName, darkThemeName] = await Promise.all([
 	getTheme('light', true),
 	getTheme('dark', true),
 ]);
 
-const html = computed(() => highlighter.codeToHtml(props.code, {
+const diffed = computed(() => {
+	if (props.diffBase == null || diffLines.value == null) return null;
+
+	// 行単位で組み立てることで、末尾に改行がない削除行と追加行が同じ行に連結されないようにする
+	const lines: string[] = [];
+	const lineTypes: ('add' | 'remove' | null)[] = [];
+	for (const part of diffLines.value(props.diffBase, props.code)) {
+		const partLines = part.value.split('\n');
+		if (part.value.endsWith('\n')) partLines.pop();
+		const type = part.added ? 'add' : part.removed ? 'remove' : null;
+		for (const line of partLines) {
+			lines.push(line);
+			lineTypes.push(type);
+		}
+	}
+	return { code: lines.join('\n'), lineTypes };
+});
+
+// コメント記法に依存せず行にクラスを付与するため、言語指定の無いプレーンテキストでも差分を表示できる
+function transformerDiff(lineTypes: ('add' | 'remove' | null)[]): ShikiTransformer {
+	return {
+		name: 'misskey:diff',
+		pre(node) {
+			this.addClassToHast(node, 'has-diff');
+		},
+		line(node, line) {
+			const type = lineTypes[line - 1];
+			if (type != null) this.addClassToHast(node, ['diff', type]);
+		},
+	};
+}
+
+const html = computed(() => highlighter.codeToHtml(diffed.value?.code ?? props.code, {
 	lang: codeLang.value,
 	themes: {
 		fallback: 'dark-plus',
 		light: lightThemeName,
 		dark: darkThemeName,
 	},
+	transformers: diffed.value != null ? [transformerDiff(diffed.value.lineTypes)] : [],
 	defaultColor: false,
 	cssVariablePrefix: '--shiki-',
 }));
 
 async function fetchLanguage(to: string): Promise<void> {
+	// Shiki 組み込みのプレーンテキスト (言語ファイルの読み込み不要)
+	if (['text', 'txt', 'plaintext', 'plain'].includes(to)) {
+		codeLang.value = 'text';
+		return;
+	}
+
 	const language = to as BundledLanguage;
 
 	// Check for the loaded languages, and load the language if it's not loaded yet.
@@ -72,6 +121,15 @@ async function fetchLanguage(to: string): Promise<void> {
 		codeLang.value = language;
 	}
 }
+
+watch(() => props.diffBase, async (to) => {
+	if (to != null) {
+		if (diffLines.value == null) {
+			const { diffLines: dl } = await import('diff');
+			diffLines.value = dl;
+		}
+	}
+}, { immediate: true });
 
 watch(() => props.lang, (to) => {
 	if (codeLang.value === to || !to) return;
@@ -96,6 +154,34 @@ watch(() => props.lang, (to) => {
 	& code {
 		font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
 	}
+
+	&>code {
+		display: block;
+		min-width: fit-content;
+	}
+
+	& :global(.line) {
+		display: inline-block;
+		width: 100%;
+		min-height: 1em;
+	}
+}
+
+.codeBlockRoot :global(.shiki.has-diff) {
+	& :global(.line.diff.remove) {
+		background-color: rgba(244, 63, 94, .14);
+		text-decoration: line-through;
+	}
+
+	& :global(.line.diff.add) {
+		background-color: rgba(75, 192, 107, .14);
+	}
+}
+
+.codeBlockRoot.withMaxHeight :global(.shiki) {
+	max-height: v-bind(maxHeight);
+	scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
+	scrollbar-width: thin;
 }
 
 .outerStyle.codeBlockRoot :global(.shiki) {

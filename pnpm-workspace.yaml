@@ -28,7 +28,6 @@ allowBuilds:
   re2: true
   sharp: true
   utf-8-validate: true
-  v-code-diff: true
   vue-demi: true
   exifreader: false
   protobufjs: false
