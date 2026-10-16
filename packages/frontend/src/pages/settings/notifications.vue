@@ -111,18 +111,19 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 const $i = ensureSignin();
 
 async function showNotifyMenu(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
-	os.popupMenu([{
-		text: (user.notify === 'normal') ? i18n.ts.unnotifyNotes : i18n.ts.notifyNotes,
-		icon: (user.notify === 'normal') ? 'ti ti-x' : 'ti ti-plus',
-		action: async () => {
-			await os.apiWithDialog('following/update', {
+	os.popupMenu((['normal', 'withFile', 'none'] as const).map(v => ({
+		type: 'radioOption',
+		text: v === 'normal' ? i18n.ts.notifyAllNotes : v === 'withFile' ? i18n.ts.notifyNotesWithFiles : i18n.ts.unnotifyNotes,
+		active: computed(() => user.notify === v),
+		action: () => {
+			os.apiWithDialog('following/update', {
 				userId: user.id,
-				notify: user.notify === 'normal' ? 'none' : 'normal',
+				notify: v,
 			}).then(() => {
-				user.notify = user.notify === 'normal' ? 'none' : 'normal';
+				user.notify = v;
 			});
 		},
-	}], ev.currentTarget ?? ev.target);
+	})), ev.currentTarget ?? ev.target);
 }
 
 const notifyUserPaginator = markRaw(new Paginator('following/list', {
