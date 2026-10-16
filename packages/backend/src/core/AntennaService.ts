@@ -7,10 +7,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { In } from 'typeorm';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { GlobalEvents } from '@/core/GlobalEventPublishService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -30,9 +31,6 @@ export class AntennaService implements OnApplicationShutdown {
 		@Inject(DI.redisForTimelines)
 		private redisForTimelines: Redis.Redis,
 
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
-
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
@@ -41,56 +39,53 @@ export class AntennaService implements OnApplicationShutdown {
 
 		private cacheService: CacheService,
 		private utilityService: UtilityService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 		private fanoutTimelineService: FanoutTimelineService,
 	) {
 		this.antennasFetched = false;
 		this.antennas = [];
 
-		this.redisForSub.on('message', this.onRedisMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onRedisMessage);
 	}
 
 	@bindThis
-	private async onRedisMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-
-		if (obj.channel === 'internal') {
-			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
-			switch (type) {
-				case 'antennaCreated':
+	private async onRedisMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type, body } = payload;
+		switch (type) {
+			case 'antennaCreated':
+				this.antennas.push({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
+					...body,
+					lastUsedAt: new Date(body.lastUsedAt),
+					user: null, // joinなカラムは通常取ってこないので
+					userList: null, // joinなカラムは通常取ってこないので
+				});
+				break;
+			case 'antennaUpdated': {
+				const idx = this.antennas.findIndex(a => a.id === body.id);
+				if (idx >= 0) {
+					this.antennas[idx] = { // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
+						...body,
+						lastUsedAt: new Date(body.lastUsedAt),
+						user: null, // joinなカラムは通常取ってこないので
+						userList: null, // joinなカラムは通常取ってこないので
+					};
+				} else {
+					// サーバ起動時にactiveじゃなかった場合、リストに持っていないので追加する必要あり
 					this.antennas.push({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
 						...body,
 						lastUsedAt: new Date(body.lastUsedAt),
 						user: null, // joinなカラムは通常取ってこないので
 						userList: null, // joinなカラムは通常取ってこないので
 					});
-					break;
-				case 'antennaUpdated': {
-					const idx = this.antennas.findIndex(a => a.id === body.id);
-					if (idx >= 0) {
-						this.antennas[idx] = { // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
-							...body,
-							lastUsedAt: new Date(body.lastUsedAt),
-							user: null, // joinなカラムは通常取ってこないので
-							userList: null, // joinなカラムは通常取ってこないので
-						};
-					} else {
-						// サーバ起動時にactiveじゃなかった場合、リストに持っていないので追加する必要あり
-						this.antennas.push({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
-							...body,
-							lastUsedAt: new Date(body.lastUsedAt),
-							user: null, // joinなカラムは通常取ってこないので
-							userList: null, // joinなカラムは通常取ってこないので
-						});
-					}
 				}
-					break;
-				case 'antennaDeleted':
-					this.antennas = this.antennas.filter(a => a.id !== body.id);
-					break;
-				default:
-					break;
 			}
+				break;
+			case 'antennaDeleted':
+				this.antennas = this.antennas.filter(a => a.id !== body.id);
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -104,7 +99,7 @@ export class AntennaService implements OnApplicationShutdown {
 
 		for (const antenna of matchedAntennas) {
 			this.fanoutTimelineService.push(`antennaTimeline:${antenna.id}`, note.id, 200, redisPipeline);
-			this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
+			this.globalEventPublishService.publishAntennaStream(antenna.id, 'note', note);
 		}
 
 		redisPipeline.exec();
@@ -251,13 +246,13 @@ export class AntennaService implements OnApplicationShutdown {
 
 		// announce update to event
 		for (const newAntenna of await this.antennasRepository.findBy({ id: In(antennaIds) })) {
-			this.globalEventService.publishInternalEvent('antennaUpdated', newAntenna);
+			this.globalEventPublishService.publishInternalEvent('antennaUpdated', newAntenna);
 		}
 	}
 
 	@bindThis
 	public dispose(): void {
-		this.redisForSub.off('message', this.onRedisMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onRedisMessage);
 	}
 
 	@bindThis

@@ -20,11 +20,12 @@ import type { MiUser } from '@/models/User.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { RoleCondFormulaValue } from '@/models/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { GlobalEvents } from '@/core/GlobalEventPublishService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { IdService } from '@/core/IdService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -144,9 +145,6 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		@Inject(DI.redisForTimelines)
 		private redisForTimelines: Redis.Redis,
 
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -158,7 +156,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 		private idService: IdService,
 		private moderationLogService: ModerationLogService,
 		private fanoutTimelineService: FanoutTimelineService,
@@ -166,7 +165,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		this.rolesCache = new MemorySingleCache<MiRole[]>(1000 * 60 * 60); // 1h
 		this.roleAssignmentByUserIdCache = new MemoryKVCache<MiRoleAssignment[]>(1000 * 60 * 5); // 5m
 
-		this.redisForSub.on('message', this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	async onModuleInit() {
@@ -174,66 +173,62 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	private async onMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-
-		if (obj.channel === 'internal') {
-			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
-			switch (type) {
-				case 'roleCreated': {
-					const cached = this.rolesCache.get();
-					if (cached) {
-						cached.push({
+	private async onMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type, body } = payload;
+		switch (type) {
+			case 'roleCreated': {
+				const cached = this.rolesCache.get();
+				if (cached) {
+					cached.push({
+						...body,
+						updatedAt: new Date(body.updatedAt),
+						lastUsedAt: new Date(body.lastUsedAt),
+					});
+				}
+				break;
+			}
+			case 'roleUpdated': {
+				const cached = this.rolesCache.get();
+				if (cached) {
+					const i = cached.findIndex(x => x.id === body.id);
+					if (i > -1) {
+						cached[i] = {
 							...body,
 							updatedAt: new Date(body.updatedAt),
 							lastUsedAt: new Date(body.lastUsedAt),
-						});
+						};
 					}
-					break;
 				}
-				case 'roleUpdated': {
-					const cached = this.rolesCache.get();
-					if (cached) {
-						const i = cached.findIndex(x => x.id === body.id);
-						if (i > -1) {
-							cached[i] = {
-								...body,
-								updatedAt: new Date(body.updatedAt),
-								lastUsedAt: new Date(body.lastUsedAt),
-							};
-						}
-					}
-					break;
-				}
-				case 'roleDeleted': {
-					const cached = this.rolesCache.get();
-					if (cached) {
-						this.rolesCache.set(cached.filter(x => x.id !== body.id));
-					}
-					break;
-				}
-				case 'userRoleAssigned': {
-					const cached = this.roleAssignmentByUserIdCache.get(body.userId);
-					if (cached) {
-						cached.push({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
-							...body,
-							expiresAt: body.expiresAt ? new Date(body.expiresAt) : null,
-							user: null, // joinなカラムは通常取ってこないので
-							role: null, // joinなカラムは通常取ってこないので
-						});
-					}
-					break;
-				}
-				case 'userRoleUnassigned': {
-					const cached = this.roleAssignmentByUserIdCache.get(body.userId);
-					if (cached) {
-						this.roleAssignmentByUserIdCache.set(body.userId, cached.filter(x => x.id !== body.id));
-					}
-					break;
-				}
-				default:
-					break;
+				break;
 			}
+			case 'roleDeleted': {
+				const cached = this.rolesCache.get();
+				if (cached) {
+					this.rolesCache.set(cached.filter(x => x.id !== body.id));
+				}
+				break;
+			}
+			case 'userRoleAssigned': {
+				const cached = this.roleAssignmentByUserIdCache.get(body.userId);
+				if (cached) {
+					cached.push({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
+						...body,
+						expiresAt: body.expiresAt ? new Date(body.expiresAt) : null,
+						user: null, // joinなカラムは通常取ってこないので
+						role: null, // joinなカラムは通常取ってこないので
+					});
+				}
+				break;
+			}
+			case 'userRoleUnassigned': {
+				const cached = this.roleAssignmentByUserIdCache.get(body.userId);
+				if (cached) {
+					this.roleAssignmentByUserIdCache.set(body.userId, cached.filter(x => x.id !== body.id));
+				}
+				break;
+			}
+			default:
+				break;
 		}
 	}
 
@@ -588,7 +583,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			lastUsedAt: new Date(),
 		});
 
-		this.globalEventService.publishInternalEvent('userRoleAssigned', created);
+		this.globalEventPublishService.publishInternalEvent('userRoleAssigned', created);
 
 		const user = await this.usersRepository.findOneByOrFail({ id: userId });
 
@@ -631,7 +626,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			lastUsedAt: now,
 		});
 
-		this.globalEventService.publishInternalEvent('userRoleUnassigned', existing);
+		this.globalEventPublishService.publishInternalEvent('userRoleUnassigned', existing);
 
 		if (moderator) {
 			const [user, role] = await Promise.all([
@@ -656,7 +651,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 		for (const role of roles) {
 			this.fanoutTimelineService.push(`roleTimeline:${role.id}`, note.id, 1000, redisPipeline);
-			this.globalEventService.publishRoleTimelineStream(role.id, 'note', note);
+			this.globalEventPublishService.publishRoleTimelineStream(role.id, 'note', note);
 		}
 
 		redisPipeline.exec();
@@ -686,7 +681,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			policies: values.policies,
 		});
 
-		this.globalEventService.publishInternalEvent('roleCreated', created);
+		this.globalEventPublishService.publishInternalEvent('roleCreated', created);
 
 		if (moderator) {
 			this.moderationLogService.log(moderator, 'createRole', {
@@ -707,7 +702,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		});
 
 		const updated = await this.rolesRepository.findOneByOrFail({ id: role.id });
-		this.globalEventService.publishInternalEvent('roleUpdated', updated);
+		this.globalEventPublishService.publishInternalEvent('roleUpdated', updated);
 
 		if (moderator) {
 			this.moderationLogService.log(moderator, 'updateRole', {
@@ -721,7 +716,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	@bindThis
 	public async delete(role: MiRole, moderator?: MiUser): Promise<void> {
 		await this.rolesRepository.delete({ id: role.id });
-		this.globalEventService.publishInternalEvent('roleDeleted', role);
+		this.globalEventPublishService.publishInternalEvent('roleDeleted', role);
 
 		if (moderator) {
 			this.moderationLogService.log(moderator, 'deleteRole', {
@@ -733,7 +728,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public dispose(): void {
-		this.redisForSub.off('message', this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 		this.roleAssignmentByUserIdCache.dispose();
 	}
 

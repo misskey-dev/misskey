@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { PagesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../error.js';
 
@@ -41,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private pagesRepository: PagesRepository,
 
 		private userEntityService: UserEntityService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const page = await this.pagesRepository.findOneBy({ id: ps.pageId });
@@ -49,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchPage);
 			}
 
-			this.globalEventService.publishMainStream(page.userId, 'pageEvent', {
+			this.globalEventPublishService.publishMainStream(page.userId, 'pageEvent', {
 				pageId: ps.pageId,
 				event: ps.event,
 				var: ps.var,

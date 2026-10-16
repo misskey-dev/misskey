@@ -9,7 +9,7 @@ import { afterEach, beforeEach, describe, expect, beforeAll, afterAll, test } fr
 import { Test, TestingModule } from '@nestjs/testing';
 import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { IdService } from '@/core/IdService.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import {
@@ -105,7 +105,7 @@ describe('ChannelMutingService', () => {
 				CoreModule,
 			],
 			providers: [
-				GlobalEventService,
+				GlobalEventPublishService,
 				IdService,
 				ChannelMutingService,
 			],

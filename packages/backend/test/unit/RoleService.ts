@@ -28,7 +28,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { genAidx } from '@/misc/id/aidx.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { RoleCondFormulaValue } from '@/models/Role.js';
@@ -116,7 +116,7 @@ describe('RoleService', () => {
 				RoleService,
 				CacheService,
 				IdService,
-				GlobalEventService,
+				GlobalEventPublishService,
 				UserEntityService,
 				{
 					provide: NotificationService,

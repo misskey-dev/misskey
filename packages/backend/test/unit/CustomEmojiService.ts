@@ -7,7 +7,7 @@ import { afterEach, beforeAll, describe, test, expect } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { IdService } from '@/core/IdService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -35,7 +35,7 @@ describe('CustomEmojiService', () => {
 					IdService,
 					EmojiEntityService,
 					ModerationLogService,
-					GlobalEventService,
+					GlobalEventPublishService,
 				],
 			})
 			.compile();

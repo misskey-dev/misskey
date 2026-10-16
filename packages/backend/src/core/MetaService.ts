@@ -5,12 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { MiMeta } from '@/models/Meta.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { bindThis } from '@/decorators.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
+import type { GlobalEvents } from '@/core/GlobalEventPublishService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
@@ -20,14 +20,12 @@ export class MetaService implements OnApplicationShutdown {
 	private intervalId: NodeJS.Timeout;
 
 	constructor(
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
-
 		@Inject(DI.db)
 		private db: DataSource,
 
 		private featuredService: FeaturedService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -40,26 +38,22 @@ export class MetaService implements OnApplicationShutdown {
 			}, 1000 * 60 * 5);
 		}
 
-		this.redisForSub.on('message', this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	@bindThis
-	private async onMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-
-		if (obj.channel === 'internal') {
-			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
-			switch (type) {
-				case 'metaUpdated': {
-					this.cache = { // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
-						...(body.after),
-						rootUser: null, // joinなカラムは通常取ってこないので
-					};
-					break;
-				}
-				default:
-					break;
+	private async onMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type, body } = payload;
+		switch (type) {
+			case 'metaUpdated': {
+				this.cache = { // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
+					...(body.after),
+					rootUser: null, // joinなカラムは通常取ってこないので
+				};
+				break;
 			}
+			default:
+				break;
 		}
 	}
 
@@ -144,7 +138,7 @@ export class MetaService implements OnApplicationShutdown {
 			});
 		}
 
-		this.globalEventService.publishInternalEvent('metaUpdated', { before, after: updated });
+		this.globalEventPublishService.publishInternalEvent('metaUpdated', { before, after: updated });
 
 		return updated;
 	}
@@ -152,7 +146,7 @@ export class MetaService implements OnApplicationShutdown {
 	@bindThis
 	public dispose(): void {
 		clearInterval(this.intervalId);
-		this.redisForSub.off('message', this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 	}
 
 	@bindThis

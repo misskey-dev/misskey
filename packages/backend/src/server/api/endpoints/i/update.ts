@@ -19,7 +19,7 @@ import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { langmap } from '@/misc/langmap.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -259,7 +259,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private userFollowingService: UserFollowingService,
 		private accountUpdateService: AccountUpdateService,
 		private remoteUserResolveService: RemoteUserResolveService,
@@ -532,7 +532,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (Object.keys(updates).length > 0) {
 				await this.usersRepository.update(user.id, updates);
-				this.globalEventService.publishInternalEvent('localUserUpdated', { id: user.id });
+				this.globalEventPublishService.publishInternalEvent('localUserUpdated', { id: user.id });
 			}
 
 			await this.userProfilesRepository.update(user.id, {
@@ -550,7 +550,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			this.cacheService.userProfileCache.set(user.id, updatedProfile);
 
 			// Publish meUpdated event
-			this.globalEventService.publishMainStream(user.id, 'meUpdated', iObj);
+			this.globalEventPublishService.publishMainStream(user.id, 'meUpdated', iObj);
 
 			// 鍵垢を解除したとき、期間による承認条件も考慮してフォローリクエストを承認
 			if (user.isLocked && ps.isLocked === false) {

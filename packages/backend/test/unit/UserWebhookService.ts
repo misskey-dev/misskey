@@ -11,7 +11,7 @@ import { MiUser } from '@/models/User.js';
 import { MiWebhook, UsersRepository, WebhooksRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalModule } from '@/GlobalModule.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { DI } from '@/di-symbols.js';
 import { QueueService } from '@/core/QueueService.js';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -69,7 +69,7 @@ describe('UserWebhookService', () => {
 					UserWebhookService,
 					IdService,
 					LoggerService,
-					GlobalEventService,
+					GlobalEventPublishService,
 					{
 						provide: QueueService, useFactory: () => ({ userWebhookDeliver: vi.fn() }),
 					},

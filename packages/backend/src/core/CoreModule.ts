@@ -31,7 +31,7 @@ import { DriveService } from './DriveService.js';
 import { EmailService } from './EmailService.js';
 import { FederatedInstanceService } from './FederatedInstanceService.js';
 import { FetchInstanceMetadataService } from './FetchInstanceMetadataService.js';
-import { GlobalEventService } from './GlobalEventService.js';
+import { GlobalEventPublishService } from './GlobalEventPublishService.js';
 import { HashtagService } from './HashtagService.js';
 import { HttpRequestService } from './HttpRequestService.js';
 import { IdService } from './IdService.js';
@@ -177,7 +177,7 @@ const $DriveService: Provider = { provide: 'DriveService', useExisting: DriveSer
 const $EmailService: Provider = { provide: 'EmailService', useExisting: EmailService };
 const $FederatedInstanceService: Provider = { provide: 'FederatedInstanceService', useExisting: FederatedInstanceService };
 const $FetchInstanceMetadataService: Provider = { provide: 'FetchInstanceMetadataService', useExisting: FetchInstanceMetadataService };
-const $GlobalEventService: Provider = { provide: 'GlobalEventService', useExisting: GlobalEventService };
+const $GlobalEventPublishService: Provider = { provide: 'GlobalEventPublishService', useExisting: GlobalEventPublishService };
 const $HashtagService: Provider = { provide: 'HashtagService', useExisting: HashtagService };
 const $HttpRequestService: Provider = { provide: 'HttpRequestService', useExisting: HttpRequestService };
 const $IdService: Provider = { provide: 'IdService', useExisting: IdService };
@@ -330,7 +330,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		EmailService,
 		FederatedInstanceService,
 		FetchInstanceMetadataService,
-		GlobalEventService,
+		GlobalEventPublishService,
 		HashtagService,
 		HttpRequestService,
 		IdService,
@@ -481,7 +481,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$EmailService,
 		$FederatedInstanceService,
 		$FetchInstanceMetadataService,
-		$GlobalEventService,
+		$GlobalEventPublishService,
 		$HashtagService,
 		$HttpRequestService,
 		$IdService,
@@ -632,7 +632,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		EmailService,
 		FederatedInstanceService,
 		FetchInstanceMetadataService,
-		GlobalEventService,
+		GlobalEventPublishService,
 		HashtagService,
 		HttpRequestService,
 		IdService,
@@ -782,7 +782,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$EmailService,
 		$FederatedInstanceService,
 		$FetchInstanceMetadataService,
-		$GlobalEventService,
+		$GlobalEventPublishService,
 		$HashtagService,
 		$HttpRequestService,
 		$IdService,

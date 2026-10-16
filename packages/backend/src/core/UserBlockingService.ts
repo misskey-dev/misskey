@@ -9,7 +9,7 @@ import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiBlocking } from '@/models/Blocking.js';
 import { QueueService } from '@/core/QueueService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { DI } from '@/di-symbols.js';
 import type { FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListMembershipsRepository } from '@/models/_.js';
 import Logger from '@/logger.js';
@@ -45,7 +45,7 @@ export class UserBlockingService implements OnModuleInit {
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private queueService: QueueService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private webhookService: UserWebhookService,
 		private apRendererService: ApRendererService,
 		private loggerService: LoggerService,
@@ -80,7 +80,7 @@ export class UserBlockingService implements OnModuleInit {
 		this.cacheService.userBlockingCache.refresh(blocker.id);
 		this.cacheService.userBlockedCache.refresh(blockee.id);
 
-		this.globalEventService.publishInternalEvent('blockingCreated', {
+		this.globalEventPublishService.publishInternalEvent('blockingCreated', {
 			blockerId: blocker.id,
 			blockeeId: blockee.id,
 		});
@@ -110,14 +110,14 @@ export class UserBlockingService implements OnModuleInit {
 		if (this.userEntityService.isLocalUser(followee)) {
 			this.userEntityService.pack(followee, followee, {
 				schema: 'MeDetailed',
-			}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
+			}).then(packed => this.globalEventPublishService.publishMainStream(followee.id, 'meUpdated', packed));
 		}
 
 		if (this.userEntityService.isLocalUser(follower) && !silent) {
 			this.userEntityService.pack(followee, follower, {
 				schema: 'UserDetailedNotMe',
 			}).then(async packed => {
-				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
+				this.globalEventPublishService.publishMainStream(follower.id, 'unfollow', packed);
 				this.webhookService.enqueueUserWebhook(follower.id, 'unfollow', { user: packed });
 			});
 		}
@@ -171,7 +171,7 @@ export class UserBlockingService implements OnModuleInit {
 		this.cacheService.userBlockingCache.refresh(blocker.id);
 		this.cacheService.userBlockedCache.refresh(blockee.id);
 
-		this.globalEventService.publishInternalEvent('blockingDeleted', {
+		this.globalEventPublishService.publishInternalEvent('blockingDeleted', {
 			blockerId: blocker.id,
 			blockeeId: blockee.id,
 		});

@@ -12,7 +12,7 @@ import { isJsonObject } from '@/misc/json-value.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
-import type { GlobalEvents, StreamEventEmitter } from '@/core/GlobalEventService.js';
+import type { GlobalEvents, StreamEventEmitter } from '@/core/GlobalEventPublishService.js';
 import { MiFollowing, MiUserProfile } from '@/models/_.js';
 import type { MiMeta } from '@/models/_.js';
 import { CacheService } from '@/core/CacheService.js';

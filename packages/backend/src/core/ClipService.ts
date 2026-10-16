@@ -11,7 +11,7 @@ import { bindThis } from '@/decorators.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import type { MiLocalUser } from '@/models/User.js';
 
 @Injectable()
@@ -39,7 +39,7 @@ export class ClipService {
 
 		private roleService: RoleService,
 		private idService: IdService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 	) {
 	}
 
@@ -48,7 +48,7 @@ export class ClipService {
 		const pending = this.pendingUpdated.get(clipId);
 		if (pending == null) {
 			// バースト先頭は即時配信し、静穏化ウィンドウを開始する
-			this.globalEventService.publishClipStream(clipId, 'updated');
+			this.globalEventPublishService.publishClipStream(clipId, 'updated');
 			this.pendingUpdated.set(clipId, {
 				trailing: false,
 				timer: setTimeout(() => this.flushUpdated(clipId), ClipService.UPDATED_THROTTLE_MS),
@@ -66,7 +66,7 @@ export class ClipService {
 		const pending = this.pendingUpdated.get(clipId);
 		this.pendingUpdated.delete(clipId);
 		if (pending?.trailing) {
-			this.globalEventService.publishClipStream(clipId, 'updated');
+			this.globalEventPublishService.publishClipStream(clipId, 'updated');
 		}
 	}
 
@@ -126,7 +126,7 @@ export class ClipService {
 			clearTimeout(pending.timer);
 			this.pendingUpdated.delete(clip.id);
 		}
-		this.globalEventService.publishClipStream(clip.id, 'deleted');
+		this.globalEventPublishService.publishClipStream(clip.id, 'deleted');
 
 		await this.clipsRepository.delete(clip.id);
 	}

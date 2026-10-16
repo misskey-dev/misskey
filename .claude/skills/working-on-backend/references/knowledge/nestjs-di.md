@@ -23,7 +23,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
-		// 他にも RoleService, UserEntityService, GlobalEventService 等を必要なだけ inject
+		// 他にも RoleService, UserEntityService, GlobalEventPublishService 等を必要なだけ inject
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// this.notesRepository.findOneBy(...) のように使う

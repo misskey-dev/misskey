@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
 import type { MiUser, SystemWebhooksRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
+import { GlobalEvents, GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { MiSystemWebhook, type SystemWebhookEventType } from '@/models/SystemWebhook.js';
 import { IdService } from '@/core/IdService.js';
 import { QueueService } from '@/core/QueueService.js';
@@ -54,16 +54,16 @@ export class SystemWebhookService implements OnApplicationShutdown {
 	private activeSystemWebhooks: MiSystemWebhook[] = [];
 
 	constructor(
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
 		@Inject(DI.systemWebhooksRepository)
 		private systemWebhooksRepository: SystemWebhooksRepository,
+
 		private idService: IdService,
 		private queueService: QueueService,
 		private moderationLogService: ModerationLogService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 	) {
-		this.redisForSub.on('message', this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	@bindThis
@@ -124,7 +124,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 		});
 
 		const webhook = await this.systemWebhooksRepository.findOneByOrFail({ id });
-		this.globalEventService.publishInternalEvent('systemWebhookCreated', webhook);
+		this.globalEventPublishService.publishInternalEvent('systemWebhookCreated', webhook);
 		this.moderationLogService
 			.log(updater, 'createSystemWebhook', {
 				systemWebhookId: webhook.id,
@@ -160,7 +160,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 		});
 
 		const afterEntity = await this.systemWebhooksRepository.findOneByOrFail({ id: beforeEntity.id });
-		this.globalEventService.publishInternalEvent('systemWebhookUpdated', afterEntity);
+		this.globalEventPublishService.publishInternalEvent('systemWebhookUpdated', afterEntity);
 		this.moderationLogService
 			.log(updater, 'updateSystemWebhook', {
 				systemWebhookId: beforeEntity.id,
@@ -179,7 +179,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 		const webhook = await this.systemWebhooksRepository.findOneByOrFail({ id });
 		await this.systemWebhooksRepository.delete(id);
 
-		this.globalEventService.publishInternalEvent('systemWebhookDeleted', webhook);
+		this.globalEventPublishService.publishInternalEvent('systemWebhookDeleted', webhook);
 		this.moderationLogService
 			.log(updater, 'deleteSystemWebhook', {
 				systemWebhookId: webhook.id,
@@ -211,13 +211,8 @@ export class SystemWebhookService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async onMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-		if (obj.channel !== 'internal') {
-			return;
-		}
-
-		const { type, body } = obj.message as GlobalEvents['internal']['payload'];
+	private async onMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type, body } = payload;
 		switch (type) {
 			case 'systemWebhookCreated': {
 				if (body.isActive) {
@@ -249,7 +244,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.redisForSub.off('message', this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 	}
 
 	@bindThis

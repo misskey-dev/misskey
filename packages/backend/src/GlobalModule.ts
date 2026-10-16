@@ -13,7 +13,7 @@ import { Config, loadConfig } from './config.js';
 import { createPostgresDataSource } from './postgres.js';
 import { RepositoryModule } from './models/RepositoryModule.js';
 import { allSettled } from './misc/promise-tracker.js';
-import { GlobalEvents } from './core/GlobalEventService.js';
+import { GlobalEventSubscribeService } from './core/GlobalEventSubscribeService.js';
 import type { Provider, OnApplicationShutdown } from '@nestjs/common';
 
 const $config: Provider = {
@@ -99,7 +99,7 @@ const $redisForReactions: Provider = {
 
 const $meta: Provider = {
 	provide: DI.meta,
-	useFactory: async (db: DataSource, redisForSub: Redis.Redis) => {
+	useFactory: async (db: DataSource, eventReceiver: GlobalEventSubscribeService) => {
 		const meta = await db.transaction(async transactionalEntityManager => {
 			// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
 			const metas = await transactionalEntityManager.find(MiMeta, {
@@ -128,37 +128,30 @@ const $meta: Provider = {
 			}
 		});
 
-		async function onMessage(_: string, data: string): Promise<void> {
-			const obj = JSON.parse(data);
-
-			if (obj.channel === 'internal') {
-				const { type, body } = obj.message as GlobalEvents['internal']['payload'];
-				switch (type) {
-					case 'metaUpdated': {
-						for (const key in body.after) {
-							(meta as any)[key] = (body.after as any)[key];
-						}
-						meta.rootUser = null; // joinなカラムは通常取ってこないので
-						break;
+		eventReceiver.onInternalEvent(({ type, body }) => {
+			switch (type) {
+				case 'metaUpdated': {
+					for (const key in body.after) {
+						(meta as any)[key] = (body.after as any)[key];
 					}
-					default:
-						break;
+					meta.rootUser = null; // joinなカラムは通常取ってこないので
+					break;
 				}
+				default:
+					break;
 			}
-		}
-
-		redisForSub.on('message', onMessage);
+		});
 
 		return meta;
 	},
-	inject: [DI.db, DI.redisForSub],
+	inject: [DI.db, GlobalEventSubscribeService],
 };
 
 @Global()
 @Module({
 	imports: [RepositoryModule],
-	providers: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions],
-	exports: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, RepositoryModule],
+	providers: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, GlobalEventSubscribeService],
+	exports: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, GlobalEventSubscribeService, RepositoryModule],
 })
 export class GlobalModule implements OnApplicationShutdown {
 	constructor(

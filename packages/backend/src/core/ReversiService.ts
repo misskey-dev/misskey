@@ -18,7 +18,7 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { IdService } from '@/core/IdService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { Serialized } from '@/types.js';
@@ -42,7 +42,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private reversiGameEntityService: ReversiGameEntityService,
 		private idService: IdService,
 	) {
@@ -134,7 +134,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		redisPipeline.expire(`reversi:matchSpecific:${targetUser.id}`, 120, 'NX');
 		await redisPipeline.exec();
 
-		this.globalEventService.publishReversiStream(targetUser.id, 'invited', {
+		this.globalEventPublishService.publishReversiStream(targetUser.id, 'invited', {
 			user: await this.userEntityService.pack(me, targetUser),
 		});
 
@@ -245,7 +245,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			};
 			this.cacheGame(updatedGame);
 
-			this.globalEventService.publishReversiGameStream(game.id, 'changeReadyStates', {
+			this.globalEventPublishService.publishReversiGameStream(game.id, 'changeReadyStates', {
 				user1: ready,
 				user2: updatedGame.user2Ready,
 			});
@@ -258,7 +258,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			};
 			this.cacheGame(updatedGame);
 
-			this.globalEventService.publishReversiGameStream(game.id, 'changeReadyStates', {
+			this.globalEventPublishService.publishReversiGameStream(game.id, 'changeReadyStates', {
 				user1: updatedGame.user1Ready,
 				user2: ready,
 			});
@@ -304,7 +304,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		this.cacheGame(game);
 
 		const packed = await this.reversiGameEntityService.packDetail(game);
-		this.globalEventService.publishReversiStream(parentId, 'matched', { game: packed });
+		this.globalEventPublishService.publishReversiStream(parentId, 'matched', { game: packed });
 
 		return game;
 	}
@@ -363,7 +363,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 		this.redisClient.setex(`reversi:game:turnTimer:${game.id}:1`, updatedGame.timeLimitForEachTurn, '');
 
-		this.globalEventService.publishReversiGameStream(game.id, 'started', {
+		this.globalEventPublishService.publishReversiGameStream(game.id, 'started', {
 			game: await this.reversiGameEntityService.packDetail(updatedGame),
 		});
 	}
@@ -388,7 +388,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		updatedGame.user2 = game.user2;
 		this.cacheGame(updatedGame);
 
-		this.globalEventService.publishReversiGameStream(game.id, 'ended', {
+		this.globalEventPublishService.publishReversiGameStream(game.id, 'ended', {
 			winnerId: winnerId,
 			game: await this.reversiGameEntityService.packDetail(updatedGame),
 		});
@@ -445,7 +445,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		};
 		this.cacheGame(updatedGame);
 
-		this.globalEventService.publishReversiGameStream(game.id, 'updateSettings', {
+		this.globalEventPublishService.publishReversiGameStream(game.id, 'updateSettings', {
 			userId: user.id,
 			key: key,
 			value: value,
@@ -500,7 +500,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		};
 		this.cacheGame(updatedGame);
 
-		this.globalEventService.publishReversiGameStream(game.id, 'log', {
+		this.globalEventPublishService.publishReversiGameStream(game.id, 'log', {
 			...log,
 			id: id ?? null,
 		});
@@ -568,7 +568,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		await this.reversiGamesRepository.delete(game.id);
 		this.deleteGameCache(game.id);
 
-		this.globalEventService.publishReversiGameStream(game.id, 'canceled', {
+		this.globalEventPublishService.publishReversiGameStream(game.id, 'canceled', {
 			userId: user.id,
 		});
 	}

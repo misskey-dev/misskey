@@ -27,7 +27,7 @@ import { QueueService } from '@/core/QueueService.js';
 import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository, MiMeta } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import type { MiRemoteUser } from '@/models/User.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { AbuseReportService } from '@/core/AbuseReportService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
@@ -84,7 +84,7 @@ export class ApInboxService {
 		private apPersonService: ApPersonService,
 		private apQuestionService: ApQuestionService,
 		private queueService: QueueService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 	) {
 		this.logger = this.apLoggerService.logger;
 	}
@@ -343,7 +343,7 @@ export class ApInboxService {
 			if (fromRelay) {
 				this.logger.info(`Publishing relay-delivered note: ${uri}`);
 				const noteObj = await this.noteEntityService.pack(renote, null, { skipHide: true, withReactionAndUserPairCache: true });
-				this.globalEventService.publishNotesStream(noteObj);
+				this.globalEventPublishService.publishNotesStream(noteObj);
 				return;
 			}
 
@@ -524,7 +524,7 @@ export class ApInboxService {
 
 		const job = await this.queueService.createDeleteAccountJob(actor);
 
-		this.globalEventService.publishInternalEvent('remoteUserUpdated', { id: actor.id });
+		this.globalEventPublishService.publishInternalEvent('remoteUserUpdated', { id: actor.id });
 
 		return `ok: queued ${job.name} ${job.id}`;
 	}

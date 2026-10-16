@@ -32,7 +32,7 @@ import NotesChart from '@/core/chart/charts/notes.js';
 import PerUserNotesChart from '@/core/chart/charts/per-user-notes.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { HashtagService } from '@/core/HashtagService.js';
@@ -247,7 +247,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private idService: IdService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private queueService: QueueService,
 		private fanoutTimelineService: FanoutTimelineService,
 		private notificationService: NotificationService,
@@ -839,7 +839,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			// Pack the note
 			const noteObj = await this.noteEntityService.pack(note, null, { skipHide: true, withReactionAndUserPairCache: true });
 
-			this.globalEventService.publishNotesStream(noteObj);
+			this.globalEventPublishService.publishNotesStream(noteObj);
 
 			this.roleService.addNoteToRoleTimeline(noteObj);
 
@@ -862,7 +862,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 					if (!isThreadMuted) {
 						nm.push(data.reply.userId, 'reply');
-						this.globalEventService.publishMainStream(data.reply.userId, 'reply', noteObj);
+						this.globalEventPublishService.publishMainStream(data.reply.userId, 'reply', noteObj);
 						this.webhookService.enqueueUserWebhook(data.reply.userId, 'reply', { note: noteObj });
 					}
 				}
@@ -879,7 +879,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 				// Publish event
 				if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
-					this.globalEventService.publishMainStream(data.renote.userId, 'renote', noteObj);
+					this.globalEventPublishService.publishMainStream(data.renote.userId, 'renote', noteObj);
 					this.webhookService.enqueueUserWebhook(data.renote.userId, 'renote', { note: noteObj });
 				}
 			}
@@ -1005,7 +1005,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				detail: true,
 			});
 
-			this.globalEventService.publishMainStream(u.id, 'mention', detailPackedNote);
+			this.globalEventPublishService.publishMainStream(u.id, 'mention', detailPackedNote);
 			this.webhookService.enqueueUserWebhook(u.id, 'mention', { note: detailPackedNote });
 
 			// Create notification

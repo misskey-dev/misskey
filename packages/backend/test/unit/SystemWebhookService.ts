@@ -15,7 +15,7 @@ import { SystemWebhooksRepository, UsersRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { DI } from '@/di-symbols.js';
 import { QueueService } from '@/core/QueueService.js';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -72,7 +72,7 @@ describe('SystemWebhookService', () => {
 					SystemWebhookService,
 					IdService,
 					LoggerService,
-					GlobalEventService,
+					GlobalEventPublishService,
 					{
 						provide: QueueService, useFactory: () => ({ systemWebhookDeliver: vi.fn() }),
 					},

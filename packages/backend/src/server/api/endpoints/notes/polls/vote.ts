@@ -12,7 +12,7 @@ import { GetterService } from '@/server/api/GetterService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { PollService } from '@/core/PollService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { DI } from '@/di-symbols.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -94,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queueService: QueueService,
 		private pollService: PollService,
 		private apRendererService: ApRendererService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private userBlockingService: UserBlockingService,
 		private noteEntityService: NoteEntityService,
 	) {
@@ -162,7 +162,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const index = ps.choice + 1; // In SQL, array index is 1 based
 			await this.pollsRepository.query('UPDATE poll SET votes[$1] = votes[$1] + 1 WHERE "noteId" = $2', [index, poll.noteId]);
 
-			this.globalEventService.publishNoteStream(note, 'pollVoted', {
+			this.globalEventPublishService.publishNoteStream(note, 'pollVoted', {
 				choice: ps.choice,
 				userId: me.id,
 			});

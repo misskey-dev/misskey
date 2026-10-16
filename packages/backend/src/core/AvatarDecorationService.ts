@@ -4,14 +4,14 @@
  */
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import * as Redis from 'ioredis';
 import type { AvatarDecorationsRepository, MiAvatarDecoration, MiUser } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
 import { MemorySingleCache } from '@/misc/cache.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import type { GlobalEvents } from '@/core/GlobalEventPublishService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 @Injectable()
@@ -19,37 +19,31 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 	public cache: MemorySingleCache<MiAvatarDecoration[]>;
 
 	constructor(
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
-
 		@Inject(DI.avatarDecorationsRepository)
 		private avatarDecorationsRepository: AvatarDecorationsRepository,
 
 		private idService: IdService,
 		private moderationLogService: ModerationLogService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 	) {
 		this.cache = new MemorySingleCache<MiAvatarDecoration[]>(1000 * 60 * 30); // 30s
 
-		this.redisForSub.on('message', this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	@bindThis
-	private async onMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-
-		if (obj.channel === 'internal') {
-			const { type, body: _ } = obj.message as GlobalEvents['internal']['payload'];
-			switch (type) {
-				case 'avatarDecorationCreated':
-				case 'avatarDecorationUpdated':
-				case 'avatarDecorationDeleted': {
-					this.cache.delete();
-					break;
-				}
-				default:
-					break;
+	private async onMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type, body: _ } = payload;
+		switch (type) {
+			case 'avatarDecorationCreated':
+			case 'avatarDecorationUpdated':
+			case 'avatarDecorationDeleted': {
+				this.cache.delete();
+				break;
 			}
+			default:
+				break;
 		}
 	}
 
@@ -60,7 +54,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 			...options,
 		});
 
-		this.globalEventService.publishInternalEvent('avatarDecorationCreated', created);
+		this.globalEventPublishService.publishInternalEvent('avatarDecorationCreated', created);
 
 		if (moderator) {
 			this.moderationLogService.log(moderator, 'createAvatarDecoration', {
@@ -83,7 +77,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 		});
 
 		const updated = await this.avatarDecorationsRepository.findOneByOrFail({ id: avatarDecoration.id });
-		this.globalEventService.publishInternalEvent('avatarDecorationUpdated', updated);
+		this.globalEventPublishService.publishInternalEvent('avatarDecorationUpdated', updated);
 
 		if (moderator) {
 			this.moderationLogService.log(moderator, 'updateAvatarDecoration', {
@@ -99,7 +93,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 		const avatarDecoration = await this.avatarDecorationsRepository.findOneByOrFail({ id });
 
 		await this.avatarDecorationsRepository.delete({ id: avatarDecoration.id });
-		this.globalEventService.publishInternalEvent('avatarDecorationDeleted', avatarDecoration);
+		this.globalEventPublishService.publishInternalEvent('avatarDecorationDeleted', avatarDecoration);
 
 		if (moderator) {
 			this.moderationLogService.log(moderator, 'deleteAvatarDecoration', {
@@ -119,7 +113,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.redisForSub.off('message', this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 	}
 
 	@bindThis

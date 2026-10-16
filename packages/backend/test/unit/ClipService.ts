@@ -15,7 +15,7 @@ describe('ClipService', () => {
 		findOneBy: ReturnType<typeof vi.fn>;
 		update: ReturnType<typeof vi.fn>;
 	};
-	let globalEventService: {
+	let globalEventPublishService: {
 		publishClipStream: ReturnType<typeof vi.fn>;
 	};
 	let clipService: ClipService;
@@ -30,7 +30,7 @@ describe('ClipService', () => {
 			}),
 			update: vi.fn().mockResolvedValue(undefined),
 		};
-		globalEventService = {
+		globalEventPublishService = {
 			publishClipStream: vi.fn(),
 		};
 
@@ -40,7 +40,7 @@ describe('ClipService', () => {
 			{} as any,
 			{} as any,
 			{} as any,
-			globalEventService as any,
+			globalEventPublishService as any,
 		);
 	});
 
@@ -51,18 +51,18 @@ describe('ClipService', () => {
 	test('debounces trailing update publish until updates have been quiet for the throttle window', async () => {
 		await clipService.update({ id: 'user-1' } as any, 'clip-1', 'name-1', undefined, undefined);
 
-		expect(globalEventService.publishClipStream).toHaveBeenCalledTimes(1);
-		expect(globalEventService.publishClipStream).toHaveBeenLastCalledWith('clip-1', 'updated');
+		expect(globalEventPublishService.publishClipStream).toHaveBeenCalledTimes(1);
+		expect(globalEventPublishService.publishClipStream).toHaveBeenLastCalledWith('clip-1', 'updated');
 
 		vi.advanceTimersByTime(1000);
 		await clipService.update({ id: 'user-1' } as any, 'clip-1', 'name-2', undefined, undefined);
 
 		vi.advanceTimersByTime(2999);
-		expect(globalEventService.publishClipStream).toHaveBeenCalledTimes(1);
+		expect(globalEventPublishService.publishClipStream).toHaveBeenCalledTimes(1);
 
 		vi.advanceTimersByTime(1);
-		expect(globalEventService.publishClipStream).toHaveBeenCalledTimes(2);
-		expect(globalEventService.publishClipStream).toHaveBeenLastCalledWith('clip-1', 'updated');
+		expect(globalEventPublishService.publishClipStream).toHaveBeenCalledTimes(2);
+		expect(globalEventPublishService.publishClipStream).toHaveBeenLastCalledWith('clip-1', 'updated');
 	});
 });
 
