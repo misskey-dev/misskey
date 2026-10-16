@@ -260,6 +260,8 @@ function save() {
 		},
 	}).then((res) => {
 		replaceCurrentAccountData(res);
+	}).catch(() => {
+		// エラーダイアログは apiWithDialog 側で表示済み
 	});
 
 	claimAchievement('profileFilled');
@@ -280,7 +282,9 @@ function changeAvatar(ev: PointerEvent) {
 				title: i18n.ts.cannotSelectSensitiveMedia,
 				text: i18n.ts.cannotSelectSensitiveMediaDescription,
 			},
-		});
+		}).catch(() => null); // エラーダイアログは apiWithDialog 側で表示済み
+		if (i == null) return;
+
 		updateCurrentAccount({
 			avatarId: i.avatarId,
 			avatarUrl: i.avatarUrl,
@@ -338,6 +342,8 @@ function changeAvatar(ev: PointerEvent) {
 							avatarId: res.avatarId,
 							avatarUrl: res.avatarUrl,
 						});
+					}).catch(() => {
+						// エラーダイアログは apiWithDialog 側で表示済み
 					});
 				},
 			},
@@ -353,7 +359,8 @@ function changeBanner(ev: PointerEvent) {
 				title: i18n.ts.cannotSelectSensitiveMedia,
 				text: i18n.ts.cannotSelectSensitiveMediaDescription,
 			},
-		});
+		}).catch(() => null); // エラーダイアログは apiWithDialog 側で表示済み
+		if (i == null) return;
 		updateCurrentAccount({
 			bannerId: i.bannerId,
 			bannerUrl: i.bannerUrl,
@@ -410,6 +417,8 @@ function changeBanner(ev: PointerEvent) {
 							bannerId: res.bannerId,
 							bannerUrl: res.bannerUrl,
 						});
+					}).catch(() => {
+						// エラーダイアログは apiWithDialog 側で表示済み
 					});
 				},
 			},
