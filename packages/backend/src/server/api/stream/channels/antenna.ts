@@ -61,7 +61,7 @@ export class AntennaChannel extends Channel {
 	@bindThis
 	private async onEvent(data: GlobalEvents['antenna']['payload']) {
 		if (data.type === 'note') {
-			let note = await this.noteEntityService.pack(data.body.id, this.user, { detail: true });
+			let note = data.body;
 
 			if (!this.isNoteVisibleForMe(note)) return;
 			if (this.isNoteMutedOrBlocked(note)) return;
