@@ -1398,7 +1398,7 @@ pluginsAreDisabledBecauseSafeMode: "Tutti i plugin sono disattivati, poiché la 
 customCssIsDisabledBecauseSafeMode: "Il CSS personalizzato non è stato applicato, poiché la modalità sicura è attiva."
 themeIsDefaultBecauseSafeMode: "Quando la modalità sicura è attiva, viene utilizzato il tema predefinito. Quando la modalità sicura viene disattivata, il tema torna a essere quello precedente."
 thankYouForTestingBeta: "Grazie per la tua collaborazione nella verifica delle versioni beta!"
-createUserSpecifiedNote: "Crea Nota privata"
+createUserSpecifiedNote: "Messaggio diretto"
 schedulePost: "Pianificare la pubblicazione"
 scheduleToPostOnX: "Pianificare la pubblicazione {x}"
 scheduledToPostOnX: "Pubblicazione pianificata {x}"
