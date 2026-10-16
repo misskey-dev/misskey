@@ -8,8 +8,8 @@ import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 
-export function shouldHideFileByDefault(file: Misskey.entities.DriveFile): boolean {
-	if (prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) {
+export function shouldHideFileByDefault(file: Misskey.entities.DriveFile, ignoreDataSaver = false): boolean {
+	if (prefer.s.nsfw === 'force' || (!ignoreDataSaver && prefer.s.dataSaver.media)) {
 		return true;
 	}
 

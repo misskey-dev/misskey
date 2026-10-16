@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/notifications" :label="i18n.ts.notifications" :keywords="['notifications']" icon="ti ti-bell">
 	<div class="_gaps_m">
-		<MkFeatureBanner icon="/client-assets/bell_3d.png" color="#ffff00">
+		<MkFeatureBanner icon="/fluent-emoji/1f514.png" color="#ffff00">
 			<SearchText>{{ i18n.ts._settings.notificationsBanner }}</SearchText>
 		</MkFeatureBanner>
 
@@ -47,10 +47,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps_s">
 							<div v-for="item in items" :key="item.id" :class="[$style.userItem ]">
 								<div :class="$style.userItemMain">
-									<MkA :class="$style.userItemMainBody" :to="userPage(item)">
-										<MkUserCardMini :user="item"/>
+									<MkA :class="$style.userItemMainBody" :to="userPage(item.followee!)">
+										<MkUserCardMini :user="item.followee!"/>
 									</MkA>
-									<button class="_button" :class="$style.notifyMenu" @click="showNotifyMenu(item, $event)"><i class="ti ti-dots"></i></button>
+									<button class="_button" :class="$style.notifyMenu" @click="showNotifyMenu(item.followee!, $event)"><i class="ti ti-dots"></i></button>
 								</div>
 							</div>
 						</div>
@@ -105,7 +105,7 @@ import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowB
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { Paginator } from '@/utility/paginator.js';
 import MkPagination from '@/components/MkPagination.vue';
-import { userPage } from '@/filters/user.js';
+import { userPage } from '@@/js/user.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
 const $i = ensureSignin();
@@ -125,8 +125,11 @@ async function showNotifyMenu(user: Misskey.entities.UserDetailed, ev: PointerEv
 	}], ev.currentTarget ?? ev.target);
 }
 
-const notifyUserPaginator = markRaw(new Paginator('users/notify/list', {
+const notifyUserPaginator = markRaw(new Paginator('following/list', {
 	limit: 10,
+	params: {
+		notification: true,
+	},
 }));
 
 const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'test', 'exportCompleted'] as const satisfies (typeof notificationTypes[number])[];

@@ -9,10 +9,12 @@
 
 import cluster from 'node:cluster';
 import { EventEmitter } from 'node:events';
-import chalk from 'chalk';
+import { writeHeapSnapshot } from 'node:v8';
 import Xev from 'xev';
 import Logger from '@/logger.js';
 import { envOption } from '../env.js';
+import { installProcessErrorHandlers } from './process-error-handler.js';
+import { isShutdownInProgress } from './shutdown-handler.js';
 import { readyRef } from './ready.js';
 
 import 'reflect-metadata';
@@ -25,6 +27,8 @@ EventEmitter.defaultMaxListeners = 128;
 const logger = new Logger('core', 'cyan');
 const clusterLogger = logger.createSubLogger('cluster', 'orange');
 const ev = new Xev();
+
+installProcessErrorHandlers({ logger, quiet: envOption.quiet });
 
 //#region Events
 
@@ -40,27 +44,19 @@ cluster.on('online', worker => {
 
 // Listen for dying workers
 cluster.on('exit', worker => {
-	// Replace the dead worker,
-	// we're not sentimental
-	clusterLogger.error(chalk.red(`[${worker.id}] died :(`));
+	if (isShutdownInProgress()) {
+		clusterLogger.info(`Process exited during shutdown: [${worker.id}]`);
+		return;
+	}
+
+	// 終了したワーカーは従来どおり再生成し、表示色は出力処理へ任せます。
+	clusterLogger.error(`[${worker.id}] died :(`);
 	cluster.fork();
-});
-
-// Display detail of unhandled promise rejection
-if (!envOption.quiet) {
-	process.on('unhandledRejection', console.dir);
-}
-
-// Display detail of uncaught exception
-process.on('uncaughtException', err => {
-	try {
-		logger.error(err);
-		console.trace(err);
-	} catch { }
 });
 
 // Dying away...
 process.on('exit', code => {
+	if (isShutdownInProgress()) return;
 	logger.info(`The process is going to exit with code ${code}`);
 });
 
@@ -68,12 +64,10 @@ process.on('exit', code => {
 
 if (!envOption.disableClustering) {
 	if (cluster.isPrimary) {
-		logger.info(`Start main process... pid: ${process.pid}`);
 		const { masterMain } = await import('./master.js');
 		await masterMain();
 		ev.mount();
 	} else if (cluster.isWorker) {
-		logger.info(`Start worker process... pid: ${process.pid}`);
 		const { workerMain } = await import('./worker.js');
 		await workerMain();
 	} else {
@@ -81,7 +75,6 @@ if (!envOption.disableClustering) {
 	}
 } else {
 	// 非clusterの場合はMasterのみが起動するため、Workerの処理は行わない(cluster.isWorker === trueの状態でこのブロックに来ることはない)
-	logger.info(`Start main process... pid: ${process.pid}`);
 	const { masterMain } = await import('./master.js');
 	await masterMain();
 	ev.mount();
@@ -91,10 +84,35 @@ process.on('message', msg => {
 	if (msg === 'gc') {
 		if (global.gc != null) {
 			logger.info('Manual GC triggered');
-			global.gc();
+			for (let i = 0; i < 3; i++) {
+				global.gc();
+			}
 			if (process.send != null) process.send('gc ok');
 		} else {
 			logger.warn('Manual GC requested but gc is not available. Start the process with --expose-gc to enable this feature.');
+			if (process.send != null) process.send('gc unavailable');
+		}
+	} else if (msg === 'memory usage') {
+		if (process.send != null) {
+			process.send({
+				type: 'memory usage',
+				value: process.memoryUsage(),
+			});
+		}
+	} else if (msg != null && typeof msg === 'object' && 'type' in msg && msg.type === 'heap snapshot' && 'path' in msg && typeof msg.path === 'string') {
+		if (process.send != null) {
+			try {
+				const path = writeHeapSnapshot(msg.path);
+				process.send({
+					type: 'heap snapshot',
+					path,
+				});
+			} catch (err) {
+				process.send({
+					type: 'heap snapshot error',
+					message: err instanceof Error ? err.message : String(err),
+				});
+			}
 		}
 	}
 });

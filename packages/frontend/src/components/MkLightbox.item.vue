@@ -1,0 +1,1307 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<template>
+<div
+	ref="rootEl"
+	:class="$style.root"
+>
+	<div
+		ref="mainEl"
+		:class="$style.main"
+		@pointerdown.passive="onPointerdown"
+		@pointermove.passive="onPointermove"
+		@pointerup.passive="onPointerup"
+		@pointercancel.passive="cancelPointerGesture"
+		@touchstart.passive="onTouchstart"
+		@touchmove="onTouchmove"
+		@touchcancel.passive="cancelPointerGesture"
+		@contextmenu="cancelPointerGesture"
+		@wheel="onWheel"
+		@click="onClick"
+	>
+		<div
+			:class="[$style.transformer, { [$style.transition]: enableTransition }]"
+			:style="{ transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})` }"
+			@transitionend.self="enableTransition = false"
+			@transitioncancel.self="enableTransition = false"
+		>
+			<div :class="[$style.contentWrapper, { [$style.hideForFallback]: hideForFallback }]">
+				<div
+					v-if="hide"
+					data-gallery-click-action="hidden"
+					:class="[$style.hidden, {
+						[$style.sensitive]: content.file?.isSensitive && prefer.s.highlightSensitiveMedia,
+					}]"
+					:style="hiddenStyle"
+					@click.stop="onHiddenClick"
+				>
+					<div :class="$style.hiddenWrapper">
+						<MkBlurhash
+							v-if="content.type === 'image' && content.file?.blurhash != null"
+							:class="$style.hiddenBlurhash"
+							:blurhash="content.file.blurhash ?? null"
+							:height="content?.height ?? undefined"
+							:width="content?.width ?? undefined"
+						/>
+						<img
+							v-else-if="content.type === 'video' && content.thumbnailUrl != null"
+							:src="content.thumbnailUrl"
+							:class="$style.hiddenThumbnail"
+						/>
+						<div v-else :class="$style.hiddenPlaceholder"></div>
+						<div :class="[$style.hiddenText, { [$style.withBlur]: content.type === 'video' && content.thumbnailUrl != null }]">
+							<div :class="$style.hiddenTextWrapper">
+								<b v-if="content.file?.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</b>
+								<b v-else style="display: block;"><i class="ti" :class="contentHideFileIcon"></i> {{ contentHideFileText }}</b>
+								<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<template v-else>
+					<img
+						v-if="(!originalContentLoaded || !thumbnailContentLoaded) && (content.thumbnailUrl != null)"
+						:class="[$style.content, $style.thumbnail]"
+						:src="content.thumbnailUrl"
+						draggable="false"
+						@load="thumbnailContentLoaded = true"
+					>
+
+					<template v-if="activated">
+						<img
+							v-if="content.type === 'image'"
+							:class="[$style.content, { [$style.pixelatedZoom]: pixelatedZoom }]"
+							:src="content.url"
+							:alt="content.file?.comment ?? undefined"
+							draggable="false"
+							@load="originalContentLoaded = true"
+						>
+						<video
+							v-else-if="content.type === 'video'"
+							ref="videoEl"
+							data-gallery-click-action="media"
+							:class="[$style.video, { [$style.videoSized]: videoAspectRatio != null }]"
+							:src="content.url"
+							:alt="content.file?.comment ?? undefined"
+							draggable="false"
+							:controls="prefer.s.useNativeUiForVideoAudioPlayer"
+							playsinline
+							@loadedmetadata="onVideoLoadedMetadata"
+							@click.stop="onMediaClick"
+						></video>
+						<div v-if="content.type === 'video' && !prefer.s.useNativeUiForVideoAudioPlayer && !isMediaPlaying" :class="$style.playIconWrapper">
+							<div :class="$style.playIcon">
+								<i class="ti ti-player-play"></i>
+							</div>
+						</div>
+						<div v-if="content.type === 'audio' && prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.audioRoot">
+							<audio
+								ref="audioEl"
+								:src="content.url"
+								:alt="content.file?.comment ?? undefined"
+								:class="$style.audio"
+								controls
+								@loadedmetadata="originalContentLoaded = true"
+							></audio>
+						</div>
+						<XAudioVisualizer
+							v-else-if="content.type === 'audio' && !prefer.s.useNativeUiForVideoAudioPlayer"
+							ref="audioVisualizer"
+							:content="content"
+							:user="user"
+							:isPlaying="isMediaPlaying"
+							:volume="volume"
+							@click.stop="onMediaClick"
+							@loadedmetadata="originalContentLoaded = true"
+						/>
+					</template>
+
+					<div v-if="activated && (!originalContentLoaded || (isMediaControlledByMisskey && isMediaPlaying && (!isMediaReady || !isMediaActuallyPlaying)))" :class="$style.loading">
+						<MkLoading/>
+					</div>
+				</template>
+			</div>
+		</div>
+	</div>
+
+	<div :class="[$style.header, { [$style.infoShowing]: infoShowing && !isZooming }]">
+		<div :class="$style.title" class="_acrylic">
+			<button class="_button" :class="$style.titleButton" @click="openMenu"><i class="ti ti-dots"></i></button>
+			<div :class="$style.titleText">
+				<MkCondensedLine :minScale="0.5">{{ content.filename }}</MkCondensedLine>
+			</div>
+			<button class="_button" :class="$style.titleButton" @click="closeThis"><i class="ti ti-x"></i></button>
+		</div>
+	</div>
+
+	<div :class="[$style.footer, { [$style.infoShowing]: infoShowing && !isZooming }]">
+		<div v-if="isMediaControlledByMisskey && !hide" :class="$style.mediaControl">
+			<XControl v-if="mediaEl != null" ref="mediaControl" v-model:volume="volume" :externalVolumeControl="isVolumeHandledByVisualizer"/>
+		</div>
+	</div>
+</div>
+</template>
+
+<script lang="ts">
+import * as Misskey from 'misskey-js';
+
+type Size = {
+	width: number;
+	height: number;
+};
+
+type Rect = Size & {
+	left: number;
+	top: number;
+};
+
+export type Content = {
+	id: string;
+	type: 'image' | 'video' | 'audio';
+	url: string;
+	thumbnailUrl?: string | null;
+	width?: number | null;
+	height?: number | null;
+	filename?: string | null;
+	file?: Misskey.entities.DriveFile;
+	sourceElement?: HTMLElement | null;
+};
+
+export function calculateSourceTransform({
+	fit,
+	contentRenderingRect,
+	sourceRect,
+}: {
+	fit: string;
+	contentRenderingRect: Rect;
+	sourceRect: Rect;
+}): { x: number; y: number; scale: number } {
+	const scale = fit === 'cover'
+		? Math.max(sourceRect.width / contentRenderingRect.width, sourceRect.height / contentRenderingRect.height)
+		: Math.min(sourceRect.width / contentRenderingRect.width, sourceRect.height / contentRenderingRect.height);
+
+	const sourceContentWidth = contentRenderingRect.width * scale;
+	const sourceContentHeight = contentRenderingRect.height * scale;
+	const sourceContentLeft = sourceRect.left + (sourceRect.width - sourceContentWidth) / 2;
+	const sourceContentTop = sourceRect.top + (sourceRect.height - sourceContentHeight) / 2;
+
+	return {
+		x: sourceContentLeft - contentRenderingRect.left * scale,
+		y: sourceContentTop - contentRenderingRect.top * scale,
+		scale,
+	};
+}
+</script>
+
+<script lang="ts" setup>
+import { computed, nextTick, ref, useTemplateRef, markRaw, watch, provide, onBeforeUnmount, defineAsyncComponent } from 'vue';
+import MkBlurhash from '@/components/MkBlurhash.vue';
+import XControl from './MkLightbox.item.controls.vue';
+import type XAudioVisualizer__TypeReferenceOnly from './MkLightbox.item.audio-visualizer.vue';
+import XFileInfo from './MkLightbox.item.fileinfo.vue';
+import type { MenuItem } from '@/types/menu.js';
+import { DI } from '@/di.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import { i18n } from '@/i18n.js';
+import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
+import { makeDoubleTapDetector } from '@/utility/double-tap.js';
+import { deviceKind } from '@/utility/device-kind.js';
+import { isTouchUsing } from '@/utility/touch.js';
+import { getFileMenu } from '@/utility/get-file-menu.js';
+
+const props = withDefaults(defineProps<{
+	content: Content;
+	user?: Misskey.entities.User | null; // DriveFileのuserはnullになることがある。その場合に使用する所有者情報
+	activated: boolean;
+	initiallyRevealed?: boolean;
+}>(), {
+	initiallyRevealed: false,
+});
+
+const emit = defineEmits<{
+	(ev: 'close'): void;
+	(ev: 'horizontalSwipe', offset: number): void;
+	(ev: 'next'): void;
+	(ev: 'prev'): void;
+	(ev: 'cancelHorizontalSwipe'): void;
+}>();
+
+const XAudioVisualizer = defineAsyncComponent(() => import('./MkLightbox.item.audio-visualizer.vue'));
+
+// 一回のビューワー操作内では状態を維持するためにmodelで親に伝えて親で状態を保持する
+// TODO: drivefileのproperties側にピクセルアートかどうかのフラグを立ててそちらを元にデフォルトの挙動を決めるようにする
+const pixelatedZoom = defineModel<boolean>('pixelatedZoom', { required: true });
+
+const rootEl = useTemplateRef('rootEl');
+const mainEl = useTemplateRef('mainEl');
+const videoEl = useTemplateRef('videoEl');
+const audioEl = useTemplateRef('audioEl'); // ネイティブUI時
+const audioVisualizer = useTemplateRef<InstanceType<typeof XAudioVisualizer__TypeReferenceOnly>>('audioVisualizer'); // ネイティブUIじゃない場合
+const mediaControl = useTemplateRef<InstanceType<typeof XControl>>('mediaControl');
+
+const mediaEl = computed<HTMLVideoElement | HTMLAudioElement | null>(() => {
+	if (props.content.type === 'video') {
+		return videoEl.value;
+	} else if (props.content.type === 'audio') {
+		if (prefer.s.useNativeUiForVideoAudioPlayer) {
+			return audioEl.value;
+		} else {
+			return audioVisualizer.value?.audioEl ?? null;
+		}
+	} else {
+		return null;
+	}
+});
+
+provide(DI.mkLightboxItemMediaEl, mediaEl);
+
+const originalContentLoaded = ref(false);
+const thumbnailContentLoaded = ref(false);
+const enableTransition = ref(false);
+const infoShowing = ref(false);
+const hide = ref(true);
+const isMediaControlledByMisskey = computed(() => ['video', 'audio'].includes(props.content.type) && !prefer.s.useNativeUiForVideoAudioPlayer);
+// ビジュアライザー使用時は音量の適用をGainNode側が担当する (メディア要素は100%固定にして、波形が音量レベルに依存しないようにするため)
+const isVolumeHandledByVisualizer = computed(() => props.content.type === 'audio' && !prefer.s.useNativeUiForVideoAudioPlayer);
+const volume = ref(0.25);
+const isMediaReady = computed(() => mediaControl.value?.isReady ?? false);
+const isMediaPlaying = computed(() => mediaControl.value?.isPlaying ?? false);
+const isMediaActuallyPlaying = computed(() => mediaControl.value?.isActuallyPlaying ?? false);
+let canOpenAnimation = false;
+
+const contentHideFileIcon = computed(() => {
+	switch (props.content.type) {
+		case 'image':
+			return 'ti-photo';
+		case 'video':
+			return 'ti-movie';
+		case 'audio':
+			return 'ti-music';
+		default:
+			return '';
+	}
+});
+const contentHideFileText = computed(() => {
+	switch (props.content.type) {
+		case 'image':
+			return i18n.ts.image;
+		case 'video':
+			return i18n.ts.video;
+		case 'audio':
+			return i18n.ts.audio;
+		default:
+			return '';
+	}
+});
+
+const videoAspectRatio = ref<number | null>(
+	props.content.width != null && props.content.height != null && props.content.width > 0 && props.content.height > 0
+		? props.content.width / props.content.height
+		: null
+);
+
+function onVideoLoadedMetadata() {
+	originalContentLoaded.value = true;
+
+	// ドライブ上のメタデータが無い場合に限り、動画自体の初期サイズから縦横比を確定させる
+	if (videoAspectRatio.value != null) return;
+	if (videoEl.value == null || videoEl.value.videoWidth === 0 || videoEl.value.videoHeight === 0) return;
+	videoAspectRatio.value = videoEl.value.videoWidth / videoEl.value.videoHeight;
+}
+
+const headerSize = 30;
+const footerSize = isMediaControlledByMisskey.value ? 80 : 0;
+
+const padding = deviceKind === 'smartphone' ? {
+	top: Math.max(0, headerSize + 10),
+	right: 0,
+	bottom: Math.max(0, footerSize + 10),
+	left: 0,
+} : {
+	top: Math.max(30, headerSize + 10),
+	right: 30,
+	bottom: Math.max(30, footerSize + 10),
+	left: 30,
+};
+
+// maxからはみ出す場合は縮小、maxに満たない場合は拡大する(contain)
+function calcContentRenderingSize(content: Content) {
+	if (content.width == null || content.height == null || content.width === 0 || content.height === 0) return null;
+
+	const maxWidth = window.innerWidth - padding.left - padding.right;
+	const maxHeight = window.innerHeight - padding.top - padding.bottom;
+
+	const widthRatio = maxWidth / content.width;
+	const heightRatio = maxHeight / content.height;
+	const ratio = widthRatio < heightRatio ? widthRatio : heightRatio;
+
+	const width = content.width * ratio;
+	const height = content.height * ratio;
+
+	return { width, height };
+}
+
+const contentRenderingSize = calcContentRenderingSize(props.content);
+const getContentRenderingRect = () => contentRenderingSize != null ? {
+	left: (window.innerWidth - contentRenderingSize.width + padding.left - padding.right) / 2,
+	top: (window.innerHeight - contentRenderingSize.height + padding.top - padding.bottom) / 2,
+	width: contentRenderingSize.width,
+	height: contentRenderingSize.height,
+} : null;
+
+const hiddenStyle = computed(() => {
+	if (contentRenderingSize == null) {
+		return {
+			width: '100%',
+			height: '100%',
+		};
+	}
+
+	return {
+		width: `${contentRenderingSize.width}px`,
+		height: `${contentRenderingSize.height}px`,
+	};
+});
+
+function shouldHideInGallery(content: Content): boolean {
+	if (content.file == null) return false;
+	const hiddenByDefault = shouldHideFileByDefault(content.file, true);
+	if (!hiddenByDefault) return false;
+
+	// 呼び出し元で既にぼかしが解除されているものは初期表示で隠さない
+	if (props.initiallyRevealed) {
+		return false;
+	}
+
+	return true;
+}
+
+function isValidRect(rect: Rect | null): rect is Rect {
+	return rect != null && rect.width > 0 && rect.height > 0;
+}
+
+const transform = ref({ x: 0, y: 0, scale: 1 });
+
+// 元のimg要素の位置・サイズ(とobject-fitの設定値)を取得して、そこからneutralの位置にアニメーションするためのscaleとtranslationを計算する
+function getScaleAndTranslationForSourceElement() {
+	const sourceElement = props.content.sourceElement;
+	const contentRenderingRect = getContentRenderingRect();
+	if (sourceElement == null || !isValidRect(contentRenderingRect)) return null;
+	const sourceElementRect = sourceElement.getBoundingClientRect();
+	if (!isValidRect(sourceElementRect)) return null;
+
+	return calculateSourceTransform({
+		fit: window.getComputedStyle(sourceElement).objectFit,
+		contentRenderingRect,
+		sourceRect: sourceElementRect,
+	});
+}
+
+if (props.content.sourceElement != null && props.activated) {
+	const sourceTransform = getScaleAndTranslationForSourceElement();
+	if (sourceTransform != null) {
+		transform.value.scale = sourceTransform.scale;
+		transform.value.x = sourceTransform.x;
+		transform.value.y = sourceTransform.y;
+		canOpenAnimation = true;
+	}
+}
+
+const hideForFallback = ref(!canOpenAnimation);
+
+const isZooming = ref(false);
+
+function clampZoomTransform(nextTransform: { x: number; y: number; scale: number }) {
+	if (mainEl.value == null || nextTransform.scale <= 1) {
+		return {
+			x: 0,
+			y: 0,
+			scale: nextTransform.scale,
+		};
+	}
+
+	const panMargin = 24;
+	const rect = mainEl.value.getBoundingClientRect();
+	const minX = rect.width - rect.width * nextTransform.scale - panMargin;
+	const minY = rect.height - rect.height * nextTransform.scale - panMargin;
+	const maxX = panMargin;
+	const maxY = panMargin;
+
+	return {
+		x: Math.min(maxX, Math.max(minX, nextTransform.x)),
+		y: Math.min(maxY, Math.max(minY, nextTransform.y)),
+		scale: nextTransform.scale,
+	};
+}
+
+function zoomInTo(x: number, y: number, factor = 1.1, withAnimation = false, clamp = true) {
+	if (mainEl.value == null) return;
+
+	const newScale = transform.value.scale * factor;
+	isZooming.value = true;
+
+	const rect = mainEl.value.getBoundingClientRect();
+	const offsetX = x - rect.left;
+	const offsetY = y - rect.top;
+
+	const newTranslationX = offsetX - (offsetX - transform.value.x) * factor;
+	const newTranslationY = offsetY - (offsetY - transform.value.y) * factor;
+
+	if (withAnimation) {
+		enableTransition.value = true;
+	}
+
+	transform.value = clamp
+		? clampZoomTransform({
+			x: newTranslationX,
+			y: newTranslationY,
+			scale: newScale,
+		})
+		: {
+			x: newTranslationX,
+			y: newTranslationY,
+			scale: newScale,
+		};
+}
+
+function resetToNeutral() {
+	if (rootEl.value == null) return;
+
+	isZooming.value = false;
+
+	enableTransition.value = true;
+	rootEl.value.offsetHeight; // reflow
+	transform.value.scale = 1;
+	transform.value.x = 0;
+	transform.value.y = 0;
+}
+
+function closeThis() {
+	emit('close');
+
+	infoShowing.value = false;
+
+	if (rootEl.value == null) return;
+
+	const sourceTransform = getScaleAndTranslationForSourceElement();
+	if (sourceTransform != null) {
+		enableTransition.value = true;
+		rootEl.value.offsetHeight; // reflow
+		transform.value.x = sourceTransform.x;
+		transform.value.y = sourceTransform.y;
+		transform.value.scale = sourceTransform.scale;
+	} else {
+		hideForFallback.value = true;
+	}
+}
+
+function onWheel(event: WheelEvent) {
+	event.preventDefault();
+
+	const delta = event.deltaY;
+
+	const scaleFactor = 1.1;
+	const scale = delta > 0 ? 1 / scaleFactor : scaleFactor;
+
+	const newScale = transform.value.scale * scale;
+
+	if (newScale < 1) {
+		transform.value.scale = 1;
+		transform.value.x = 0;
+		transform.value.y = 0;
+		isZooming.value = false;
+		return;
+	}
+
+	zoomInTo(event.clientX, event.clientY, scale);
+}
+
+function onZoomGesture(ev: { delta: number; centerX: number; centerY: number }) {
+	zoomInTo(ev.centerX, ev.centerY, 1 + ev.delta / 200, false, false);
+}
+
+function onZoomGestureEnd() {
+	if (transform.value.scale < 1) {
+		isZooming.value = false;
+		resetToNeutral();
+		return;
+	}
+
+	const clampedTransform = clampZoomTransform(transform.value);
+	if (clampedTransform.x === transform.value.x && clampedTransform.y === transform.value.y && clampedTransform.scale === transform.value.scale) {
+		return;
+	}
+
+	enableTransition.value = true;
+	transform.value = clampedTransform;
+}
+
+/** 縦・横どちらのスワイプかを確定させるのに必要な、開始点からの移動量 (px) */
+const AXIS_SWIPE_HYSTERISIS = 10;
+/** スワイプが成立する速度 (px/ms) */
+const MIN_VELOCITY_TO_SWIPE = 0.5;
+/**縦スワイプで閉じるのに必要な移動量の、ビューポート高の1/3に対する比 */
+const MIN_RATIO_TO_CLOSE = 0.4;
+/** 横スワイプで前後のコンテンツに移動するのに必要な移動量 (px) */
+const HORIZONTAL_SWIPE_DISTANCE_THRESHOLD = 150;
+/** 速度を平均する時間窓 (ms) */
+const VELOCITY_WINDOW = 100;
+
+let isDragging = false;
+let isClick = false;
+let clickAction: 'hidden' | 'media' | null = null;
+let lastX = 0;
+let lastY = 0;
+let currentPointerId: number | null = null;
+let currentPointerStartOffset = { x: 0, y: 0 };
+let isVerticalSwiping = false;
+let isHorizontalSwiping = false;
+let horizontalSwipeDelta = 0;
+/** 軸が確定した時点のポインタ位置。ここを基準にスワイプ量を測ることで、確定時に描画が飛ぶのを防ぐ */
+let swipeOrigin = { x: 0, y: 0 };
+
+const pointerEventCache = new Map<number, PointerEvent>();
+let pointerVec = { x: 0, y: 0 };
+
+// 単発のpointermoveの増分から速度を求めると、表示のリフレッシュレートを超える頻度で
+// pointermoveを発火する環境では値が暴れるため、直近VELOCITY_WINDOW msの平均を取る
+let velocitySamples: { time: number; x: number; y: number }[] = [];
+
+function pushVelocitySample(time: number, x: number, y: number) {
+	velocitySamples.push({ time, x, y });
+	while (velocitySamples.length > 2 && time - velocitySamples[0].time > VELOCITY_WINDOW) {
+		velocitySamples.shift();
+	}
+}
+
+function getVelocity(now: number): { x: number; y: number } {
+	if (velocitySamples.length < 2) return { x: 0, y: 0 };
+
+	const latest = velocitySamples[velocitySamples.length - 1];
+
+	// 指を止めたまま離した場合、pointermoveが発火しなくなる環境 (iOS・マウス) では直前のフリックの速度が
+	// 残り続けてしまい、静止状態で離したのにスワイプが成立してしまう。最後のサンプルが古ければ速度なしとして扱う
+	if (now - latest.time > VELOCITY_WINDOW) return { x: 0, y: 0 };
+
+	const oldest = velocitySamples[0];
+	const duration = latest.time - oldest.time;
+	if (duration <= 0) return { x: 0, y: 0 };
+
+	return {
+		x: (latest.x - oldest.x) / duration,
+		y: (latest.y - oldest.y) / duration,
+	};
+}
+
+function resolveClickAction(target: EventTarget | null): 'hidden' | 'media' | null {
+	if (!(target instanceof Element)) return null;
+
+	const action = target.closest('[data-gallery-click-action]')?.getAttribute('data-gallery-click-action');
+	if (action === 'hidden' || action === 'media') {
+		return action;
+	}
+
+	return null;
+}
+
+function onPointerdown(ev: PointerEvent) {
+	if (mainEl.value == null) return;
+	pointerEventCache.set(ev.pointerId, ev);
+	mainEl.value.setPointerCapture(ev.pointerId);
+
+	isDragging = true;
+	isClick = true;
+	clickAction = resolveClickAction(ev.target);
+	lastX = ev.clientX;
+	lastY = ev.clientY;
+	pointerVec = { x: 0, y: 0 };
+	velocitySamples = [];
+	horizontalSwipeDelta = 0;
+	// スワイプで閉じた直後はitemがv-showで残ったままなので (MkLightbox.vue参照)、閉じるアニメーション中に
+	// 触るとロック済みの軸が引き継がれてヒステリシスを経ずにスワイプが始まってしまう。ここで必ず解除する
+	isVerticalSwiping = false;
+	isHorizontalSwiping = false;
+	swipeOrigin = { x: ev.clientX, y: ev.clientY };
+	if (currentPointerId == null) {
+		currentPointerId = ev.pointerId;
+		currentPointerStartOffset = {
+			x: ev.clientX,
+			y: ev.clientY,
+		};
+		// pointerdown自体を最初のサンプルとして積む。これがないとpointermoveが1回しか発生しないような
+		// 素早いフリックでサンプルが1つしか溜まらず、速度が常に0と評価されてスワイプが成立しない
+		pushVelocitySample(ev.timeStamp, ev.clientX, ev.clientY);
+	}
+}
+
+let prevTwoTouchPointsDistance = 0;
+
+function onPointermove(ev: PointerEvent) {
+	const currentTime = ev.timeStamp;
+
+	if (pointerEventCache.size === 0) {
+		return;
+	}
+
+	pointerEventCache.set(ev.pointerId, ev);
+
+	if (pointerEventCache.size > 1) { // 2本指での操作
+		pointerVec = { x: 0, y: 0 };
+		currentPointerId = null;
+		isVerticalSwiping = false;
+		isHorizontalSwiping = false;
+		isClick = false;
+		const a = Array.from(pointerEventCache.values())[0];
+		const b = Array.from(pointerEventCache.values())[1];
+		const distance = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+		if (prevTwoTouchPointsDistance > 0) {
+			const delta = distance - prevTwoTouchPointsDistance;
+			onZoomGesture({ delta, centerX: (a.clientX + b.clientX) / 2, centerY: (a.clientY + b.clientY) / 2 });
+		}
+		prevTwoTouchPointsDistance = distance;
+		return;
+	}
+
+	prevTwoTouchPointsDistance = 0;
+
+	if (currentPointerId === ev.pointerId) {
+		const deltaX = ev.clientX - lastX;
+		const deltaY = ev.clientY - lastY;
+
+		if (Math.abs(ev.clientX - currentPointerStartOffset.x) > 5 || Math.abs(ev.clientY - currentPointerStartOffset.y) > 5) {
+			isClick = false;
+		}
+
+		if (isZooming.value) {
+			transform.value = clampZoomTransform({
+				x: transform.value.x + deltaX,
+				y: transform.value.y + deltaY,
+				scale: transform.value.scale,
+			});
+		} else {
+			if (isVerticalSwiping) {
+				transform.value.y += deltaY;
+			} else if (isHorizontalSwiping) {
+				horizontalSwipeDelta = ev.clientX - swipeOrigin.x;
+				emit('horizontalSwipe', horizontalSwipeDelta);
+			} else {
+				// 軸を確定させるまでは、開始点からの累積移動量で毎回評価し直す。
+				const totalX = ev.clientX - currentPointerStartOffset.x;
+				const totalY = ev.clientY - currentPointerStartOffset.y;
+				const diff = Math.abs(totalX) - Math.abs(totalY);
+
+				if (diff !== 0) {
+					// 完全に同値の場合はどちらにもロックしない
+					const isVerticalVector = diff < 0;
+					const dominantDelta = isVerticalVector ? totalY : totalX;
+
+					// 意図が読み取れる程度に動いてからロックする
+					if (Math.abs(dominantDelta) >= AXIS_SWIPE_HYSTERISIS) {
+						swipeOrigin = { x: ev.clientX, y: ev.clientY };
+						if (isVerticalVector) {
+							isVerticalSwiping = true;
+						} else {
+							isHorizontalSwiping = true;
+						}
+					}
+				}
+			}
+		}
+
+		pushVelocitySample(currentTime, ev.clientX, ev.clientY);
+		pointerVec = getVelocity(currentTime);
+
+		lastX = ev.clientX;
+		lastY = ev.clientY;
+	}
+
+	return false;
+}
+
+function onPointerup(ev: PointerEvent) {
+	if (mainEl.value == null) return;
+	pointerEventCache.delete(ev.pointerId);
+	mainEl.value.releasePointerCapture(ev.pointerId);
+	prevTwoTouchPointsDistance = 0;
+	isDragging = false;
+	if (currentPointerId === ev.pointerId) {
+		currentPointerId = null;
+
+		// 離した時点で取り直す。指を止めたまま離した場合はここで速度が0になり、
+		// 直前のフリックの速度で誤ってスワイプが成立するのを防ぐことができる
+		pointerVec = getVelocity(ev.timeStamp);
+
+		// 判定にはジェスチャー開始点からの総移動量を使う。描画用のdelta (transform.y / horizontalSwipeDelta) は
+		// 軸が確定した地点を基準にしており、確定までのヒステリシス分と確定したpointermove自体の移動量を含まないため、
+		// pointermoveが1回しか発生しないような素早いフリックがそのまま握り潰されてしまう
+		const totalSwipeX = ev.clientX - currentPointerStartOffset.x;
+		const totalSwipeY = ev.clientY - currentPointerStartOffset.y;
+
+		if (isVerticalSwiping) {
+			const closeThreshold = (window.innerHeight / 3) * MIN_RATIO_TO_CLOSE;
+			const shouldCloseByUpwardSwipe = totalSwipeY < -closeThreshold || (totalSwipeY < 0 && pointerVec.y < -MIN_VELOCITY_TO_SWIPE); // 上の方で離された、または上に向かって強めに弾かれた
+			const shouldCloseByDownwardSwipe = totalSwipeY > closeThreshold || (totalSwipeY > 0 && pointerVec.y > MIN_VELOCITY_TO_SWIPE); // 下の方で離された、または下に向かって強めに弾かれた
+			if (shouldCloseByUpwardSwipe || shouldCloseByDownwardSwipe) {
+				closeThis();
+				return;
+			}
+
+			resetToNeutral();
+		} else if (isHorizontalSwiping) {
+			const shouldNext = totalSwipeX < -HORIZONTAL_SWIPE_DISTANCE_THRESHOLD || (totalSwipeX < 0 && pointerVec.x < -MIN_VELOCITY_TO_SWIPE); // 左の方で離された、または左に向かって強めに弾かれた
+			const shouldPrev = totalSwipeX > HORIZONTAL_SWIPE_DISTANCE_THRESHOLD || (totalSwipeX > 0 && pointerVec.x > MIN_VELOCITY_TO_SWIPE); // 右の方で離された、または右に向かって強めに弾かれた
+			if (shouldNext) {
+				emit('next');
+			} else if (shouldPrev) {
+				emit('prev');
+			} else {
+				emit('cancelHorizontalSwipe');
+			}
+		}
+	}
+	isVerticalSwiping = false;
+	isHorizontalSwiping = false;
+
+	onZoomGestureEnd();
+}
+
+const doubleTapDetector = makeDoubleTapDetector((ev) => {
+	pointerVec = { x: 0, y: 0 };
+
+	if (isZooming.value) {
+		isZooming.value = false;
+		resetToNeutral();
+	} else {
+		isZooming.value = true;
+		zoomInTo(ev.touches[0].clientX, ev.touches[0].clientY, 2, true);
+	}
+});
+
+// これがないと例えばiOSで画像長押しでのコンテキストメニューを表示させた後にそれを閉じるとタッチ判定が残ったままになり不具合の原因になる
+function cancelPointerGesture() {
+	const wasVerticalSwiping = isVerticalSwiping;
+	const wasHorizontalSwiping = isHorizontalSwiping;
+
+	pointerEventCache.clear();
+	prevTwoTouchPointsDistance = 0;
+	currentPointerId = null;
+	isDragging = false;
+	isClick = false;
+	clickAction = null;
+	pointerVec = { x: 0, y: 0 };
+	velocitySamples = [];
+	horizontalSwipeDelta = 0;
+	swipeOrigin = { x: 0, y: 0 };
+	isVerticalSwiping = false;
+	isHorizontalSwiping = false;
+	doubleTapDetector.reset();
+
+	if (wasVerticalSwiping) resetToNeutral();
+	if (wasHorizontalSwiping) emit('cancelHorizontalSwipe');
+}
+
+function onTouchstart(ev: TouchEvent) {
+	doubleTapDetector.onTouchstart(ev);
+}
+
+function onTouchmove(ev: TouchEvent) {
+	doubleTapDetector.onTouchmove(ev);
+
+	// スワイプ操作中は、ブラウザがタッチを慣性スクロールとして認識するのを防ぐためにpreventDefaultする必要がある
+	// touch-action: noneが指定されているが、それだけではブラウザによっては慣性スクロールが発生した扱いになり、
+	// その後のタップが慣性スクロールを止めるためのタップという扱いで握りつぶされてしまうことがあるので必要
+	if (isVerticalSwiping || isHorizontalSwiping || isZooming.value || pointerEventCache.size > 1) {
+		ev.preventDefault();
+	}
+}
+
+//#region inertia
+let rafHandle: ReturnType<typeof window['requestAnimationFrame']> | null = null;
+let latestInertiaTimeStamp = 0;
+const inertiaFactor = 0.9;
+
+function updateInertia(timeStamp: number) {
+	rafHandle = window.requestAnimationFrame(updateInertia);
+	const timeDelta = timeStamp - latestInertiaTimeStamp;
+	latestInertiaTimeStamp = timeStamp;
+	if (timeDelta > 100) return;
+
+	if (isDragging) return;
+	if (!isZooming.value) return;
+	if (Math.abs(pointerVec.x) < 0.01 && Math.abs(pointerVec.y) < 0.01) return;
+	transform.value = clampZoomTransform({
+		x: transform.value.x + pointerVec.x * timeDelta,
+		y: transform.value.y + pointerVec.y * timeDelta,
+		scale: transform.value.scale,
+	});
+	pointerVec.x *= inertiaFactor ** (timeDelta / 16.67);
+	pointerVec.y *= inertiaFactor ** (timeDelta / 16.67);
+}
+
+watch(isZooming, () => {
+	pointerVec = { x: 0, y: 0 };
+	if (isZooming.value) {
+		rafHandle = window.requestAnimationFrame(updateInertia);
+	} else {
+		if (rafHandle != null) window.cancelAnimationFrame(rafHandle);
+	}
+});
+//#endregion
+
+function animateFromSourceToNeutral() {
+	if (rootEl.value == null) return;
+
+	const sourceElement = props.content.sourceElement;
+	if (sourceElement == null || !props.activated) return;
+
+	enableTransition.value = true;
+	rootEl.value.offsetHeight; // reflow
+	transform.value.x = 0;
+	transform.value.y = 0;
+	transform.value.scale = 1;
+
+	nextTick(() => {
+		sourceElement.style.visibility = 'hidden';
+	});
+}
+
+watch([thumbnailContentLoaded, originalContentLoaded], () => {
+	animateFromSourceToNeutral();
+}, { once: true });
+
+watch([rootEl, hide], ([newRootEl, isHidden]) => {
+	if (newRootEl == null || !isHidden) return;
+	animateFromSourceToNeutral();
+}, { immediate: true });
+
+watch(props.content, (newContent) => {
+	hide.value = shouldHideInGallery(newContent);
+}, { deep: true, immediate: true });
+
+watch(rootEl, (newRootEl) => {
+	if (newRootEl == null) return;
+
+	infoShowing.value = true;
+	newRootEl.offsetHeight; // reflow
+	hideForFallback.value = false;
+}, { immediate: true });
+
+function onClick(ev: MouseEvent) {
+	if (!isClick) return;
+
+	const action = clickAction ?? resolveClickAction(ev.target);
+	clickAction = null;
+
+	if (action === 'hidden') {
+		void onHiddenClick();
+		return;
+	}
+
+	if (action === 'media') {
+		onMediaClick();
+		return;
+	}
+
+	if (!isTouchUsing) {
+		if (isZooming.value) {
+			isZooming.value = false;
+			resetToNeutral();
+		} else {
+			closeThis();
+		}
+	}
+}
+
+/**
+ * play() は自動再生のブロックや、再生が始まる前の pause() によって reject することがある。
+ * いずれも再生ボタンが出たままになるだけで復帰不能ではないので、握りつぶす
+ */
+function safePlay(el: HTMLMediaElement) {
+	el.play().catch(err => {
+		if (_DEV_) console.warn('Failed to play media:', err);
+	});
+}
+
+function playWhenAvailable() {
+	if (mediaEl.value != null) {
+		safePlay(mediaEl.value);
+		return;
+	}
+
+	// オーディオビジュアライザはlazy-loadのため、この時点ではまだ要素が無い可能性がある
+	const watchStop = watch(mediaEl, (newMediaEl) => {
+		if (newMediaEl == null) return;
+		safePlay(newMediaEl);
+		watchStop();
+	});
+}
+
+async function onHiddenClick() {
+	if (hide.value) {
+		if (props.content.file == null || await canRevealFile(props.content.file)) {
+			hide.value = false;
+			if (['audio', 'video'].includes(props.content.type)) {
+				playWhenAvailable();
+			}
+		}
+	}
+}
+
+function onMediaClick() {
+	if (!prefer.s.useNativeUiForVideoAudioPlayer) {
+		if (mediaEl.value == null) return;
+
+		if (mediaEl.value.paused) {
+			safePlay(mediaEl.value);
+		} else {
+			mediaEl.value.pause();
+		}
+	}
+}
+
+function openMenu(ev: PointerEvent) {
+	const menu: MenuItem[] = [];
+
+	// isTouchUsingにする？
+	menu.push({
+		type: 'component',
+		component: markRaw(XFileInfo),
+		props: {
+			content: props.content,
+		},
+	}, {
+		type: 'divider',
+	});
+
+	if (props.content.type === 'image') {
+		menu.push({
+			type: 'switch',
+			text: i18n.ts.pixelatedZoom,
+			icon: 'ti ti-grain',
+			ref: pixelatedZoom,
+		});
+	}
+
+	menu.push({
+		text: i18n.ts.hide,
+		icon: 'ti ti-eye-off',
+		action: () => {
+			hide.value = true;
+		},
+	});
+
+	if (props.content.file != null) {
+		const fileMenu = getFileMenu(props.content.file);
+		if (fileMenu.length > 0) {
+			menu.push({ type: 'divider' });
+			menu.push(...fileMenu);
+		}
+	}
+
+	os.popupMenu(menu, (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+}
+
+function onActive() {
+	playWhenAvailable();
+}
+
+function onDeactive() {
+	if (isZooming.value) {
+		isZooming.value = false;
+		resetToNeutral();
+	}
+	if (mediaEl.value != null && props.activated) {
+		mediaEl.value.pause();
+	}
+}
+
+onBeforeUnmount(() => {
+	if (rafHandle) {
+		window.cancelAnimationFrame(rafHandle);
+	}
+});
+
+defineExpose({
+	onActive,
+	onDeactive,
+	closeThis,
+});
+</script>
+
+<style lang="scss" module>
+.root {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	container-type: size;
+}
+
+.main {
+	position: absolute;
+	touch-action: none;
+	width: 100%;
+	height: 100%;
+}
+
+.content {
+	display: block;
+	user-select: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.pixelatedZoom {
+	image-rendering: pixelated;
+}
+
+.video {
+	display: block;
+	user-select: none;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.videoSized {
+	width: min(100cqw, calc(100cqh * v-bind("videoAspectRatio ?? 16 / 9")));
+	height: auto;
+	background-color: #000;
+	aspect-ratio: v-bind("videoAspectRatio ?? 16 / 9");
+}
+
+.audioRoot {
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	max-width: calc(100vw - 140px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.audio {
+	width: 100%;
+}
+
+.loading {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 2;
+	display: grid;
+	place-items: center;
+	pointer-events: none;
+}
+
+.transformer {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	padding: v-bind("padding.top + 'px'") v-bind("padding.right + 'px'") v-bind("padding.bottom + 'px'") v-bind("padding.left + 'px'");
+	transform-origin: left top;
+}
+
+.transition {
+	transition: transform 200ms ease;
+}
+
+.contentWrapper {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	// .videoSizedが使う100cqw / 100cqhの基準 (= paddingを除いた実際の表示領域)
+	container-type: size;
+	transition: scale 200ms ease, opacity 200ms ease !important;
+}
+
+.hideForFallback {
+	scale: 0.7 !important;
+	opacity: 0 !important;
+}
+
+.playIconWrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: grid;
+	place-items: center;
+	pointer-events: none;
+}
+
+.playIcon {
+	display: grid;
+	place-items: center;
+	width: 50px;
+	height: 50px;
+	border-radius: 100%;
+	font-size: 120%;
+	background: var(--MI_THEME-accent);
+	color: var(--MI_THEME-fgOnAccent);
+	scale: 1;
+	transition: scale 100ms ease;
+}
+
+// アイコン自体はクリックを受け取らないので、hoverは下のvideo要素を経由して拾う
+.video:hover ~ .playIconWrapper .playIcon {
+	scale: 1.2;
+}
+
+.hidden {
+	position: absolute;
+	inset: 0;
+	margin: auto;
+	display: grid;
+	place-items: center;
+	width: 100%;
+	height: 100%;
+	overflow: clip;
+
+	&.sensitive::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		border-radius: inherit;
+		box-shadow: inset 0 0 0 4px var(--MI_THEME-warn);
+	}
+}
+
+.hiddenWrapper {
+	position: relative;
+	width: 100%;
+	max-height: 100%;
+	min-height: 0;
+}
+
+.hiddenBlurhash {
+	display: block;
+	width: 100%;
+	height: 100%;
+	filter: brightness(0.7);
+}
+
+.hiddenThumbnail {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	filter: brightness(0.7);
+}
+
+.hiddenPlaceholder {
+	width: 100%;
+	height: auto;
+	aspect-ratio: 16 / 9;
+	background: #000;
+}
+
+.hiddenText {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	cursor: pointer;
+	color: #fff;
+
+	&.withBlur {
+		backdrop-filter: blur(12px);
+	}
+}
+
+.footer {
+	position: absolute;
+	bottom: v-bind("-footerSize + 'px'");
+	left: 0;
+	right: 0;
+	height: v-bind("footerSize + 'px'");
+	opacity: 0;
+	transition: opacity 200ms ease, bottom 200ms ease;
+}
+.footer.infoShowing {
+	bottom: 0px;
+	opacity: 1;
+}
+.header {
+	position: absolute;
+	top: v-bind("-headerSize + 'px'");
+	left: 0;
+	right: 0;
+	height: v-bind("headerSize + 'px'");
+	opacity: 0;
+	transition: opacity 200ms ease, top 200ms ease;
+}
+.header.infoShowing {
+	top: 0px;
+	opacity: 1;
+}
+
+.title {
+	display: flex;
+	align-items: center;
+	width: max-content;
+	max-width: calc(100% - 20px);
+	margin: auto;
+	box-sizing: border-box;
+	border-radius: 0 0 10px 10px;
+	font-size: 85%;
+}
+
+.titleButton {
+	flex-shrink: 0;
+	width: 32px;
+	height: 32px;
+}
+
+.titleText {
+	flex-grow: 1;
+	height: 100%;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding: 6px 0px;
+}
+
+.mediaControl {
+	width: 100%;
+	height: 100%;
+	max-width: min(1000px, calc(100% - 16px));
+	box-sizing: border-box;
+	padding: 12px 20px;
+	margin: auto;
+	background: var(--MI_THEME-panel);
+	border-radius: 12px 12px 0 0;
+}
+
+@container (max-width: 500px) {
+	.mediaControl {
+		padding: 8px 12px;
+	}
+}
+</style>

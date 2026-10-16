@@ -1,6 +1,6 @@
-# syntax = docker/dockerfile:1.23
+# syntax = docker/dockerfile:1.27
 
-ARG NODE_VERSION=22.22.2-bookworm
+ARG NODE_VERSION=26.10.0-trixie
 
 # build assets & compile TypeScript
 
@@ -40,7 +40,6 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 
 COPY --link . ./
 
-RUN git submodule update --init
 RUN pnpm build
 RUN rm -rf .git/
 
@@ -73,6 +72,8 @@ FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-slim AS runner
 
 ARG UID="991"
 ARG GID="991"
+
+ENV PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \

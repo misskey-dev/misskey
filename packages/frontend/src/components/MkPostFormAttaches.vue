@@ -52,6 +52,8 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
+import type { Content } from '@/components/MkLightbox.item.vue';
+import { isPreviewable, getType } from '@/utility/lightbox.js';
 
 const props = defineProps<{
 	modelValue: Misskey.entities.DriveFile[];
@@ -152,8 +154,6 @@ async function describe(file: Misskey.entities.DriveFile) {
 function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | KeyboardEvent): void {
 	if (menuShowing) return;
 
-	const isImage = file.type.startsWith('image/');
-
 	const menuItems: MenuItem[] = [];
 
 	menuItems.push({
@@ -170,13 +170,26 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | Keybo
 		action: () => { describe(file); },
 	});
 
-	if (isImage) {
+	if (isPreviewable(file.type)) {
 		menuItems.push({
 			text: i18n.ts.preview,
 			icon: 'ti ti-photo-search',
 			action: async () => {
-				const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImgPreviewDialog.vue').then(x => x.default), {
-					file: file,
+				const constents = props.modelValue.filter(item => isPreviewable(item.type)).map<Content>(item => ({
+					id: item.id,
+					type: getType(item.type),
+					url: item.url,
+					thumbnailUrl: item.thumbnailUrl,
+					width: item.properties.width,
+					height: item.properties.height,
+					filename: item.name,
+					file: item,
+					//sourceElement: TODO
+				}));
+				const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
+					defaultIndex: constents.findIndex(content => content.id === file.id),
+					contents: constents,
+					initiallyRevealedContentIds: [file.id],
 				}, {
 					closed: () => dispose(),
 				});
