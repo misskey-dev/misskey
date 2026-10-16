@@ -64,7 +64,6 @@ import FormSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
@@ -111,7 +110,7 @@ async function regenerateToken() {
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
 
-	misskeyApi('i/regenerate-token', {
+	os.apiWithDialog('i/regenerate-token', {
 		password: auth.result.password,
 		token: auth.result.token,
 	});
