@@ -7,7 +7,7 @@
 
 import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { Component, MaybeRef } from 'vue';
+import type { Component, ComputedRef, MaybeRef } from 'vue';
 import type { ComponentEmit, ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/utility/form.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -161,7 +161,7 @@ export function claimZIndex(priority: keyof typeof zIndexes = 'low'): number {
 }
 
 // props に ref を許可するようにする
-type PropsWithRefs<P> = { [K in keyof P]: MaybeRef<P[K]> };
+type PropsWithRefs<P> = { [K in keyof P]: MaybeRef<P[K]> | ComputedRef<P[K]> };
 type ComponentProps<T extends Component> = PropsWithRefs<CP<T>>;
 
 // 関数の引数が any[] (もっとも広義なもの) かどうかを判定し、any[] の場合は排除 (never) するヘルパー
