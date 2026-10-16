@@ -288,6 +288,7 @@ function changeAvatar(ev: PointerEvent) {
 		updateCurrentAccount({
 			avatarId: i.avatarId,
 			avatarUrl: i.avatarUrl,
+			avatarBlurhash: i.avatarBlurhash,
 		});
 		claimAchievement('profileFilled');
 	}
@@ -341,6 +342,7 @@ function changeAvatar(ev: PointerEvent) {
 						updateCurrentAccount({
 							avatarId: res.avatarId,
 							avatarUrl: res.avatarUrl,
+							avatarBlurhash: res.avatarBlurhash,
 						});
 					}).catch(() => {
 						// エラーダイアログは apiWithDialog 側で表示済み
