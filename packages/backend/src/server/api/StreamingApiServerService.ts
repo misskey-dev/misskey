@@ -38,6 +38,8 @@ export class StreamingApiServerService {
 	public attach(server: http.Server): void {
 		this.#wss = new WebSocket.WebSocketServer({
 			noServer: true,
+			maxPayload: 1024 * 1024, // 1MiB
+			perMessageDeflate: false,
 		});
 
 		server.on('upgrade', async (request, socket, head) => {
