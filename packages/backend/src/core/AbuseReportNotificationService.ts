@@ -5,10 +5,10 @@
 
 import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
 import { Brackets, In, IsNull, Not } from 'typeorm';
-import * as Redis from 'ioredis';
 import sanitizeHtml from 'sanitize-html';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
 import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
 import type {
 	AbuseReportNotificationRecipientRepository,
@@ -34,18 +34,16 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		@Inject(DI.abuseReportNotificationRecipientRepository)
 		private abuseReportNotificationRecipientRepository: AbuseReportNotificationRecipientRepository,
 
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
-
 		private idService: IdService,
 		private roleService: RoleService,
 		private systemWebhookService: SystemWebhookService,
 		private emailService: EmailService,
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
+		private globalEventReceiverService: GlobalEventReceiverService,
 		private userEntityService: UserEntityService,
 	) {
-		this.redisForSub.on('message', this.onMessage);
+		this.globalEventReceiverService.onInternalEvent(this.onMessage);
 	}
 
 	/**
@@ -394,13 +392,8 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async onMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-		if (obj.channel !== 'internal') {
-			return;
-		}
-
-		const { type } = obj.message as GlobalEvents['internal']['payload'];
+	private async onMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type } = payload;
 		switch (type) {
 			case 'roleUpdated':
 			case 'roleDeleted':
@@ -422,7 +415,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.redisForSub.off('message', this.onMessage);
+		this.globalEventReceiverService.offInternalEvent(this.onMessage);
 	}
 
 	@bindThis

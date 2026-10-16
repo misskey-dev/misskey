@@ -4,13 +4,12 @@
  */
 
 import { EventEmitter } from 'events';
-import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
+import { Injectable } from '@nestjs/common';
 import * as WebSocket from 'ws';
-import { DI } from '@/di-symbols.js';
 import type { MiAccessToken } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
-import { MiLocalUser } from '@/models/User.js';
+import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
+import type { MiLocalUser } from '@/models/User.js';
 import { UserService } from '@/core/UserService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
 import MainStreamConnection, { ConnectionRequest } from './stream/Connection.js';
@@ -24,11 +23,9 @@ export class StreamingApiServerService {
 	#cleanConnectionsIntervalId: NodeJS.Timeout | null = null;
 
 	constructor(
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
-
 		private moduleRef: ModuleRef,
 		private authenticateService: AuthenticateService,
+		private globalEventReceiverService: GlobalEventReceiverService,
 		private usersService: UserService,
 	) {
 	}
@@ -101,9 +98,8 @@ export class StreamingApiServerService {
 
 		const globalEv = new EventEmitter();
 
-		this.redisForSub.on('message', (_: string, data: string) => {
-			const parsed = JSON.parse(data);
-			globalEv.emit('message', parsed);
+		this.globalEventReceiverService.onMessage((message) => {
+			globalEv.emit('message', message);
 		});
 
 		this.#wss.on('connection', async (connection: WebSocket.WebSocket, request: http.IncomingMessage, ctx: {

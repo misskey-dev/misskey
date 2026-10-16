@@ -11,6 +11,7 @@ import { MiChannel } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
 import { bindThis } from '@/decorators.js';
+import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
 import type { MiLocalUser } from '@/models/User.js';
 import { RedisKVCache } from '@/misc/cache.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
@@ -23,14 +24,16 @@ export class ChannelFollowingService implements OnModuleInit {
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
+
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
+
 		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingsRepository: ChannelFollowingsRepository,
+
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
+		private globalEventReceiverService: GlobalEventReceiverService,
 	) {
 		this.userFollowingChannelsCache = new RedisKVCache<Set<string>>(this.redisClient, 'userFollowingChannels', {
 			lifetime: 1000 * 60 * 30, // 30m
@@ -43,7 +46,7 @@ export class ChannelFollowingService implements OnModuleInit {
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
 
-		this.redisForSub.on('message', this.onMessage);
+		this.globalEventReceiverService.onInternalEvent(this.onMessage);
 	}
 
 	onModuleInit() {
@@ -134,20 +137,16 @@ export class ChannelFollowingService implements OnModuleInit {
 	}
 
 	@bindThis
-	private async onMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-
-		if (obj.channel === 'internal') {
-			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
-			switch (type) {
-				case 'followChannel': {
-					this.userFollowingChannelsCache.refresh(body.userId);
-					break;
-				}
-				case 'unfollowChannel': {
-					this.userFollowingChannelsCache.delete(body.userId);
-					break;
-				}
+	private async onMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type, body } = payload;
+		switch (type) {
+			case 'followChannel': {
+				this.userFollowingChannelsCache.refresh(body.userId);
+				break;
+			}
+			case 'unfollowChannel': {
+				this.userFollowingChannelsCache.delete(body.userId);
+				break;
 			}
 		}
 	}

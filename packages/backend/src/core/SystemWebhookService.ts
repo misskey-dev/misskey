@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
 import type { MiUser, SystemWebhooksRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
 import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
 import { MiSystemWebhook, type SystemWebhookEventType } from '@/models/SystemWebhook.js';
 import { IdService } from '@/core/IdService.js';
@@ -54,16 +54,16 @@ export class SystemWebhookService implements OnApplicationShutdown {
 	private activeSystemWebhooks: MiSystemWebhook[] = [];
 
 	constructor(
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
 		@Inject(DI.systemWebhooksRepository)
 		private systemWebhooksRepository: SystemWebhooksRepository,
+
 		private idService: IdService,
 		private queueService: QueueService,
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
+		private globalEventReceiverService: GlobalEventReceiverService,
 	) {
-		this.redisForSub.on('message', this.onMessage);
+		this.globalEventReceiverService.onInternalEvent(this.onMessage);
 	}
 
 	@bindThis
@@ -211,13 +211,8 @@ export class SystemWebhookService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async onMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-		if (obj.channel !== 'internal') {
-			return;
-		}
-
-		const { type, body } = obj.message as GlobalEvents['internal']['payload'];
+	private async onMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type, body } = payload;
 		switch (type) {
 			case 'systemWebhookCreated': {
 				if (body.isActive) {
@@ -249,7 +244,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.redisForSub.off('message', this.onMessage);
+		this.globalEventReceiverService.offInternalEvent(this.onMessage);
 	}
 
 	@bindThis

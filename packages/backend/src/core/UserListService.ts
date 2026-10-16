@@ -16,6 +16,7 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { RedisKVCache } from '@/misc/cache.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -34,15 +35,13 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
-
 		@Inject(DI.userListMembershipsRepository)
 		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
+		private globalEventReceiverService: GlobalEventReceiverService,
 		private queueService: QueueService,
 		private systemAccountService: SystemAccountService,
 	) {
@@ -57,7 +56,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
 
-		this.redisForSub.on('message', this.onMessage);
+		this.globalEventReceiverService.onInternalEvent(this.onMessage);
 	}
 
 	async onModuleInit() {
@@ -65,31 +64,27 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	private async onMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-
-		if (obj.channel === 'internal') {
-			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
-			switch (type) {
-				case 'userListMemberAdded': {
-					const { userListId, memberId } = body;
-					const members = await this.membersCache.get(userListId);
-					if (members) {
-						members.add(memberId);
-					}
-					break;
+	private async onMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type, body } = payload;
+		switch (type) {
+			case 'userListMemberAdded': {
+				const { userListId, memberId } = body;
+				const members = await this.membersCache.get(userListId);
+				if (members) {
+					members.add(memberId);
 				}
-				case 'userListMemberRemoved': {
-					const { userListId, memberId } = body;
-					const members = await this.membersCache.get(userListId);
-					if (members) {
-						members.delete(memberId);
-					}
-					break;
-				}
-				default:
-					break;
+				break;
 			}
+			case 'userListMemberRemoved': {
+				const { userListId, memberId } = body;
+				const members = await this.membersCache.get(userListId);
+				if (members) {
+					members.delete(memberId);
+				}
+				break;
+			}
+			default:
+				break;
 		}
 	}
 
@@ -151,7 +146,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public dispose(): void {
-		this.redisForSub.off('message', this.onMessage);
+		this.globalEventReceiverService.offInternalEvent(this.onMessage);
 		this.membersCache.dispose();
 	}
 

@@ -11,6 +11,7 @@ import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
+import { GlobalEventReceiverService } from '@/core/GlobalEventReceiverService.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -30,9 +31,6 @@ export class AntennaService implements OnApplicationShutdown {
 		@Inject(DI.redisForTimelines)
 		private redisForTimelines: Redis.Redis,
 
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
-
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
@@ -42,55 +40,52 @@ export class AntennaService implements OnApplicationShutdown {
 		private cacheService: CacheService,
 		private utilityService: UtilityService,
 		private globalEventService: GlobalEventService,
+		private globalEventReceiverService: GlobalEventReceiverService,
 		private fanoutTimelineService: FanoutTimelineService,
 	) {
 		this.antennasFetched = false;
 		this.antennas = [];
 
-		this.redisForSub.on('message', this.onRedisMessage);
+		this.globalEventReceiverService.onInternalEvent(this.onRedisMessage);
 	}
 
 	@bindThis
-	private async onRedisMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-
-		if (obj.channel === 'internal') {
-			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
-			switch (type) {
-				case 'antennaCreated':
+	private async onRedisMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type, body } = payload;
+		switch (type) {
+			case 'antennaCreated':
+				this.antennas.push({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
+					...body,
+					lastUsedAt: new Date(body.lastUsedAt),
+					user: null, // joinなカラムは通常取ってこないので
+					userList: null, // joinなカラムは通常取ってこないので
+				});
+				break;
+			case 'antennaUpdated': {
+				const idx = this.antennas.findIndex(a => a.id === body.id);
+				if (idx >= 0) {
+					this.antennas[idx] = { // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
+						...body,
+						lastUsedAt: new Date(body.lastUsedAt),
+						user: null, // joinなカラムは通常取ってこないので
+						userList: null, // joinなカラムは通常取ってこないので
+					};
+				} else {
+					// サーバ起動時にactiveじゃなかった場合、リストに持っていないので追加する必要あり
 					this.antennas.push({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
 						...body,
 						lastUsedAt: new Date(body.lastUsedAt),
 						user: null, // joinなカラムは通常取ってこないので
 						userList: null, // joinなカラムは通常取ってこないので
 					});
-					break;
-				case 'antennaUpdated': {
-					const idx = this.antennas.findIndex(a => a.id === body.id);
-					if (idx >= 0) {
-						this.antennas[idx] = { // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
-							...body,
-							lastUsedAt: new Date(body.lastUsedAt),
-							user: null, // joinなカラムは通常取ってこないので
-							userList: null, // joinなカラムは通常取ってこないので
-						};
-					} else {
-						// サーバ起動時にactiveじゃなかった場合、リストに持っていないので追加する必要あり
-						this.antennas.push({ // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
-							...body,
-							lastUsedAt: new Date(body.lastUsedAt),
-							user: null, // joinなカラムは通常取ってこないので
-							userList: null, // joinなカラムは通常取ってこないので
-						});
-					}
 				}
-					break;
-				case 'antennaDeleted':
-					this.antennas = this.antennas.filter(a => a.id !== body.id);
-					break;
-				default:
-					break;
 			}
+				break;
+			case 'antennaDeleted':
+				this.antennas = this.antennas.filter(a => a.id !== body.id);
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -257,7 +252,7 @@ export class AntennaService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.redisForSub.off('message', this.onRedisMessage);
+		this.globalEventReceiverService.offInternalEvent(this.onRedisMessage);
 	}
 
 	@bindThis
