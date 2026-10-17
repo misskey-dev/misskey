@@ -105,9 +105,10 @@ function getRequestDetails(request: ClientRequest): { url: string; host: string;
 		protocol = request.protocol === 'https:' ? 'https:' : 'http:';
 		const host = request.getHeader('host')?.toString() ?? request.host;
 		const url = new URL(request.path || '/', `${protocol}//${host}`);
-		// URL 属性には認証情報やクエリ文字列を含めない。
+		// URL 属性には認証情報やクエリ文字列、Push endpoint の capability URL を含みうるパスを含めない。
 		url.username = '';
 		url.password = '';
+		url.pathname = '/';
 		url.search = '';
 		url.hash = '';
 

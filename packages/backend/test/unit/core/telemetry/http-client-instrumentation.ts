@@ -48,7 +48,7 @@ describe('http-client-instrumentation', () => {
 			kind: SpanKind.CLIENT,
 			attributes: {
 				'http.request.method': 'POST',
-				'url.full': 'https://remote.example:8443/inbox',
+				'url.full': 'https://remote.example:8443/',
 				'server.address': 'remote.example',
 				'server.port': 8443,
 			},

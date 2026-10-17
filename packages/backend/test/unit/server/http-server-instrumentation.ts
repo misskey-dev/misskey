@@ -33,9 +33,14 @@ describe('http-server-instrumentation', () => {
 		expect(fastify.register).toHaveBeenCalledWith(plugin);
 
 		const requestHook = mocks.instrumentation.mock.calls[0][0].requestHook;
-		const span = { updateName: vi.fn() };
-		requestHook(span, { method: 'POST', routeOptions: { url: '/notes/create' } });
+		const span = { updateName: vi.fn(), setAttribute: vi.fn() };
+		requestHook(span, { method: 'POST', url: '/notes/create?i=secret', routeOptions: { url: '/notes/create' } });
 		expect(span.updateName).toHaveBeenCalledWith('POST /notes/create');
+		expect(span.setAttribute).toHaveBeenCalledWith('url.path', '/notes/create');
+
+		const unmatchedSpan = { updateName: vi.fn(), setAttribute: vi.fn() };
+		requestHook(unmatchedSpan, { method: 'GET', url: '/unknown?i=secret', routeOptions: {} });
+		expect(unmatchedSpan.setAttribute).toHaveBeenCalledWith('url.path', '/');
 	});
 
 	test('registers request instrumentation when used with Sentry', async () => {
