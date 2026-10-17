@@ -17,10 +17,14 @@
 
 ### Client
 - Feat: デッキにクリップのカラムを追加できるように
+- Fix: Misskeyを一時的に閉じてから再度開いたときに、WebSocketが再接続されないことがある問題を修正  
+  (Cherry-picked from https://github.com/shiroha-a/misskey-ts/commit/8eda4aa2d02a7d737951553f2b6304fc6a4e4f7c)
 
 ### Server
 - Fix: ローカル限定絵文字でリモートノートのリノートにリアクションできてしまう問題を修正
 
+### Misskey.js
+- Enhance: `Stream` に、WebSocket の再接続を行うための `reconnect()` メソッドを追加
 
 ## 2026.10.0
 
