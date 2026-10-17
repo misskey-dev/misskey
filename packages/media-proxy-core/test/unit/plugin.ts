@@ -6,10 +6,10 @@
 import Fastify from 'fastify';
 import sharp from 'sharp';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { createHttpAgents, mediaProxyPlugin } from '../src/standalone.js';
-import { createPatternPng } from './utils.js';
+import { createHttpAgents, mediaProxyPlugin } from '../../src/standalone.js';
+import { createPatternPng } from '../utils.js';
 import type { FastifyInstance } from 'fastify';
-import type { MediaProxyPluginOptions } from '../src/standalone.js';
+import type { MediaProxyPluginOptions } from '../../src/standalone.js';
 
 const userAgent = 'Mozilla/5.0 (media-proxy-core test)';
 

@@ -4,8 +4,8 @@
  */
 
 import { describe, expect, test } from 'vitest';
-import { getProxyTargetUrl, validateProxyUserAgent } from '../src/proxy-request.js';
-import { StatusError } from '../src/status-error.js';
+import { getProxyTargetUrl, validateProxyUserAgent } from '../../src/proxy-request.js';
+import { StatusError } from '../../src/status-error.js';
 
 describe(getProxyTargetUrl, () => {
 	test('url クエリを優先する', () => {

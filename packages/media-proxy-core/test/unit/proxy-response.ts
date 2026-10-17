@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, test } from 'vitest';
-import { createProxyResponseHeaders } from '../src/proxy-response.js';
+import { createProxyResponseHeaders } from '../../src/proxy-response.js';
 
 describe(createProxyResponseHeaders, () => {
 	test('正常レスポンスのヘッダーを返す', () => {
