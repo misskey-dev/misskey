@@ -253,7 +253,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	return [...modifications, ...codeModifications];
 }
 
-function declsOfPattern(pattern: ESTree.BindingPattern | ESTree.ParamPattern | ESTree.ArrayAssignmentTarget | ESTree.ObjectAssignmentTarget | ESTree.AssignmentTargetMaybeDefault | ESTree.AssignmentTargetRest | null): string[] {
+export function declsOfPattern(pattern: ESTree.BindingPattern | ESTree.ParamPattern | ESTree.ArrayAssignmentTarget | ESTree.ObjectAssignmentTarget | ESTree.AssignmentTargetMaybeDefault | ESTree.AssignmentTargetRest | null): string[] {
 	if (pattern == null) return [];
 	switch (pattern.type) {
 		case 'Identifier':

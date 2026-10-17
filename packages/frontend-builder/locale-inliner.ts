@@ -6,11 +6,13 @@
 import * as fs from 'fs/promises';
 import * as path from 'node:path';
 import MagicString from 'magic-string';
+import { parseAst } from 'rolldown/parseAst';
 import { collectModifications } from './locale-inliner/collect-modifications.js';
 import { applyWithLocale } from './locale-inliner/apply-with-locale.js';
 import { blankLogger } from './logger.js';
-import { detectI18nFacadeChunk } from './locale-inliner/facade-chunk-detection.js';
+import { ChunkExportResolver } from './locale-inliner/chunk-export-resolver.js';
 import type { Logger } from './logger.js';
+import type { ESTree } from 'rolldown/utils';
 import type { Locale } from 'i18n';
 import type { Manifest as ViteManifest } from 'vite';
 
@@ -82,20 +84,43 @@ export class LocaleInliner {
 
 	#detectI18nFacadeChunk() {
 		// For some reason, even with `preserveEntrySignatures: 'allow-extension'`, rolldown may generate facade chunk
-		// This method detects facade chunk and replace i18nFile / i18nFileName with correct file name
-		const chunk = this.chunks.find(x => x.fileName === this.i18nFileName);
-		if (chunk == null) throw new Error(`i18n script file '${this.i18nFile}' not found`);
-		if (chunk.sourceCode == null) throw new Error(`Source code for '${this.i18nFile}' not loaded`);
-		const fileLogger = this.logger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);
-		const facadeInfo = detectI18nFacadeChunk(chunk.sourceCode, chunk.fileName, fileLogger);
-		if (facadeInfo != null) {
-			const i18nSymbol = facadeInfo.nameMap[this.i18nSymbol];
-			if (i18nSymbol == null) throw new Error(`Facade module for i18n file does not map ${this.i18nSymbol}. mapping: ${JSON.stringify(facadeInfo.nameMap)}`);
-			this.logger.info(`We detected ${this.i18nFileName} is facade chunk maps ${facadeInfo.fileName} with ${i18nSymbol} as ${this.i18nSymbol}`);
-			chunk.isFacadeOfI18n = true;
-			this.i18nFileName = facadeInfo.fileName;
-			this.i18nSymbol = i18nSymbol;
+		// This method detects facade chunk and replace i18nFile / i18nFileName with correct file name.
+		// The shape of the facade chunk depends on the bundler version, so we follow the import / export statements
+		// to find the chunk and the export name that defines i18n instead of matching the shape of the facade chunk.
+		const entryChunk = this.chunks.find(x => x.fileName === this.i18nFileName);
+		if (entryChunk == null) throw new Error(`i18n script file '${this.i18nFile}' not found`);
+
+		const programs = this.chunks.flatMap(chunk => {
+			if (chunk.sourceCode == null) throw new Error(`Source code for ${chunk.fileName} is not loaded.`);
+			if (chunk.sourceCode === '') return [];
+			let program: ESTree.Program;
+			try {
+				program = parseAst(chunk.sourceCode);
+			} catch {
+				return []; // reported by collectModifications
+			}
+			return [{ fileName: chunk.fileName, program }];
+		});
+		const resolver = new ChunkExportResolver(programs);
+
+		const resolved = resolver.resolveExport(this.i18nFileName, this.i18nSymbol);
+		if (resolved == null) {
+			throw new Error(`Failed to resolve export '${this.i18nSymbol}' of i18n script file '${this.i18nFile}' (${this.i18nFileName}).`);
 		}
+		if (resolved.fileName !== this.i18nFileName) {
+			// facade chunk is skipped from collectModifications, so it must not contain anything other than imports and re-exports.
+			const entryProgram = programs.find(x => x.fileName === this.i18nFileName)?.program;
+			const isFacade = entryProgram?.body.every(stmt => stmt.type === 'ImportDeclaration'
+				|| stmt.type === 'ExportAllDeclaration'
+				|| (stmt.type === 'ExportNamedDeclaration' && stmt.declaration == null));
+			if (!isFacade) {
+				throw new Error(`i18n script file '${this.i18nFile}' (${this.i18nFileName}) re-exports ${this.i18nSymbol} from ${resolved.fileName}, but it is not a facade chunk consisting only of imports and re-exports.`);
+			}
+			this.logger.info(`We detected ${this.i18nFileName} is facade chunk maps ${resolved.fileName} with ${resolved.exportName} as ${this.i18nSymbol}`);
+			entryChunk.isFacadeOfI18n = true;
+			this.i18nFileName = resolved.fileName;
+		}
+		this.i18nSymbol = resolved.exportName;
 	}
 
 	async saveAllLocales(locales: Record<string, Locale>) {
