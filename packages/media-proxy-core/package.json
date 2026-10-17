@@ -23,7 +23,8 @@
 		"build": "node -e \"require('node:fs').rmSync('built', { recursive: true, force: true })\" && tsc -p tsconfig.json",
 		"watch": "tsc -p tsconfig.json --watch --preserveWatchOutput",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsc --noEmit && tsc -p test --noEmit",
+		"test": "vitest run",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"repository": {
@@ -64,6 +65,7 @@
 		"@types/tmp": "0.2.6",
 		"@typescript-eslint/parser": "8.71.1",
 		"fastify": "5.12.5",
-		"sharp": "0.35.5"
+		"sharp": "0.35.5",
+		"vitest": "5.0.3"
 	}
 }
