@@ -4,7 +4,7 @@
  */
 
 import * as path from 'node:path';
-import { declsOfPattern, getModuleExportName } from '../utils.js';
+import { declsOfPattern } from './collect-modifications.js';
 import type { ESTree } from 'rolldown/utils';
 
 /**
@@ -90,15 +90,6 @@ export class ChunkExportResolver {
 
 		return null;
 	}
-
-	/**
-	 * Resolves the binding imported by the import specifier in the chunk `importerFileName`.
-	 */
-	resolveImport(importerFileName: string, source: string, importedName: string): ResolvedBinding | null {
-		const sourceFileName = this.resolveSource(importerFileName, source);
-		if (sourceFileName == null) return null;
-		return this.resolveExport(sourceFileName, importedName);
-	}
 }
 
 function collectExports(program: ESTree.Program): ChunkExports {
@@ -173,4 +164,8 @@ function declaredNames(declaration: ESTree.Declaration): string[] {
 			// TypeScript only declarations, which never appear in the bundled output
 			return [];
 	}
+}
+
+function getModuleExportName(node: ESTree.ModuleExportName): string {
+	return node.type === 'Literal' ? node.value : node.name;
 }

@@ -11,7 +11,6 @@ import { collectModifications } from './locale-inliner/collect-modifications.js'
 import { applyWithLocale } from './locale-inliner/apply-with-locale.js';
 import { blankLogger } from './logger.js';
 import { ChunkExportResolver } from './locale-inliner/chunk-export-resolver.js';
-import type { ResolvedBinding } from './locale-inliner/chunk-export-resolver.js';
 import type { Logger } from './logger.js';
 import type { ESTree } from 'rolldown/utils';
 import type { Locale } from 'i18n';
@@ -64,27 +63,18 @@ export class LocaleInliner {
 	}
 
 	collectsModifications() {
-		const programs = new Map<ScriptChunk, ESTree.Program>();
-		for (const chunk of this.chunks) {
-			const fileLogger = this.logger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);
-			const program = parseChunk(chunk, fileLogger);
-			if (program != null) programs.set(chunk, program);
-		}
-
-		const resolver = new ChunkExportResolver([...programs].map(([chunk, program]) => ({ fileName: chunk.fileName, program })));
-		const i18nBinding = this.#resolveI18nBinding(resolver);
+		this.#detectI18nFacadeChunk();
 
 		for (const chunk of this.chunks) {
 			if (chunk.sourceCode == null) {
 				throw new Error(`Source code for ${chunk.fileName} is not loaded.`);
 			}
-			const program = programs.get(chunk);
-			if (program == null) {
+			if (chunk.isFacadeOfI18n) {
 				chunk.modifications = [];
 				continue;
 			}
 			const fileLogger = this.logger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);
-			chunk.modifications = collectModifications(chunk.sourceCode, program, chunk.fileName, fileLogger, this, resolver, i18nBinding);
+			chunk.modifications = collectModifications(chunk.sourceCode, chunk.fileName, fileLogger, this);
 		}
 
 		if (!this.chunks.flatMap(x => x.modifications ?? []).some(x => x.type === 'localized')) {
@@ -92,20 +82,36 @@ export class LocaleInliner {
 		}
 	}
 
-	#resolveI18nBinding(resolver: ChunkExportResolver): ResolvedBinding {
-		// The bundler may emit the entry chunk of i18n file as a facade chunk which re-exports the binding
-		// from the chunk that actually defines it, with minified export name.
+	#detectI18nFacadeChunk() {
+		// For some reason, even with `preserveEntrySignatures: 'allow-extension'`, rolldown may generate facade chunk
+		// This method detects facade chunk and replace i18nFile / i18nFileName with correct file name.
 		// The shape of the facade chunk depends on the bundler version, so we follow the import / export statements
 		// to find the chunk and the export name that defines i18n instead of matching the shape of the facade chunk.
+		const entryChunk = this.chunks.find(x => x.fileName === this.i18nFileName);
+		if (entryChunk == null) throw new Error(`i18n script file '${this.i18nFile}' not found`);
+
+		const resolver = new ChunkExportResolver(this.chunks.flatMap(chunk => {
+			if (chunk.sourceCode == null) throw new Error(`Source code for ${chunk.fileName} is not loaded.`);
+			if (chunk.sourceCode === '') return [];
+			let program: ESTree.Program;
+			try {
+				program = parseAst(chunk.sourceCode);
+			} catch {
+				return []; // reported by collectModifications
+			}
+			return [{ fileName: chunk.fileName, program }];
+		}));
+
 		const resolved = resolver.resolveExport(this.i18nFileName, this.i18nSymbol);
 		if (resolved == null) {
 			throw new Error(`Failed to resolve export '${this.i18nSymbol}' of i18n script file '${this.i18nFile}' (${this.i18nFileName}).`);
 		}
-		if (resolved.fileName !== this.i18nFileName || resolved.exportName !== this.i18nSymbol) {
-			this.logger.info(`'${this.i18nSymbol}' exported from ${this.i18nFileName} is defined in ${resolved.fileName} as '${resolved.exportName}'`);
+		if (resolved.fileName !== this.i18nFileName) {
+			this.logger.info(`We detected ${this.i18nFileName} is facade chunk maps ${resolved.fileName} with ${resolved.exportName} as ${this.i18nSymbol}`);
+			entryChunk.isFacadeOfI18n = true;
+			this.i18nFileName = resolved.fileName;
 		}
-		this.i18nFileName = resolved.fileName;
-		return resolved;
+		this.i18nSymbol = resolved.exportName;
 	}
 
 	async saveAllLocales(locales: Record<string, Locale>) {
@@ -145,27 +151,11 @@ export class LocaleInliner {
 	}
 }
 
-function parseChunk(chunk: ScriptChunk, fileLogger: Logger): ESTree.Program | null {
-	if (chunk.sourceCode == null) throw new Error(`Source code for ${chunk.fileName} is not loaded.`);
-	if (chunk.sourceCode === '') return null;
-	let program: ESTree.Program;
-	try {
-		program = parseAst(chunk.sourceCode);
-	} catch (err) {
-		fileLogger.error(`Failed to parse source code: ${err}`);
-		return null;
-	}
-	if (program.sourceType !== 'module') {
-		fileLogger.error('Source code is not a module.');
-		return null;
-	}
-	return program;
-}
-
 interface ScriptChunk {
 	fileName: string;
 	chunkName?: string;
 	sourceCode?: string;
+	isFacadeOfI18n?: true;
 	modifications?: TextModification[];
 }
 
