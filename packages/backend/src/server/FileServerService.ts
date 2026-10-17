@@ -6,6 +6,7 @@
 import * as fs from 'node:fs';
 import { resolve } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
+import { StatusError as MediaProxyStatusError } from '@misskey-dev/media-proxy-core';
 import type { Config } from '@/config.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -14,7 +15,6 @@ import type Logger from '@/logger.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
-import { ImageProcessingService } from '@/core/ImageProcessingService.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
@@ -42,7 +42,6 @@ export class FileServerService {
 
 		private fileInfoService: FileInfoService,
 		private downloadService: DownloadService,
-		private imageProcessingService: ImageProcessingService,
 		private videoProcessingService: VideoProcessingService,
 		private internalStorageService: InternalStorageService,
 		private loggerService: LoggerService,
@@ -65,7 +64,6 @@ export class FileServerService {
 			this.config,
 			this.fileResolver,
 			this.assets,
-			this.imageProcessingService,
 		);
 
 		//this.createServer = this.createServer.bind(this);
@@ -121,7 +119,8 @@ export class FileServerService {
 			return reply.sendFile('/dummy.png', this.assets);
 		}
 
-		if (err instanceof StatusError && (err.statusCode === 302 || err.isClientError)) {
+		// プロキシの画像変換などは media-proxy-core の StatusError (backend の StatusError とは別クラス) を投げる
+		if ((err instanceof StatusError || err instanceof MediaProxyStatusError) && (err.statusCode === 302 || err.isClientError)) {
 			reply.code(err.statusCode);
 			return;
 		}

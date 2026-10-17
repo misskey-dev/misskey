@@ -5,17 +5,19 @@ on:
     branches: [ develop ]
     paths:
       - packages/misskey-js/package.json
+      - packages/media-proxy-core/package.json
       - package.json
       - .github/workflows/check-misskey-js-version.yml
   pull_request:
     branches: [ develop ]
     paths:
       - packages/misskey-js/package.json
+      - packages/media-proxy-core/package.json
       - package.json
       - .github/workflows/check-misskey-js-version.yml
 jobs:
   check-version:
-    # ルートの package.json と packages/misskey-js/package.json のバージョンが一致しているかを確認する
+    # ルートの package.json と、本体とバージョンを揃えて公開するパッケージの package.json のバージョンが一致しているかを確認する
     name: Check version
     runs-on: ubuntu-latest
     steps:
@@ -23,7 +25,10 @@ jobs:
         uses: actions/checkout@v7.0.1
       - name: Check version
         run: |
-          if [ "$(jq -r '.version' package.json)" != "$(jq -r '.version' packages/misskey-js/package.json)" ]; then
-            echo "Version mismatch!"
-            exit 1
-          fi
+          root_version="$(jq -r '.version' package.json)"
+          for package_json in packages/misskey-js/package.json packages/media-proxy-core/package.json; do
+            if [ "$root_version" != "$(jq -r '.version' "$package_json")" ]; then
+              echo "Version mismatch! ($package_json)"
+              exit 1
+            fi
+          done

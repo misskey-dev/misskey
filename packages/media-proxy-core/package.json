@@ -1,0 +1,69 @@
+{
+	"type": "module",
+	"name": "@misskey-dev/media-proxy-core",
+	"version": "2026.10.1-alpha.0",
+	"description": "Shared media proxy implementation for Misskey",
+	"license": "AGPL-3.0-only",
+	"main": "./built/index.js",
+	"types": "./built/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./built/index.d.ts",
+			"import": "./built/index.js",
+			"default": "./built/index.js"
+		},
+		"./standalone": {
+			"types": "./built/standalone.d.ts",
+			"import": "./built/standalone.js",
+			"default": "./built/standalone.js"
+		}
+	},
+	"sideEffects": false,
+	"scripts": {
+		"build": "node -e \"require('node:fs').rmSync('built', { recursive: true, force: true })\" && tsc -p tsconfig.json",
+		"watch": "tsc -p tsconfig.json --watch --preserveWatchOutput",
+		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"typecheck": "tsc --noEmit",
+		"lint": "pnpm typecheck && pnpm eslint"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/misskey-dev/misskey.git",
+		"directory": "packages/media-proxy-core"
+	},
+	"files": [
+		"built",
+		"assets",
+		"LICENSE",
+		"README.md"
+	],
+	"peerDependencies": {
+		"@misskey-dev/sharp-read-bmp": "^2.0.0",
+		"fastify": "^5.0.0",
+		"sharp": "^0.35.0"
+	},
+	"peerDependenciesMeta": {
+		"fastify": {
+			"optional": true
+		}
+	},
+	"dependencies": {
+		"@fastify/static": "10.1.6",
+		"cacheable-lookup": "7.0.0",
+		"content-disposition": "3.0.0",
+		"file-type": "22.1.1",
+		"got": "16.0.0",
+		"hpagent": "1.2.0",
+		"ipaddr.js": "2.5.0",
+		"is-svg": "6.1.0",
+		"tmp": "0.2.7"
+	},
+	"devDependencies": {
+		"@misskey-dev/sharp-read-bmp": "2.0.0",
+		"@types/node": "26.6.5",
+		"@types/tmp": "0.2.6",
+		"@typescript-eslint/parser": "8.71.1",
+		"fastify": "5.12.5",
+		"sharp": "0.35.5"
+	}
+}

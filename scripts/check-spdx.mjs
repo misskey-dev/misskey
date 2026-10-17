@@ -48,6 +48,7 @@ const TARGET_DIRECTORIES = [
 	'packages/frontend-embed/@types',
 	'packages/frontend-embed/src',
 	'packages/icons-subsetter/src',
+	'packages/media-proxy-core/src',
 	'packages/misskey-bubble-game/src',
 	'packages/misskey-reversi/src',
 	'packages/sw/src',
