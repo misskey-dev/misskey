@@ -10,7 +10,7 @@ import * as WebSocket from 'ws';
 import { DI } from '@/di-symbols.js';
 import type { MiAccessToken } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
-import { MiLocalUser } from '@/models/User.js';
+import type { MiLocalUser } from '@/models/User.js';
 import { UserService } from '@/core/UserService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
 import MainStreamConnection, { ConnectionRequest } from './stream/Connection.js';
@@ -22,6 +22,7 @@ export class StreamingApiServerService {
 	#wss: WebSocket.WebSocketServer;
 	#connections = new Map<WebSocket.WebSocket, number>();
 	#cleanConnectionsIntervalId: NodeJS.Timeout | null = null;
+	#activeUsers = new Map<MiLocalUser['id'], { connections: number; intervalId: NodeJS.Timeout; }>();
 
 	constructor(
 		@Inject(DI.redisForSub)
@@ -37,6 +38,8 @@ export class StreamingApiServerService {
 	public attach(server: http.Server): void {
 		this.#wss = new WebSocket.WebSocketServer({
 			noServer: true,
+			maxPayload: 1024 * 1024, // 1MiB
+			perMessageDeflate: false,
 		});
 
 		server.on('upgrade', async (request, socket, head) => {
@@ -125,19 +128,14 @@ export class StreamingApiServerService {
 
 			this.#connections.set(connection, Date.now());
 
-			const userUpdateIntervalId = user ? setInterval(() => {
-				this.usersService.updateLastActiveDate(user);
-			}, 1000 * 60 * 5) : null;
-			if (user) {
-				this.usersService.updateLastActiveDate(user);
-			}
+			if (user) this.onUserConnected(user);
 
 			connection.once('close', () => {
 				ev.removeAllListeners();
 				stream.dispose();
 				globalEv.off('message', onRedisMessage);
 				this.#connections.delete(connection);
-				if (userUpdateIntervalId) clearInterval(userUpdateIntervalId);
+				if (user) this.onUserDisconnected(user);
 			});
 
 			connection.on('pong', () => {
@@ -157,6 +155,35 @@ export class StreamingApiServerService {
 				}
 			}
 		}, 1000 * 60);
+	}
+
+	@bindThis
+	private onUserConnected(user: MiLocalUser): void {
+		const activeUser = this.#activeUsers.get(user.id);
+		if (activeUser) {
+			activeUser.connections++;
+			return;
+		}
+
+		this.usersService.updateLastActiveDate(user);
+		this.#activeUsers.set(user.id, {
+			connections: 1,
+			intervalId: setInterval(() => {
+				this.usersService.updateLastActiveDate(user);
+			}, 1000 * 60 * 5),
+		});
+	}
+
+	@bindThis
+	private onUserDisconnected(user: MiLocalUser): void {
+		const activeUser = this.#activeUsers.get(user.id);
+		if (!activeUser) return;
+
+		activeUser.connections--;
+		if (activeUser.connections <= 0) {
+			clearInterval(activeUser.intervalId);
+			this.#activeUsers.delete(user.id);
+		}
 	}
 
 	@bindThis
