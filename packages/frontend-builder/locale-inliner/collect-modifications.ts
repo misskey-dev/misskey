@@ -3,27 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { parseAst } from 'rolldown/parseAst';
 import { walk } from 'oxc-walker';
-import { assertNever } from '../utils.js';
+import { declsOfPattern, getModuleExportName } from '../utils.js';
 import type { ESTree } from 'rolldown/utils';
 import type { LocaleInliner, TextModification } from '../locale-inliner.js';
 import type { Logger } from '../logger.js';
+import type { ChunkExportResolver, ResolvedBinding } from './chunk-export-resolver.js';
 
-export function collectModifications(sourceCode: string, fileName: string, fileLogger: Logger, inliner: LocaleInliner): TextModification[] {
-	if (sourceCode === '') return [];
-	let programNode: ESTree.Program;
-	try {
-		programNode = parseAst(sourceCode);
-	} catch (err) {
-		fileLogger.error(`Failed to parse source code: ${err}`);
-		return [];
-	}
-	if (programNode.sourceType !== 'module') {
-		fileLogger.error('Source code is not a module.');
-		return [];
-	}
-
+export function collectModifications(
+	sourceCode: string,
+	programNode: ESTree.Program,
+	fileName: string,
+	fileLogger: Logger,
+	inliner: LocaleInliner,
+	resolver: ChunkExportResolver,
+	i18nBinding: ResolvedBinding,
+): TextModification[] {
 	const modifications: TextModification[] = [];
 
 	// first
@@ -82,33 +77,35 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 		},
 	});
 
-	const importSpecifierResult = findImportSpecifier(programNode, inliner.i18nFileName, inliner.i18nSymbol);
+	const importResult = findI18nImport(programNode, fileName, resolver, i18nBinding);
 
-	switch (importSpecifierResult.type) {
+	for (const importNode of importResult.sideEffectImports) {
+		fileLogger.debug('Importing i18n without specifiers, removing the import.');
+		modifications.push({
+			type: 'delete',
+			begin: importNode.start,
+			end: importNode.end,
+			localizedOnly: false,
+		});
+	}
+
+	switch (importResult.type) {
 		case 'no-import':
 			fileLogger.debug('No import of i18n found, skipping inlining.');
 			return modifications;
-		case 'no-specifiers':
-			fileLogger.debug('Importing i18n without specifiers, removing the import.');
-			modifications.push({
-				type: 'delete',
-				begin: importSpecifierResult.importNode.start,
-				end: importSpecifierResult.importNode.end,
-				localizedOnly: false,
-			});
-			return modifications;
-		case 'unexpected-specifiers':
-			fileLogger.error(`Importing ${inliner.i18nFileName} found but with unexpected specifiers. Skipping inlining.`);
+		case 'unexpected-import':
+			fileLogger.error(`Importing ${inliner.i18nFileName} found but ${importResult.reason}. Skipping inlining.`);
 			return modifications;
 		case 'specifier':
-			fileLogger.debug(`Found import i18n as ${importSpecifierResult.localI18nIdentifier}`);
+			fileLogger.debug(`Found import i18n as ${importResult.specifier.local.name}`);
 			break;
 	}
 
-	const i18nImport = importSpecifierResult.importNode;
-	const localI18nIdentifier = importSpecifierResult.localI18nIdentifier;
+	const i18nImport = importResult.importNode;
+	const i18nImportSpecifier = importResult.specifier;
+	const localI18nIdentifier = i18nImportSpecifier.local.name;
 
-	fileLogger.debug(`imports ${inliner.i18nSymbol} /*i18n*/ as ${localI18nIdentifier}`);
+	fileLogger.debug(`imports ${i18nBinding.exportName} /*i18n*/ as ${localI18nIdentifier}`);
 
 	// In case of substitution failure, we will preserve the import statement
 	// otherwise we will remove it.
@@ -136,6 +133,12 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 				if (parent.type === 'Property' && !parent.computed && property === 'key') return; // we don't care 'id' part of { id: expr }
 				if (parent.type === 'MemberExpression' && !parent.computed && property === 'property') return; // we don't care 'id' part of { id: expr }
 				if (parent.type === 'ExportSpecifier' && property === 'exported') return; // we don't care 'id' part of { id: expr }
+				if (parent.type === 'ExportSpecifier' && node.name === localI18nIdentifier) {
+					// re-exporting i18n (e.g. facade chunk of i18n entry). we need to keep the import for the re-export.
+					fileLogger.debug(`${lineCol(sourceCode, node)}: re-exporting i18n identifier "${localI18nIdentifier}". Keeping the import.`);
+					preserveI18nImport = true;
+					return;
+				}
 				if (node.name === localI18nIdentifier) {
 					// the use of identifier is either direct reference to i18n, or unsupported conflict of the identifier, which should report error.
 					fileLogger.error(`${lineCol(sourceCode, node)}: Using i18n identifier "${localI18nIdentifier}" directly. Skipping inlining.`);
@@ -211,11 +214,10 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (!preserveI18nImport) {
-		fileLogger.debug('removing i18n import statement');
+		fileLogger.debug('removing i18n import');
 		codeModifications.push({
 			type: 'delete',
-			begin: i18nImport.start,
-			end: i18nImport.end,
+			...importSpecifierDeletionRange(i18nImport, i18nImportSpecifier),
 			localizedOnly: true,
 		});
 	}
@@ -251,41 +253,6 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	}
 
 	return [...modifications, ...codeModifications];
-}
-
-function declsOfPattern(pattern: ESTree.BindingPattern | ESTree.ParamPattern | ESTree.ArrayAssignmentTarget | ESTree.ObjectAssignmentTarget | ESTree.AssignmentTargetMaybeDefault | ESTree.AssignmentTargetRest | null): string[] {
-	if (pattern == null) return [];
-	switch (pattern.type) {
-		case 'Identifier':
-			return [pattern.name];
-		case 'ObjectPattern':
-			return pattern.properties.flatMap(prop => {
-				switch (prop.type) {
-					case 'Property':
-						return declsOfPattern(prop.value);
-					case 'RestElement':
-						return declsOfPattern(prop.argument);
-					default:
-						assertNever(prop);
-				}
-			});
-		case 'ArrayPattern':
-			return pattern.elements.flatMap(p => declsOfPattern(p));
-		case 'RestElement':
-			return declsOfPattern(pattern.argument);
-		case 'AssignmentPattern':
-			return declsOfPattern(pattern.left);
-		case 'MemberExpression':
-		case 'TSAsExpression':
-		case 'TSSatisfiesExpression':
-		case 'TSTypeAssertion':
-		case 'TSNonNullExpression':
-			return []; // not introducing new symbol
-		case 'TSParameterProperty':
-			throw new Error();
-		default:
-			assertNever(pattern);
-	}
 }
 
 function lineCol(sourceCode: string, node: ESTree.Node): string {
@@ -412,40 +379,63 @@ function isAwaitFetchLocaleThenJson(awaitNode: ESTree.Node): boolean {
 	return true;
 }
 
-type SpecifierResult =
+type I18nImportResult = { sideEffectImports: ESTree.ImportDeclaration[] } & (
 	| { type: 'no-import' }
-	| { type: 'no-specifiers', importNode: ESTree.ImportDeclaration }
-	| { type: 'unexpected-specifiers', importNode: ESTree.ImportDeclaration }
-	| { type: 'specifier', localI18nIdentifier: string, importNode: ESTree.ImportDeclaration }
-	;
+	| { type: 'unexpected-import', reason: string }
+	| { type: 'specifier', importNode: ESTree.ImportDeclaration, specifier: ESTree.ImportSpecifier }
+);
 
-function findImportSpecifier(programNode: ESTree.Program, i18nFileName: string, i18nSymbol: string): SpecifierResult {
-	const imports = programNode.body.filter(x => x.type === 'ImportDeclaration');
-	const importNode = imports.find(x => x.source.value === `./${i18nFileName}`);
-	if (!importNode) return { type: 'no-import' };
+function findI18nImport(programNode: ESTree.Program, fileName: string, resolver: ChunkExportResolver, i18nBinding: ResolvedBinding): I18nImportResult {
+	const sideEffectImports: ESTree.ImportDeclaration[] = [];
+	const found: { importNode: ESTree.ImportDeclaration, specifier: ESTree.ImportSpecifier }[] = [];
 
-	if (importNode.specifiers.length === 0) {
-		return { type: 'no-specifiers', importNode };
+	for (const importNode of programNode.body) {
+		if (importNode.type !== 'ImportDeclaration') continue;
+		const source = importNode.source.value;
+
+		if (importNode.specifiers.length === 0) {
+			// `import "./i18n.js"` is only for side effects of loading i18n chunk, which is not needed for localized bundles.
+			if (resolver.resolveSource(fileName, source) === i18nBinding.fileName) sideEffectImports.push(importNode);
+			continue;
+		}
+
+		for (const specifier of importNode.specifiers) {
+			if (specifier.type === 'ImportNamespaceSpecifier') {
+				if (resolver.resolveSource(fileName, source) === i18nBinding.fileName) {
+					return { type: 'unexpected-import', reason: 'with namespace import', sideEffectImports };
+				}
+				continue;
+			}
+
+			const importedName = specifier.type === 'ImportDefaultSpecifier' ? 'default' : getModuleExportName(specifier.imported);
+			const resolved = resolver.resolveImport(fileName, source, importedName);
+			if (resolved == null || resolved.fileName !== i18nBinding.fileName || resolved.exportName !== i18nBinding.exportName) continue;
+			if (specifier.type === 'ImportDefaultSpecifier') {
+				return { type: 'unexpected-import', reason: 'with default import', sideEffectImports };
+			}
+			found.push({ importNode, specifier });
+		}
 	}
 
-	if (importNode.specifiers.length !== 1) {
-		return { type: 'unexpected-specifiers', importNode };
-	}
-	const i18nImportSpecifier = importNode.specifiers[0];
-	if (i18nImportSpecifier.type !== 'ImportSpecifier') {
-		return { type: 'unexpected-specifiers', importNode };
-	}
+	if (found.length === 0) return { type: 'no-import', sideEffectImports };
+	if (found.length > 1) return { type: 'unexpected-import', reason: `imported ${found.length} times`, sideEffectImports };
+	return { type: 'specifier', ...found[0], sideEffectImports };
+}
 
-	if (i18nImportSpecifier.imported.type !== 'Identifier') {
-		return { type: 'unexpected-specifiers', importNode };
-	}
+/**
+ * Returns the range to remove the specifier from the import declaration.
+ * If the specifier is the only one in the declaration, the whole declaration is removed.
+ */
+function importSpecifierDeletionRange(importNode: ESTree.ImportDeclaration, specifier: ESTree.ImportSpecifier): { begin: number, end: number } {
+	if (importNode.specifiers.length === 1) return { begin: importNode.start, end: importNode.end };
 
-	const importingIdentifier = i18nImportSpecifier.imported.name;
-	if (importingIdentifier !== i18nSymbol) {
-		return { type: 'unexpected-specifiers', importNode };
-	}
-	const localI18nIdentifier = i18nImportSpecifier.local.name;
-	return { type: 'specifier', localI18nIdentifier, importNode };
+	// remove the specifier with adjacent comma: `import { a, b } from "x"` => `import { b } from "x"`
+	// if it's the only named specifier, `import d, { a } from "x"` => `import d, {} from "x"`, which is still valid.
+	const namedSpecifiers = importNode.specifiers.filter(x => x.type === 'ImportSpecifier');
+	const index = namedSpecifiers.indexOf(specifier);
+	if (namedSpecifiers.length === 1) return { begin: specifier.start, end: specifier.end };
+	if (index < namedSpecifiers.length - 1) return { begin: specifier.start, end: namedSpecifiers[index + 1].start };
+	return { begin: namedSpecifiers[index - 1].end, end: specifier.end };
 }
 
 // checker helpers

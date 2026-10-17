@@ -6,11 +6,14 @@
 import * as fs from 'fs/promises';
 import * as path from 'node:path';
 import MagicString from 'magic-string';
+import { parseAst } from 'rolldown/parseAst';
 import { collectModifications } from './locale-inliner/collect-modifications.js';
 import { applyWithLocale } from './locale-inliner/apply-with-locale.js';
 import { blankLogger } from './logger.js';
-import { detectI18nFacadeChunk } from './locale-inliner/facade-chunk-detection.js';
+import { ChunkExportResolver } from './locale-inliner/chunk-export-resolver.js';
+import type { ResolvedBinding } from './locale-inliner/chunk-export-resolver.js';
 import type { Logger } from './logger.js';
+import type { ESTree } from 'rolldown/utils';
 import type { Locale } from 'i18n';
 import type { Manifest as ViteManifest } from 'vite';
 
@@ -61,18 +64,27 @@ export class LocaleInliner {
 	}
 
 	collectsModifications() {
-		this.#detectI18nFacadeChunk();
+		const programs = new Map<ScriptChunk, ESTree.Program>();
+		for (const chunk of this.chunks) {
+			const fileLogger = this.logger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);
+			const program = parseChunk(chunk, fileLogger);
+			if (program != null) programs.set(chunk, program);
+		}
+
+		const resolver = new ChunkExportResolver([...programs].map(([chunk, program]) => ({ fileName: chunk.fileName, program })));
+		const i18nBinding = this.#resolveI18nBinding(resolver);
 
 		for (const chunk of this.chunks) {
 			if (chunk.sourceCode == null) {
 				throw new Error(`Source code for ${chunk.fileName} is not loaded.`);
 			}
-			if (chunk.isFacadeOfI18n) {
+			const program = programs.get(chunk);
+			if (program == null) {
 				chunk.modifications = [];
 				continue;
 			}
 			const fileLogger = this.logger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);
-			chunk.modifications = collectModifications(chunk.sourceCode, chunk.fileName, fileLogger, this);
+			chunk.modifications = collectModifications(chunk.sourceCode, program, chunk.fileName, fileLogger, this, resolver, i18nBinding);
 		}
 
 		if (!this.chunks.flatMap(x => x.modifications ?? []).some(x => x.type === 'localized')) {
@@ -80,22 +92,20 @@ export class LocaleInliner {
 		}
 	}
 
-	#detectI18nFacadeChunk() {
-		// For some reason, even with `preserveEntrySignatures: 'allow-extension'`, rolldown may generate facade chunk
-		// This method detects facade chunk and replace i18nFile / i18nFileName with correct file name
-		const chunk = this.chunks.find(x => x.fileName === this.i18nFileName);
-		if (chunk == null) throw new Error(`i18n script file '${this.i18nFile}' not found`);
-		if (chunk.sourceCode == null) throw new Error(`Source code for '${this.i18nFile}' not loaded`);
-		const fileLogger = this.logger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);
-		const facadeInfo = detectI18nFacadeChunk(chunk.sourceCode, chunk.fileName, fileLogger);
-		if (facadeInfo != null) {
-			const i18nSymbol = facadeInfo.nameMap[this.i18nSymbol];
-			if (i18nSymbol == null) throw new Error(`Facade module for i18n file does not map ${this.i18nSymbol}. mapping: ${JSON.stringify(facadeInfo.nameMap)}`);
-			this.logger.info(`We detected ${this.i18nFileName} is facade chunk maps ${facadeInfo.fileName} with ${i18nSymbol} as ${this.i18nSymbol}`);
-			chunk.isFacadeOfI18n = true;
-			this.i18nFileName = facadeInfo.fileName;
-			this.i18nSymbol = i18nSymbol;
+	#resolveI18nBinding(resolver: ChunkExportResolver): ResolvedBinding {
+		// The bundler may emit the entry chunk of i18n file as a facade chunk which re-exports the binding
+		// from the chunk that actually defines it, with minified export name.
+		// The shape of the facade chunk depends on the bundler version, so we follow the import / export statements
+		// to find the chunk and the export name that defines i18n instead of matching the shape of the facade chunk.
+		const resolved = resolver.resolveExport(this.i18nFileName, this.i18nSymbol);
+		if (resolved == null) {
+			throw new Error(`Failed to resolve export '${this.i18nSymbol}' of i18n script file '${this.i18nFile}' (${this.i18nFileName}).`);
 		}
+		if (resolved.fileName !== this.i18nFileName || resolved.exportName !== this.i18nSymbol) {
+			this.logger.info(`'${this.i18nSymbol}' exported from ${this.i18nFileName} is defined in ${resolved.fileName} as '${resolved.exportName}'`);
+		}
+		this.i18nFileName = resolved.fileName;
+		return resolved;
 	}
 
 	async saveAllLocales(locales: Record<string, Locale>) {
@@ -135,11 +145,27 @@ export class LocaleInliner {
 	}
 }
 
+function parseChunk(chunk: ScriptChunk, fileLogger: Logger): ESTree.Program | null {
+	if (chunk.sourceCode == null) throw new Error(`Source code for ${chunk.fileName} is not loaded.`);
+	if (chunk.sourceCode === '') return null;
+	let program: ESTree.Program;
+	try {
+		program = parseAst(chunk.sourceCode);
+	} catch (err) {
+		fileLogger.error(`Failed to parse source code: ${err}`);
+		return null;
+	}
+	if (program.sourceType !== 'module') {
+		fileLogger.error('Source code is not a module.');
+		return null;
+	}
+	return program;
+}
+
 interface ScriptChunk {
 	fileName: string;
 	chunkName?: string;
 	sourceCode?: string;
-	isFacadeOfI18n?: true;
 	modifications?: TextModification[];
 }
 
