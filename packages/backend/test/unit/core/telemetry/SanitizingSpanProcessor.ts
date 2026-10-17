@@ -181,6 +181,28 @@ describe('SanitizingSpanProcessor', () => {
 		expect(exceptionAttributes(exported)['exception.stacktrace']).toBe('control chars[31m');
 	});
 
+	test('keeps only the origin of URLs embedded in exception.message and exception.stacktrace', () => {
+		const exported = createSanitizedReadableSpan(createSpan({
+			events: [{ name: 'exception', time: [1, 0], attributes: {
+				'exception.type': 'Error',
+				'exception.message': 'person url <> uri host mismatch: https://user:DO_NOT_EXPORT@remote.example:8443/users/DO_NOT_EXPORT?token=DO_NOT_EXPORT#DO_NOT_EXPORT <> https://other.example/inbox/DO_NOT_EXPORT',
+				'exception.stacktrace': 'Error: connect failed postgres://misskey:DO_NOT_EXPORT@db:5432/misskey\n    at foo (file:///misskey/packages/backend/built/foo.js:1:1)\n    at bar (node:internal/process/task_queues:105:5)',
+			} }],
+		}));
+		expect(exceptionAttributes(exported)['exception.message']).toBe('person url <> uri host mismatch: https://remote.example:8443 <> https://other.example');
+		// origin を持たない URL はマーカーに置き換え、スタックトレースのソース位置 (file://) は残す。
+		expect(exceptionAttributes(exported)['exception.stacktrace']).toBe('Error: connect failed [redacted]    at foo (file:///misskey/packages/backend/built/foo.js:1:1)    at bar (node:internal/process/task_queues:105:5)');
+		expect(JSON.stringify(exported)).not.toContain('DO_NOT_EXPORT');
+	});
+
+	test('does not let a URL absorb the text that follows it when newlines are stripped', () => {
+		const exported = createSanitizedReadableSpan(createSpan({
+			events: [{ name: 'exception', time: [1, 0], attributes: { 'exception.type': 'Error', 'exception.message': 'failed https://remote.example/inbox/DO_NOT_EXPORT\nnext line' } }],
+		}));
+		// URL は改行の手前で区切って置き換え、そのあとで改行を除去する。
+		expect(exceptionAttributes(exported)['exception.message']).toBe('failed https://remote.examplenext line');
+	});
+
 	test('truncates an oversized exception.stacktrace instead of dropping the whole span (boot/entry.ts sets Error.stackTraceLimit = Infinity)', () => {
 		const hugeStacktrace = 'TypeError: boom ' + '    at frame (file.ts:1:1) '.repeat(4000); // 約108KB
 		expect(Buffer.byteLength(hugeStacktrace, 'utf-8')).toBeGreaterThan(64 * 1024);
