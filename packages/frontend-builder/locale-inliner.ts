@@ -90,7 +90,7 @@ export class LocaleInliner {
 		const entryChunk = this.chunks.find(x => x.fileName === this.i18nFileName);
 		if (entryChunk == null) throw new Error(`i18n script file '${this.i18nFile}' not found`);
 
-		const resolver = new ChunkExportResolver(this.chunks.flatMap(chunk => {
+		const programs = this.chunks.flatMap(chunk => {
 			if (chunk.sourceCode == null) throw new Error(`Source code for ${chunk.fileName} is not loaded.`);
 			if (chunk.sourceCode === '') return [];
 			let program: ESTree.Program;
@@ -100,13 +100,22 @@ export class LocaleInliner {
 				return []; // reported by collectModifications
 			}
 			return [{ fileName: chunk.fileName, program }];
-		}));
+		});
+		const resolver = new ChunkExportResolver(programs);
 
 		const resolved = resolver.resolveExport(this.i18nFileName, this.i18nSymbol);
 		if (resolved == null) {
 			throw new Error(`Failed to resolve export '${this.i18nSymbol}' of i18n script file '${this.i18nFile}' (${this.i18nFileName}).`);
 		}
 		if (resolved.fileName !== this.i18nFileName) {
+			// facade chunk is skipped from collectModifications, so it must not contain anything other than imports and re-exports.
+			const entryProgram = programs.find(x => x.fileName === this.i18nFileName)?.program;
+			const isFacade = entryProgram?.body.every(stmt => stmt.type === 'ImportDeclaration'
+				|| stmt.type === 'ExportAllDeclaration'
+				|| (stmt.type === 'ExportNamedDeclaration' && stmt.declaration == null));
+			if (!isFacade) {
+				throw new Error(`i18n script file '${this.i18nFile}' (${this.i18nFileName}) re-exports ${this.i18nSymbol} from ${resolved.fileName}, but it is not a facade chunk consisting only of imports and re-exports.`);
+			}
 			this.logger.info(`We detected ${this.i18nFileName} is facade chunk maps ${resolved.fileName} with ${resolved.exportName} as ${this.i18nSymbol}`);
 			entryChunk.isFacadeOfI18n = true;
 			this.i18nFileName = resolved.fileName;
