@@ -1071,6 +1071,7 @@ _deck:
     antenna: "Antennes"
     list: "Lijsten"
     channel: "Kanalen"
+    clip: "Clip aanmaken"
     mentions: "Vermeldingen"
     direct: "Directe notities"
 _webhookSettings:

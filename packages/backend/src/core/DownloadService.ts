@@ -60,8 +60,22 @@ export class DownloadService {
 				request: operationTimeout,	// whole operation timeout
 			},
 			agent: {
-				http: this.httpRequestService.getAgentForHttp(urlObj, true),
-				https: this.httpRequestService.getAgentForHttps(urlObj, true),
+				http: this.httpRequestService.getAgentForHttp(urlObj),
+				https: this.httpRequestService.getAgentForHttps(urlObj),
+			},
+			hooks: {
+				beforeRedirect: [
+					(options) => {
+						// リダイレクト先ごとにエージェントを選択し直し、
+						// proxyBypassHosts 経由のリダイレクトでローカルアドレスチェックが素通しになるのを防ぐ
+						const redirectUrl = options.url;
+						if (redirectUrl == null) return;
+						options.agent = {
+							http: this.httpRequestService.getAgentForHttp(redirectUrl),
+							https: this.httpRequestService.getAgentForHttps(redirectUrl),
+						};
+					},
+				],
 			},
 			http2: false,	// default
 			retry: {
