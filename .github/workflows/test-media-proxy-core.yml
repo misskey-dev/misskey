@@ -1,0 +1,42 @@
+name: Test (media-proxy-core)
+
+on:
+  push:
+    branches: [ develop ]
+    paths:
+      - packages/media-proxy-core/**
+      - .github/workflows/test-media-proxy-core.yml
+  pull_request:
+    branches: [ develop ]
+    paths:
+      - packages/media-proxy-core/**
+      - .github/workflows/test-media-proxy-core.yml
+jobs:
+  test:
+    name: Unit tests (media-proxy-core)
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Check pnpm-lock.yaml
+        run: git diff --exit-code pnpm-lock.yaml
+
+      - name: Test
+        run: pnpm --filter @misskey-dev/media-proxy-core test
+        env:
+          CI: true

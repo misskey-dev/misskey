@@ -69,6 +69,7 @@ jobs:
         - icons-subsetter
         - sw
         - misskey-js
+        - '@misskey-dev/media-proxy-core'
         - misskey-bubble-game
         - misskey-reversi
     env:
@@ -105,6 +106,7 @@ jobs:
         - frontend
         - sw
         - misskey-js
+        - '@misskey-dev/media-proxy-core'
     steps:
     - uses: actions/checkout@v7.0.1
       with:

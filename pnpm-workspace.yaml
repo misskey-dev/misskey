@@ -9,6 +9,7 @@ packages:
   - packages/sw
   - packages/misskey-js
   - packages/misskey-js/generator
+  - packages/media-proxy-core
   - packages/misskey-reversi
   - packages/misskey-bubble-game
   - packages-private/*
