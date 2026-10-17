@@ -49,6 +49,6 @@
 		"vite": "8.3.4",
 		"vue-component-type-helpers": "3.3.12",
 		"vue-eslint-parser": "10.4.1",
-		"vue-tsc": "3.3.13"
+		"vue-tsc": "3.3.11"
 	}
 }
