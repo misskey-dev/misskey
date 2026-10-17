@@ -69,8 +69,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="$style.noteHeaderUsername">
 							<MkAcct :user="appearNote.user"/>
 						</div>
-						<div v-if="appearNote.user.badgeRoles" :class="$style.noteHeaderBadgeRoles">
-							<img v-for="(role, i) in appearNote.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.noteHeaderBadgeRole" :src="role.iconUrl!"/>
+						<div v-if="badgeRoles" :class="$style.noteHeaderBadgeRoles">
+							<img v-for="role in badgeRoles" :key="role.id" v-tooltip="role.name" :class="$style.noteHeaderBadgeRole" :src="role.iconUrl!"/>
 						</div>
 					</div>
 					<MkInstanceTicker v-if="showTicker" :host="appearNote.user.host" :instance="appearNote.user.instance"/>
@@ -251,6 +251,7 @@ import { Paginator } from '@/utility/paginator.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import number from '@/filters/number.js';
 import { DI } from '@/di.js';
+import { $i } from '@/i.js';
 import type { Keymap } from '@/utility/hotkey.js';
 
 // コンポーネント外部の依存関係
@@ -332,6 +333,14 @@ provide(DI.mfmEmojiReactCallback, reactViaMfmEmoji);
 // MkNoteDetailed固有
 const tab = ref(props.initialTab);
 const reactionTabType = ref<string | null>(null);
+const badgeRoles = computed(() => {
+	const roles = appearNote.user.badgeRoles;
+	if (roles == null || $i == null || $i.id !== appearNote.userId) return roles;
+
+	// 自分のノートを自分で見た場合レスポンスに非表示ロールも含まれるので、別途除外する必要がある
+	const hiddenRoleIds = new Set($i.hiddenRoleIds ?? []);
+	return roles.filter(role => !hiddenRoleIds.has(role.id));
+});
 
 const renotesPaginator = markRaw(new Paginator('notes/renotes', {
 	limit: 10,
