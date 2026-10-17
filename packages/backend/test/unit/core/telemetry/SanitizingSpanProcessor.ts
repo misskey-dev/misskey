@@ -97,6 +97,29 @@ describe('SanitizingSpanProcessor', () => {
 		expect(createSanitizedReadableSpan(span, { allowDbStatement: true })?.attributes).toEqual({ 'db.system.name': 'postgresql', 'db.query.text': 'SELECT 1' });
 	});
 
+	test('rebuilds HTTP span names from the sanitized method and route or host', () => {
+		// 受信 span は計装が付けた名前を使わず、method と route から作り直す。
+		expect(createSanitizedReadableSpan(createSpan({
+			name: 'GET /notes/DO_NOT_EXPORT?i=DO_NOT_EXPORT',
+			attributes: { 'http.request.method': 'GET', 'http.route': '/notes/:id', 'url.path': '/notes/DO_NOT_EXPORT?i=DO_NOT_EXPORT' },
+		}))?.name).toBe('GET /notes/:id');
+		// 送信 span は method と送信先 host (port を含む) から作り直す。
+		expect(createSanitizedReadableSpan(createSpan({
+			name: 'POST https://remote.example:8443/inbox/DO_NOT_EXPORT',
+			attributes: { 'http.request.method': 'POST', 'url.full': 'https://remote.example:8443/inbox/DO_NOT_EXPORT' },
+		}))?.name).toBe('POST remote.example:8443');
+		// Fastify の hook span は method を持たないため、hook 名をそのまま使う。
+		expect(createSanitizedReadableSpan(createSpan({
+			name: 'fastify -> @fastify/otel - route -> onRequest',
+			attributes: { 'fastify.type': 'route-hook', 'http.route': '/notes/:id' },
+		}))?.name).toBe('fastify -> @fastify/otel - route -> onRequest');
+		// route に一致しなかった受信 span は、計装の固定名 (`request`) を使う。
+		expect(createSanitizedReadableSpan(createSpan({
+			name: 'request',
+			attributes: { 'http.request.method': 'GET', 'url.path': '/DO_NOT_EXPORT' },
+		}))?.name).toBe('request');
+	});
+
 	test('strips control characters from span names and bounds their length', () => {
 		expect(createSanitizedReadableSpan(createSpan({ name: 'API: notes/show\r\n\x1b[31mFAKE' }))?.name).toBe('API: notes/show[31mFAKE');
 		expect(Buffer.byteLength(createSanitizedReadableSpan(createSpan({ name: 'a'.repeat(1000) }))!.name, 'utf-8')).toBeLessThanOrEqual(256);
