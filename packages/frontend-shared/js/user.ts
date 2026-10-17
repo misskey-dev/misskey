@@ -4,7 +4,7 @@
  */
 
 import * as Misskey from 'misskey-js';
-import { url } from '@@/js/config.js';
+import { url } from './config.js';
 
 export const acct = (user: Misskey.Acct) => {
 	return Misskey.acct.toString(user);
@@ -16,8 +16,4 @@ export const userName = (user: Misskey.entities.User) => {
 
 export const userPage = (user: Misskey.Acct, path?: string, absolute = false) => {
 	return `${absolute ? url : ''}/@${acct(user)}${(path ? `/${path}` : '')}`;
-};
-
-export const notePage = (note: Misskey.entities.Note) => {
-	return `/notes/${note.id}`;
 };
