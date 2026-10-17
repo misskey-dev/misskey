@@ -9,8 +9,8 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"dependencies": {
-		"i18n": "workspace:*",
 		"esbuild": "0.28.2",
+		"i18n": "workspace:*",
 		"idb-keyval": "6.3.0",
 		"misskey-js": "workspace:*"
 	},
