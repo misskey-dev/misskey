@@ -90,6 +90,7 @@ export default defineConfig((args) => {
 		'class-validator',
 		/^@sentry\/.*/,
 		/^@sentry-internal\/.*/,
+		/^@opentelemetry\/.*/,
 		// @nestjs/coreはmicroservices / websocketsをoptional peerとして動的importするが、
 		// Misskeyはどちらも使わないためインストールしていない
 		/^@nestjs\/(?:microservices|websockets)(?:\/.*)?$/,

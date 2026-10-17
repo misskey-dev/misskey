@@ -10,6 +10,9 @@ import type { LogRecordInput } from '@/logging/types.js';
 const mocks = vi.hoisted(() => {
 	return {
 		sentryCreate: vi.fn(),
+		sentryGetOtlpExportTarget: vi.fn(),
+		sentryCreateLinkedToOpenTelemetry: vi.fn(),
+		otelCreate: vi.fn(),
 		setLogTraceContextProvider: vi.fn(),
 		logWrite: vi.fn<(input: LogRecordInput) => void>(),
 	};
@@ -24,6 +27,14 @@ vi.mock('@/logging/logging-runtime.js', () => ({
 vi.mock('@/core/telemetry/adapters/SentryTelemetryAdapter.js', () => ({
 	SentryTelemetryAdapter: {
 		create: mocks.sentryCreate,
+		getOtlpExportTarget: mocks.sentryGetOtlpExportTarget,
+		createLinkedToOpenTelemetry: mocks.sentryCreateLinkedToOpenTelemetry,
+	},
+}));
+
+vi.mock('@/core/telemetry/adapters/OpenTelemetryAdapter.js', () => ({
+	OpenTelemetryAdapter: {
+		create: mocks.otelCreate,
 	},
 }));
 
@@ -38,38 +49,47 @@ describe('telemetry-registry', () => {
 	beforeEach(() => {
 		vi.resetModules();
 		mocks.sentryCreate.mockReset();
+		mocks.sentryGetOtlpExportTarget.mockReset();
+		mocks.sentryCreateLinkedToOpenTelemetry.mockReset();
+		mocks.otelCreate.mockReset();
 		mocks.setLogTraceContextProvider.mockReset();
 		mocks.logWrite.mockReset();
 		mocks.sentryCreate.mockResolvedValue({ shutdown: vi.fn(), captureMessage: vi.fn(), startSpan: vi.fn() });
+		mocks.sentryGetOtlpExportTarget.mockResolvedValue(undefined);
+		mocks.sentryCreateLinkedToOpenTelemetry.mockResolvedValue({ shutdown: vi.fn(), captureMessage: vi.fn(), startSpan: vi.fn() });
+		mocks.otelCreate.mockResolvedValue({ shutdown: vi.fn(), captureMessage: vi.fn(), startSpan: vi.fn() });
 	});
 
-	test('does not initialize an adapter when Sentry is not configured', async () => {
+	test('uses OpenTelemetryAdapter when only otelForBackend is configured', async () => {
 		const { initTelemetry } = await import('@/core/telemetry/telemetry-registry.js');
+		const otelForBackend = { endpoint: 'http://collector:4318/v1/traces' };
 
-		await initTelemetry(config({}));
+		await initTelemetry(config({ otelForBackend }));
 
+		expect(mocks.otelCreate).toHaveBeenCalledWith({
+			...otelForBackend,
+			serviceVersion: '2026.1.0',
+		});
 		expect(mocks.sentryCreate).not.toHaveBeenCalled();
-		expect(mocks.setLogTraceContextProvider).not.toHaveBeenCalled();
+		expect(mocks.sentryCreateLinkedToOpenTelemetry).not.toHaveBeenCalled();
 	});
 
-	test('initializes Sentry and registers its trace context provider', async () => {
+	test('registers the adapter trace context provider after telemetry initialization', async () => {
 		const { initTelemetry } = await import('@/core/telemetry/telemetry-registry.js');
-		const sentryForBackend = { options: {}, enableNodeProfiling: false };
 		const getActiveTraceContext = vi.fn(() => ({
 			traceId: '0123456789abcdef0123456789abcdef',
 			spanId: '0123456789abcdef',
 			traceFlags: 0,
 		}));
-		mocks.sentryCreate.mockResolvedValue({
+		mocks.otelCreate.mockResolvedValue({
 			shutdown: vi.fn(),
 			captureMessage: vi.fn(),
 			startSpan: vi.fn(),
 			getActiveTraceContext,
 		});
 
-		await initTelemetry(config({ sentryForBackend }));
+		await initTelemetry(config({ otelForBackend: { endpoint: 'http://collector:4318/v1/traces' } }));
 
-		expect(mocks.sentryCreate).toHaveBeenCalledWith(sentryForBackend, expect.any(Function));
 		expect(mocks.setLogTraceContextProvider).toHaveBeenCalledWith(expect.any(Function));
 		const provider = mocks.setLogTraceContextProvider.mock.calls[0][0] as () => unknown;
 		expect(provider()).toEqual({
@@ -78,6 +98,60 @@ describe('telemetry-registry', () => {
 			traceFlags: 0,
 		});
 		expect(getActiveTraceContext).toHaveBeenCalledOnce();
+	});
+
+	test('lets OTel own tracing and exports spans to Sentry over OTLP when both Sentry and OTel are configured', async () => {
+		const { initTelemetry } = await import('@/core/telemetry/telemetry-registry.js');
+		const sentryForBackend = { options: { dsn: 'https://key@o0.ingest.sentry.io/1' }, enableNodeProfiling: false };
+		const otelForBackend = { endpoint: 'http://collector:4318/v1/traces' };
+		const sentryOtlpTarget = { url: 'https://o0.ingest.sentry.io/api/1/integration/otlp/v1/traces', headers: { 'x-sentry-auth': 'sentry sentry_key=key' } };
+		mocks.sentryGetOtlpExportTarget.mockResolvedValue(sentryOtlpTarget);
+
+		await initTelemetry(config({ sentryForBackend, otelForBackend }));
+
+		const otelRuntimeConfig = { ...otelForBackend, serviceVersion: '2026.1.0' };
+		expect(mocks.sentryGetOtlpExportTarget).toHaveBeenCalledWith(sentryForBackend, expect.any(Function));
+		expect(mocks.otelCreate).toHaveBeenCalledWith(otelRuntimeConfig, [sentryOtlpTarget]);
+		expect(mocks.sentryCreateLinkedToOpenTelemetry).toHaveBeenCalledWith(sentryForBackend, otelRuntimeConfig, expect.any(Function));
+		expect(mocks.sentryCreate).not.toHaveBeenCalled();
+	});
+
+	test('exports spans only to otelForBackend when the Sentry OTLP endpoint cannot be resolved', async () => {
+		const { initTelemetry } = await import('@/core/telemetry/telemetry-registry.js');
+
+		await initTelemetry(config({
+			sentryForBackend: { options: {}, enableNodeProfiling: false },
+			otelForBackend: { endpoint: 'http://collector:4318/v1/traces' },
+		}));
+
+		expect(mocks.otelCreate).toHaveBeenCalledWith(expect.any(Object), []);
+		expect(mocks.sentryCreateLinkedToOpenTelemetry).toHaveBeenCalledOnce();
+	});
+
+	test('takes the log trace context from the OTel adapter when Sentry is linked to OTel', async () => {
+		const { initTelemetry } = await import('@/core/telemetry/telemetry-registry.js');
+		const otelTraceContext = { traceId: '0123456789abcdef0123456789abcdef', spanId: '0123456789abcdef', traceFlags: 1 };
+		mocks.otelCreate.mockResolvedValue({
+			shutdown: vi.fn(),
+			captureMessage: vi.fn(),
+			startSpan: vi.fn(),
+			getActiveTraceContext: vi.fn(() => otelTraceContext),
+		});
+		mocks.sentryCreateLinkedToOpenTelemetry.mockResolvedValue({
+			shutdown: vi.fn(),
+			captureMessage: vi.fn(),
+			startSpan: vi.fn(),
+			getActiveTraceContext: vi.fn(() => undefined),
+		});
+
+		await initTelemetry(config({
+			sentryForBackend: { options: {}, enableNodeProfiling: false },
+			otelForBackend: { endpoint: 'http://collector:4318/v1/traces' },
+		}));
+
+		expect(mocks.setLogTraceContextProvider).toHaveBeenCalledOnce();
+		const provider = mocks.setLogTraceContextProvider.mock.calls[0][0] as () => unknown;
+		expect(provider()).toEqual(otelTraceContext);
 	});
 
 	test('routes adapter warnings to the Misskey logger instead of the console', async () => {
@@ -104,32 +178,89 @@ describe('telemetry-registry', () => {
 		expect(fn).toHaveBeenCalledTimes(1);
 	});
 
-	test('startSpan delegates to the Sentry adapter', async () => {
+	test('startSpan delegates directly to the single registered adapter without extra wrapping', async () => {
 		const { initTelemetry, startSpan } = await import('@/core/telemetry/telemetry-registry.js');
+		const otelForBackend = { endpoint: 'http://collector:4318/v1/traces' };
 		const adapterStartSpan = vi.fn((_name: string, fn: () => string) => fn());
-		mocks.sentryCreate.mockResolvedValue({ shutdown: vi.fn(), captureMessage: vi.fn(), startSpan: adapterStartSpan });
+		mocks.otelCreate.mockResolvedValue({ shutdown: vi.fn(), captureMessage: vi.fn(), startSpan: adapterStartSpan });
 
-		await initTelemetry(config({ sentryForBackend: { options: {}, enableNodeProfiling: false } }));
+		await initTelemetry(config({ otelForBackend }));
 
 		const fn = vi.fn().mockReturnValue('result');
 		expect(startSpan('test', fn)).toBe('result');
 		expect(adapterStartSpan).toHaveBeenCalledWith('test', fn);
 	});
 
-	test('shutdownTelemetry waits for all registered adapters even when one rejects', async () => {
-		const { initTelemetry, shutdownTelemetry } = await import('@/core/telemetry/telemetry-registry.js');
-		const firstShutdown = vi.fn().mockRejectedValue(new Error('first failed'));
-		const secondShutdown = vi.fn().mockResolvedValue(undefined);
-		mocks.sentryCreate
-			.mockResolvedValueOnce({ shutdown: firstShutdown, captureMessage: vi.fn(), startSpan: vi.fn() })
-			.mockResolvedValueOnce({ shutdown: secondShutdown, captureMessage: vi.fn(), startSpan: vi.fn() });
+	test('startSpanWithTraceContext executes an undefined-returning callback only once', async () => {
+		const { initTelemetry, startSpanWithTraceContext } = await import('@/core/telemetry/telemetry-registry.js');
+		const otelForBackend = { endpoint: 'http://collector:4318/v1/traces' };
+		const adapterStartSpan = vi.fn((_name: string, fn: () => undefined) => fn());
+		const adapterStartSpanWithTraceContext = vi.fn((_name: string, _jobData: object, fn: () => undefined) => fn());
+		mocks.otelCreate.mockResolvedValue({
+			shutdown: vi.fn(),
+			captureMessage: vi.fn(),
+			startSpan: adapterStartSpan,
+			startSpanWithTraceContext: adapterStartSpanWithTraceContext,
+		});
 
-		const sentryForBackend = { options: {}, enableNodeProfiling: false };
-		await initTelemetry(config({ sentryForBackend }));
-		await initTelemetry(config({ sentryForBackend }));
+		await initTelemetry(config({ otelForBackend }));
+
+		const jobData = { id: 'job' };
+		const fn = vi.fn(() => undefined);
+		expect(startSpanWithTraceContext('test', jobData, fn)).toBeUndefined();
+		expect(adapterStartSpanWithTraceContext).toHaveBeenCalledWith('test', jobData, fn);
+		expect(adapterStartSpan).not.toHaveBeenCalled();
+		expect(fn).toHaveBeenCalledTimes(1);
+	});
+
+	test('startSpan wraps work through multiple registered adapters in order for future adapter combinations', async () => {
+		const { initTelemetry, startSpan } = await import('@/core/telemetry/telemetry-registry.js');
+		const calls: string[] = [];
+		mocks.sentryCreate.mockResolvedValue({
+			shutdown: vi.fn(),
+			captureMessage: vi.fn(),
+			startSpan: vi.fn((_name: string, fn: () => string) => {
+				calls.push('sentry:start');
+				const result = fn();
+				calls.push('sentry:end');
+				return result;
+			}),
+		});
+		mocks.otelCreate.mockResolvedValue({
+			shutdown: vi.fn(),
+			captureMessage: vi.fn(),
+			startSpan: vi.fn((_name: string, fn: () => string) => {
+				calls.push('otel:start');
+				const result = fn();
+				calls.push('otel:end');
+				return result;
+			}),
+		});
+
+		await initTelemetry(config({ sentryForBackend: { options: {}, enableNodeProfiling: false } }));
+		await initTelemetry(config({ otelForBackend: { endpoint: 'http://collector:4318/v1/traces' } }));
+
+		const fn = vi.fn(() => {
+			calls.push('work');
+			return 'result';
+		});
+
+		expect(startSpan('test', fn)).toBe('result');
+		expect(calls).toEqual(['sentry:start', 'otel:start', 'work', 'otel:end', 'sentry:end']);
+	});
+
+	test('shutdownTelemetry waits for every adapter even when one shutdown rejects', async () => {
+		const { initTelemetry, shutdownTelemetry } = await import('@/core/telemetry/telemetry-registry.js');
+		const sentryShutdown = vi.fn().mockRejectedValue(new Error('sentry failed'));
+		const otelShutdown = vi.fn().mockResolvedValue(undefined);
+		mocks.sentryCreate.mockResolvedValue({ shutdown: sentryShutdown, captureMessage: vi.fn(), startSpan: vi.fn() });
+		mocks.otelCreate.mockResolvedValue({ shutdown: otelShutdown, captureMessage: vi.fn(), startSpan: vi.fn() });
+
+		await initTelemetry(config({ sentryForBackend: { options: {}, enableNodeProfiling: false } }));
+		await initTelemetry(config({ otelForBackend: { endpoint: 'http://collector:4318/v1/traces' } }));
 
 		await expect(shutdownTelemetry()).resolves.toBeUndefined();
-		expect(firstShutdown).toHaveBeenCalledTimes(1);
-		expect(secondShutdown).toHaveBeenCalledTimes(1);
+		expect(sentryShutdown).toHaveBeenCalledTimes(1);
+		expect(otelShutdown).toHaveBeenCalledTimes(1);
 	});
 });
