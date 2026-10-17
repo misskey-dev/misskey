@@ -38,13 +38,13 @@ describe('http-server-instrumentation', () => {
 		expect(span.updateName).toHaveBeenCalledWith('POST /notes/create');
 	});
 
-	test('does not register duplicate request instrumentation with Sentry', async () => {
-		const fastify = { register: vi.fn() };
+	test('registers request instrumentation when used with Sentry', async () => {
+		const fastify = { register: vi.fn().mockResolvedValue(undefined) };
 
 		await registerHttpServerInstrumentation(fastify as any, { otelForBackend: {}, sentryForBackend: {} } as any);
 
-		expect(fastify.register).not.toHaveBeenCalled();
-		expect(shouldRegisterHttpServerInstrumentation({ otelForBackend: {}, sentryForBackend: {} } as any)).toBe(false);
+		expect(fastify.register).toHaveBeenCalledTimes(1);
+		expect(shouldRegisterHttpServerInstrumentation({ otelForBackend: {}, sentryForBackend: {} } as any)).toBe(true);
 	});
 
 	test('does not register instrumentation without OpenTelemetry', () => {

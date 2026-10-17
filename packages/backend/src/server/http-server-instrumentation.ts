@@ -9,8 +9,8 @@ import type { FastifyInstance } from 'fastify';
 type TelemetryConfig = Pick<Config, 'otelForBackend' | 'sentryForBackend'>;
 
 export function shouldRegisterHttpServerInstrumentation(config: TelemetryConfig): boolean {
-	// Sentryもリクエストspanを作成するため、両方を登録すると重複して出力される。
-	return config.otelForBackend != null && config.sentryForBackend == null;
+	// Sentry併用時はSentry側のtracingを無効化しOTelがspanを所有するため、Sentryの有無にかかわらず登録する。
+	return config.otelForBackend != null;
 }
 
 /**

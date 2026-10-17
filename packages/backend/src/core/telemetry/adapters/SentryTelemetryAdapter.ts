@@ -9,7 +9,7 @@ import type * as SentryNode from '@sentry/node';
 import type { NodeOptions } from '@sentry/node';
 import type { OtelBackendRuntimeConfig, OtlpExportTarget, SentryBackendConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
 
-// OpenTelemetryAdapterのDEFAULT_SHUTDOWN_TIMEOUTと揃え、Sentryのtransportが詰まってもプロセス終了を妨げないようにする。
+// Sentryのtransportが詰まってもプロセス終了を妨げないよう、上限時間を設ける。
 const DEFAULT_SHUTDOWN_TIMEOUT = 5000;
 const logger = new Logger('telemetry', 'green');
 

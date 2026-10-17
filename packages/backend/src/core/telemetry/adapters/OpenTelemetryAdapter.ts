@@ -18,7 +18,7 @@ import type { ParentBasedSampler, Sampler } from '@opentelemetry/sdk-trace-base'
 import type { OtelBackendRuntimeConfig, OtlpExportTarget, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
 import type { QueueTraceContextCarrier, QueueTraceContextDeps } from '../queue-trace-context.js';
 
-const DEFAULT_SHUTDOWN_TIMEOUT = 5000;
+const DEFAULT_SHUTDOWN_TIMEOUT = 15_000;
 
 type OpenTelemetryAdapterDeps = {
 	tracer: Pick<Tracer, 'startActiveSpan'>;
