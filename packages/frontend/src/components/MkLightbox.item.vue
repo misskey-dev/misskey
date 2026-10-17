@@ -64,6 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template v-else>
 					<img
 						v-if="(!originalContentLoaded || !thumbnailContentLoaded) && (content.thumbnailUrl != null)"
+						ref="thumbnailEl"
 						:class="[$style.content, $style.thumbnail]"
 						:src="content.thumbnailUrl"
 						draggable="false"
@@ -73,6 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template v-if="activated">
 						<img
 							v-if="content.type === 'image'"
+							ref="imageEl"
 							:class="[$style.content, { [$style.pixelatedZoom]: pixelatedZoom }]"
 							:src="content.url"
 							:alt="content.file?.comment ?? undefined"
@@ -238,6 +240,8 @@ const pixelatedZoom = defineModel<boolean>('pixelatedZoom', { required: true });
 
 const rootEl = useTemplateRef('rootEl');
 const mainEl = useTemplateRef('mainEl');
+const imageEl = useTemplateRef('imageEl');
+const thumbnailEl = useTemplateRef('thumbnailEl');
 const videoEl = useTemplateRef('videoEl');
 const audioEl = useTemplateRef('audioEl'); // ネイティブUI時
 const audioVisualizer = useTemplateRef<InstanceType<typeof XAudioVisualizer__TypeReferenceOnly>>('audioVisualizer'); // ネイティブUIじゃない場合
@@ -554,6 +558,7 @@ const VELOCITY_WINDOW = 100;
 let isDragging = false;
 let isClick = false;
 let clickAction: 'hidden' | 'media' | null = null;
+let isBackgroundTap = false;
 let lastX = 0;
 let lastY = 0;
 let currentPointerId: number | null = null;
@@ -608,14 +613,35 @@ function resolveClickAction(target: EventTarget | null): 'hidden' | 'media' | nu
 	return null;
 }
 
+function isOutsideImage(x: number, y: number): boolean {
+	if (props.content.type !== 'image' || hide.value) return false;
+	const image = imageEl.value?.naturalWidth && imageEl.value.naturalHeight
+		? imageEl.value
+		: thumbnailEl.value ?? imageEl.value;
+	if (image == null) return false;
+
+	const width = image.naturalWidth || props.content.width;
+	const height = image.naturalHeight || props.content.height;
+	if (width == null || height == null || !Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) return false;
+
+	// img自体は余白を含む。変形後の矩形からobject-fit: containで描画される範囲を求める。
+	const rect = image.getBoundingClientRect();
+	if (!isValidRect(rect)) return false;
+	const scale = Math.min(rect.width / width, rect.height / height);
+	const left = rect.left + (rect.width - width * scale) / 2;
+	const top = rect.top + (rect.height - height * scale) / 2;
+	return x < left || x > left + width * scale || y < top || y > top + height * scale;
+}
+
 function onPointerdown(ev: PointerEvent) {
 	if (mainEl.value == null) return;
 	pointerEventCache.set(ev.pointerId, ev);
 	mainEl.value.setPointerCapture(ev.pointerId);
 
 	isDragging = true;
-	isClick = true;
+	isClick = pointerEventCache.size === 1;
 	clickAction = resolveClickAction(ev.target);
+	isBackgroundTap = isClick && isOutsideImage(ev.clientX, ev.clientY);
 	lastX = ev.clientX;
 	lastY = ev.clientY;
 	pointerVec = { x: 0, y: 0 };
@@ -724,6 +750,7 @@ function onPointermove(ev: PointerEvent) {
 
 function onPointerup(ev: PointerEvent) {
 	if (mainEl.value == null) return;
+	isBackgroundTap = isBackgroundTap && isOutsideImage(ev.clientX, ev.clientY);
 	pointerEventCache.delete(ev.pointerId);
 	mainEl.value.releasePointerCapture(ev.pointerId);
 	prevTwoTouchPointsDistance = 0;
@@ -792,6 +819,7 @@ function cancelPointerGesture() {
 	isDragging = false;
 	isClick = false;
 	clickAction = null;
+	isBackgroundTap = false;
 	pointerVec = { x: 0, y: 0 };
 	velocitySamples = [];
 	horizontalSwipeDelta = 0;
@@ -805,6 +833,10 @@ function cancelPointerGesture() {
 }
 
 function onTouchstart(ev: TouchEvent) {
+	if (props.content.type === 'image' && (ev.touches.length !== 1 || isOutsideImage(ev.touches[0].clientX, ev.touches[0].clientY))) {
+		doubleTapDetector.reset();
+		return;
+	}
 	doubleTapDetector.onTouchstart(ev);
 }
 
@@ -891,10 +923,13 @@ watch(rootEl, (newRootEl) => {
 }, { immediate: true });
 
 function onClick(ev: MouseEvent) {
-	if (!isClick) return;
-
+	const wasClick = isClick;
+	const wasBackgroundTap = isBackgroundTap;
 	const action = clickAction ?? resolveClickAction(ev.target);
+	isClick = false;
 	clickAction = null;
+	isBackgroundTap = false;
+	if (!wasClick) return;
 
 	if (action === 'hidden') {
 		void onHiddenClick();
@@ -906,7 +941,7 @@ function onClick(ev: MouseEvent) {
 		return;
 	}
 
-	if (!isTouchUsing) {
+	if (!isTouchUsing || wasBackgroundTap) {
 		if (isZooming.value) {
 			isZooming.value = false;
 			resetToNeutral();
