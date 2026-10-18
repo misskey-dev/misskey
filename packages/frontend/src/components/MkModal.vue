@@ -41,6 +41,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </Transition>
 </template>
 
+<script lang="ts">
+// 表示中のモーダルの z-index。ESC は最前面のモーダルだけが受け取るようにするために使う
+const visibleModalZIndexes = new Set<number>();
+</script>
+
 <script lang="ts" setup>
 import { nextTick, normalizeClass, onMounted, onUnmounted, provide, watch, ref, useTemplateRef, computed } from 'vue';
 import type { Keymap } from '@/utility/hotkey.js';
@@ -165,7 +170,11 @@ if (type.value === 'drawer') {
 const keymap = {
 	'esc': {
 		allowRepeat: true,
-		callback: () => emit('esc'),
+		callback: () => {
+			// keydown は document で拾っているため、下に重なっているモーダルにも届いてしまう
+			if (zIndex !== Math.max(...visibleModalZIndexes)) return;
+			emit('esc');
+		},
 	},
 } as const satisfies Keymap;
 
@@ -330,6 +339,7 @@ onMounted(() => {
 
 	watch([showing, () => props.manualShowing], ([showing, manualShowing]) => {
 		if (manualShowing === true || (manualShowing == null && showing === true)) {
+			visibleModalZIndexes.add(zIndex);
 			if (modalRootEl.value != null) {
 				const { release } = focusTrap(modalRootEl.value, props.hasInteractionWithOtherFocusTrappedEls);
 
@@ -337,6 +347,7 @@ onMounted(() => {
 				modalRootEl.value.focus();
 			}
 		} else {
+			visibleModalZIndexes.delete(zIndex);
 			releaseFocusTrap?.();
 			focusParent(props.returnFocusTo ?? props.anchorElement, true, false);
 		}
@@ -348,6 +359,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+	visibleModalZIndexes.delete(zIndex);
 	alignObserver.disconnect();
 });
 
