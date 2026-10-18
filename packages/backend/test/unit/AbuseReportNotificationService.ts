@@ -25,7 +25,7 @@ import { EmailService } from '@/core/EmailService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { RecipientMethod } from '@/models/AbuseReportNotificationRecipient.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -129,7 +129,7 @@ describe('AbuseReportNotificationService', () => {
 						provide: ModerationLogService, useFactory: () => ({ log: () => Promise.resolve() }),
 					},
 					{
-						provide: GlobalEventService, useFactory: () => ({ publishAdminStream: vi.fn() }),
+						provide: GlobalEventPublishService, useFactory: () => ({ publishAdminStream: vi.fn() }),
 					},
 				],
 			})

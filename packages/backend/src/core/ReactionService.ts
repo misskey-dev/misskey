@@ -12,7 +12,7 @@ import type { MiNote } from '@/models/Note.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiNoteReaction } from '@/models/NoteReaction.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
 import { emojiRegex } from '@/misc/emoji-regex.js';
@@ -94,7 +94,7 @@ export class ReactionService {
 		private reactionsBufferingService: ReactionsBufferingService,
 		private idService: IdService,
 		private featuredService: FeaturedService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private notificationService: NotificationService,
@@ -246,7 +246,7 @@ export class ReactionService {
 					},
 				});
 
-		this.globalEventService.publishNoteStream(note, 'reacted', {
+		this.globalEventPublishService.publishNoteStream(note, 'reacted', {
 			reaction: decodedReaction.reaction,
 			emoji: customEmoji != null ? {
 				name: customEmoji.host ? `${customEmoji.name}@${customEmoji.host}` : `${customEmoji.name}@.`,
@@ -320,7 +320,7 @@ export class ReactionService {
 				.execute();
 		}
 
-		this.globalEventService.publishNoteStream(note, 'unreacted', {
+		this.globalEventPublishService.publishNoteStream(note, 'unreacted', {
 			reaction: this.decodeReaction(exist.reaction).reaction,
 			userId: user.id,
 		});

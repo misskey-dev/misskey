@@ -21,7 +21,7 @@ import type { MiNote } from '@/models/Note.js';
 import type { IdService } from '@/core/IdService.js';
 import type { MfmService } from '@/core/MfmService.js';
 import { toArray } from '@/misc/prelude/array.js';
-import type { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
 import { MiUserProfile } from '@/models/UserProfile.js';
@@ -60,7 +60,7 @@ export class ApPersonService implements OnModuleInit {
 	private userEntityService: UserEntityService;
 	private driveFileEntityService: DriveFileEntityService;
 	private idService: IdService;
-	private globalEventService: GlobalEventService;
+	private globalEventPublishService: GlobalEventPublishService;
 	private federatedInstanceService: FederatedInstanceService;
 	private fetchInstanceMetadataService: FetchInstanceMetadataService;
 	private cacheService: CacheService;
@@ -112,7 +112,7 @@ export class ApPersonService implements OnModuleInit {
 		this.userEntityService = this.moduleRef.get('UserEntityService');
 		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
 		this.idService = this.moduleRef.get('IdService');
-		this.globalEventService = this.moduleRef.get('GlobalEventService');
+		this.globalEventPublishService = this.moduleRef.get('GlobalEventPublishService');
 		this.federatedInstanceService = this.moduleRef.get('FederatedInstanceService');
 		this.fetchInstanceMetadataService = this.moduleRef.get('FetchInstanceMetadataService');
 		this.cacheService = this.moduleRef.get('CacheService');
@@ -624,7 +624,7 @@ export class ApPersonService implements OnModuleInit {
 			location: person['vcard:Address'] ?? null,
 		});
 
-		this.globalEventService.publishInternalEvent('remoteUserUpdated', { id: exist.id });
+		this.globalEventPublishService.publishInternalEvent('remoteUserUpdated', { id: exist.id });
 
 		// ハッシュタグ更新
 		this.hashtagService.updateUsertags(exist, tags);

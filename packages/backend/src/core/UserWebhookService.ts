@@ -4,12 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
 import { MiUser, type WebhooksRepository } from '@/models/_.js';
 import { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
+import { GlobalEvents } from '@/core/GlobalEventPublishService.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { QueueService } from '@/core/QueueService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
@@ -31,13 +31,13 @@ export class UserWebhookService implements OnApplicationShutdown {
 	private activeWebhooks: MiWebhook[] = [];
 
 	constructor(
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
 		@Inject(DI.webhooksRepository)
 		private webhooksRepository: WebhooksRepository,
+
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 		private queueService: QueueService,
 	) {
-		this.redisForSub.on('message', this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	@bindThis
@@ -97,13 +97,8 @@ export class UserWebhookService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async onMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-		if (obj.channel !== 'internal') {
-			return;
-		}
-
-		const { type, body } = obj.message as GlobalEvents['internal']['payload'];
+	private async onMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type, body } = payload;
 		switch (type) {
 			case 'webhookCreated': {
 				if (body.active) {
@@ -147,7 +142,7 @@ export class UserWebhookService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.redisForSub.off('message', this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 	}
 
 	@bindThis

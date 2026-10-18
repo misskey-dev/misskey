@@ -7,15 +7,15 @@ import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { DataSource, IsNull } from 'typeorm';
-import * as Redis from 'ioredis';
 import bcrypt from 'bcryptjs';
 import { MiLocalUser, MiUser } from '@/models/User.js';
 import { MiSystemAccount, MiUsedUsername, MiUserKeypair, MiUserProfile, type UsersRepository, type SystemAccountsRepository } from '@/models/_.js';
 import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import type { GlobalEvents } from '@/core/GlobalEventPublishService.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
 import { generateNativeUserToken } from '@/misc/token.js';
 import { IdService } from '@/core/IdService.js';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
@@ -27,9 +27,6 @@ export class SystemAccountService implements OnApplicationShutdown {
 	private cache: MemoryKVCache<MiLocalUser>;
 
 	constructor(
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
-
 		@Inject(DI.db)
 		private db: DataSource,
 
@@ -46,32 +43,29 @@ export class SystemAccountService implements OnApplicationShutdown {
 		private userProfilesRepository: UserProfilesRepository,
 
 		private idService: IdService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 	) {
 		this.cache = new MemoryKVCache<MiLocalUser>(1000 * 60 * 10); // 10m
 
-		this.redisForSub.on('message', this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	@bindThis
-	private async onMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-
-		if (obj.channel === 'internal') {
-			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
-			switch (type) {
-				case 'metaUpdated': {
-					if (body.before != null && body.before.name !== body.after.name) {
-						for (const account of SYSTEM_ACCOUNT_TYPES) {
-							await this.updateCorrespondingUserProfile(account, {
-								name: body.after.name,
-							});
-						}
+	private async onMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type, body } = payload;
+		switch (type) {
+			case 'metaUpdated': {
+				if (body.before != null && body.before.name !== body.after.name) {
+					for (const account of SYSTEM_ACCOUNT_TYPES) {
+						await this.updateCorrespondingUserProfile(account, {
+							name: body.after.name,
+						});
 					}
-					break;
 				}
-				default:
-					break;
+				break;
 			}
+			default:
+				break;
 		}
 	}
 
@@ -203,7 +197,7 @@ export class SystemAccountService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.redisForSub.off('message', this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 		this.cache.dispose();
 	}
 

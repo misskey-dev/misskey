@@ -9,8 +9,9 @@ import { Brackets, In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { ChannelMutingRepository, ChannelsRepository, MiChannel, MiChannelMuting, MiUser } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
-import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEvents, GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { bindThis } from '@/decorators.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
 import { RedisKVCache } from '@/misc/cache.js';
 
 @Injectable()
@@ -20,14 +21,16 @@ export class ChannelMutingService {
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
+
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
+
 		@Inject(DI.channelMutingRepository)
 		private channelMutingRepository: ChannelMutingRepository,
+
 		private idService: IdService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 	) {
 		this.mutingChannelsCache = new RedisKVCache<Set<string>>(this.redisClient, 'channelMutingChannels', {
 			lifetime: 1000 * 60 * 30, // 30m
@@ -40,7 +43,7 @@ export class ChannelMutingService {
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
 
-		this.redisForSub.on('message', this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	/**
@@ -153,7 +156,7 @@ export class ChannelMutingService {
 			expiresAt: params.expiresAt,
 		});
 
-		this.globalEventService.publishInternalEvent('muteChannel', {
+		this.globalEventPublishService.publishInternalEvent('muteChannel', {
 			userId: params.requestUserId,
 			channelId: params.targetChannelId,
 		});
@@ -173,7 +176,7 @@ export class ChannelMutingService {
 			channelId: params.targetChannelId,
 		});
 
-		this.globalEventService.publishInternalEvent('unmuteChannel', {
+		this.globalEventPublishService.publishInternalEvent('unmuteChannel', {
 			userId: params.requestUserId,
 			channelId: params.targetChannelId,
 		});
@@ -194,20 +197,16 @@ export class ChannelMutingService {
 	}
 
 	@bindThis
-	private async onMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-
-		if (obj.channel === 'internal') {
-			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
-			switch (type) {
-				case 'muteChannel': {
-					this.mutingChannelsCache.refresh(body.userId).then();
-					break;
-				}
-				case 'unmuteChannel': {
-					this.mutingChannelsCache.delete(body.userId).then();
-					break;
-				}
+	private async onMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type, body } = payload;
+		switch (type) {
+			case 'muteChannel': {
+				this.mutingChannelsCache.refresh(body.userId).then();
+				break;
+			}
+			case 'unmuteChannel': {
+				this.mutingChannelsCache.delete(body.userId).then();
+				break;
 			}
 		}
 	}

@@ -15,7 +15,7 @@ import type { Config } from '@/config.js';
 import NotesChart from '@/core/chart/charts/notes.js';
 import PerUserNotesChart from '@/core/chart/charts/per-user-notes.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -43,7 +43,7 @@ export class NoteDeleteService {
 		private instancesRepository: InstancesRepository,
 
 		private userEntityService: UserEntityService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private relayService: RelayService,
 		private federatedInstanceService: FederatedInstanceService,
 		private apRendererService: ApRendererService,
@@ -68,7 +68,7 @@ export class NoteDeleteService {
 		}
 
 		if (!quiet) {
-			this.globalEventService.publishNoteStream(note, 'deleted', {
+			this.globalEventPublishService.publishNoteStream(note, 'deleted', {
 				deletedAt: deletedAt,
 			});
 

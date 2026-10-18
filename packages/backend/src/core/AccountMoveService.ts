@@ -13,7 +13,7 @@ import type { BlockingsRepository, FollowingsRepository, InstancesRepository, Mi
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 
 import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { RelayService } from '@/core/RelayService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
@@ -56,7 +56,7 @@ export class AccountMoveService {
 		private apPersonService: ApPersonService,
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private perUserFollowingChart: PerUserFollowingChart,
 		private federatedInstanceService: FederatedInstanceService,
 		private instanceChart: InstanceChart,
@@ -87,7 +87,7 @@ export class AccountMoveService {
 		Object.assign(src, update);
 
 		// Update cache
-		this.globalEventService.publishInternalEvent('localUserUpdated', src);
+		this.globalEventPublishService.publishInternalEvent('localUserUpdated', src);
 
 		const srcPerson = await this.apRendererService.renderPerson(src);
 		const updateAct = this.apRendererService.addContext(this.apRendererService.renderUpdate(srcPerson, src));
@@ -100,7 +100,7 @@ export class AccountMoveService {
 
 		// Publish meUpdated event
 		const iObj = await this.userEntityService.pack(src.id, src, { schema: 'MeDetailed', includeSecrets: true });
-		this.globalEventService.publishMainStream(src.id, 'meUpdated', iObj);
+		this.globalEventPublishService.publishMainStream(src.id, 'meUpdated', iObj);
 
 		// Unfollow after 24 hours
 		const followings = await this.followingsRepository.findBy({

@@ -11,7 +11,8 @@ import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
+import type { GlobalEvents } from '@/core/GlobalEventPublishService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -31,9 +32,6 @@ export class CacheService implements OnApplicationShutdown {
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -52,6 +50,7 @@ export class CacheService implements OnApplicationShutdown {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 		private userEntityService: UserEntityService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
@@ -132,60 +131,56 @@ export class CacheService implements OnApplicationShutdown {
 
 		// NOTE: チャンネルのフォロー状況キャッシュはChannelFollowingServiceで行っている
 
-		this.redisForSub.on('message', this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	@bindThis
-	private async onMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-
-		if (obj.channel === 'internal') {
-			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
-			switch (type) {
-				case 'userChangeSuspendedState':
-				case 'userChangeDeletedState':
-				case 'remoteUserUpdated':
-				case 'localUserUpdated': {
-					const user = await this.usersRepository.findOneBy({ id: body.id });
-					if (user == null) {
-						this.userByIdCache.delete(body.id);
-						this.localUserByIdCache.delete(body.id);
-						for (const [k, v] of this.uriPersonCache.entries) {
-							if (v.value?.id === body.id) {
-								this.uriPersonCache.delete(k);
-							}
-						}
-					} else {
-						this.userByIdCache.set(user.id, user);
-						for (const [k, v] of this.uriPersonCache.entries) {
-							if (v.value?.id === user.id) {
-								this.uriPersonCache.set(k, user);
-							}
-						}
-						if (this.userEntityService.isLocalUser(user)) {
-							this.localUserByNativeTokenCache.set(user.token!, user);
-							this.localUserByIdCache.set(user.id, user);
+	private async onMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type, body } = payload;
+		switch (type) {
+			case 'userChangeSuspendedState':
+			case 'userChangeDeletedState':
+			case 'remoteUserUpdated':
+			case 'localUserUpdated': {
+				const user = await this.usersRepository.findOneBy({ id: body.id });
+				if (user == null) {
+					this.userByIdCache.delete(body.id);
+					this.localUserByIdCache.delete(body.id);
+					for (const [k, v] of this.uriPersonCache.entries) {
+						if (v.value?.id === body.id) {
+							this.uriPersonCache.delete(k);
 						}
 					}
-					break;
+				} else {
+					this.userByIdCache.set(user.id, user);
+					for (const [k, v] of this.uriPersonCache.entries) {
+						if (v.value?.id === user.id) {
+							this.uriPersonCache.set(k, user);
+						}
+					}
+					if (this.userEntityService.isLocalUser(user)) {
+						this.localUserByNativeTokenCache.set(user.token!, user);
+						this.localUserByIdCache.set(user.id, user);
+					}
 				}
-				case 'userTokenRegenerated': {
-					const user = await this.usersRepository.findOneByOrFail({ id: body.id }) as MiLocalUser;
-					this.localUserByNativeTokenCache.delete(body.oldToken);
-					this.localUserByNativeTokenCache.set(body.newToken, user);
-					break;
-				}
-				case 'follow': {
-					const follower = this.userByIdCache.get(body.followerId);
-					if (follower) follower.followingCount++;
-					const followee = this.userByIdCache.get(body.followeeId);
-					if (followee) followee.followersCount++;
-					this.userFollowingsCache.delete(body.followerId);
-					break;
-				}
-				default:
-					break;
+				break;
 			}
+			case 'userTokenRegenerated': {
+				const user = await this.usersRepository.findOneByOrFail({ id: body.id }) as MiLocalUser;
+				this.localUserByNativeTokenCache.delete(body.oldToken);
+				this.localUserByNativeTokenCache.set(body.newToken, user);
+				break;
+			}
+			case 'follow': {
+				const follower = this.userByIdCache.get(body.followerId);
+				if (follower) follower.followingCount++;
+				const followee = this.userByIdCache.get(body.followeeId);
+				if (followee) followee.followersCount++;
+				this.userFollowingsCache.delete(body.followerId);
+				break;
+			}
+			default:
+				break;
 		}
 	}
 
@@ -196,7 +191,7 @@ export class CacheService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.redisForSub.off('message', this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 		this.userByIdCache.dispose();
 		this.localUserByNativeTokenCache.dispose();
 		this.localUserByIdCache.dispose();

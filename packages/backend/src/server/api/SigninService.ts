@@ -9,7 +9,7 @@ import { DI } from '@/di-symbols.js';
 import type { SigninsRepository, UserProfilesRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiLocalUser } from '@/models/User.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { EmailService } from '@/core/EmailService.js';
@@ -29,7 +29,7 @@ export class SigninService {
 		private emailService: EmailService,
 		private notificationService: NotificationService,
 		private idService: IdService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 	) {
 	}
 
@@ -46,7 +46,7 @@ export class SigninService {
 				success: true,
 			});
 
-			this.globalEventService.publishMainStream(user.id, 'signin', await this.signinEntityService.pack(record));
+			this.globalEventPublishService.publishMainStream(user.id, 'signin', await this.signinEntityService.pack(record));
 
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 			if (profile.email && profile.emailVerified) {

@@ -12,7 +12,7 @@ import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
 import { IdService } from '@/core/IdService.js';
 import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { QueueService } from '@/core/QueueService.js';
 
@@ -29,7 +29,7 @@ export class AnnouncementService implements OnModuleInit {
 		private usersRepository: UsersRepository,
 
 		private idService: IdService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private moderationLogService: ModerationLogService,
 		private announcementEntityService: AnnouncementEntityService,
 		private queueService: QueueService,
@@ -112,7 +112,7 @@ export class AnnouncementService implements OnModuleInit {
 		// 作成処理中にautoArchiveAtを過ぎる可能性があるため、insert完了時点で非アクティブなお知らせはイベント配信しない
 		if (values.userId) {
 			if (announcement.isActive) {
-				this.globalEventService.publishMainStream(values.userId, 'announcementCreated', {
+				this.globalEventPublishService.publishMainStream(values.userId, 'announcementCreated', {
 					announcement: packed,
 				});
 			}
@@ -129,7 +129,7 @@ export class AnnouncementService implements OnModuleInit {
 			}
 		} else {
 			if (announcement.isActive) {
-				this.globalEventService.publishBroadcastStream('announcementCreated', {
+				this.globalEventPublishService.publishBroadcastStream('announcementCreated', {
 					announcement: packed,
 				});
 			}
@@ -284,7 +284,7 @@ export class AnnouncementService implements OnModuleInit {
 		}
 
 		if ((await this.getUnreadAnnouncements(user)).length === 0) {
-			this.globalEventService.publishMainStream(user.id, 'readAllAnnouncements');
+			this.globalEventPublishService.publishMainStream(user.id, 'readAllAnnouncements');
 		}
 	}
 }

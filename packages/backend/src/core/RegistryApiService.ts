@@ -9,7 +9,7 @@ import type { MiRegistryItem, RegistryItemsRepository } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { MiUser } from '@/models/User.js';
 import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class RegistryApiService {
 		private registryItemsRepository: RegistryItemsRepository,
 
 		private idService: IdService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 	) {
 	}
 
@@ -58,7 +58,7 @@ export class RegistryApiService {
 
 		if (domain == null) {
 			// TODO: サードパーティアプリが傍受出来てしまうのでどうにかする
-			this.globalEventService.publishMainStream(userId, 'registryUpdated', {
+			this.globalEventPublishService.publishMainStream(userId, 'registryUpdated', {
 				scope: scope,
 				key: key,
 				value: value,

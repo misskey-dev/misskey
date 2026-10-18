@@ -7,7 +7,7 @@ import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { In, IsNull } from 'typeorm';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { IdService } from '@/core/IdService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -71,7 +71,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		private idService: IdService,
 		private emojiEntityService: EmojiEntityService,
 		private moderationLogService: ModerationLogService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 	) {
 		this.emojisCache = new MemoryKVCache<MiEmoji | null>(1000 * 60 * 60 * 12); // 12h
 
@@ -122,7 +122,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		if (data.host == null) {
 			this.localEmojisCache.refresh();
 
-			this.globalEventService.publishBroadcastStream('emojiAdded', {
+			this.globalEventPublishService.publishBroadcastStream('emojiAdded', {
 				emoji: await this.emojiEntityService.packDetailed(emoji.id),
 			});
 
@@ -187,15 +187,15 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		const packed = await this.emojiEntityService.packDetailed(emoji.id);
 
 		if (!doNameUpdate) {
-			this.globalEventService.publishBroadcastStream('emojiUpdated', {
+			this.globalEventPublishService.publishBroadcastStream('emojiUpdated', {
 				emojis: [packed],
 			});
 		} else {
-			this.globalEventService.publishBroadcastStream('emojiDeleted', {
+			this.globalEventPublishService.publishBroadcastStream('emojiDeleted', {
 				emojis: [await this.emojiEntityService.packDetailed(emoji)],
 			});
 
-			this.globalEventService.publishBroadcastStream('emojiAdded', {
+			this.globalEventPublishService.publishBroadcastStream('emojiAdded', {
 				emoji: packed,
 			});
 		}
@@ -226,7 +226,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		this.localEmojisCache.refresh();
 
-		this.globalEventService.publishBroadcastStream('emojiUpdated', {
+		this.globalEventPublishService.publishBroadcastStream('emojiUpdated', {
 			emojis: await this.emojiEntityService.packDetailedMany(ids),
 		});
 	}
@@ -242,7 +242,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		this.localEmojisCache.refresh();
 
-		this.globalEventService.publishBroadcastStream('emojiUpdated', {
+		this.globalEventPublishService.publishBroadcastStream('emojiUpdated', {
 			emojis: await this.emojiEntityService.packDetailedMany(ids),
 		});
 	}
@@ -262,7 +262,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		this.localEmojisCache.refresh();
 
-		this.globalEventService.publishBroadcastStream('emojiUpdated', {
+		this.globalEventPublishService.publishBroadcastStream('emojiUpdated', {
 			emojis: await this.emojiEntityService.packDetailedMany(ids),
 		});
 	}
@@ -278,7 +278,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		this.localEmojisCache.refresh();
 
-		this.globalEventService.publishBroadcastStream('emojiUpdated', {
+		this.globalEventPublishService.publishBroadcastStream('emojiUpdated', {
 			emojis: await this.emojiEntityService.packDetailedMany(ids),
 		});
 	}
@@ -294,7 +294,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		this.localEmojisCache.refresh();
 
-		this.globalEventService.publishBroadcastStream('emojiUpdated', {
+		this.globalEventPublishService.publishBroadcastStream('emojiUpdated', {
 			emojis: await this.emojiEntityService.packDetailedMany(ids),
 		});
 	}
@@ -307,7 +307,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		this.localEmojisCache.refresh();
 
-		this.globalEventService.publishBroadcastStream('emojiDeleted', {
+		this.globalEventPublishService.publishBroadcastStream('emojiDeleted', {
 			emojis: [await this.emojiEntityService.packDetailed(emoji)],
 		});
 
@@ -338,7 +338,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		this.localEmojisCache.refresh();
 
-		this.globalEventService.publishBroadcastStream('emojiDeleted', {
+		this.globalEventPublishService.publishBroadcastStream('emojiDeleted', {
 			emojis: await this.emojiEntityService.packDetailedMany(emojis),
 		});
 	}

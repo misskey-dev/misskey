@@ -5,11 +5,11 @@
 
 import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
 import { Brackets, In, IsNull, Not } from 'typeorm';
-import * as Redis from 'ioredis';
 import sanitizeHtml from 'sanitize-html';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventSubscribeService } from '@/core/GlobalEventSubscribeService.js';
+import { GlobalEvents, GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import type {
 	AbuseReportNotificationRecipientRepository,
 	MiAbuseReportNotificationRecipient,
@@ -34,18 +34,16 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		@Inject(DI.abuseReportNotificationRecipientRepository)
 		private abuseReportNotificationRecipientRepository: AbuseReportNotificationRecipientRepository,
 
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
-
 		private idService: IdService,
 		private roleService: RoleService,
 		private systemWebhookService: SystemWebhookService,
 		private emailService: EmailService,
 		private moderationLogService: ModerationLogService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
+		private globalEventSubscribeService: GlobalEventSubscribeService,
 		private userEntityService: UserEntityService,
 	) {
-		this.redisForSub.on('message', this.onMessage);
+		this.globalEventSubscribeService.onInternalEvent(this.onMessage);
 	}
 
 	/**
@@ -53,7 +51,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 	 * 通知先ユーザは{@link getModeratorIds}の取得結果に依る.
 	 *
 	 * @see RoleService.getModeratorIds
-	 * @see GlobalEventService.publishAdminStream
+	 * @see GlobalEventPublishService.publishAdminStream
 	 */
 	@bindThis
 	public async notifyAdminStream(abuseReports: MiAbuseUserReport[]) {
@@ -68,7 +66,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 
 		for (const moderatorId of moderatorIds) {
 			for (const abuseReport of abuseReports) {
-				this.globalEventService.publishAdminStream(
+				this.globalEventPublishService.publishAdminStream(
 					moderatorId,
 					'newAbuseUserReport',
 					{
@@ -394,13 +392,8 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async onMessage(_: string, data: string): Promise<void> {
-		const obj = JSON.parse(data);
-		if (obj.channel !== 'internal') {
-			return;
-		}
-
-		const { type } = obj.message as GlobalEvents['internal']['payload'];
+	private async onMessage(payload: GlobalEvents['internal']['payload']): Promise<void> {
+		const { type } = payload;
 		switch (type) {
 			case 'roleUpdated':
 			case 'roleDeleted':
@@ -422,7 +415,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.redisForSub.off('message', this.onMessage);
+		this.globalEventSubscribeService.offInternalEvent(this.onMessage);
 	}
 
 	@bindThis

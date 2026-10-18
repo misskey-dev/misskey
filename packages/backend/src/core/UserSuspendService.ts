@@ -8,7 +8,7 @@ import { Not, IsNull } from 'typeorm';
 import type { FollowingsRepository, FollowRequestsRepository, UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import { QueueService } from '@/core/QueueService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { GlobalEventPublishService } from '@/core/GlobalEventPublishService.js';
 import { DI } from '@/di-symbols.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -30,7 +30,7 @@ export class UserSuspendService {
 
 		private userEntityService: UserEntityService,
 		private queueService: QueueService,
-		private globalEventService: GlobalEventService,
+		private globalEventPublishService: GlobalEventPublishService,
 		private apRendererService: ApRendererService,
 		private moderationLogService: ModerationLogService,
 	) {
@@ -73,7 +73,7 @@ export class UserSuspendService {
 
 	@bindThis
 	private async postSuspend(user: { id: MiUser['id']; host: MiUser['host'] }): Promise<void> {
-		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: true });
+		this.globalEventPublishService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: true });
 
 		this.followRequestsRepository.delete({
 			followeeId: user.id,
@@ -113,7 +113,7 @@ export class UserSuspendService {
 
 	@bindThis
 	private async postUnsuspend(user: MiUser): Promise<void> {
-		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: false });
+		this.globalEventPublishService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: false });
 
 		if (this.userEntityService.isLocalUser(user)) {
 			// 知り得る全SharedInboxにUndo Delete配信
