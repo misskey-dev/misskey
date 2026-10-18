@@ -73,7 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 16px;">
 				<div class="_buttons">
 					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-					<MkButton rounded @click="testEmail"><i class="ti ti-send"></i> {{ i18n.ts.testEmail }}</MkButton>
+					<MkButton rounded :disabled="hasUnsavedChanges" @click="testEmail"><i class="ti ti-send"></i> {{ i18n.ts.testEmail }}</MkButton>
 				</div>
 			</div>
 		</div>
@@ -105,6 +105,25 @@ const smtpPort = ref(meta.smtpPort);
 const smtpUser = ref(meta.smtpUser);
 const smtpPass = ref(meta.smtpPass);
 
+function getSettings() {
+	return {
+		enableEmail: enableEmail.value,
+		email: email.value,
+		smtpSecure: smtpSecure.value,
+		smtpHost: smtpHost.value,
+		smtpPort: smtpPort.value,
+		smtpUser: smtpUser.value,
+		smtpPass: smtpPass.value,
+	};
+}
+
+// 配信テストは保存済みの設定で行われるため、未保存の変更がある間はテストできないようにする
+const savedSettings = ref(getSettings());
+const hasUnsavedChanges = computed(() => {
+	const current = getSettings();
+	return (Object.keys(current) as (keyof typeof current)[]).some(key => current[key] !== savedSettings.value[key]);
+});
+
 async function testEmail() {
 	const { canceled, result: destination } = await os.inputText({
 		title: 'To',
@@ -122,15 +141,9 @@ async function testEmail() {
 }
 
 function save() {
-	os.apiWithDialog('admin/update-meta', {
-		enableEmail: enableEmail.value,
-		email: email.value,
-		smtpSecure: smtpSecure.value,
-		smtpHost: smtpHost.value,
-		smtpPort: smtpPort.value,
-		smtpUser: smtpUser.value,
-		smtpPass: smtpPass.value,
-	}).then(() => {
+	const settings = getSettings();
+	os.apiWithDialog('admin/update-meta', settings).then(() => {
+		savedSettings.value = settings;
 		fetchInstance(true);
 	});
 }
