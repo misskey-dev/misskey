@@ -73,7 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 16px;">
 				<div class="_buttons">
 					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-					<MkButton rounded :disabled="hasUnsavedChanges" @click="testEmail"><i class="ti ti-send"></i> {{ i18n.ts.testEmail }}</MkButton>
+					<MkButton rounded :disabled="!canTestEmail" @click="testEmail"><i class="ti ti-send"></i> {{ i18n.ts.testEmail }}</MkButton>
 				</div>
 			</div>
 		</div>
@@ -117,12 +117,19 @@ function getSettings() {
 	};
 }
 
-// 配信テストは保存済みの設定で行われるため、未保存の変更がある間はテストできないようにする
+// 未入力を表す値（null・空文字・数値欄を空にしたときの NaN）を同じものとして比べる
+function normalizeSettingValue(value: unknown) {
+	if (value === '' || (typeof value === 'number' && Number.isNaN(value))) return null;
+	return value;
+}
+
+// 配信テストは保存済みの設定で行われるため、未保存の変更がある間や、SMTP サーバーが保存されていない間はテストできないようにする
 const savedSettings = ref(getSettings());
 const hasUnsavedChanges = computed(() => {
 	const current = getSettings();
-	return (Object.keys(current) as (keyof typeof current)[]).some(key => current[key] !== savedSettings.value[key]);
+	return (Object.keys(current) as (keyof typeof current)[]).some(key => normalizeSettingValue(current[key]) !== normalizeSettingValue(savedSettings.value[key]));
 });
+const canTestEmail = computed(() => !hasUnsavedChanges.value && (savedSettings.value.smtpHost ?? '').trim() !== '');
 
 async function testEmail() {
 	const { canceled, result: destination } = await os.inputText({
