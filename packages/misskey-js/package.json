@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "misskey-js",
-	"version": "2026.1.0-beta.0",
+	"version": "2026.10.1-alpha.0",
 	"description": "Misskey SDK for JavaScript",
 	"license": "MIT",
 	"main": "./built/index.js",
@@ -25,7 +25,7 @@
 		"api": "pnpm api-extractor run --local --verbose",
 		"api-prod": "pnpm api-extractor run --verbose",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"typecheck": "tsgo --noEmit",
+		"typecheck": "tsc --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint",
 		"vitest": "vitest run --coverage",
 		"test": "pnpm vitest && pnpm tsd",
@@ -37,25 +37,25 @@
 		"directory": "packages/misskey-js"
 	},
 	"devDependencies": {
-		"@microsoft/api-extractor": "7.55.5",
-		"@types/node": "24.10.9",
-		"@typescript-eslint/eslint-plugin": "8.53.0",
-		"@typescript-eslint/parser": "8.53.0",
-		"@vitest/coverage-v8": "4.0.17",
-		"esbuild": "0.27.2",
-		"execa": "9.6.1",
+		"@microsoft/api-extractor": "7.59.4",
+		"@types/node": "26.6.5",
+		"@typescript-eslint/eslint-plugin": "8.71.1",
+		"@typescript-eslint/parser": "8.71.1",
+		"@vitest/coverage-v8": "5.0.3",
+		"esbuild": "0.28.2",
+		"execa": "10.1.0",
 		"ncp": "2.0.0",
-		"nodemon": "3.1.11",
+		"nodemon": "3.1.14",
 		"tsd": "0.33.0",
-		"vitest": "4.0.17",
-		"vitest-websocket-mock": "0.5.0"
+		"vitest": "5.0.3",
+		"vitest-websocket-mock": "0.8.0"
 	},
 	"files": [
 		"built"
 	],
 	"dependencies": {
-		"@simplewebauthn/types": "12.0.0",
-		"eventemitter3": "5.0.1",
+		"@simplewebauthn/browser": "14.0.0",
+		"eventemitter3": "5.0.4",
 		"reconnecting-websocket": "4.4.0"
 	}
 }

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <component
-	:is="self ? EmA : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel ?? 'nofollow noopener'" :target="target"
+	:is="self ? EmA : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="maybeRelativeUrl" :rel="rel ?? 'nofollow noopener'" :target="target"
 	@contextmenu.stop="() => {}"
 >
 	<template v-if="!self">
@@ -25,17 +25,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { toUnicode as decodePunycode } from 'punycode.js';
 import EmA from './EmA.vue';
 import { url as local } from '@@/js/config.js';
-
-function safeURIDecode(str: string): string {
-	try {
-		return decodeURIComponent(str);
-	} catch {
-		return str;
-	}
-}
+import { maybeMakeRelative, parseUrlForDisplay } from '@@/js/url.js';
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -45,17 +37,11 @@ const props = withDefaults(defineProps<{
 	showUrlPreview: true,
 });
 
-const self = props.url.startsWith(local);
-const url = new URL(props.url);
-if (!['http:', 'https:'].includes(url.protocol)) throw new Error('invalid url');
+const maybeRelativeUrl = maybeMakeRelative(props.url, local);
+const self = maybeRelativeUrl !== props.url;
+const { schema, hostname, port, pathname, query, hash } = parseUrlForDisplay(props.url);
 const el = ref();
 
-const schema = url.protocol;
-const hostname = decodePunycode(url.hostname);
-const port = url.port;
-const pathname = safeURIDecode(url.pathname);
-const query = safeURIDecode(url.search);
-const hash = safeURIDecode(url.hash);
 const attr = self ? 'to' : 'href';
 const target = self ? null : '_blank';
 </script>

@@ -28,7 +28,7 @@ import { postMessageToParentWindow, setIframeId } from '@/post-message.js';
 import { serverContext } from '@/server-context.js';
 import { i18n } from '@/i18n.js';
 
-import type { Theme } from '@/theme.js';
+import type { Theme } from '@@/js/theme.js';
 
 console.log('Misskey Embed');
 

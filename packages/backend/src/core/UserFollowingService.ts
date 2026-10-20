@@ -5,7 +5,7 @@
 
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { Brackets, IsNull } from 'typeorm';
+import { Brackets, In, IsNull } from 'typeorm';
 import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
@@ -13,6 +13,7 @@ import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
+import { shouldRequireFollowApproval } from '@/misc/should-require-follow-approval.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { UserWebhookService } from '@/core/UserWebhookService.js';
@@ -161,13 +162,21 @@ export class UserFollowingService implements OnModuleInit {
 		}
 
 		const followeeProfile = await this.userProfilesRepository.findOneByOrFail({ userId: followee.id });
+		const requiresAgeBasedApproval = this.userEntityService.isLocalUser(followee) && shouldRequireFollowApproval(
+			followeeProfile,
+			this.userEntityService.isRemoteUser(follower),
+			// For remote users, the ID records when this server first discovered them.
+			this.idService.parse(follower.id).date,
+		);
 		// フォロー対象が鍵アカウントである or
+		// フォロー対象の設定でフォロワーのアカウント作成後の期間が不足している or
 		// フォロワーがBotであり、フォロー対象がBotからのフォローに慎重である or
 		// フォロワーがローカルユーザーであり、フォロー対象がリモートユーザーである or
 		// フォロワーがローカルユーザーであり、フォロー対象がサイレンスされているサーバーである
 		// 上記のいずれかに当てはまる場合はすぐフォローせずにフォローリクエストを発行しておく
 		if (
 			followee.isLocked ||
+			requiresAgeBasedApproval ||
 			(followeeProfile.carefulBot && follower.isBot) ||
 			(this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee) && process.env.FORCE_FOLLOW_REMOTE_USER_FOR_TESTING !== 'true') ||
 			(this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower) && this.utilityService.isSilencedHost(this.meta.silencedHosts, follower.host))
@@ -608,17 +617,55 @@ export class UserFollowingService implements OnModuleInit {
 
 	@bindThis
 	public async acceptAllFollowRequests(
-		user: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
-		},
+		user: Pick<MiLocalUser, 'id' | 'host' | 'uri' | 'inbox' | 'sharedInbox'>,
 	): Promise<void> {
-		const requests = await this.followRequestsRepository.findBy({
-			followeeId: user.id,
+		const requests = await this.followRequestsRepository.find({
+			select: { followerId: true, follower: true },
+			where: { followeeId: user.id },
+			relations: { follower: true },
 		});
+		if (requests.length === 0) {
+			return;
+		}
+
+		// フォローを受ける側がリクエストを送ってきた側を既にフォローしているか確認するため、下記を取得する
+		// - フォローを受ける側のユーザプロファイル
+		// - フォローを送る側のユーザ情報一覧
+		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
+		const followed = profile.autoAcceptFollowed
+			? await this.followingsRepository.find({
+				select: { followeeId: true },
+				where: { followerId: user.id, followeeId: In(requests.map(request => request.followerId)) },
+			})
+			: [];
+		const followedIds = new Set(followed.map(following => following.followeeId));
 
 		for (const request of requests) {
-			const follower = await this.usersRepository.findOneByOrFail({ id: request.followerId });
-			this.acceptFollowRequest(user, follower);
+			const follower = request.follower;
+			if (follower == null) {
+				continue;
+			}
+
+			if (shouldRequireFollowApproval(
+				profile,
+				this.userEntityService.isRemoteUser(follower),
+				this.idService.parse(follower.id).date,
+			)) {
+				if (!followedIds.has(follower.id)) {
+					// フォロー承認が必要（自動承認されるべきではない）と判断され、かつ
+					// まだフォローしていない相手からのリクエストは自動承認せずスキップする
+					continue;
+				}
+			}
+
+			try {
+				await this.acceptFollowRequest(user, follower);
+			} catch (err) {
+				// 処理中に取り消されたリクエストはスキップする。
+				if (!(err instanceof IdentifiableError) || err.id !== '8884c2dd-5795-4ac9-b27e-6a01d38190f9') {
+					throw err;
+				}
+			}
 		}
 	}
 

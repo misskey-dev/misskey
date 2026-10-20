@@ -35,6 +35,7 @@ import { MainChannel } from './api/stream/channels/main.js';
 import { AdminChannel } from './api/stream/channels/admin.js';
 import { AntennaChannel } from './api/stream/channels/antenna.js';
 import { ChannelChannel } from './api/stream/channels/channel.js';
+import { ClipChannel } from './api/stream/channels/clip.js';
 import { DriveChannel } from './api/stream/channels/drive.js';
 import { GlobalTimelineChannel } from './api/stream/channels/global-timeline.js';
 import { HashtagChannel } from './api/stream/channels/hashtag.js';
@@ -49,6 +50,7 @@ import { ChatUserChannel } from './api/stream/channels/chat-user.js';
 import { ChatRoomChannel } from './api/stream/channels/chat-room.js';
 import { ReversiChannel } from './api/stream/channels/reversi.js';
 import { ReversiGameChannel } from './api/stream/channels/reversi-game.js';
+import { NoteStreamingHidingService } from './api/stream/NoteStreamingHidingService.js';
 import { SigninWithPasskeyApiService } from './api/SigninWithPasskeyApiService.js';
 
 @Module({
@@ -84,6 +86,7 @@ import { SigninWithPasskeyApiService } from './api/SigninWithPasskeyApiService.j
 		AdminChannel,
 		AntennaChannel,
 		ChannelChannel,
+		ClipChannel,
 		DriveChannel,
 		GlobalTimelineChannel,
 		HashtagChannel,
@@ -98,6 +101,7 @@ import { SigninWithPasskeyApiService } from './api/SigninWithPasskeyApiService.j
 		QueueStatsChannel,
 		ServerStatsChannel,
 		UserListChannel,
+		NoteStreamingHidingService,
 		OpenApiServerService,
 		OAuth2ProviderService,
 	],

@@ -81,6 +81,8 @@ function menu(ev: PointerEvent) {
 	text-align: left;
 	background: var(--MI_THEME-panel);
 	border-radius: 8px;
+	content-visibility: auto;
+	contain-intrinsic-size: auto 66px;
 
 	&:hover {
 		border-color: var(--MI_THEME-accent);

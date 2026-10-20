@@ -5,7 +5,7 @@
 
 /* eslint-disable */
 
-import { afterEach, beforeEach, describe, expect } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, beforeAll, afterAll, test } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';

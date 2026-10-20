@@ -20,6 +20,7 @@ export class MiHashtag {
 
 	@Column({
 		...id(),
+		default: [],
 		array: true,
 	})
 	public mentionedUserIds: MiUser['id'][];
@@ -32,6 +33,7 @@ export class MiHashtag {
 
 	@Column({
 		...id(),
+		default: [],
 		array: true,
 	})
 	public mentionedLocalUserIds: MiUser['id'][];
@@ -44,6 +46,7 @@ export class MiHashtag {
 
 	@Column({
 		...id(),
+		default: [],
 		array: true,
 	})
 	public mentionedRemoteUserIds: MiUser['id'][];
@@ -56,6 +59,7 @@ export class MiHashtag {
 
 	@Column({
 		...id(),
+		default: [],
 		array: true,
 	})
 	public attachedUserIds: MiUser['id'][];
@@ -68,6 +72,7 @@ export class MiHashtag {
 
 	@Column({
 		...id(),
+		default: [],
 		array: true,
 	})
 	public attachedLocalUserIds: MiUser['id'][];
@@ -80,6 +85,7 @@ export class MiHashtag {
 
 	@Column({
 		...id(),
+		default: [],
 		array: true,
 	})
 	public attachedRemoteUserIds: MiUser['id'][];

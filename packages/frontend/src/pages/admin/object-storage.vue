@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</SearchMarker>
 
 						<SearchMarker>
-							<MkInput v-model="objectStorageSecretKey" type="password">
+							<MkInput v-model="objectStorageSecretKey" type="password" autocomplete="new-password">
 								<template #prefix><i class="ti ti-key"></i></template>
 								<template #label><SearchLabel>Secret key</SearchLabel></template>
 							</MkInput>

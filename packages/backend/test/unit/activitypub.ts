@@ -9,12 +9,13 @@ import * as assert from 'assert';
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
+import { describe, beforeAll, beforeEach, test, vi } from 'vitest';
 import { Test } from '@nestjs/testing';
-import { jest } from '@jest/globals';
 
 import { MockResolver } from '../misc/mock-resolver.js';
 import type { IActor, IApDocument, ICollection, IObject, IPost } from '@/core/activitypub/type.js';
 import type { MiRemoteUser } from '@/models/User.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
 import { ApImageService } from '@/core/activitypub/models/ApImageService.js';
 import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
@@ -155,7 +156,7 @@ describe('ActivityPub', () => {
 
 		// Prevent ApPersonService from fetching instance, as it causes Jest import-after-test error
 		const federatedInstanceService = app.get<FederatedInstanceService>(FederatedInstanceService);
-		jest.spyOn(federatedInstanceService, 'fetch').mockImplementation(() => new Promise(() => { }));
+		vi.spyOn(federatedInstanceService, 'fetch').mockImplementation(() => new Promise(() => { }));
 	});
 
 	beforeEach(() => {
@@ -221,6 +222,51 @@ describe('ActivityPub', () => {
 			const user = await personService.createPerson(actor.id, resolver);
 
 			assert.strictEqual(user.name, null);
+		});
+	});
+
+	describe('alsoKnownAs field', () => {
+		test('Handle alsoKnownAs as an array', async () => {
+			const actor = {
+				...createRandomActor(),
+				alsoKnownAs: ['https://example.com/users/alice', 'https://example.com/users/alice2'],
+			};
+
+			resolver.register(actor.id, actor);
+
+			const user = await personService.createPerson(actor.id, resolver);
+
+			assert.deepStrictEqual(user.alsoKnownAs, actor.alsoKnownAs);
+		});
+
+		test('Handle alsoKnownAs as a string', async () => {
+			const actor = {
+				...createRandomActor(),
+				alsoKnownAs: 'https://example.com/users/alice',
+			};
+
+			resolver.register(actor.id, actor);
+
+			const user = await personService.createPerson(actor.id, resolver);
+
+			assert.deepStrictEqual(user.alsoKnownAs, [actor.alsoKnownAs]);
+		});
+
+		test('Update person with alsoKnownAs as a string', async () => {
+			const actor = createRandomActor();
+			resolver.register(actor.id, actor);
+			const user = await personService.createPerson(actor.id, resolver);
+
+			const updatedActor = {
+				...actor,
+				alsoKnownAs: 'https://example.com/users/alice',
+			};
+			resolver.register(actor.id, updatedActor);
+
+			await personService.updatePerson(actor.id, resolver, updatedActor);
+
+			const updatedUser = await personService.fetchPerson(actor.id);
+			assert.deepStrictEqual(updatedUser?.alsoKnownAs, [updatedActor.alsoKnownAs]);
 		});
 	});
 
@@ -354,6 +400,28 @@ describe('ActivityPub', () => {
 	});
 
 	describe('Images', () => {
+		test('Render image document with dimensions', () => {
+			const rendered = rendererService.renderDocument({
+				id: genAidx(Date.now()),
+				type: 'image/png',
+				webpublicType: null,
+				url: 'https://example.test/files/image.png',
+				webpublicUrl: null,
+				comment: null,
+				isSensitive: false,
+				properties: { width: 3600, height: 1890 },
+				uri: null,
+				userHost: null,
+				isLink: false,
+				webpublicAccessKey: null,
+			} as MiDriveFile);
+
+			assert.strictEqual(rendered.type, 'Document');
+			assert.strictEqual(rendered.mediaType, 'image/png');
+			assert.strictEqual(rendered.width, 3600);
+			assert.strictEqual(rendered.height, 1890);
+		});
+
 		test('Create images', async () => {
 			const imageObject: IApDocument = {
 				type: 'Document',

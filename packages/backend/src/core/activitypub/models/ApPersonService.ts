@@ -376,7 +376,7 @@ export class ApPersonService implements OnModuleInit {
 					isLocked: person.manuallyApprovesFollowers,
 					movedToUri: person.movedTo,
 					movedAt: person.movedTo ? new Date() : null,
-					alsoKnownAs: person.alsoKnownAs,
+					alsoKnownAs: toArray(person.alsoKnownAs),
 					isExplorable: person.discoverable,
 					username: person.preferredUsername,
 					usernameLower: person.preferredUsername?.toLowerCase(),
@@ -568,7 +568,7 @@ export class ApPersonService implements OnModuleInit {
 			isCat: (person as any).isCat === true,
 			isLocked: person.manuallyApprovesFollowers,
 			movedToUri: person.movedTo ?? null,
-			alsoKnownAs: person.alsoKnownAs ?? null,
+			alsoKnownAs: person.alsoKnownAs ? toArray(person.alsoKnownAs) : null,
 			isExplorable: person.discoverable,
 			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
 		} as Partial<MiRemoteUser> & Pick<MiRemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
@@ -758,8 +758,8 @@ export class ApPersonService implements OnModuleInit {
 		let dst = await this.fetchPerson(src.movedToUri);
 
 		if (dst && this.userEntityService.isLocalUser(dst)) {
-			// targetがローカルユーザーだった場合データベースから引っ張ってくる
-			dst = await this.usersRepository.findOneByOrFail({ uri: src.movedToUri }) as MiLocalUser;
+			// ローカルユーザーの uri は null なので、ID で最新の移行設定を取得する
+			dst = await this.usersRepository.findOneByOrFail({ id: dst.id }) as MiLocalUser;
 		} else if (dst) {
 			if (movePreventUris.includes(src.movedToUri)) return 'skip: circular move';
 
@@ -777,8 +777,9 @@ export class ApPersonService implements OnModuleInit {
 			dst = await this.resolvePerson(src.movedToUri);
 		}
 
-		if (dst.movedToUri === dst.uri) return 'skip: movedTo itself (dst)'; // ？？？
-		if (src.movedToUri !== dst.uri) return 'skip: missmatch uri'; // ？？？
+		const dstUri = this.userEntityService.getUserUri(dst);
+		if (dst.movedToUri === dstUri) return 'skip: movedTo itself (dst)'; // ？？？
+		if (src.movedToUri !== dstUri) return 'skip: missmatch uri'; // ？？？
 		if (dst.movedToUri === src.uri) return 'skip: dst.movedToUri === src.uri';
 		if (!dst.alsoKnownAs || dst.alsoKnownAs.length === 0) {
 			return 'skip: dst.alsoKnownAs is empty';

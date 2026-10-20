@@ -4,34 +4,47 @@
  */
 
 import { onActivated, onDeactivated, onMounted, onUnmounted } from 'vue';
+import { createVisibilityAwareInterval } from './interval.js';
 
 export function useInterval(fn: () => void, interval: number, options: {
 	immediate: boolean;
 	afterMounted: boolean;
+	keepRunningWhenHidden?: boolean;
 }): (() => void) | undefined {
 	if (Number.isNaN(interval)) return;
 
-	let intervalId: number | null = null;
+	let disposer: (() => void) | null = null;
+
+	const start = () => {
+		if (options.keepRunningWhenHidden) {
+			if (options.immediate) fn();
+			const intervalId = window.setInterval(fn, interval);
+			disposer = () => {
+				window.clearInterval(intervalId);
+			};
+		} else {
+			disposer = createVisibilityAwareInterval(fn, interval, { immediate: options.immediate });
+		}
+	};
+
+	const clear = () => {
+		if (disposer) {
+			disposer();
+			disposer = null;
+		}
+	};
 
 	if (options.afterMounted) {
 		onMounted(() => {
-			if (options.immediate) fn();
-			intervalId = window.setInterval(fn, interval);
+			start();
 		});
 	} else {
-		if (options.immediate) fn();
-		intervalId = window.setInterval(fn, interval);
+		start();
 	}
 
-	const clear = () => {
-		if (intervalId) window.clearInterval(intervalId);
-		intervalId = null;
-	};
-
 	onActivated(() => {
-		if (intervalId) return;
-		if (options.immediate) fn();
-		intervalId = window.setInterval(fn, interval);
+		if (disposer) return;
+		start();
 	});
 
 	onDeactivated(() => {

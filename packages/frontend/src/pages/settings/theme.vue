@@ -210,7 +210,7 @@ import JSON5 from 'json5';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
 import { isSafeMode } from '@@/js/config.js';
-import type { Theme } from '@/theme.js';
+import type { Theme } from '@@/js/theme.js';
 import * as os from '@/os.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
@@ -218,7 +218,8 @@ import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkThemePreview from '@/components/MkThemePreview.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { getBuiltinThemesRef, getThemesRef, installTheme, parseThemeCode, removeTheme } from '@/theme.js';
+import { handleThemeInstallError, installTheme, removeTheme } from '@/theme.js';
+import { getBuiltinThemes } from '@@/js/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -229,8 +230,11 @@ import { prefer } from '@/preferences.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { checkDragDataType, getDragData, getPlainDragData, setDragData, setPlainDragData } from '@/drag-and-drop.js';
 
-const installedThemes = getThemesRef();
-const builtinThemes = getBuiltinThemesRef();
+const installedThemes = prefer.r.themes;
+const builtinThemes = ref<Theme[]>([]);
+getBuiltinThemes().then(themes => {
+	builtinThemes.value = themes;
+});
 
 const instanceDarkTheme = computed<Theme | null>(() => instance.defaultDarkTheme ? JSON5.parse(instance.defaultDarkTheme) : null);
 const installedDarkThemes = computed(() => installedThemes.value.filter(t => t.base === 'dark' || t.kind === 'dark'));
@@ -353,7 +357,7 @@ async function onDrop(ev: DragEvent) {
 		try {
 			await installTheme(code);
 		} catch (err) {
-			// nop
+			handleThemeInstallError(err);
 		}
 	}
 }

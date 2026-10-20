@@ -7,18 +7,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="_gaps">
-			<div :class="$style.decorations">
-				<div
-					v-for="avatarDecoration in avatarDecorations"
-					:key="avatarDecoration.id"
-					v-panel
-					:class="$style.decoration"
-					@click="edit(avatarDecoration)"
-				>
-					<div :class="$style.decorationName"><MkCondensedLine :minScale="0.5">{{ avatarDecoration.name }}</MkCondensedLine></div>
-					<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decorations="[{ url: avatarDecoration.url }]" forceShowDecoration/>
+			<MkFoldableSection v-for="category in Object.keys(groupedDecorations)" :key="category" :expanded="true">
+				<template #header>{{ category || i18n.ts.other }}</template>
+				<div :class="$style.decorations">
+					<div
+						v-for="avatarDecoration in groupedDecorations[category]"
+						:key="avatarDecoration.id"
+						v-panel
+						:class="$style.decoration"
+						@click="edit(avatarDecoration)"
+					>
+						<div :class="$style.decorationName"><MkCondensedLine :minScale="0.5">{{ avatarDecoration.name }}</MkCondensedLine></div>
+						<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decorations="[{ url: avatarDecoration.url }]" forceShowDecoration/>
+					</div>
 				</div>
-			</div>
+			</MkFoldableSection>
 		</div>
 	</div>
 </PageWithHeader>
@@ -32,10 +35,13 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import { groupAvatarDecorations } from '@/utility/group-avatar-decorations.js';
 
 const $i = ensureSignin();
 
 const avatarDecorations = ref<Misskey.entities.AdminAvatarDecorationsListResponse>([]);
+const groupedDecorations = computed(() => groupAvatarDecorations(avatarDecorations.value));
 
 function load() {
 	misskeyApi('admin/avatar-decorations/list').then(_avatarDecorations => {
@@ -47,6 +53,7 @@ load();
 
 async function add(ev: PointerEvent) {
 	const { dispose } = await os.popupAsyncWithDialog(import('./avatar-decoration-edit-dialog.vue').then(x => x.default), {
+		categories: Object.keys(groupedDecorations.value),
 	}, {
 		done: result => {
 			if (result.created) {
@@ -60,6 +67,7 @@ async function add(ev: PointerEvent) {
 async function edit(avatarDecoration: Misskey.entities.AdminAvatarDecorationsListResponse[number]) {
 	const { dispose } = await os.popupAsyncWithDialog(import('./avatar-decoration-edit-dialog.vue').then(x => x.default), {
 		avatarDecoration: avatarDecoration,
+		categories: Object.keys(groupedDecorations.value),
 	}, {
 		done: result => {
 			if (result.updated) {

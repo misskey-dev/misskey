@@ -82,8 +82,10 @@ export class Pizzax<T extends StateDef> {
 		this.r = {} as ReactiveState<T>;
 
 		for (const [k, v] of Object.entries(def) as [keyof T, T[keyof T]['default']][]) {
-			this.s[k] = v.default;
-			this.r[k] = ref(v.default);
+			// 参照渡しになるのを防ぐためclone
+			const defaultValue = deepClone(v.default);
+			this.s[k] = defaultValue;
+			this.r[k] = ref(defaultValue);
 		}
 
 		this.ready = this.init();
@@ -120,7 +122,8 @@ export class Pizzax<T extends StateDef> {
 			} else if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
 				this.r[k].value = this.s[k] = this.mergeState<T[keyof T]['default']>(deviceAccountState[k], v.default);
 			} else {
-				this.r[k].value = this.s[k] = v.default;
+				// 参照渡しになるのを防ぐためclone
+				this.r[k].value = this.s[k] = deepClone(v.default);
 			}
 		}
 
@@ -148,7 +151,8 @@ export class Pizzax<T extends StateDef> {
 										this.r[k].value = this.s[k] = (kvs as Partial<T>)[k];
 										cache[k] = (kvs as Partial<T>)[k];
 									} else {
-										this.r[k].value = this.s[k] = v.default;
+										// 参照渡しになるのを防ぐためclone
+										this.r[k].value = this.s[k] = deepClone(v.default);
 									}
 								}
 							}
@@ -218,8 +222,10 @@ export class Pizzax<T extends StateDef> {
 	}
 
 	public reset(key: keyof T) {
-		this.set(key, this.def[key].default);
-		return this.def[key].default;
+		// 参照渡しになるのを防ぐためclone
+		const defaultValue = deepClone(this.def[key].default);
+		this.set(key, defaultValue);
+		return defaultValue;
 	}
 
 	/**

@@ -210,7 +210,15 @@ export class NotificationEntityService implements OnModuleInit {
 		const noteIds = validNotifications.map(x => 'noteId' in x ? x.noteId : null).filter(x => x != null);
 		const notes = noteIds.length > 0 ? await this.notesRepository.find({
 			where: { id: In(noteIds) },
-			relations: ['user', 'reply', 'reply.user', 'renote', 'renote.user'],
+			relations: {
+				user: true,
+				reply: {
+					user: true,
+				},
+				renote: {
+					user: true,
+				},
+			},
 		}) : [];
 		const packedNotesArray = await this.noteEntityService.packMany(notes, { id: meId }, {
 			detail: true,

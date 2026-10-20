@@ -27,21 +27,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import JSON5 from 'json5';
-import type { Theme } from '@/theme.js';
+import type { Theme } from '@@/js/theme.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getBuiltinThemesRef, getThemesRef, removeTheme } from '@/theme.js';
+import { removeTheme } from '@/theme.js';
+import { getBuiltinThemes } from '@@/js/theme.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
+import { prefer } from '@/preferences';
 
-const installedThemes = getThemesRef();
-const builtinThemes = getBuiltinThemesRef();
+const installedThemes = prefer.r.themes;
+const builtinThemes = ref<Theme[]>([]);
+getBuiltinThemes().then(themes => {
+	builtinThemes.value = themes;
+});
+
 const {
 	model: selectedThemeId,
 	def: selectedThemeIdDef,
