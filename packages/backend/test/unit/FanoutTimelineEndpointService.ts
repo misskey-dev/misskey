@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { describe, jest, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
+import { describe, vi, test, expect, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
+import type { Mocked } from 'vitest';
 import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
@@ -16,7 +17,7 @@ import { DI } from '@/di-symbols.js';
 describe('FanoutTimelineEndpointService', () => {
 	let app: TestingModule;
 	let service: FanoutTimelineEndpointService;
-	let fanoutTimelineService: jest.Mocked<FanoutTimelineService>;
+	let fanoutTimelineService: Mocked<FanoutTimelineService>;
 	let notesRepository: NotesRepository;
 	let usersRepository: UsersRepository;
 	let userProfilesRepository: UserProfilesRepository;
@@ -66,16 +67,16 @@ describe('FanoutTimelineEndpointService', () => {
 		})
 			.overrideProvider(FanoutTimelineService)
 			.useValue({
-				getMulti: jest.fn(),
-				injectDummy: jest.fn(),
-				injectDummyIfEmpty: jest.fn(),
+				getMulti: vi.fn(),
+				injectDummy: vi.fn(),
+				injectDummyIfEmpty: vi.fn(),
 			})
 			.compile();
 
 		app.enableShutdownHooks();
 
 		service = app.get<FanoutTimelineEndpointService>(FanoutTimelineEndpointService);
-		fanoutTimelineService = app.get(FanoutTimelineService) as jest.Mocked<FanoutTimelineService>;
+		fanoutTimelineService = app.get(FanoutTimelineService);
 		notesRepository = app.get<NotesRepository>(DI.notesRepository);
 		usersRepository = app.get<UsersRepository>(DI.usersRepository);
 		userProfilesRepository = app.get<UserProfilesRepository>(DI.userProfilesRepository);
@@ -91,7 +92,7 @@ describe('FanoutTimelineEndpointService', () => {
 	});
 
 	afterEach(async () => {
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 		await notesRepository.deleteAll();
 		await userProfilesRepository.deleteAll();
 		await usersRepository.deleteAll();
@@ -117,7 +118,7 @@ describe('FanoutTimelineEndpointService', () => {
 		fanoutTimelineService.getMulti.mockResolvedValue([htlIds, ltlIds]);
 
 		// dbFallback spy
-		const dbFallback = jest.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
+		const dbFallback = vi.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
 
 		const ps = {
 			redisTimelines: [`homeTimeline:${alice.id}`, 'localTimeline'] as FanoutTimelineName[],
@@ -155,7 +156,7 @@ describe('FanoutTimelineEndpointService', () => {
 
 		// Mock dbFallback to return empty array
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const dbFallback = jest.fn((untilId: string | null, sinceId: string | null, limit: number) => Promise.resolve([] as MiNote[]));
+		const dbFallback = vi.fn((untilId: string | null, sinceId: string | null, limit: number) => Promise.resolve([] as MiNote[]));
 
 		const ps = {
 			redisTimelines: [`homeTimeline:${alice.id}`] as FanoutTimelineName[],
@@ -182,7 +183,7 @@ describe('FanoutTimelineEndpointService', () => {
 
 		fanoutTimelineService.getMulti.mockResolvedValue([ids]);
 
-		const dbFallback = jest.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
+		const dbFallback = vi.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
 
 		const ps = {
 			redisTimelines: [`homeTimeline:${alice.id}`] as FanoutTimelineName[],
@@ -217,7 +218,7 @@ describe('FanoutTimelineEndpointService', () => {
 		fanoutTimelineService.getMulti.mockResolvedValue([ids1, ids2]);
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const dbFallback = jest.fn((untilId: string | null, sinceId: string | null, limit: number) => Promise.resolve([] as MiNote[]));
+		const dbFallback = vi.fn((untilId: string | null, sinceId: string | null, limit: number) => Promise.resolve([] as MiNote[]));
 
 		const ps = {
 			redisTimelines: [`homeTimeline:${alice.id}`, 'localTimeline'] as FanoutTimelineName[],
@@ -245,7 +246,7 @@ describe('FanoutTimelineEndpointService', () => {
 		fanoutTimelineService.getMulti.mockResolvedValue(redisResult);
 
 		// Mock dbFallback to return empty array
-		const dbFallback = jest.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
+		const dbFallback = vi.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
 
 		const ps = {
 			redisTimelines: [`homeTimeline:${alice.id}`, 'localTimeline'] as FanoutTimelineName[],
@@ -279,7 +280,7 @@ describe('FanoutTimelineEndpointService', () => {
 
 		// Mock dbFallback (should be called to check for newer notes than the dummy ID)
 
-		const dbFallback = jest.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
+		const dbFallback = vi.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
 
 		const ps = {
 			redisTimelines: [`homeTimeline:${alice.id}`] as FanoutTimelineName[],

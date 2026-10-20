@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { describe, jest, test, expect, afterEach, beforeAll, afterAll } from '@jest/globals';
+import { describe, vi, test, expect, afterEach, beforeAll, afterAll } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as Redis from 'ioredis';
+import type { Mocked } from 'vitest';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
@@ -13,7 +14,7 @@ import { DI } from '@/di-symbols.js';
 describe('FanoutTimelineService', () => {
 	let app: TestingModule;
 	let service: FanoutTimelineService;
-	let redisForTimelines: jest.Mocked<Redis.Redis>;
+	let redisForTimelines: Mocked<Redis.Redis>;
 	let idService: IdService;
 
 	beforeAll(async () => {
@@ -23,22 +24,22 @@ describe('FanoutTimelineService', () => {
 				{
 					provide: IdService,
 					useValue: {
-						parse: jest.fn(),
-						gen: jest.fn(),
+						parse: vi.fn(),
+						gen: vi.fn(),
 					},
 				},
 				{
 					provide: DI.redisForTimelines,
 					useValue: {
-						eval: jest.fn(),
-						lpush: jest.fn(),
-						lrange: jest.fn(),
-						del: jest.fn(),
-						pipeline: jest.fn(() => ({
-							lpush: jest.fn(),
-							ltrim: jest.fn(),
-							lrange: jest.fn(),
-							exec: jest.fn(),
+						eval: vi.fn(),
+						lpush: vi.fn(),
+						lrange: vi.fn(),
+						del: vi.fn(),
+						pipeline: vi.fn(() => ({
+							lpush: vi.fn(),
+							ltrim: vi.fn(),
+							lrange: vi.fn(),
+							exec: vi.fn(),
 						})),
 					},
 				},
@@ -57,7 +58,7 @@ describe('FanoutTimelineService', () => {
 	});
 
 	afterEach(async () => {
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 	});
 
 	test('injectDummyIfEmpty should call Redis EVAL with correct script', async () => {
