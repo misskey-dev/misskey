@@ -270,7 +270,7 @@ describe('FanoutTimelineEndpointService', () => {
 	});
 
 	// Test for behavior when dummy ID exists
-	test('should return empty result without DB fallback when only dummy ID exists in Redis', async () => {
+	test('should return empty result when only dummy ID exists in Redis and DB has no newer data', async () => {
 		const dummyId = idService.gen(1);
 		// Redis has only dummy ID
 		const redisResult: string[][] = [[dummyId]];
@@ -294,7 +294,7 @@ describe('FanoutTimelineEndpointService', () => {
 		const result = await service.getMiNotes(ps);
 
 		expect(result).toEqual([]);
-		expect(dbFallback).not.toHaveBeenCalled();
+		expect(dbFallback).toHaveBeenCalled();
 		expect(fanoutTimelineService.injectDummyIfEmpty).not.toHaveBeenCalled();
 	});
 

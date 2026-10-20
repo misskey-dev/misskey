@@ -96,10 +96,6 @@ export class FanoutTimelineEndpointService {
 			}
 		}
 
-		if (redisResult.length > 0 && trustedEmptyIndices.size === redisResult.length) {
-			return [];
-		}
-
 		let shouldFallbackToDb = ps.useDbFallback && (redisResult.length > 1 && redisResult.some((ids, i) => ids.length === 0 && !trustedEmptyIndices.has(i)));
 
 		// 取得したresultの中で最古のIDのうち、最も新しいものを取得
