@@ -249,7 +249,7 @@ export class FanoutTimelineEndpointService {
 		if (canInject) {
 			const dummyId = this.idService.gen(1); // 1 = Detectable Dummy Timestamp
 
-			Promise.all(ps.redisTimelines.map((tl, i) => {
+			void Promise.all(ps.redisTimelines.map((tl, i) => {
 				// 有効なソースかつ結果が空だった場合のみダミーを入れる
 				if (redisResult[i] && redisResult[i].length === 0) {
 					let isEmpty = true;
@@ -258,11 +258,18 @@ export class FanoutTimelineEndpointService {
 					}
 
 					if (isEmpty) {
-						return this.fanoutTimelineService.injectDummyIfEmpty(tl, dummyId);
+						// ユーザーによるフィルタが影響してもいいタイムラインのみにダミーを入れる
+						if (
+							tl.startsWith('homeTimeline:') ||
+							tl.startsWith('homeTimelineWithFiles:') ||
+							tl.startsWith('localTimelineWithReplyTo:')
+						) {
+							return this.fanoutTimelineService.injectDummyIfEmpty(tl, dummyId);
+						}
 					}
 				}
 				return Promise.resolve();
-			}));
+			})).catch(_ => {});
 		}
 
 		return gotFromDb;
