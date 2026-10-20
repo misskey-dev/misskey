@@ -300,4 +300,64 @@ describe('FanoutTimelineEndpointService', () => {
 		// Fallback should be called to check for newer notes (ascending check from dummy ID)
 		expect(dbFallback).toHaveBeenCalled();
 	});
+
+	test('should not inject dummy ID into shared or user timeline when DB has notes filtered out for viewer', async () => {
+		// DB has a public local note by alice, so localTimeline and userTimeline:alice are NOT empty in DB
+		await createNote({ visibility: 'public', userHost: null });
+
+		const redisResult: string[][] = [[], [], []];
+		fanoutTimelineService.getMulti.mockResolvedValue(redisResult);
+
+		// Simulate viewer-filtered dbFallback returning empty (e.g. muted/blocked by viewer)
+		const dbFallback = vi.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
+
+		const ps = {
+			redisTimelines: [`homeTimeline:${alice.id}`, 'localTimeline', `userTimeline:${alice.id}`] as FanoutTimelineName[],
+			useDbFallback: true,
+			limit: 10,
+			allowPartial: true,
+			excludePureRenotes: false,
+			dbFallback,
+			noteFilter: () => true,
+			untilId: null,
+			sinceId: null,
+		};
+
+		const result = await service.getMiNotes(ps);
+
+		expect(result).toEqual([]);
+		// Only viewer-private homeTimeline should receive dummy ID; localTimeline and userTimeline must not be polluted
+		expect(fanoutTimelineService.injectDummyIfEmpty).toHaveBeenCalledTimes(1);
+		expect(fanoutTimelineService.injectDummyIfEmpty).toHaveBeenCalledWith(`homeTimeline:${alice.id}`, expect.any(String));
+		expect(fanoutTimelineService.injectDummyIfEmpty).not.toHaveBeenCalledWith('localTimeline', expect.any(String));
+		expect(fanoutTimelineService.injectDummyIfEmpty).not.toHaveBeenCalledWith(`userTimeline:${alice.id}`, expect.any(String));
+	});
+
+	test('should detect gen(1) dummy ID as trusted empty and avoid DB fallback when another source has notes', async () => {
+		const now = Date.now();
+		const note1 = await createNote({ id: idService.gen(now - 1000) });
+		const dummyId = idService.gen(1);
+
+		// First source has only dummyId(gen(1)), second source has note1
+		fanoutTimelineService.getMulti.mockResolvedValue([[dummyId], [note1.id]]);
+
+		const dbFallback = vi.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
+
+		const ps = {
+			redisTimelines: [`userTimelineWithReplies:${alice.id}`, `userTimeline:${alice.id}`] as FanoutTimelineName[],
+			useDbFallback: true,
+			limit: 10,
+			allowPartial: true,
+			excludePureRenotes: false,
+			dbFallback,
+			noteFilter: () => true,
+			untilId: null,
+			sinceId: null,
+		};
+
+		const result = await service.getMiNotes(ps);
+
+		expect(dbFallback).not.toHaveBeenCalled();
+		expect(result.map(n => n.id)).toEqual([note1.id]);
+	});
 });

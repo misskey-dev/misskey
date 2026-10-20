@@ -79,15 +79,19 @@ export class FanoutTimelineEndpointService {
 
 		const redisResult = await this.fanoutTimelineService.getMulti(ps.redisTimelines, ps.untilId, ps.sinceId);
 
+		const dummyTime = this.idService.parse(this.idService.gen(1)).date.getTime();
+
 		// 取得したredisResultのうち、2つ以上ソースがあり、1つでも空であればDBにフォールバックする
 		const trustedEmptyIndices = new Set<number>();
 		for (let i = 0; i < redisResult.length; i++) {
 			const ids = redisResult[i];
-			const dummyIdIndex = ids.findIndex(id => this.idService.parse(id).date.getTime() === 1);
-			if (dummyIdIndex !== -1) {
-				ids.splice(dummyIdIndex, 1);
-				if (ids.length === 0) {
-					trustedEmptyIndices.add(i);
+			if (ids.length > 0) {
+				const dummyIdIndex = ascending ? 0 : ids.length - 1;
+				if (this.idService.parse(ids[dummyIdIndex]).date.getTime() === dummyTime) {
+					ids.splice(dummyIdIndex, 1);
+					if (ids.length === 0) {
+						trustedEmptyIndices.add(i);
+					}
 				}
 			}
 		}
@@ -249,26 +253,14 @@ export class FanoutTimelineEndpointService {
 		if (canInject) {
 			const dummyId = this.idService.gen(1); // 1 = Detectable Dummy Timestamp
 
-			void Promise.all(ps.redisTimelines.map((tl, i) => {
+			await Promise.all(ps.redisTimelines.map(async (tl, i) => {
 				// 有効なソースかつ結果が空だった場合のみダミーを入れる
 				if (redisResult[i] && redisResult[i].length === 0) {
-					let isEmpty = true;
-					if (gotFromDb.length > 0) {
-						isEmpty = !gotFromDb.some(n => this.accepts(tl, n));
-					}
-
-					if (isEmpty) {
-						// ユーザーによるフィルタが影響してもいいタイムラインのみにダミーを入れる
-						if (
-							tl.startsWith('homeTimeline:') ||
-							tl.startsWith('homeTimelineWithFiles:') ||
-							tl.startsWith('localTimelineWithReplyTo:')
-						) {
-							return this.fanoutTimelineService.injectDummyIfEmpty(tl, dummyId);
-						}
+					if (await this.isTimelineEmpty(tl, gotFromDb)) {
+						return this.fanoutTimelineService.injectDummyIfEmpty(tl, dummyId);
 					}
 				}
-				return Promise.resolve();
+				return;
 			})).catch(_ => {});
 		}
 
@@ -292,30 +284,115 @@ export class FanoutTimelineEndpointService {
 		return notes;
 	}
 
+	private async isTimelineEmpty(tl: FanoutTimelineName, gotFromDb: MiNote[]): Promise<boolean> {
+		// アンテナ・ロールはDBフォールバックを持たないためダミー注入対象外
+		if (
+			tl.startsWith('antennaTimeline:') ||
+			tl.startsWith('roleTimeline:')
+		) {
+			return false;
+		}
+
+		// gotFromDb 内にすでに該当ソースのノートが含まれていれば空ではない
+		if (gotFromDb.some(n => this.accepts(tl, n))) {
+			return false;
+		}
+
+		// 閲覧者によるフィルタが他者に影響しないタイムラインは gotFromDb の結果で空とみなす
+		if (
+			tl.startsWith('homeTimeline:') ||
+			tl.startsWith('homeTimelineWithFiles:') ||
+			tl.startsWith('localTimelineWithReplyTo:') ||
+			tl.startsWith('userListTimeline:') ||
+			tl.startsWith('userListTimelineWithFiles:')
+		) {
+			return true;
+		}
+
+		// 共有・公開ソースは閲覧者フィルタを適用しないDB確認で空判定を行う
+		return (await this.isSharedTimelineEmptyInDb(tl)) === true;
+	}
+
+	private async isSharedTimelineEmptyInDb(tl: FanoutTimelineName): Promise<boolean | null> {
+		const query = this.notesRepository.createQueryBuilder('note').select('note.id');
+
+		if (tl === 'localTimeline') {
+			query.where('note.visibility = :visibility', { visibility: 'public' })
+				.andWhere('note.userHost IS NULL')
+				.andWhere('note.channelId IS NULL')
+				.andWhere('(note.replyId IS NULL OR note.replyUserId = note.userId)');
+		} else if (tl === 'localTimelineWithFiles') {
+			query.where('note.visibility = :visibility', { visibility: 'public' })
+				.andWhere('note.userHost IS NULL')
+				.andWhere('note.channelId IS NULL')
+				.andWhere('(note.replyId IS NULL OR note.replyUserId = note.userId)')
+				.andWhere('note.fileIds != \'{}\'');
+		} else if (tl === 'localTimelineWithReplies') {
+			query.where('note.visibility = :visibility', { visibility: 'public' })
+				.andWhere('note.userHost IS NULL')
+				.andWhere('note.channelId IS NULL')
+				.andWhere('note.replyId IS NOT NULL')
+				.andWhere('note.replyUserId != note.userId');
+		} else if (tl.startsWith('userTimeline:')) {
+			const userId = tl.split(':')[1];
+			query.where('note.userId = :userId', { userId })
+				.andWhere('note.channelId IS NULL')
+				.andWhere('(note.replyId IS NULL OR note.replyUserId = note.userId)');
+		} else if (tl.startsWith('userTimelineWithFiles:')) {
+			const userId = tl.split(':')[1];
+			query.where('note.userId = :userId', { userId })
+				.andWhere('note.channelId IS NULL')
+				.andWhere('(note.replyId IS NULL OR note.replyUserId = note.userId)')
+				.andWhere('note.fileIds != \'{}\'');
+		} else if (tl.startsWith('userTimelineWithReplies:')) {
+			const userId = tl.split(':')[1];
+			query.where('note.userId = :userId', { userId })
+				.andWhere('note.channelId IS NULL')
+				.andWhere('note.replyId IS NOT NULL')
+				.andWhere('note.replyUserId != note.userId');
+		} else if (tl.startsWith('userTimelineWithChannel:')) {
+			const userId = tl.split(':')[1];
+			query.where('note.userId = :userId', { userId })
+				.andWhere('note.channelId IS NOT NULL');
+		} else if (tl.startsWith('channelTimeline:')) {
+			const channelId = tl.split(':')[1];
+			query.where('note.channelId = :channelId', { channelId });
+		} else {
+			return null;
+		}
+
+		const note = await query.limit(1).getRawOne();
+		return note == null;
+	}
+
 	private accepts(tl: FanoutTimelineName, note: MiNote): boolean {
 		if (tl === 'localTimeline') {
-			return !note.userHost && !note.replyId && note.visibility === 'public';
+			return !note.userHost && !note.channelId && !isReply(note) && note.visibility === 'public';
 		} else if (tl === 'localTimelineWithFiles') {
-			return !note.userHost && !note.replyId && note.visibility === 'public' && note.fileIds.length > 0;
+			return !note.userHost && !note.channelId && !isReply(note) && note.visibility === 'public' && note.fileIds.length > 0;
 		} else if (tl === 'localTimelineWithReplies') {
-			return !note.userHost && note.replyId != null && note.visibility === 'public';
+			return !note.userHost && !note.channelId && isReply(note) && note.visibility === 'public';
 		} else if (tl.startsWith('localTimelineWithReplyTo:')) {
 			const id = tl.split(':')[1];
-			return !note.userHost && note.replyId != null && note.replyUserId === id;
+			return !note.userHost && !note.channelId && isReply(note) && note.visibility === 'public' && note.replyUserHost == null && note.replyUserId === id;
 		} else if (tl.startsWith('userTimeline:')) {
 			const id = tl.split(':')[1];
-			return note.userId === id && !note.replyId;
+			return note.userId === id && !note.channelId && !isReply(note);
 		} else if (tl.startsWith('userTimelineWithFiles:')) {
 			const id = tl.split(':')[1];
-			return note.userId === id && !note.replyId && note.fileIds.length > 0;
+			return note.userId === id && !note.channelId && !isReply(note) && note.fileIds.length > 0;
 		} else if (tl.startsWith('userTimelineWithReplies:')) {
 			const id = tl.split(':')[1];
-			return note.userId === id && note.replyId != null;
+			return note.userId === id && !note.channelId && isReply(note);
 		} else if (tl.startsWith('userTimelineWithChannel:')) {
 			const id = tl.split(':')[1];
 			return note.userId === id && note.channelId != null;
+		} else if (tl.startsWith('channelTimeline:')) {
+			const id = tl.split(':')[1];
+			return note.channelId === id;
+		} else if (tl.startsWith('homeTimelineWithFiles:')) {
+			return note.fileIds.length > 0;
 		} else {
-			// TODO: homeTimeline系
 			return true;
 		}
 	}
