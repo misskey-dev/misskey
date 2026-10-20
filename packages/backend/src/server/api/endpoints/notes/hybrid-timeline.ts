@@ -230,6 +230,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 										qb.where('note.userId IN (:...followeeWithRepliesIds)', { followeeWithRepliesIds })
 											.andWhere(new Brackets(qb => {
 												qb.where('reply.visibility != \'followers\'')
+													.orWhere('reply.visibility IS NULL') // reply target note is deleted
 													.orWhere('note.replyUserId IN (:...followeeIds)', { followeeIds });
 											}));
 									}));
