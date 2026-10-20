@@ -336,6 +336,9 @@ export const PREF_DEF = definePreferences({
 	useGroupedNotifications: {
 		default: true,
 	},
+	forceCompactUrlPreview: {
+		default: false,
+	},
 	dataSaver: {
 		default: {
 			media: false,
