@@ -96,6 +96,10 @@ export class FanoutTimelineEndpointService {
 			}
 		}
 
+		if (redisResult.length > 0 && trustedEmptyIndices.size === redisResult.length) {
+			return [];
+		}
+
 		let shouldFallbackToDb = ps.useDbFallback && (redisResult.length > 1 && redisResult.some((ids, i) => ids.length === 0 && !trustedEmptyIndices.has(i)));
 
 		// 取得したresultの中で最古のIDのうち、最も新しいものを取得
@@ -255,7 +259,7 @@ export class FanoutTimelineEndpointService {
 
 			await Promise.all(ps.redisTimelines.map(async (tl, i) => {
 				// 有効なソースかつ結果が空だった場合のみダミーを入れる
-				if (redisResult[i] && redisResult[i].length === 0) {
+				if (redisResult[i] && redisResult[i].length === 0 && !trustedEmptyIndices.has(i)) {
 					if (await this.isTimelineEmpty(tl, gotFromDb)) {
 						return this.fanoutTimelineService.injectDummyIfEmpty(tl, dummyId);
 					}

@@ -270,15 +270,12 @@ describe('FanoutTimelineEndpointService', () => {
 	});
 
 	// Test for behavior when dummy ID exists
-	test('should return empty result when only dummy ID exists in Redis and DB has no newer data', async () => {
-		const now = Date.now();
-		const dummyId = idService.gen(now);
+	test('should return empty result without DB fallback when only dummy ID exists in Redis', async () => {
+		const dummyId = idService.gen(1);
 		// Redis has only dummy ID
 		const redisResult: string[][] = [[dummyId]];
 
 		fanoutTimelineService.getMulti.mockResolvedValue(redisResult);
-
-		// Mock dbFallback (should be called to check for newer notes than the dummy ID)
 
 		const dbFallback = vi.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
 
@@ -297,8 +294,37 @@ describe('FanoutTimelineEndpointService', () => {
 		const result = await service.getMiNotes(ps);
 
 		expect(result).toEqual([]);
-		// Fallback should be called to check for newer notes (ascending check from dummy ID)
-		expect(dbFallback).toHaveBeenCalled();
+		expect(dbFallback).not.toHaveBeenCalled();
+		expect(fanoutTimelineService.injectDummyIfEmpty).not.toHaveBeenCalled();
+	});
+
+	test('should not re-inject dummy ID into already trusted-empty source when another empty source triggers DB fallback', async () => {
+		const dummyId = idService.gen(1);
+		// First source already has dummyId, second source is uninitialized empty
+		const redisResult: string[][] = [[dummyId], []];
+		fanoutTimelineService.getMulti.mockResolvedValue(redisResult);
+
+		const dbFallback = vi.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
+
+		const ps = {
+			redisTimelines: ['localTimeline', `homeTimeline:${alice.id}`] as FanoutTimelineName[],
+			useDbFallback: true,
+			limit: 10,
+			allowPartial: true,
+			excludePureRenotes: false,
+			dbFallback,
+			noteFilter: () => true,
+			untilId: null,
+			sinceId: null,
+		};
+
+		const result = await service.getMiNotes(ps);
+
+		expect(result).toEqual([]);
+		expect(dbFallback).toHaveBeenCalledTimes(1);
+		expect(fanoutTimelineService.injectDummyIfEmpty).toHaveBeenCalledTimes(1);
+		expect(fanoutTimelineService.injectDummyIfEmpty).toHaveBeenCalledWith(`homeTimeline:${alice.id}`, expect.any(String));
+		expect(fanoutTimelineService.injectDummyIfEmpty).not.toHaveBeenCalledWith('localTimeline', expect.any(String));
 	});
 
 	test('should not inject dummy ID into shared or user timeline when DB has notes filtered out for viewer', async () => {
