@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export class RoleDisplayVisibility1783059479536 {
-    name = 'RoleDisplayVisibility1783059479536';
+export class RoleDisplayVisibility1792601030286 {
+    name = 'RoleDisplayVisibility1792601030286';
 
     async up(queryRunner) {
         await queryRunner.query(`ALTER TABLE "user" ADD "hiddenRoleIds" character varying(32) array NOT NULL DEFAULT '{}'`);
