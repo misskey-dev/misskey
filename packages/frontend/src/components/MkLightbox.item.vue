@@ -633,6 +633,16 @@ function isOutsideImage(x: number, y: number): boolean {
 	return x < left || x > left + width * scale || y < top || y > top + height * scale;
 }
 
+function isOutsideContent(x: number, y: number): boolean {
+	if (props.content.type !== 'video') return isOutsideImage(x, y);
+	if (hide.value || videoEl.value == null || videoAspectRatio.value == null) return false;
+
+	// 動画要素は縦横比に合わせてサイズを指定しているため、要素の矩形が描画範囲になる。
+	const rect = videoEl.value.getBoundingClientRect();
+	if (!isValidRect(rect)) return false;
+	return x < rect.left || x > rect.right || y < rect.top || y > rect.bottom;
+}
+
 function onPointerdown(ev: PointerEvent) {
 	if (mainEl.value == null) return;
 	pointerEventCache.set(ev.pointerId, ev);
@@ -641,7 +651,7 @@ function onPointerdown(ev: PointerEvent) {
 	isDragging = true;
 	isClick = pointerEventCache.size === 1;
 	clickAction = resolveClickAction(ev.target);
-	isBackgroundTap = isClick && isOutsideImage(ev.clientX, ev.clientY);
+	isBackgroundTap = isClick && isOutsideContent(ev.clientX, ev.clientY);
 	lastX = ev.clientX;
 	lastY = ev.clientY;
 	pointerVec = { x: 0, y: 0 };
@@ -750,7 +760,7 @@ function onPointermove(ev: PointerEvent) {
 
 function onPointerup(ev: PointerEvent) {
 	if (mainEl.value == null) return;
-	isBackgroundTap = isBackgroundTap && isOutsideImage(ev.clientX, ev.clientY);
+	isBackgroundTap = isBackgroundTap && isOutsideContent(ev.clientX, ev.clientY);
 	pointerEventCache.delete(ev.pointerId);
 	mainEl.value.releasePointerCapture(ev.pointerId);
 	prevTwoTouchPointsDistance = 0;
@@ -833,7 +843,7 @@ function cancelPointerGesture() {
 }
 
 function onTouchstart(ev: TouchEvent) {
-	if (props.content.type === 'image' && (ev.touches.length !== 1 || isOutsideImage(ev.touches[0].clientX, ev.touches[0].clientY))) {
+	if ((props.content.type === 'image' || props.content.type === 'video') && (ev.touches.length !== 1 || isOutsideContent(ev.touches[0].clientX, ev.touches[0].clientY))) {
 		doubleTapDetector.reset();
 		return;
 	}
@@ -936,7 +946,7 @@ function onClick(ev: MouseEvent) {
 		return;
 	}
 
-	if (action === 'media') {
+	if (action === 'media' && !wasBackgroundTap) {
 		onMediaClick();
 		return;
 	}

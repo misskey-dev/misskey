@@ -6,6 +6,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { cleanup, fireEvent, render } from '@testing-library/vue';
 import { nextTick } from 'vue';
+import { preferState } from '../setup.unit.js';
 import MkLightboxItem from '@/components/MkLightbox.item.vue';
 import type { Content } from '@/components/MkLightbox.item.vue';
 
@@ -47,7 +48,7 @@ function pointer(target: Element, type: string, x: number, y: number, pointerId 
 }
 
 async function tap(main: HTMLElement, x: number, y: number, endX = x, endY = y) {
-	await pointer(main.querySelector('img') ?? main, 'pointerdown', x, y);
+	await pointer(main.querySelector('img, video') ?? main, 'pointerdown', x, y);
 	await pointer(main, 'pointerup', endX, endY);
 	// Pointer capture can retarget the compatibility click to main.
 	await fireEvent.click(main, { clientX: endX, clientY: endY });
@@ -63,6 +64,7 @@ function touchstart(main: HTMLElement, x: number, y: number) {
 beforeEach(() => {
 	state.touch = true;
 	state.hidden = false;
+	preferState.useNativeUiForVideoAudioPlayer = false;
 });
 
 afterEach(() => {
@@ -209,9 +211,73 @@ describe('Lightbox background taps', () => {
 		expect(view.emitted('close')).toHaveLength(1);
 	});
 
-	test.each(['video', 'audio'] as const)('does not close %s on background taps', async (type) => {
-		const view = setup({ type });
+	test('does not close audio on background taps', async () => {
+		const view = setup({ type: 'audio' });
 		await tap(view.main, 50, 200);
 		expect(view.emitted('close')).toBeUndefined();
 	});
+
+	test.each([true, false])('closes outside video with touch mode %s', async (touch) => {
+		state.touch = touch;
+		const view = setup({ type: 'video' });
+		const video = view.main.querySelector('video')!;
+		vi.spyOn(video, 'getBoundingClientRect').mockReturnValue(new DOMRect(100, 0, 200, 400));
+		await tap(view.main, 50, 200);
+		expect(view.emitted('close')).toHaveLength(1);
+	});
+
+	test('preserves video playback taps and requires both endpoints outside', async () => {
+		const view = setup({ type: 'video' });
+		const video = view.main.querySelector('video')!;
+		vi.spyOn(video, 'getBoundingClientRect').mockReturnValue(new DOMRect(100, 0, 200, 400));
+		const play = vi.spyOn(video, 'play').mockResolvedValue();
+		await tap(view.main, 200, 200);
+		expect(play).toHaveBeenCalledOnce();
+		await tap(view.main, 99, 200, 101, 200);
+		await tap(view.main, 101, 200, 99, 200);
+		expect(view.emitted('close')).toBeUndefined();
+	});
+
+	test('waits for video metadata when dimensions are unknown', async () => {
+		const view = setup({ type: 'video', width: null, height: null });
+		const video = view.main.querySelector('video')!;
+		vi.spyOn(video, 'getBoundingClientRect').mockReturnValue(new DOMRect(100, 0, 200, 400));
+		vi.spyOn(video, 'play').mockResolvedValue();
+		await tap(view.main, 50, 200);
+		expect(view.emitted('close')).toBeUndefined();
+		Object.defineProperties(video, { videoWidth: { value: 200 }, videoHeight: { value: 400 } });
+		await fireEvent.loadedMetadata(video);
+		await tap(view.main, 50, 200);
+		expect(view.emitted('close')).toHaveLength(1);
+	});
+
+	test('does not treat a video background touch as the second half of a double tap', async () => {
+		const view = setup({ type: 'video' });
+		const video = view.main.querySelector('video')!;
+		vi.spyOn(video, 'getBoundingClientRect').mockReturnValue(new DOMRect(100, 0, 200, 400));
+		const now = vi.spyOn(Date.prototype, 'getTime');
+		now.mockReturnValue(1000);
+		await touchstart(view.main, 101, 200);
+		now.mockReturnValue(1100);
+		await touchstart(view.main, 99, 200);
+		expect(view.transformer.style.transform).toContain('scale(1)');
+		await tap(view.main, 99, 200);
+		expect(view.emitted('close')).toHaveLength(1);
+	});
+
+	test('keeps native video controls inside the player and closes from the background', async () => {
+		preferState.useNativeUiForVideoAudioPlayer = true;
+		const view = setup({ type: 'video' });
+		const video = view.main.querySelector('video')!;
+		vi.spyOn(video, 'getBoundingClientRect').mockReturnValue(new DOMRect(100, 0, 200, 400));
+		const play = vi.spyOn(video, 'play').mockResolvedValue();
+		await tap(view.main, 200, 200);
+		expect(play).not.toHaveBeenCalled();
+		expect(view.emitted('close')).toBeUndefined();
+		await pointer(view.main, 'pointerdown', 50, 200);
+		await pointer(view.main, 'pointerup', 50, 200);
+		await fireEvent.click(view.main, { clientX: 50, clientY: 200 });
+		expect(view.emitted('close')).toHaveLength(1);
+	});
+
 });
