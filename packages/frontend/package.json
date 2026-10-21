@@ -131,7 +131,7 @@
 		"rolldown": "1.2.13",
 		"rollup-plugin-visualizer": "7.1.1",
 		"sass-embedded": "1.105.1",
-		"storybook": "10.6.1",
+		"storybook": "10.6.2",
 		"storybook-addon-misskey-theme": "github:misskey-dev/storybook-addon-misskey-theme",
 		"tsx": "4.23.15",
 		"typescript": "6.0.3",

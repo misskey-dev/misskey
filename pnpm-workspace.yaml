@@ -53,6 +53,8 @@ minimumReleaseAgeExclude:
   - slacc-linux-x64-musl
   - slacc-win32-arm64-msvc
   - slacc-win32-x64-msvc
+  # Renovate security update: storybook@10.6.2
+  - storybook@10.6.2
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
