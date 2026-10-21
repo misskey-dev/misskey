@@ -55,6 +55,8 @@ minimumReleaseAgeExclude:
   - slacc-win32-x64-msvc
   # Renovate security update: sanitize-html@2.18.1
   - sanitize-html@2.18.1
+  # Renovate security update: storybook@10.6.2
+  - storybook@10.6.2
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
