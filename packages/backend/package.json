@@ -126,7 +126,7 @@
 		"reflect-metadata": "0.2.2",
 		"rename": "1.0.4",
 		"rss-parser": "3.13.0",
-		"sanitize-html": "2.18.0",
+		"sanitize-html": "2.18.1",
 		"secure-json-parse": "4.1.0",
 		"semver": "7.8.5",
 		"sharp": "0.35.5",
