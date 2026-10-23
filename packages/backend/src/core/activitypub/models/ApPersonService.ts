@@ -14,7 +14,7 @@ import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import { MiUser } from '@/models/User.js';
 import { truncate } from '@/misc/truncate.js';
 import type { CacheService } from '@/core/CacheService.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { normalizeTag } from '@/misc/normalize-tag.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import type Logger from '@/logger.js';
 import type { MiNote } from '@/models/Note.js';
@@ -321,7 +321,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const fields = this.analyzeAttachments(person.attachment ?? []);
 
-		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
+		const tags = extractApHashtags(person.tag).splice(0, 32).map(normalizeTag);
 
 		const isBot = getApType(object) === 'Service' || getApType(object) === 'Application';
 
@@ -518,7 +518,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const fields = this.analyzeAttachments(person.attachment ?? []);
 
-		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
+		const tags = extractApHashtags(person.tag).splice(0, 32).map(normalizeTag);
 
 		const [followingVisibility, followersVisibility] = await Promise.all(
 			[
