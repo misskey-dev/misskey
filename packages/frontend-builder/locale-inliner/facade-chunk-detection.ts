@@ -32,39 +32,68 @@ export function detectI18nFacadeChunk(
 	}
 
 	// check if the file is like facade.
-	// if file is like following we treat them as facade.
+	// The exact shape of the facade chunk depends on the bundler version, so we accept any module
+	// that consists only of import / re-export statements. e.g.
 	// ```
 	// import { something } from "file";
 	// export { something };
 	// ```
-	if (programNode.body.length !== 2) return null; // not a facade
-	if (programNode.body[0].type !== 'ImportDeclaration') return null; // not a facade
-	if (programNode.body[1].type !== 'ExportNamedDeclaration') return null; // not a facade
-	const importDecl = programNode.body[0];
-	const exportDecl = programNode.body[1];
+	// or
+	// ```
+	// export { something } from "file";
+	// ```
+	if (programNode.body.length === 0) return null;
+	const isFacadeStatement = (stmt: RolldownESTree.Statement | RolldownESTree.Directive | RolldownESTree.ModuleDeclaration) =>
+		stmt.type === 'ImportDeclaration'
+		|| stmt.type === 'ExportAllDeclaration'
+		|| (stmt.type === 'ExportNamedDeclaration' && stmt.declaration == null);
+	if (!programNode.body.every(isFacadeStatement)) return null; // not a facade
 
 	// the file is a facade file.
 
-	const sourcePath = importDecl.source.value;
-	const sourceName = path.posix.basename(sourcePath);
+	// local name => [source, imported name]
+	const importNameMap = new Map<string, [string, string]>();
+	// facade export name => [source, imported name]
+	const exportMap = new Map<string, [string, string]>();
 
-	const importNameMap = Object.fromEntries(importDecl.specifiers
-		.map(specifier => {
-			if (specifier.type !== 'ImportSpecifier') throw new Error(`${fileName}: Unexpected import specifier in facade module: ${specifier.type}`);
-			const exportName = getExportName(specifier.imported);
-			const localName = specifier.local.name;
-			return [localName, exportName];
-		}));
-	const nameMap = Object.fromEntries(exportDecl.specifiers.map(spec => {
-		const localName = getExportName(spec.local);
-		const facadeExportName = getExportName(spec.exported);
-		const moduleExportName = importNameMap[localName];
-		return [facadeExportName, moduleExportName];
-	}));
+	for (const stmt of programNode.body) {
+		if (stmt.type === 'ImportDeclaration') {
+			for (const specifier of stmt.specifiers) {
+				if (specifier.type !== 'ImportSpecifier') throw new Error(`${fileName}: Unexpected import specifier in facade module: ${specifier.type}`);
+				importNameMap.set(specifier.local.name, [stmt.source.value, getExportName(specifier.imported)]);
+			}
+		}
+	}
+
+	for (const stmt of programNode.body) {
+		if (stmt.type === 'ExportAllDeclaration') {
+			throw new Error(`${fileName}: Unsupported 'export *' statement in facade module`);
+		}
+		if (stmt.type !== 'ExportNamedDeclaration') continue;
+		for (const spec of stmt.specifiers) {
+			const localName = getExportName(spec.local);
+			const facadeExportName = getExportName(spec.exported);
+			if (stmt.source != null) {
+				// export { local as exported } from "file";
+				exportMap.set(facadeExportName, [stmt.source.value, localName]);
+			} else {
+				// import { imported as local } from "file"; export { local as exported };
+				const imported = importNameMap.get(localName);
+				if (imported == null) throw new Error(`${fileName}: Facade module exports '${localName}' which is not imported`);
+				exportMap.set(facadeExportName, imported);
+			}
+		}
+	}
+
+	const sources = new Set([...exportMap.values()].map(([source]) => source));
+	if (sources.size !== 1) {
+		throw new Error(`${fileName}: Facade module is expected to re-export from exactly one module, but got: ${JSON.stringify([...sources])}`);
+	}
+	const [sourcePath] = sources;
 
 	return {
-		fileName: sourceName,
-		nameMap,
+		fileName: path.posix.basename(sourcePath),
+		nameMap: Object.fromEntries([...exportMap].map(([exported, [, imported]]) => [exported, imported])),
 	};
 }
 

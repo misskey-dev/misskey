@@ -2583,6 +2583,7 @@ _deck:
     antenna: "Antena"
     list: "Daftar"
     channel: "Kanal"
+    clip: "Klip"
     mentions: "Sebutan"
     direct: "Langsung"
     roleTimeline: "Lini masa peran"
