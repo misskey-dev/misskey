@@ -115,7 +115,7 @@
 		"eslint-plugin-import": "2.32.0",
 		"eslint-plugin-vue": "10.11.1",
 		"execa": "10.1.1",
-		"happy-dom": "20.14.6",
+		"happy-dom": "21.0.3",
 		"intersection-observer": "0.12.2",
 		"lightningcss": "1.33.0",
 		"micromatch": "4.0.8",
