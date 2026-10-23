@@ -500,8 +500,8 @@ importers:
         specifier: 0.62.0
         version: 0.62.0
       mfm-js:
-        specifier: 0.27.0
-        version: 0.27.0
+        specifier: 0.28.0
+        version: 0.28.0
       mime-types:
         specifier: 3.0.2
         version: 3.0.2
@@ -901,8 +901,8 @@ importers:
         specifier: 1.61.5
         version: 1.61.5
       mfm-js:
-        specifier: 0.27.0
-        version: 0.27.0
+        specifier: 0.28.0
+        version: 0.28.0
       misskey-bubble-game:
         specifier: workspace:*
         version: link:../misskey-bubble-game
@@ -1218,8 +1218,8 @@ importers:
         specifier: 2.2.3
         version: 2.2.3
       mfm-js:
-        specifier: 0.27.0
-        version: 0.27.0
+        specifier: 0.28.0
+        version: 0.28.0
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
@@ -1330,8 +1330,8 @@ importers:
         specifier: 2.2.3
         version: 2.2.3
       mfm-js:
-        specifier: 0.27.0
-        version: 0.27.0
+        specifier: 0.28.0
+        version: 0.28.0
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
@@ -6635,8 +6635,8 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
-  mfm-js@0.27.0:
-    resolution: {integrity: sha512-UgnCx6foer9OsD/WoEjVWELL5IaJ8ShBHz6XwEvQZmRon3ccz7Cdrejfk7sj2jSHhnqQOIKNLUvMsWcILafNfw==}
+  mfm-js@0.28.0:
+    resolution: {integrity: sha512-Ym54M3C1F5rqsqawi8BYEc/uCcbAlewSLiwLmJgB0Eow6QPJxm8I+pGjtRqJXf+BqoFyDFchr+dtFwesS22NHw==}
 
   micromark-core-commonmark@2.0.4:
     resolution: {integrity: sha512-wxEeE8v8XVvOrxn1TZj74qYhAtTQsSqufHVS3uNVyT1MupXxhyaHk8/9xDNPh9BmL77QNDgWTkZ3RsYHB2ry7w==}
@@ -14822,7 +14822,7 @@ snapshots:
 
   merge2@1.4.1: {}
 
-  mfm-js@0.27.0:
+  mfm-js@0.28.0:
     dependencies:
       '@misskey-dev/emoji-data': 17.0.3
 
