@@ -15,7 +15,7 @@ import type { UsersRepository, DriveFilesRepository, MiMeta, UserProfilesReposit
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { birthdaySchema, descriptionSchema, followedMessageSchema, locationSchema, nameSchema } from '@/models/User.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { normalizeTag } from '@/misc/normalize-tag.js';
 import { langmap } from '@/misc/langmap.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -520,7 +520,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (newDescription != null) {
 				const tokens = mfm.parse(newDescription);
 				emojis = emojis.concat(extractCustomEmojisFromMfm(tokens));
-				tags = extractHashtags(tokens).map(tag => normalizeForSearch(tag)).splice(0, 32);
+				tags = extractHashtags(tokens).map(tag => normalizeTag(tag)).splice(0, 32);
 			}
 
 			for (const field of newFields) {
