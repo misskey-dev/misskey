@@ -14,6 +14,7 @@ import type { NotesRepository } from '@/models/_.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { FanoutTimelineName, FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { CacheService } from '@/core/CacheService.js';
@@ -59,6 +60,7 @@ export class FanoutTimelineEndpointService {
 		private fanoutTimelineService: FanoutTimelineService,
 		private utilityService: UtilityService,
 		private channelMutingService: ChannelMutingService,
+		private idService: IdService,
 	) {
 	}
 
@@ -77,12 +79,41 @@ export class FanoutTimelineEndpointService {
 
 		const redisResult = await this.fanoutTimelineService.getMulti(ps.redisTimelines, ps.untilId, ps.sinceId);
 
+		const dummyTime = this.idService.parse(this.idService.gen(1)).date.getTime();
+
+		// 取得したredisResultのうち、2つ以上ソースがあり、1つでも空であればDBにフォールバックする
+		const trustedEmptyIndices = new Set<number>();
+		for (let i = 0; i < redisResult.length; i++) {
+			const ids = redisResult[i];
+			if (ids.length > 0) {
+				const dummyIdIndex = ascending ? 0 : ids.length - 1;
+				if (this.idService.parse(ids[dummyIdIndex]).date.getTime() === dummyTime) {
+					ids.splice(dummyIdIndex, 1);
+					if (ids.length === 0) {
+						trustedEmptyIndices.add(i);
+					}
+				}
+			}
+		}
+
+		let shouldFallbackToDb = ps.useDbFallback && (redisResult.length > 1 && redisResult.some((ids, i) => ids.length === 0 && !trustedEmptyIndices.has(i)));
+
+		// 取得したresultの中で最古のIDのうち、最も新しいものを取得
+		// ids自体が空配列の場合、ids[ids.length - 1]はundefinedになるため、filterでnullを除外する
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		const fttThresholdId = redisResult.map(ids => ascending ? ids[0] : ids[ids.length - 1]).filter(id => id != null).sort().pop();
+
 		// TODO: いい感じにgetMulti内でソート済だからuniqするときにredisResultが全てソート済なのを利用して再ソートを避けたい
-		const redisResultIds = Array.from(new Set(redisResult.flat(1))).sort(idCompare);
+		let redisResultIds = shouldFallbackToDb ? [] : Array.from(new Set(redisResult.flat(1)));
+		if (ps.useDbFallback && fttThresholdId != null) {
+			redisResultIds = redisResultIds.filter(id => id >= fttThresholdId);
+		}
+		redisResultIds.sort(idCompare);
 
 		let noteIds = redisResultIds.slice(0, ps.limit);
+
 		const oldestNoteId = ascending ? redisResultIds[0] : redisResultIds[redisResultIds.length - 1];
-		const shouldFallbackToDb = noteIds.length === 0 || ps.sinceId != null && ps.sinceId < oldestNoteId;
+		shouldFallbackToDb ||= ps.useDbFallback && (noteIds.length === 0 || ps.sinceId != null && ps.sinceId < oldestNoteId);
 
 		if (!shouldFallbackToDb) {
 			let filter = ps.noteFilter ?? (_note => true) as NoteFilter;
@@ -212,7 +243,28 @@ export class FanoutTimelineEndpointService {
 			return [...redisTimeline, ...gotFromDb];
 		}
 
-		return await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
+		// RedisおよびDBが空の場合、次回以降の無駄なDBアクセスを防ぐためダミーIDを保存する
+		const gotFromDb = await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
+		const canInject = (
+			(redisResultIds.length === 0 && ps.sinceId == null && ps.untilId == null) &&
+			(gotFromDb.length < ps.limit)
+		);
+
+		if (canInject) {
+			const dummyId = this.idService.gen(1); // 1 = Detectable Dummy Timestamp
+
+			await Promise.all(ps.redisTimelines.map(async (tl, i) => {
+				// 有効なソースかつ結果が空だった場合のみダミーを入れる
+				if (redisResult[i] && redisResult[i].length === 0 && !trustedEmptyIndices.has(i)) {
+					if (await this.isTimelineEmpty(tl, gotFromDb)) {
+						return this.fanoutTimelineService.injectDummyIfEmpty(tl, dummyId);
+					}
+				}
+				return;
+			})).catch(_ => {});
+		}
+
+		return gotFromDb;
 	}
 
 	private async getAndFilterFromDb(noteIds: string[], noteFilter: NoteFilter, idCompare: (a: string, b: string) => number): Promise<MiNote[]> {
@@ -230,5 +282,118 @@ export class FanoutTimelineEndpointService {
 		notes.sort((a, b) => idCompare(a.id, b.id));
 
 		return notes;
+	}
+
+	private async isTimelineEmpty(tl: FanoutTimelineName, gotFromDb: MiNote[]): Promise<boolean> {
+		// アンテナ・ロールはDBフォールバックを持たないためダミー注入対象外
+		if (
+			tl.startsWith('antennaTimeline:') ||
+			tl.startsWith('roleTimeline:')
+		) {
+			return false;
+		}
+
+		// gotFromDb 内にすでに該当ソースのノートが含まれていれば空ではない
+		if (gotFromDb.some(n => this.accepts(tl, n))) {
+			return false;
+		}
+
+		// 閲覧者によるフィルタが他者に影響しないタイムラインは gotFromDb の結果で空とみなす
+		if (
+			tl.startsWith('homeTimeline:') ||
+			tl.startsWith('homeTimelineWithFiles:') ||
+			tl.startsWith('localTimelineWithReplyTo:') ||
+			tl.startsWith('userListTimeline:') ||
+			tl.startsWith('userListTimelineWithFiles:')
+		) {
+			return true;
+		}
+
+		// 共有・公開ソースは閲覧者フィルタを適用しないDB確認で空判定を行う
+		return (await this.isSharedTimelineEmptyInDb(tl)) === true;
+	}
+
+	private async isSharedTimelineEmptyInDb(tl: FanoutTimelineName): Promise<boolean | null> {
+		const query = this.notesRepository.createQueryBuilder('note').select('note.id');
+
+		if (tl === 'localTimeline') {
+			query.where('note.visibility = :visibility', { visibility: 'public' })
+				.andWhere('note.userHost IS NULL')
+				.andWhere('note.channelId IS NULL')
+				.andWhere('(note.replyId IS NULL OR note.replyUserId = note.userId)');
+		} else if (tl === 'localTimelineWithFiles') {
+			query.where('note.visibility = :visibility', { visibility: 'public' })
+				.andWhere('note.userHost IS NULL')
+				.andWhere('note.channelId IS NULL')
+				.andWhere('(note.replyId IS NULL OR note.replyUserId = note.userId)')
+				.andWhere('note.fileIds != \'{}\'');
+		} else if (tl === 'localTimelineWithReplies') {
+			query.where('note.visibility = :visibility', { visibility: 'public' })
+				.andWhere('note.userHost IS NULL')
+				.andWhere('note.channelId IS NULL')
+				.andWhere('note.replyId IS NOT NULL')
+				.andWhere('note.replyUserId != note.userId');
+		} else if (tl.startsWith('userTimeline:')) {
+			const userId = tl.split(':')[1];
+			query.where('note.userId = :userId', { userId })
+				.andWhere('note.channelId IS NULL')
+				.andWhere('(note.replyId IS NULL OR note.replyUserId = note.userId)');
+		} else if (tl.startsWith('userTimelineWithFiles:')) {
+			const userId = tl.split(':')[1];
+			query.where('note.userId = :userId', { userId })
+				.andWhere('note.channelId IS NULL')
+				.andWhere('(note.replyId IS NULL OR note.replyUserId = note.userId)')
+				.andWhere('note.fileIds != \'{}\'');
+		} else if (tl.startsWith('userTimelineWithReplies:')) {
+			const userId = tl.split(':')[1];
+			query.where('note.userId = :userId', { userId })
+				.andWhere('note.channelId IS NULL')
+				.andWhere('note.replyId IS NOT NULL')
+				.andWhere('note.replyUserId != note.userId');
+		} else if (tl.startsWith('userTimelineWithChannel:')) {
+			const userId = tl.split(':')[1];
+			query.where('note.userId = :userId', { userId })
+				.andWhere('note.channelId IS NOT NULL');
+		} else if (tl.startsWith('channelTimeline:')) {
+			const channelId = tl.split(':')[1];
+			query.where('note.channelId = :channelId', { channelId });
+		} else {
+			return null;
+		}
+
+		const note = await query.limit(1).getRawOne();
+		return note == null;
+	}
+
+	private accepts(tl: FanoutTimelineName, note: MiNote): boolean {
+		if (tl === 'localTimeline') {
+			return !note.userHost && !note.channelId && !isReply(note) && note.visibility === 'public';
+		} else if (tl === 'localTimelineWithFiles') {
+			return !note.userHost && !note.channelId && !isReply(note) && note.visibility === 'public' && note.fileIds.length > 0;
+		} else if (tl === 'localTimelineWithReplies') {
+			return !note.userHost && !note.channelId && isReply(note) && note.visibility === 'public';
+		} else if (tl.startsWith('localTimelineWithReplyTo:')) {
+			const id = tl.split(':')[1];
+			return !note.userHost && !note.channelId && isReply(note) && note.visibility === 'public' && note.replyUserHost == null && note.replyUserId === id;
+		} else if (tl.startsWith('userTimeline:')) {
+			const id = tl.split(':')[1];
+			return note.userId === id && !note.channelId && !isReply(note);
+		} else if (tl.startsWith('userTimelineWithFiles:')) {
+			const id = tl.split(':')[1];
+			return note.userId === id && !note.channelId && !isReply(note) && note.fileIds.length > 0;
+		} else if (tl.startsWith('userTimelineWithReplies:')) {
+			const id = tl.split(':')[1];
+			return note.userId === id && !note.channelId && isReply(note);
+		} else if (tl.startsWith('userTimelineWithChannel:')) {
+			const id = tl.split(':')[1];
+			return note.userId === id && note.channelId != null;
+		} else if (tl.startsWith('channelTimeline:')) {
+			const id = tl.split(':')[1];
+			return note.channelId === id;
+		} else if (tl.startsWith('homeTimelineWithFiles:')) {
+			return note.fileIds.length > 0;
+		} else {
+			return true;
+		}
 	}
 }
