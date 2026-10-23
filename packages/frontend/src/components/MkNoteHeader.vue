@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkA>
 	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
 	<div :class="$style.username"><MkAcct :user="note.user"/></div>
-	<div v-if="badgeRoles" :class="$style.badgeRoles">
+	<div v-if="badgeRoles != null && badgeRoles.length > 0" :class="$style.badgeRoles">
 		<img v-for="role in badgeRoles" :key="role.id" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
 	</div>
 	<div :class="$style.info">

@@ -69,7 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="$style.noteHeaderUsername">
 							<MkAcct :user="appearNote.user"/>
 						</div>
-						<div v-if="badgeRoles" :class="$style.noteHeaderBadgeRoles">
+						<div v-if="badgeRoles != null && badgeRoles.length > 0" :class="$style.noteHeaderBadgeRoles">
 							<img v-for="role in badgeRoles" :key="role.id" v-tooltip="role.name" :class="$style.noteHeaderBadgeRole" :src="role.iconUrl!"/>
 						</div>
 					</div>

@@ -722,6 +722,9 @@ describe('ユーザー', () => {
 		});
 
 		assert.deepStrictEqual(response.hiddenRoleIds, [secondVisibleRole.id, visibleRole.id]);
+
+		const shown = await successfulApiCall({ endpoint: 'users/show', parameters: { userId: user.id }, user: alice });
+		assert.deepStrictEqual(shown.roles.map(r => r.id), [forcedRole.id]);
 	});
 	test('をID指定のリスト形式で取得することができる（空）', async () => {
 		const parameters = { userIds: [] };
