@@ -89,6 +89,10 @@ export const ROUTE_DEF = [{
 		name: 'privacy',
 		component: page(() => import('@/pages/settings/privacy.vue')),
 	}, {
+		path: '/roles',
+		name: 'roles',
+		component: page(() => import('@/pages/settings/roles.vue')),
+	}, {
 		path: '/emoji-palette',
 		name: 'emoji-palette',
 		component: page(() => import('@/pages/settings/emoji-palette.vue')),

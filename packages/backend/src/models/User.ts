@@ -6,6 +6,7 @@
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { id } from './util/id.js';
 import { MiDriveFile } from './DriveFile.js';
+import type { MiRole } from './Role.js';
 
 @Entity('user')
 @Index(['usernameLower', 'host'], { unique: true })
@@ -228,6 +229,11 @@ export class MiUser {
 		length: 128, array: true, default: '{}',
 	})
 	public emojis: string[];
+
+	@Column('varchar', {
+		length: 32, array: true, default: '{}',
+	})
+	public hiddenRoleIds: MiRole['id'][];
 
 	// チャットを許可する相手
 	// everyone: 誰からでも
