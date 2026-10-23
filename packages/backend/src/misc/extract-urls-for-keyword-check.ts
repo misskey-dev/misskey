@@ -7,12 +7,40 @@ import { domainToUnicode } from 'node:url';
 import * as mfm from 'mfm-js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 
+/**
+ * パーセントデコードする。不正なエスケープはその部分だけ元の形のまま残し、有効なUTF-8として解釈できる部分はデコードする
+ */
 function safeDecodeURIComponent(str: string): string {
-	try {
-		return decodeURIComponent(str);
-	} catch {
-		return str;
-	}
+	return str.replace(/(?:%[0-9A-Fa-f]{2})+/g, (run) => {
+		try {
+			return decodeURIComponent(run);
+		} catch {
+			// 不正なバイト列を含む場合は、UTF-8の1文字分(最大4バイト)ずつ復号を試みる
+			const escapes = run.match(/%[0-9A-Fa-f]{2}/g)!;
+			let result = '';
+			let i = 0;
+			while (i < escapes.length) {
+				let decoded: string | null = null;
+				let len = Math.min(4, escapes.length - i);
+				for (; len > 0; len--) {
+					try {
+						decoded = decodeURIComponent(escapes.slice(i, i + len).join(''));
+						break;
+					} catch {
+						// 次に短い長さで再試行
+					}
+				}
+				if (decoded != null) {
+					result += decoded;
+					i += len;
+				} else {
+					result += escapes[i];
+					i++;
+				}
+			}
+			return result;
+		}
+	});
 }
 
 /**

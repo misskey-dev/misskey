@@ -60,6 +60,11 @@ describe('extractUrlsForKeyWordCheck', () => {
 		]);
 	});
 
+	test('不正なパーセントエンコーディングが混在していても有効な部分はデコードされる', () => {
+		expect(extractUrlsForKeyWordCheck('https://example.com/%E7%A6%81%E6%AD%A2/%E7%A6?q=%E7%A6%81%FF%E6%AD%A2#%E7%A6%E7%A6%81')).toContain('https://example.com/禁止/%E7%A6?q=禁%FF止#%E7%A6禁');
+		expect(extractUrlsForKeyWordCheck('https://example.com/%zz%E7%A6%81')).toContain('https://example.com/%zz禁');
+	});
+
 	test('保存時に切り詰められる範囲より後ろのURLは対象外', () => {
 		const padding = 'a'.repeat(DB_MAX_NOTE_TEXT_LENGTH);
 		expect(extractUrlsForKeyWordCheck(`${padding} https://%65xample.com/`)).toEqual([]);
