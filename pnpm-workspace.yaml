@@ -57,6 +57,8 @@ minimumReleaseAgeExclude:
   - sanitize-html@2.18.1
   # Renovate security update: storybook@10.6.2
   - storybook@10.6.2
+  # Renovate security update: fastify@5.12.6
+  - fastify@5.12.6
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
