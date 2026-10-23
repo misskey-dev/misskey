@@ -30,6 +30,25 @@ type SentryBackendConfig = {
 	disabledIntegrations?: string[];
 };
 
+type SentryBackendConfigSource = Omit<SentryBackendConfig, 'options'> & {
+	options?: Partial<Sentry.NodeOptions>;
+};
+
+type OtelBackendConfig = {
+	endpoint?: string;
+	headers?: Record<string, string>;
+	sampleRate?: number;
+	capturePgSpans?: boolean;
+	capturePgStatement?: boolean;
+	capturePgConnectionSpans?: boolean;
+	captureRedisCommandSpans?: boolean;
+	captureRedisConnectionSpans?: boolean;
+	captureRedisRootSpans?: boolean;
+	resourceAttributes?: Record<string, string>;
+	propagateTraceToRemote?: boolean;
+	jobTraceContextMode?: 'link' | 'parent';
+};
+
 /**
  * 設定ファイルの型
  */
@@ -74,7 +93,8 @@ type Source = {
 		index: string;
 		scope?: 'local' | 'global' | string[];
 	};
-	sentryForBackend?: SentryBackendConfig;
+	sentryForBackend?: SentryBackendConfigSource;
+	otelForBackend?: OtelBackendConfig;
 	sentryForFrontend?: {
 		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
 		vueIntegration?: SentryVue.VueIntegrationOptions | null;
@@ -220,6 +240,7 @@ export type Config = {
 	redisForTimelines: RedisOptionsResolved;
 	redisForReactions: RedisOptionsResolved;
 	sentryForBackend: SentryBackendConfig | undefined;
+	otelForBackend: OtelBackendConfig | undefined;
 	sentryForFrontend: {
 		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
 		vueIntegration?: SentryVue.VueIntegrationOptions | null;
@@ -324,7 +345,8 @@ export function loadConfig(): Config {
 		redisForJobQueue: config.redisForJobQueue ? convertRedisOptions(config.redisForJobQueue, host) : redis,
 		redisForTimelines: config.redisForTimelines ? convertRedisOptions(config.redisForTimelines, host) : redis,
 		redisForReactions: config.redisForReactions ? convertRedisOptions(config.redisForReactions, host) : redis,
-		sentryForBackend: config.sentryForBackend,
+		sentryForBackend: config.sentryForBackend == null ? undefined : normalizeSentryBackendConfig(config.sentryForBackend),
+		otelForBackend: config.otelForBackend,
 		sentryForFrontend: config.sentryForFrontend,
 		id: config.id,
 		proxy: config.proxy,
@@ -358,6 +380,13 @@ export function loadConfig(): Config {
 		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
 		pidFile: config.pidFile,
 		logging: config.logging,
+	};
+}
+
+export function normalizeSentryBackendConfig(config: SentryBackendConfigSource): SentryBackendConfig {
+	return {
+		...config,
+		options: config.options ?? {},
 	};
 }
 

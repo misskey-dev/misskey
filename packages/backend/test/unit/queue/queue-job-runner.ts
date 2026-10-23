@@ -4,13 +4,13 @@
  */
 
 import { describe, expect, test, vi } from 'vitest';
-import { runQueueJob } from '@/queue/queue-job-runner.js';
+import { runQueueJobWithTraceContext } from '@/queue/queue-job-runner.js';
 import { TelemetryService } from '@/core/telemetry/TelemetryService.js';
 
-describe('runQueueJob', () => {
+describe('runQueueJobWithTraceContext', () => {
 	test('returns the processor result without invoking the error handler', async () => {
 		let spanActive = false;
-		const startSpan = vi.fn(<T>(_name: string, fn: () => T): T => {
+		const startSpanWithTraceContext = vi.fn(<T>(_name: string, _jobData: object, fn: () => T): T => {
 			spanActive = true;
 			const result = fn();
 			if (result instanceof Promise) return result.finally(() => { spanActive = false; }) as T;
@@ -18,11 +18,11 @@ describe('runQueueJob', () => {
 			return result;
 		});
 		const telemetryService = {
-			startSpan,
+			startSpanWithTraceContext,
 		} as unknown as TelemetryService;
 		const onError = vi.fn();
 
-		await expect(runQueueJob(telemetryService, 'Queue: test', () => 'ok', onError)).resolves.toBe('ok');
+		await expect(runQueueJobWithTraceContext(telemetryService, 'Queue: test', {}, () => 'ok', onError)).resolves.toBe('ok');
 
 		expect(onError).not.toHaveBeenCalled();
 		expect(spanActive).toBe(false);
@@ -30,7 +30,7 @@ describe('runQueueJob', () => {
 
 	test('handles failures while the processor span is active and rethrows the original error', async () => {
 		let spanActive = false;
-		const startSpan = vi.fn(<T>(_name: string, fn: () => T): T => {
+		const startSpanWithTraceContext = vi.fn(<T>(_name: string, _jobData: object, fn: () => T): T => {
 			spanActive = true;
 			const result = fn();
 			if (result instanceof Promise) return result.finally(() => { spanActive = false; }) as T;
@@ -38,7 +38,7 @@ describe('runQueueJob', () => {
 			return result;
 		});
 		const telemetryService = {
-			startSpan,
+			startSpanWithTraceContext,
 		} as unknown as TelemetryService;
 		const onError = vi.fn((error: Error) => {
 			expect(spanActive).toBe(true);
@@ -46,7 +46,7 @@ describe('runQueueJob', () => {
 		});
 		const originalError = new Error('failed');
 
-		await expect(runQueueJob(telemetryService, 'Queue: test', async () => {
+		await expect(runQueueJobWithTraceContext(telemetryService, 'Queue: test', {}, async () => {
 			throw originalError;
 		}, onError)).rejects.toBe(originalError);
 

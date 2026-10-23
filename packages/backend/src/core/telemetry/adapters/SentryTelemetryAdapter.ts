@@ -3,13 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import Logger from '@/logger.js';
 import type { LogTraceContext } from '@/logging/types.js';
 import type * as SentryNode from '@sentry/node';
 import type { NodeOptions } from '@sentry/node';
-import type { SentryBackendConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
+import type { OtelBackendRuntimeConfig, OtlpExportTarget, SentryBackendConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
 
-// Sentryのtransportが詰まってもプロセス終了を妨げないようにする。
+// Sentryのtransportが詰まってもプロセス終了を妨げないよう、上限時間を設ける。
 const DEFAULT_SHUTDOWN_TIMEOUT = 5000;
+const logger = new Logger('telemetry', 'green');
 
 type SentryIntegrationsOption = NonNullable<NodeOptions['integrations']>;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -105,9 +107,82 @@ export function buildSentryNodeOptions(
 	};
 }
 
+type BuildSentryOpenTelemetryLinkedInitOptions = {
+	sentryConfig: SentryBackendConfig;
+	otelConfig: OtelBackendRuntimeConfig;
+	openTelemetryIntegration: () => SentryIntegration;
+	warn?: (message: string) => void;
+};
+
+/**
+ * otelForBackend併用時のSentry.initオプションを組み立てる。
+ *
+ * Sentry SDK v11はOTel SDKのproviderを持たなくなったため、tracingはMisskeyのOTel providerに一本化する。
+ * Sentry側はtracingを無効にしたうえでopenTelemetryIntegrationを入れ、エラー等をactiveなOTel spanへ紐付けるだけにする。
+ * Sentryへのspan送信はOTel provider側からSentryのOTLP endpointへ行う(getSentryOtlpExportTarget)。
+ */
+export function buildSentryOpenTelemetryLinkedInitOptions(options: BuildSentryOpenTelemetryLinkedInitOptions): SentryNodeOptions {
+	const warn = options.warn ?? ((message: string) => logger.warn(message));
+	const { tracePropagationTargets, tracesSampleRate, tracesSampler, ...sentryOptions } = options.sentryConfig.options;
+	// remoteへtrace headerを漏らさないデフォルトはSentry単体時と揃える。
+	// propagateTraceToRemote: true か、options.tracePropagationTargets の明示指定がある場合のみ既定を上書きする。
+	const propagateTraceToRemote = options.otelConfig.propagateTraceToRemote === true || tracePropagationTargets != null;
+
+	if (tracesSampleRate != null || tracesSampler != null) {
+		warn('sentryForBackend.options.tracesSampleRate / tracesSampler are ignored when otelForBackend is also configured; spans are sampled by OpenTelemetry, so configure otelForBackend.sampleRate instead.');
+	}
+
+	if (options.sentryConfig.enableNodeProfiling) {
+		warn('sentryForBackend.enableNodeProfiling is ignored when otelForBackend is also configured, because trace-based profiling requires Sentry to own tracing.');
+	}
+
+	const nodeOptions = buildSentryNodeOptions({
+		...options.sentryConfig,
+		enableNodeProfiling: false,
+		options: {
+			...sentryOptions,
+			...(propagateTraceToRemote ? { tracePropagationTargets } : {}),
+		},
+	}, undefined, warn);
+
+	// tracesSampleRateを設定するとSentryが自前のspanを別traceとして発行し、OTelのspanと二重になるため未設定にする。
+	delete nodeOptions.tracesSampleRate;
+	delete nodeOptions.profileSessionSampleRate;
+	delete nodeOptions.profileLifecycle;
+
+	const integrations = nodeOptions.integrations as SentryIntegrationFactory;
+	return {
+		...nodeOptions,
+		integrations: (defaults) => [
+			...integrations(defaults),
+			options.openTelemetryIntegration(),
+		],
+	};
+}
+
+/**
+ * Sentry SDK v11がOTel provider側のspanを受け取る唯一の経路であるOTLP endpointの送信先を求める。
+ * DSNが無い(Sentryが無効)か解釈できない場合はundefinedを返す。
+ */
+export function resolveSentryOtlpExportTarget(
+	dsn: string | undefined,
+	getOtlpTracesEndpoint: (dsn: string) => OtlpExportTarget | undefined,
+	warn: (message: string) => void,
+): OtlpExportTarget | undefined {
+	if (dsn == null || dsn === '') return undefined;
+
+	const target = getOtlpTracesEndpoint(dsn);
+	if (target == null) {
+		warn('Could not derive the Sentry OTLP traces endpoint from sentryForBackend.options.dsn; spans will be exported only to otelForBackend.');
+	}
+	return target;
+}
+
 export class SentryTelemetryAdapter implements TelemetryAdapter {
 	private constructor(
 		private readonly Sentry: typeof SentryNode,
+		/** trueの場合、tracingはOTel adapterが所有し、Sentryはイベント通知だけを担う。 */
+		private readonly linkedToOpenTelemetry = false,
 	) {
 	}
 
@@ -120,6 +195,33 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 		return new SentryTelemetryAdapter(Sentry);
 	}
 
+	/** OTel provider へ追加する、Sentry の OTLP 送信先を返す。Sentry.init より前に OTel provider を作れるよう分けている。 */
+	public static async getOtlpExportTarget(
+		config: SentryBackendConfig,
+		warn: (message: string) => void = message => logger.warn(message),
+	): Promise<OtlpExportTarget | undefined> {
+		const { getOtlpTracesEndpoint } = await import('@sentry/node');
+		// Sentry.initと同様、dsn未指定時はSENTRY_DSN環境変数へfallbackする。
+		return resolveSentryOtlpExportTarget(config.options.dsn ?? process.env.SENTRY_DSN, getOtlpTracesEndpoint, warn);
+	}
+
+	public static async createLinkedToOpenTelemetry(
+		sentryConfig: SentryBackendConfig,
+		otelConfig: OtelBackendRuntimeConfig,
+		warn?: (message: string) => void,
+	): Promise<SentryTelemetryAdapter> {
+		const Sentry = await import('@sentry/node');
+
+		Sentry.init(buildSentryOpenTelemetryLinkedInitOptions({
+			sentryConfig,
+			otelConfig,
+			openTelemetryIntegration: Sentry.openTelemetryIntegration,
+			warn,
+		}));
+
+		return new SentryTelemetryAdapter(Sentry, true);
+	}
+
 	public captureMessage(message: string, opts: TelemetryCaptureMessageOptions): void {
 		this.Sentry.captureMessage(message, {
 			level: opts.level,
@@ -130,6 +232,9 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 
 	/** activeなSpanの識別子を、Logging基盤で扱える形式へ変換します。 */
 	public getActiveTraceContext(): LogTraceContext | undefined {
+		// OTel併用時のtrace contextはOTel adapter側から取得する。
+		if (this.linkedToOpenTelemetry) return undefined;
+
 		const activeSpan = this.Sentry.getActiveSpan();
 		if (activeSpan == null) return undefined;
 
@@ -138,6 +243,8 @@ export class SentryTelemetryAdapter implements TelemetryAdapter {
 	}
 
 	public startSpan<T>(name: string, fn: () => T): T {
+		// OTel併用時はOTel adapterがspanを作るため、ここで包むと非記録のSentry spanがOTel spanより優先されてしまう。
+		if (this.linkedToOpenTelemetry) return fn();
 		return this.Sentry.startSpan({ name }, fn);
 	}
 
