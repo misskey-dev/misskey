@@ -142,7 +142,7 @@
 		"vitest-fetch-mock": "0.4.5",
 		"vue-component-type-helpers": "3.3.13",
 		"vue-eslint-parser": "10.4.1",
-		"vue-tsc": "3.3.13"
+		"vue-tsc": "3.3.11"
 	},
 	"msw": {
 		"workerDirectory": [
