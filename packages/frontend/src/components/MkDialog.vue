@@ -22,11 +22,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<header v-if="title" :class="$style.title" class="_selectable"><Mfm :text="title"/></header>
 		<div v-if="text" :class="$style.text" class="_selectable"><Mfm :text="text"/></div>
-		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" :autocomplete="input.autocomplete" @keydown="onInputKeydown">
+		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" :autocomplete="input.autocomplete" :min="inputMinAttr" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
 			<template #caption>
 				<span v-if="okButtonDisabledReason === 'charactersExceeded'" v-text="i18n.tsx._dialog.charactersExceeded({ current: (inputValue as string)?.length ?? 0, max: input.maxLength ?? 'NaN' })"></span>
 				<span v-else-if="okButtonDisabledReason === 'charactersBelow'" v-text="i18n.tsx._dialog.charactersBelow({ current: (inputValue as string)?.length ?? 0, min: input.minLength ?? 'NaN' })"></span>
+				<span v-else-if="okButtonDisabledReason === 'datetimeBelowMin' && input.min" v-text="i18n.tsx._dialog.datetimeBelowMin({ min: input.min.toLocaleString() })"></span>
 			</template>
 		</MkInput>
 		<MkSelect v-if="select" v-model="selectedValue" :items="selectDef" autofocus></MkSelect>
@@ -64,6 +65,8 @@ type Input = {
 	default: string | number | null;
 	minLength?: number;
 	maxLength?: number;
+	/** `type: 'datetime-local'` のときのみ有効。これより前の日時では OK ボタンを無効化する */
+	min?: Date;
 };
 
 type Select = {
@@ -105,7 +108,14 @@ const modal = useTemplateRef('modal');
 
 const inputValue = ref<string | number | null>(props.input?.default ?? null);
 
-const okButtonDisabledReason = computed<null | 'charactersExceeded' | 'charactersBelow'>(() => {
+// datetime-local の min 属性は秒を持たない "YYYY-MM-DDTHH:mm" (ローカル時刻) 形式
+const inputMinAttr = computed(() => {
+	if (props.input?.type !== 'datetime-local' || props.input.min == null) return undefined;
+	const d = props.input.min;
+	return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+});
+
+const okButtonDisabledReason = computed<null | 'charactersExceeded' | 'charactersBelow' | 'datetimeEmpty' | 'datetimeBelowMin'>(() => {
 	if (props.input) {
 		if (props.input.minLength) {
 			if (inputValue.value == null || (inputValue.value as string).length < props.input.minLength) {
@@ -115,6 +125,14 @@ const okButtonDisabledReason = computed<null | 'charactersExceeded' | 'character
 		if (props.input.maxLength) {
 			if (inputValue.value && (inputValue.value as string).length > props.input.maxLength) {
 				return 'charactersExceeded';
+			}
+		}
+		if (props.input.type === 'datetime-local' && props.input.min != null) {
+			if (inputValue.value == null || inputValue.value === '') {
+				return 'datetimeEmpty';
+			}
+			if (new Date(inputValue.value).getTime() < props.input.min.getTime()) {
+				return 'datetimeBelowMin';
 			}
 		}
 	}
