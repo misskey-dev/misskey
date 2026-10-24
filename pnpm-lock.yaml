@@ -373,6 +373,9 @@ importers:
       '@misskey-dev/emoji-data':
         specifier: 17.0.3
         version: 17.0.3
+      '@misskey-dev/media-proxy-core':
+        specifier: workspace:*
+        version: link:../media-proxy-core
       '@misskey-dev/sharp-read-bmp':
         specifier: 2.0.0
         version: 2.0.0(sharp@0.35.5(@types/node@26.6.5))
@@ -1428,6 +1431,58 @@ importers:
       '@typescript-eslint/parser':
         specifier: 8.71.2
         version: 8.71.2(@typescript/typescript6@6.0.2)(eslint@9.39.5(supports-color@10.2.2))(supports-color@10.2.2)
+
+  packages/media-proxy-core:
+    dependencies:
+      '@fastify/static':
+        specifier: 10.1.6
+        version: 10.1.6
+      cacheable-lookup:
+        specifier: 7.0.0
+        version: 7.0.0
+      content-disposition:
+        specifier: 3.0.0
+        version: 3.0.0
+      file-type:
+        specifier: 22.1.1
+        version: 22.1.1(supports-color@10.2.2)
+      got:
+        specifier: 16.0.0
+        version: 16.0.0
+      hpagent:
+        specifier: 1.2.0
+        version: 1.2.0
+      ipaddr.js:
+        specifier: 2.5.0
+        version: 2.5.0
+      is-svg:
+        specifier: 6.1.0
+        version: 6.1.0
+      tmp:
+        specifier: 0.2.7
+        version: 0.2.7
+    devDependencies:
+      '@misskey-dev/sharp-read-bmp':
+        specifier: 2.0.0
+        version: 2.0.0(sharp@0.35.5(@types/node@26.6.5))
+      '@types/node':
+        specifier: 26.6.5
+        version: 26.6.5
+      '@types/tmp':
+        specifier: 0.2.6
+        version: 0.2.6
+      '@typescript-eslint/parser':
+        specifier: 8.71.1
+        version: 8.71.1(@typescript/typescript6@6.0.2)(eslint@9.39.5(supports-color@10.2.2))(supports-color@10.2.2)
+      fastify:
+        specifier: 5.12.5
+        version: 5.12.5
+      sharp:
+        specifier: 0.35.5
+        version: 0.35.5(@types/node@26.6.5)
+      vitest:
+        specifier: 5.0.3
+        version: 5.0.3(@opentelemetry/api@1.9.1)(@types/node@26.6.5)(@vitest/browser-playwright@5.0.3)(@vitest/coverage-v8@5.0.3)(@vitest/ui@5.0.3)(happy-dom@20.14.6(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@3.0.3(@types/node@26.6.5)(supports-color@5.5.0)(typescript@6.0.3)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15)))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.105.1)(sass@1.105.1)(tsx@4.23.15))
 
   packages/misskey-bubble-game:
     dependencies:

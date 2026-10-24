@@ -28,6 +28,7 @@ COPY --link ["packages/i18n/package.json", "./packages/i18n/"]
 COPY --link ["packages/icons-subsetter/package.json", "./packages/icons-subsetter/"]
 COPY --link ["packages/sw/package.json", "./packages/sw/"]
 COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
+COPY --link ["packages/media-proxy-core/package.json", "./packages/media-proxy-core/"]
 COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-reversi/"]
 COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bubble-game/"]
 
@@ -58,6 +59,7 @@ COPY --link ["scripts", "./scripts"]
 COPY --link ["patches", "./patches"]
 COPY --link ["packages/backend/package.json", "./packages/backend/"]
 COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
+COPY --link ["packages/media-proxy-core/package.json", "./packages/media-proxy-core/"]
 COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-reversi/"]
 COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bubble-game/"]
 
@@ -96,10 +98,12 @@ WORKDIR /misskey
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules ./node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-js/node_modules ./packages/misskey-js/node_modules
+COPY --chown=misskey:misskey --from=target-builder /misskey/packages/media-proxy-core/node_modules ./packages/media-proxy-core/node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-reversi/node_modules ./packages/misskey-reversi/node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-bubble-game/node_modules ./packages/misskey-bubble-game/node_modules
 COPY --chown=misskey:misskey --from=native-builder /misskey/built ./built
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-js/built ./packages/misskey-js/built
+COPY --chown=misskey:misskey --from=native-builder /misskey/packages/media-proxy-core/built ./packages/media-proxy-core/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-reversi/built ./packages/misskey-reversi/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-bubble-game/built ./packages/misskey-bubble-game/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/built ./packages/backend/built
