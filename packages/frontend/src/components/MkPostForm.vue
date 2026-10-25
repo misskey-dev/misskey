@@ -1182,7 +1182,7 @@ async function insertEmoji(ev: PointerEvent) {
 	// See: https://github.com/misskey-dev/misskey/pull/14282
 	//      https://github.com/misskey-dev/misskey/issues/14274
 
-	const isCwTarget = emojiTarget.value === 'cw';
+	const isCwTarget = useCw.value && emojiTarget.value === 'cw';
 	const input = isCwTarget ? cwInputEl.value : textareaEl.value;
 	if (input == null) return;
 	if (!isCwTarget) textAreaReadOnly.value = true;
@@ -1202,7 +1202,7 @@ async function insertEmoji(ev: PointerEvent) {
 				text.value = value;
 			}
 			pos += emoji.length;
-			posEnd += emoji.length;
+			posEnd = pos;
 		},
 		() => {
 			textAreaReadOnly.value = false;
