@@ -162,6 +162,12 @@ export interface AdminEventTypes {
 		reporterId: MiUser['id'],
 		comment: string;
 	};
+	meilisearchReIndexCompleted: {
+		fetchedCount: number;
+		errorCount: number;
+		durationMs: number;
+		triggeredAt: number;
+	};
 }
 
 export interface ChatEventTypes {
