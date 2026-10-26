@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/** ドロップエリアから渡される、登録対象のファイルとディレクトリ由来のカテゴリ */
+export type DroppedEmojiFile = {
+	file: File;
+	category: string;
+};
+
 export type RequestLogItem = {
 	failed: boolean;
 	url: string;
