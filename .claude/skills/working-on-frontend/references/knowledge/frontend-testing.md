@@ -11,8 +11,8 @@ pnpm --filter frontend test-and-coverage   # カバレッジ付き
 
 ### 配置
 
-- 主な配置: `packages/frontend/test/*.test.ts` (例: `i18n.test.ts`, `theme.test.ts`, `is-birthday.test.ts`)
-- ビルドツール周りなど対象コードと隣接させた方が分かりやすいテストは、コードと同じディレクトリに `*.test.ts` として置く (例: [packages/frontend/lib/rollup-plugin-unwind-css-module-class-name.test.ts](../../../../../packages/frontend/lib/rollup-plugin-unwind-css-module-class-name.test.ts))
+- 原則、テストは `packages/frontend/test/unit/**/*.test.ts` に置く (例: `i18n.test.ts`, `theme.test.ts`, `is-birthday.test.ts`)。対象コードは `@/...` で import する
+- 必要がない場合 (in-source testing を行わないテストである場合など) は、`src/` 配下に `*.test.ts` を併設しない。
 - 共有コンポーネント (`MkX.vue`) のユニットテストは現状少なく、`*.spec.ts` / `__tests__/` 形式は採用していない (Storybook + Playwright でカバー)
 
 ## Playwright E2E

@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, test, vi } from 'vitest';
-import { getClipColumnReloadDelayMs } from './clip-column.js';
+import { getClipColumnReloadDelayMs } from '@/ui/deck/clip-column.js';
 
 describe('getClipColumnReloadDelayMs', () => {
 	test('returns no delay for clips owned by the current user', () => {

@@ -6,7 +6,7 @@
 import { describe, expect, test } from 'vitest';
 import * as Misskey from 'misskey-js';
 
-import { checkReactionPermissions } from './check-reaction-permissions.js';
+import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 
 describe('checkReactionPermissions', () => {
 	const me = {
