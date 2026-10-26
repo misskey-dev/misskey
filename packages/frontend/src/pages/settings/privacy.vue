@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkFeatureBanner>
 
 		<FormSection first>
-			<template #label><SearchText>{{ i18n.ts._followApproval.groupTitle }}</SearchText></template>
+			<template #label><SearchLabel>{{ i18n.ts._followApproval.groupTitle }}</SearchLabel></template>
 			<div class="_gaps_m">
 				<SearchMarker :keywords="['follow', 'lock']">
 					<MkSwitch v-model="isLocked" @update:modelValue="save()">
