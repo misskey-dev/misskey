@@ -404,6 +404,8 @@ async function onDeleteButtonClicked() {
 	await os.promiseDialog(
 		action(),
 	);
+
+	await refreshCustomEmojis();
 }
 
 async function onGridResetButtonClicked() {
@@ -468,15 +470,16 @@ async function refreshCustomEmojis() {
 		aliases: emptyStrToUndefined(searchQuery.value.aliases),
 		category: emptyStrToUndefined(searchQuery.value.category),
 		license: emptyStrToUndefined(searchQuery.value.license),
-		isSensitive: searchQuery.value.sensitive != null ? Boolean(searchQuery.value.sensitive).valueOf() : undefined,
-		localOnly: searchQuery.value.localOnly != null ? Boolean(searchQuery.value.localOnly).valueOf() : undefined,
+		isSensitive: searchQuery.value.sensitive != null ? searchQuery.value.sensitive === 'true' : undefined,
+		localOnly: searchQuery.value.localOnly != null ? searchQuery.value.localOnly === 'true' : undefined,
 		updatedAtFrom: emptyStrToUndefined(searchQuery.value.updatedAtFrom),
 		updatedAtTo: emptyStrToUndefined(searchQuery.value.updatedAtTo),
 		roleIds: searchQuery.value.roles.map(it => it.id),
 		hostType: 'local',
 	};
 
-	if (JSON.stringify(query) !== previousQuery.value) {
+	const queryKey = JSON.stringify({ query, limit });
+	if (queryKey !== previousQuery.value) {
 		currentPage.value = 1;
 	}
 
@@ -490,7 +493,7 @@ async function refreshCustomEmojis() {
 	customEmojis.value = result.emojis;
 	allPages.value = result.allPages;
 
-	previousQuery.value = JSON.stringify(query);
+	previousQuery.value = queryKey;
 
 	refreshGridItems();
 }
