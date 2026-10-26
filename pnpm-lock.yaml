@@ -191,7 +191,7 @@ overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
   lodash: 4.18.1
-  undici@^7: 7.29.1
+  undici@^7: 7.30.1
   undici@^6: 6.29.1
   '@tabler/icons-webfont>sharp': '-'
 
@@ -8589,8 +8589,8 @@ packages:
     resolution: {integrity: sha512-EvRlUt/QqAEvXdQeRMYUfwOQsfzpDztykrG2owGEE/rBOBoYv9uF39ZzsNDh4lTFHhTr2XOZjKkYgueD12ZmGA==}
     engines: {node: '>=18.17'}
 
-  undici@7.29.1:
-    resolution: {integrity: sha512-RYONW2MeafgYlkVOKYKkA/Ag7BmXqgIWCa8t1m0JcxrQg9pI9lEqRhAOruOBCbAohOa/gkCF+iPi9hrgvTzu6Q==}
+  undici@7.30.1:
+    resolution: {integrity: sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==}
     engines: {node: '>=20.18.1'}
 
   undici@8.11.2:
@@ -9692,7 +9692,7 @@ snapshots:
       fast-querystring: 1.1.2
       fastify-plugin: 6.0.0
       toad-cache: 3.7.4
-      undici: 7.29.1
+      undici: 7.30.1
 
   '@fastify/send@4.1.1':
     dependencies:
@@ -12713,7 +12713,7 @@ snapshots:
       parse5: 7.3.0
       parse5-htmlparser2-tree-adapter: 7.1.0
       parse5-parser-stream: 7.1.2
-      undici: 7.29.1
+      undici: 7.30.1
       whatwg-mimetype: 4.0.0
 
   chokidar@5.0.0:
@@ -13298,13 +13298,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.14.0(@typescript-eslint/parser@8.71.2(eslint@9.39.5(supports-color@5.5.0))(supports-color@5.5.0)(typescript@6.0.3))(eslint-import-resolver-node@0.3.10(supports-color@5.5.0))(eslint@9.39.5(supports-color@5.5.0))(supports-color@5.5.0):
+  eslint-module-utils@2.14.0(@typescript-eslint/parser@8.71.2(eslint@9.39.5(supports-color@5.5.0))(supports-color@5.5.0)(typescript@6.0.3))(eslint-import-resolver-node@0.3.10(supports-color@10.2.2))(eslint@9.39.5(supports-color@5.5.0))(supports-color@5.5.0):
     dependencies:
       debug: 3.2.7(supports-color@5.5.0)
     optionalDependencies:
       '@typescript-eslint/parser': 8.71.2(eslint@9.39.5(supports-color@5.5.0))(supports-color@5.5.0)(typescript@6.0.3)
       eslint: 9.39.5(supports-color@5.5.0)
-      eslint-import-resolver-node: 0.3.10(supports-color@5.5.0)
+      eslint-import-resolver-node: 0.3.10(supports-color@10.2.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -13377,7 +13377,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.39.5(supports-color@5.5.0)
       eslint-import-resolver-node: 0.3.10(supports-color@5.5.0)
-      eslint-module-utils: 2.14.0(@typescript-eslint/parser@8.71.2(eslint@9.39.5(supports-color@5.5.0))(supports-color@5.5.0)(typescript@6.0.3))(eslint-import-resolver-node@0.3.10(supports-color@5.5.0))(eslint@9.39.5(supports-color@5.5.0))(supports-color@5.5.0)
+      eslint-module-utils: 2.14.0(@typescript-eslint/parser@8.71.2(eslint@9.39.5(supports-color@5.5.0))(supports-color@5.5.0)(typescript@6.0.3))(eslint-import-resolver-node@0.3.10(supports-color@10.2.2))(eslint@9.39.5(supports-color@5.5.0))(supports-color@5.5.0)
       hasown: 2.0.4
       is-core-module: 2.17.0
       is-glob: 4.0.3
@@ -17079,7 +17079,7 @@ snapshots:
 
   undici@6.29.1: {}
 
-  undici@7.29.1: {}
+  undici@7.30.1: {}
 
   undici@8.11.2: {}
 
