@@ -242,14 +242,14 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 	}
 
 	private rewriteRawState<K extends keyof PREF>(key: K, value: ValueOf<K>) {
-		const v = JSON.parse(JSON.stringify(value)); // deep copy 兼 vueのプロキシ解除
+		const v = deepClone(value); // deep copy 兼 vueのプロキシ解除
 		this.r[key].value = this.s[key] = v;
 	}
 
 	// TODO: desync対策 cloudの値のfetchが正常に完了していない状態でcommitすると多分値が上書きされる
 	public commit<K extends keyof PREF>(key: K, value: ValueOf<K>) {
 		const currentAccount = this.currentAccount; // TSを黙らせるため
-		const v = JSON.parse(JSON.stringify(value)); // deep copy 兼 vueのプロキシ解除
+		const v = deepClone(value); // deep copy 兼 vueのプロキシ解除
 
 		if (deepEqual(this.s[key], v)) {
 			if (_DEV_) console.log('(skip) prefer:commit', key, v);
