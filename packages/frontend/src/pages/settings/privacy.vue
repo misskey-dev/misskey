@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkFeatureBanner>
 
 		<FormSection first>
-			<template #label><SearchLabel>{{ i18n.ts._followApproval.groupTitle }}</SearchLabel></template>
+			<template #label><SearchText>{{ i18n.ts._followApproval.groupTitle }}</SearchText></template>
 			<div class="_gaps_m">
 				<SearchMarker :keywords="['follow', 'lock']">
 					<MkSwitch v-model="isLocked" @update:modelValue="save()">
@@ -20,7 +20,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 				</SearchMarker>
 
-				<SearchMarker :keywords="['follow', 'request', 'approval', 'age']">
+				<SearchMarker
+					:keywords="[
+						'follow', 'request', 'approval', 'age',
+						i18n.ts._followApproval.local,
+						i18n.ts._followApproval.localDescription,
+						i18n.ts._followApproval.remote,
+						i18n.ts._followApproval.remoteDescription,
+					]"
+				>
 					<FormSlot>
 						<template #label><SearchLabel>{{ i18n.ts._followApproval.title }}</SearchLabel></template>
 						<div class="_gaps_m">
@@ -30,8 +38,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div class="_gaps_m">
 									<div v-for="setting in followApprovalSettings" :key="setting.key" class="_gaps_s">
 										<MkSelect v-model="setting.mode" :items="followApprovalModes" @update:modelValue="saveFollowApproval(setting)">
-											<template #label><SearchLabel>{{ setting.label }}</SearchLabel></template>
-											<template #caption><SearchText>{{ setting.caption }}</SearchText></template>
+											<template #label>{{ setting.label }}</template>
+											<template #caption>{{ setting.caption }}</template>
 										</MkSelect>
 										<MkInput v-if="setting.mode === 'custom'" v-model="setting.amount" type="number" :min="1 / FOLLOW_APPROVAL_UNIT_SECONDS[setting.unit]" :max="FOLLOW_APPROVAL_MAX_SECONDS / FOLLOW_APPROVAL_UNIT_SECONDS[setting.unit]" step="any" @update:modelValue="scheduleFollowApprovalSave(setting)">
 											<template #label>{{ i18n.ts._followApproval.period }}</template>
