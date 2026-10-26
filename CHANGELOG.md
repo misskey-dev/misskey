@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
 
 ### Client
 -
