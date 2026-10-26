@@ -141,7 +141,7 @@ function setupGrid(): GridSetting {
 				},
 				{
 					// バリデーションに引っかかっていたら背景色を変更
-					condition: ({ cells }) => cells.some(it => !it.violation.valid),
+					condition: ({ row, cells }) => !isDeleted(gridItems.value[row.index]) && cells.some(it => !it.violation.valid),
 					applyStyle: { className: $style.violationRow },
 				},
 			],
@@ -473,7 +473,8 @@ function onGridEvent(event: GridEvent) {
 }
 
 function onGridCellValidation(event: GridCellValidationEvent) {
-	updateButtonDisabled.value = event.all.filter(it => !it.valid).length > 0;
+	// 削除済みの行は編集できないため、入力エラーが残っていても更新の可否には影響させない
+	updateButtonDisabled.value = event.all.filter(it => !it.valid && !isDeleted(gridItems.value[it.params.row.index])).length > 0;
 }
 
 function onGridCellValueChange(event: GridCellValueChangeEvent) {
