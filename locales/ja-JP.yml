@@ -3605,3 +3605,9 @@ _qr:
   scanFile: "端末の画像をスキャン"
   raw: "テキスト"
   mfm: "MFM"
+
+_clientErrorLog:
+  title: "エラーログ"
+  copyAll: "すべてコピー"
+  deleteAll: "すべて削除"
+  deleteConfirm: "エラーログをすべて削除しますか？"
