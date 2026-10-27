@@ -23,10 +23,11 @@ export class ApMfmService {
 		html: string,
 		options: {
 			tag?: IObject | IObject[],
+			hasQuote?: boolean,
 		} = {},
 	): string {
 		const hashtagNames = extractApHashtagObjects(options.tag).map(x => x.name);
-		return this.mfmService.fromHtml(html, { hashtagNames });
+		return this.mfmService.fromHtml(html, { hashtagNames, hasQuote: options.hasQuote });
 	}
 
 	@bindThis

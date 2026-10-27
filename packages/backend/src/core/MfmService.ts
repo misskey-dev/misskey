@@ -31,6 +31,7 @@ export class MfmService {
 		html: string,
 		options: {
 			hashtagNames?: string[],
+			hasQuote?: boolean,
 		} = {},
 	): string {
 		// some AP servers like Pixelfed use br tags as well as newlines
@@ -41,6 +42,14 @@ export class MfmService {
 		const doc = htmlParser.parse(`<div>${html}</div>`);
 
 		let text = '';
+
+		if (options.hasQuote) {
+			for (const n of doc.children[0].children) {
+				if (n.classList.contains('quote-inline') && n.querySelector('a') != null) {
+					n.remove();
+				}
+			}
+		}
 
 		for (const n of doc.childNodes) {
 			analyze(n);
