@@ -56,7 +56,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
-		notify: { type: 'string', enum: ['normal', 'none'] },
+		notify: { type: 'string', enum: ['normal', 'withFile', 'none'] },
 		withReplies: { type: 'boolean' },
 	},
 	required: ['userId'],
