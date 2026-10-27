@@ -132,7 +132,7 @@ describe('MfmService', () => {
 		});
 
 		test('hashtag', () => {
-			assert.deepStrictEqual(mfmService.fromHtml('<p>a <a href="https://example.com/tags/a">#a</a> d</p>', ['#a']), 'a #a d');
+			assert.deepStrictEqual(mfmService.fromHtml('<p>a <a href="https://example.com/tags/a">#a</a> d</p>', { hashtagNames: ['#a'] }), 'a #a d');
 		});
 	});
 });
