@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
 
 ### Client
 -
