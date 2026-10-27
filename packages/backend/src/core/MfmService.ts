@@ -47,6 +47,7 @@ export class MfmService {
 			for (const n of doc.children[0].children) {
 				if (n.classList.contains('quote-inline') && n.querySelector('a') != null) {
 					n.remove();
+					break;
 				}
 			}
 		}
