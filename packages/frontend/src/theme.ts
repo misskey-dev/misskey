@@ -10,7 +10,7 @@ import { EventEmitter } from 'eventemitter3';
 import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
 import { version } from '@@/js/config.js';
-import { getBuiltinThemes, parseThemeCode, themeProps, compile } from '@@/js/theme.js';
+import { getBuiltinThemes, themeProps, compile } from '@@/js/theme.js';
 import type { Theme, CompiledTheme } from '@@/js/theme.js';
 import { deepClone } from '@/utility/clone.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -204,6 +204,7 @@ export async function removeTheme(theme: Theme): Promise<void> {
 }
 
 export async function installTheme(code: string): Promise<void> {
+	const { parseThemeCode } = await import('@@/js/theme-code.js');
 	const theme = parseThemeCode(code);
 	if (theme == null) return;
 	await addTheme(theme);
