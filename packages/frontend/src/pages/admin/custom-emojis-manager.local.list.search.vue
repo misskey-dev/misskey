@@ -101,7 +101,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #suffix><i class="ti ti-pencil"></i></template>
 					</MkInput>
 				</div>
-				<MkFolder :spacerMax="8" :spacerMin="8">
+				<MkFolder :spacerMax="8" :spacerMin="8" :defaultOpen="sortOrders.length > 0">
 					<template #icon><i class="ti ti-arrows-sort"></i></template>
 					<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
 					<MkSortOrderEditor
@@ -162,10 +162,11 @@ watch(model, () => {
 	emit('queryUpdated', model.value);
 }, { deep: true });
 
-const sortOrders = ref<SortOrder<GridSortOrderKey>[]>([]);
+const sortOrders = ref<SortOrder<GridSortOrderKey>[]>(model.value.sortOrders);
 
 function onSortOrderUpdate(orders: SortOrder<GridSortOrderKey>[]) {
 	sortOrders.value = orders;
+	model.value.sortOrders = orders;
 	emit('sortOrderUpdated', orders);
 }
 
@@ -183,7 +184,8 @@ function onQueryResetButtonClicked() {
 	model.value.localOnly = null;
 	model.value.updatedAtFrom = '';
 	model.value.updatedAtTo = '';
-	sortOrders.value = [];
+	model.value.roles = [];
+	onSortOrderUpdate([]);
 }
 
 async function onQueryRolesEditClicked() {

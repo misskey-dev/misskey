@@ -131,12 +131,17 @@ function setupGrid(): GridSetting {
 			styleRules: [
 				{
 					// 初期値から変わっていたら背景色を変更
-					condition: ({ row }) => JSON.stringify(gridItems.value[row.index]) !== JSON.stringify(originGridItems.value[row.index]),
+					condition: ({ row }) => !isDeleted(gridItems.value[row.index]) && JSON.stringify(gridItems.value[row.index]) !== JSON.stringify(originGridItems.value[row.index]),
 					applyStyle: { className: $style.changedRow },
 				},
 				{
+					// 削除済みの行は取り消し線を引いて薄く表示する
+					condition: ({ row }) => isDeleted(gridItems.value[row.index]),
+					applyStyle: { className: $style.deletedRow },
+				},
+				{
 					// バリデーションに引っかかっていたら背景色を変更
-					condition: ({ cells }) => cells.some(it => !it.violation.valid),
+					condition: ({ row, cells }) => !isDeleted(gridItems.value[row.index]) && cells.some(it => !it.violation.valid),
 					applyStyle: { className: $style.violationRow },
 				},
 			],
@@ -155,6 +160,7 @@ function setupGrid(): GridSetting {
 						icon: 'ti ti-trash',
 						action: () => {
 							for (const rangedRow of context.rangedRows) {
+								if (isDeleted(gridItems.value[rangedRow.index])) continue;
 								gridItems.value[rangedRow.index].checked = true;
 							}
 						},
@@ -165,6 +171,7 @@ function setupGrid(): GridSetting {
 				delete(rows) {
 					// 行削除時は元データの行を消さず、削除対象としてマークするのみにする
 					for (const row of rows) {
+						if (isDeleted(gridItems.value[row.index])) continue;
 						gridItems.value[row.index].checked = true;
 					}
 				},
@@ -175,6 +182,7 @@ function setupGrid(): GridSetting {
 			{
 				bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 'auto', validators: [required],
 				async customValueEditor(row, col, value, cellElement) {
+					if (isDeleted(gridItems.value[row.index])) return value;
 					const file = await selectFile({
 						anchorElement: cellElement,
 						multiple: false,
@@ -205,6 +213,7 @@ function setupGrid(): GridSetting {
 				async customValueEditor(row) {
 					// ID直記入は体験的に最悪なのでモーダルを使って入力する
 					const current = gridItems.value[row.index].roleIdsThatCanBeUsedThisEmojiAsReaction;
+					if (isDeleted(gridItems.value[row.index])) return current;
 					const result = await os.selectRole({
 						initialRoleIds: current.map(it => it.id),
 						title: i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction,
@@ -224,6 +233,7 @@ function setupGrid(): GridSetting {
 					paste: roleIdsParser,
 					delete(cell) {
 						// デフォルトはundefinedになるが、このプロパティは空配列にしたい
+						if (isDeleted(gridItems.value[cell.row.index])) return;
 						gridItems.value[cell.row.index].roleIdsThatCanBeUsedThisEmojiAsReaction = [];
 					},
 				},
@@ -251,6 +261,7 @@ function setupGrid(): GridSetting {
 						icon: 'ti ti-trash',
 						action: () => {
 							removeDataFromGrid(context, (cell) => {
+								if (isDeleted(gridItems.value[cell.row.index])) return;
 								(gridItems.value[cell.row.index] as any)[cell.column.setting.bindTo] = undefined;
 							});
 						},
@@ -261,6 +272,7 @@ function setupGrid(): GridSetting {
 						icon: 'ti ti-trash',
 						action: () => {
 							for (const rowIdx of [...new Set(context.rangedCells.map(it => it.row.index)).values()]) {
+								if (isDeleted(gridItems.value[rowIdx])) continue;
 								gridItems.value[rowIdx].checked = true;
 							}
 						},
@@ -298,13 +310,19 @@ const sortOrders = ref<SortOrder<GridSortOrderKey>[]>([]);
 const requestLogs = ref<RequestLogItem[]>([]);
 
 const gridItems = ref<GridItem[]>([]);
+// 削除済みの絵文字。再取得すると未保存の変更が失われるため、削除後も一覧に残して取り消し線で示し、編集は受け付けない
+const deletedEmojiIds = ref<string[]>([]);
 const originGridItems = ref<GridItem[]>([]);
 const updateButtonDisabled = ref<boolean>(false);
 
 const updatedItemsCount = computed(() => {
-	return gridItems.value.filter((it, idx) => !it.checked && JSON.stringify(it) !== JSON.stringify(originGridItems.value[idx])).length;
+	return gridItems.value.filter((it, idx) => !it.checked && !isDeleted(it) && JSON.stringify(it) !== JSON.stringify(originGridItems.value[idx])).length;
 });
-const deleteItemsCount = computed(() => gridItems.value.filter(it => it.checked).length);
+const deleteItemsCount = computed(() => gridItems.value.filter(it => it.checked && !isDeleted(it)).length);
+
+function isDeleted(item: GridItem | undefined) {
+	return item != null && deletedEmojiIds.value.includes(item.id);
+}
 
 async function onUpdateButtonClicked() {
 	const _items = gridItems.value;
@@ -313,7 +331,7 @@ async function onUpdateButtonClicked() {
 		throw new Error('The number of items has been changed. Please refresh the page and try again.');
 	}
 
-	const updatedItems = _items.filter((it, idx) => !it.checked && JSON.stringify(it) !== JSON.stringify(_originItems[idx]));
+	const updatedItems = _items.filter((it, idx) => !it.checked && !isDeleted(it) && JSON.stringify(it) !== JSON.stringify(_originItems[idx]));
 	if (updatedItems.length === 0) {
 		await os.alert({
 			type: 'info',
@@ -379,7 +397,7 @@ async function onDeleteButtonClicked() {
 		throw new Error('The number of items has been changed. Please refresh the page and try again.');
 	}
 
-	const deleteItems = _items.filter((it) => it.checked);
+	const deleteItems = _items.filter((it) => it.checked && !isDeleted(it));
 	if (deleteItems.length === 0) {
 		await os.alert({
 			type: 'info',
@@ -404,6 +422,12 @@ async function onDeleteButtonClicked() {
 	await os.promiseDialog(
 		action(),
 	);
+
+	deletedEmojiIds.value.push(...deleteItems.map(it => it.id));
+	// チェックを外してセルの値を変え、行のスタイルを再評価させる
+	for (const item of deleteItems) {
+		item.checked = false;
+	}
 }
 
 async function onGridResetButtonClicked() {
@@ -449,11 +473,14 @@ function onGridEvent(event: GridEvent) {
 }
 
 function onGridCellValidation(event: GridCellValidationEvent) {
-	updateButtonDisabled.value = event.all.filter(it => !it.valid).length > 0;
+	// 削除済みの行は編集できないため、入力エラーが残っていても更新の可否には影響させない
+	updateButtonDisabled.value = event.all.filter(it => !it.valid && !isDeleted(gridItems.value[it.params.row.index])).length > 0;
 }
 
 function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	const { row, column, newValue } = event;
+	// 削除済みの行は編集を受け付けない
+	if (isDeleted(gridItems.value[row.index])) return;
 	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
 		(gridItems.value[row.index] as any)[column.setting.bindTo] = newValue;
 	}
@@ -468,15 +495,16 @@ async function refreshCustomEmojis() {
 		aliases: emptyStrToUndefined(searchQuery.value.aliases),
 		category: emptyStrToUndefined(searchQuery.value.category),
 		license: emptyStrToUndefined(searchQuery.value.license),
-		isSensitive: searchQuery.value.sensitive != null ? Boolean(searchQuery.value.sensitive).valueOf() : undefined,
-		localOnly: searchQuery.value.localOnly != null ? Boolean(searchQuery.value.localOnly).valueOf() : undefined,
+		isSensitive: searchQuery.value.sensitive != null ? searchQuery.value.sensitive === 'true' : undefined,
+		localOnly: searchQuery.value.localOnly != null ? searchQuery.value.localOnly === 'true' : undefined,
 		updatedAtFrom: emptyStrToUndefined(searchQuery.value.updatedAtFrom),
 		updatedAtTo: emptyStrToUndefined(searchQuery.value.updatedAtTo),
 		roleIds: searchQuery.value.roles.map(it => it.id),
 		hostType: 'local',
 	};
 
-	if (JSON.stringify(query) !== previousQuery.value) {
+	const queryKey = JSON.stringify({ query, limit });
+	if (queryKey !== previousQuery.value) {
 		currentPage.value = 1;
 	}
 
@@ -490,7 +518,8 @@ async function refreshCustomEmojis() {
 	customEmojis.value = result.emojis;
 	allPages.value = result.allPages;
 
-	previousQuery.value = JSON.stringify(query);
+	previousQuery.value = queryKey;
+	deletedEmojiIds.value = [];
 
 	refreshGridItems();
 }
@@ -603,6 +632,11 @@ const headerActions = computed<PageHeaderItem[]>(() => [{
 <style module lang="scss">
 .changedRow {
 	background-color: var(--MI_THEME-infoBg) !important;
+}
+
+.deletedRow {
+	text-decoration: line-through;
+	opacity: 0.5;
 }
 
 .violationRow {

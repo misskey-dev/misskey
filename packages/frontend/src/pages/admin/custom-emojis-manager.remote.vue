@@ -166,6 +166,8 @@ type GridItem = {
 	id: string;
 	url: string;
 	name: string;
+	uri: string | null;
+	publicUrl: string;
 	host: string;
 };
 
@@ -364,7 +366,8 @@ async function refreshCustomEmojis() {
 		hostType: 'remote',
 	};
 
-	if (JSON.stringify(query) !== previousQuery.value) {
+	const queryKey = JSON.stringify({ query, limit: queryLimit.value });
+	if (queryKey !== previousQuery.value) {
 		currentPage.value = 1;
 	}
 
@@ -377,13 +380,15 @@ async function refreshCustomEmojis() {
 
 	customEmojis.value = result.emojis;
 	allPages.value = result.allPages;
-	previousQuery.value = JSON.stringify(query);
+	previousQuery.value = queryKey;
 	gridItems.value = customEmojis.value.map(it => ({
 		checked: false,
 		id: it.id,
 		url: it.publicUrl,
 		name: it.name,
 		license: it.license,
+		uri: it.uri,
+		publicUrl: it.publicUrl,
 		host: it.host!,
 	}));
 }
