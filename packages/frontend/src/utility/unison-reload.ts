@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { TypedBroadcastChannel as BroadcastChannel } from '@/utility/typed-broadcast-channel.js'
+import { TypedBroadcastChannel as BroadcastChannel } from '@/utility/typed-broadcast-channel.js';
 
 export const reloadChannel = new BroadcastChannel<string | null>('reload');
 
