@@ -58,7 +58,7 @@ const toggle = () => {
 .root {
 	position: relative;
 	display: flex;
-	transition: all 0.2s ease;
+	transition: opacity 0.2s ease;
 	user-select: none;
 
 	&:hover {
@@ -90,7 +90,6 @@ const toggle = () => {
 	margin-left: 12px;
 	margin-top: 2px;
 	display: block;
-	transition: inherit;
 	color: var(--MI_THEME-fg);
 }
 
@@ -98,7 +97,6 @@ const toggle = () => {
 	display: block;
 	line-height: 20px;
 	cursor: pointer;
-	transition: inherit;
 }
 
 .caption {
