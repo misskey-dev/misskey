@@ -8,6 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MetricsTime, type JobType } from 'bullmq';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiAnnouncement } from '@/models/Announcement.js';
 import type { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
 import type { MiSystemWebhook, SystemWebhookEventType } from '@/models/SystemWebhook.js';
 import type { Config } from '@/config.js';
@@ -20,6 +21,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { type UserWebhookPayload } from './UserWebhookService.js';
 import type {
 	DbJobData,
+	ArchiveAnnouncementJobData,
 	DeliverJobData,
 	RelationshipJobData,
 	SystemWebhookDeliverJobData,
@@ -245,6 +247,44 @@ export class QueueService {
 				count: 100,
 			},
 		});
+	}
+
+	private announcementArchiveJobId(announcementId: MiAnnouncement['id'], autoArchiveAt: Date): string {
+		return `archiveAnnouncement-${announcementId}-${autoArchiveAt.getTime()}`;
+	}
+
+	@bindThis
+	public async scheduleAnnouncementArchive(announcementId: MiAnnouncement['id'], autoArchiveAt: Date): Promise<void> {
+		const jobId = this.announcementArchiveJobId(announcementId, autoArchiveAt);
+		const existingJob = await this.systemQueue.getJob(jobId);
+		if (existingJob != null) {
+			const state = await existingJob.getState();
+			if (state !== 'completed' && state !== 'failed') return;
+			await this.systemQueue.remove(jobId);
+		}
+
+		const data: ArchiveAnnouncementJobData = {
+			announcementId,
+			autoArchiveAt: autoArchiveAt.getTime(),
+		};
+
+		await this.systemQueue.add('archiveAnnouncement', data, {
+			jobId,
+			delay: Math.max(0, autoArchiveAt.getTime() - Date.now()),
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
+		});
+	}
+
+	@bindThis
+	public async clearAnnouncementArchive(announcementId: MiAnnouncement['id'], autoArchiveAt: Date): Promise<void> {
+		await this.systemQueue.remove(this.announcementArchiveJobId(announcementId, autoArchiveAt));
 	}
 
 	@bindThis
