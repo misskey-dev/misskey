@@ -37,7 +37,7 @@ import { getEmojiNameFromReaction, isLocalCustomEmojiReaction } from '@@/js/emoj
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
-import { customEmojisMap } from '@/custom-emojis.js';
+import { customEmojis, customEmojisMap } from '@/custom-emojis.js';
 import { DI } from '@/di.js';
 
 const props = withDefaults(defineProps<{
@@ -82,7 +82,9 @@ function canReact(reaction: string) {
 		: isSupportedEmoji(reaction);
 }
 
-watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
+let lastCanReact: Map<string, boolean> | null = null;
+
+function rebuildReactions(newSource: Misskey.entities.Note['reactions'], maxNumber: number) {
 	let newReactions: [string, number][] = [];
 	hasMoreReactions.value = Object.keys(newSource).length > maxNumber;
 
@@ -101,6 +103,7 @@ watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) =
 		for (const [emoji] of sorted) {
 			canReactCache.set(emoji, canReact(emoji));
 		}
+		lastCanReact = canReactCache;
 		sorted.sort(([emojiA, countA], [emojiB, countB]) => {
 			const canReactA = canReactCache.get(emojiA)!;
 			const canReactB = canReactCache.get(emojiB)!;
@@ -124,7 +127,19 @@ watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) =
 	}
 
 	_reactions.value = newReactions;
+}
+
+watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
+	rebuildReactions(newSource, maxNumber);
 }, { immediate: true, deep: true });
+
+watch(customEmojis, () => {
+	if (!prefer.s.showAvailableReactionsFirstInNote || lastCanReact == null) return;
+	const sortedWith = lastCanReact;
+	if (!Object.keys(props.reactions).some(r => sortedWith.has(r) && sortedWith.get(r) !== canReact(r))) return;
+	_reactions.value = [];
+	rebuildReactions(props.reactions, props.maxNumber);
+});
 </script>
 
 <style lang="scss" module>
