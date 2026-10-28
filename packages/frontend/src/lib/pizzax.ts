@@ -8,12 +8,12 @@
 // TODO: Misskeyのドメイン知識があるのでutilityなどに移動する
 
 import { customRef, ref, watch, onScopeDispose } from 'vue';
-import { BroadcastChannel } from 'broadcast-channel';
 import type { Ref } from 'vue';
 import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { get, set } from '@/utility/idb-proxy.js';
 import { store } from '@/store.js';
+import { TypedBroadcastChannel as BroadcastChannel } from '@/utility/typed-broadcast-channel.js';
 import { deepClone } from '@/utility/clone.js';
 import { deepMerge } from '@/utility/merge.js';
 

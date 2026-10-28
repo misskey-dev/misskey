@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// SafariがBroadcastChannel未実装なのでライブラリを使う
-import { BroadcastChannel } from 'broadcast-channel';
+import { TypedBroadcastChannel as BroadcastChannel } from '@/utility/typed-broadcast-channel.js'
 
 export const reloadChannel = new BroadcastChannel<string | null>('reload');
 

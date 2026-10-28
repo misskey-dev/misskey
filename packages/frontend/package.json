@@ -30,7 +30,6 @@
 		"@vitejs/plugin-vue": "6.0.10",
 		"aiscript-vscode": "github:aiscript-dev/aiscript-vscode#v0.1.16",
 		"analytics": "0.8.19",
-		"broadcast-channel": "7.4.0",
 		"buraha": "0.0.1",
 		"canvas-confetti": "1.9.4",
 		"chart.js": "4.5.1",
