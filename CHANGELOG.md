@@ -4,7 +4,7 @@
 - Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
 
 ### Client
--
+- Fix: モーダルが重なっているときにESCキーを押すと下のモーダルまで閉じてしまう問題を修正
 
 ### Server
 -
