@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { verify } from 'crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
@@ -25,7 +26,6 @@ import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
 import { MiUserProfile } from '@/models/UserProfile.js';
-import { MiUserPublickey } from '@/models/UserPublickey.js';
 import type UsersChart from '@/core/chart/charts/users.js';
 import type InstanceChart from '@/core/chart/charts/instance.js';
 import type { HashtagService } from '@/core/HashtagService.js';
@@ -38,6 +38,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
+import { REMOTE_USER_CACHE_TTL, REMOTE_USER_MOVE_COOLDOWN } from '@/const.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -47,10 +48,13 @@ import type { ApResolverService, Resolver } from '../ApResolverService.js';
 import type { ApLoggerService } from '../ApLoggerService.js';
 
 import type { ApImageService } from './ApImageService.js';
-import type { IActor, ICollection, IObject, IOrderedCollection } from '../type.js';
+import type { IActor, IObject, ICollection, IOrderedCollection } from '../type.js';
+
+import { extractActorPublicKeys, storeActorPublicKeys } from '../misc/actor-public-keys.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
+const maxPublicKeys = 16;
 
 type Field = Record<'name' | 'value', string>;
 
@@ -209,13 +213,20 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		if (x.publicKey) {
-			if (typeof x.publicKey.id !== 'string') {
-				throw new Error('invalid Actor: publicKey.id is not a string');
+			const publicKeys = Array.isArray(x.publicKey) ? x.publicKey : [x.publicKey];
+			if (publicKeys.length > maxPublicKeys) {
+				throw new Error('invalid Actor: too many publicKey entries');
 			}
 
-			const publicKeyIdHost = this.utilityService.punyHost(x.publicKey.id);
-			if (publicKeyIdHost !== expectHost) {
-				throw new Error('invalid Actor: publicKey.id has different host');
+			for (const publicKey of publicKeys) {
+				if (typeof publicKey.id !== 'string') {
+					throw new Error('invalid Actor: publicKey.id is not a string');
+				}
+
+				const publicKeyIdHost = this.utilityService.punyHost(publicKey.id);
+				if (publicKeyIdHost !== expectHost) {
+					throw new Error('invalid Actor: publicKey.id has different host');
+				}
 			}
 		}
 
@@ -250,6 +261,33 @@ export class ApPersonService implements OnModuleInit {
 		//#endregion
 
 		return null;
+	}
+
+	/**
+	 * uriからUser(Person)をフェッチします。
+	 *
+	 * Misskeyに対象のPersonが登録されていればそれを返し、登録がなければnullを返します。
+	 * また、TTLが0でない場合、TTLを過ぎていた場合はupdatePersonを実行します。
+	 */
+	@bindThis
+	async fetchPersonWithRenewal(uri: string, TTL = REMOTE_USER_CACHE_TTL): Promise<MiLocalUser | MiRemoteUser | null> {
+		const exist = await this.fetchPerson(uri);
+		if (exist == null) return null;
+
+		if (this.userEntityService.isRemoteUser(exist)) {
+			if (TTL === 0 || exist.lastFetchedAt == null || Date.now() - exist.lastFetchedAt.getTime() > TTL) {
+				this.logger.debug('fetchPersonWithRenewal: renew', { uri, TTL, lastFetchedAt: exist.lastFetchedAt });
+				try {
+					await this.updatePerson(exist.uri);
+					return await this.fetchPerson(uri);
+				} catch (err) {
+					this.logger.error('error occurred while renewing user', { err });
+				}
+			}
+			this.logger.debug('fetchPersonWithRenewal: use cache', { uri, TTL, lastFetchedAt: exist.lastFetchedAt });
+		}
+
+		return exist;
 	}
 
 	private async resolveAvatarAndBanner(user: MiRemoteUser, icon: any, image: any): Promise<Partial<Pick<MiRemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash'>>> {
@@ -316,6 +354,7 @@ export class ApPersonService implements OnModuleInit {
 		if (object.id == null) throw new Error('invalid object.id: ' + object.id);
 
 		const person = this.validateActor(object, uri);
+		const publicKeys = extractActorPublicKeys(person, value => this.utilityService.punyHost(value));
 
 		this.logger.info(`Creating the Person: ${person.id}`);
 
@@ -333,7 +372,7 @@ export class ApPersonService implements OnModuleInit {
 				.then(isPublic => isPublic ? 'public' : 'private')
 				.catch(err => {
 					if (!(err instanceof StatusError) || err.isRetryable) {
-						this.logger.error('error occurred while fetching following/followers collection', { stack: err });
+						this.logger.error('Create the Person: error occurred while fetching following/followers collection', { stack: err });
 					}
 					return 'private';
 				}),
@@ -359,7 +398,7 @@ export class ApPersonService implements OnModuleInit {
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host)
 			.then(_emojis => _emojis.map(emoji => emoji.name))
 			.catch(err => {
-				this.logger.error('error occurred while fetching user emojis', { stack: err });
+				this.logger.error('Create the Person: error occurred while fetching user emojis', { stack: err });
 				return [];
 			});
 		//#endregion
@@ -416,12 +455,8 @@ export class ApPersonService implements OnModuleInit {
 					userHost: host,
 				}));
 
-				if (person.publicKey) {
-					await transactionalEntityManager.save(new MiUserPublickey({
-						userId: user.id,
-						keyId: person.publicKey.id,
-						keyPem: person.publicKey.publicKeyPem,
-					}));
+				if (publicKeys != null) {
+					await storeActorPublicKeys(transactionalEntityManager, user.id, publicKeys);
 				}
 			});
 		} catch (e) {
@@ -429,7 +464,10 @@ export class ApPersonService implements OnModuleInit {
 			if (isDuplicateKeyValueError(e)) {
 				// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
 				const u = await this.usersRepository.findOneBy({ uri: person.id });
-				if (u == null) throw new Error('already registered');
+				if (u == null) {
+					this.logger.error('Create the Person: duplicate key error', { stack: e });
+					throw new Error('already registered');
+				}
 
 				user = u as MiRemoteUser;
 			} else {
@@ -505,6 +543,7 @@ export class ApPersonService implements OnModuleInit {
 		const object = hint ?? await resolver.resolve(uri);
 
 		const person = this.validateActor(object, uri);
+		const publicKeys = extractActorPublicKeys(person, value => this.utilityService.punyHost(value));
 
 		this.logger.info(`Updating the Person: ${person.id}`);
 
@@ -598,11 +637,9 @@ export class ApPersonService implements OnModuleInit {
 			return 'skip';
 		}
 
-		if (person.publicKey) {
-			await this.userPublickeysRepository.update({ userId: exist.id }, {
-				keyId: person.publicKey.id,
-				keyPem: person.publicKey.publicKeyPem,
-			});
+		if (publicKeys != null) {
+			// Commit the complete key refresh before publishing remoteUserUpdated below.
+			await this.db.transaction(manager => storeActorPublicKeys(manager, exist.id, publicKeys));
 		}
 
 		let _description: string | null = null;
@@ -647,7 +684,7 @@ export class ApPersonService implements OnModuleInit {
 			exist.movedAt == null ||
 			// 以前のmovingから14日以上経過した場合のみ移行処理を許可
 			// （Mastodonのクールダウン期間は30日だが若干緩めに設定しておく）
-			exist.movedAt.getTime() + 1000 * 60 * 60 * 24 * 14 < updated.movedAt.getTime()
+			exist.movedAt.getTime() + REMOTE_USER_MOVE_COOLDOWN < updated.movedAt.getTime()
 		)) {
 			this.logger.info(`Start to process Move of @${updated.username}@${updated.host} (${uri})`);
 			return this.processRemoteMove(updated, movePreventUris)
@@ -670,9 +707,9 @@ export class ApPersonService implements OnModuleInit {
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
 	@bindThis
-	public async resolvePerson(uri: string, resolver?: Resolver): Promise<MiLocalUser | MiRemoteUser> {
+	public async resolvePerson(uri: string, resolver?: Resolver, withRenewal = false): Promise<MiLocalUser | MiRemoteUser> {
 		//#region このサーバーに既に登録されていたらそれを返す
-		const exist = await this.fetchPerson(uri);
+		const exist = withRenewal ? await this.fetchPersonWithRenewal(uri) : await this.fetchPerson(uri);
 		if (exist) return exist;
 		//#endregion
 
