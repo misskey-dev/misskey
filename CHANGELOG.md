@@ -4,7 +4,7 @@
 - Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
 
 ### Client
--
+- Fix: メールサーバー設定で、設定が保存されていない状態でも配信テストを実行できてしまう問題を修正
 
 ### Server
 -
