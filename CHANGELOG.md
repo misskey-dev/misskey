@@ -2,6 +2,7 @@
 
 ### General
 - Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
+- Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
 
 ### Client
 -
