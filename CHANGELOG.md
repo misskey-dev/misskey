@@ -6,7 +6,7 @@
 
 ### Client
 - Fix: 設定検索にプライバシー設定の項目が表示されない問題を修正
-- Fix: ノート投稿前プラグイン(note_post_interruptor)を使用するとノートを投稿できない問題を修正
+- Fix: ノート投稿前プラグイン(`Plugin:register_note_post_interruptor`)を使用するとノートを投稿できない問題を修正
 
 ### Server
 -
