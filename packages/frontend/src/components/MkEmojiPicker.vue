@@ -222,8 +222,8 @@ const customEmojiFolderRoot = computed(() => {
 	return root;
 });
 
-watch(q, () => {
-	if (emojisEl.value) emojisEl.value.scrollTop = 0;
+watch([q, customEmojis], (_, [oldQ]) => {
+	if (q.value !== oldQ && emojisEl.value) emojisEl.value.scrollTop = 0;
 
 	if (q.value === '') {
 		searchResultCustom.value = [];
