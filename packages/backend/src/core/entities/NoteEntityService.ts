@@ -348,15 +348,27 @@ export class NoteEntityService implements OnModuleInit {
 	/** CDNなどにキャッシュしても問題ないノートかどうか */
 	@bindThis
 	public canCache(note: MiNote | Packed<'Note'>): boolean {
-		const now = Date.now();
-		const createdAt = 'createdAt' in note ? note.createdAt : this.idService.parse(note.id).date.toISOString();
-		return (
-			(this.meta.ugcVisibilityForVisitor !== 'none') &&
-			(note.visibility === 'public' || note.visibility === 'home') &&
-			!shouldHideNoteByTime(note.user?.makeNotesFollowersOnlyBefore, createdAt, now) &&
-			!shouldHideNoteByTime(note.user?.makeNotesHiddenBefore, createdAt, now) &&
-			(note.user?.requireSigninToViewContents === false || note.user?.requireSigninToViewContents == null)
-		);
+		if (this.meta.ugcVisibilityForVisitor === 'none') return false;
+		return this.canCacheRecursive(note, Date.now());
+	}
+
+	private canCacheRecursive(note: MiNote | Packed<'Note'>, now: number): boolean {
+		const isPacked = 'createdAt' in note;
+		const createdAt = isPacked ? note.createdAt : this.idService.parse(note.id).date.toISOString();
+		const userHost = isPacked ? note.user.host : note.userHost;
+
+		if (this.meta.ugcVisibilityForVisitor === 'local' && userHost != null) return false;
+		if (note.visibility !== 'public' && note.visibility !== 'home') return false;
+		if (shouldHideNoteByTime(note.user?.makeNotesFollowersOnlyBefore, createdAt, now)) return false;
+		if (shouldHideNoteByTime(note.user?.makeNotesHiddenBefore, createdAt, now)) return false;
+		if (note.user?.requireSigninToViewContents) return false;
+
+		if (isPacked) {
+			if (note.reply != null && !this.canCacheRecursive(note.reply, now)) return false;
+			if (note.renote != null && !this.canCacheRecursive(note.renote, now)) return false;
+		}
+
+		return true;
 	}
 
 	@bindThis

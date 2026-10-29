@@ -635,6 +635,13 @@ export class ClientServerService {
 			if (note && this.noteEntityService.canCache(note)) {
 				try {
 					const _note = await this.noteEntityService.pack(note, null);
+
+					// MiNote の時点ではユーザーや reply / renote を見られないので、pack 後に改めて判定する
+					if (!this.noteEntityService.canCache(_note)) {
+						reply.code(404);
+						return;
+					}
+
 					reply.header('Content-Type', 'application/json; charset=utf-8');
 					reply.header('Cache-Control', 'public, max-age=600');
 					return reply.send(_note);
