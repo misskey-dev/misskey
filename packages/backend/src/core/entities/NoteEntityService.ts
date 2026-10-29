@@ -383,10 +383,12 @@ export class NoteEntityService implements OnModuleInit {
 		return true;
 	}
 
-	/** ストリーミングで minimize が指定されている場合に送信する、縮約したノートを返す */
+	/**
+	 * ストリーミングで minimize が指定されている場合に送信する、縮約したノートを返す */
 	@bindThis
-	public minimizeForStream(note: Packed<'Note'>): MinimizedStreamNote {
+	public minimizeForStream(note: Packed<'Note'>, meId: MiUser['id'] | null): Packed<'Note'> | MinimizedStreamNote {
 		if (!this.canCache(note)) {
+			if (meId == null) return note;
 			return {
 				id: note.id,
 				_allowCached_: false,

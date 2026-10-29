@@ -321,7 +321,8 @@ async function releaseQueue(scroll = true) {
 
 		const notes = await Promise.allSettled(queue.map(getFullNote));
 
-		if (queue.length >= 10) {
+		// すべて取得に失敗した場合は既存のノートを残す
+		if (queue.length >= 10 && notes.some(note => note.status === 'fulfilled' && note.value != null)) {
 			paginator.clearItems();
 		}
 

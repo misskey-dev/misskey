@@ -124,7 +124,7 @@ export class UserListChannel extends Channel {
 		// eslint-disable-next-line no-param-reassign -- これ以降元の Note オブジェクトは見てはいけないので、いっそ再代入した方が安全
 		note = await this.noteEntityService.withMyRenoteReaction(filtered, this.user?.id ?? null);
 
-		this.send('note', this.minimize ? this.noteEntityService.minimizeForStream(note) : note);
+		this.send('note', this.minimize ? this.noteEntityService.minimizeForStream(note, this.user?.id ?? null) : note);
 	}
 
 	@bindThis
