@@ -79,7 +79,7 @@ const rawUrl = computed(() => {
 		return props.url;
 	}
 	if (isLocal.value) {
-		return customEmojisMap.get(customEmojiName.value)?.url ?? null;
+		return customEmojisMap.value.get(customEmojiName.value)?.url ?? null;
 	}
 	return getCustomEmojiImagePath(customEmojiName.value, props.host);
 });

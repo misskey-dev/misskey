@@ -3,30 +3,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { shallowRef, computed, markRaw, watch, triggerRef } from 'vue';
+import { shallowRef, computed, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import { get, set } from '@/utility/idb-proxy.js';
 
 const storageCache = await get('emojis');
 export const customEmojis = shallowRef<Misskey.entities.EmojiSimple[]>(Array.isArray(storageCache) ? storageCache : []);
-export const customEmojiCategories = computed<[ ...string[], null ]>(() => {
+export const customEmojiCategories = computed<[ ...string[], null ]>((oldValue) => {
 	const categories = new Set<string>();
 	for (const emoji of customEmojis.value) {
 		if (emoji.category && emoji.category !== 'null') {
 			categories.add(emoji.category);
 		}
 	}
-	return markRaw([...Array.from(categories), null]);
+	const res: [ ...string[], null ] = [...Array.from(categories), null];
+	// カテゴリ構成が変わっていなければ同一参照を返し、依存先の再計算を抑える
+	if (oldValue != null && oldValue.length === res.length && oldValue.every((c, i) => c === res[i])) return oldValue;
+	return markRaw(res);
 });
 
-export const customEmojisMap = new Map<string, Misskey.entities.EmojiSimple>();
-watch(customEmojis, emojis => {
-	customEmojisMap.clear();
-	for (const emoji of emojis) {
-		customEmojisMap.set(emoji.name, emoji);
+export const customEmojisMap = computed(() => {
+	const map = new Map<string, Misskey.entities.EmojiSimple>();
+	for (const emoji of customEmojis.value) {
+		map.set(emoji.name, emoji);
 	}
-}, { immediate: true });
+	return markRaw(map);
+});
 
 export function addCustomEmoji(emoji: Misskey.entities.EmojiSimple) {
 	customEmojis.value = [emoji, ...customEmojis.value];
@@ -45,9 +48,6 @@ export function removeCustomEmojis(emojis: Misskey.entities.EmojiSimple[]) {
 
 export async function initCustomEmojiCache() {
 	const fetchingPromise = fetchCustomEmojis()
-		.then(() => {
-			triggerRef(customEmojis);
-		})
 		.catch(() => { /* nop */ });
 
 	if (customEmojis.value.length === 0) {

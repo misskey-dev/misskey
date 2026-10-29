@@ -78,7 +78,7 @@ function canReact(reaction: string) {
 	if (!$i) return false;
 	// TODO: CheckPermissions
 	return isLocalCustomEmojiReaction(reaction)
-		? customEmojisMap.has(getEmojiNameFromReaction(reaction))
+		? customEmojisMap.value.has(getEmojiNameFromReaction(reaction))
 		: isSupportedEmoji(reaction);
 }
 
