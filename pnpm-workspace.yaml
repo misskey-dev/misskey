@@ -55,6 +55,8 @@ minimumReleaseAgeExclude:
   - slacc-win32-x64-msvc
   # Renovate security update: nodemailer@10.1.4
   - nodemailer@10.1.4
+  # Renovate security update: systeminformation@5.33.16
+  - systeminformation@5.33.16
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
