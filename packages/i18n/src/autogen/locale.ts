@@ -13465,4 +13465,18 @@ export interface Locale extends ILocale {
          */
         "mfm": string;
     };
+    "_clockSkewWarning": {
+        /**
+         * 時刻のずれ
+         */
+        "title": string;
+        /**
+         * 端末とサーバーの時刻にずれがあります。端末の設定を確認してください。設定が正しい場合は、サーバー管理者にご確認ください。
+         */
+        "description": string;
+        /**
+         * このタブでは表示しない
+         */
+        "dismiss": string;
+    };
 }

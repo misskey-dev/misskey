@@ -4,7 +4,7 @@
 - Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
 
 ### Client
--
+- Feat: 端末とサーバーの時刻に20秒以上の差がある場合に警告を表示するように
 
 ### Server
 -
