@@ -5,7 +5,7 @@
 - Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
 
 ### Client
--
+- Fix: 設定検索にプライバシー設定の項目が表示されない問題を修正
 
 ### Server
 -
