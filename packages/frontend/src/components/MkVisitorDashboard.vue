@@ -77,7 +77,7 @@ if (instance.clientOptions.showActivitiesForVisitor !== false) {
 }
 
 async function signin() {
-	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkSigninDialog.vue'), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkSigninDialog.vue').then((x) => x.default), {
 		autoSet: true,
 	}, {
 		closed: () => dispose(),
@@ -85,7 +85,7 @@ async function signin() {
 }
 
 async function signup() {
-	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkSignupDialog.vue'), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkSignupDialog.vue').then((x) => x.default), {
 		autoSet: true,
 	}, {
 		closed: () => dispose(),
