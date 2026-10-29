@@ -1,0 +1,26 @@
+{
+	"name": "diagnostics-backend",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"inspect": "tsx src/inspect.ts",
+		"lint": "pnpm typecheck && pnpm eslint",
+		"measure": "tsx src/measure-once.ts",
+		"render-md": "tsx src/render-md.ts",
+		"test": "vitest run",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"diagnostics-shared": "workspace:*",
+		"execa": "10.1.1"
+	},
+	"devDependencies": {
+		"@types/node": "26.6.5",
+		"@types/pg": "8.23.1",
+		"ioredis": "6.0.0",
+		"pg": "8.23.1",
+		"tsx": "4.23.15",
+		"vitest": "5.0.5"
+	}
+}

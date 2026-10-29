@@ -9,7 +9,7 @@ import * as htmlParser from 'node-html-parser';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { intersperse } from '@/misc/prelude/array.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { normalizeTag } from '@/misc/normalize-tag.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import { escapeHtml } from '@/misc/escape-html.js';
@@ -31,7 +31,7 @@ export class MfmService {
 		// some AP servers like Pixelfed use br tags as well as newlines
 		html = html.replace(/<br\s?\/?>\r?\n/gi, '\n');
 
-		const normalizedHashtagNames = hashtagNames == null ? undefined : new Set<string>(hashtagNames.map(x => normalizeForSearch(x)));
+		const normalizedHashtagNames = hashtagNames == null ? undefined : new Set<string>(hashtagNames.map(x => normalizeTag(x)));
 
 		const doc = htmlParser.parse(`<div>${html}</div>`);
 
@@ -86,7 +86,7 @@ export class MfmService {
 					const href = node.attributes.href;
 
 					// ハッシュタグ
-					if (normalizedHashtagNames && href != null && normalizedHashtagNames.has(normalizeForSearch(txt))) {
+					if (normalizedHashtagNames && href != null && normalizedHashtagNames.has(normalizeTag(txt))) {
 						text += txt;
 						// メンション
 					} else if (txt.startsWith('@') && !(rel != null && rel.startsWith('me '))) {
@@ -308,7 +308,7 @@ export class MfmService {
 						try {
 							const date = new Date(parseInt(text, 10) * 1000);
 							return `<time datetime="${escapeHtml(date.toISOString())}">${escapeHtml(date.toISOString())}</time>`;
-						} catch (err) {
+						} catch (_) {
 							return fnDefault(node);
 						}
 					}
@@ -376,7 +376,7 @@ export class MfmService {
 				try {
 					const url = new URL(node.props.url);
 					return `<a href="${escapeHtml(url.href)}">${toHtml(node.children)}</a>`;
-				} catch (err) {
+				} catch (_) {
 					return `[${toHtml(node.children)}](${escapeHtml(node.props.url)})`;
 				}
 			},
@@ -390,7 +390,7 @@ export class MfmService {
 				try {
 					const url = new URL(href);
 					return `<a href="${escapeHtml(url.href)}" class="u-url mention">${escapeHtml(acct)}</a>`;
-				} catch (err) {
+				} catch (_) {
 					return escapeHtml(acct);
 				}
 			},
@@ -419,7 +419,7 @@ export class MfmService {
 				try {
 					const url = new URL(node.props.url);
 					return `<a href="${escapeHtml(url.href)}">${escapeHtml(node.props.url)}</a>`;
-				} catch (err) {
+				} catch (_) {
 					return escapeHtml(node.props.url);
 				}
 			},

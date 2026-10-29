@@ -9,7 +9,7 @@ window.onload = async () => {
 	const account = JSON.parse(localStorage.getItem('account'));
 	const i = account.token;
 
-	const api = (endpoint, data = {}) => {
+	const _api = (endpoint, data = {}) => {
 		const promise = new Promise((resolve, reject) => {
 			// Append a credential
 			if (i) data.i = i;

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	:class="[$style.root, { [$style.isSelected]: isSelected }]"
+	:class="[$style.root, { [$style.isSelected]: isSelected, [$style.isDisabled]: isDisabled }]"
 	draggable="true"
 	:title="title"
 	@contextmenu.stop="onContextmenu"
@@ -51,8 +51,10 @@ const props = withDefaults(defineProps<{
 	file: Misskey.entities.DriveFile;
 	folder: Misskey.entities.DriveFolder | null;
 	isSelected?: boolean;
+	isDisabled?: boolean;
 }>(), {
 	isSelected: false,
+	isDisabled: false,
 });
 
 const emit = defineEmits<{
@@ -64,11 +66,13 @@ const isDragging = ref(false);
 
 const title = computed(() => `${props.file.name}\n${props.file.type} ${bytes(props.file.size)}`);
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	os.contextMenu(getDriveFileMenu(props.file, props.folder), ev);
 }
 
 function onDragstart(ev: DragEvent) {
+	if (props.isDisabled) return;
+
 	if (ev.dataTransfer) {
 		ev.dataTransfer.effectAllowed = 'move';
 		setDragData(ev, 'driveFiles', [props.file]);
@@ -152,6 +156,23 @@ function onDragend() {
 
 		.thumbnail {
 			color: var(--MI_THEME-fgOnAccent);
+		}
+	}
+
+	&.isDisabled {
+		cursor: not-allowed;
+
+		.thumbnail {
+			opacity: 0.5;
+		}
+
+		.name {
+			opacity: 0.5;
+		}
+
+		&:hover,
+		&:active {
+			background: none;
 		}
 	}
 }

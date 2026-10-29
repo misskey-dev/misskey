@@ -49,8 +49,8 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postSuspend(user).catch(e => {});
-			await this.unFollowAll(user).catch(e => {});
+			await this.postSuspend(user).catch(_ => {});
+			await this.unFollowAll(user).catch(_ => {});
 		})();
 	}
 
@@ -67,7 +67,7 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postUnsuspend(user).catch(e => {});
+			await this.postUnsuspend(user).catch(_ => {});
 		})();
 	}
 
@@ -93,7 +93,10 @@ export class UserSuspendService {
 					{ followerSharedInbox: Not(IsNull()) },
 					{ followeeSharedInbox: Not(IsNull()) },
 				],
-				select: ['followerSharedInbox', 'followeeSharedInbox'],
+				select: {
+					followerSharedInbox: true,
+					followeeSharedInbox: true,
+				},
 			});
 
 			const inboxes = followings.map(x => x.followerSharedInbox ?? x.followeeSharedInbox);
@@ -123,7 +126,10 @@ export class UserSuspendService {
 					{ followerSharedInbox: Not(IsNull()) },
 					{ followeeSharedInbox: Not(IsNull()) },
 				],
-				select: ['followerSharedInbox', 'followeeSharedInbox'],
+				select: {
+					followerSharedInbox: true,
+					followeeSharedInbox: true,
+				},
 			});
 
 			const inboxes = followings.map(x => x.followerSharedInbox ?? x.followeeSharedInbox);

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
 import { store } from '@/store.js';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
@@ -28,7 +28,7 @@ const { handler: externalTooltipHandler } = useChartTooltip();
 
 let chartInstance: Chart | null = null;
 
-function setData(values) {
+function setData(values: number[]) {
 	if (chartInstance == null || chartInstance.data.labels == null) return;
 	for (const value of values) {
 		chartInstance.data.labels.push('');
@@ -41,7 +41,7 @@ function setData(values) {
 	chartInstance.update();
 }
 
-function pushData(value) {
+function pushData(value: number) {
 	if (chartInstance == null || chartInstance.data.labels == null) return;
 	chartInstance.data.labels.push('');
 	chartInstance.data.datasets[0].data.push(value);
@@ -132,6 +132,10 @@ onMounted(() => {
 		},
 		plugins: [chartVLine(vLineColor)],
 	});
+});
+
+onUnmounted(() => {
+	chartInstance?.destroy();
 });
 
 defineExpose({

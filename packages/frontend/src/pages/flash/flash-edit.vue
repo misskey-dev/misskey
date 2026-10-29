@@ -395,7 +395,7 @@ const {
 });
 const script = ref(flash.value?.script ?? PRESET_DEFAULT);
 
-function selectPreset(ev: MouseEvent) {
+function selectPreset(ev: PointerEvent) {
 	os.popupMenu([{
 		text: 'Omikuji',
 		action: () => {

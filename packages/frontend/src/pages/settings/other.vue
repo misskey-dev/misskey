@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 								<div class="_gaps_s">
 									<div v-for="policy in Object.keys($i.policies)" :key="policy">
-										{{ policy }} ... {{ $i.policies[policy] }}
+										{{ policy }} ... {{ $i.policies[policy as keyof typeof $i.policies] }}
 									</div>
 								</div>
 							</MkFolder>
@@ -89,9 +89,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label><SearchLabel>{{ i18n.ts.experimentalFeatures }}</SearchLabel></template>
 
 					<div class="_gaps_m">
-						<MkSwitch v-model="enableCondensedLine">
-							<template #label>Enable condensed line</template>
-						</MkSwitch>
 						<MkSwitch v-model="skipNoteRender">
 							<template #label>Enable note render skipping</template>
 						</MkSwitch>
@@ -142,12 +139,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<hr>
 		</template>
 
-		<MkButton @click="forceCloudBackup">{{ i18n.ts._preferencesBackup.forceBackup }}</MkButton>
+		<MkButton v-if="storagePersistenceSupported && !storagePersisted" @click="enableStoragePersistence">{{ i18n.ts._settings.settingsPersistence_title }}</MkButton>
 
-		<FormSlot>
-			<MkButton danger @click="migrate"><i class="ti ti-refresh"></i> {{ i18n.ts.migrateOldSettings }}</MkButton>
-			<template #caption>{{ i18n.ts.migrateOldSettings_description }}</template>
-		</FormSlot>
+		<MkButton @click="forceCloudBackup">{{ i18n.ts._preferencesBackup.forceBackup }}</MkButton>
 	</div>
 </SearchMarker>
 </template>
@@ -163,7 +157,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
+import { enableStoragePersistence, getStoragePersistenceStatusRef, storagePersistenceSupported } from '@/utility/storage.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
@@ -171,15 +165,15 @@ import FormSection from '@/components/form/section.vue';
 import { prefer } from '@/preferences.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import { signout } from '@/signout.js';
-import { migrateOldSettings } from '@/pref-migrate.js';
 import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
 import { cloudBackup } from '@/preferences/utility.js';
 
 const $i = ensureSignin();
 
+const storagePersisted = await getStoragePersistenceStatusRef();
+
 const reportError = prefer.model('reportError');
-const enableCondensedLine = prefer.model('enableCondensedLine');
 const skipNoteRender = prefer.model('skipNoteRender');
 const devMode = prefer.model('devMode');
 const stackingRouterView = prefer.model('experimental.stackingRouterView');
@@ -213,10 +207,6 @@ async function deleteAccount() {
 	});
 
 	await signout();
-}
-
-function migrate() {
-	migrateOldSettings();
 }
 
 function resetAllTips() {

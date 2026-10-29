@@ -5,7 +5,7 @@
 
 import { watch, version as vueVersion } from 'vue';
 import { compareVersions } from 'compare-versions';
-import { version, lang, apiUrl, isSafeMode } from '@@/js/config.js';
+import { version, lang, isSafeMode } from '@@/js/config.js';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
 import { storeBootloaderErrors } from '@@/js/store-boot-errors';
@@ -13,7 +13,7 @@ import type { App } from 'vue';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
-import { applyTheme } from '@/theme.js';
+import { themeManager } from '@/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { i18n } from '@/i18n.js';
 import { refreshCurrentAccount, login } from '@/accounts.js';
@@ -30,6 +30,7 @@ import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
 import { $i } from '@/i.js';
 import { launchPlugins } from '@/plugin.js';
+import { initTelemetry } from '@/telemetry.js';
 
 export async function common(createVue: () => Promise<App<Element>>) {
 	console.info(`Misskey v${version}`);
@@ -161,7 +162,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 
 	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
 	// NOTE: この処理は必ずダークモード判定処理より後に来ること(初回のテーマ適用のため)
-	// NOTE: この処理は必ずサーバーテーマ適用処理より後に来ること(二重applyTheme発火を防ぐため)
+	// NOTE: この処理は必ずサーバーテーマ適用処理より後に来ること(二重発火を防ぐため)
 	// see: https://github.com/misskey-dev/misskey/issues/16562
 	watch(store.r.darkMode, (darkMode) => {
 		const theme = (() => {
@@ -172,7 +173,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 			}
 		})();
 
-		applyTheme(theme);
+		themeManager.updateTheme(theme);
 	}, { immediate: true });
 
 	window.document.documentElement.dataset.colorScheme = store.s.darkMode ? 'dark' : 'light';
@@ -180,13 +181,13 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	if (!isSafeMode) {
 		watch(prefer.r.darkTheme, (theme) => {
 			if (store.s.darkMode) {
-				applyTheme(theme ?? defaultDarkTheme);
+				themeManager.updateTheme(theme ?? defaultDarkTheme);
 			}
 		});
 
 		watch(prefer.r.lightTheme, (theme) => {
 			if (!store.s.darkMode) {
-				applyTheme(theme ?? defaultLightTheme);
+				themeManager.updateTheme(theme ?? defaultLightTheme);
 			}
 		});
 	}
@@ -286,40 +287,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 		return root;
 	})();
 
-	if (instance.sentryForFrontend) {
-		const Sentry = await import('@sentry/vue');
-		Sentry.init({
-			app,
-			integrations: [
-				...(instance.sentryForFrontend.vueIntegration !== undefined ? [
-					Sentry.vueIntegration(instance.sentryForFrontend.vueIntegration ?? undefined),
-				] : []),
-				...(instance.sentryForFrontend.browserTracingIntegration !== undefined ? [
-					Sentry.browserTracingIntegration(instance.sentryForFrontend.browserTracingIntegration ?? undefined),
-				] : []),
-				...(instance.sentryForFrontend.replayIntegration !== undefined ? [
-					Sentry.replayIntegration(instance.sentryForFrontend.replayIntegration ?? undefined),
-				] : []),
-			],
-
-			// Set tracesSampleRate to 1.0 to capture 100%
-			tracesSampleRate: 1.0,
-
-			// Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
-			...(instance.sentryForFrontend.browserTracingIntegration !== undefined ? {
-				tracePropagationTargets: [apiUrl],
-			} : {}),
-
-			// Capture Replay for 10% of all sessions,
-			// plus for 100% of sessions with an error
-			...(instance.sentryForFrontend.replayIntegration !== undefined ? {
-				replaysSessionSampleRate: 0.1,
-				replaysOnErrorSampleRate: 1.0,
-			} : {}),
-
-			...instance.sentryForFrontend.options,
-		});
-	}
+	await initTelemetry(instance, app);
 
 	try {
 		await launchPlugins();

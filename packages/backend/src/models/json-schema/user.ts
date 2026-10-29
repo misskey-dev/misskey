@@ -495,6 +495,14 @@ export const packedMeDetailedOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
+		followApprovalLocalSeconds: {
+			type: 'number',
+			nullable: true, optional: false,
+		},
+		followApprovalRemoteSeconds: {
+			type: 'number',
+			nullable: true, optional: false,
+		},
 		noCrawle: {
 			type: 'boolean',
 			nullable: false, optional: false,
@@ -618,6 +626,9 @@ export const packedMeDetailedOnlySchema = {
 				achievementEarned: { optional: true, ...notificationRecieveConfig },
 				app: { optional: true, ...notificationRecieveConfig },
 				test: { optional: true, ...notificationRecieveConfig },
+				login: { optional: true, ...notificationRecieveConfig },
+				createToken: { optional: true, ...notificationRecieveConfig },
+				exportCompleted: { optional: true, ...notificationRecieveConfig },
 			},
 		},
 		emailNotificationTypes: {

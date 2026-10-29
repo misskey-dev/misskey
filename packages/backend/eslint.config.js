@@ -5,7 +5,7 @@ import sharedConfig from '../shared/eslint.config.js';
 export default [
 	...sharedConfig,
 	{
-		ignores: ['**/node_modules', 'built', '@types/**/*', 'migration'],
+		ignores: ['**/node_modules', 'built', '@types/**/*', 'migration', 'test-federation/volumes'],
 	},
 	{
 		languageOptions: {
@@ -25,7 +25,6 @@ export default [
 			},
 		},
 		rules: {
-			'@typescript-eslint/no-unused-vars': 'off',
 			'import/order': ['warn', {
 				groups: [
 					'builtin',

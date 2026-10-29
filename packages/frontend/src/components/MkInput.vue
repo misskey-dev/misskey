@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@input="onInput"
 		>
 		<datalist v-if="datalist" :id="id">
-			<option v-for="data in datalist" :key="data" :value="data"/>
+			<option v-for="data in datalist" :key="data" :value="data"></option>
 		</datalist>
 		<div ref="suffixEl" :class="$style.suffix"><slot name="suffix"></slot></div>
 	</div>
@@ -53,8 +53,7 @@ type ModelValueType<T extends SupportedTypes> =
 
 <script lang="ts" setup generic="T extends SupportedTypes = 'text'">
 import { onMounted, onUnmounted, nextTick, ref, useTemplateRef, watch, computed, toRefs } from 'vue';
-import { debounce } from 'throttle-debounce';
-import { useInterval } from '@@/js/use-interval.js';
+import { throttle, debounce } from 'throttle-debounce';
 import type { InputHTMLAttributes } from 'vue';
 import type { SuggestionType } from '@/utility/autocomplete.js';
 import MkButton from '@/components/MkButton.vue';
@@ -81,17 +80,19 @@ const props = defineProps<{
 	min?: number;
 	max?: number;
 	inline?: boolean;
-	debounce?: boolean;
+	debounce?: boolean | number;
+	throttle?: boolean | number;
 	manualSave?: boolean;
 	small?: boolean;
 	large?: boolean;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'change', _ev: KeyboardEvent): void;
+	(ev: 'change', _ev: InputEvent): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
 	(ev: 'enter', _ev: KeyboardEvent): void;
 	(ev: 'update:modelValue', value: ModelValueType<T>): void;
+	(ev: 'savingStateChange', saved: boolean, invalid: boolean): void;
 }>();
 
 const { modelValue } = toRefs(props);
@@ -111,10 +112,9 @@ const height =
 let autocompleteWorker: Autocomplete | null = null;
 
 const focus = () => inputEl.value?.focus();
-const onInput = (event: Event) => {
-	const ev = event as KeyboardEvent;
+const onInput = (event: InputEvent) => {
 	changed.value = true;
-	emit('change', ev);
+	emit('change', event);
 };
 const onKeydown = (ev: KeyboardEvent) => {
 	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
@@ -135,7 +135,8 @@ const updated = () => {
 	}
 };
 
-const debouncedUpdated = debounce(1000, updated);
+const throttledUpdated = throttle(typeof props.throttle === 'number' ? props.throttle : 1000, updated);
+const debouncedUpdated = debounce(typeof props.debounce === 'number' ? props.debounce : 1000, updated);
 
 watch(modelValue, newValue => {
 	v.value = newValue;
@@ -143,7 +144,9 @@ watch(modelValue, newValue => {
 
 watch(v, () => {
 	if (!props.manualSave) {
-		if (props.debounce) {
+		if (props.throttle === true || typeof props.throttle === 'number') {
+			throttledUpdated();
+		} else if (props.debounce === true || typeof props.debounce === 'number') {
 			debouncedUpdated();
 		} else {
 			updated();
@@ -153,27 +156,33 @@ watch(v, () => {
 	invalid.value = inputEl.value?.validity.badInput ?? true;
 });
 
+watch([changed, invalid], ([newChanged, newInvalid]) => {
+	emit('savingStateChange', newChanged, newInvalid);
+}, { immediate: true });
+
 // このコンポーネントが作成された時、非表示状態である場合がある
-// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
-useInterval(() => {
+// 非表示状態だと要素の幅などは0になってしまうので、ResizeObserverでサイズの変化を監視して計算する
+const updatePadding = (entries: ResizeObserverEntry[]) => {
 	if (inputEl.value == null) return;
 
-	if (prefixEl.value) {
-		if (prefixEl.value.offsetWidth) {
-			inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
+	for (const entry of entries) {
+		const width = entry.borderBoxSize[0].inlineSize;
+		if (width === 0) continue;
+		if (entry.target === prefixEl.value) {
+			inputEl.value.style.paddingLeft = width + 'px';
+		} else if (entry.target === suffixEl.value) {
+			inputEl.value.style.paddingRight = width + 'px';
 		}
 	}
-	if (suffixEl.value) {
-		if (suffixEl.value.offsetWidth) {
-			inputEl.value.style.paddingRight = suffixEl.value.offsetWidth + 'px';
-		}
-	}
-}, 100, {
-	immediate: true,
-	afterMounted: true,
-});
+};
+
+let paddingObserver: ResizeObserver | null = null;
 
 onMounted(() => {
+	paddingObserver = new ResizeObserver(updatePadding);
+	if (prefixEl.value) paddingObserver.observe(prefixEl.value);
+	if (suffixEl.value) paddingObserver.observe(suffixEl.value);
+
 	nextTick(() => {
 		if (props.autofocus) {
 			focus();
@@ -186,6 +195,9 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+	paddingObserver?.disconnect();
+	paddingObserver = null;
+
 	if (autocompleteWorker) {
 		autocompleteWorker.detach();
 	}

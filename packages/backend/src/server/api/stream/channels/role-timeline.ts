@@ -3,15 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
+import { NoteStreamingHidingService } from '../NoteStreamingHidingService.js';
+import { DI } from '@/di-symbols.js';
+import type { RolesRepository } from '@/models/_.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
-import Channel, { type MiChannelService } from '../channel.js';
+import Channel, { type ChannelRequest } from '../channel.js';
+import { REQUEST } from '@nestjs/core';
 
-class RoleTimelineChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class RoleTimelineChannel extends Channel {
 	public readonly chName = 'roleTimeline';
 	public static shouldShare = false;
 	public static requireCredential = false as const;
@@ -19,36 +23,55 @@ class RoleTimelineChannel extends Channel {
 	private minimize: boolean;
 
 	constructor(
-		private noteEntityService: NoteEntityService,
-		private roleservice: RoleService,
+		@Inject(REQUEST)
+		request: ChannelRequest,
 
-		id: string,
-		connection: Channel['connection'],
+		@Inject(DI.rolesRepository)
+		private rolesRepository: RolesRepository,
+
+		private noteEntityService: NoteEntityService,
+		private noteStreamingHidingService: NoteStreamingHidingService,
 	) {
-		super(id, connection);
+		super(request);
 		//this.onNote = this.onNote.bind(this);
 	}
 
 	@bindThis
 	public async init(params: JsonObject) {
-		if (typeof params.roleId !== 'string') return;
+		if (typeof params.roleId !== 'string') return false;
 		this.roleId = params.roleId;
 		this.minimize = !!(params.minimize ?? false);
 
+		if (!await this.isAvailable()) return false;
+
 		this.subscriber.on(`roleTimelineStream:${this.roleId}`, this.onEvent);
+		return true;
+	}
+
+	@bindThis
+	private async isAvailable() {
+		return await this.rolesRepository.exists({
+			where: { id: this.roleId, isPublic: true, isExplorable: true },
+		});
 	}
 
 	@bindThis
 	private async onEvent(data: GlobalEvents['roleTimeline']['payload']) {
-		if (data.type === 'note') {
-			const note = data.body;
+		if (!await this.isAvailable()) return;
 
-			if (!(await this.roleservice.isExplorable({ id: this.roleId }))) {
-				return;
-			}
+		if (data.type === 'note') {
+			let note = data.body;
+
 			if (note.visibility !== 'public') return;
+			if (note.user.requireSigninToViewContents && this.user == null) return;
+			if (note.renote && note.renote.user.requireSigninToViewContents && this.user == null) return;
+			if (note.reply && note.reply.user.requireSigninToViewContents && this.user == null) return;
 
 			if (this.isNoteMutedOrBlocked(note)) return;
+
+			const filtered = await this.noteStreamingHidingService.filter(note, this.user?.id ?? null);
+			if (!filtered) return;
+			note = await this.noteEntityService.withMyRenoteReaction(filtered, this.user?.id ?? null);
 
 			if (this.minimize) {
 				if (this.noteEntityService.canCache(note)) {
@@ -77,28 +100,5 @@ class RoleTimelineChannel extends Channel {
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off(`roleTimelineStream:${this.roleId}`, this.onEvent);
-	}
-}
-
-@Injectable()
-export class RoleTimelineChannelService implements MiChannelService<false> {
-	public readonly shouldShare = RoleTimelineChannel.shouldShare;
-	public readonly requireCredential = RoleTimelineChannel.requireCredential;
-	public readonly kind = RoleTimelineChannel.kind;
-
-	constructor(
-		private noteEntityService: NoteEntityService,
-		private roleservice: RoleService,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): RoleTimelineChannel {
-		return new RoleTimelineChannel(
-			this.noteEntityService,
-			this.roleservice,
-			id,
-			connection,
-		);
 	}
 }

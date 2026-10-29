@@ -12,20 +12,17 @@ export const fn = defineImageCompositorFunction<{
 	x: number;
 	y: number;
 	frequency: number;
-	smoothing: boolean;
-	threshold: number;
+	density: number;
+	outlineThickness: number;
 	maskSize: number;
-	black: boolean;
 }>({
 	shader,
 	main: ({ gl, u, params }) => {
 		gl.uniform2f(u.pos, params.x / 2, params.y / 2);
 		gl.uniform1f(u.frequency, params.frequency * params.frequency);
-		// thresholdの調整が有効な間はsmoothingが利用できない
-		gl.uniform1i(u.thresholdEnabled, params.smoothing ? 0 : 1);
-		gl.uniform1f(u.threshold, params.threshold);
+		gl.uniform1f(u.threshold, 1.0 - params.density);
+		gl.uniform1f(u.outlineThickness, params.outlineThickness);
 		gl.uniform1f(u.maskSize, params.maskSize);
-		gl.uniform1i(u.black, params.black ? 1 : 0);
 	},
 });
 
@@ -56,16 +53,18 @@ export const uiDefinition = {
 			max: 15.0,
 			step: 0.1,
 		},
-		smoothing: {
-			label: i18n.ts._imageEffector._fxProps.zoomLinesSmoothing,
-			caption: i18n.ts._imageEffector._fxProps.zoomLinesSmoothingDescription,
-			type: 'boolean',
-			default: false,
-		},
-		threshold: {
-			label: i18n.ts._imageEffector._fxProps.zoomLinesThreshold,
+		density: {
+			label: i18n.ts._imageEffector._fxProps.density,
 			type: 'number',
 			default: 0.5,
+			min: 0.0,
+			max: 1.0,
+			step: 0.01,
+		},
+		outlineThickness: {
+			label: i18n.ts._imageEffector._fxProps.zoomLinesOutlineThickness,
+			type: 'number',
+			default: 0.25,
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
@@ -77,11 +76,6 @@ export const uiDefinition = {
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
-		},
-		black: {
-			label: i18n.ts._imageEffector._fxProps.zoomLinesBlack,
-			type: 'boolean',
-			default: false,
 		},
 	},
 } satisfies ImageEffectorUiDefinition<typeof fn>;

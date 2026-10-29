@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/security" :label="i18n.ts.security" :keywords="['security']" icon="ti ti-lock" :inlining="['2fa']">
 	<div class="_gaps_m">
-		<MkFeatureBanner icon="/client-assets/locked_with_key_3d.png" color="#ffbf00">
+		<MkFeatureBanner icon="/fluent-emoji/1f510.png" color="#ffbf00">
 			<SearchText>{{ i18n.ts._settings.securityBanner }}</SearchText>
 		</MkFeatureBanner>
 
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['signin', 'login', 'history', 'log']">
 			<FormSection>
 				<template #label><SearchLabel>{{ i18n.ts.signinHistory }}</SearchLabel></template>
-				<MkPagination :paginator="paginator" withControl>
+				<MkPagination :paginator="paginator" withControl :forceDisableInfiniteScroll="true">
 					<template #default="{items}">
 						<div>
 							<div v-for="item in items" :key="item.id" v-panel class="timnmucd">

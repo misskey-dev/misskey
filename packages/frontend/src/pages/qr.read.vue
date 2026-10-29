@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #header>
 			<div :class="$style.view">
 				<video ref="videoEl" :class="$style.video" autoplay muted playsinline></video>
-				<div ref="overlayEl" :class="$style.overlay"></div>
+				<div ref="overlayEl"></div>
 				<div :class="$style.controls">
 					<MkButton v-tooltip="i18n.ts._qr.scanFile" iconOnly @click="upload"><i class="ti ti-photo-plus"></i></MkButton>
 
@@ -247,24 +247,48 @@ async function toggleFlash(to = false) {
 	}
 }
 
-async function startQr() {
+// hasFlashなどの後続の処理がカメラを再起動する可能性があるため、
+// start() が完了するまでの間に停止された場合は結果を破棄する必要がある
+let initializeId = 0;
+
+function startQr() {
 	if (!scannerInstance.value) return;
-	await scannerInstance.value.start();
-	qrStarted.value = true;
+	const currentInitializeId = ++initializeId;
+	qrStarted.value = false;
+	scannerInstance.value.start()
+		.then(async () => {
+			if (currentInitializeId !== initializeId) return;
+			qrStarted.value = true;
+			if (!scannerInstance.value) return;
+			const hasFlash = await scannerInstance.value.hasFlash();
+			if (currentInitializeId !== initializeId) return;
+			flashCanToggle.value = hasFlash;
+			flash.value = scannerInstance.value.isFlashOn();
+		})
+		.catch(err => {
+			if (currentInitializeId !== initializeId) return;
+			qrStarted.value = false;
+			os.alert({
+				type: 'error',
+				text: err.toString(),
+			});
+			console.error(err);
+		});
 }
 
 function stopQr() {
+	initializeId++;
 	if (!scannerInstance.value) return;
 	scannerInstance.value.stop();
 	qrStarted.value = false;
 }
 
 onActivated(() => {
-	startQr;
+	startQr();
 });
 
 onDeactivated(() => {
-	stopQr;
+	stopQr();
 });
 
 const alertLock = ref(false);
@@ -311,21 +335,7 @@ onMounted(() => {
 		},
 	);
 
-	scannerInstance.value.start()
-		.then(async () => {
-			qrStarted.value = true;
-			if (!scannerInstance.value) return;
-			flashCanToggle.value = await scannerInstance.value.hasFlash();
-			flash.value = scannerInstance.value.isFlashOn();
-		})
-		.catch(err => {
-			qrStarted.value = false;
-			os.alert({
-				type: 'error',
-				text: err.toString(),
-			});
-			console.error(err);
-		});
+	startQr();
 });
 
 onUnmounted(() => {
@@ -334,6 +344,7 @@ onUnmounted(() => {
 		timer.value = null;
 	}
 
+	initializeId++;
 	scannerInstance.value?.destroy();
 });
 </script>

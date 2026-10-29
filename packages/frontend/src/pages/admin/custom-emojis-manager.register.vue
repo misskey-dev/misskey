@@ -58,7 +58,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as Misskey from 'misskey-js';
 import { computed, onMounted, ref, useCssModule } from 'vue';
 import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
@@ -339,7 +338,7 @@ function onGridCellValidation(event: GridCellValidationEvent) {
 function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	const { row, column, newValue } = event;
 	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
-		gridItems.value[row.index][column.setting.bindTo] = newValue;
+		(gridItems.value[row.index] as any)[column.setting.bindTo] = newValue;
 	}
 }
 

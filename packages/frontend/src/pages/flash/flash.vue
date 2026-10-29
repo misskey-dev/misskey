@@ -104,7 +104,7 @@ function fetchFlash() {
 	});
 }
 
-function share(ev: MouseEvent) {
+function share(ev: PointerEvent) {
 	if (!flash.value) return;
 
 	const menuItems: MenuItem[] = [];
@@ -151,9 +151,11 @@ function shareWithNote() {
 	});
 }
 
-function like() {
+async function like() {
 	if (!flash.value) return;
-	pleaseLogin();
+
+	const isLoggedIn = await pleaseLogin();
+	if (!isLoggedIn) return;
 
 	os.apiWithDialog('flash/like', {
 		flashId: flash.value.id,
@@ -165,7 +167,9 @@ function like() {
 
 async function unlike() {
 	if (!flash.value) return;
-	pleaseLogin();
+
+	const isLoggedIn = await pleaseLogin();
+	if (!isLoggedIn) return;
 
 	const confirm = await os.confirm({
 		type: 'warning',
@@ -193,7 +197,7 @@ function start() {
 }
 
 function getIsLegacy(version: string | null): boolean {
-	if (version == null) return false;
+	if (version == null) return true;
 	try {
 		return compareVersions(version, '1.0.0') < 0;
 	} catch {
@@ -206,9 +210,9 @@ async function run() {
 	if (!flash.value) return;
 
 	const version = utils.getLangVersion(flash.value.script);
-	const isLegacy = version != null && getIsLegacy(version);
+	const isLegacy = getIsLegacy(version);
 
-	const { Interpreter, Parser, values } = isLegacy ? (await import('@syuilo/aiscript-0-19-0') as any) : await import('@syuilo/aiscript');
+	const { Interpreter, Parser, values } = (isLegacy ? (await import('@syuilo/aiscript-0-19-0')) : await import('@syuilo/aiscript')) as typeof import('@syuilo/aiscript');
 
 	const parser = new Parser();
 
@@ -225,10 +229,17 @@ async function run() {
 		THIS_URL: values.STR(`${url}/play/${flash.value.id}`),
 	}, {
 		in: aiScriptReadline,
-		out: (value) => {
+		out: () => {
 			// nop
 		},
-		log: (type, params) => {
+		err: (err) => {
+			os.alert({
+				type: 'error',
+				title: 'AiScript Error',
+				text: String(err),
+			});
+		},
+		log: () => {
 			// nop
 		},
 	});
@@ -241,7 +252,8 @@ async function run() {
 	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: 'Syntax error :(',
+			title: 'Syntax Error',
+			text: String(err),
 		});
 		return;
 	}
@@ -250,8 +262,8 @@ async function run() {
 	} catch (err: any) {
 		os.alert({
 			type: 'error',
-			title: 'AiScript Error',
-			text: err.message,
+			title: 'AiScript Internal Error',
+			text: String(err),
 		});
 	}
 }
@@ -269,7 +281,7 @@ async function reportAbuse() {
 	});
 }
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	if (!flash.value) return;
 
 	const menu: MenuItem[] = [

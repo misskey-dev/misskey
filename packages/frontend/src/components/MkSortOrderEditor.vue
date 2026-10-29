@@ -25,11 +25,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts" generic="T extends string">
 import { toRefs } from 'vue';
+import type { MenuItem } from '@/types/menu.js';
+import type { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 import MkTagItem from '@/components/MkTagItem.vue';
 import MkButton from '@/components/MkButton.vue';
-import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
-import type { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 
 const emit = defineEmits<{
 	(ev: 'update', sortOrders: SortOrder<T>[]): void;
@@ -55,7 +55,7 @@ function onToggleSortOrderButtonClicked(order: SortOrder<T>) {
 	emitOrder(currentOrders.value);
 }
 
-function onAddSortOrderButtonClicked(ev: MouseEvent) {
+function onAddSortOrderButtonClicked(ev: PointerEvent) {
 	const menuItems: MenuItem[] = props.baseOrderKeyNames
 		.filter(baseKey => !currentOrders.value.map(it => it.key).includes(baseKey))
 		.map(it => {

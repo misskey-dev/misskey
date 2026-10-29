@@ -21,13 +21,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, onBeforeUnmount, useTemplateRef, ref } from 'vue';
 import MkMenu from './MkMenu.vue';
 import type { MenuItem } from '@/types/menu.js';
-import contains from '@/utility/contains.js';
+import { elementContains } from '@/utility/element-contains.js';
 import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
 
 const props = defineProps<{
 	items: MenuItem[];
-	ev: MouseEvent;
+	ev: PointerEvent;
 }>();
 
 const emit = defineEmits<{
@@ -75,8 +75,8 @@ onBeforeUnmount(() => {
 	window.document.body.removeEventListener('mousedown', onMousedown);
 });
 
-function onMousedown(evt: Event) {
-	if (!contains(rootEl.value, evt.target) && (rootEl.value !== evt.target)) emit('closed');
+function onMousedown(evt: MouseEvent) {
+	if (!elementContains(rootEl.value, evt.target as Element) && (rootEl.value !== evt.target)) emit('closed');
 }
 </script>
 

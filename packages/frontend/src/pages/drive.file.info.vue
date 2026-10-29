@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkLoading v-if="fetching"/>
 	<div v-else-if="file" class="_gaps">
 		<div :class="$style.filePreviewRoot">
-			<MkMediaList :mediaList="[file]"></MkMediaList>
+			<MkMediaList :mediaList="[file]" :user="file.user"></MkMediaList>
 		</div>
 		<div :class="$style.fileQuickActionsRoot">
 			<button class="_button" :class="$style.fileNameEditBtn" @click="rename()">
@@ -123,6 +123,7 @@ function postThis() {
 
 	os.post({
 		initialFiles: [file.value],
+		instant: true,
 	});
 }
 
@@ -131,10 +132,11 @@ function move() {
 
 	const f = file.value;
 
-	selectDriveFolder(null).then(folder => {
+	selectDriveFolder(null).then(({ canceled, folders }) => {
+		if (canceled) return;
 		misskeyApi('drive/files/update', {
 			fileId: f.id,
-			folderId: folder[0] ? folder[0].id : null,
+			folderId: folders[0] ? folders[0].id : null,
 		}).then(async () => {
 			await _fetch_();
 		});
@@ -214,7 +216,7 @@ async function deleteFile() {
 
 	globalEvents.emit('driveFilesDeleted', [file.value]);
 
-	router.push('/my/drive');
+	router.replace('/my/drive');
 }
 
 onMounted(async () => {

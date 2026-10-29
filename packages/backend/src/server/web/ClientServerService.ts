@@ -4,8 +4,7 @@
  */
 
 import { randomUUID } from 'node:crypto';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import sharp from 'sharp';
@@ -49,6 +48,7 @@ import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { HtmlTemplateService } from './HtmlTemplateService.js';
 
 import { BasePage } from './views/base.js';
+import { htmlToPlainText } from '@/misc/html-to-plain-text.js';
 import { UserPage } from './views/user.js';
 import { NotePage } from './views/note.js';
 import { PagePage } from './views/page.js';
@@ -67,20 +67,17 @@ import { ErrorPage } from './views/error.js';
 
 import type { FastifyError, FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
 
-const _filename = fileURLToPath(import.meta.url);
-const _dirname = dirname(_filename);
-
-const staticAssets = `${_dirname}/../../../assets/`;
-const clientAssets = `${_dirname}/../../../../frontend/assets/`;
-const assets = `${_dirname}/../../../../../built/_frontend_dist_/`;
-const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
-const frontendViteOut = `${_dirname}/../../../../../built/_frontend_vite_/`;
-const frontendEmbedViteOut = `${_dirname}/../../../../../built/_frontend_embed_vite_/`;
-const tarball = `${_dirname}/../../../../../built/tarball/`;
-
 @Injectable()
 export class ClientServerService {
-	private logger: Logger;
+	private readonly staticAssets: string;
+	private readonly clientAssets: string;
+	private readonly assets: string;
+	private readonly swAssets: string;
+	private readonly fluentEmojiDir: string;
+	private readonly twemojiDir: string;
+	private readonly frontendViteOut: string;
+	private readonly frontendEmbedViteOut: string;
+	private readonly tarball: string;
 
 	constructor(
 		@Inject(DI.config)
@@ -134,6 +131,17 @@ export class ClientServerService {
 		private clientLoggerService: ClientLoggerService,
 	) {
 		//this.createServer = this.createServer.bind(this);
+		const backendRootdir = resolve(this.config.rootDir, 'packages/backend');
+		const frontendRootdir = resolve(this.config.rootDir, 'packages/frontend');
+		this.staticAssets = resolve(backendRootdir, 'assets');
+		this.clientAssets = resolve(frontendRootdir, 'assets');
+		this.assets = resolve(this.config.rootDir, 'built/_frontend_dist_');
+		this.swAssets = resolve(this.config.rootDir, 'built/_sw_dist_');
+		this.fluentEmojiDir = resolve(backendRootdir, 'node_modules/@misskey-dev/emoji-assets/built/fluent-emoji');
+		this.twemojiDir = resolve(backendRootdir, 'node_modules/@misskey-dev/emoji-assets/built/twemoji');
+		this.frontendViteOut = resolve(this.config.rootDir, 'built/_frontend_vite_');
+		this.frontendEmbedViteOut = resolve(this.config.rootDir, 'built/_frontend_embed_vite_');
+		this.tarball = resolve(this.config.rootDir, 'built/tarball');
 	}
 
 	@bindThis
@@ -208,16 +216,17 @@ export class ClientServerService {
 
 		//#region vite assets
 		if (this.config.frontendEmbedManifestExists) {
+			this.clientLoggerService.logger.info(`[ClientServerService] Using built frontend vite assets. ${this.frontendViteOut}`);
 			fastify.register((fastify, options, done) => {
 				fastify.register(fastifyStatic, {
-					root: frontendViteOut,
+					root: this.frontendViteOut,
 					prefix: '/vite/',
 					maxAge: ms('30 days'),
 					immutable: true,
 					decorateReply: false,
 				});
 				fastify.register(fastifyStatic, {
-					root: frontendEmbedViteOut,
+					root: this.frontendEmbedViteOut,
 					prefix: '/embed_vite/',
 					maxAge: ms('30 days'),
 					immutable: true,
@@ -227,6 +236,7 @@ export class ClientServerService {
 				done();
 			});
 		} else {
+			console.log('[ClientServerService] Proxying to Vite dev server.');
 			const urlOriginWithoutPort = configUrl.origin.replace(/:\d+$/, '');
 
 			const port = (process.env.VITE_PORT ?? '5173');
@@ -248,21 +258,21 @@ export class ClientServerService {
 		//#region static assets
 
 		fastify.register(fastifyStatic, {
-			root: staticAssets,
+			root: this.staticAssets,
 			prefix: '/static-assets/',
 			maxAge: ms('7 days'),
 			decorateReply: false,
 		});
 
 		fastify.register(fastifyStatic, {
-			root: clientAssets,
+			root: this.clientAssets,
 			prefix: '/client-assets/',
 			maxAge: ms('7 days'),
 			decorateReply: false,
 		});
 
 		fastify.register(fastifyStatic, {
-			root: assets,
+			root: this.assets,
 			prefix: '/assets/',
 			maxAge: ms('7 days'),
 			decorateReply: false,
@@ -270,7 +280,7 @@ export class ClientServerService {
 
 		fastify.register((fastify, options, done) => {
 			fastify.register(fastifyStatic, {
-				root: tarball,
+				root: this.tarball,
 				prefix: '/tarball/',
 				maxAge: ms('30 days'),
 				immutable: true,
@@ -281,11 +291,11 @@ export class ClientServerService {
 		});
 
 		fastify.get('/favicon.ico', async (request, reply) => {
-			return reply.sendFile('/favicon.ico', staticAssets);
+			return reply.sendFile('/favicon.ico', this.staticAssets);
 		});
 
 		fastify.get('/apple-touch-icon.png', async (request, reply) => {
-			return reply.sendFile('/apple-touch-icon.png', staticAssets);
+			return reply.sendFile('/apple-touch-icon.png', this.staticAssets);
 		});
 
 		fastify.get<{ Params: { path: string } }>('/fluent-emoji/:path(.*)', async (request, reply) => {
@@ -298,7 +308,7 @@ export class ClientServerService {
 
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
-			return await reply.sendFile(path, `${_dirname}/../../../../../fluent-emojis/dist/`, {
+			return reply.sendFile(path, this.fluentEmojiDir, {
 				maxAge: ms('30 days'),
 			});
 		});
@@ -313,7 +323,7 @@ export class ClientServerService {
 
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
-			return await reply.sendFile(path, `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`, {
+			return reply.sendFile(path, this.twemojiDir, {
 				maxAge: ms('30 days'),
 			});
 		});
@@ -327,7 +337,7 @@ export class ClientServerService {
 			}
 
 			const mask = await sharp(
-				`${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/${path.replace('.png', '')}.svg`,
+				`${this.twemojiDir}/${path.replace('.png', '')}.svg`,
 				{ density: 1000 },
 			)
 				.resize(488, 488)
@@ -363,7 +373,7 @@ export class ClientServerService {
 
 		// ServiceWorker
 		fastify.get('/sw.js', async (request, reply) => {
-			return await reply.sendFile('/sw.js', swAssets, {
+			return await reply.sendFile('/sw.js', this.swAssets, {
 				maxAge: ms('10 minutes'),
 			});
 		});
@@ -373,13 +383,40 @@ export class ClientServerService {
 
 		// Embed Javascript
 		fastify.get('/embed.js', async (request, reply) => {
-			return await reply.sendFile('/embed.js', staticAssets, {
+			return await reply.sendFile('/embed.js', this.staticAssets, {
 				maxAge: ms('1 day'),
 			});
 		});
 
 		fastify.get('/robots.txt', async (request, reply) => {
-			return await reply.sendFile('/robots.txt', staticAssets);
+			const disallowedPaths = [
+				'/settings',
+				'/admin',
+				'/custom-emojis-manager',
+				'/avatar-decorations',
+				'/share',
+				'/my',
+				'/api',
+				'/inbox',
+				'/oauth',
+				'/proxy',
+				'/url',
+			];
+
+			if (this.meta.ugcVisibilityForVisitor === 'none') {
+				disallowedPaths.push(
+					'/@',
+					'/notes',
+				);
+			}
+
+			let content = `User-agent: *\n`;
+			content += disallowedPaths.map((path) => `Disallow: ${path}`).join('\n') + '\n';
+			content += 'Allow: /\n';
+			content += '\n# todo: sitemap\n';
+
+			reply.header('Content-Type', 'text/plain; charset=utf-8');
+			return await reply.send(content);
 		});
 
 		// OpenSearch XML
@@ -405,8 +442,8 @@ export class ClientServerService {
 			return await HtmlTemplateService.replyHtml(reply, BasePage({
 				img: this.meta.bannerUrl ?? undefined,
 				title: this.meta.name ?? 'Misskey',
-				desc: this.meta.description ?? undefined,
-				...await this.htmlTemplateService.getCommonData(),
+				desc: this.meta.description == null ? undefined : htmlToPlainText(this.meta.description),
+				...(await this.htmlTemplateService.getCommonData()),
 				...data,
 			}));
 		};
@@ -423,7 +460,13 @@ export class ClientServerService {
 				requireSigninToViewContents: false,
 			});
 
-			return user && await this.feedService.packFeed(user);
+			if (user == null) return null;
+
+			if (this.meta.ugcVisibilityForVisitor === 'none' || (this.meta.ugcVisibilityForVisitor === 'local' && user.host != null)) {
+				return null;
+			}
+
+			return await this.feedService.packFeed(user);
 		};
 
 		// Atom
@@ -506,7 +549,7 @@ export class ClientServerService {
 					user: _user,
 					profile,
 					sub: request.params.sub,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 					clientCtxJson: htmlSafeJsonStringify({
 						user: _user,
 					}),
@@ -544,7 +587,11 @@ export class ClientServerService {
 					id: request.params.note,
 					visibility: In(['public', 'home']),
 				},
-				relations: ['user', 'reply', 'renote'],
+				relations: {
+					user: true,
+					reply: true,
+					renote: true,
+				},
 			});
 
 			if (
@@ -564,7 +611,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, NotePage({
 					note: _note,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 					clientCtxJson: htmlSafeJsonStringify({
 						note: _note,
 					}),
@@ -684,7 +731,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, PagePage({
 					page: _page,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -708,7 +755,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, FlashPage({
 					flash: _flash,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -732,7 +779,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, ClipPage({
 					clip: _clip,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 					clientCtxJson: htmlSafeJsonStringify({
 						clip: _clip,
 					}),
@@ -757,7 +804,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, GalleryPostPage({
 					galleryPost: _post,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -775,7 +822,7 @@ export class ClientServerService {
 				reply.header('Cache-Control', 'public, max-age=15');
 				return await HtmlTemplateService.replyHtml(reply, ChannelPage({
 					channel: _channel,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -793,7 +840,7 @@ export class ClientServerService {
 				reply.header('Cache-Control', 'public, max-age=3600');
 				return await HtmlTemplateService.replyHtml(reply, ReversiGamePage({
 					reversiGame: _game,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -812,7 +859,7 @@ export class ClientServerService {
 				reply.header('Cache-Control', 'public, max-age=3600');
 				return await HtmlTemplateService.replyHtml(reply, AnnouncementPage({
 					announcement: _announcement,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -848,7 +895,7 @@ export class ClientServerService {
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 				embedCtxJson: htmlSafeJsonStringify({
 					user: _user,
 				}),
@@ -862,7 +909,11 @@ export class ClientServerService {
 				where: {
 					id: request.params.note,
 				},
-				relations: ['user', 'reply', 'renote'],
+				relations: {
+					user: true,
+					reply: true,
+					renote: true,
+				},
 			});
 
 			if (note == null) return;
@@ -874,7 +925,7 @@ export class ClientServerService {
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 				embedCtxJson: htmlSafeJsonStringify({
 					note: _note,
 				}),
@@ -895,7 +946,7 @@ export class ClientServerService {
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 				embedCtxJson: htmlSafeJsonStringify({
 					clip: _clip,
 				}),
@@ -908,7 +959,7 @@ export class ClientServerService {
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 			}));
 		});
 
@@ -934,9 +985,6 @@ export class ClientServerService {
 				version: this.config.version,
 			}));
 		});
-
-		const override = (source: string, target: string, depth = 0) =>
-			[, ...target.split('/').filter(x => x), ...source.split('/').filter(x => x).splice(depth)].join('/');
 
 		fastify.get('/flush', async (request, reply) => {
 			let sendHeader = true;

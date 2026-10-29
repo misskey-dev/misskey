@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref, watch, onUnmounted } from 'vue';
+import { ref, watch, onBeforeUnmount } from 'vue';
 import type { Ref } from 'vue';
 
 export function useTooltip(
@@ -22,7 +22,7 @@ export function useTooltip(
 
 	let changeShowingState: (() => void) | null;
 
-	let autoHidingTimer;
+	let autoHidingTimer: number | null = null;
 
 	const open = () => {
 		close();
@@ -43,7 +43,7 @@ export function useTooltip(
 				isHovering = false;
 				window.clearTimeout(timeoutId);
 				close();
-				window.clearInterval(autoHidingTimer);
+				if (autoHidingTimer != null) window.clearInterval(autoHidingTimer);
 			}
 		}, 1000);
 	};
@@ -66,7 +66,7 @@ export function useTooltip(
 		if (!isHovering) return;
 		isHovering = false;
 		window.clearTimeout(timeoutId);
-		window.clearInterval(autoHidingTimer);
+		if (autoHidingTimer != null) window.clearInterval(autoHidingTimer);
 		close();
 	};
 
@@ -81,7 +81,7 @@ export function useTooltip(
 		if (!isHovering) return;
 		isHovering = false;
 		window.clearTimeout(timeoutId);
-		window.clearInterval(autoHidingTimer);
+		if (autoHidingTimer != null) window.clearInterval(autoHidingTimer);
 		close();
 	};
 
@@ -100,7 +100,15 @@ export function useTooltip(
 		flush: 'post',
 	});
 
-	onUnmounted(() => {
+	onBeforeUnmount(() => {
 		close();
+		if (elRef.value) {
+			const el = elRef.value instanceof Element ? elRef.value : elRef.value.$el;
+			el.removeEventListener('mouseover', onMouseover);
+			el.removeEventListener('mouseleave', onMouseleave);
+			el.removeEventListener('touchstart', onTouchstart);
+			el.removeEventListener('touchend', onTouchend);
+			el.removeEventListener('click', close);
+		}
 	});
 }

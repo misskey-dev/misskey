@@ -22,6 +22,8 @@ export const meta = {
 
 	kind: 'write:channels',
 
+	requiredRolePolicy: 'canCreateChannel',
+
 	limit: {
 		duration: ms('1hour'),
 		max: 10,

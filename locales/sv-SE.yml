@@ -559,6 +559,7 @@ tryAgain: "Försök igen senare"
 signinWithPasskey: "Logga in med nyckel"
 unknownWebAuthnKey: "Okänd nyckel"
 information: "Om"
+previewingThemeRestore: "Återställ"
 _imageEditing:
   _vars:
     filename: "Filnamn"
@@ -639,6 +640,9 @@ _widgets:
   jobQueue: "Jobbkö"
   _userList:
     chooseList: "Välj lista"
+_widgetOptions:
+  _clock:
+    size: "Storlek"
 _cw:
   hide: "Dölj"
   show: "Ladda mer"

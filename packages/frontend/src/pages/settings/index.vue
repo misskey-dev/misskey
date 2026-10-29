@@ -11,6 +11,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
 					<div class="_gaps_s">
 						<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+						<MkInfo v-if="storagePersistenceSupported && !storagePersisted && store.r.showStoragePersistenceSuggestion.value" class="info">
+							<div>{{ i18n.ts._settings.settingsPersistence_description1 }}</div>
+							<div>{{ i18n.ts._settings.settingsPersistence_description2 }}</div>
+							<div><button class="_textButton" @click="enableStoragePersistence">{{ i18n.ts.enable }}</button> | <button class="_textButton" @click="skipStoragePersistence">{{ i18n.ts.skip }}</button></div>
+						</MkInfo>
 						<MkInfo v-if="!store.r.enablePreferencesAutoCloudBackup.value && store.r.showPreferencesAutoCloudBackupSuggestion.value" class="info">
 							<div>{{ i18n.ts._preferencesBackup.autoPreferencesBackupIsNotEnabledForThisDevice }}</div>
 							<div><button class="_textButton" @click="enableAutoBackup">{{ i18n.ts.enable }}</button> | <button class="_textButton" @click="skipAutoBackup">{{ i18n.ts.skip }}</button></div>
@@ -46,8 +51,11 @@ import { enableAutoBackup, getPreferencesProfileMenu } from '@/preferences/utili
 import { store } from '@/store.js';
 import { signout } from '@/signout.js';
 import { genSearchIndexes } from '@/utility/inapp-search.js';
+import { enableStoragePersistence, getStoragePersistenceStatusRef, storagePersistenceSupported, skipStoragePersistence } from '@/utility/storage.js';
 
 const searchIndex = await import('search-index:settings').then(({ searchIndexes }) => genSearchIndexes(searchIndexes));
+
+const storagePersisted = await getStoragePersistenceStatusRef();
 
 const indexInfo = {
 	title: i18n.ts.settings,
@@ -160,7 +168,7 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		type: 'button',
 		icon: 'ti ti-settings-2',
 		text: i18n.ts.preferencesProfile,
-		action: async (ev: MouseEvent) => {
+		action: async (ev) => {
 			os.popupMenu(getPreferencesProfileMenu(), ev.currentTarget ?? ev.target);
 		},
 	}, {

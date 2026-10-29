@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<SearchMarker :keywords="['avatar', 'icon', 'change']">
 						<MkButton primary rounded @click="changeAvatar"><SearchLabel>{{ i18n.ts._profile.changeAvatar }}</SearchLabel></MkButton>
 					</SearchMarker>
-					<MkButton primary rounded link to="/settings/avatar-decoration">{{ i18n.ts.decorate }} <i class="ti ti-sparkles"></i></MkButton>
+					<MkButton primary rounded type="routerLink" to="/settings/avatar-decoration">{{ i18n.ts.decorate }} <i class="ti ti-sparkles"></i></MkButton>
 				</div>
 			</div>
 		</div>
@@ -75,30 +75,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.metadataRoot" class="_gaps_s">
 						<MkInfo>{{ i18n.ts._profile.verifiedLinkDescription }}</MkInfo>
 
-						<Sortable
+						<MkDraggable
 							v-model="fields"
-							class="_gaps_s"
-							itemKey="id"
-							:animation="150"
-							:handle="'.' + $style.dragItemHandle"
-							@start="e => e.item.classList.add('active')"
-							@end="e => e.item.classList.remove('active')"
+							direction="vertical"
+							withGaps
+							manualDragStart
 						>
-							<template #item="{element, index}">
+							<template #default="{ item, dragStart }">
 								<div v-panel :class="$style.fieldDragItem">
-									<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
-									<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
+									<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1" :draggable="true" @dragstart.stop="dragStart"><i class="ti ti-menu"></i></button>
+									<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(item.id)"><i class="ti ti-x"></i></button>
 									<div :class="$style.dragItemForm">
 										<FormSplit :minWidth="200">
-											<MkInput v-model="element.name" small :placeholder="i18n.ts._profile.metadataLabel">
+											<MkInput v-model="item.name" small :placeholder="i18n.ts._profile.metadataLabel">
 											</MkInput>
-											<MkInput v-model="element.value" small :placeholder="i18n.ts._profile.metadataContent">
+											<MkInput v-model="item.value" small :placeholder="i18n.ts._profile.metadataContent">
 											</MkInput>
 										</FormSplit>
 									</div>
 								</div>
 							</template>
-						</Sortable>
+						</MkDraggable>
 					</div>
 				</MkFolder>
 				<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
@@ -107,7 +104,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['follow', 'message']">
 			<MkInput v-model="profile.followedMessage" :max="200" manualSave :mfmPreview="false">
-				<template #label><SearchLabel>{{ i18n.ts._profile.followedMessage }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+				<template #label><SearchLabel>{{ i18n.ts._profile.followedMessage }}</SearchLabel></template>
 				<template #caption>
 					<div><SearchText>{{ i18n.ts._profile.followedMessageDescription }}</SearchText></div>
 					<div>{{ i18n.ts._profile.followedMessageDescriptionForLockedAccount }}</div>
@@ -165,7 +162,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -174,6 +172,7 @@ import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';
 import FormLink from '@/components/form/link.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import { chooseDriveFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -185,12 +184,11 @@ import { store } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import { genId } from '@/utility/id.js';
+import { replaceCurrentAccountData, updateCurrentAccount } from '@/accounts.js';
 
 const $i = ensureSignin();
 
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
-
-const reactionAcceptance = computed(store.makeGetterSetter('reactionAcceptance'));
+const reactionAcceptance = store.model('reactionAcceptance');
 
 function assertVaildLang(lang: string | null): lang is keyof typeof langmap {
 	return lang != null && lang in langmap;
@@ -228,8 +226,8 @@ while (fields.value.length < 4) {
 	addField();
 }
 
-function deleteField(index: number) {
-	fields.value.splice(index, 1);
+function deleteField(itemId: string) {
+	fields.value = fields.value.filter(f => f.id !== itemId);
 }
 
 function saveFields() {
@@ -260,7 +258,12 @@ function save() {
 			title: i18n.ts.yourNameContainsProhibitedWords,
 			text: i18n.ts.yourNameContainsProhibitedWordsDescription,
 		},
+	}).then((res) => {
+		replaceCurrentAccountData(res);
+	}).catch(() => {
+		// エラーダイアログは apiWithDialog 側で表示済み
 	});
+
 	claimAchievement('profileFilled');
 	if (profile.name === 'syuilo' || profile.name === 'しゅいろ') {
 		claimAchievement('setNameToSyuilo');
@@ -270,13 +273,23 @@ function save() {
 	}
 }
 
-function changeAvatar(ev) {
-	async function done(driveFile) {
+function changeAvatar(ev: PointerEvent) {
+	async function done(driveFile: Misskey.entities.DriveFile) {
 		const i = await os.apiWithDialog('i/update', {
 			avatarId: driveFile.id,
+		}, undefined, {
+			'71bb5e53-4742-4609-b465-36081e131208': {
+				title: i18n.ts.cannotSelectSensitiveMedia,
+				text: i18n.ts.cannotSelectSensitiveMediaDescription,
+			},
+		}).catch(() => null); // エラーダイアログは apiWithDialog 側で表示済み
+		if (i == null) return;
+
+		updateCurrentAccount({
+			avatarId: i.avatarId,
+			avatarUrl: i.avatarUrl,
+			avatarBlurhash: i.avatarBlurhash,
 		});
-		$i.avatarId = i.avatarId;
-		$i.avatarUrl = i.avatarUrl;
 		claimAchievement('profileFilled');
 	}
 
@@ -312,20 +325,48 @@ function changeAvatar(ev) {
 		text: i18n.ts.fromDrive,
 		icon: 'ti ti-cloud',
 		action: () => {
-			chooseDriveFile({ multiple: false }).then(files => {
+			chooseDriveFile({ multiple: false, excludeSensitive: true }).then(files => {
 				done(files[0]);
 			});
 		},
-	}], ev.currentTarget ?? ev.target);
+	}, ...($i.avatarId != null ? [
+			{ type: 'divider' as const },
+			{
+				type: 'button' as const,
+				text: i18n.ts.detach,
+				icon: 'ti ti-circle-x',
+				action: () => {
+					os.apiWithDialog('i/update', {
+						avatarId: null,
+					}).then((res) => {
+						updateCurrentAccount({
+							avatarId: res.avatarId,
+							avatarUrl: res.avatarUrl,
+							avatarBlurhash: res.avatarBlurhash,
+						});
+					}).catch(() => {
+						// エラーダイアログは apiWithDialog 側で表示済み
+					});
+				},
+			},
+		] : [])], ev.currentTarget ?? ev.target);
 }
 
-function changeBanner(ev) {
-	async function done(driveFile) {
+function changeBanner(ev: PointerEvent) {
+	async function done(driveFile: Misskey.entities.DriveFile) {
 		const i = await os.apiWithDialog('i/update', {
 			bannerId: driveFile.id,
+		}, undefined, {
+			'e148b34c-9f33-4300-93e0-7817008fb366': {
+				title: i18n.ts.cannotSelectSensitiveMedia,
+				text: i18n.ts.cannotSelectSensitiveMediaDescription,
+			},
+		}).catch(() => null); // エラーダイアログは apiWithDialog 側で表示済み
+		if (i == null) return;
+		updateCurrentAccount({
+			bannerId: i.bannerId,
+			bannerUrl: i.bannerUrl,
 		});
-		$i.bannerId = i.bannerId;
-		$i.bannerUrl = i.bannerUrl;
 	}
 
 	os.popupMenu([{
@@ -360,11 +401,30 @@ function changeBanner(ev) {
 		text: i18n.ts.fromDrive,
 		icon: 'ti ti-cloud',
 		action: () => {
-			chooseDriveFile({ multiple: false }).then(files => {
+			chooseDriveFile({ multiple: false, excludeSensitive: true }).then(files => {
 				done(files[0]);
 			});
 		},
-	}], ev.currentTarget ?? ev.target);
+	}, ...($i.bannerId ? [
+			{ type: 'divider' as const },
+			{
+				type: 'button' as const,
+				text: i18n.ts.detach,
+				icon: 'ti ti-circle-x',
+				action: () => {
+					os.apiWithDialog('i/update', {
+						bannerId: null,
+					}).then((res) => {
+						updateCurrentAccount({
+							bannerId: res.bannerId,
+							bannerUrl: res.bannerUrl,
+						});
+					}).catch(() => {
+						// エラーダイアログは apiWithDialog 側で表示済み
+					});
+				},
+			},
+		] : [])], ev.currentTarget ?? ev.target);
 }
 
 const headerActions = computed(() => []);

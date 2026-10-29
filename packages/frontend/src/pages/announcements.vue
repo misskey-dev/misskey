@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</MkA>
 					</div>
-					<div v-if="tab !== 'past' && $i && !announcement.silence && !announcement.isRead" :class="$style.footer">
+					<div v-if="tab !== 'past' && $i != null && !announcement.silence && !announcement.isRead" :class="$style.footer">
 						<MkButton primary @click="read(announcement)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
 					</div>
 				</section>
@@ -45,6 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, markRaw } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -53,7 +54,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { $i } from '@/i.js';
-import { updateCurrentAccountPartial } from '@/accounts.js';
+import { updateCurrentAccount } from '@/accounts.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const paginator = markRaw(new Paginator('announcements', {
@@ -65,7 +66,9 @@ const paginator = markRaw(new Paginator('announcements', {
 
 const tab = ref('current');
 
-async function read(target) {
+async function read(target: Misskey.entities.Announcement) {
+	if ($i == null) return;
+
 	if (target.needConfirmationToRead) {
 		const confirm = await os.confirm({
 			type: 'question',
@@ -80,8 +83,8 @@ async function read(target) {
 		isRead: true,
 	}));
 	misskeyApi('i/read-announcement', { announcementId: target.id });
-	updateCurrentAccountPartial({
-		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== target.id),
+	updateCurrentAccount({
+		unreadAnnouncements: $i.unreadAnnouncements.filter(a => a.id !== target.id),
 	});
 }
 

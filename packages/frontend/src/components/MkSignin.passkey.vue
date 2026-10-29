@@ -22,21 +22,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { get as webAuthnRequest } from '@github/webauthn-json/browser-ponyfill';
+import { startAuthentication } from '@simplewebauthn/browser';
 
 import { i18n } from '@/i18n.js';
 
 import MkButton from '@/components/MkButton.vue';
 
-import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/browser-ponyfill';
+import type { PublicKeyCredentialRequestOptionsJSON, AuthenticationResponseJSON } from '@simplewebauthn/browser';
 
 const props = defineProps<{
-	credentialRequest: CredentialRequestOptions;
+	credentialRequest: PublicKeyCredentialRequestOptionsJSON;
 	isPerformingPasswordlessLogin?: boolean;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'done', credential: AuthenticationPublicKeyCredential): void;
+	(ev: 'done', credential: AuthenticationResponseJSON): void;
 	(ev: 'useTotp'): void;
 }>();
 
@@ -44,7 +44,7 @@ const queryingKey = ref(true);
 
 async function queryKey() {
 	queryingKey.value = true;
-	await webAuthnRequest(props.credentialRequest)
+	await startAuthentication({ optionsJSON: props.credentialRequest })
 		.catch(() => {
 			return Promise.reject(null);
 		})

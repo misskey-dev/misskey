@@ -24,6 +24,6 @@ const props = withDefaults(defineProps<{
 	noGap?: boolean;
 	extractor?: ExtractorFunction<P, Misskey.entities.Channel>;
 }>(), {
-	extractor: (item) => item,
+	extractor: (item: any) => item as Misskey.entities.Channel,
 });
 </script>

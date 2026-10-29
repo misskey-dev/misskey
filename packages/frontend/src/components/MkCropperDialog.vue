@@ -28,23 +28,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkModalWindow>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="F extends File | Blob">
 import { onMounted, useTemplateRef, ref, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import * as os from '@/os.js';
+import { themeManager } from '@/theme.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	imageFile: File | Blob;
+	imageFile: F;
 	aspectRatio: number | null;
 	uploadFolder?: string | null;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'ok', cropped: File | Blob): void;
+	(ev: 'ok', cropped: F): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
@@ -74,8 +74,14 @@ async function ok() {
 	});
 
 	const f = await promise;
+	let finalFile: F;
+	if (props.imageFile instanceof File) {
+		finalFile = new File([f], props.imageFile.name, { type: f.type }) as F;
+	} else {
+		finalFile = f as F;
+	}
 
-	emit('ok', f);
+	emit('ok', finalFile);
 	if (dialogEl.value != null) dialogEl.value.close();
 }
 
@@ -99,10 +105,10 @@ onMounted(() => {
 	cropper = new Cropper(imgEl.value, {
 	});
 
-	const computedStyle = getComputedStyle(window.document.documentElement);
+	const themeValue = themeManager.currentCompiledTheme!;
 
 	const selection = cropper.getCropperSelection()!;
-	selection.themeColor = tinycolor(computedStyle.getPropertyValue('--MI_THEME-accent')).toHexString();
+	selection.themeColor = tinycolor(themeValue.accent).toHexString();
 	if (props.aspectRatio != null) selection.aspectRatio = props.aspectRatio;
 	selection.initialAspectRatio = props.aspectRatio ?? 1;
 	selection.outlined = true;

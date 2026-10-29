@@ -945,6 +945,12 @@ _widgets:
   jobQueue: "Vazifalar navbati"
   _userList:
     chooseList: "Ro'yxat tanlash"
+_widgetOptions:
+  height: "balandligi"
+  _button:
+    colored: "rangli"
+  _birthdayFollowings:
+    period: "Davomiylik"
 _cw:
   show: "Ko‘proq ko‘rish"
   chars: "{count} ta belgi(lar)"
@@ -1085,6 +1091,7 @@ _deck:
     antenna: "Antennalar"
     list: "Ro‘yxat"
     channel: "Kanal"
+    clip: "Klip"
     mentions: "Eslatib o'tish"
     direct: "Bevosita qaydlar"
     roleTimeline: "Rol xronologiyasi"

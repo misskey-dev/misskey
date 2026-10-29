@@ -75,7 +75,8 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { deepMerge } from '@/utility/merge.js';
 import MkNote from '@/components/MkNote.vue';
 import { i18n } from '@/i18n.js';
-import { useGlobalEvent } from '@/events.js';
+import { DI } from '@/di.js';
+import { globalEvents, useGlobalEvent } from '@/events.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 import { Paginator } from '@/utility/paginator.js';
 
@@ -102,7 +103,7 @@ const props = withDefaults(defineProps<{
 
 provide('inTimeline', true);
 provide('tl_withSensitive', computed(() => props.withSensitive));
-provide('inChannel', computed(() => props.src === 'channel'));
+provide(DI.inChannel, computed(() => props.src === 'channel' ? props.channel ?? null : null));
 
 const minimize = instance.enableStreamNotesCdnCache;
 let queueOnMinimize: ((Misskey.entities.StreamNote | Misskey.entities.Note) & { _shouldInsertAd_?: boolean; })[] = [];
@@ -328,6 +329,12 @@ async function releaseQueue() {
 	scrollToTop(rootEl.value!);
 }
 
+useGlobalEvent('noteRemovedFromAntenna', (antennaId, noteId) => {
+	if (props.src === 'antenna' && props.antenna === antennaId) {
+		paginator.removeItem(noteId);
+	}
+});
+
 async function prepend(data: Misskey.entities.Note | Misskey.entities.StreamNote, withSound = true) {
 	adInsertionCounter++;
 	const shouldInsertAd = (instance.notesPerOneAd > 0 && adInsertionCounter % instance.notesPerOneAd === 0);
@@ -423,13 +430,12 @@ function connectChannel() {
 		connections.main = stream.useChannel('main');
 		connections.main.on('mention', prepend);
 	} else if (props.src === 'directs') {
-		const onNote = note => {
+		connections.main = stream.useChannel('main');
+		connections.main.on('mention', note => {
 			if (note.visibility === 'specified') {
 				prepend(note);
 			}
-		};
-		connections.main = stream.useChannel('main');
-		connections.main.on('mention', onNote);
+		});
 	} else if (props.src === 'list') {
 		if (props.list == null) return;
 		connections.userList = stream.useChannel('userList', {

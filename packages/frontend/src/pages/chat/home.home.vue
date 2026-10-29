@@ -50,7 +50,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { ensureSignin } from '@/i.js';
 import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
-import { updateCurrentAccountPartial } from '@/accounts.js';
+import { updateCurrentAccount } from '@/accounts.js';
 import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -64,7 +64,7 @@ const searchQuery = ref('');
 const searched = ref(false);
 const searchResults = ref<Misskey.entities.ChatMessage[]>([]);
 
-function start(ev: MouseEvent) {
+function start(ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts._chat.individualChat,
 		caption: i18n.ts._chat.individualChat_description,
@@ -89,7 +89,7 @@ async function startUser() {
 		router.push('/chat/user/:userId', {
 			params: {
 				userId: user.id,
-			}
+			},
 		});
 	});
 }
@@ -108,7 +108,7 @@ async function createRoom() {
 	router.push('/chat/room/:roomId', {
 		params: {
 			roomId: room.id,
-		}
+		},
 	});
 }
 
@@ -122,7 +122,7 @@ async function search() {
 }
 
 onMounted(() => {
-	updateCurrentAccountPartial({ hasUnreadChatMessages: false });
+	updateCurrentAccount({ hasUnreadChatMessages: false });
 });
 </script>
 
