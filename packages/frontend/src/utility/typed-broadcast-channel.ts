@@ -14,7 +14,12 @@ export interface TypedBroadcastChannel<T> extends BroadcastChannel {
 	removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
-export const TypedBroadcastChannel = BroadcastChannel as {
-	prototype: TypedBroadcastChannel<unknown>;
-	new <T>(name: string): TypedBroadcastChannel<T>;
-};
+// 以前使用していた broadcast-channel ライブラリはメッセージを { time, type, data } で包んで
+// 同名のネイティブ BroadcastChannel に送信していたため、更新前のタブと混線しないようチャンネル名を分ける
+const CHANNEL_NAME_PREFIX = 'native:';
+
+export class TypedBroadcastChannel<T> extends BroadcastChannel implements TypedBroadcastChannel<T> {
+	constructor(name: string) {
+		super(`${CHANNEL_NAME_PREFIX}${name}`);
+	}
+}
