@@ -211,7 +211,7 @@ let scrollContainer: HTMLElement | null = null;
 
 function onScrollContainerScroll() {
 	if (isTop()) {
-		paginator.releaseQueue();
+		releaseQueue(false);
 	}
 }
 
@@ -280,12 +280,17 @@ async function getFullNote(data: Misskey.entities.Note | Misskey.entities.Stream
 		let fullNote: Misskey.entities.Note | null = null;
 
 		if (data._allowCached_) {
-			const res = await window.fetch(`/notes/${data.id}.json`, {
-				method: 'GET',
-				credentials: 'omit',
-			});
-			if (!res.ok) return null;
-			fullNote = (await res.json().catch(() => null)) as Misskey.entities.Note | null;
+			try {
+				const res = await window.fetch(`/notes/${data.id}.json`, {
+					method: 'GET',
+					credentials: 'omit',
+				});
+				if (res.ok) {
+					fullNote = (await res.json().catch(() => null)) as Misskey.entities.Note | null;
+				}
+			} catch {
+				// 取得に失敗した場合は下の notes/show にフォールバックする
+			}
 		}
 
 		// キャッシュできないノート or キャッシュ用のノートが取得できなかった場合
@@ -308,25 +313,30 @@ async function getFullNote(data: Misskey.entities.Note | Misskey.entities.Stream
 	}
 }
 
-async function releaseQueue() {
-	if (minimize) {
-		if (queueOnMinimize.length === 0) return;
-		if (queueOnMinimize.length >= 10) {
+async function releaseQueue(scroll = true) {
+	if (minimize && queueOnMinimize.length > 0) {
+		// 取得中に積まれたノートを消さないよう、先に退避してから処理する
+		const queue = queueOnMinimize;
+		queueOnMinimize = [];
+
+		const notes = await Promise.allSettled(queue.map(getFullNote));
+
+		if (queue.length >= 10) {
 			paginator.clearItems();
 		}
-
-		const notes = await Promise.allSettled(queueOnMinimize.map(getFullNote));
-		queueOnMinimize = [];
 
 		for (const note of notes) {
 			if (note.status !== 'fulfilled' || note.value == null) continue;
 			await prepend(note.value, false);
 		}
-	} else {
-		paginator.releaseQueue();
 	}
 
-	scrollToTop(rootEl.value!);
+	// minimize 時も、先頭にいない間に取得したノートは paginator 側のキューに入っている
+	paginator.releaseQueue();
+
+	if (scroll && rootEl.value) {
+		scrollToTop(rootEl.value);
+	}
 }
 
 useGlobalEvent('noteRemovedFromAntenna', (antennaId, noteId) => {

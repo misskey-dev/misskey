@@ -628,8 +628,13 @@ export class ClientServerService {
 			// this.meta.enableStreamNotesCdnCacheにかかわらずレスポンスは返す
 			// （このプロパティを見ずにminimizeでChannelに繋いだ場合用）
 
-			const note = await this.notesRepository.findOneBy({
-				id: request.params.note,
+			const note = await this.notesRepository.findOne({
+				where: {
+					id: request.params.note,
+				},
+				relations: {
+					user: true,
+				},
 			});
 
 			if (note && this.noteEntityService.canCache(note)) {
