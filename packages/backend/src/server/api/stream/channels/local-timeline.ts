@@ -79,24 +79,7 @@ export class LocalTimelineChannel extends Channel {
 		// eslint-disable-next-line no-param-reassign -- これ以降元の Note オブジェクトは見てはいけないので、いっそ再代入した方が安全
 		note = await this.noteEntityService.withMyRenoteReaction(filtered, this.user?.id ?? null);
 
-		if (this.minimize) {
-			if (this.noteEntityService.canCache(note)) {
-				this.send('note', {
-					id: note.id, myReaction: note.myReaction,
-					poll: note.poll?.choices ? { choices: note.poll.choices } : undefined,
-					reply: note.reply?.myReaction ? { myReaction: note.reply.myReaction } : undefined,
-					renote: note.renote?.myReaction ? { myReaction: note.renote.myReaction } : undefined,
-					_allowCached_: true,
-				});
-			} else {
-				this.send('note', {
-					id: note.id,
-					_allowCached_: false,
-				});
-			}
-		} else {
-			this.send('note', note);
-		}
+		this.send('note', this.minimize ? this.noteEntityService.minimizeForStream(note) : note);
 	}
 
 	@bindThis

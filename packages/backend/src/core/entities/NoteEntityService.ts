@@ -25,6 +25,18 @@ import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 
+export type MinimizedStreamNote = {
+	id: Packed<'Note'>['id'];
+	myReaction?: Packed<'Note'>['myReaction'];
+	poll?: Pick<NonNullable<Packed<'Note'>['poll']>, 'choices'>;
+	reply?: Pick<NonNullable<Packed<'Note'>['reply']>, 'myReaction'>;
+	renote?: Pick<NonNullable<Packed<'Note'>['renote']>, 'myReaction'>;
+	_allowCached_: true;
+} | {
+	id: Packed<'Note'>['id'];
+	_allowCached_: false;
+};
+
 // is-renote.tsとよしなにリンク
 function isPureRenote(note: MiNote): note is MiNote & { renoteId: MiNote['id']; renote: MiNote } {
 	return (
@@ -369,6 +381,26 @@ export class NoteEntityService implements OnModuleInit {
 		}
 
 		return true;
+	}
+
+	/** ストリーミングで minimize が指定されている場合に送信する、縮約したノートを返す */
+	@bindThis
+	public minimizeForStream(note: Packed<'Note'>): MinimizedStreamNote {
+		if (!this.canCache(note)) {
+			return {
+				id: note.id,
+				_allowCached_: false,
+			};
+		}
+
+		return {
+			id: note.id,
+			myReaction: note.myReaction,
+			poll: note.poll?.choices ? { choices: note.poll.choices } : undefined,
+			reply: note.reply?.myReaction ? { myReaction: note.reply.myReaction } : undefined,
+			renote: note.renote?.myReaction ? { myReaction: note.renote.myReaction } : undefined,
+			_allowCached_: true,
+		};
 	}
 
 	@bindThis
