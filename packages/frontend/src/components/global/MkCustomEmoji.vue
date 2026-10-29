@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, inject, ref } from 'vue';
+import { computed, defineAsyncComponent, inject, ref, watch } from 'vue';
 import { normalizeCustomEmojiName, isLocalCustomEmojiName, getCustomEmojiImagePath } from '@@/js/emoji-name.js';
 import type { MenuItem } from '@/types/menu.js';
 import { getProxiedImageUrl, getStaticImageUrl } from '@/utility/media-proxy.js';
@@ -103,6 +103,11 @@ const url = computed(() => {
 
 const alt = computed(() => `:${customEmojiName.value}:`);
 const errored = ref(url.value == null);
+
+watch(url, (newUrl) => {
+	// 絵文字一覧の更新などでURLが変わったら読み込みを再試行する
+	errored.value = (newUrl == null);
+});
 
 function onClick(ev: PointerEvent) {
 	if (props.menu) {
