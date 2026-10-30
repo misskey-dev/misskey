@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { HashtagsRepository } from '@/models/_.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { normalizeTag } from '@/misc/normalize-tag.js';
 import { HashtagEntityService } from '@/core/entities/HashtagEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { packedHashtagSchema } from '@/models/schema/hashtag.js';
@@ -30,7 +30,7 @@ export const meta = {
 } as const;
 
 export const paramDef = v.object({
-	tag: v.string(),
+	tag: v.pipe(v.string(), v.maxCodePoints(128)),
 });
 
 @Injectable()
@@ -42,7 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private hashtagEntityService: HashtagEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const hashtag = await this.hashtagsRepository.findOneBy({ name: normalizeForSearch(ps.tag) });
+			const hashtag = await this.hashtagsRepository.findOneBy({ name: normalizeTag(ps.tag) });
 			if (hashtag == null) {
 				throw new ApiError(meta.errors.noSuchHashtag);
 			}

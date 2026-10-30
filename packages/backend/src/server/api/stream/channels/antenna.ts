@@ -9,7 +9,6 @@ import type { AntennasRepository } from '@/models/_.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteStreamingHidingService } from '../NoteStreamingHidingService.js';
 import { bindThis } from '@/decorators.js';
-import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type ChannelRequest } from '../channel.js';
@@ -62,7 +61,7 @@ export class AntennaChannel extends Channel {
 	@bindThis
 	private async onEvent(data: GlobalEvents['antenna']['payload']) {
 		if (data.type === 'note') {
-			let note = await this.noteEntityService.pack(data.body.id, this.user, { detail: true });
+			let note = data.body;
 
 			if (!this.isNoteVisibleForMe(note)) return;
 			if (this.isNoteMutedOrBlocked(note)) return;
@@ -71,16 +70,7 @@ export class AntennaChannel extends Channel {
 			if (!filtered) return;
 			note = filtered;
 
-			if (this.user) {
-				if (isRenotePacked(note) && !isQuotePacked(note)) {
-					if (note.renote && Object.keys(note.renote.reactions).length > 0) {
-						const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
-						note.renote.myReaction = myRenoteReaction;
-					}
-				}
-			}
-
-			this.send('note', note);
+			this.send('note', await this.noteEntityService.withMyRenoteReaction(note, this.user?.id ?? null));
 		} else {
 			this.send(data.type, data.body);
 		}

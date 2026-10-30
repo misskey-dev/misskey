@@ -41,8 +41,7 @@ export class MainChannel extends Channel {
 		switch (data.type) {
 			case 'notification': {
 				// Ignore notifications from instances the user has muted
-				if (isUserFromMutedInstance(data.body, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
-				// `userId` / `note` は通知種別によって有無が変わるので存在チェックしてから見る
+				if (isUserFromMutedInstance(data.body, this.userMutedInstances)) return;
 				if ('userId' in data.body && data.body.userId && this.userIdsWhoMeMuting.has(data.body.userId)) return;
 
 				if ('note' in data.body && data.body.note && data.body.note.isHidden) {
@@ -54,7 +53,7 @@ export class MainChannel extends Channel {
 				break;
 			}
 			case 'mention': {
-				if (isInstanceMuted(data.body, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
+				if (isInstanceMuted(data.body, this.userMutedInstances)) return;
 				if (!this.isNoteVisibleForMe(data.body)) return;
 				if (this.isNoteMutedOrBlocked(data.body)) return;
 				if (data.body.isHidden) {

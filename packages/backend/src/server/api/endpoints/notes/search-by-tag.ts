@@ -9,7 +9,7 @@ import * as v from 'valibot';
 import * as mi from '@/misc/schema/index.js';
 import type { NotesRepository } from '@/models/_.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { normalizeTag } from '@/misc/normalize-tag.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -22,7 +22,6 @@ export const meta = {
 	res: v.array(packedNoteSchema),
 } as const;
 
-// legacy の `allOf: [{ anyOf: [...] }, { reply, renote, ... }]` の共通パート
 const filterEntries = {
 	reply: v.optional(v.nullable(v.boolean()), null),
 	renote: v.optional(v.nullable(v.boolean()), null),
@@ -35,16 +34,15 @@ const filterEntries = {
 	limit: mi.limit({ max: 100, def: 10 }),
 };
 
-// NOTE: cookbook R9 に従い allOf に混在した anyOf を各分岐へ共通パートを分配した v.union に変換している
 export const paramDef = v.union([
 	v.object({
-		tag: v.pipe(v.string(), v.minCodePoints(1)),
+		tag: v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(128)),
 		...filterEntries,
 	}),
 	v.object({
 		query: v.pipe(
 			v.array(v.pipe(
-				v.array(v.pipe(v.string(), v.minCodePoints(1))),
+				v.array(v.pipe(v.string(), v.minCodePoints(1), v.maxCodePoints(128))),
 				v.minLength(1),
 			)),
 			v.minLength(1),
@@ -77,15 +75,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			try {
 				if ('tag' in ps) {
-					if (!safeForSql(normalizeForSearch(ps.tag))) throw new Error('Injection');
-					query.andWhere(':tag <@ note.tags', { tag: [normalizeForSearch(ps.tag)] });
+					if (!safeForSql(normalizeTag(ps.tag))) throw new Error('Injection');
+					query.andWhere(':tag <@ note.tags', { tag: [normalizeTag(ps.tag)] });
 				} else {
 					query.andWhere(new Brackets(qb => {
 						for (const tags of ps.query) {
 							qb.orWhere(new Brackets(qb => {
 								for (const tag of tags) {
-									if (!safeForSql(normalizeForSearch(tag))) throw new Error('Injection');
-									qb.andWhere(':tag <@ note.tags', { tag: [normalizeForSearch(tag)] });
+									if (!safeForSql(normalizeTag(tag))) throw new Error('Injection');
+									qb.andWhere(':tag <@ note.tags', { tag: [normalizeTag(tag)] });
 								}
 							}));
 						}

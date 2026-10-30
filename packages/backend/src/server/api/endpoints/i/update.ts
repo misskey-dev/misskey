@@ -17,7 +17,7 @@ import type { UsersRepository, DriveFilesRepository, MiMeta, UserProfilesReposit
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { birthdaySchema, descriptionSchema, followedMessageSchema, locationSchema, nameSchema } from '@/models/User.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { normalizeTag } from '@/misc/normalize-tag.js';
 import { langmap } from '@/misc/langmap.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -74,6 +74,18 @@ export const meta = {
 			message: 'The file specified as a banner is not an image.',
 			code: 'BANNER_NOT_AN_IMAGE',
 			id: '75aedb19-2afd-4e6d-87fc-67941256fa60',
+		},
+
+		avatarIsSensitive: {
+			message: 'The file specified as an avatar is marked as sensitive.',
+			code: 'AVATAR_IS_SENSITIVE',
+			id: '71bb5e53-4742-4609-b465-36081e131208',
+		},
+
+		bannerIsSensitive: {
+			message: 'The file specified as a banner is marked as sensitive.',
+			code: 'BANNER_IS_SENSITIVE',
+			id: 'e148b34c-9f33-4300-93e0-7817008fb366',
 		},
 
 		noSuchPage: {
@@ -365,6 +377,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (avatar == null || avatar.userId !== user.id) throw new ApiError(meta.errors.noSuchAvatar);
 				if (!avatar.type.startsWith('image/')) throw new ApiError(meta.errors.avatarNotAnImage);
+				if (avatar.isSensitive) throw new ApiError(meta.errors.avatarIsSensitive);
 
 				updates.avatarId = avatar.id;
 				updates.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
@@ -383,6 +396,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (banner == null || banner.userId !== user.id) throw new ApiError(meta.errors.noSuchBanner);
 				if (!banner.type.startsWith('image/')) throw new ApiError(meta.errors.bannerNotAnImage);
+				if (banner.isSensitive) throw new ApiError(meta.errors.bannerIsSensitive);
 
 				updates.bannerId = banner.id;
 				updates.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
@@ -489,7 +503,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (newDescription != null) {
 				const tokens = mfm.parse(newDescription);
 				emojis = emojis.concat(extractCustomEmojisFromMfm(tokens));
-				tags = extractHashtags(tokens).map(tag => normalizeForSearch(tag)).splice(0, 32);
+				tags = extractHashtags(tokens).map(tag => normalizeTag(tag)).splice(0, 32);
 			}
 
 			for (const field of newFields) {

@@ -156,7 +156,7 @@ export interface ClipEventTypes {
 }
 
 export interface AntennaEventTypes {
-	note: MiNote;
+	note: Packed<'Note'>;
 }
 
 export interface RoleTimelineEventTypes {
