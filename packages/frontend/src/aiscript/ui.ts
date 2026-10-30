@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { utils, values } from '@syuilo/aiscript';
-import { ref } from 'vue';
+import { errors, utils, values } from '@syuilo/aiscript';
+import { reactive } from 'vue';
 import * as Misskey from 'misskey-js';
 import { assertStringAndIsIn } from './common.js';
-import type { Ref } from 'vue';
 import { genId } from '@/utility/id.js';
+
+const ROOT_ID = '___root___';
 
 const ALIGNS = ['left', 'center', 'right'] as const;
 const FONTS = ['serif', 'sans-serif', 'monospace'] as const;
@@ -21,7 +22,7 @@ type BorderStyle = (typeof BORDER_STYLES)[number];
 export type AsUiComponentBase = {
 	id: string;
 	hidden?: boolean;
-	children?: AsUiComponent['id'][];
+	children?: AsUiComponent[];
 };
 
 export type AsUiRoot = AsUiComponentBase & {
@@ -152,27 +153,24 @@ type Options<T extends AsUiComponent> = T extends AsUiButtons
 	? Omit<T, 'id' | 'type' | 'buttons'> & { 'buttons'?: Options<AsUiButton>[] }
 	: Omit<T, 'id' | 'type'>;
 
+type ChildResolver = (v: values.Value) => AsUiComponent;
+
 export function patch(id: string, def: values.Value, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) {
 	// TODO
 }
 
-function getRootOptions(def: values.Value | undefined): Options<AsUiRoot> {
+function getRootOptions(def: values.Value | undefined, resolveChild: ChildResolver): Options<AsUiRoot> {
 	utils.assertObject(def);
 
 	const children = def.value.get('children');
 	utils.assertArray(children);
 
 	return {
-		children: children.value.map(v => {
-			utils.assertObject(v);
-			const id = v.value.get('id');
-			utils.assertString(id);
-			return id.value;
-		}),
+		children: children.value.map(resolveChild),
 	};
 }
 
-function getContainerOptions(def: values.Value | undefined): Options<AsUiContainer> {
+function getContainerOptions(def: values.Value | undefined, resolveChild: ChildResolver): Options<AsUiContainer> {
 	utils.assertObject(def);
 
 	const children = def.value.get('children');
@@ -201,12 +199,7 @@ function getContainerOptions(def: values.Value | undefined): Options<AsUiContain
 	if (hidden) utils.assertBoolean(hidden);
 
 	return {
-		children: children ? children.value.map(v => {
-			utils.assertObject(v);
-			const id = v.value.get('id');
-			utils.assertString(id);
-			return id.value;
-		}) : [],
+		children: children ? children.value.map(resolveChild) : [],
 		align: align?.value,
 		fgColor: fgColor?.value,
 		bgColor: bgColor?.value,
@@ -453,7 +446,7 @@ function getSelectOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 	};
 }
 
-function getFolderOptions(def: values.Value | undefined): Options<AsUiFolder> {
+function getFolderOptions(def: values.Value | undefined, resolveChild: ChildResolver): Options<AsUiFolder> {
 	utils.assertObject(def);
 
 	const children = def.value.get('children');
@@ -464,12 +457,7 @@ function getFolderOptions(def: values.Value | undefined): Options<AsUiFolder> {
 	if (opened) utils.assertBoolean(opened);
 
 	return {
-		children: children ? children.value.map(v => {
-			utils.assertObject(v);
-			const id = v.value.get('id');
-			utils.assertString(id);
-			return id.value;
-		}) : [],
+		children: children ? children.value.map(resolveChild) : [],
 		title: title?.value ?? '',
 		opened: opened?.value ?? true,
 	};
@@ -528,10 +516,72 @@ function getPostFormOptions(def: values.Value | undefined, call: (fn: values.VFn
 	};
 }
 
-export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: Ref<AsUiRoot>) => void) {
+/**
+ * Ui:C:* が返すインスタンスの中身
+ *
+ * スクリプトが id を読み取ったこと (中身の列挙を含む) を検知する。
+ * AiScript のインタプリタはオブジェクトのプロパティをこの Map 経由で読むため、
+ * id を知る経路は全てここを通る。
+ */
+class ComponentInstanceMap extends Map<string, values.Value> {
+	constructor(entries: [string, values.Value][], private onIdRead: () => void) {
+		super(entries);
+	}
+
+	override get(key: string) {
+		if (key === 'id') this.onIdRead();
+		return super.get(key);
+	}
+
+	override entries() {
+		this.onIdRead();
+		return super.entries();
+	}
+
+	override values() {
+		this.onIdRead();
+		return super.values();
+	}
+
+	override forEach(callbackfn: (value: values.Value, key: string, map: Map<string, values.Value>) => void, thisArg?: unknown) {
+		this.onIdRead();
+		super.forEach(callbackfn, thisArg);
+	}
+
+	override [Symbol.iterator]() {
+		this.onIdRead();
+		return super[Symbol.iterator]();
+	}
+}
+
+/**
+ * @param done root コンポーネントが作成されたときに呼ばれる
+ * @param components Ui:get で取得できるコンポーネント。
+ * id を指定して作成されたものと、id をスクリプトに読み取られたものだけが入る。
+ * それ以外のコンポーネントはスクリプトか親コンポーネントから参照されている間だけ保持される。
+ */
+export function registerAsUiLib(done: (root: AsUiRoot) => void, components: Map<string, AsUiComponent> = new Map()) {
 	type OptionsConverter<T extends AsUiComponent, C> = (def: values.Value | undefined, call: C) => Options<T>;
 
-	const instances = {} as Record<string, values.VObj>;
+	const componentByInstance = new WeakMap<values.VObj, AsUiComponent>();
+	const instanceByComponent = new WeakMap<AsUiComponent, values.VObj>();
+	// children に { id: ... } 形式で指定された、まだ作成されていないコンポーネント
+	const placeholders = new Map<string, AsUiComponent>();
+
+	function resolveChild(v: values.Value): AsUiComponent {
+		utils.assertObject(v);
+		const component = componentByInstance.get(v);
+		if (component) return component;
+
+		const id = v.value.get('id');
+		utils.assertString(id);
+		const existing = components.get(id.value) ?? placeholders.get(id.value);
+		if (existing) return existing;
+
+		const placeholder = reactive<AsUiRoot>({ id: id.value, type: 'root', children: [] });
+		placeholders.set(id.value, placeholder);
+		return placeholder;
+	}
 
 	function createComponentInstance<T extends AsUiComponent, C>(
 		type: T['type'],
@@ -540,31 +590,53 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 		getOptions: OptionsConverter<T, C>,
 		call: C,
 	) {
-		if (id) utils.assertString(id);
+		if (id) {
+			utils.assertString(id);
+			if (id.value === ROOT_ID && components.has(ROOT_ID)) {
+				throw new errors.AiScriptRuntimeError(`"${ROOT_ID}" is a reserved id`);
+			}
+		}
 		const _id = id?.value ?? genId();
-		const component = ref({
+		const props = {
 			...getOptions(def, call),
 			type,
 			id: _id,
-		} as T);
-		components.push(component);
-		const instance = values.OBJ(new Map<string, values.Value>([
+		} as T;
+
+		const existing = id ? components.get(_id) ?? placeholders.get(_id) : undefined;
+		let component: T;
+		if (existing) {
+			// 同じ id で作り直されたときは、既存のコンポーネントを書き換えて参照を保つ
+			for (const key of Object.keys(existing)) {
+				if (!Object.hasOwn(props, key)) delete (existing as Record<string, unknown>)[key];
+			}
+			component = Object.assign(existing, props);
+			placeholders.delete(_id);
+		} else {
+			component = reactive(props) as T;
+		}
+		if (id) components.set(_id, component);
+
+		const instance = values.OBJ(new ComponentInstanceMap([
 			['id', values.STR(_id)],
 			['update', values.FN_NATIVE(([def], opts) => {
 				utils.assertObject(def);
 				const updates = getOptions(def, call);
 				for (const update of def.value.keys()) {
 					if (!Object.hasOwn(updates, update)) continue;
-					component.value[update] = updates[update as keyof Options<T>];
+					(component as Record<string, unknown>)[update] = updates[update as keyof Options<T>];
 				}
 			})],
-		]));
-		instances[_id] = instance;
+		], () => {
+			if (!components.has(_id)) components.set(_id, component);
+		}));
+		componentByInstance.set(instance, component);
+		instanceByComponent.set(component, instance);
 		return instance;
 	}
 
-	const rootInstance = createComponentInstance('root', utils.jsToVal({ children: [] }), utils.jsToVal('___root___'), getRootOptions, () => {});
-	const rootComponent = components[0] as Ref<AsUiRoot>;
+	const rootInstance = createComponentInstance('root', utils.jsToVal({ children: [] }), utils.jsToVal(ROOT_ID), getRootOptions, resolveChild);
+	const rootComponent = componentByInstance.get(rootInstance) as AsUiRoot;
 	done(rootComponent);
 
 	return {
@@ -578,28 +650,19 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 
 		'Ui:get': values.FN_NATIVE(([id], opts) => {
 			utils.assertString(id);
-			const instance = instances[id.value];
-			if (instance) {
-				return instance;
-			} else {
-				return values.NULL;
-			}
+			const component = components.get(id.value);
+			return (component && instanceByComponent.get(component)) ?? values.NULL;
 		}),
 
 		// Ui:root.update({ children: [...] }) の糖衣構文
 		'Ui:render': values.FN_NATIVE(([children], opts) => {
 			utils.assertArray(children);
 
-			rootComponent.value.children = children.value.map(v => {
-				utils.assertObject(v);
-				const id = v.value.get('id');
-				utils.assertString(id);
-				return id.value;
-			});
+			rootComponent.children = children.value.map(resolveChild);
 		}),
 
 		'Ui:C:container': values.FN_NATIVE(([def, id], opts) => {
-			return createComponentInstance('container', def, id, getContainerOptions, opts.topCall);
+			return createComponentInstance('container', def, id, getContainerOptions, resolveChild);
 		}),
 
 		'Ui:C:text': values.FN_NATIVE(([def, id], opts) => {
@@ -639,7 +702,7 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 		}),
 
 		'Ui:C:folder': values.FN_NATIVE(([def, id], opts) => {
-			return createComponentInstance('folder', def, id, getFolderOptions, opts.topCall);
+			return createComponentInstance('folder', def, id, getFolderOptions, resolveChild);
 		}),
 
 		'Ui:C:postFormButton': values.FN_NATIVE(([def, id], opts) => {

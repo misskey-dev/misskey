@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<Transition :name="prefer.s.animation ? 'zoom' : ''" mode="out-in">
 					<div v-if="started" :class="$style.started">
 						<div class="main _panel">
-							<MkAsUi v-if="root" :component="root" :components="components"/>
+							<MkAsUi v-if="root" :component="root"/>
 						</div>
 						<div class="actions _panel">
 							<div class="items">
@@ -66,8 +66,7 @@ import * as Misskey from 'misskey-js';
 import { utils } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
 import { url } from '@@/js/config.js';
-import type { Ref } from 'vue';
-import type { AsUiComponent, AsUiRoot } from '@/aiscript/ui.js';
+import type { AsUiRoot } from '@/aiscript/ui.js';
 import type { MenuItem } from '@/types/menu.js';
 import type { Interpreter } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
@@ -189,7 +188,6 @@ watch(() => props.id, fetchFlash, { immediate: true });
 const started = ref(false);
 const aiscript = shallowRef<Interpreter | null>(null);
 const root = ref<AsUiRoot>();
-const components = ref<Ref<AsUiComponent>[]>([]);
 
 function start() {
 	started.value = true;
@@ -216,14 +214,12 @@ async function run() {
 
 	const parser = new Parser();
 
-	components.value = [];
-
 	const interpreter = new Interpreter({
 		...createAiScriptEnv({
 			storageKey: 'flash:' + flash.value.id,
 		}),
-		...registerAsUiLib(components.value, (_root) => {
-			root.value = _root.value;
+		...registerAsUiLib((_root) => {
+			root.value = _root;
 		}),
 		THIS_ID: values.STR(flash.value.id),
 		THIS_URL: values.STR(`${url}/play/${flash.value.id}`),
