@@ -326,7 +326,12 @@ const canPost = computed((): boolean => {
 	const isQuoting = renoteTargetNote.value != null || quoteId.value != null;
 	const canQuote = isQuoting ? postAccountPolicies.value.renotePolicy === 'allow' : true;
 	const isVisibilityValid = visibility.value === 'specified' ? postAccountPolicies.value.canCreateSpecifiedNote : true;
-	const isFederationValid = postAccountPolicies.value.canFederateNote || localOnly.value || visibility.value === 'specified';
+	// 指名ノートはlocalOnlyを指定できないため、宛先にリモートユーザーが含まれていないかで判定する
+	const isFederationValid = postAccountPolicies.value.canFederateNote || (
+		visibility.value === 'specified'
+			? !visibleUsers.value.some(u => u.host != null)
+			: localOnly.value
+	);
 
 	const isNotPosting = !posting.value && !posted.value;
 	const isNotUploading = !uploader.uploading.value;
