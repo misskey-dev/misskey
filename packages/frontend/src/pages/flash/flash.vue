@@ -318,6 +318,7 @@ function showMenu(ev: PointerEvent) {
 function reset() {
 	if (aiscript.value) aiscript.value.abort();
 	started.value = false;
+	root.value = undefined;
 }
 
 onDeactivated(() => {
