@@ -7,14 +7,16 @@
 		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": false,
-		"outDir": "./built/",
+		"outDir": "./built",
 		"removeComments": true,
+		"skipLibCheck": true,
 		"strict": true,
 		"strictFunctionTypes": true,
 		"strictNullChecks": true,
 		"experimentalDecorators": true,
 		"noImplicitReturns": true,
 		"esModuleInterop": true,
+		"rootDir": "./src",
 		"typeRoots": [
 			"./node_modules/@types"
 		],

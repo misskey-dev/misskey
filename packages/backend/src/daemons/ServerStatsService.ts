@@ -4,13 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import si from 'systeminformation';
 import Xev from 'xev';
 import * as osUtils from 'os-utils';
 import { bindThis } from '@/decorators.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
 import { MiMeta } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import type { OnApplicationShutdown } from '@nestjs/common';
 
 const ev = new Xev();
 
@@ -97,12 +96,14 @@ function cpuUsage(): Promise<number> {
 
 // MEMORY STAT
 async function mem() {
+	const si = await import('systeminformation');
 	const data = await si.mem();
 	return data;
 }
 
 // NETWORK STAT
 async function net() {
+	const si = await import('systeminformation');
 	const iface = await si.networkInterfaceDefault();
 	const data = await si.networkStats(iface);
 	return data[0];
@@ -110,5 +111,6 @@ async function net() {
 
 // FS STAT
 async function fs() {
+	const si = await import('systeminformation');
 	return await si.disksIO().catch(() => ({ rIO_sec: 0, wIO_sec: 0 }));
 }

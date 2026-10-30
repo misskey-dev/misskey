@@ -6,9 +6,16 @@
 import * as Misskey from 'misskey-js';
 
 export interface PostFormProps {
-	reply?: Misskey.entities.Note;
-	renote?: Misskey.entities.Note;
-	channel?: Misskey.entities.Channel; // TODO
+	reply?: Misskey.entities.Note | null;
+	renote?: Misskey.entities.Note | null;
+	channel?: {
+		id: string;
+		name: string;
+		color: string;
+		isSensitive: boolean;
+		allowRenoteToExternal: boolean;
+		userId: string | null;
+	} | null;
 	mention?: Misskey.entities.User;
 	specified?: Misskey.entities.UserDetailed;
 	initialText?: string;

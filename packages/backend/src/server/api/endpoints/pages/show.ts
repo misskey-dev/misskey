@@ -33,15 +33,22 @@ export const meta = {
 } as const;
 
 export const paramDef = {
-	type: 'object',
-	properties: {
-		pageId: { type: 'string', format: 'misskey:id' },
-		name: { type: 'string' },
-		username: { type: 'string' },
-	},
 	anyOf: [
-		{ required: ['pageId'] },
-		{ required: ['name', 'username'] },
+		{
+			type: 'object',
+			properties: {
+				pageId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['pageId'],
+		},
+		{
+			type: 'object',
+			properties: {
+				name: { type: 'string' },
+				username: { type: 'string' },
+			},
+			required: ['name', 'username'],
+		},
 	],
 } as const;
 
@@ -59,9 +66,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			let page: MiPage | null = null;
 
-			if (ps.pageId) {
+			if ('pageId' in ps) {
 				page = await this.pagesRepository.findOneBy({ id: ps.pageId });
-			} else if (ps.name && ps.username) {
+			} else {
 				const author = await this.usersRepository.findOneBy({
 					host: IsNull(),
 					usernameLower: ps.username.toLowerCase(),

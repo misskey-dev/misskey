@@ -5,8 +5,8 @@
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable import/no-default-export */
-import { StoryObj } from '@storybook/vue3';
-import { action } from '@storybook/addon-actions';
+import type { StoryObj } from '@storybook/vue3';
+import { action } from 'storybook/actions';
 import MkCodeEditor from './MkCodeEditor.vue';
 const code = `for (let i, 100) {
 	<: if (i % 15 == 0) "FizzBuzz"

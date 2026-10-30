@@ -4,6 +4,7 @@
  */
 
 import * as assert from 'assert';
+import { describe, test } from 'vitest';
 import { query } from '../../src/misc/prelude/url.js';
 
 describe('url', () => {

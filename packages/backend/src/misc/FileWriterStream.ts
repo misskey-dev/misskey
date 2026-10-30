@@ -4,6 +4,7 @@
  */
 
 import * as fs from 'node:fs/promises';
+import { WritableStream } from 'node:stream/web';
 import type { PathLike } from 'node:fs';
 
 /**

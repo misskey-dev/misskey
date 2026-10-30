@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Directive } from 'vue';
+import type { Directive } from 'vue';
 
-export default {
-	beforeMount(src, binding, vn) {
+export const animDirective = {
+	beforeMount(src) {
 		src.style.opacity = '0';
 		src.style.transform = 'scale(0.9)';
 		// ページネーションと相性が悪いので
@@ -14,10 +14,10 @@ export default {
 		src.classList.add('_zoom');
 	},
 
-	mounted(src, binding, vn) {
+	mounted(src) {
 		window.setTimeout(() => {
 			src.style.opacity = '1';
 			src.style.transform = 'none';
 		}, 1);
 	},
-} as Directive;
+} as Directive<HTMLElement>;

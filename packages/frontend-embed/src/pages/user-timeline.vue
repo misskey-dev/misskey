@@ -49,6 +49,8 @@ import { ref, computed, inject, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url, instanceName } from '@@/js/config.js';
 import { defaultEmbedParams } from '@@/js/embed-page.js';
+import { scrollToTop } from '@@/js/scroll.js';
+import { isLink } from '@@/js/is-link.js';
 import type { Paging } from '@/components/EmPagination.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
@@ -56,8 +58,6 @@ import EmUserName from '@/components/EmUserName.vue';
 import I18n from '@/components/I18n.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
-import { scrollToTop } from '@@/js/scroll.js';
-import { isLink } from '@@/js/is-link.js';
 import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { assertServerContext } from '@/server-context.js';
@@ -101,7 +101,7 @@ const pagination = computed(() => ({
 
 const notesEl = useTemplateRef('notesEl');
 
-function top(ev: MouseEvent) {
+function top(ev: PointerEvent) {
 	const target = ev.target as HTMLElement | null;
 	if (target && isLink(target)) return;
 

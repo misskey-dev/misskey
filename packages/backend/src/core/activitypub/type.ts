@@ -34,6 +34,8 @@ export interface IObject {
 	href?: string;
 	tag?: IObject | IObject[];
 	sensitive?: boolean;
+	width?: number;
+	height?: number;
 }
 
 /**
@@ -56,10 +58,10 @@ export function getOneApId(value: ApObject): string {
 /**
  * Get ActivityStreams Object id
  */
-export function getApId(value: string | IObject): string {
+export function getApId(value: string | IObject | undefined): string {
 	if (typeof value === 'string') return value;
-	if (typeof value.id === 'string') return value.id;
-	throw new Error('cannot detemine id');
+	if (value != null && typeof value.id === 'string') return value.id;
+	throw new Error('cannot determine id');
 }
 
 /**
@@ -242,6 +244,11 @@ export interface IApEmoji extends IObject {
 	type: 'Emoji';
 	name: string;
 	updated: string;
+	// Misskey拡張。後方互換性のためにoptional。
+	// 将来の拡張性を考慮してobjectにしている
+	_misskey_license?: {
+		freeText: string | null;
+	};
 }
 
 export const isEmoji = (object: IObject): object is IApEmoji =>

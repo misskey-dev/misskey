@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, UserProfilesRepository } from '@/models/_.js';
-import generateUserToken from '@/misc/generate-native-user-token.js';
+import { generateNativeUserToken } from '@/misc/token.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 
@@ -49,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new Error('incorrect password');
 			}
 
-			const newToken = generateUserToken();
+			const newToken = generateNativeUserToken();
 
 			await this.usersRepository.update(me.id, {
 				token: newToken,

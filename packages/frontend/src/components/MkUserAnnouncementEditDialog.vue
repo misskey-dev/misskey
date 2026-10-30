@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else #header>New announcement</template>
 
 	<div>
-		<MkSpacer :marginMin="20" :marginMax="28">
+		<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 			<div class="_gaps_m">
 				<MkInput v-model="title">
 					<template #label>{{ i18n.ts.title }}</template>
@@ -22,26 +22,38 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkTextarea v-model="text">
 					<template #label>{{ i18n.ts.text }}</template>
 				</MkTextarea>
-				<MkRadios v-model="icon">
+				<MkRadios
+					v-model="icon"
+					:options="[
+						{ value: 'info', icon: 'ti ti-info-circle' },
+						{ value: 'warning', icon: 'ti ti-alert-triangle', iconStyle: 'color: var(--MI_THEME-warn);' },
+						{ value: 'error', icon: 'ti ti-circle-x', iconStyle: 'color: var(--MI_THEME-error);' },
+						{ value: 'success', icon: 'ti ti-check', iconStyle: 'color: var(--MI_THEME-success);' },
+					]"
+				>
 					<template #label>{{ i18n.ts.icon }}</template>
-					<option value="info"><i class="ti ti-info-circle"></i></option>
-					<option value="warning"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i></option>
-					<option value="error"><i class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i></option>
-					<option value="success"><i class="ti ti-check" style="color: var(--MI_THEME-success);"></i></option>
 				</MkRadios>
-				<MkRadios v-model="display">
+				<MkRadios
+					v-model="display"
+					:options="[
+						{ value: 'normal', label: i18n.ts.normal },
+						{ value: 'banner', label: i18n.ts.banner },
+						{ value: 'dialog', label: i18n.ts.dialog },
+					]"
+				>
 					<template #label>{{ i18n.ts.display }}</template>
-					<option value="normal">{{ i18n.ts.normal }}</option>
-					<option value="banner">{{ i18n.ts.banner }}</option>
-					<option value="dialog">{{ i18n.ts.dialog }}</option>
 				</MkRadios>
+				<MkInput v-model="autoArchiveAt" type="datetime-local">
+					<template #label>{{ i18n.ts._announcement.autoArchiveAt }}</template>
+					<template #caption>{{ i18n.ts._announcement.autoArchiveAtDescription }}</template>
+				</MkInput>
 				<MkSwitch v-model="needConfirmationToRead">
 					{{ i18n.ts._announcement.needConfirmationToRead }}
 					<template #caption>{{ i18n.ts._announcement.needConfirmationToReadDescription }}</template>
 				</MkSwitch>
 				<MkButton v-if="announcement" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
-		</MkSpacer>
+		</div>
 		<div :class="$style.footer">
 			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.announcement ? i18n.ts.update : i18n.ts.create }}</MkButton>
 		</div>
@@ -50,38 +62,62 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { ApiWithDialogCustomErrors } from '@/os.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
+import { formatDateTimeString } from '@/utility/format-time-string.js';
 
-type AdminAnnouncementType = Misskey.entities.AdminAnnouncementsCreateRequest & { id: string; }
+type AdminAnnouncementType = Misskey.entities.AdminAnnouncementsListResponse[number];
+type AdminAnnouncementUpdate = Misskey.entities.AdminAnnouncementsCreateRequest & { id: string; };
 
 const props = defineProps<{
 	user: Misskey.entities.User,
-	announcement?: Required<AdminAnnouncementType>,
+	announcement?: AdminAnnouncementType,
 }>();
 
 const emit = defineEmits<{
-	(ev: 'done', v: { deleted?: boolean; updated?: AdminAnnouncementType; created?: AdminAnnouncementType; }): void,
+	(ev: 'done', v: { deleted?: boolean; updated?: AdminAnnouncementUpdate; created?: Misskey.entities.AdminAnnouncementsCreateResponse; }): void,
 	(ev: 'closed'): void
 }>();
 
-const dialog = ref<InstanceType<typeof MkModalWindow> | null>(null);
+const dialog = useTemplateRef('dialog');
 const title = ref(props.announcement ? props.announcement.title : '');
 const text = ref(props.announcement ? props.announcement.text : '');
 const icon = ref(props.announcement ? props.announcement.icon : 'info');
 const display = ref(props.announcement ? props.announcement.display : 'dialog');
 const needConfirmationToRead = ref(props.announcement ? props.announcement.needConfirmationToRead : false);
+const initialAutoArchiveAt = props.announcement?.autoArchiveAt ? formatDateTimeString(new Date(props.announcement.autoArchiveAt), 'yyyy-MM-ddTHH:mm') : '';
+const autoArchiveAt = ref(initialAutoArchiveAt);
+
+const createAnnouncementErrors: ApiWithDialogCustomErrors = {
+	'2a892bd5-487d-46a2-a5fe-3d85ad51defe': {
+		title: i18n.ts._announcement.autoArchiveAt,
+		text: i18n.ts._announcement.autoArchiveAtMustBeInFuture,
+	},
+};
 
 async function done() {
+	const autoArchiveAtMs = props.announcement?.autoArchiveAt != null && autoArchiveAt.value === initialAutoArchiveAt
+		? new Date(props.announcement.autoArchiveAt).getTime()
+		: autoArchiveAt.value === '' ? null : new Date(autoArchiveAt.value).getTime();
+	if (!props.announcement && autoArchiveAtMs != null && (Number.isNaN(autoArchiveAtMs) || autoArchiveAtMs <= Date.now())) {
+		await os.alert({
+			type: 'error',
+			title: i18n.ts._announcement.autoArchiveAt,
+			text: i18n.ts._announcement.autoArchiveAtMustBeInFuture,
+		});
+		return;
+	}
+
 	const params = {
 		title: title.value,
 		text: text.value,
@@ -90,6 +126,7 @@ async function done() {
 		display: display.value,
 		needConfirmationToRead: needConfirmationToRead.value,
 		userId: props.user.id,
+		autoArchiveAt: autoArchiveAtMs,
 	} satisfies Misskey.entities.AdminAnnouncementsCreateRequest;
 
 	if (props.announcement) {
@@ -107,10 +144,10 @@ async function done() {
 
 		dialog.value?.close();
 	} else {
-		const created = await os.apiWithDialog('admin/announcements/create', params);
+		const created = await os.apiWithDialog('admin/announcements/create', params, undefined, createAnnouncementErrors);
 
 		emit('done', {
-			created: created,
+			created,
 		});
 
 		dialog.value?.close();

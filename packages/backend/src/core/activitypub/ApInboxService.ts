@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
+import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
@@ -14,8 +15,8 @@ import { NotePiningService } from '@/core/NotePiningService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { NoteDeleteService } from '@/core/NoteDeleteService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
+import { acquireApObjectLock } from '@/misc/distributed-lock.js';
 import { concat, toArray, toSingle, unique } from '@/misc/prelude/array.js';
-import { AppLockService } from '@/core/AppLockService.js';
 import type Logger from '@/logger.js';
 import { IdService } from '@/core/IdService.js';
 import { StatusError } from '@/misc/status-error.js';
@@ -28,6 +29,7 @@ import { bindThis } from '@/decorators.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { AbuseReportService } from '@/core/AbuseReportService.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
@@ -47,8 +49,8 @@ export class ApInboxService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI.meta)
-		private meta: MiMeta,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -75,7 +77,6 @@ export class ApInboxService {
 		private userBlockingService: UserBlockingService,
 		private noteCreateService: NoteCreateService,
 		private noteDeleteService: NoteDeleteService,
-		private appLockService: AppLockService,
 		private apResolverService: ApResolverService,
 		private apDbResolverService: ApDbResolverService,
 		private apLoggerService: ApLoggerService,
@@ -94,7 +95,7 @@ export class ApInboxService {
 		if (isCollectionOrOrderedCollection(activity)) {
 			const results = [] as [string, string | void][];
 			// eslint-disable-next-line no-param-reassign
-			resolver ??= this.apResolverService.createResolver();
+			resolver ??= await this.apResolverService.createResolver();
 
 			const items = toArray(isCollection(activity) ? activity.items : activity.orderedItems);
 			if (items.length >= resolver.getRecursionLimit()) {
@@ -201,13 +202,16 @@ export class ApInboxService {
 
 		await this.apNoteService.extractEmojis(activity.tag ?? [], actor.host).catch(() => null);
 
-		return await this.reactionService.create(actor, note, activity._misskey_reaction ?? activity.content ?? activity.name).catch(err => {
-			if (err.id === '51c42bb4-931a-456b-bff7-e5a8a70dd298') {
+		try {
+			await this.reactionService.create(actor, note, activity._misskey_reaction ?? activity.content ?? activity.name);
+			return 'ok';
+		} catch (err) {
+			if (err instanceof IdentifiableError && err.id === '51c42bb4-931a-456b-bff7-e5a8a70dd298') {
 				return 'skip: already reacted';
 			} else {
 				throw err;
 			}
-		}).then(() => 'ok');
+		}
 	}
 
 	@bindThis
@@ -217,7 +221,7 @@ export class ApInboxService {
 		this.logger.info(`Accept: ${uri}`);
 
 		// eslint-disable-next-line no-param-reassign
-		resolver ??= this.apResolverService.createResolver();
+		resolver ??= await this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(err => {
 			this.logger.error(`Resolution failed: ${err}`);
@@ -246,7 +250,7 @@ export class ApInboxService {
 		// relay
 		const match = activity.id?.match(/follow-relay\/(\w+)/);
 		if (match) {
-			return await this.relayService.relayAccepted(match[1]);
+			return await this.relayService.relayAccepted(match[1], actor);
 		}
 
 		await this.userFollowingService.acceptFollowRequest(actor, follower);
@@ -255,7 +259,7 @@ export class ApInboxService {
 
 	@bindThis
 	private async add(actor: MiRemoteUser, activity: IAdd, resolver?: Resolver): Promise<string | void> {
-		if (actor.uri !== activity.actor) {
+		if (actor.uri !== getApId(activity.actor)) {
 			return 'invalid actor';
 		}
 
@@ -280,7 +284,7 @@ export class ApInboxService {
 		this.logger.info(`Announce: ${uri}`);
 
 		// eslint-disable-next-line no-param-reassign
-		resolver ??= this.apResolverService.createResolver();
+		resolver ??= await this.apResolverService.createResolver();
 
 		if (!activity.object) return 'skip: activity has no object property';
 		const targetUri = getApId(activity.object);
@@ -288,7 +292,7 @@ export class ApInboxService {
 
 		const target = await resolver.resolve(activity.object).catch(e => {
 			this.logger.error(`Resolution failed: ${e}`);
-			return e;
+			throw e;
 		});
 
 		if (isPost(target)) return await this.announceNote(actor, activity, target);
@@ -298,16 +302,19 @@ export class ApInboxService {
 
 	@bindThis
 	private async announceNote(actor: MiRemoteUser, activity: IAnnounce, target: IPost, resolver?: Resolver): Promise<string | void> {
-		const uri = getApId(activity);
-
 		if (actor.isSuspended) {
 			return;
 		}
 
+		// リレーからのAnnounceかチェック
+		const fromRelay = await this.relayService.isRelayActor(actor);
+		const uri = getApId(fromRelay ? target : activity);
+
 		// アナウンス先が許可されているかチェック
 		if (!this.utilityService.isFederationAllowedUri(uri)) return;
 
-		const unlock = await this.appLockService.getApLock(uri);
+		const activityUri = getApId(activity);
+		const unlock = await acquireApObjectLock(this.redisClient, activityUri);
 
 		try {
 			// 既に同じURIを持つものが登録されていないかチェック
@@ -330,6 +337,14 @@ export class ApInboxService {
 					return `Error in announce target ${target.id} - ${err.statusCode}`;
 				}
 				throw err;
+			}
+
+			// リレーからのAnnounceはリノートを作成せず、ノートを直接公開する
+			if (fromRelay) {
+				this.logger.info(`Publishing relay-delivered note: ${uri}`);
+				const noteObj = await this.noteEntityService.pack(renote, null, { skipHide: true, withReactionAndUserPairCache: true });
+				this.globalEventService.publishNotesStream(noteObj);
+				return;
 			}
 
 			if (!await this.noteEntityService.isVisibleForMe(renote, actor.id)) {
@@ -402,7 +417,7 @@ export class ApInboxService {
 		}
 
 		// eslint-disable-next-line no-param-reassign
-		resolver ??= this.apResolverService.createResolver();
+		resolver ??= await this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
 			this.logger.error(`Resolution failed: ${e}`);
@@ -434,7 +449,7 @@ export class ApInboxService {
 			}
 		}
 
-		const unlock = await this.appLockService.getApLock(uri);
+		const unlock = await acquireApObjectLock(this.redisClient, uri);
 
 		try {
 			const exist = await this.apNoteService.fetchNote(note);
@@ -455,7 +470,7 @@ export class ApInboxService {
 
 	@bindThis
 	private async delete(actor: MiRemoteUser, activity: IDelete): Promise<string> {
-		if (actor.uri !== activity.actor) {
+		if (actor.uri !== getApId(activity.actor)) {
 			return 'invalid actor';
 		}
 
@@ -503,18 +518,11 @@ export class ApInboxService {
 			return `skip: delete actor ${actor.uri} !== ${uri}`;
 		}
 
-		const user = await this.usersRepository.findOneBy({ id: actor.id });
-		if (user == null) {
-			return 'skip: actor not found';
-		} else if (user.isDeleted) {
-			return 'skip: already deleted';
+		if (!(await this.usersRepository.update({ id: actor.id, isDeleted: false }, { isDeleted: true })).affected) {
+			return 'skip: already deleted or actor not found';
 		}
 
 		const job = await this.queueService.createDeleteAccountJob(actor);
-
-		await this.usersRepository.update(actor.id, {
-			isDeleted: true,
-		});
 
 		this.globalEventService.publishInternalEvent('remoteUserUpdated', { id: actor.id });
 
@@ -525,7 +533,7 @@ export class ApInboxService {
 	private async deleteNote(actor: MiRemoteUser, uri: string): Promise<string> {
 		this.logger.info(`Deleting the Note: ${uri}`);
 
-		const unlock = await this.appLockService.getApLock(uri);
+		const unlock = await acquireApObjectLock(this.redisClient, uri);
 
 		try {
 			const note = await this.apDbResolverService.getNoteFromApId(uri);
@@ -578,7 +586,7 @@ export class ApInboxService {
 		this.logger.info(`Reject: ${uri}`);
 
 		// eslint-disable-next-line no-param-reassign
-		resolver ??= this.apResolverService.createResolver();
+		resolver ??= await this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
 			this.logger.error(`Resolution failed: ${e}`);
@@ -607,7 +615,7 @@ export class ApInboxService {
 		// relay
 		const match = activity.id?.match(/follow-relay\/(\w+)/);
 		if (match) {
-			return await this.relayService.relayRejected(match[1]);
+			return await this.relayService.relayRejected(match[1], actor);
 		}
 
 		await this.userFollowingService.remoteReject(actor, follower);
@@ -616,7 +624,7 @@ export class ApInboxService {
 
 	@bindThis
 	private async remove(actor: MiRemoteUser, activity: IRemove, resolver?: Resolver): Promise<string | void> {
-		if (actor.uri !== activity.actor) {
+		if (actor.uri !== getApId(activity.actor)) {
 			return 'invalid actor';
 		}
 
@@ -636,7 +644,7 @@ export class ApInboxService {
 
 	@bindThis
 	private async undo(actor: MiRemoteUser, activity: IUndo, resolver?: Resolver): Promise<string> {
-		if (actor.uri !== activity.actor) {
+		if (actor.uri !== getApId(activity.actor)) {
 			return 'invalid actor';
 		}
 
@@ -645,11 +653,11 @@ export class ApInboxService {
 		this.logger.info(`Undo: ${uri}`);
 
 		// eslint-disable-next-line no-param-reassign
-		resolver ??= this.apResolverService.createResolver();
+		resolver ??= await this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
 			this.logger.error(`Resolution failed: ${e}`);
-			return e;
+			throw e;
 		});
 
 		// don't queue because the sender may attempt again when timeout
@@ -770,14 +778,14 @@ export class ApInboxService {
 
 	@bindThis
 	private async update(actor: MiRemoteUser, activity: IUpdate, resolver?: Resolver): Promise<string> {
-		if (actor.uri !== activity.actor) {
+		if (actor.uri !== getApId(activity.actor)) {
 			return 'skip: invalid actor';
 		}
 
 		this.logger.debug('Update');
 
 		// eslint-disable-next-line no-param-reassign
-		resolver ??= this.apResolverService.createResolver();
+		resolver ??= await this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
 			this.logger.error(`Resolution failed: ${e}`);

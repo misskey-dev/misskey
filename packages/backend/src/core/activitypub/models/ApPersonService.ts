@@ -14,7 +14,7 @@ import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import { MiUser } from '@/models/User.js';
 import { truncate } from '@/misc/truncate.js';
 import type { CacheService } from '@/core/CacheService.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { normalizeTag } from '@/misc/normalize-tag.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import type Logger from '@/logger.js';
 import type { MiNote } from '@/models/Note.js';
@@ -157,8 +157,12 @@ export class ApPersonService implements OnModuleInit {
 		const sharedInboxObject = x.sharedInbox ?? (x.endpoints ? x.endpoints.sharedInbox : undefined);
 		if (sharedInboxObject != null) {
 			const sharedInbox = getApId(sharedInboxObject);
-			if (!(typeof sharedInbox === 'string' && sharedInbox.length > 0 && this.utilityService.punyHost(sharedInbox) === expectHost)) {
-				throw new Error('invalid Actor: wrong shared inbox');
+			if (!(typeof sharedInbox === 'string' && sharedInbox.length > 0 && new URL(sharedInbox).host === expectHost)) {
+				this.logger.warn(`invalid Actor: skipping wrong shared inbox, expected host: ${expectHost}, actual URL: ${sharedInbox}`);
+				x.sharedInbox = undefined;
+				if (x.endpoints?.sharedInbox) {
+					x.endpoints.sharedInbox = undefined;
+				}
 			}
 		}
 
@@ -257,7 +261,7 @@ export class ApPersonService implements OnModuleInit {
 			if (Array.isArray(img)) {
 				img = img.find(item => item && item.url) ?? null;
 			}
-			
+
 			// if we have an explicitly missing image, return an
 			// explicitly-null set of values
 			if ((img == null) || (typeof img === 'object' && img.url == null)) {
@@ -306,7 +310,7 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		// eslint-disable-next-line no-param-reassign
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = await this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(uri);
 		if (object.id == null) throw new Error('invalid object.id: ' + object.id);
@@ -317,7 +321,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const fields = this.analyzeAttachments(person.attachment ?? []);
 
-		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
+		const tags = extractApHashtags(person.tag).splice(0, 32).map(normalizeTag);
 
 		const isBot = getApType(object) === 'Service' || getApType(object) === 'Application';
 
@@ -344,14 +348,8 @@ export class ApPersonService implements OnModuleInit {
 			throw new Error('Refusing to create person without id');
 		}
 
-		if (url != null) {
-			if (!checkHttps(url)) {
-				throw new Error('unexpected schema of person url: ' + url);
-			}
-
-			if (this.utilityService.punyHost(url) !== this.utilityService.punyHost(person.id)) {
-				throw new Error(`person url <> uri host mismatch: ${url} <> ${person.id}`);
-			}
+		if (url && !checkHttps(url)) {
+			throw new Error('unexpected schema of person url: ' + url);
 		}
 
 		// Create user
@@ -378,7 +376,7 @@ export class ApPersonService implements OnModuleInit {
 					isLocked: person.manuallyApprovesFollowers,
 					movedToUri: person.movedTo,
 					movedAt: person.movedTo ? new Date() : null,
-					alsoKnownAs: person.alsoKnownAs,
+					alsoKnownAs: toArray(person.alsoKnownAs),
 					isExplorable: person.discoverable,
 					username: person.preferredUsername,
 					usernameLower: person.preferredUsername?.toLowerCase(),
@@ -402,7 +400,7 @@ export class ApPersonService implements OnModuleInit {
 				if (person._misskey_summary) {
 					_description = truncate(person._misskey_summary, summaryLength);
 				} else if (person.summary) {
-					_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag);
+					_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), { tag: person.tag });
 				}
 
 				await transactionalEntityManager.save(new MiUserProfile({
@@ -502,7 +500,7 @@ export class ApPersonService implements OnModuleInit {
 		//#endregion
 
 		// eslint-disable-next-line no-param-reassign
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = await this.apResolverService.createResolver();
 
 		const object = hint ?? await resolver.resolve(uri);
 
@@ -520,7 +518,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const fields = this.analyzeAttachments(person.attachment ?? []);
 
-		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
+		const tags = extractApHashtags(person.tag).splice(0, 32).map(normalizeTag);
 
 		const [followingVisibility, followersVisibility] = await Promise.all(
 			[
@@ -562,7 +560,7 @@ export class ApPersonService implements OnModuleInit {
 			inbox: person.inbox,
 			sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox ?? null,
 			followersUri: person.followers ? getApId(person.followers) : undefined,
-			featured: person.featured,
+			featured: person.featured ? getApId(person.featured) : undefined,
 			emojis: emojiNames,
 			name: truncate(person.name, nameLength),
 			tags,
@@ -570,7 +568,7 @@ export class ApPersonService implements OnModuleInit {
 			isCat: (person as any).isCat === true,
 			isLocked: person.manuallyApprovesFollowers,
 			movedToUri: person.movedTo ?? null,
-			alsoKnownAs: person.alsoKnownAs ?? null,
+			alsoKnownAs: person.alsoKnownAs ? toArray(person.alsoKnownAs) : null,
 			isExplorable: person.discoverable,
 			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
 		} as Partial<MiRemoteUser> & Pick<MiRemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
@@ -596,7 +594,9 @@ export class ApPersonService implements OnModuleInit {
 		if (moving) updates.movedAt = new Date();
 
 		// Update user
-		await this.usersRepository.update(exist.id, updates);
+		if (!(await this.usersRepository.update({ id: exist.id, isDeleted: false }, updates)).affected) {
+			return 'skip';
+		}
 
 		if (person.publicKey) {
 			await this.userPublickeysRepository.update({ userId: exist.id }, {
@@ -610,7 +610,7 @@ export class ApPersonService implements OnModuleInit {
 		if (person._misskey_summary) {
 			_description = truncate(person._misskey_summary, summaryLength);
 		} else if (person.summary) {
-			_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag);
+			_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), { tag: person.tag });
 		}
 
 		await this.userProfilesRepository.update({ userId: exist.id }, {
@@ -678,7 +678,7 @@ export class ApPersonService implements OnModuleInit {
 
 		// リモートサーバーからフェッチしてきて登録
 		// eslint-disable-next-line no-param-reassign
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = await this.apResolverService.createResolver();
 		return await this.createPerson(uri, resolver);
 	}
 
@@ -701,13 +701,13 @@ export class ApPersonService implements OnModuleInit {
 
 	@bindThis
 	public async updateFeatured(userId: MiUser['id'], resolver?: Resolver): Promise<void> {
-		const user = await this.usersRepository.findOneByOrFail({ id: userId });
+		const user = await this.usersRepository.findOneByOrFail({ id: userId, isDeleted: false });
 		if (!this.userEntityService.isRemoteUser(user)) return;
 		if (!user.featured) return;
 
 		this.logger.info(`Updating the featured: ${user.uri}`);
 
-		const _resolver = resolver ?? this.apResolverService.createResolver();
+		const _resolver = resolver ?? await this.apResolverService.createResolver();
 
 		// Resolve to (Ordered)Collection Object
 		const collection = await _resolver.resolveCollection(user.featured);
@@ -758,8 +758,8 @@ export class ApPersonService implements OnModuleInit {
 		let dst = await this.fetchPerson(src.movedToUri);
 
 		if (dst && this.userEntityService.isLocalUser(dst)) {
-			// targetがローカルユーザーだった場合データベースから引っ張ってくる
-			dst = await this.usersRepository.findOneByOrFail({ uri: src.movedToUri }) as MiLocalUser;
+			// ローカルユーザーの uri は null なので、ID で最新の移行設定を取得する
+			dst = await this.usersRepository.findOneByOrFail({ id: dst.id }) as MiLocalUser;
 		} else if (dst) {
 			if (movePreventUris.includes(src.movedToUri)) return 'skip: circular move';
 
@@ -777,8 +777,9 @@ export class ApPersonService implements OnModuleInit {
 			dst = await this.resolvePerson(src.movedToUri);
 		}
 
-		if (dst.movedToUri === dst.uri) return 'skip: movedTo itself (dst)'; // ？？？
-		if (src.movedToUri !== dst.uri) return 'skip: missmatch uri'; // ？？？
+		const dstUri = this.userEntityService.getUserUri(dst);
+		if (dst.movedToUri === dstUri) return 'skip: movedTo itself (dst)'; // ？？？
+		if (src.movedToUri !== dstUri) return 'skip: missmatch uri'; // ？？？
 		if (dst.movedToUri === src.uri) return 'skip: dst.movedToUri === src.uri';
 		if (!dst.alsoKnownAs || dst.alsoKnownAs.length === 0) {
 			return 'skip: dst.alsoKnownAs is empty';

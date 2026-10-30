@@ -4,17 +4,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="1200">
+<div class="_spacer" style="--MI_SPACER-w: 1200px;">
 	<MkAchievements :user="user" :withLocked="false" :withDescription="$i != null && (props.user.id === $i.id)"/>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>
 import { onActivated, onDeactivated, onMounted, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkAchievements from '@/components/MkAchievements.vue';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { $i } from '@/account.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { $i } from '@/i.js';
 
 const props = defineProps<{
 	user: Misskey.entities.User;

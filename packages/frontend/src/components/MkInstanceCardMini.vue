@@ -18,8 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkMiniChart from '@/components/MkMiniChart.vue';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
+import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 
 const props = defineProps<{
 	instance: Misskey.entities.FederationInstance;
@@ -33,7 +33,7 @@ misskeyApiGet('charts/instance', { host: props.instance.host, limit: 16 + 1, spa
 	chartValues.value = res.requests.received;
 });
 
-function getInstanceIcon(instance): string {
+function getInstanceIcon(instance: Misskey.entities.FederationInstance): string {
 	return getProxiedImageUrlNullable(instance.iconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png';
 }
 </script>

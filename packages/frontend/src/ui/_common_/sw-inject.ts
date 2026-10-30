@@ -4,11 +4,12 @@
  */
 
 import { post } from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { $i, login } from '@/account.js';
-import { getAccountFromId } from '@/scripts/get-account-from-id.js';
-import { deepClone } from '@/scripts/clone.js';
-import { mainRouter } from '@/router/main.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { $i } from '@/i.js';
+import { getAccountFromId } from '@/utility/get-account-from-id.js';
+import { deepClone } from '@/utility/clone.js';
+import { mainRouter } from '@/router.js';
+import { login } from '@/accounts.js';
 
 export function swInject() {
 	navigator.serviceWorker.addEventListener('message', async ev => {
@@ -42,7 +43,7 @@ export function swInject() {
 				if (mainRouter.currentRoute.value.path === ev.data.url) {
 					return window.scroll({ top: 0, behavior: 'smooth' });
 				}
-				return mainRouter.push(ev.data.url);
+				return mainRouter.pushByPath(ev.data.url);
 			default:
 				return;
 		}

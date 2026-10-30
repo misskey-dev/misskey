@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive]" @click="onclick">
+<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive]" @click="onClick" @contextmenu.stop="onContextmenu">
 	<component
 		:is="disableImageLink ? 'div' : 'a'"
 		v-bind="disableImageLink ? {
@@ -17,9 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			style: 'cursor: zoom-in;'
 		}"
 	>
-		<ImgWithBlurhash
+		<MkImgWithBlurhash
+			v-if="prefer.s.enableHighQualityImagePlaceholders"
 			:hash="image.blurhash"
-			:src="(defaultStore.state.dataSaver.media && hide) ? null : url"
+			:src="(prefer.s.dataSaver.media && hide) ? null : url"
 			:forceBlurhash="hide"
 			:cover="hide || cover"
 			:alt="image.comment || image.name"
@@ -27,13 +28,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:width="image.properties.width"
 			:height="image.properties.height"
 			:style="hide ? 'filter: brightness(0.7);' : null"
+			:class="$style.image"
+			:marker="marker"
+		/>
+		<div
+			v-else-if="prefer.s.dataSaver.media || hide"
+			:title="image.comment || image.name"
+			:style="hide ? 'background: #888;' : null"
+			:class="$style.image"
+		></div>
+		<img
+			v-else
+			:src="url"
+			:alt="image.comment || image.name"
+			:title="image.comment || image.name"
+			:class="$style.image"
+			:data-marker="marker"
 		/>
 	</component>
 	<template v-if="hide">
 		<div :class="$style.hiddenText">
 			<div :class="$style.hiddenTextWrapper">
-				<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.dataSaver.media ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
-				<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ defaultStore.state.dataSaver.media && image.size ? bytes(image.size) : i18n.ts.image }}</b>
+				<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ prefer.s.dataSaver.media ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
+				<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ prefer.s.dataSaver.media && image.size ? bytes(image.size) : i18n.ts.image }}</b>
 				<span v-if="controls" style="display: block;">{{ i18n.ts.clickToShow }}</span>
 			</div>
 		</div>
@@ -44,8 +61,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="image.comment" :class="$style.indicator">ALT</div>
 			<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--MI_THEME-warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
 		</div>
-		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
-		<i class="ti ti-eye-off" :class="$style.hide" @click.stop="hide = true"></i>
+		<button :class="[$style.menu, $style.menuBottom]" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;" aria-hidden="true"></i></button>
+		<button :class="[$style.menu, $style.menuTop]" class="_button" @click.stop="hide = true"><i class="ti ti-eye-off" style="vertical-align: middle;" aria-hidden="true"></i></button>
 	</template>
 </div>
 </template>
@@ -53,14 +70,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { MenuItem } from '@/types/menu.js';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import type { MediaComponentExposes } from '@/types/media-component.js';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import bytes from '@/filters/bytes.js';
-import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
-import { defaultStore } from '@/store.js';
+import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { $i, iAmModerator } from '@/account.js';
+import { prefer } from '@/preferences.js';
+import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
+import { getFileMenu } from '@/utility/get-file-menu.js';
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;
@@ -68,84 +86,63 @@ const props = withDefaults(defineProps<{
 	cover?: boolean;
 	disableImageLink?: boolean;
 	controls?: boolean;
+	marker?: string;
 }>(), {
 	cover: false,
 	disableImageLink: false,
 	controls: true,
 });
 
+const emit = defineEmits<{
+	(event: 'mediaClick', ev: PointerEvent): void;
+}>();
+
 const hide = ref(true);
 
-const url = computed(() => (props.raw || defaultStore.state.loadRawImages)
+const url = computed(() => (props.raw || prefer.s.loadRawImages)
 	? props.image.url
-	: defaultStore.state.disableShowingAnimatedImages
+	: prefer.s.disableShowingAnimatedImages
 		? getStaticImageUrl(props.image.url)
-		: props.image.thumbnailUrl,
+		: props.image.thumbnailUrl!,
 );
 
-async function onclick(ev: MouseEvent) {
+async function onClick(ev: PointerEvent) {
 	if (!props.controls) {
+		emit('mediaClick', ev);
 		return;
 	}
 
 	if (hide.value) {
 		ev.stopPropagation();
-		if (props.image.isSensitive && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
-			const { canceled } = await os.confirm({
-				type: 'question',
-				text: i18n.ts.sensitiveMediaRevealConfirm,
-			});
-			if (canceled) return;
+		if (!(await canRevealFile(props.image))) {
+			return;
 		}
 
 		hide.value = false;
+	} else {
+		emit('mediaClick', ev);
 	}
 }
 
 // Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
-watch(() => props.image, () => {
-	hide.value = (defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.image.isSensitive && defaultStore.state.nsfw !== 'ignore');
+watch(() => props.image, (newImage) => {
+	hide.value = shouldHideFileByDefault(newImage);
 }, {
 	deep: true,
 	immediate: true,
 });
 
-function showMenu(ev: MouseEvent) {
-	const menuItems: MenuItem[] = [];
-
-	menuItems.push({
-		text: i18n.ts.hide,
-		icon: 'ti ti-eye-off',
-		action: () => {
-			hide.value = true;
-		},
-	});
-
-	if (iAmModerator) {
-		menuItems.push({
-			text: i18n.ts.markAsSensitive,
-			icon: 'ti ti-eye-exclamation',
-			danger: true,
-			action: () => {
-				os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
-			},
-		});
-	}
-
-	if ($i?.id === props.image.userId) {
-		menuItems.push({
-			type: 'divider',
-		}, {
-			type: 'link',
-			text: i18n.ts._fileViewer.title,
-			icon: 'ti ti-info-circle',
-			to: `/my/drive/file/${props.image.id}`,
-		});
-	}
-
-	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
+function showMenu(ev: PointerEvent) {
+	os.popupMenu(getFileMenu(props.image, (newHide) => { hide.value = newHide; }), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 
+function onContextmenu(ev: PointerEvent) {
+	os.contextMenu(getFileMenu(props.image, (newHide) => { hide.value = newHide; }), ev);
+}
+
+defineExpose<MediaComponentExposes>({
+	isRevealed: () => !hide.value,
+});
 </script>
 
 <style lang="scss" module>
@@ -182,21 +179,6 @@ function showMenu(ev: MouseEvent) {
 	cursor: pointer;
 }
 
-.hide {
-	display: block;
-	position: absolute;
-	border-radius: 6px;
-	background-color: var(--MI_THEME-fg);
-	color: var(--MI_THEME-accentLighten);
-	font-size: 12px;
-	opacity: .5;
-	padding: 5px 8px;
-	text-align: center;
-	cursor: pointer;
-	top: 12px;
-	right: 12px;
-}
-
 .hiddenTextWrapper {
 	display: table-cell;
 	text-align: center;
@@ -224,7 +206,6 @@ html[data-color-scheme=light] .visible {
 .menu {
 	display: block;
 	position: absolute;
-	border-radius: 999px;
 	background-color: rgba(0, 0, 0, 0.3);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
@@ -233,8 +214,18 @@ html[data-color-scheme=light] .visible {
 	width: 28px;
 	height: 28px;
 	text-align: center;
-	bottom: 10px;
-	right: 10px;
+}
+
+.menuBottom {
+	border-radius: 8px 0 8px 0;
+	bottom: 0;
+	right: 0;
+}
+
+.menuTop {
+	border-radius: 0 8px 0 8px;
+	top: 0;
+	right: 0;
 }
 
 .imageContainer {
@@ -261,10 +252,18 @@ html[data-color-scheme=light] .visible {
 	/* Hardcode to black because either --MI_THEME-bg or --MI_THEME-fg makes it hard to read in dark/light mode */
 	background-color: black;
 	border-radius: 6px;
-	color: var(--MI_THEME-accentLighten);
+	color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 	display: inline-block;
 	font-weight: bold;
 	font-size: 0.8em;
 	padding: 2px 5px;
+}
+
+.image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	object-position: center;
 }
 </style>

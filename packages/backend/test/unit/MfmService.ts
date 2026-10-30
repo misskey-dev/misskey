@@ -5,11 +5,13 @@
 
 import * as assert from 'assert';
 import * as mfm from 'mfm-js';
+import { beforeAll, describe, test } from 'vitest';
 import { Test } from '@nestjs/testing';
 
 import { CoreModule } from '@/core/CoreModule.js';
 import { MfmService } from '@/core/MfmService.js';
 import { GlobalModule } from '@/GlobalModule.js';
+import {factory} from "typescript";
 
 describe('MfmService', () => {
 	let mfmService: MfmService;
@@ -24,25 +26,25 @@ describe('MfmService', () => {
 	describe('toHtml', () => {
 		test('br', () => {
 			const input = 'foo\nbar\nbaz';
-			const output = '<p><span>foo<br>bar<br>baz</span></p>';
+			const output = 'foo<br />bar<br />baz';
 			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
 		});
 
 		test('br alt', () => {
 			const input = 'foo\r\nbar\rbaz';
-			const output = '<p><span>foo<br>bar<br>baz</span></p>';
+			const output = 'foo<br />bar<br />baz';
 			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
 		});
 
 		test('Do not generate unnecessary span', () => {
 			const input = 'foo $[tada bar]';
-			const output = '<p>foo <i>bar</i></p>';
+			const output = 'foo <i>bar</i>';
 			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
 		});
 
 		test('escape', () => {
 			const input = '```\n<p>Hello, world!</p>\n```';
-			const output = '<p><pre><code>&lt;p&gt;Hello, world!&lt;/p&gt;</code></pre></p>';
+			const output = '<pre><code>&lt;p&gt;Hello, world!&lt;/p&gt;</code></pre>';
 			assert.equal(mfmService.toHtml(mfm.parse(input)), output);
 		});
 	});
@@ -108,12 +110,43 @@ describe('MfmService', () => {
 			assert.deepStrictEqual(mfmService.fromHtml('<p>a <a></a> d</p>'), 'a  d');
 		});
 
+		test('ruby', () => {
+			assert.deepStrictEqual(mfmService.fromHtml('<p>a <ruby>Misskey<rp>(</rp><rt>ミスキー</rt><rp>)</rp></ruby> b</p>'), 'a $[ruby Misskey ミスキー] b');
+			assert.deepStrictEqual(mfmService.fromHtml('<p>a <ruby>Misskey<rp>(</rp><rt>ミスキー</rt><rp>)</rp>Misskey<rp>(</rp><rt>ミスキー</rt><rp>)</rp></ruby> b</p>'), 'a $[ruby Misskey ミスキー]$[ruby Misskey ミスキー] b');
+		});
+
+		test('ruby with spaces', () => {
+			assert.deepStrictEqual(mfmService.fromHtml('<p>a <ruby>Miss key<rp>(</rp><rt>ミスキー</rt><rp>)</rp> b</ruby> c</p>'), 'a Miss key(ミスキー) b c');
+			assert.deepStrictEqual(mfmService.fromHtml('<p>a <ruby>Misskey<rp>(</rp><rt>ミス キー</rt><rp>)</rp> b</ruby> c</p>'), 'a Misskey(ミス キー) b c');
+			assert.deepStrictEqual(
+				mfmService.fromHtml('<p>a <ruby>Misskey<rp>(</rp><rt>ミスキー</rt><rp>)</rp>Misskey<rp>(</rp><rt>ミス キー</rt><rp>)</rp>Misskey<rp>(</rp><rt>ミスキー</rt><rp>)</rp></ruby> b</p>'),
+				'a Misskey(ミスキー)Misskey(ミス キー)Misskey(ミスキー) b',
+			);
+		});
+
+		test('ruby with other inline tags', () => {
+			assert.deepStrictEqual(mfmService.fromHtml('<p>a <ruby><strong>Misskey</strong><rp>(</rp><rt>ミスキー</rt><rp>)</rp> b</ruby> c</p>'), 'a **Misskey**(ミスキー) b c');
+		});
+
 		test('mention', () => {
 			assert.deepStrictEqual(mfmService.fromHtml('<p>a <a href="https://example.com/@user" class="u-url mention">@user</a> d</p>'), 'a @user@example.com d');
 		});
 
 		test('hashtag', () => {
-			assert.deepStrictEqual(mfmService.fromHtml('<p>a <a href="https://example.com/tags/a">#a</a> d</p>', ['#a']), 'a #a d');
+			assert.deepStrictEqual(mfmService.fromHtml('<p>a <a href="https://example.com/tags/a">#a</a> d</p>', { hashtagNames: ['#a'] }), 'a #a d');
+		});
+
+		test('quote-like but misskey does not recognize', () => {
+			assert.deepStrictEqual(mfmService.fromHtml('<p class="quote-inline">RE: <a href="https://example.com/notes/id">https://example.com/notes/id</a></p><p>Note Content</p>', { hasQuote: false }), 'RE: https://example.com/notes/id\n\nNote Content');
+		});
+
+		test('quote that misskey recognizes', () => {
+			assert.deepStrictEqual(mfmService.fromHtml('<p class="quote-inline">RE: <a href="https://example.com/notes/id">https://example.com/notes/id</a></p><p>Note Content</p>', { hasQuote: true }), 'Note Content');
+		});
+
+		test('quote (real mastodon toot)', () => {
+			// mastodon quotes their toot https://mstdn.virtecam.net/@YTJVDCM/117512986116956890
+			assert.deepStrictEqual(mfmService.fromHtml('<p class="quote-inline">RE: <a href="https://mstdn.virtecam.net/@YTJVDCM/117512985585506708" target="_blank" rel="nofollow noopener" translate="no"><span class="invisible">https://</span><span class="ellipsis">mstdn.virtecam.net/@YTJVDCM/11</span><span class="invisible">7512985585506708</span></a></p><p>ここに引用先を挿入</p>', { hasQuote: true }), 'ここに引用先を挿入');
 		});
 	});
 });

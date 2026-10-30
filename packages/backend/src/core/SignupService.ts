@@ -14,14 +14,15 @@ import { MiUserProfile } from '@/models/UserProfile.js';
 import { IdService } from '@/core/IdService.js';
 import { MiUserKeypair } from '@/models/UserKeypair.js';
 import { MiUsedUsername } from '@/models/UsedUsername.js';
-import generateUserToken from '@/misc/generate-native-user-token.js';
+import { generateNativeUserToken } from '@/misc/token.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { bindThis } from '@/decorators.js';
 import UsersChart from '@/core/chart/charts/users.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserService } from '@/core/UserService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { MetaService } from '@/core/MetaService.js';
 
 @Injectable()
 export class SignupService {
@@ -43,7 +44,8 @@ export class SignupService {
 		private userFollowingService: UserFollowingService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
-		private instanceActorService: InstanceActorService,
+		private systemAccountService: SystemAccountService,
+		private metaService: MetaService,
 		private usersChart: UsersChart,
 	) {
 	}
@@ -76,7 +78,7 @@ export class SignupService {
 		}
 
 		// Generate secret
-		const secret = generateUserToken();
+		const secret = generateNativeUserToken();
 
 		// Check username duplication
 		if (await this.usersRepository.exists({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
@@ -88,11 +90,14 @@ export class SignupService {
 			throw new Error('USED_USERNAME');
 		}
 
-		const isTheFirstUser = !await this.instanceActorService.realLocalUsersPresent();
-
-		if (!opts.ignorePreservedUsernames && !isTheFirstUser) {
+		if (!opts.ignorePreservedUsernames && this.meta.rootUserId != null) {
 			const isPreserved = this.meta.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
 			if (isPreserved) {
+				throw new Error('USED_USERNAME');
+			}
+
+			const hasProhibitedWords = this.utilityService.isKeyWordIncluded(username.toLowerCase(), this.meta.prohibitedWordsForNameOfUser);
+			if (hasProhibitedWords) {
 				throw new Error('USED_USERNAME');
 			}
 		}
@@ -118,6 +123,15 @@ export class SignupService {
 
 		// Start transaction
 		await this.db.transaction(async transactionalEntityManager => {
+			// ローカルユーザーのユーザー名は host が NULL のため、(usernameLower, host) の
+			// 複合ユニークインデックスでは重複を防げない（NULLは互いにdistinct扱い）。
+			// 同一ユーザー名の並行サインアップをトランザクション単位のadvisory lockで直列化し、
+			// チェック→挿入のTOCTOU競合を排除する。
+			await transactionalEntityManager.query(
+				'SELECT pg_advisory_xact_lock(hashtext($1))',
+				[`signup:username:${username.toLowerCase()}`],
+			);
+
 			const exist = await transactionalEntityManager.findOneBy(MiUser, {
 				usernameLower: username.toLowerCase(),
 				host: IsNull(),
@@ -131,7 +145,6 @@ export class SignupService {
 				usernameLower: username.toLowerCase(),
 				host: this.utilityService.toPunyNullable(host),
 				token: secret,
-				isRoot: isTheFirstUser,
 			}));
 
 			await transactionalEntityManager.save(new MiUserKeypair({
@@ -156,7 +169,7 @@ export class SignupService {
 
 		//#region Default following
 		if (
-			!isTheFirstUser &&
+			this.meta.rootUserId != null &&
 			(this.meta.defaultFollowedUsers.length > 0 || this.meta.forciblyFollowedUsers.length > 0)
 		) {
 			const userIdsToFollow = [
@@ -172,7 +185,10 @@ export class SignupService {
 
 		this.userService.notifySystemWebhook(account, 'userCreated');
 
+		if (this.meta.rootUserId == null) {
+			await this.metaService.update({ rootUserId: account.id });
+		}
+
 		return { account, secret };
 	}
 }
-

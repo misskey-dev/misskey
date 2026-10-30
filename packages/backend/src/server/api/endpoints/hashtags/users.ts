@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository } from '@/models/_.js';
 import { safeForSql } from "@/misc/safe-for-sql.js";
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { normalizeTag } from '@/misc/normalize-tag.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
 
@@ -30,8 +30,9 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		tag: { type: 'string' },
+		tag: { type: 'string', maxLength: 128 },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		offset: { type: 'integer', default: 0 },
 		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'] },
 		state: { type: 'string', enum: ['all', 'alive'], default: 'all' },
 		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'local' },
@@ -48,9 +49,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if (!safeForSql(normalizeForSearch(ps.tag))) throw new Error('Injection');
+			if (!safeForSql(normalizeTag(ps.tag))) throw new Error('Injection');
 			const query = this.usersRepository.createQueryBuilder('user')
-				.where(':tag <@ user.tags', { tag: [normalizeForSearch(ps.tag)] })
+				.where(':tag <@ user.tags', { tag: [normalizeTag(ps.tag)] })
 				.andWhere('user.isSuspended = FALSE');
 
 			const recent = new Date(Date.now() - (1000 * 60 * 60 * 24 * 5));
@@ -74,7 +75,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				case '-updatedAt': query.orderBy('user.updatedAt', 'ASC'); break;
 			}
 
-			const users = await query.limit(ps.limit).getMany();
+			const users = await query
+				.limit(ps.limit)
+				.offset(ps.offset)
+				.getMany();
 
 			return await this.userEntityService.packMany(users, me, { schema: 'UserDetailed' });
 		});

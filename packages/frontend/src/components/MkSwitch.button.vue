@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		[$style.buttonChecked]: checked,
 		[$style.buttonDisabled]: props.disabled
 	}"
-	data-cy-switch-toggle
+	data-testid="switch-toggle"
 	@click.prevent.stop="toggle"
 >
 	<div :class="{ [$style.knob]: true, [$style.knobChecked]: checked }"></div>
@@ -19,7 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { toRefs, Ref } from 'vue';
+import { toRefs } from 'vue';
+import type { Ref } from 'vue';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{

@@ -23,11 +23,12 @@
 		"emitDecoratorMetadata": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,
-		"rootDir": "../src",
-		"baseUrl": "./",
+		"jsx": "react-jsx",
+		"jsxImportSource": "@kitajs/html",
 		"paths": {
 			"@/*": ["../src/*"]
 		},
+		"rootDir": "../",
 		"outDir": "../built-test",
 		"types": [
 			"node"
