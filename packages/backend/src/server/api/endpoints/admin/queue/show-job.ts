@@ -4,8 +4,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QUEUE_TYPES, QueueService } from '@/core/QueueService.js';
+import { packedQueueJobSchema } from '@/models/schema/queue.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -14,20 +16,13 @@ export const meta = {
 	requireModerator: true,
 	kind: 'read:admin:queue',
 
-	res: {
-		optional: false, nullable: false,
-		ref: 'QueueJob',
-	},
+	res: packedQueueJobSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		queue: { type: 'string', enum: QUEUE_TYPES },
-		jobId: { type: 'string' },
-	},
-	required: ['queue', 'jobId'],
-} as const;
+export const paramDef = v.object({
+	queue: v.picklist([...QUEUE_TYPES]),
+	jobId: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

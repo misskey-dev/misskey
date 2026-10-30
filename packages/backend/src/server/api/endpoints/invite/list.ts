@@ -4,11 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RegistrationTicketsRepository } from '@/models/_.js';
 import { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
+import { packedInviteCodeSchema } from '@/models/schema/invite-code.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -17,28 +20,13 @@ export const meta = {
 	requiredRolePolicy: 'canInvite',
 	kind: 'read:invite-codes',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'InviteCode',
-		},
-	},
+	res: v.array(packedInviteCodeSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	...mi.paginationEntries({ max: 100, default: 30 }),
+	...mi.paginationDateEntries(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

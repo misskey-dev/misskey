@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AccessTokensRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -14,58 +16,20 @@ export const meta = {
 
 	secure: true,
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-			properties: {
-				id: {
-					type: 'string',
-					optional: false,
-					format: 'misskey:id',
-				},
-				name: {
-					type: 'string',
-					optional: true,
-				},
-				createdAt: {
-					type: 'string',
-					optional: false,
-					format: 'date-time',
-				},
-				lastUsedAt: {
-					type: 'string',
-					optional: true,
-					format: 'date-time',
-				},
-				permission: {
-					type: 'array',
-					optional: false,
-					uniqueItems: true,
-					items: {
-						type: 'string',
-					},
-				},
-				iconUrl: {
-					type: 'string',
-					optional: true, nullable: true,
-				},
-				description: {
-					type: 'string',
-					optional: true, nullable: true,
-				},
-			},
-		},
-	},
+	res: v.array(v.object({
+		id: v.pipe(v.string(), mi.format('misskey:id')),
+		name: v.optional(v.string()),
+		createdAt: mi.dateTimeString(),
+		lastUsedAt: v.optional(mi.dateTimeString()),
+		permission: v.pipe(v.array(v.string()), mi.uniqueArray()),
+		iconUrl: v.optional(v.nullable(v.string())),
+		description: v.optional(v.nullable(v.string())),
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		sort: { type: 'string', enum: ['+createdAt', '-createdAt', '+lastUsedAt', '-lastUsedAt'] },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	sort: v.optional(v.picklist(['+createdAt', '-createdAt', '+lastUsedAt', '-lastUsedAt'])),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -7,7 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, PagesRepository, PageLikesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedPage } from '@/models/schema/page.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import type { } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiPage } from '@/models/Page.js';
@@ -40,9 +41,9 @@ export class PageEntityService {
 		src: MiPage['id'] | MiPage,
 		me?: { id: MiUser['id'] } | null | undefined,
 		hint?: {
-			packedUser?: Packed<'UserLite'>
+			packedUser?: PackedUserLite
 		},
-	): Promise<Packed<'Page'>> {
+	): Promise<PackedPage> {
 		const meId = me ? me.id : null;
 		const page = typeof src === 'object' ? src : await this.pagesRepository.findOneByOrFail({ id: src });
 

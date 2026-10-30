@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as v from 'valibot';
 import type { SwSubscriptionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -25,15 +26,11 @@ export const meta = {
 	description: 'Unregister from receiving push notifications.',
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		endpoint: { type: 'string' },
-		auth: { type: 'string' },
-		publickey: { type: 'string' },
-	},
-	required: ['endpoint', 'auth', 'publickey'],
-} as const;
+export const paramDef = v.object({
+	endpoint: v.string(),
+	auth: v.string(),
+	publickey: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -5,6 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AccessTokensRepository } from '@/models/_.js';
 import { AppEntityService } from '@/core/entities/AppEntityService.js';
@@ -15,50 +17,20 @@ export const meta = {
 
 	secure: true,
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-			properties: {
-				id: {
-					type: 'string',
-					format: 'misskey:id',
-					optional: false,
-				},
-				name: {
-					type: 'string',
-					optional: false,
-				},
-				callbackUrl: {
-					type: 'string',
-					optional: false, nullable: true,
-				},
-				permission: {
-					type: 'array',
-					optional: false,
-					uniqueItems: true,
-					items: {
-						type: 'string',
-					},
-				},
-				isAuthorized: {
-					type: 'boolean',
-					optional: true,
-				},
-			},
-		},
-	},
+	res: v.array(v.object({
+		id: v.pipe(v.string(), mi.format('misskey:id')),
+		name: v.string(),
+		callbackUrl: v.nullable(v.string()),
+		permission: v.pipe(v.array(v.string()), mi.uniqueArray()),
+		isAuthorized: v.optional(v.boolean()),
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		offset: { type: 'integer', default: 0 },
-		sort: { type: 'string', enum: ['desc', 'asc'], default: 'desc' },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	limit: mi.limit({ max: 100, def: 10 }),
+	offset: v.optional(mi.integer(), 0),
+	sort: v.optional(v.picklist(['desc', 'asc']), 'desc'),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

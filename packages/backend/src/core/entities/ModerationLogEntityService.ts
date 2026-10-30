@@ -11,7 +11,7 @@ import type { } from '@/models/Blocking.js';
 import { MiModerationLog } from '@/models/ModerationLog.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedUserDetailedNotMe } from '@/models/schema/user.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class ModerationLogEntityService {
 	public async pack(
 		src: MiModerationLog['id'] | MiModerationLog,
 		hint?: {
-			packedUser?: Packed<'UserDetailedNotMe'>,
+			packedUser?: PackedUserDetailedNotMe,
 		},
 	) {
 		const log = typeof src === 'object' ? src : await this.moderationLogsRepository.findOneByOrFail({ id: src });

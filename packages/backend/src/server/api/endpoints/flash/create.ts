@@ -5,11 +5,13 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import type { FlashsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
+import { packedFlashSchema } from '@/models/schema/flash.js';
 
 export const meta = {
 	tags: ['flash'],
@@ -28,26 +30,16 @@ export const meta = {
 	errors: {
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Flash',
-	},
+	res: packedFlashSchema,
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		title: { type: 'string' },
-		summary: { type: 'string' },
-		script: { type: 'string' },
-		permissions: { type: 'array', items: {
-			type: 'string',
-		} },
-		visibility: { type: 'string', enum: ['public', 'private'], default: 'public' },
-	},
-	required: ['title', 'summary', 'script', 'permissions'],
-} as const;
+export const paramDef = v.object({
+	title: v.string(),
+	summary: v.string(),
+	script: v.string(),
+	permissions: v.array(v.string()),
+	visibility: v.optional(v.picklist(['public', 'private']), 'public'),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

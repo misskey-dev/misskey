@@ -4,12 +4,15 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
+import { packedDriveFileSchema } from '@/models/schema/drive-file.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -21,11 +24,7 @@ export const meta = {
 
 	description: 'Show the properties of a drive file.',
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'DriveFile',
-	},
+	res: packedDriveFileSchema,
 
 	errors: {
 		noSuchFile: {
@@ -42,24 +41,14 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	anyOf: [
-		{
-			type: 'object',
-			properties: {
-				fileId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['fileId'],
-		},
-		{
-			type: 'object',
-			properties: {
-				url: { type: 'string' },
-			},
-			required: ['url'],
-		},
-	],
-} as const;
+export const paramDef = v.union([
+	v.object({
+		fileId: mi.misskeyId(),
+	}),
+	v.object({
+		url: v.string(),
+	}),
+]);
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

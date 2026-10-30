@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { NoteDraftsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -17,22 +18,13 @@ export const meta = {
 
 	kind: 'read:account',
 
-	res: {
-		type: 'number',
-		optional: false, nullable: false,
-		description: 'The number of drafts',
-	},
+	res: v.pipe(v.number(), v.description('The number of drafts')),
 
 	errors: {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

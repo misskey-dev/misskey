@@ -4,10 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AdsRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
+import { packedAdSchema } from '@/models/schema/ad.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -15,31 +18,14 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 	kind: 'read:admin:ad',
-	res: {
-		type: 'array',
-		optional: false,
-		nullable: false,
-		items: {
-			type: 'object',
-			optional: false,
-			nullable: false,
-			ref: 'Ad',
-		},
-	},
+	res: v.array(packedAdSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		publishing: { type: 'boolean', default: null, nullable: true },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+	publishing: v.optional(v.nullable(v.boolean()), null),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

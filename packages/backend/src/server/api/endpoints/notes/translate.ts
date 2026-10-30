@@ -5,6 +5,8 @@
 
 import { URLSearchParams } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -20,14 +22,10 @@ export const meta = {
 	requireCredential: true,
 	kind: 'read:account',
 
-	res: {
-		type: 'object',
-		optional: true, nullable: false,
-		properties: {
-			sourceLang: { type: 'string' },
-			text: { type: 'string' },
-		},
-	},
+	res: v.optional(v.object({
+		sourceLang: v.string(),
+		text: v.string(),
+	})),
 
 	errors: {
 		unavailable: {
@@ -48,14 +46,10 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		noteId: { type: 'string', format: 'misskey:id' },
-		targetLang: { type: 'string' },
-	},
-	required: ['noteId', 'targetLang'],
-} as const;
+export const paramDef = v.object({
+	noteId: mi.misskeyId(),
+	targetLang: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

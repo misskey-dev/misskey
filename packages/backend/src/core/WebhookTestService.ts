@@ -8,7 +8,8 @@ import { MiAbuseUserReport, MiNote, MiUser, MiWebhook } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { MiSystemWebhook, type SystemWebhookEventType } from '@/models/SystemWebhook.js';
 import { type AbuseReportPayload, SystemWebhookPayload, SystemWebhookService } from '@/core/SystemWebhookService.js';
-import { type Packed } from '@/misc/json-schema.js';
+import type { PackedNote } from '@/models/schema/note.js';
+import type { PackedUserDetailedNotMe, PackedUserLite } from '@/models/schema/user.js';
 import { type WebhookEventTypes } from '@/models/Webhook.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { type UserWebhookPayload, UserWebhookService } from '@/core/UserWebhookService.js';
@@ -362,7 +363,7 @@ export class WebhookTestService {
 	}
 
 	@bindThis
-	private async toPackedNote(note: MiNote, detail = true, override?: Packed<'Note'>): Promise<Packed<'Note'>> {
+	private async toPackedNote(note: MiNote, detail = true, override?: PackedNote): Promise<PackedNote> {
 		return {
 			id: note.id,
 			createdAt: new Date().toISOString(),
@@ -405,7 +406,7 @@ export class WebhookTestService {
 	}
 
 	@bindThis
-	private async toPackedUserLite(user: MiUser, override?: Packed<'UserLite'>): Promise<Packed<'UserLite'>> {
+	private async toPackedUserLite(user: MiUser, override?: PackedUserLite): Promise<PackedUserLite> {
 		return {
 			id: user.id,
 			name: user.name,
@@ -431,7 +432,7 @@ export class WebhookTestService {
 	}
 
 	@bindThis
-	private async toPackedUserDetailedNotMe(user: MiUser, override?: Packed<'UserDetailedNotMe'>): Promise<Packed<'UserDetailedNotMe'>> {
+	private async toPackedUserDetailedNotMe(user: MiUser, override?: PackedUserDetailedNotMe): Promise<PackedUserDetailedNotMe> {
 		return {
 			...await this.toPackedUserLite(user),
 			url: null,

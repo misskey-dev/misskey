@@ -4,12 +4,15 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { EmojisRepository } from '@/models/_.js';
 import type { MiEmoji } from '@/models/Emoji.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import { packedEmojiDetailedSchema } from '@/models/schema/emoji.js';
 //import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 export const meta = {
@@ -19,28 +22,14 @@ export const meta = {
 	requiredRolePolicy: 'canManageCustomEmojis',
 	kind: 'read:admin:emoji',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			ref: 'EmojiDetailed',
-		},
-	},
+	res: v.array(packedEmojiDetailedSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		query: { type: 'string', nullable: true, default: null },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	query: v.optional(v.nullable(v.string()), null),
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedPage } from '@/models/schema/page.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
 import type { CommonProps } from '@/server/web/views/_.js';
 import { Layout } from '@/server/web/views/base.js';
 
 export function PagePage(props: CommonProps<{
-	page: Packed<'Page'>;
+	page: PackedPage;
 	profile: MiUserProfile;
 }>) {
 	function ogBlock() {

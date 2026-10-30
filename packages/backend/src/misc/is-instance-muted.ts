@@ -4,9 +4,10 @@
  */
 
 import { MiNote } from '@/models/Note.js';
-import type { Packed } from './json-schema.js';
+import type { PackedNote } from '@/models/schema/note.js';
+import type { PackedNotification } from '@/models/schema/notification.js';
 
-export function isInstanceMuted(note: Packed<'Note'> | MiNote, mutedInstances: Set<string>): boolean {
+export function isInstanceMuted(note: PackedNote | MiNote, mutedInstances: Set<string>): boolean {
 	if (mutedInstances.has(note.user?.host ?? '')) return true;
 	if (mutedInstances.has(note.reply?.user?.host ?? '')) return true;
 	if (mutedInstances.has(note.renote?.user?.host ?? '')) return true;
@@ -14,8 +15,10 @@ export function isInstanceMuted(note: Packed<'Note'> | MiNote, mutedInstances: S
 	return false;
 }
 
-export function isUserFromMutedInstance(notif: Packed<'Notification'>, mutedInstances: Set<string>): boolean {
-	if (mutedInstances.has(notif.user?.host ?? '')) return true;
+export function isUserFromMutedInstance(notif: PackedNotification, mutedInstances: Set<string>): boolean {
+	// `user` を持たない種別 (achievementEarned / app など) もあるので存在チェックしてから見る
+	const host = 'user' in notif ? notif.user.host : undefined;
+	if (mutedInstances.has(host ?? '')) return true;
 
 	return false;
 }

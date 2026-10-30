@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MiMeta, UsersRepository } from '@/models/_.js';
 import { SignupService } from '@/core/SignupService.js';
@@ -13,7 +14,18 @@ import { localUsernameSchema, passwordSchema } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { ApiError } from '@/server/api/error.js';
-import { Packed } from '@/misc/json-schema.js';
+import * as mi from '@/misc/schema/index.js';
+import {
+	packedUserLiteSchema,
+	packedUserDetailedNotMeOnlySchema,
+	packedMeDetailedOnlySchema,
+} from '@/models/schema/user.js';
+import type { PackedMeDetailed } from '@/models/schema/user.js';
+
+// legacy の `allOf: [{ ref: 'MeDetailed' }, { token }]` の inline パート
+const createdAccountTokenSchema = v.object({
+	token: v.string(),
+});
 
 export const meta = {
 	tags: ['admin'],
@@ -32,37 +44,25 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		allOf: [
-			{
-				type: 'object',
-				ref: 'MeDetailed',
-			},
-			{
-				type: 'object',
-				optional: false, nullable: false,
-				properties: {
-					token: {
-						type: 'string',
-						optional: false, nullable: false,
-					},
-				},
-			}
-		],
-	},
+	// NOTE: endpoint の res 側の allOf 合成には mi.composeEntity() (entity 登録が必須) が使えないので、
+	// マージ済み object に allOfParts メタデータだけを直接載せて現行の `allOf` 出力を維持する
+	// (MeDetailed = UserLite + UserDetailedNotMeOnly + MeDetailedOnly の合成)
+	res: v.pipe(
+		v.object({
+			...packedUserLiteSchema.entries,
+			...packedUserDetailedNotMeOnlySchema.entries,
+			...packedMeDetailedOnlySchema.entries,
+			...createdAccountTokenSchema.entries,
+		}),
+		mi.schemaMeta({ allOfParts: ['MeDetailed', createdAccountTokenSchema] }),
+	),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		username: localUsernameSchema,
-		password: passwordSchema,
-		setupPassword: { type: 'string', nullable: true },
-	},
-	required: ['username', 'password'],
-} as const;
+export const paramDef = v.object({
+	username: localUsernameSchema,
+	password: passwordSchema,
+	setupPassword: v.nullish(v.string()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
@@ -109,7 +109,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const res = await this.userEntityService.pack(account, account, {
 				schema: 'MeDetailed',
 				includeSecrets: true,
-			}) as Packed<'MeDetailed'> & { token: string };
+			}) as PackedMeDetailed & { token: string };
 
 			res.token = secret;
 

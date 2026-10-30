@@ -16,7 +16,7 @@ import type { MiPoll } from '@/models/Poll.js';
 import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import { Packed } from '@/misc/json-schema.js';
+import type { PackedDriveFile } from '@/models/schema/drive-file.js';
 import { IdService } from '@/core/IdService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { JsonArrayStream } from '@/misc/JsonArrayStream.js';
@@ -42,7 +42,7 @@ class NoteStream extends ReadableStream<Record<string, unknown>> {
 		const serialize = (
 			note: MiNote,
 			poll: MiPoll | null,
-			files: Packed<'DriveFile'>[],
+			files: PackedDriveFile[],
 		): Record<string, unknown> => {
 			return {
 				id: note.id,

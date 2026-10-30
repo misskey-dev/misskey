@@ -5,6 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { DI } from '@/di-symbols.js';
 import type {
 	FollowingsRepository,
@@ -12,7 +14,14 @@ import type {
 } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { Packed } from '@/misc/json-schema.js';
+import { packedUserLiteSchema } from '@/models/schema/user.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
+
+// legacy の `oneOf` の各分岐で使い回されている `{ month, day }`
+const monthDaySchema = v.object({
+	month: mi.integer({ min: 1, max: 12 }),
+	day: mi.integer({ min: 1, max: 31 }),
+});
 
 export const meta = {
 	tags: ['users'],
@@ -22,71 +31,29 @@ export const meta = {
 
 	description: 'Retrieve users who have a birthday on the specified range.',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			properties: {
-				id: {
-					type: 'string',
-					optional: false, nullable: false,
-					format: 'misskey:id',
-				},
-				birthday: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-				user: {
-					type: 'object',
-					optional: false, nullable: false,
-					ref: 'UserLite',
-				},
-			},
-		},
-	},
+	res: v.array(v.object({
+		// NOTE: res 側なのに legacy が `format: 'misskey:id'` を書いているので、`mi.idString()` (= format: 'id') ではなく元のリテラルを保つ
+		id: v.pipe(v.string(), mi.format('misskey:id')),
+		birthday: v.string(),
+		user: packedUserLiteSchema,
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		offset: { type: 'integer', default: 0 },
-		birthday: {
-			oneOf: [{
-				type: 'object',
-				properties: {
-					month: { type: 'integer', minimum: 1, maximum: 12 },
-					day: { type: 'integer', minimum: 1, maximum: 31 },
-				},
-				required: ['month', 'day'],
-			}, {
-				type: 'object',
-				properties: {
-					begin: {
-						type: 'object',
-						properties: {
-							month: { type: 'integer', minimum: 1, maximum: 12 },
-							day: { type: 'integer', minimum: 1, maximum: 31 },
-						},
-						required: ['month', 'day'],
-					},
-					end: {
-						type: 'object',
-						properties: {
-							month: { type: 'integer', minimum: 1, maximum: 12 },
-							day: { type: 'integer', minimum: 1, maximum: 31 },
-						},
-						required: ['month', 'day'],
-					},
-				},
-				required: ['begin', 'end'],
-			}],
-		},
-	},
-	required: ['birthday'],
-} as const;
+export const paramDef = v.object({
+	limit: mi.limit({ max: 100, def: 10 }),
+	offset: v.optional(mi.integer(), 0),
+	// NOTE: 判別子の無い oneOf なので v.union + asOneOf で現行出力 (oneOf) を維持する
+	birthday: v.pipe(
+		v.union([
+			monthDaySchema,
+			v.object({
+				begin: monthDaySchema,
+				end: monthDaySchema,
+			}),
+		]),
+		mi.asOneOf(),
+	),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
@@ -134,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.offset(ps.offset).limit(ps.limit)
 				.getRawMany<{ birthday_date: number; user_id: string }>();
 
-			const users = new Map<string, Packed<'UserLite'>>((
+			const users = new Map<string, PackedUserLite>((
 				await this.userEntityService.packMany(
 					birthdayUsers.map(u => u.user_id),
 					me,
@@ -161,7 +128,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					};
 				})
 				.filter(item => item.user != null)
-				.map(item => item as { id: string; birthday: string; user: Packed<'UserLite'> });
+				.map(item => item as { id: string; birthday: string; user: PackedUserLite });
 		});
 	}
 }

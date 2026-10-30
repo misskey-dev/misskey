@@ -5,6 +5,7 @@
 
 import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AuthSessionsRepository, AppsRepository, AccessTokensRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
@@ -28,13 +29,9 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		token: { type: 'string' },
-	},
-	required: ['token'],
-} as const;
+export const paramDef = v.object({
+	token: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -5,11 +5,14 @@
 
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { UsersRepository, FollowingsRepository, UserProfilesRepository } from '@/models/_.js';
 import { birthdaySchema } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
+import { packedFollowingSchema } from '@/models/schema/following.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -22,15 +25,7 @@ export const meta = {
 
 	description: 'Show everyone that this user is following.',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Following',
-		},
-	},
+	res: v.array(packedFollowingSchema),
 
 	errors: {
 		noSuchUser: {
@@ -53,44 +48,33 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	allOf: [
-		{
-			anyOf: [
-				{
-					type: 'object',
-					properties: {
-						userId: { type: 'string', format: 'misskey:id' },
-					},
-					required: ['userId'],
-				},
-				{
-					type: 'object',
-					properties: {
-						username: { type: 'string' },
-						host: {
-							type: 'string',
-							nullable: true,
-							description: 'The local host is represented with `null`.',
-						},
-					},
-					required: ['username', 'host'],
-				},
-			],
-		},
-		{
-			type: 'object',
-			properties: {
-				sinceId: { type: 'string', format: 'misskey:id' },
-				untilId: { type: 'string', format: 'misskey:id' },
-				sinceDate: { type: 'integer' },
-				untilDate: { type: 'integer' },
-				limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-				birthday: { ...birthdaySchema, nullable: true, description: '@deprecated use get-following-users-by-birthday instead.' },
-			},
-		},
-	],
-} as const;
+const commonEntries = {
+	sinceId: v.optional(mi.misskeyId()),
+	untilId: v.optional(mi.misskeyId()),
+	sinceDate: v.optional(mi.integer()),
+	untilDate: v.optional(mi.integer()),
+	limit: mi.limit({ max: 100, def: 10 }),
+	birthday: v.pipe(
+		v.nullish(birthdaySchema),
+		mi.deprecated(),
+		v.description('@deprecated use get-following-users-by-birthday instead.'),
+	),
+};
+
+export const paramDef = v.union([
+	v.object({
+		userId: mi.misskeyId(),
+		...commonEntries,
+	}),
+	v.object({
+		username: v.string(),
+		host: v.pipe(
+			v.nullable(v.string()),
+			v.description('The local host is represented with `null`.'),
+		),
+		...commonEntries,
+	}),
+]);
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

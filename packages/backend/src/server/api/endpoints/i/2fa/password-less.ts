@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/_.js';
@@ -25,13 +26,9 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		value: { type: 'boolean' },
-	},
-	required: ['value'],
-} as const;
+export const paramDef = v.object({
+	value: v.boolean(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

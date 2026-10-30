@@ -5,6 +5,8 @@
 
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
 
@@ -23,19 +25,12 @@ export const meta = {
 	errors: {
 	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-	},
+	res: mi.anyObject(),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		uri: { type: 'string' },
-	},
-	required: ['uri'],
-} as const;
+export const paramDef = v.object({
+	uri: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

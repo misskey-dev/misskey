@@ -5,11 +5,14 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { UsersRepository, FollowingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { packedUserDetailedSchema } from '@/models/schema/user.js';
 
 export const meta = {
 	tags: ['users'],
@@ -20,25 +23,13 @@ export const meta = {
 
 	description: 'Show users that the authenticated user might be interested to follow.',
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'UserDetailed',
-		},
-	},
+	res: v.array(packedUserDetailedSchema),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		offset: { type: 'integer', default: 0 },
-	},
-	required: [],
-} as const;
+export const paramDef = v.object({
+	limit: mi.limit({ max: 100, def: 10 }),
+	offset: v.optional(mi.integer(), 0),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

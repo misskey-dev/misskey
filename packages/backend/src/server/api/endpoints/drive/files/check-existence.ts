@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -17,19 +18,12 @@ export const meta = {
 
 	description: 'Check if a given file exists.',
 
-	res: {
-		type: 'boolean',
-		optional: false, nullable: false,
-	},
+	res: v.boolean(),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		md5: { type: 'string' },
-	},
-	required: ['md5'],
-} as const;
+export const paramDef = v.object({
+	md5: v.string(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

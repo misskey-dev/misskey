@@ -5,7 +5,7 @@
 
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { normalizeTag } from '@/misc/normalize-tag.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedNote } from '@/models/schema/note.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteStreamingHidingService } from '../NoteStreamingHidingService.js';
 import { bindThis } from '@/decorators.js';
@@ -47,7 +47,7 @@ export class HashtagChannel extends Channel {
 	}
 
 	@bindThis
-	private async onNote(note: Packed<'Note'>) {
+	private async onNote(note: PackedNote) {
 		const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
 		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(tag)));
 		if (!matched) return;

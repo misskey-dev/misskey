@@ -5,6 +5,7 @@
 
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { DriveService } from '@/core/DriveService.js';
@@ -18,11 +19,7 @@ export const meta = {
 	kind: 'write:admin:drive',
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

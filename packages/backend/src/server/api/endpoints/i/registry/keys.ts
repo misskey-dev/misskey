@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { RegistryApiService } from '@/core/RegistryApiService.js';
 
@@ -11,24 +12,13 @@ export const meta = {
 	requireCredential: true,
 	kind: 'read:account',
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'string',
-		},
-	},
+	res: v.array(v.string()),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		scope: { type: 'array', default: [], items: {
-			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
-		} },
-		domain: { type: 'string', nullable: true },
-	},
-	required: ['scope'],
-} as const;
+export const paramDef = v.object({
+	scope: v.optional(v.array(v.pipe(v.string(), v.regex(/^[a-zA-Z0-9_]+$/))), []),
+	domain: v.nullish(v.string()),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

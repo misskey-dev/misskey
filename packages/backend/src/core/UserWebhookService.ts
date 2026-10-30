@@ -10,19 +10,20 @@ import { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { GlobalEvents } from '@/core/GlobalEventService.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedNote } from '@/models/schema/note.js';
+import type { PackedUserDetailedNotMe, PackedUserLite } from '@/models/schema/user.js';
 import { QueueService } from '@/core/QueueService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type UserWebhookPayload<T extends WebhookEventTypes> =
 	T extends 'note' | 'reply' | 'renote' | 'mention' ? {
-		note: Packed<'Note'>,
+		note: PackedNote,
 	} :
 	T extends 'follow' | 'unfollow' ? {
-		user: Packed<'UserDetailedNotMe'>,
+		user: PackedUserDetailedNotMe,
 	} :
 	T extends 'followed' ? {
-		user: Packed<'UserLite'>,
+		user: PackedUserLite,
 	} : never;
 
 @Injectable()

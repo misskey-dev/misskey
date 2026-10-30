@@ -5,6 +5,8 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { FlashsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -39,20 +41,14 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		flashId: { type: 'string', format: 'misskey:id' },
-		title: { type: 'string' },
-		summary: { type: 'string' },
-		script: { type: 'string' },
-		permissions: { type: 'array', items: {
-			type: 'string',
-		} },
-		visibility: { type: 'string', enum: ['public', 'private'] },
-	},
-	required: ['flashId'],
-} as const;
+export const paramDef = v.object({
+	flashId: mi.misskeyId(),
+	title: v.optional(v.string()),
+	summary: v.optional(v.string()),
+	script: v.optional(v.string()),
+	permissions: v.optional(v.array(v.string())),
+	visibility: v.optional(v.picklist(['public', 'private'])),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
@@ -73,7 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				updatedAt: new Date(),
 				...Object.fromEntries(
 					Object.entries(ps).filter(
-						([key, val]) => (key !== 'flashId') && Object.hasOwn(paramDef.properties, key),
+						([key, val]) => (key !== 'flashId') && Object.hasOwn(paramDef.entries, key),
 					),
 				),
 			});

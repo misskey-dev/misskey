@@ -4,6 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AccessTokensRepository } from '@/models/_.js';
 import type { MiAccessToken } from '@/models/AccessToken.js';
@@ -33,24 +35,14 @@ export const meta = {
 	},
 } as const;
 
-export const paramDef = {
-	anyOf: [
-		{
-			type: 'object',
-			properties: {
-				tokenId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['tokenId'],
-		},
-		{
-			type: 'object',
-			properties: {
-				token: { type: 'string', nullable: true },
-			},
-			required: ['token'],
-		},
-	],
-} as const;
+export const paramDef = v.union([
+	v.object({
+		tokenId: mi.misskeyId(),
+	}),
+	v.object({
+		token: v.nullable(v.string()),
+	}),
+]);
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

@@ -4,6 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 // 循環参照を回避
@@ -18,27 +20,15 @@ export const meta = {
 
 	tags: ['meta'],
 
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'string',
-			optional: false, nullable: false,
-		},
-		example: [
-			'admin/abuse-user-reports',
-			'admin/accounts/create',
-			'admin/announcements/create',
-			'...',
-		],
-	},
+	res: mi.example(v.array(v.string()), [
+		'admin/abuse-user-reports',
+		'admin/accounts/create',
+		'admin/announcements/create',
+		'...',
+	]),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
+export const paramDef = v.object({});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

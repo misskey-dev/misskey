@@ -5,12 +5,15 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
+import * as v from 'valibot';
+import * as mi from '@/misc/schema/index.js';
 import type { RoleAssignmentsRepository, RolesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { IdService } from '@/core/IdService.js';
+import { packedUserDetailedSchema } from '@/models/schema/user.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -28,33 +31,21 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-			properties: {
-				id: { type: 'string', format: 'misskey:id' },
-				createdAt: { type: 'string', format: 'date-time' },
-				user: { ref: 'UserDetailed' },
-				expiresAt: { type: 'string', format: 'date-time', nullable: true },
-			},
-			required: ['id', 'createdAt', 'user'],
-		},
-	},
+	res: v.array(v.object({
+		id: v.pipe(v.string(), mi.format('misskey:id')),
+		createdAt: mi.dateTimeString(),
+		user: packedUserDetailedSchema,
+		// legacy res には手書きの required: ['id','createdAt','user'] があったが、res モードの
+		// コンバータは optional フラグからの導出で上書きするため api.json 上は expiresAt も required
+		expiresAt: v.nullable(mi.dateTimeString()),
+	})),
 } as const;
 
-export const paramDef = {
-	type: 'object',
-	properties: {
-		roleId: { type: 'string', format: 'misskey:id' },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-	},
-	required: ['roleId'],
-} as const;
+export const paramDef = v.object({
+	roleId: mi.misskeyId(),
+	...mi.paginationEntries({ max: 100, default: 10 }),
+	...mi.paginationDateEntries(),
+});
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export

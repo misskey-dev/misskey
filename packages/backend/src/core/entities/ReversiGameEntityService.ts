@@ -7,14 +7,15 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { ReversiGamesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { PackedReversiGameDetailed, PackedReversiGameLite } from '@/models/schema/reversi-game.js';
+import type { PackedUserLite } from '@/models/schema/user.js';
 import type { } from '@/models/Blocking.js';
 import type { MiReversiGame } from '@/models/ReversiGame.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import { UserEntityService } from './UserEntityService.js';
 
-function assertBw(bw: string): bw is Packed<'ReversiGameDetailed'>['bw'] {
+function assertBw(bw: string): bw is PackedReversiGameDetailed['bw'] {
 	return ['random', '1', '2'].includes(bw);
 }
 
@@ -33,10 +34,10 @@ export class ReversiGameEntityService {
 	public async packDetail(
 		src: MiReversiGame['id'] | MiReversiGame,
 		hint?: {
-			packedUser1?: Packed<'UserLite'>,
-			packedUser2?: Packed<'UserLite'>,
+			packedUser1?: PackedUserLite,
+			packedUser2?: PackedUserLite,
 		},
-	): Promise<Packed<'ReversiGameDetailed'>> {
+	): Promise<PackedReversiGameDetailed> {
 		const game = typeof src === 'object' ? src : await this.reversiGamesRepository.findOneByOrFail({ id: src });
 
 		const user1 = hint?.packedUser1 ?? await this.userEntityService.pack(game.user1 ?? game.user1Id);
@@ -95,10 +96,10 @@ export class ReversiGameEntityService {
 	public async packLite(
 		src: MiReversiGame['id'] | MiReversiGame,
 		hint?: {
-			packedUser1?: Packed<'UserLite'>,
-			packedUser2?: Packed<'UserLite'>,
+			packedUser1?: PackedUserLite,
+			packedUser2?: PackedUserLite,
 		},
-	): Promise<Packed<'ReversiGameLite'>> {
+	): Promise<PackedReversiGameLite> {
 		const game = typeof src === 'object' ? src : await this.reversiGamesRepository.findOneByOrFail({ id: src });
 
 		const user1 = hint?.packedUser1 ?? await this.userEntityService.pack(game.user1 ?? game.user1Id);
