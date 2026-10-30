@@ -4,10 +4,10 @@
  */
 
 import { Injectable, Inject } from '@nestjs/common';
-import { In } from 'typeorm';
+import { In, IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta } from '@/models/Meta.js';
-import type { UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { UsersRepository } from '@/models/_.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -26,9 +26,9 @@ export const meta = {
 			code: 'FOLLOWED_USER_DUPLICATED',
 			id: 'bcf088ec-fec5-42d0-8b9e-16d3b4797a4d',
 		},
-		forciblyFollowedUserRequiresApproval: {
-			message: 'Users in "forciblyFollowedUsers" must be local users who do not require approval for follows from new accounts.',
-			code: 'FORCIBLY_FOLLOWED_USER_REQUIRES_APPROVAL',
+		forciblyFollowedUserIsRemote: {
+			message: 'Remote users cannot be specified in "forciblyFollowedUsers".',
+			code: 'FORCIBLY_FOLLOWED_USER_IS_REMOTE',
 			id: '797fd84b-b6f6-4852-96ec-990b1e049a6c',
 		},
 	},
@@ -269,9 +269,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
-
 		private metaService: MetaService,
 		private moderationLogService: ModerationLogService,
 	) {
@@ -304,17 +301,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (set.forciblyFollowedUsers != null && set.forciblyFollowedUsers.length > 0) {
-				// 新規アカウントからのフォローがフォローリクエスト止まりになるユーザーは指定できない
+				// リモートユーザーへのフォローは相手サーバーの承認が必要で、確実に成立させられないため指定できない
 				// （存在しないユーザーはサインアップ時のフォローで無視されるため検証しない）
-				const [users, profiles] = await Promise.all([
-					this.usersRepository.findBy({ id: In(set.forciblyFollowedUsers) }),
-					this.userProfilesRepository.findBy({ userId: In(set.forciblyFollowedUsers) }),
-				]);
-				if (
-					users.some(user => user.host != null || user.isLocked) ||
-					profiles.some(profile => (profile.followApprovalLocalSeconds ?? 0) > 0)
-				) {
-					throw new ApiError(meta.errors.forciblyFollowedUserRequiresApproval);
+				if (await this.usersRepository.exists({ where: { id: In(set.forciblyFollowedUsers), host: Not(IsNull()) } })) {
+					throw new ApiError(meta.errors.forciblyFollowedUserIsRemote);
 				}
 			}
 

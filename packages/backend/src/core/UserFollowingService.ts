@@ -106,10 +106,12 @@ export class UserFollowingService implements OnModuleInit {
 	public async follow(
 		_follower: ThinUser,
 		_followee: ThinUser,
-		{ requestId, silent = false, withReplies }: {
+		{ requestId, silent = false, withReplies, skipApproval = false }: {
 			requestId?: string,
 			silent?: boolean,
 			withReplies?: boolean,
+			/** ローカルユーザー同士のフォローで、フォロー対象の承認制に関する設定を無視してフォローを成立させる */
+			skipApproval?: boolean,
 		} = {},
 	): Promise<void> {
 		/**
@@ -176,13 +178,15 @@ export class UserFollowingService implements OnModuleInit {
 		// フォロワーがローカルユーザーであり、フォロー対象がリモートユーザーである or
 		// フォロワーがローカルユーザーであり、フォロー対象がサイレンスされているサーバーである
 		// 上記のいずれかに当てはまる場合はすぐフォローせずにフォローリクエストを発行しておく
-		if (
+		// （承認をスキップする場合はローカルユーザー同士に限り、すぐフォローする）
+		const shouldSkipApproval = skipApproval && this.userEntityService.isLocalUser(follower) && this.userEntityService.isLocalUser(followee);
+		if (!shouldSkipApproval && (
 			followee.isLocked ||
 			requiresApprovalByAccountAge ||
 			(followeeProfile.carefulBot && follower.isBot) ||
 			(this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee) && process.env.FORCE_FOLLOW_REMOTE_USER_FOR_TESTING !== 'true') ||
 			(this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower) && this.utilityService.isSilencedHost(this.meta.silencedHosts, follower.host))
-		) {
+		)) {
 			let autoAccept = false;
 
 			// 鍵アカウントであっても、既にフォローされていた場合はスルー

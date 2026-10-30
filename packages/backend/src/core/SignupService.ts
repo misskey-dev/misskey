@@ -175,19 +175,20 @@ export class SignupService {
 			this.meta.rootUserId != null &&
 			(this.meta.defaultFollowedUsers.length > 0 || this.meta.forciblyFollowedUsers.length > 0)
 		) {
-			const userIdsToFollow = [
-				...this.meta.defaultFollowedUsers,
-				...this.meta.forciblyFollowedUsers,
+			const usersToFollow = [
+				...this.meta.defaultFollowedUsers.map(id => ({ id, forcibly: false })),
+				...this.meta.forciblyFollowedUsers.map(id => ({ id, forcibly: true })),
 			];
 
-			const results = await Promise.allSettled(userIdsToFollow.map(async userId => {
-				await this.userFollowingService.follow(account, { id: userId });
+			const results = await Promise.allSettled(usersToFollow.map(async ({ id, forcibly }) => {
+				// 交流を断てないユーザーは、相手の承認制に関する設定に関わらずフォローを成立させる
+				await this.userFollowingService.follow(account, { id }, { skipApproval: forcibly });
 			}));
 
 			for (const [i, result] of results.entries()) {
 				// 削除済みなど存在しないユーザーは想定内のため記録しない
 				if (result.status === 'rejected' && !(result.reason instanceof EntityNotFoundError)) {
-					logger.warn(`Failed to follow ${userIdsToFollow[i]} by default: ${result.reason}`);
+					logger.warn(`Failed to follow ${usersToFollow[i].id} by default: ${result.reason}`);
 				}
 			}
 		}

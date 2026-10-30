@@ -268,7 +268,7 @@ function save_defaultUsers() {
 			text: i18n.ts.defaultFollowedUsersDuplicated,
 		},
 		'797fd84b-b6f6-4852-96ec-990b1e049a6c': {
-			text: i18n.ts.forciblyFollowedUsersRequiresApproval,
+			text: i18n.ts.forciblyFollowedUsersCannotBeRemote,
 		},
 	}).then(() => {
 		fetchInstance(true);

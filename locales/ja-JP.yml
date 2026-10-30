@@ -1339,7 +1339,7 @@ defaultFollowedUsersDescription: "今後アカウントが作成された際に�
 forciblyFollowedUsers: "交流を断てないユーザー (ID)"
 forciblyFollowedUsersDescription: "今後アカウントが作成された際には自動でフォローされ、フォローの解除やミュート・ブロックができないユーザーのユーザーIDを改行区切りで指定します。"
 defaultFollowedUsersDuplicated: "「デフォルトでフォローするユーザー」と「交流を絶てないユーザー」が重複しています。"
-forciblyFollowedUsersRequiresApproval: "「交流を断てないユーザー」には、リモートユーザー、鍵アカウント、新しいアカウントからのフォローを承認制にしているユーザーは指定できません。"
+forciblyFollowedUsersCannotBeRemote: "「交流を断てないユーザー」にリモートユーザーは指定できません。"
 unfollowThisUserIsProhibited: "サーバー管理者はこのユーザーをフォロー解除することを禁止しています。"
 blockThisUserIsProhibited: "サーバー管理者はこのユーザーをブロックすることを禁止しています。"
 muteThisUserIsProhibited: "サーバー管理者はこのユーザーをミュートすることを禁止しています。"

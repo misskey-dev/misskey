@@ -17,11 +17,15 @@ describe('デフォルトでフォローするユーザー / 交流を断てな�
 	let alice: misskey.entities.SignupResponse;
 	let moderator: misskey.entities.SignupResponse;
 
-	const isFollowing = async (follower: misskey.entities.SignupResponse, followee: misskey.entities.SignupResponse) => {
+	const relation = async (follower: misskey.entities.SignupResponse, followee: misskey.entities.SignupResponse) => {
 		const res = await api('users/relation', { userId: followee.id }, follower);
 		assert.strictEqual(res.status, 200);
 		assert.ok(!Array.isArray(res.body));
-		return res.body.isFollowing;
+		return res.body;
+	};
+
+	const isFollowing = async (follower: misskey.entities.SignupResponse, followee: misskey.entities.SignupResponse) => {
+		return (await relation(follower, followee)).isFollowing;
 	};
 
 	beforeAll(async () => {
@@ -76,23 +80,6 @@ describe('デフォルトでフォローするユーザー / 交流を断てな�
 			assert.deepStrictEqual(res.forciblyFollowedUsers, [forciblyFollowee.id, '0000000000000000']);
 		});
 
-		test('フォローが承認制のアカウントを交流を断てないユーザーに指定するとエラーになる', async () => {
-			const locked = await signup({ username: 'locked' });
-			await successfulApiCall({ endpoint: 'i/update', parameters: { isLocked: true }, user: locked });
-
-			await failedApiCall({
-				endpoint: 'admin/update-meta',
-				parameters: {
-					forciblyFollowedUsers: [forciblyFollowee.id, locked.id],
-				},
-				user: root,
-			}, {
-				status: 400,
-				code: 'FORCIBLY_FOLLOWED_USER_REQUIRES_APPROVAL',
-				id: '797fd84b-b6f6-4852-96ec-990b1e049a6c',
-			});
-		});
-
 		test('設定済みの交流を断てないユーザーをデフォルトでフォローするユーザーに指定するとエラーになる', async () => {
 			await failedApiCall({
 				endpoint: 'admin/update-meta',
@@ -111,6 +98,28 @@ describe('デフォルトでフォローするユーザー / 交流を断てな�
 	test('新規アカウントは両方のユーザーを自動でフォローする', async () => {
 		assert.strictEqual(await isFollowing(alice, defaultFollowee), true);
 		assert.strictEqual(await isFollowing(alice, forciblyFollowee), true);
+	});
+
+	test('鍵アカウントの場合、交流を断てないユーザーは承認なしでフォローし、デフォルトでフォローするユーザーはフォローリクエストになる', async () => {
+		const lockedDefault = await signup({ username: 'lockedDefault' });
+		const lockedForcibly = await signup({ username: 'lockedForcibly' });
+		await successfulApiCall({ endpoint: 'i/update', parameters: { isLocked: true }, user: lockedDefault });
+		await successfulApiCall({ endpoint: 'i/update', parameters: { isLocked: true }, user: lockedForcibly });
+		await successfulApiCall({
+			endpoint: 'admin/update-meta',
+			parameters: {
+				defaultFollowedUsers: [defaultFollowee.id, lockedDefault.id],
+				forciblyFollowedUsers: [forciblyFollowee.id, lockedForcibly.id],
+			},
+			user: root,
+		});
+
+		const newUser = await signup({ username: 'newUser' });
+
+		assert.strictEqual(await isFollowing(newUser, lockedForcibly), true);
+		const toLockedDefault = await relation(newUser, lockedDefault);
+		assert.strictEqual(toLockedDefault.isFollowing, false);
+		assert.strictEqual(toLockedDefault.hasPendingFollowRequestFromYou, true);
 	});
 
 	describe('交流を断てないユーザーに対する操作', () => {
