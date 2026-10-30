@@ -1,5 +1,8 @@
 ## Unreleased
 
+### Note
+- Node.js v22のサポートを終了しました。Node.js v22では動作しません。Node.js v24, v26をご利用ください。
+
 ### General
 - Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
 - Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
@@ -10,7 +13,7 @@
 - Fix: 存在しない・アクセス権のないチャットを開いたときにエラーが表示されない問題を修正
 
 ### Server
--
+- Enhance: 動画処理のパフォーマンスを改善
 
 
 ## 2026.10.1
