@@ -96,7 +96,7 @@ export function searchEmoji(query: string | null, emojiDb: EmojiDef[], max = 30)
 		[...hitEmojis.values()]
 			.sort((x, y) => y.score - x.score)
 			.slice(0, 6)
-			.forEach(it => matched.set(it.emoji.name, it));
+			.forEach(it => matched.set(it.emoji.emoji, it));
 	}
 
 	return [...matched.values()]
