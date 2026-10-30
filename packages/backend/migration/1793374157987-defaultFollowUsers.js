@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export class DefaultFollowUsers1728986848483 {
-	name = 'defaultFollowUsers1728986848483'
+export class DefaultFollowUsers1793374157987 {
+	name = 'defaultFollowUsers1793374157987'
 
 	async up(queryRunner) {
 		await queryRunner.query(`ALTER TABLE "meta" ADD "defaultFollowedUsers" character varying(1024) array NOT NULL DEFAULT '{}'`);
