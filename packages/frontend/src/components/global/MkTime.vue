@@ -62,7 +62,7 @@ const ago = computed(() => (now.value - _time.value) / 1000/*ms*/);
 
 const relative = computed<string>(() => {
 	if (_mode.value === 'absolute') return ''; // absoluteではrelativeを使わないので計算しない
-	if (invalid) return i18n.ts._ago.invalid;
+	if (invalid.value) return i18n.ts._ago.invalid;
 
 	return formatRelativeTime(ago.value, relativeTimeLocale);
 });
