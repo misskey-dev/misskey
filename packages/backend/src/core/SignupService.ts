@@ -6,7 +6,7 @@
 import { generateKeyPair } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import { DataSource, IsNull } from 'typeorm';
+import { DataSource, EntityNotFoundError, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta, UsedUsernamesRepository, UsersRepository } from '@/models/_.js';
 import { MiUser } from '@/models/User.js';
@@ -23,6 +23,9 @@ import { UserService } from '@/core/UserService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { MetaService } from '@/core/MetaService.js';
+import Logger from '@/logger.js';
+
+const logger = new Logger('signup');
 
 @Injectable()
 export class SignupService {
@@ -177,9 +180,16 @@ export class SignupService {
 				...this.meta.forciblyFollowedUsers,
 			];
 
-			await Promise.allSettled(userIdsToFollow.map(async userId => {
+			const results = await Promise.allSettled(userIdsToFollow.map(async userId => {
 				await this.userFollowingService.follow(account, { id: userId });
 			}));
+
+			for (const [i, result] of results.entries()) {
+				// 削除済みなど存在しないユーザーは想定内のため記録しない
+				if (result.status === 'rejected' && !(result.reason instanceof EntityNotFoundError)) {
+					logger.warn(`Failed to follow ${userIdsToFollow[i]} by default: ${result.reason}`);
+				}
+			}
 		}
 		//#endregion
 

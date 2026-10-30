@@ -267,6 +267,9 @@ function save_defaultUsers() {
 		'bcf088ec-fec5-42d0-8b9e-16d3b4797a4d': {
 			text: i18n.ts.defaultFollowedUsersDuplicated,
 		},
+		'797fd84b-b6f6-4852-96ec-990b1e049a6c': {
+			text: i18n.ts.forciblyFollowedUsersRequiresApproval,
+		},
 	}).then(() => {
 		fetchInstance(true);
 	});

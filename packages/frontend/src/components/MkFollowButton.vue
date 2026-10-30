@@ -114,7 +114,9 @@ async function onClick() {
 						title: i18n.ts.permissionDeniedError,
 						text: i18n.ts.unfollowThisUserIsProhibited,
 					});
+					return;
 				}
+				throw err;
 			});
 		} else if (hasPendingFollowRequestFromYou.value) {
 			const { canceled } = await os.confirm({

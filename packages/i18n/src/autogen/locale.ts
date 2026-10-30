@@ -5370,6 +5370,10 @@ export interface Locale extends ILocale {
      */
     "defaultFollowedUsersDuplicated": string;
     /**
+     * 「交流を断てないユーザー」には、リモートユーザー、鍵アカウント、新しいアカウントからのフォローを承認制にしているユーザーは指定できません。
+     */
+    "forciblyFollowedUsersRequiresApproval": string;
+    /**
      * サーバー管理者はこのユーザーをフォロー解除することを禁止しています。
      */
     "unfollowThisUserIsProhibited": string;

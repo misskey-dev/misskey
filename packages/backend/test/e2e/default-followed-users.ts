@@ -76,6 +76,23 @@ describe('デフォルトでフォローするユーザー / 交流を断てな�
 			assert.deepStrictEqual(res.forciblyFollowedUsers, [forciblyFollowee.id, '0000000000000000']);
 		});
 
+		test('フォローが承認制のアカウントを交流を断てないユーザーに指定するとエラーになる', async () => {
+			const locked = await signup({ username: 'locked' });
+			await successfulApiCall({ endpoint: 'i/update', parameters: { isLocked: true }, user: locked });
+
+			await failedApiCall({
+				endpoint: 'admin/update-meta',
+				parameters: {
+					forciblyFollowedUsers: [forciblyFollowee.id, locked.id],
+				},
+				user: root,
+			}, {
+				status: 400,
+				code: 'FORCIBLY_FOLLOWED_USER_REQUIRES_APPROVAL',
+				id: '797fd84b-b6f6-4852-96ec-990b1e049a6c',
+			});
+		});
+
 		test('設定済みの交流を断てないユーザーをデフォルトでフォローするユーザーに指定するとエラーになる', async () => {
 			await failedApiCall({
 				endpoint: 'admin/update-meta',
