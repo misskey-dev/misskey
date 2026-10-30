@@ -138,6 +138,11 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 
 		os.apiWithDialog('following/invalidate', {
 			userId: user.id,
+		}, undefined, {
+			'0cb6fb08-355c-40af-b176-4a6ba136c390': {
+				title: i18n.ts.permissionDeniedError,
+				text: i18n.ts.breakFollowThisUserIsProhibited,
+			},
 		}).then(() => {
 			user.isFollowed = !user.isFollowed;
 		});

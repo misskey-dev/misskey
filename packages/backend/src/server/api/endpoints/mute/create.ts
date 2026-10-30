@@ -110,6 +110,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (err instanceof IdentifiableError && err.id === meta.errors.cannotMuteDueToServerPolicy.id) {
 					throw new ApiError(meta.errors.cannotMuteDueToServerPolicy);
 				}
+				throw err;
 			});
 		});
 	}

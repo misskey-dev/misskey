@@ -370,9 +370,14 @@ export class UserFollowingService implements OnModuleInit {
 			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		silent = false,
+		{ ignoreServerPolicy = false }: {
+			/** 呼び出し元で判定済みの場合や、リモートで既に成立している解除の場合に、フォロー解除できないユーザーの制限を適用しない */
+			ignoreServerPolicy?: boolean,
+		} = {},
 	): Promise<void> {
 		// フォロー解除できないユーザーの場合
 		if (
+			!ignoreServerPolicy &&
 			follower.host == null &&
 			this.meta.forciblyFollowedUsers.includes(followee.id) &&
 			!await this.roleService.isModerator(follower)

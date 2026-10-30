@@ -108,6 +108,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (err instanceof IdentifiableError && err.id === meta.errors.cannotUnfollowDueToServerPolicy.id) {
 					throw new ApiError(meta.errors.cannotUnfollowDueToServerPolicy);
 				}
+				throw err;
 			});
 
 			return await this.userEntityService.pack(followee.id, me);

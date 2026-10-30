@@ -113,6 +113,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (err instanceof IdentifiableError && err.id === meta.errors.cannotBlockDueToServerPolicy.id) {
 					throw new ApiError(meta.errors.cannotBlockDueToServerPolicy);
 				}
+				throw err;
 			});
 
 			return await this.userEntityService.pack(blockee.id, blocker, {

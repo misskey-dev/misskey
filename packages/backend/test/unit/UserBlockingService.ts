@@ -22,6 +22,7 @@ describe('交流を断てないユーザーのブロック制限', () => {
 	const userFollowingService = mockDeep<UserFollowingService>();
 	const roleService = mockDeep<RoleService>();
 	const blockee = { id: 'forcibly', host: null } as MiUser;
+	const remoteForcibly = { id: 'remote-forcibly', host: 'remote.example.com' } as MiUser;
 
 	beforeEach(async () => {
 		mockReset(blockings);
@@ -32,7 +33,7 @@ describe('交流を断てないユーザーのブロック制限', () => {
 		const module = await Test.createTestingModule({
 			providers: [
 				UserBlockingService,
-				{ provide: DI.meta, useValue: { forciblyFollowedUsers: [blockee.id] } as MiMeta },
+				{ provide: DI.meta, useValue: { forciblyFollowedUsers: [blockee.id, remoteForcibly.id] } as MiMeta },
 				{ provide: DI.blockingsRepository, useValue: blockings },
 				{ provide: DI.userListsRepository, useValue: userLists },
 				{ provide: DI.chatRoomsRepository, useValue: chatRooms },
@@ -62,5 +63,15 @@ describe('交流を断てないユーザーのブロック制限', () => {
 
 		expect(blockings.insert).toHaveBeenCalledOnce();
 		expect(roleService.isModerator).not.toHaveBeenCalled();
+	});
+
+	// リモートでは既にブロックが成立しているため、ブロックされた側のフォロー解除にも制限をかけない
+	test('リモートの交流を断てないユーザーからのブロックは制限しない', async () => {
+		const localUser = { id: 'local', host: null } as MiUser;
+
+		await service.block(remoteForcibly, localUser);
+
+		expect(userFollowingService.unfollow).toHaveBeenCalledWith(localUser, remoteForcibly, false, { ignoreServerPolicy: true });
+		expect(blockings.insert).toHaveBeenCalledOnce();
 	});
 });

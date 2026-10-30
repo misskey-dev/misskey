@@ -82,11 +82,23 @@ export class UserBlockingService implements OnModuleInit {
 			throw new IdentifiableError('e2f04d25-0d94-4ac3-a4d8-ba401062741b', 'You cannot block that user due to server policy.');
 		}
 
+		// フォロー解除できないユーザー側からも、ローカルユーザーとの関係は断てない
+		// （リモートからのブロックは既に相手のサーバーで成立しているため制限しない）
+		if (
+			blocker.host == null &&
+			blockee.host == null &&
+			this.serverSettings.forciblyFollowedUsers.includes(blocker.id) &&
+			!await this.roleService.isModerator(blockee)
+		) {
+			throw new IdentifiableError('e2f04d25-0d94-4ac3-a4d8-ba401062741b', 'You cannot block that user due to server policy.');
+		}
+
 		await Promise.all([
 			this.cancelRequest(blocker, blockee, silent),
 			this.cancelRequest(blockee, blocker, silent),
-			this.userFollowingService.unfollow(blocker, blockee, silent),
-			this.userFollowingService.unfollow(blockee, blocker, silent),
+			// ブロックの可否は上で判定済み（リモートからのブロックを含む）のため、ここでのフォロー解除には制限を適用しない
+			this.userFollowingService.unfollow(blocker, blockee, silent, { ignoreServerPolicy: true }),
+			this.userFollowingService.unfollow(blockee, blocker, silent, { ignoreServerPolicy: true }),
 			this.removeFromList(blockee, blocker),
 			this.removeRoomInvitations(blocker, blockee),
 			this.removeRoomInvitations(blockee, blocker),

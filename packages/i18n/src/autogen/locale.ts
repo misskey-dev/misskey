@@ -5382,6 +5382,10 @@ export interface Locale extends ILocale {
      */
     "muteThisUserIsProhibited": string;
     /**
+     * サーバー管理者はこのユーザーをフォロワーから解除することを禁止しています。
+     */
+    "breakFollowThisUserIsProhibited": string;
+    /**
      * このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。
      */
     "federationSpecified": string;

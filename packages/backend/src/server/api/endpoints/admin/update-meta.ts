@@ -274,19 +274,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (Array.isArray(ps.defaultFollowedUsers)) {
-				if (ps.defaultFollowedUsers.some(x => this.serverSettings.forciblyFollowedUsers.includes(x) || ps.forciblyFollowedUsers?.includes(x))) {
-					throw new ApiError(meta.errors.followedUserDuplicated);
-				}
-
 				set.defaultFollowedUsers = ps.defaultFollowedUsers.filter(Boolean);
 			}
 
 			if (Array.isArray(ps.forciblyFollowedUsers)) {
-				if (ps.forciblyFollowedUsers.some(x => this.serverSettings.defaultFollowedUsers.includes(x) || ps.defaultFollowedUsers?.includes(x))) {
+				set.forciblyFollowedUsers = ps.forciblyFollowedUsers.filter(Boolean);
+			}
+
+			if (set.defaultFollowedUsers != null || set.forciblyFollowedUsers != null) {
+				// 片方だけ更新する場合は、もう片方は現在の設定値と比較する
+				const defaultFollowedUsers = set.defaultFollowedUsers ?? this.serverSettings.defaultFollowedUsers;
+				const forciblyFollowedUsers = set.forciblyFollowedUsers ?? this.serverSettings.forciblyFollowedUsers;
+				if (defaultFollowedUsers.some(x => forciblyFollowedUsers.includes(x))) {
 					throw new ApiError(meta.errors.followedUserDuplicated);
 				}
-
-				set.forciblyFollowedUsers = ps.forciblyFollowedUsers.filter(Boolean);
 			}
 
 			if (Array.isArray(ps.hiddenTags)) {
