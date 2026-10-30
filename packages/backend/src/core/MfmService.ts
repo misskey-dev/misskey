@@ -27,15 +27,30 @@ export class MfmService {
 	}
 
 	@bindThis
-	public fromHtml(html: string, hashtagNames?: string[]): string {
+	public fromHtml(
+		html: string,
+		options: {
+			hashtagNames?: string[],
+			hasQuote?: boolean,
+		} = {},
+	): string {
 		// some AP servers like Pixelfed use br tags as well as newlines
 		html = html.replace(/<br\s?\/?>\r?\n/gi, '\n');
 
-		const normalizedHashtagNames = hashtagNames == null ? undefined : new Set<string>(hashtagNames.map(x => normalizeTag(x)));
+		const normalizedHashtagNames = options.hashtagNames == null ? undefined : new Set<string>(options.hashtagNames.map(x => normalizeTag(x)));
 
 		const doc = htmlParser.parse(`<div>${html}</div>`);
 
 		let text = '';
+
+		if (options.hasQuote) {
+			for (const n of doc.children[0].children) {
+				if (n.classList.contains('quote-inline') && n.querySelector('a') != null) {
+					n.remove();
+					break;
+				}
+			}
+		}
 
 		for (const n of doc.childNodes) {
 			analyze(n);

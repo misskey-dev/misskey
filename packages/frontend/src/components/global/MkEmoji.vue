@@ -36,7 +36,7 @@ const char2path = prefer.s.emojiStyle === 'twemoji' ? char2twemojiFilePath : cha
 const useOsNativeEmojis = computed(() => prefer.s.emojiStyle === 'native');
 const url = computed(() => char2path(props.emoji));
 const colorizedNativeEmoji = computed(() => colorizeEmoji(props.emoji));
-const isMuted = checkMutedEmoji(props.emoji);
+const isMuted = checkMutedEmoji(() => props.emoji);
 const shouldMute = computed(() => isMuted.value && !props.ignoreMuted);
 
 // Searching from an array with 2000 items for every emoji felt like too energy-consuming, so I decided to do it lazily on pointerenter
