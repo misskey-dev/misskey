@@ -33,7 +33,7 @@ export function formatNumber(value: number) {
 }
 
 export function formatBytes(value: number) {
-	if (value === 0) return '0 B'; // nbspにすること
+	if (value === 0) return '0\u00A0B'; // nbspにすること
 	const units = ['B', 'KB', 'MB', 'GB'];
 	let unitIndex = 0;
 	let size = value;
@@ -44,7 +44,7 @@ export function formatBytes(value: number) {
 
 	const maximumFractionDigits = size >= 10 || unitIndex === 0 ? 0 : 1;
 	// eslint-disable-next-line no-irregular-whitespace
-	return `${numberFormatter.format(Number(size.toFixed(maximumFractionDigits)))} ${units[unitIndex]}`; // nbspにすること
+	return `${numberFormatter.format(Number(size.toFixed(maximumFractionDigits)))}\u00A0${units[unitIndex]}`; // nbspにすること
 }
 
 /**

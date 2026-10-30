@@ -13,6 +13,8 @@ on:
       - pnpm-lock.yaml
       - .github/workflows/packages-private.yml
   pull_request:
+    branches-ignore:
+      - master
     paths:
       - packages-private/**
       - packages/shared/eslint.config.js
@@ -36,11 +38,11 @@ jobs:
           - diagnostics-frontend
           - changelog-checker
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6.0.9
+        uses: pnpm/action-setup@v6.0.10
       - uses: actions/setup-node@v7.0.0
         with:
           node-version-file: '.node-version'

@@ -18,8 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			key="canvas"
 			:class="$style.canvas"
 			:blurhash="hash ?? null"
-			:height="imgHeight ?? undefined"
-			:width="imgWidth ?? undefined"
+			:height="props.height"
+			:width="props.width"
 			:onlyAvgColor="props.onlyAvgColor"
 			:show="hide"
 		/>

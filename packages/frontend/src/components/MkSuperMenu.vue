@@ -95,7 +95,8 @@ export type SuperMenuDef = {
 </script>
 
 <script lang="ts" setup>
-import { useTemplateRef, ref, watch, nextTick, computed } from 'vue';
+import { useTemplateRef, ref, watch, nextTick, computed, onUnmounted } from 'vue';
+import { throttle } from 'throttle-debounce';
 import { getScrollContainer } from '@@/js/scroll.js';
 import type { SearchIndexItem } from '@/utility/inapp-search.js';
 import MkInput from '@/components/MkInput.vue';
@@ -109,7 +110,18 @@ const props = defineProps<{
 	searchIndex?: SearchIndexItem[];
 }>();
 
+type SearchResultItem = {
+	id: string;
+	path: string;
+	label: string;
+	icon?: string;
+	isRoot: boolean;
+	parentLabels: string[];
+};
+
 initIntlString();
+
+const maxSearchResult = 20;
 
 const router = useRouter();
 const rootEl = useTemplateRef('rootEl');
@@ -118,27 +130,15 @@ const searchQuery = ref('');
 const rawSearchQuery = ref('');
 
 const searchSelectedIndex = ref<null | number>(null);
-const searchResult = ref<{
-	id: string;
-	path: string;
-	label: string;
-	icon?: string;
-	isRoot: boolean;
-	parentLabels: string[];
-}[]>([]);
+const searchResult = ref<SearchResultItem[]>([]);
 const searchIndexItemByIdComputed = computed(() => props.searchIndex && new Map<string, SearchIndexItem>(props.searchIndex.map(i => [i.id, i])));
 
 watch(searchQuery, (value) => {
 	rawSearchQuery.value = value;
 });
 
-watch(rawSearchQuery, (value) => {
-	searchResult.value = [];
-	searchSelectedIndex.value = null;
-
-	if (value === '') {
-		return;
-	}
+function execSearch(value: string) {
+	const newResult: SearchResultItem[] = [];
 
 	const searchIndexItemById = searchIndexItemByIdComputed.value;
 	if (searchIndexItemById != null) {
@@ -157,7 +157,7 @@ watch(rawSearchQuery, (value) => {
 
 			if (_DEV_ && path == null) throw new Error('path is null for ' + item.id);
 
-			searchResult.value.push({
+			newResult.push({
 				id: item.id,
 				path: path ?? '/', // never gets `/`
 				label: item.label,
@@ -169,29 +169,57 @@ watch(rawSearchQuery, (value) => {
 
 		// label, keywords, texts の順に優先して表示
 
-		let items = Array.from(searchIndexItemById.values());
+		const items = Array.from(searchIndexItemById.values());
+		const matchedIds = new Set<string>();
 
 		for (const item of items) {
+			if (matchedIds.size >= maxSearchResult) break;
+			if (matchedIds.has(item.id)) continue;
 			if (compareStringIncludes(item.label, value)) {
 				addSearchResult(item);
-				items = items.filter(i => i.id !== item.id);
+				matchedIds.add(item.id);
 			}
 		}
 
 		for (const item of items) {
+			if (matchedIds.size >= maxSearchResult) break;
+			if (matchedIds.has(item.id)) continue;
 			if (item.keywords.some((x) => compareStringIncludes(x, value))) {
 				addSearchResult(item);
-				items = items.filter(i => i.id !== item.id);
+				matchedIds.add(item.id);
 			}
 		}
 
 		for (const item of items) {
+			if (matchedIds.size >= maxSearchResult) break;
+			if (matchedIds.has(item.id)) continue;
 			if (item.texts.some((x) => compareStringIncludes(x, value))) {
 				addSearchResult(item);
-				items = items.filter(i => i.id !== item.id);
+				matchedIds.add(item.id);
 			}
 		}
 	}
+
+	searchResult.value = newResult;
+}
+
+const execSearchThrottled = throttle(150, execSearch);
+
+onUnmounted(() => {
+	execSearchThrottled.cancel();
+});
+
+watch(rawSearchQuery, (value) => {
+	searchSelectedIndex.value = null;
+
+	if (value === '') {
+		// クリア時は即座にメニュー表示へ戻すため、保留中の検索も破棄する
+		execSearchThrottled.cancel({ upcomingOnly: true });
+		searchResult.value = [];
+		return;
+	}
+
+	execSearchThrottled(value);
 });
 
 function searchOnInput(ev: InputEvent) {

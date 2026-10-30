@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -19,6 +19,10 @@ const props = defineProps<{
 }>();
 
 const query = ref(props.q);
+
+watch(() => props.q, (v) => {
+	query.value = v;
+});
 
 const search = () => {
 	const sp = new URLSearchParams();

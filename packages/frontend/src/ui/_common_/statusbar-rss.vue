@@ -31,6 +31,7 @@ import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import { url as baseUrl } from '@@/js/config.js';
+import { tryParseUrl } from '@@/js/url.js';
 import MkMarqueeText from '@/components/MkMarqueeText.vue';
 import { shuffle } from '@/utility/shuffle.js';
 
@@ -56,8 +57,8 @@ const tick = () => {
 			}
 			items.value = feed.items.filter((item) => {
 				if (!item.link) return false;
-				const itemUrl = new URL(item.link, baseUrl);
-				return ['http:', 'https:'].includes(itemUrl.protocol);
+				const itemUrl = tryParseUrl(item.link, baseUrl);
+				return itemUrl != null && ['http:', 'https:'].includes(itemUrl.protocol);
 			});
 			fetching.value = false;
 			key.value++;

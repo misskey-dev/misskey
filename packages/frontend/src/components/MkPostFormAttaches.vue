@@ -86,6 +86,7 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
+import { isPreviewable, getType } from '@/utility/lightbox.js';
 
 const props = defineProps<{
 	draggable?: boolean;
@@ -202,8 +203,6 @@ function handleClick(attach: Attach, ev: PointerEvent | KeyboardEvent): void {
 function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 	if (attach.type === 'driveFile') {
 		const file = attach.file;
-		const isImage = file.type.startsWith('image/');
-		const isVideo = file.type.startsWith('video/');
 
 		const menuItems: MenuItem[] = [];
 		menuItems.push({
@@ -220,38 +219,26 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 			action: () => { describeDriveFile(file); },
 		});
 
-		if (isImage || isVideo) {
+		if (isPreviewable(file.type)) {
 			menuItems.push({
 				text: i18n.ts.preview,
 				icon: 'ti ti-photo-search',
 				action: async () => {
-					function getFileType(attach: Attach): 'image' | 'video' | null {
-						if (attach.type === 'driveFile') {
-							if (attach.file.type.startsWith('image/')) return 'image';
-							if (attach.file.type.startsWith('video/')) return 'video';
-						} else if (attach.type === 'uploaderItem') {
-							if (attach.file.file.type.startsWith('image/')) return 'image';
-							if (attach.file.file.type.startsWith('video/')) return 'video';
-						}
-						return null;
-					}
-
-					const contents = props.modelValue
-						.filter(item => getFileType(item) != null)
-						.map<Content>(item => ({
-							id: item.file.id,
-							type: getFileType(item) ?? 'image',
-							url: item.type === 'driveFile' ? item.file.url : item.file.objectUrl,
-							thumbnailUrl: item.type === 'driveFile' ? item.file.thumbnailUrl : item.file.thumbnail,
-							width: item.type === 'driveFile' ? item.file.properties.width : null,
-							height: item.type === 'driveFile' ? item.file.properties.height : null,
-							filename: item.type === 'driveFile' ? item.file.name : item.file.name,
-							file: item.type === 'driveFile' ? item.file : undefined,
-							//sourceElement: TODO
-						}));
+					const constents = props.modelValue.filter(item => isPreviewable(item.type)).map<Content>(item => ({
+						id: item.id,
+						type: getType(file.type),
+						url: file.url,
+						thumbnailUrl: file.thumbnailUrl,
+						width: file.properties.width,
+						height: file.properties.height,
+						filename: file.name,
+						file,
+						//sourceElement: TODO
+					}));
 					const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
-						defaultIndex: contents.findIndex(content => content.id === file.id),
-						contents: contents,
+						defaultIndex: constents.findIndex(content => content.id === file.id),
+						contents: constents,
+						initiallyRevealedContentIds: [file.id],
 					}, {
 						closed: () => dispose(),
 					});

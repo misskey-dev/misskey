@@ -73,7 +73,7 @@ export class PrettyConsoleBackend implements LogBackend {
 			presentationLevel === 'debug' ? chalk.gray(record.message) :
 			presentationLevel === 'info' ? record.message :
 			null;
-		// 主プロセスは従来どおり「*」、子プロセスはワーカー番号で識別します。
+		// 主プロセスは「*」で示し、子プロセスはワーカー番号で識別します。
 		const worker = record.isPrimary ? '*' : record.workerId;
 
 		let log = `${label} ${worker}\t[${contexts.join(' ')}]\t${message}`;

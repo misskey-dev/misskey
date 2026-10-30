@@ -1,3 +1,121 @@
+## Unreleased
+
+### General
+- Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
+- Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
+
+### Client
+- Fix: 設定検索にプライバシー設定の項目が表示されない問題を修正
+- Fix: デッキでノートのアイコンが横スクロールに追従する問題を修正
+- Fix: 存在しない・アクセス権のないチャットを開いたときにエラーが表示されない問題を修正
+- Fix: Unicode絵文字とカスタム絵文字の名前が重複したときにカスタム絵文字がオートコンプリートにサジェストされない問題を修正
+
+### Server
+-
+
+
+## 2026.10.1
+
+### Note
+
+**今回のリリースではMisskeyの動作要件やSentryの設定方法などが変更されます。必ずアップグレード前にお使いの環境をご確認ください。**
+
+- Sentry SDKをv11に更新したため、Sentryを利用しているサーバーでは設定の変更が必要になる場合があります。
+  - Sentry v11で`sendDefaultPii`が削除され、収集する項目を個別に指定する`dataCollection`に置き換えられました。
+  	- **`sentryForBackend.options.sendDefaultPii` / `sentryForFrontend.options.sendDefaultPii`を設定しているサーバーは対応が必要です。** このオプションは無視されるようになり、設定されている場合は起動時に警告を出力します。同じ収集範囲を維持するには`dataCollection: {}`に書き換えてください。
+  	- 設定していない場合、対応は不要です。Sentry v11は`dataCollection`未指定時にすべてを収集しますが、Misskeyは利用者の情報が意図せず送信されないよう、収集範囲を絞った既定を適用します（ユーザー情報・Cookie・URLクエリパラメータ・HTTPボディ・DBクエリの値を送信せず、中継元を特定できるヘッダーを除外）。
+  	- 収集範囲を変更する場合は`dataCollection`を明示してください。Misskeyの既定をすべて置き換えるため、`dataCollection: {}`と書くとSentry本来の既定（すべて収集）に戻ります。
+  - `sentryForBackend.options.profilesSampleRate`を設定している場合、v11で削除されたため無視されます。プロファイリングの有効化は引き続き`sentryForBackend.enableNodeProfiling`で行います。
+  - 詳細は https://docs.sentry.io/platforms/javascript/migration/v10-to-v11/ を参照してください。
+- Node.jsのセキュリティアップデートに伴い、最低動作バージョンを 22.23.4 / 24.22.1 / 26.12.1 に引き上げました。
+  - Docker Image は Node.js 26.12.1-trixie に更新されています。
+
+### General
+- Feat: お知らせに自動アーカイブ日時を設定できるように
+- Feat: アカウント作成から一定期間経っていないアカウントからのフォローを自動的にフォロー申請にできるように
+- Enhance: 依存関係の更新
+- Fix: センシティブな画像をアイコン・バナーに指定できないように
+- Fix: セキュリティに関する修正
+
+### Client
+- Feat: デッキにクリップのカラムを追加できるように
+- Enhance: アイコン画像・バナー画像を外せるように	
+
+### Server
+- Enhance: ノート中のURLを正規化して禁止ワードを判定するように
+- Fix: ローカル限定絵文字でリモートノートのリノートにリアクションできてしまう問題を修正
+- Fix: サーバーの紹介にHTMLを使うとリンクプレビューの説明文にHTMLタグが表示される問題を修正
+- Fix: ルーム招待時にブロック状態を考慮するように
+
+
+## 2026.10.0
+
+### General
+- Enhance: 翻訳の更新
+
+### Client
+- Fix: 初期設定ダイアログの表示が一部乱れる問題を修正  
+  (Cherry-picked from https://github.com/Zel9278/misskey-juice/commit/25d65914f629936f33d7e41a1369eda1f6c4cd1d, https://github.com/Zel9278/misskey-juice/commit/6ff1ce752c4494f4889ec23ca5419645e3db98e0)
+- Fix: ユーザーの「概要」ページで引っ張って更新しても何も更新されない問題を修正  
+  (Cherry-picked from https://github.com/shiroha-a/misskey-ts/commit/c946a42dbb71234dd9d9bbc14474853f0709431c)
+
+### Server
+- Fix: HTTP Signaturesの`(request-target)`にクエリ文字列が含まれない問題を修正
+- Fix: クリップから同じノートを繰り返し削除すると、ノートの被クリップ数が負の値を取る問題を修正
+- Fix: 添付ファイルの配信に関する挙動の修正
+- Fix: セキュリティに関する修正
+
+
+## 2026.9.1
+
+### General
+- Enhance: 翻訳の更新
+- Fix: セキュリティに関する修正
+
+### Client
+- Enhance: Scratchpadに導入していた非同期エラーへの対応をPlayやウィジェットにも実装
+- Fix: MFMでカスタム絵文字が正しく描画されないことがある問題を修正
+
+### Server
+- Fix: キャッシュされていないリモートファイルへのRangeリクエストで、`Content-Length`が正しく設定されず、動画再生が始まらない問題を修正
+- Fix: チャートの記録の保持上限に達した場合、それ以降の記録に失敗し続ける問題を修正
+- Fix: リモートノート削除機能で、前回の処理で終了した位置を記憶してその続きから処理を再開するように
+
+
+## 2026.9.0
+
+### Note
+- カスタム絵文字の一括インポートは、必要なロールポリシーを所持しているかどうかにかかわらず、管理者権限を持つユーザーのみが実行できるようになりました。
+- `notes/reactions` を GET で取得することができなくなりました。
+
+### General
+- Enhance: ノート翻訳時、CWも翻訳対象に含めるように
+- Enhance: 依存関係の更新
+- Enhance: 翻訳の更新
+
+### Client
+- Enhance: 画像ビューワーで、ピクセルアートの拡大表示に適したモードを追加（画像ビューワー起動時に画面上の詳細メニューから有効化できます）
+- Enhance: メディアリスト上でぼかしを解除したメディアを画像ビューワーで表示した際にぼかしを解除した状態で表示するように
+- Enhance: 音声プレイヤーを画像・動画ビューワーに統合
+- Enhance: パフォーマンスの向上
+- Fix: 画像の表示時にBlurhashが描画されない場合があるのを修正
+- Fix: モバイルでの利用時に一部のテキストが選択できない問題を修正
+- Fix: 「利用できるリアクションを先頭に表示」が機能しない問題を修正
+- Fix: コントロールパネルでユーザーをメール検索し見つからなかった場合、エラーダイアログが2重に表示される問題を修正
+- Fix: リストにユーザーを追加/削除した際、メンバー数の表示が更新されない問題を修正
+- Fix: 通知トーストの位置を左側にした場合でも右から通知が入ってくる問題を修正
+- Fix: 通知トーストのアニメーションの挙動が不安定になる問題を修正
+
+### Server
+- Feat: `.well-known/change-password`に対応（`/settings/security`にリダイレクトします）
+- Enhance: アクセストークンでAPIを使用している際に、自身のアクセストークンを失効させることができるように
+  - `i/revoke-token` エンドポイントにリクエストすることで、現在使用しているアクセストークンを失効させることができます
+- Fix: 既にミュートしているスレッドに対して再度スレッドミュートを作成しようとするとサーバーエラーになる問題を修正
+- Fix: 古いバージョンのMisskeyで作成されたアカウントでノートの連合が行えない場合があるのを修正
+- Fix: 一部のWebSocketチャンネルのクリーンアップ処理が正しく行われない問題を修正
+- Fix: セキュリティに関する修正
+
+
 ## 2026.7.0
 
 ### Note
@@ -48,21 +166,12 @@
 - Fix: ノートの詳細表示で削除された引用元が表示されない問題を修正
 
 ### Server
-- Feat: OpenTelemetryサポート
-  - 詳細な設定はconfigファイルを参照してください。
-  - Sentryとの併用も可能です。Sentry併用時は、PostgreSQL Query と Redis command は Sentry で計装されます。
-  - 以下の自動計装をサポートしています。（計装対象にする項目は設定可能）
-    - PostgreSQL query
-    - Redis command
-    - 全ての受信HTTPリクエスト
-    - 全ての送信HTTPリクエスト
-    - ジョブキュー（エンキュー元のトレースを含む）
 - Feat: ログ基盤の刷新
   - API内部エラーのログに構造化属性と正規化したエラー情報を付与し、認証情報を自動的に秘匿するように（従来形式の表示は維持）
   - ログ全体の既定出力レベルとドメインごとの出力レベルを設定できるように
   - バックエンドのログを1行JSON形式で出力できるように
-  - OpenTelemetryのTrace ContextをJSON形式のログへ関連付けられるように
-  - HTTPのAccess logをstatus class単位で出力できるように（開発時のリクエスト・レスポンス本文、OpenTelemetryのTrace Contextにも対応）
+  - SentryのTrace ContextをJSON形式のログへ関連付けられるように
+  - HTTPのAccess logをstatus class単位で出力できるように（開発時のリクエスト・レスポンス本文、SentryのTrace Contextにも対応）
 - Enhance: Sentry バックエンドの自動計装を `sentryForBackend.disabledIntegrations` で個別に無効化できるように
 - Enhance: センシティブメディアの判定を外部サービス ([sensitive-detector](https://github.com/misskey-dev/sensitive-detector)) に分離し、`nsfwjs` / `@tensorflow/tfjs(-node)` の同梱と NSFW 判定モデルを廃止 (#16804)
 - Enhance: Node.js 22.22.2以降、24.17.0以降、26.4.0以降をサポートするように

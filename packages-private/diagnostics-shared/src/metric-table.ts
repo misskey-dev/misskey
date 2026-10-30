@@ -36,7 +36,7 @@ function formatMedian<T>(
 	const formatted = row.formatValue(value);
 	if (row.showMedianMad === false) return formatted;
 	// eslint-disable-next-line no-irregular-whitespace
-	return `${formatted} <br> ± ${row.formatValue(spread)}`; // nbspにすること
+	return `${formatted} <br> ±\u00A0${row.formatValue(spread)}`; // nbspにすること
 }
 
 function formatDelta<T>(

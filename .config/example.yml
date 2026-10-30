@@ -308,7 +308,7 @@ id: 'aidx'
 #  # To check enabled names, set `options.debug: true` and see
 #  # "Integration installed: <name>" in the Sentry logs.
 #  #
-#  # As of 2026-07-07 / @sentry/node 10.62.0, useful names for Misskey include:
+#  # As of 2026-10-01 / @sentry/node 11.0.0, useful names for Misskey include:
 #  #   Postgres  ... DB queries (when pg is externalized)
 #  #   Redis     ... ioredis commands
 #  #   Fastify   ... inbound HTTP routes
@@ -328,63 +328,15 @@ id: 'aidx'
 #    # Internal allowlist example:
 #    #tracePropagationTargets:
 #    #  - 'internal-service.example'
-
-#   ┌─────────┐
-#───┘ Tracing └────────────────────────────────────────────────
-# OpenTelemetry distributed tracing (Traces only, opt-in).
-# Existing API and Queue spans are exported to an OTLP http/protobuf endpoint.
-#
-# Standard OTEL_* environment variables are honored for values omitted below:
-# OTEL_EXPORTER_OTLP_TRACES_ENDPOINT, OTEL_EXPORTER_OTLP_ENDPOINT,
-# OTEL_EXPORTER_OTLP_HEADERS, OTEL_TRACES_SAMPLER, OTEL_TRACES_SAMPLER_ARG, etc.
-#
-# When this is enabled together with sentryForBackend, Misskey shares Sentry's
-# TracerProvider and adds an OTLP SpanProcessor to it. In that mode:
-# - sampleRate below is ignored; sampling follows sentryForBackend.options
-#   tracesSampleRate / tracesSampler.
-# - resourceAttributes below is ignored; set OTEL_SERVICE_NAME and
-#   OTEL_RESOURCE_ATTRIBUTES in the environment if you need to override them.
-# - spans produced by Sentry integrations are exported to both Sentry and OTLP.
-# - sentry-trace / baggage propagation to outbound remote requests is disabled
-#   by default while OTel is enabled. Set propagateTraceToRemote: true only if
-#   you intentionally want Sentry trace propagation for your deployment.
-
-#otelForBackend:
-#  endpoint: 'http://localhost:4318/v1/traces'
-#  #headers:
-#  #  authorization: 'Bearer xxxxx'
-#  #sampleRate: 1.0
-#  # Record PostgreSQL query spans. Disabled by default to avoid instrumentation
-#  # overhead when database-level diagnostics are not needed.
-#  #capturePgSpans: false
-#  # Include raw SQL text in PostgreSQL spans. Requires capturePgSpans and is
-#  # disabled by default because non-parameterized queries can expose values to
-#  # the OTLP Collector.
-#  #capturePgStatement: false
-#  # Include PostgreSQL connection-pool spans with an existing parent span.
-#  # Requires capturePgSpans and is disabled by default to avoid noisy spans
-#  # from connection churn.
-#  #capturePgConnectionSpans: false
-#  # Record Redis command spans. Disabled by default because subscribing to the
-#  # ioredis diagnostics channel adds work to every Redis command, including
-#  # commands without a parent span. Enable for development diagnostics or when
-#  # the added overhead is acceptable in production.
-#  #captureRedisCommandSpans: false
-#  # Include Redis startup/reconnect spans. Disabled by default to avoid noisy
-#  # connection churn; these spans are recorded even without an HTTP or job
-#  # parent span.
-#  #captureRedisConnectionSpans: false
-#  # Record Redis commands without an HTTP or job parent span. Disabled by
-#  # default because queue polling and background work can produce many root
-#  # traces; only applies when captureRedisCommandSpans is enabled.
-#  #captureRedisRootSpans: false
-#  #resourceAttributes:
-#  #  deployment.environment: 'production'
-#  #propagateTraceToRemote: false
-#  # Queue worker spans are independent traces linked to their enqueuer by default.
-#  # Set to 'parent' to make them child spans instead. This can create very large
-#  # traces for high-fan-out queues such as federation delivery.
-#  #jobTraceContextMode: 'link'
+#    # Sentry SDK v11 collects everything unless `dataCollection` is set, so
+#    # Misskey applies a restricted default: no user info, no cookies, no URL
+#    # query params (they may carry an access token), no HTTP bodies, no DB
+#    # query values, and peer-identifying request/response headers denied.
+#    # To change what is collected, set `dataCollection` here. It replaces
+#    # Misskey's default as a whole, so `dataCollection: {}` restores Sentry's
+#    # own defaults and collects everything.
+#    #dataCollection:
+#    #  userInfo: true
 
 #sentryForFrontend:
 #  vueIntegration:
@@ -434,6 +386,22 @@ id: 'aidx'
 #outgoingAddressFamily: ipv4
 
 # Proxy for HTTP/HTTPS
+#
+# IMPORTANT: When a proxy is configured, Misskey does NOT check whether
+# the destination of outgoing requests (remote ActivityPub objects,
+# media proxy, URL previews, file uploads from URL, webhooks, etc.) is
+# a private / loopback / link-local address, because the connection is
+# made to the proxy rather than to the destination itself.
+# `allowedPrivateNetworks` is also not applied to proxied requests.
+# In that case, filtering of destinations is entirely delegated to the
+# proxy, so you MUST configure the proxy to deny access to internal
+# networks (e.g. RFC 1918, loopback, link-local, and cloud metadata
+# addresses such as 169.254.169.254).
+# Hosts listed in `proxyBypassHosts` are connected to directly without
+# going through the proxy. Depending on the type of request, Misskey's
+# own private address check may not be applied to these connections,
+# so only list hosts you trust here.
+#
 #proxy: http://127.0.0.1:3128
 
 proxyBypassHosts:

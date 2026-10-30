@@ -24,10 +24,11 @@ import { ref, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url as base } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
+import { tryParseUrl } from '@@/js/url.js';
 import { useWidgetPropsManager } from './widget.js';
-import { i18n } from '@/i18n.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import { i18n } from '@/i18n.js';
 import MkContainer from '@/components/MkContainer.vue';
 
 const name = 'rss';
@@ -83,8 +84,8 @@ const tick = () => {
 		.then((feed: Misskey.entities.FetchRssResponse) => {
 			rawItems.value = feed.items.filter((item) => {
 				if (!item.link) return false;
-				const itemUrl = new URL(item.link, base);
-				return ['http:', 'https:'].includes(itemUrl.protocol);
+				const itemUrl = tryParseUrl(item.link, base);
+				return itemUrl != null && ['http:', 'https:'].includes(itemUrl.protocol);
 			});
 			fetching.value = false;
 		});

@@ -10,6 +10,8 @@ on:
       - packages/misskey-js/**
       - .github/workflows/test-federation.yml
   pull_request:
+    branches-ignore:
+      - master
     paths:
       - packages/backend/**
       - packages/misskey-js/**
@@ -30,9 +32,10 @@ jobs:
         with:
           submodules: true
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6.0.9
+        uses: pnpm/action-setup@v6.0.10
       - name: Install FFmpeg
         run: |
+          sudo apt update
           sudo apt install -y ffmpeg
       - name: Use Node.js
         uses: actions/setup-node@v7.0.0
@@ -55,6 +58,7 @@ jobs:
         # https://github.com/docker/compose/issues/1294#issuecomment-374847206
         run: |
           cd packages/backend/test-federation
+          touch ../../../built/._config_.json
           docker compose up -d --scale tester=0
       - name: Print start_servers error
         if: ${{ steps.start_servers.outcome == 'failure' }}
