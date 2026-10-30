@@ -416,7 +416,7 @@ export const waitFire = async <C extends keyof misskey.Channels>(user: UserToken
 			};
 		});
 
-		ws = await connectStream(user, channel, callback!, params);
+		ws = await connectStream(user, channel, callback!, { ...params, minimize: false });
 		await trgr();
 
 		return await Promise.race([

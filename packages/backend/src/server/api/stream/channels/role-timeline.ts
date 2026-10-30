@@ -20,6 +20,7 @@ export class RoleTimelineChannel extends Channel {
 	public static shouldShare = false;
 	public static requireCredential = false as const;
 	private roleId: string;
+	private minimize: boolean;
 
 	constructor(
 		@Inject(REQUEST)
@@ -39,6 +40,7 @@ export class RoleTimelineChannel extends Channel {
 	public async init(params: JsonObject) {
 		if (typeof params.roleId !== 'string') return false;
 		this.roleId = params.roleId;
+		this.minimize = !!(params.minimize ?? false);
 
 		if (!await this.isAvailable()) return false;
 
@@ -69,9 +71,9 @@ export class RoleTimelineChannel extends Channel {
 
 			const filtered = await this.noteStreamingHidingService.filter(note, this.user?.id ?? null);
 			if (!filtered) return;
-			note = filtered;
+			note = await this.noteEntityService.withMyRenoteReaction(filtered, this.user?.id ?? null);
 
-			this.send('note', await this.noteEntityService.withMyRenoteReaction(note, this.user?.id ?? null));
+			this.send('note', this.minimize ? this.noteEntityService.minimizeForStream(note, this.user?.id ?? null) : note);
 		} else {
 			this.send(data.type, data.body);
 		}

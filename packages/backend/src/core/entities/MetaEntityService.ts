@@ -132,6 +132,7 @@ export class MetaEntityService {
 			sentryForFrontend: this.config.sentryForFrontend ?? null,
 			mediaProxy: this.config.mediaProxy,
 			enableUrlPreview: instance.urlPreviewEnabled,
+			enableStreamNotesCdnCache: instance.enableStreamNotesCdnCache,
 			noteSearchableScope: (this.config.fulltextSearch?.provider === 'meilisearch' && this.config.meilisearch?.scope === 'local') ? 'local' : 'global',
 			maxFileSize: this.config.maxFileSize,
 			federation: this.meta.federation,

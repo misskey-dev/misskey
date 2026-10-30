@@ -21,6 +21,7 @@ import {
 	QueueStatsLog,
 	ServerStats,
 	ServerStatsLog,
+	StreamNote,
 	ReversiGameDetailed,
 } from './entities.js';
 import {
@@ -71,9 +72,10 @@ export type Channels = {
 		params: {
 			withRenotes?: boolean;
 			withFiles?: boolean;
+			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
@@ -82,9 +84,10 @@ export type Channels = {
 			withRenotes?: boolean;
 			withReplies?: boolean;
 			withFiles?: boolean;
+			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
@@ -93,9 +96,10 @@ export type Channels = {
 			withRenotes?: boolean;
 			withReplies?: boolean;
 			withFiles?: boolean;
+			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
@@ -103,9 +107,10 @@ export type Channels = {
 		params: {
 			withRenotes?: boolean;
 			withFiles?: boolean;
+			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
@@ -114,9 +119,10 @@ export type Channels = {
 			listId: string;
 			withFiles?: boolean;
 			withRenotes?: boolean;
+			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
@@ -132,27 +138,30 @@ export type Channels = {
 	roleTimeline: {
 		params: {
 			roleId: string;
+			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
 	antenna: {
 		params: {
 			antennaId: string;
+			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
 	channel: {
 		params: {
 			channelId: string;
+			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};

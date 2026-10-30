@@ -44,6 +44,7 @@ import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntitySer
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { HtmlTemplateService } from './HtmlTemplateService.js';
 
 import { BasePage } from './views/base.js';
@@ -617,6 +618,98 @@ export class ClientServerService {
 				}));
 			} else {
 				return await renderBase(reply);
+			}
+		});
+
+		fastify.get<{ Params: { note: string; } }>('/notes/:note.json', async (request, reply) => {
+			// 内部用途なのでCORSを無効化
+			reply.removeHeader('Access-Control-Allow-Origin');
+
+			// this.meta.enableStreamNotesCdnCacheにかかわらずレスポンスは返す
+			// （このプロパティを見ずにminimizeでChannelに繋いだ場合用）
+
+			const note = await this.notesRepository.findOne({
+				where: {
+					id: request.params.note,
+				},
+				relations: {
+					user: true,
+				},
+			});
+
+			if (note && this.noteEntityService.canCache(note)) {
+				try {
+					const _note = await this.noteEntityService.pack(note, null);
+
+					// MiNote の時点ではユーザーや reply / renote を見られないので、pack 後に改めて判定する
+					if (!this.noteEntityService.canCache(_note)) {
+						reply.code(404);
+						return;
+					}
+
+					reply.header('Content-Type', 'application/json; charset=utf-8');
+					reply.header('Cache-Control', 'public, max-age=600');
+					return reply.send(_note);
+				} catch (err) {
+					reply.header('Cache-Control', 'max-age=10, must-revalidate');
+					if (err instanceof IdentifiableError) {
+						this.clientLoggerService.logger.error(`Internal error occurred in ${request.routeOptions.url}: ${err.message}`, {
+							path: request.routeOptions.url,
+							params: request.params,
+							query: request.query,
+							id: err.id,
+							error: {
+								message: err.message,
+								code: 'INTERNAL_ERROR',
+								stack: err.stack,
+							},
+						});
+						const httpStatusCode = err.id === '85ab9bd7-3a41-4530-959d-f07073900109' ? 403 : 500;
+						reply.code(httpStatusCode);
+						return reply.send({
+							message: err.message,
+							code: 'INTERNAL_ERROR',
+							id: err.id,
+							kind: 'server',
+							httpStatusCode,
+							info: {
+								message: err.message,
+								code: err.name,
+								id: err.id,
+							},
+						});
+					} else {
+						const error = err as Error;
+						const errId = randomUUID();
+						this.clientLoggerService.logger.error(`Internal error occurred in ${request.routeOptions.url}: ${error.message}`, {
+							path: request.routeOptions.url,
+							params: request.params,
+							query: request.query,
+							id: errId,
+							error: {
+								message: error.message,
+								code: error.name,
+								stack: error.stack,
+							},
+						});
+						reply.code(500);
+						return reply.send({
+							message: 'Internal error occurred. Please contact us if the error persists.',
+							code: 'INTERNAL_ERROR',
+							id: 'b9f2a7f9-fe64-434b-9484-cb1f804d1a80',
+							kind: 'server',
+							httpStatusCode: 500,
+							info: {
+								message: error.message,
+								code: error.name,
+								id: errId,
+							},
+						});
+					}
+				}
+			} else {
+				reply.code(404);
+				return;
 			}
 		});
 

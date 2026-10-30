@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup, onMounted, shallowRef, ref, markRaw } from 'vue';
+import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup, onMounted, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
@@ -71,8 +71,9 @@ import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { deepMerge } from '@/utility/merge.js';
 import MkNote from '@/components/MkNote.vue';
-import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { DI } from '@/di.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
@@ -103,6 +104,9 @@ const props = withDefaults(defineProps<{
 provide('inTimeline', true);
 provide('tl_withSensitive', computed(() => props.withSensitive));
 provide(DI.inChannel, computed(() => props.src === 'channel' ? props.channel ?? null : null));
+
+const minimize = instance.enableStreamNotesCdnCache;
+let queueOnMinimize: ((Misskey.entities.StreamNote | Misskey.entities.Note) & { _shouldInsertAd_?: boolean; })[] = [];
 
 let paginator: IPaginator<Misskey.entities.Note>;
 
@@ -207,7 +211,7 @@ let scrollContainer: HTMLElement | null = null;
 
 function onScrollContainerScroll() {
 	if (isTop()) {
-		paginator.releaseQueue();
+		releaseQueue(false);
 	}
 }
 
@@ -271,35 +275,110 @@ useGlobalEvent('noteDeleted', (noteId) => {
 	paginator.removeItem(noteId);
 });
 
+async function getFullNote(data: Misskey.entities.Note | Misskey.entities.StreamNote): Promise<Misskey.entities.Note & MisskeyEntity | null> {
+	if (Misskey.note.isStreamNote(data)) {
+		let fullNote: Misskey.entities.Note | null = null;
+
+		if (data._allowCached_) {
+			try {
+				const res = await window.fetch(`/notes/${data.id}.json`, {
+					method: 'GET',
+					credentials: 'omit',
+				});
+				if (res.ok) {
+					fullNote = (await res.json().catch(() => null)) as Misskey.entities.Note | null;
+				}
+			} catch {
+				// 取得に失敗した場合は下の notes/show にフォールバックする
+			}
+		}
+
+		// キャッシュできないノート or キャッシュ用のノートが取得できなかった場合
+		if (fullNote == null) {
+			fullNote = await misskeyApi('notes/show', {
+				noteId: data.id,
+			}).catch(() => null);
+		}
+
+		if (fullNote == null) return null;
+
+		if (data._allowCached_) {
+			const { _allowCached_, ..._data } = data;
+			return deepMerge(_data as any, fullNote);
+		} else {
+			return fullNote;
+		}
+	} else {
+		return data;
+	}
+}
+
+async function releaseQueue(scroll = true) {
+	if (minimize && queueOnMinimize.length > 0) {
+		// 取得中に積まれたノートを消さないよう、先に退避してから処理する
+		const queue = queueOnMinimize;
+		queueOnMinimize = [];
+
+		const notes = await Promise.allSettled(queue.map(getFullNote));
+
+		// すべて取得に失敗した場合は既存のノートを残す
+		if (queue.length >= 10 && notes.some(note => note.status === 'fulfilled' && note.value != null)) {
+			paginator.clearItems();
+		}
+
+		for (const note of notes) {
+			if (note.status !== 'fulfilled' || note.value == null) continue;
+			await prepend(note.value, false);
+		}
+	}
+
+	// minimize 時も、先頭にいない間に取得したノートは paginator 側のキューに入っている
+	paginator.releaseQueue();
+
+	if (scroll && rootEl.value) {
+		scrollToTop(rootEl.value);
+	}
+}
+
 useGlobalEvent('noteRemovedFromAntenna', (antennaId, noteId) => {
 	if (props.src === 'antenna' && props.antenna === antennaId) {
 		paginator.removeItem(noteId);
 	}
 });
 
-function releaseQueue() {
-	paginator.releaseQueue();
-	scrollToTop(rootEl.value!);
-}
-
-function prepend(note: Misskey.entities.Note & MisskeyEntity) {
+async function prepend(data: Misskey.entities.Note | Misskey.entities.StreamNote, withSound = true) {
 	adInsertionCounter++;
+	const shouldInsertAd = (instance.notesPerOneAd > 0 && adInsertionCounter % instance.notesPerOneAd === 0);
+	let note: Misskey.entities.Note & MisskeyEntity | null = null;
 
-	if (instance.notesPerOneAd > 0 && adInsertionCounter % instance.notesPerOneAd === 0) {
-		note._shouldInsertAd_ = true;
-	}
+	if (minimize && isPausingUpdate) {
+		queueOnMinimize.push({
+			...data,
+			_shouldInsertAd_: shouldInsertAd,
+		});
 
-	if (isTop() && !isPausingUpdate) {
-		paginator.prepend(note);
+		if (queueOnMinimize.length > 10) {
+			queueOnMinimize.shift();
+		}
 	} else {
-		paginator.enqueue(note);
+		note = await getFullNote(data);
+
+		if (note == null) return;
+
+		note._shouldInsertAd_ = shouldInsertAd;
+
+		if (isTop() && !isPausingUpdate) {
+			paginator.prepend(note);
+		} else {
+			paginator.enqueue(note);
+		}
 	}
 
-	if (props.sound) {
+	if (withSound && props.sound) {
 		if (props.customSound) {
 			sound.playMisskeySfxFile(props.customSound);
 		} else {
-			sound.playMisskeySfx($i && (note.userId === $i.id) ? 'noteMy' : 'note');
+			sound.playMisskeySfx($i && (note?.userId === $i.id) ? 'noteMy' : 'note');
 		}
 	}
 }
@@ -324,12 +403,14 @@ function connectChannel() {
 		if (props.antenna == null) return;
 		connections.antenna = stream.useChannel('antenna', {
 			antennaId: props.antenna,
+			minimize,
 		});
 		connections.antenna.on('note', prepend);
 	} else if (props.src === 'home') {
 		connections.homeTimeline = stream.useChannel('homeTimeline', {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
+			minimize,
 		});
 		connections.main = stream.useChannel('main');
 		connections.homeTimeline.on('note', prepend);
@@ -338,6 +419,7 @@ function connectChannel() {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.onlyFiles ? true : undefined,
+			minimize,
 		});
 		connections.localTimeline.on('note', prepend);
 	} else if (props.src === 'social') {
@@ -345,12 +427,14 @@ function connectChannel() {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.onlyFiles ? true : undefined,
+			minimize,
 		});
 		connections.hybridTimeline.on('note', prepend);
 	} else if (props.src === 'global') {
 		connections.globalTimeline = stream.useChannel('globalTimeline', {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
+			minimize,
 		});
 		connections.globalTimeline.on('note', prepend);
 	} else if (props.src === 'mentions') {
@@ -369,18 +453,21 @@ function connectChannel() {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 			listId: props.list,
+			minimize,
 		});
 		connections.userList.on('note', prepend);
 	} else if (props.src === 'channel') {
 		if (props.channel == null) return;
 		connections.channel = stream.useChannel('channel', {
 			channelId: props.channel,
+			minimize,
 		});
 		connections.channel.on('note', prepend);
 	} else if (props.src === 'role') {
 		if (props.role == null) return;
 		connections.roleTimeline = stream.useChannel('roleTimeline', {
 			roleId: props.role,
+			minimize,
 		});
 		connections.roleTimeline.on('note', prepend);
 	}

@@ -23,6 +23,7 @@ export class LocalTimelineChannel extends Channel {
 	private withRenotes: boolean;
 	private withReplies: boolean;
 	private withFiles: boolean;
+	private minimize: boolean;
 
 	constructor(
 		@Inject(REQUEST)
@@ -45,6 +46,7 @@ export class LocalTimelineChannel extends Channel {
 		this.withRenotes = !!(params.withRenotes ?? true);
 		this.withReplies = !!(params.withReplies ?? false);
 		this.withFiles = !!(params.withFiles ?? false);
+		this.minimize = !!(params.minimize ?? false);
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -75,9 +77,9 @@ export class LocalTimelineChannel extends Channel {
 		const filtered = await this.noteStreamingHidingService.filter(note, this.user?.id ?? null);
 		if (!filtered) return;
 		// eslint-disable-next-line no-param-reassign -- これ以降元の Note オブジェクトは見てはいけないので、いっそ再代入した方が安全
-		note = filtered;
+		note = await this.noteEntityService.withMyRenoteReaction(filtered, this.user?.id ?? null);
 
-		this.send('note', await this.noteEntityService.withMyRenoteReaction(note, this.user?.id ?? null));
+		this.send('note', this.minimize ? this.noteEntityService.minimizeForStream(note, this.user?.id ?? null) : note);
 	}
 
 	@bindThis

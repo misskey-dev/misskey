@@ -21,6 +21,7 @@ export class ChannelChannel extends Channel {
 	public static shouldShare = false;
 	public static requireCredential = false as const;
 	private channelId: string;
+	private minimize: boolean;
 
 	constructor(
 		@Inject(REQUEST)
@@ -36,7 +37,8 @@ export class ChannelChannel extends Channel {
 	@bindThis
 	public async init(params: JsonObject) {
 		if (typeof params.channelId !== 'string') return;
-		this.channelId = params.channelId;
+		this.channelId = params.channelId as string;
+		this.minimize = !!(params.minimize ?? false);
 
 		// Subscribe stream
 		this.subscriber.on('notesStream', this.onNote);
@@ -56,9 +58,9 @@ export class ChannelChannel extends Channel {
 		const filtered = await this.noteStreamingHidingService.filter(note, this.user?.id ?? null);
 		if (!filtered) return;
 		// eslint-disable-next-line no-param-reassign -- これ以降元の Note オブジェクトは見てはいけないので、いっそ再代入した方が安全
-		note = filtered;
+		note = await this.noteEntityService.withMyRenoteReaction(filtered, this.user?.id ?? null);
 
-		this.send('note', await this.noteEntityService.withMyRenoteReaction(note, this.user?.id ?? null));
+		this.send('note', this.minimize ? this.noteEntityService.minimizeForStream(note, this.user?.id ?? null) : note);
 	}
 
 	/*

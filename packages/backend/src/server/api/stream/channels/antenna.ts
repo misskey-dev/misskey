@@ -21,6 +21,7 @@ export class AntennaChannel extends Channel {
 	public static requireCredential = true as const;
 	public static kind = 'read:account';
 	private antennaId: string;
+	private minimize: boolean;
 
 	constructor(
 		@Inject(REQUEST)
@@ -42,6 +43,7 @@ export class AntennaChannel extends Channel {
 		if (!this.user) return false;
 
 		this.antennaId = params.antennaId;
+		this.minimize = !!(params.minimize ?? false);
 
 		const antennaExists = await this.antennasReposiotry.exists({
 			where: {
@@ -68,9 +70,9 @@ export class AntennaChannel extends Channel {
 
 			const filtered = await this.noteStreamingHidingService.filter(note, this.user?.id ?? null);
 			if (!filtered) return;
-			note = filtered;
+			note = await this.noteEntityService.withMyRenoteReaction(filtered, this.user?.id ?? null);
 
-			this.send('note', await this.noteEntityService.withMyRenoteReaction(note, this.user?.id ?? null));
+			this.send('note', this.minimize ? this.noteEntityService.minimizeForStream(note, this.user?.id ?? null) : note);
 		} else {
 			this.send(data.type, data.body);
 		}
