@@ -266,6 +266,14 @@ export class InboxProcessorService implements OnApplicationShutdown {
 						return e.message;
 					case '9f466dab-c856-48cd-9e65-ff90ff750580':
 						return 'note contains too many mentions';
+					case 'ebd9b2a9-4d95-4b01-8824-e701629b65e7':
+						return 'actor is not allowed to create notes';
+					case '3a97010b-c338-4cdf-a567-24c54b67726e':
+						return 'actor is not allowed to quote';
+					case 'd35d80dc-02ba-4c9b-b9b8-905d306dcb67':
+						return 'actor is not allowed to renote';
+					case '80d26afb-d466-4d86-9c01-11b9cad9da24':
+						return 'actor is not allowed to send direct notes';
 					case '09d79f9e-64f1-4316-9cfa-e75c4d091574': // Instance is blocked
 						return 'skip: blocked instance';
 				}

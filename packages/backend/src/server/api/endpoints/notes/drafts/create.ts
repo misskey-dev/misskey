@@ -100,24 +100,6 @@ export const meta = {
 			id: 'b6992544-63e7-67f0-fa7f-32444b1b5306',
 		},
 
-		cannotRenoteOutsideOfChannel: {
-			message: 'Cannot renote outside of channel.',
-			code: 'CANNOT_RENOTE_OUTSIDE_OF_CHANNEL',
-			id: '33510210-8452-094c-6227-4a6c05d99f00',
-		},
-
-		containsProhibitedWords: {
-			message: 'Cannot post because it contains prohibited words.',
-			code: 'CONTAINS_PROHIBITED_WORDS',
-			id: 'aa6e01d3-a85c-669d-758a-76aab43af334',
-		},
-
-		containsTooManyMentions: {
-			message: 'Cannot post because it exceeds the allowed number of mentions.',
-			code: 'CONTAINS_TOO_MANY_MENTIONS',
-			id: '4de0363a-3046-481b-9b0f-feff3e211025',
-		},
-
 		tooManyDrafts: {
 			message: 'You cannot create drafts any more.',
 			code: 'TOO_MANY_DRAFTS',

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { MAX_NOTE_ATTACHMENTS } from '@/const.js';
+
 export const packedRoleCondFormulaLogicsSchema = {
 	type: 'object',
 	properties: {
@@ -329,6 +331,29 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canNote: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		renotePolicy: {
+			type: 'string',
+			optional: false, nullable: false,
+			enum: ['allow', 'renoteOnly', 'disallow'],
+		},
+		canCreateSpecifiedNote: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canFederateNote: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		noteFilesLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+			minimum: 0,
+			maximum: MAX_NOTE_ATTACHMENTS,
+		},
 	},
 } as const;
 
@@ -446,6 +471,9 @@ export const packedRoleSchema = {
 										},
 										{
 											type: 'boolean',
+										},
+										{
+											type: 'string',
 										},
 									],
 								},

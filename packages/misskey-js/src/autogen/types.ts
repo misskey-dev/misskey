@@ -5346,7 +5346,7 @@ export type components = {
             canEditMembersByModerator: boolean;
             policies: {
                 [key: string]: {
-                    value?: number | boolean;
+                    value?: number | boolean | string;
                     priority?: number;
                     useDefault?: boolean;
                 };
@@ -5394,6 +5394,12 @@ export type components = {
             noteDraftLimit: number;
             scheduledNoteLimit: number;
             watermarkAvailable: boolean;
+            canNote: boolean;
+            /** @enum {string} */
+            renotePolicy: 'allow' | 'renoteOnly' | 'disallow';
+            canCreateSpecifiedNote: boolean;
+            canFederateNote: boolean;
+            noteFilesLimit: number;
         };
         ReversiGameLite: {
             /** Format: id */
