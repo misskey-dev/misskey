@@ -448,12 +448,15 @@ export class NoteCreateService implements OnApplicationShutdown {
 		isCat: MiUser['isCat'];
 	}, data: Option, silent = false): Promise<MiNote> {
 		const userPolicies = await this.roleService.getUserPolicies(user.id);
+		// noteFilesLimit / canFederateNote はローカルユーザーの投稿にのみ適用する
+		// (リモートのノートには添付数の上限が無く、localOnlyにする意味も無いため)
+		const isLocalPoster = this.userEntityService.isLocalUser(user);
 
 		if (!userPolicies.canNote) {
 			throw new IdentifiableError('ebd9b2a9-4d95-4b01-8824-e701629b65e7', 'You are not allowed to create notes');
 		}
 
-		if (data.files != null && data.files.length > userPolicies.noteFilesLimit) {
+		if (isLocalPoster && data.files != null && data.files.length > userPolicies.noteFilesLimit) {
 			throw new IdentifiableError('80dc1304-d910-4daa-b26f-4220b6c944ff', 'Too many files attached to note');
 		}
 
@@ -649,13 +652,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 				data.visibleUsers.push(await this.usersRepository.findOneByOrFail({ id: data.reply!.userId }));
 			}
 
-			if (!userPolicies.canFederateNote && data.visibleUsers.some(u => this.userEntityService.isRemoteUser(u))) {
+			if (isLocalPoster && !userPolicies.canFederateNote && data.visibleUsers.some(u => this.userEntityService.isRemoteUser(u))) {
 				throw new IdentifiableError('5bbfae8d-097c-4c58-93f4-bc242d600529', 'You are not allowed to send direct notes to remote users');
 			}
 		}
 
 		// 連合が許可されていないならローカルのみにする (宛先がローカルユーザーのみでも、メンション経由でリモートに配送されうるため)
-		if (!userPolicies.canFederateNote) {
+		if (isLocalPoster && !userPolicies.canFederateNote) {
 			data.localOnly = true;
 		}
 
