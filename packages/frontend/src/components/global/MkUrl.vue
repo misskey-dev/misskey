@@ -25,7 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, ref } from 'vue';
+import { defineAsyncComponent, computed, ref, watch } from 'vue';
+import type { Ref } from 'vue';
 import { url as local } from '@@/js/config.js';
 import { maybeMakeRelative, parseUrlForDisplay } from '@@/js/url.js';
 import type { MkABehavior } from '@/components/global/MkA.vue';
@@ -51,7 +52,15 @@ const target = computed(() => self.value ? null : '_blank');
 const el = ref();
 
 if (props.showUrlPreview && isEnabledUrlPreview.value) {
+	// URL が変わったら古い URL のプレビューを閉じる
+	let previewShowing: Ref<boolean> | null = null;
+	watch(() => props.url, () => {
+		if (previewShowing != null) previewShowing.value = false;
+		previewShowing = null;
+	});
+
 	useTooltip(el, (showing) => {
+		previewShowing = showing;
 		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
 			showing,
 			url: props.url,
