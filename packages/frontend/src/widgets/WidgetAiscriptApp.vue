@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>App</template>
 	<div :class="$style.root">
 		<div v-if="isSyntaxError">Syntax error :(</div>
-		<MkAsUi v-else-if="root" :component="root" size="small"/>
+		<MkAsUi v-else-if="root" :key="uiKey" :component="root" size="small"/>
 	</div>
 </MkContainer>
 </template>
@@ -60,11 +60,14 @@ const parser = new Parser();
 
 let aiscript: Interpreter | null = null;
 const root = ref<AsUiRoot>();
+const uiKey = ref(0);
 const isSyntaxError = ref(false);
 
 async function run() {
 	if (aiscript) aiscript.abort();
 	root.value = undefined;
+	// MkAsUi は最初に受け取った root を描画し続けるため、実行ごとに作り直す
+	uiKey.value++;
 	isSyntaxError.value = false;
 
 	aiscript = new Interpreter({

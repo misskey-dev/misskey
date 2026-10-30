@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onDeactivated, onUnmounted, ref, watch, shallowRef, defineAsyncComponent } from 'vue';
+import { computed, nextTick, onDeactivated, onUnmounted, ref, watch, shallowRef, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 import { utils } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
@@ -206,6 +206,10 @@ function getIsLegacy(version: string | null): boolean {
 async function run() {
 	if (aiscript.value) aiscript.value.abort();
 	if (!flash.value) return;
+
+	// 前回の root で MkAsUi がマウントされないよう、新しい root が作られるまで描画させない
+	root.value = undefined;
+	await nextTick();
 
 	const version = utils.getLangVersion(flash.value.script);
 	const isLegacy = getIsLegacy(version);
