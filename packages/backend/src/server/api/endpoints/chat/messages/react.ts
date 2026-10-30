@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DI } from '@/di-symbols.js';
-import { ChatService } from '@/core/ChatService.js';
+import { ChatService, ChatMessageAccessError } from '@/core/ChatService.js';
 import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
@@ -15,9 +14,6 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:chat',
-
-	res: {
-	},
 
 	errors: {
 		noSuchMessage: {
@@ -43,7 +39,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private chatService: ChatService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.chatService.react(ps.messageId, me.id, ps.reaction);
+			await this.chatService.checkChatAvailability(me.id, 'write');
+
+			// メッセージの存在有無をエラー内容から判別できないようにする
+			try {
+				await this.chatService.react(ps.messageId, me.id, ps.reaction);
+			} catch (e) {
+				if (e instanceof ChatMessageAccessError) throw new ApiError(meta.errors.noSuchMessage);
+				throw e;
+			}
 		});
 	}
 }

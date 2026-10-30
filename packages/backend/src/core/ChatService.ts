@@ -29,7 +29,9 @@ import { emojiRegex } from '@/misc/emoji-regex.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
-const MAX_ROOM_MEMBERS = 30;
+export class ChatMessageAccessError extends Error {}
+
+const MAX_ROOM_MEMBERS = 50;
 const MAX_REACTIONS_PER_MESSAGE = 100;
 const isCustomEmojiRegexp = /^:([\w+-]+)(?:@\.)?:$/;
 
@@ -95,11 +97,45 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async getChatAvailability(userId: MiUser['id']): Promise<{ read: boolean; write: boolean; }> {
+		const policies = await this.roleService.getUserPolicies(userId);
+
+		switch (policies.chatAvailability) {
+			case 'available':
+				return {
+					read: true,
+					write: true,
+				};
+			case 'readonly':
+				return {
+					read: true,
+					write: false,
+				};
+			case 'unavailable':
+				return {
+					read: false,
+					write: false,
+				};
+			default:
+				throw new Error('invalid chat availability (unreachable)');
+		}
+	}
+
+	/** getChatAvailabilityの糖衣。主にAPI呼び出し時に走らせて、権限的に問題ない場合はそのまま続行する */
+	@bindThis
+	public async checkChatAvailability(userId: MiUser['id'], permission: 'read' | 'write') {
+		const policy = await this.getChatAvailability(userId);
+		if (policy[permission] === false) {
+			throw new Error('ROLE_PERMISSION_DENIED');
+		}
+	}
+
+	@bindThis
 	public async createMessageToUser(fromUser: { id: MiUser['id']; host: MiUser['host']; }, toUser: MiUser, params: {
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
-	}): Promise<Packed<'ChatMessageLite'>> {
+	}): Promise<Packed<'ChatMessageLiteFor1on1'>> {
 		if (fromUser.id === toUser.id) {
 			throw new Error('yourself');
 		}
@@ -140,7 +176,7 @@ export class ChatService {
 			}
 		}
 
-		if (!(await this.roleService.getUserPolicies(toUser.id)).canChat) {
+		if (!(await this.getChatAvailability(toUser.id)).write) {
 			throw new Error('recipient is cannot chat (policy)');
 		}
 
@@ -198,7 +234,7 @@ export class ChatService {
 
 				const packedMessageForTo = await this.chatEntityService.packMessageDetailed(inserted, toUser);
 				this.globalEventService.publishMainStream(toUser.id, 'newChatMessage', packedMessageForTo);
-				//this.pushNotificationService.pushNotification(toUser.id, 'newChatMessage', packedMessageForTo);
+				this.pushNotificationService.pushNotification(toUser.id, 'newChatMessage', packedMessageForTo);
 			}, 3000);
 		}
 
@@ -210,10 +246,16 @@ export class ChatService {
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
-	}): Promise<Packed<'ChatMessageLite'>> {
-		const memberships = await this.chatRoomMembershipsRepository.findBy({ roomId: toRoom.id });
+	}): Promise<Packed<'ChatMessageLiteForRoom'>> {
+		const memberships = (await this.chatRoomMembershipsRepository.findBy({ roomId: toRoom.id })).map(m => ({
+			userId: m.userId,
+			isMuted: m.isMuted,
+		})).concat({ // ownerはmembershipレコードを作らないため
+			userId: toRoom.ownerId,
+			isMuted: false,
+		});
 
-		if (toRoom.ownerId !== fromUser.id && !memberships.some(member => member.userId === fromUser.id)) {
+		if (!memberships.some(member => member.userId === fromUser.id)) {
 			throw new Error('you are not a member of the room');
 		}
 
@@ -262,7 +304,7 @@ export class ChatService {
 				if (marker == null) continue;
 
 				this.globalEventService.publishMainStream(membershipsOtherThanMe[i].userId, 'newChatMessage', packedMessageForTo);
-				//this.pushNotificationService.pushNotification(membershipsOtherThanMe[i].userId, 'newChatMessage', packedMessageForTo);
+				this.pushNotificationService.pushNotification(membershipsOtherThanMe[i].userId, 'newChatMessage', packedMessageForTo);
 			}
 		}, 3000);
 
@@ -288,6 +330,16 @@ export class ChatService {
 		const redisPipeline = this.redisClient.pipeline();
 		redisPipeline.del(`newRoomChatMessageExists:${readerId}:${roomId}`);
 		redisPipeline.srem(`newChatMessagesExists:${readerId}`, `room:${roomId}`);
+		await redisPipeline.exec();
+	}
+
+	@bindThis
+	public async readAllChatMessages(
+		readerId: MiUser['id'],
+	): Promise<void> {
+		const redisPipeline = this.redisClient.pipeline();
+		// TODO: newUserChatMessageExists とか newRoomChatMessageExists も消したい(けどキーの列挙が必要になって面倒)
+		redisPipeline.del(`newChatMessagesExists:${readerId}`);
 		await redisPipeline.exec();
 	}
 
@@ -523,6 +575,27 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async hasPermissionToViewRoomInfo(meId: MiUser['id'], room: MiChatRoom) {
+		if (room.ownerId === meId) {
+			return true;
+		}
+
+		if (await this.isRoomMember(room, meId)) {
+			return true;
+		}
+
+		if (await this.chatRoomInvitationsRepository.findOneBy({ roomId: room.id, userId: meId })) {
+			return true;
+		}
+
+		if (await this.roleService.isModerator({ id: meId })) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@bindThis
 	public async hasPermissionToDeleteRoom(meId: MiUser['id'], room: MiChatRoom) {
 		if (room.ownerId === meId) {
 			return true;
@@ -538,6 +611,20 @@ export class ChatService {
 
 	@bindThis
 	public async deleteRoom(room: MiChatRoom, deleter?: MiUser) {
+		const memberships = (await this.chatRoomMembershipsRepository.findBy({ roomId: room.id })).map(m => ({
+			userId: m.userId,
+		})).concat({ // ownerはmembershipレコードを作らないため
+			userId: room.ownerId,
+		});
+
+		// 未読フラグ削除
+		const redisPipeline = this.redisClient.pipeline();
+		for (const membership of memberships) {
+			redisPipeline.del(`newRoomChatMessageExists:${membership.userId}:${room.id}`);
+			redisPipeline.srem(`newChatMessagesExists:${membership.userId}`, `room:${room.id}`);
+		}
+		await redisPipeline.exec();
+
 		await this.chatRoomsRepository.delete(room.id);
 
 		if (deleter) {
@@ -559,7 +646,10 @@ export class ChatService {
 
 	@bindThis
 	public async findRoomById(roomId: MiChatRoom['id']) {
-		return this.chatRoomsRepository.findOne({ where: { id: roomId }, relations: ['owner'] });
+		return this.chatRoomsRepository.findOne({
+			where: { id: roomId },
+			relations: { owner: true },
+		});
 	}
 
 	@bindThis
@@ -591,7 +681,16 @@ export class ChatService {
 			throw new Error('room is full');
 		}
 
-		// TODO: cehck block
+		const [blocked, blocking] = await Promise.all([
+			this.userBlockingService.checkBlocked(inviteeId, inviterId),
+			this.userBlockingService.checkBlocked(inviterId, inviteeId),
+		]);
+		if (blocked) {
+			throw new Error('blocked');
+		}
+		if (blocking) {
+			throw new Error('blocking');
+		}
 
 		const invitation = {
 			id: this.idService.gen(),
@@ -669,6 +768,12 @@ export class ChatService {
 	public async leaveRoom(userId: MiUser['id'], roomId: MiChatRoom['id']) {
 		const membership = await this.chatRoomMembershipsRepository.findOneByOrFail({ roomId, userId });
 		await this.chatRoomMembershipsRepository.delete(membership.id);
+
+		// 未読フラグを消す (「既読にする」というわけでもないのでreadメソッドは使わないでおく)
+		const redisPipeline = this.redisClient.pipeline();
+		redisPipeline.del(`newRoomChatMessageExists:${userId}:${roomId}`);
+		redisPipeline.srem(`newChatMessagesExists:${userId}`, `room:${roomId}`);
+		await redisPipeline.exec();
 	}
 
 	@bindThis
@@ -780,33 +885,35 @@ export class ChatService {
 			}
 		}
 
-		const message = await this.chatMessagesRepository.findOneByOrFail({ id: messageId });
+		const message = await this.chatMessagesRepository.findOneBy({ id: messageId });
+		if (message == null) throw new ChatMessageAccessError('no such message');
 
 		if (message.fromUserId === userId) {
-			throw new Error('cannot react to own message');
+			throw new ChatMessageAccessError('cannot react to own message');
 		}
 
 		if (message.toRoomId === null && message.toUserId !== userId) {
-			throw new Error('cannot react to others message');
+			throw new ChatMessageAccessError('cannot react to others message');
+		}
+
+		const room = message.toRoomId ? await this.chatRoomsRepository.findOneByOrFail({ id: message.toRoomId }) : null;
+
+		if (room) {
+			if (!(await this.isRoomMember(room, userId))) {
+				throw new ChatMessageAccessError('cannot react to others message');
+			}
 		}
 
 		if (message.reactions.length >= MAX_REACTIONS_PER_MESSAGE) {
 			throw new Error('too many reactions');
 		}
 
-		const room = message.toRoomId ? await this.chatRoomsRepository.findOneByOrFail({ id: message.toRoomId }) : null;
-
-		if (room) {
-			if (!await this.isRoomMember(room, userId)) {
-				throw new Error('cannot react to others message');
-			}
-		}
-
 		await this.chatMessagesRepository.createQueryBuilder().update()
 			.set({
-				reactions: () => `array_append("reactions", '${userId}/${reaction}')`,
+				reactions: () => `array_append("reactions", :pair)`,
 			})
 			.where('id = :id', { id: message.id })
+			.setParameter('pair', `${userId}/${reaction}`)
 			.execute();
 
 		if (room) {
@@ -840,17 +947,25 @@ export class ChatService {
 			reaction = `:${name}:`;
 		}
 
-		// NOTE: 自分のリアクションを(あれば)削除するだけなので諸々の権限チェックは必要なし
-
-		const message = await this.chatMessagesRepository.findOneByOrFail({ id: messageId });
+		const message = await this.chatMessagesRepository.findOneBy({ id: messageId });
+		if (message == null) throw new ChatMessageAccessError('no such message');
 
 		const room = message.toRoomId ? await this.chatRoomsRepository.findOneByOrFail({ id: message.toRoomId }) : null;
 
+		if (room) {
+			if (!(await this.isRoomMember(room, userId))) {
+				throw new ChatMessageAccessError('cannot unreact to others message');
+			}
+		} else if (message.fromUserId !== userId && message.toUserId !== userId) {
+			throw new ChatMessageAccessError('cannot unreact to others message');
+		}
+
 		await this.chatMessagesRepository.createQueryBuilder().update()
 			.set({
-				reactions: () => `array_remove("reactions", '${userId}/${reaction}')`,
+				reactions: () => `array_remove("reactions", :pair)`,
 			})
 			.where('id = :id', { id: message.id })
+			.setParameter('pair', `${userId}/${reaction}`)
 			.execute();
 
 		// TODO: 実際に削除が行われたときのみイベントを発行する

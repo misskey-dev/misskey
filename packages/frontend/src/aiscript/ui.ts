@@ -4,11 +4,11 @@
  */
 
 import { utils, values } from '@syuilo/aiscript';
-import { v4 as uuid } from 'uuid';
 import { ref } from 'vue';
-import type { Ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { assertStringAndIsIn } from './common.js';
+import type { Ref } from 'vue';
+import { genId } from '@/utility/id.js';
 
 const ALIGNS = ['left', 'center', 'right'] as const;
 const FONTS = ['serif', 'sans-serif', 'monospace'] as const;
@@ -21,16 +21,15 @@ type BorderStyle = (typeof BORDER_STYLES)[number];
 export type AsUiComponentBase = {
 	id: string;
 	hidden?: boolean;
+	children?: AsUiComponent['id'][];
 };
 
 export type AsUiRoot = AsUiComponentBase & {
 	type: 'root';
-	children: AsUiComponent['id'][];
 };
 
 export type AsUiContainer = AsUiComponentBase & {
 	type: 'container';
-	children?: AsUiComponent['id'][];
 	align?: Align;
 	bgColor?: string;
 	fgColor?: string;
@@ -123,7 +122,6 @@ export type AsUiSelect = AsUiComponentBase & {
 
 export type AsUiFolder = AsUiComponentBase & {
 	type: 'folder';
-	children?: AsUiComponent['id'][];
 	title?: string;
 	opened?: boolean;
 };
@@ -533,7 +531,7 @@ function getPostFormOptions(def: values.Value | undefined, call: (fn: values.VFn
 export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: Ref<AsUiRoot>) => void) {
 	type OptionsConverter<T extends AsUiComponent, C> = (def: values.Value | undefined, call: C) => Options<T>;
 
-	const instances = {};
+	const instances = {} as Record<string, values.VObj>;
 
 	function createComponentInstance<T extends AsUiComponent, C>(
 		type: T['type'],
@@ -543,7 +541,7 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 		call: C,
 	) {
 		if (id) utils.assertString(id);
-		const _id = id?.value ?? uuid();
+		const _id = id?.value ?? genId();
 		const component = ref({
 			...getOptions(def, call),
 			type,
@@ -557,7 +555,7 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 				const updates = getOptions(def, call);
 				for (const update of def.value.keys()) {
 					if (!Object.hasOwn(updates, update)) continue;
-					component.value[update] = updates[update];
+					component.value[update] = updates[update as keyof Options<T>];
 				}
 			})],
 		]));

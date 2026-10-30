@@ -16,9 +16,6 @@ export const meta = {
 
 	kind: 'write:chat',
 
-	res: {
-	},
-
 	errors: {
 		noSuchMessage: {
 			message: 'No such message.',
@@ -42,6 +39,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private chatService: ChatService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			await this.chatService.checkChatAvailability(me.id, 'write');
+
 			const message = await this.chatService.findMyMessageById(me.id, ps.messageId);
 			if (message == null) {
 				throw new ApiError(meta.errors.noSuchMessage);

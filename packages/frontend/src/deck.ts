@@ -5,14 +5,22 @@
 
 import { notificationTypes } from 'misskey-js';
 import { ref } from 'vue';
-import { v4 as uuid } from 'uuid';
+import { EventEmitter } from 'eventemitter3';
 import { i18n } from './i18n.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { SoundStore } from '@/preferences/def.js';
 import type { MenuItem } from '@/types/menu.js';
+import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
+
+type DeckEvents = {
+	'column.dragStart': () => void;
+	'column.dragEnd': () => void;
+};
+
+export const deckGlobalEvents = new EventEmitter<DeckEvents>();
 
 export type DeckProfile = {
 	name: string;
@@ -35,9 +43,11 @@ export const columnTypes = [
 	'antenna',
 	'list',
 	'channel',
+	'clip',
 	'mentions',
 	'direct',
 	'roleTimeline',
+	'chat',
 ] as const;
 
 export type ColumnType = typeof columnTypes[number];
@@ -53,6 +63,7 @@ export type Column = {
 	antennaId?: string;
 	listId?: string;
 	channelId?: string;
+	clipId?: string;
 	roleId?: string;
 	excludeTypes?: typeof notificationTypes[number][];
 	tl?: BasicTimelineType;
@@ -61,6 +72,8 @@ export type Column = {
 	withSensitive?: boolean;
 	onlyFiles?: boolean;
 	soundSetting?: SoundStore;
+	// The cache for the name of the antenna, channel, list, clip, or role
+	timelineNameCache?: string;
 };
 
 const _currentProfile = prefer.s['deck.profiles'].find(p => p.name === prefer.s['deck.profile']);
@@ -102,7 +115,7 @@ function addProfile(name: string) {
 	if (prefer.s['deck.profiles'].find(p => p.name === name)) return;
 
 	const newProfile: DeckProfile = {
-		id: uuid(),
+		id: genId(),
 		name,
 		columns: [],
 		layout: [],
@@ -313,14 +326,14 @@ export function updateColumn(id: Column['id'], column: Partial<Column>) {
 	const currentColumn = deepClone(columns.value[columnIndex]);
 	if (currentColumn == null) return;
 	for (const [k, v] of Object.entries(column)) {
-		currentColumn[k] = v;
+		(currentColumn[k as keyof typeof column] as any) = v;
 	}
 	newColumns[columnIndex] = currentColumn;
 	columns.value = newColumns;
 	saveCurrentDeckProfile();
 }
 
-export function switchProfileMenu(ev: MouseEvent) {
+export function switchProfileMenu(ev: PointerEvent) {
 	const items: MenuItem[] = prefer.s['deck.profile'] ? [{
 		text: prefer.s['deck.profile'],
 		active: true,

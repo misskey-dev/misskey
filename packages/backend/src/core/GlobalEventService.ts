@@ -14,6 +14,7 @@ import type { MiAntenna } from '@/models/Antenna.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiDriveFolder } from '@/models/DriveFolder.js';
 import type { MiUserList } from '@/models/UserList.js';
+import type { MiClip } from '@/models/Clip.js';
 import type { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import type { MiSignin } from '@/models/Signin.js';
 import type { MiPage } from '@/models/Page.js';
@@ -38,11 +39,7 @@ export interface BroadcastTypes {
 		emojis: Packed<'EmojiDetailed'>[];
 	};
 	emojiDeleted: {
-		emojis: {
-			id?: string;
-			name: string;
-			[other: string]: any;
-		}[];
+		emojis: Packed<'EmojiDetailed'>[];
 	};
 	announcementCreated: {
 		announcement: Packed<'Announcement'>;
@@ -133,6 +130,9 @@ export interface NoteEventTypes {
 type NoteStreamEventTypes = {
 	[key in keyof NoteEventTypes]: {
 		id: MiNote['id'];
+		userId: MiNote['userId'];
+		visibility: MiNote['visibility'];
+		visibleUserIds: MiNote['visibleUserIds'];
 		body: NoteEventTypes[key];
 	};
 };
@@ -142,8 +142,13 @@ export interface UserListEventTypes {
 	userRemoved: Packed<'UserLite'>;
 }
 
+export interface ClipEventTypes {
+	updated: undefined;
+	deleted: undefined;
+}
+
 export interface AntennaEventTypes {
-	note: MiNote;
+	note: Packed<'Note'>;
 }
 
 export interface RoleTimelineEventTypes {
@@ -255,6 +260,8 @@ export interface InternalEventTypes {
 	metaUpdated: { before?: MiMeta; after: MiMeta; };
 	followChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };
 	unfollowChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };
+	muteChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };
+	unmuteChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };
 	updateUserProfile: MiUserProfile;
 	mute: { muterId: MiUser['id']; muteeId: MiUser['id']; };
 	unmute: { muterId: MiUser['id']; muteeId: MiUser['id']; };
@@ -262,7 +269,7 @@ export interface InternalEventTypes {
 	userListMemberRemoved: { userListId: MiUserList['id']; memberId: MiUser['id']; };
 }
 
-type EventTypesToEventPayload<T> = EventUnionFromDictionary<UndefinedAsNullAll<SerializedAll<T>>>;
+export type EventTypesToEventPayload<T> = EventUnionFromDictionary<UndefinedAsNullAll<SerializedAll<T>>>;
 
 // name/messages(spec) pairs dictionary
 export type GlobalEvents = {
@@ -289,6 +296,10 @@ export type GlobalEvents = {
 	userList: {
 		name: `userListStream:${MiUserList['id']}`;
 		payload: EventTypesToEventPayload<UserListEventTypes>;
+	};
+	clip: {
+		name: `clipStream:${MiClip['id']}`;
+		payload: EventTypesToEventPayload<ClipEventTypes>;
 	};
 	roleTimeline: {
 		name: `roleTimelineStream:${MiRole['id']}`;
@@ -380,9 +391,12 @@ export class GlobalEventService {
 	}
 
 	@bindThis
-	public publishNoteStream<K extends keyof NoteEventTypes>(noteId: MiNote['id'], type: K, value?: NoteEventTypes[K]): void {
-		this.publish(`noteStream:${noteId}`, type, {
-			id: noteId,
+	public publishNoteStream<K extends keyof NoteEventTypes>(note: MiNote, type: K, value?: NoteEventTypes[K]): void {
+		this.publish(`noteStream:${note.id}`, type, {
+			id: note.id,
+			userId: note.userId,
+			visibility: note.visibility,
+			visibleUserIds: note.visibleUserIds,
 			body: value,
 		});
 	}
@@ -390,6 +404,11 @@ export class GlobalEventService {
 	@bindThis
 	public publishUserListStream<K extends keyof UserListEventTypes>(listId: MiUserList['id'], type: K, value?: UserListEventTypes[K]): void {
 		this.publish(`userListStream:${listId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishClipStream<K extends keyof ClipEventTypes>(clipId: MiClip['id'], type: K, value?: ClipEventTypes[K]): void {
+		this.publish(`clipStream:${clipId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
 	@bindThis

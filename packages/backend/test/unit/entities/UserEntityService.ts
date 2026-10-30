@@ -4,6 +4,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
+import { describe, expect, beforeAll, afterAll, test } from 'vitest';
 import type { MiUser } from '@/models/User.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GlobalModule } from '@/GlobalModule.js';
@@ -74,7 +75,7 @@ describe('UserEntityService', () => {
 					...userData,
 					id: genAidx(Date.now()),
 					username: un,
-					usernameLower: un,
+					usernameLower: un.toLowerCase(),
 				})
 				.then(x => usersRepository.findOneByOrFail(x.identifiers[0]));
 
@@ -232,7 +233,7 @@ describe('UserEntityService', () => {
 		});
 
 		test('MeDetailed', async() => {
-			const achievements = [{ name: 'achievement', unlockedAt: new Date().getTime() }];
+			const achievements = [{ name: 'iLoveMisskey' as const, unlockedAt: new Date().getTime() }];
 			const me = await createUser({}, {
 				birthday: '2000-01-01',
 				achievements: achievements,
@@ -246,6 +247,16 @@ describe('UserEntityService', () => {
 			expect(actual.birthday).toBe('2000-01-01');
 			// is detail and me
 			expect(actual.achievements).toEqual(achievements);
+		});
+
+		test('alsoKnownAs as string does not throw', async () => {
+			const me = await createUser();
+			const who = await createUser();
+
+			const whoWithStringAlsoKnownAs: MiUser = { ...who, alsoKnownAs: 'https://remote.example.com/users/alice' as any };
+
+			const actual = await service.pack(whoWithStringAlsoKnownAs, me, { schema: 'UserDetailedNotMe' }) as any;
+			expect(Array.isArray(actual.alsoKnownAs)).toBe(true);
 		});
 
 		describe('packManyによるpreloadがある時、preloadが無い時とpackの結果が同じになるか見たい', () => {

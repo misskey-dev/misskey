@@ -40,7 +40,7 @@ async function install() {
 		code.value = null;
 
 		router.push('/settings/plugin');
-	} catch (err) {
+	} catch (err: any) {
 		os.alert({
 			type: 'error',
 			title: 'Install failed',

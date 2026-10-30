@@ -5,18 +5,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="600" :marginMin="16">
+	<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px;">
 		<MkButton primary @click="createKey">{{ i18n.ts._registry.createKey }}</MkButton>
 
 		<div v-if="scopesWithDomain" class="_gaps_m">
-			<FormSection v-for="domain in scopesWithDomain" :key="domain.domain">
+			<FormSection v-for="domain in scopesWithDomain" :key="domain.domain ?? 'system'">
 				<template #label>{{ domain.domain ? domain.domain.toUpperCase() : i18n.ts.system }}</template>
 				<div class="_gaps_s">
 					<FormLink v-for="scope in domain.scopes" :to="`/registry/keys/${domain.domain ?? '@'}/${scope.join('/')}`" class="_monospace">{{ scope.length === 0 ? '(root)' : scope.join('/') }}</FormLink>
 				</div>
 			</FormSection>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -56,7 +56,9 @@ async function createKey() {
 			label: i18n.ts._registry.scope,
 		},
 	});
+
 	if (canceled) return;
+
 	os.apiWithDialog('i/registry/set', {
 		scope: result.scope.split('/'),
 		key: result.key,

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="700">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps_m">
 			<div class="_gaps_m">
 				<MkInput v-model="endpoint" :datalist="endpoints" @update:modelValue="onEndpointChange()">
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkTextarea>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -68,7 +68,12 @@ function send() {
 
 function onEndpointChange() {
 	misskeyApi('endpoint', { endpoint: endpoint.value }, withCredential.value ? undefined : null).then(resp => {
-		const endpointBody = {};
+		if (resp == null) {
+			body.value = '{}';
+			return;
+		}
+
+		const endpointBody = {} as Record<string, unknown>;
 		for (const p of resp.params) {
 			endpointBody[p.name] =
 				p.type === 'String' ? '' :

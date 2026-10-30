@@ -10,7 +10,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		tail === 'left' ? $style.left : $style.right,
 		negativeMargin === true && $style.negativeMargin,
 		shadow === true && $style.shadow,
-		accented === true && $style.accented
+		accented === true && $style.accented,
+		fullWidth === true && $style.fullWidth,
 	]"
 >
 	<div :class="$style.bg">
@@ -32,11 +33,13 @@ withDefaults(defineProps<{
 	negativeMargin?: boolean;
 	shadow?: boolean;
 	accented?: boolean;
+	fullWidth?: boolean;
 }>(), {
 	tail: 'right',
 	negativeMargin: false,
 	shadow: false,
 	accented: false,
+	fullWidth: false,
 });
 </script>
 
@@ -51,7 +54,7 @@ withDefaults(defineProps<{
 	padding-top: calc(var(--fukidashi-radius) * .13);
 
 	&.accented {
-		--fukidashi-bg: var(--MI_THEME-accent);
+		--fukidashi-bg: color-mix(in srgb, var(--MI_THEME-accent), var(--MI_THEME-panel) 85%);
 	}
 
 	&.shadow {
@@ -73,6 +76,14 @@ withDefaults(defineProps<{
 			margin-right: calc(calc(var(--fukidashi-radius) * .13) * -1);
 		}
 	}
+
+	&.fullWidth {
+		width: 100%;
+
+		&.content {
+			width: 100%;
+		}
+	}
 }
 
 .bg {
@@ -85,6 +96,13 @@ withDefaults(defineProps<{
 .content {
 	position: relative;
 	padding: 10px 14px;
+	box-sizing: border-box;
+}
+
+@container (max-width: 450px) {
+	.content {
+		padding: 8px 12px;
+	}
 }
 
 .tail {

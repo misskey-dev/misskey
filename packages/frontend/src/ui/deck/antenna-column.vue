@@ -6,28 +6,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
-		<i class="ti ti-antenna"></i><span style="margin-left: 8px;">{{ column.name || antennaName || i18n.ts._deck._columns.antenna }}</span>
+		<i class="ti ti-antenna"></i><span style="margin-left: 8px;">{{ column.name || column.timelineNameCache || i18n.ts._deck._columns.antenna }}</span>
 	</template>
 
-	<MkTimeline v-if="column.antennaId" ref="timeline" src="antenna" :antenna="column.antennaId" @note="onNote"/>
+	<MkStreamingNotesTimeline v-if="column.antennaId" ref="timeline" src="antenna" :antenna="column.antennaId"/>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, useTemplateRef, watch, defineAsyncComponent } from 'vue';
+import { onMounted, ref, useTemplateRef, watch, defineAsyncComponent, provide } from 'vue';
 import XColumn from './column.vue';
+import type * as Misskey from 'misskey-js';
 import type { entities as MisskeyEntities } from 'misskey-js';
 import type { Column } from '@/deck.js';
 import type { MenuItem } from '@/types/menu.js';
 import type { SoundStore } from '@/preferences/def.js';
 import { updateColumn } from '@/deck.js';
-import MkTimeline from '@/components/MkTimeline.vue';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { antennasCache } from '@/cache.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
-import * as sound from '@/utility/sound.js';
 
 const props = defineProps<{
 	column: Column;
@@ -36,18 +36,21 @@ const props = defineProps<{
 
 const timeline = useTemplateRef('timeline');
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
-const antennaName = ref<string | null>(null);
+const antenna = ref<Misskey.entities.Antenna | null>(null);
+
+provide('currentAntenna', antenna);
+
+watch(() => props.column.antennaId, async (antennaId) => {
+	if (antennaId == null) return;
+	antenna.value = await misskeyApi('antennas/show', { antennaId });
+}, { immediate: true });
 
 onMounted(() => {
 	if (props.column.antennaId == null) {
 		setAntenna();
-	}
-});
-
-watch([() => props.column.name, () => props.column.antennaId], () => {
-	if (!props.column.name && props.column.antennaId) {
+	} else if (props.column.timelineNameCache == null) {
 		misskeyApi('antennas/show', { antennaId: props.column.antennaId })
-			.then(value => antennaName.value = value.name);
+			.then(value => updateColumn(props.column.id, { timelineNameCache: value.name }));
 	}
 });
 
@@ -57,27 +60,30 @@ watch(soundSetting, v => {
 
 async function setAntenna() {
 	const antennas = await misskeyApi('antennas/list');
-	const { canceled, result: antenna } = await os.select<MisskeyEntities.Antenna | '_CREATE_'>({
+	const { canceled, result: antennaIdOrOperation } = await os.select({
 		title: i18n.ts.selectAntenna,
 		items: [
-			{ value: '_CREATE_', text: i18n.ts.createNew },
+			{ value: '_CREATE_', label: i18n.ts.createNew },
 			(antennas.length > 0 ? {
-				sectionTitle: i18n.ts.createdAntennas,
+				type: 'group' as const,
+				label: i18n.ts.createdAntennas,
 				items: antennas.map(x => ({
-					value: x, text: x.name,
+					value: x.id, label: x.name,
 				})),
 			} : undefined),
 		],
-		default: props.column.antennaId,
+		default: antennas.find(x => x.id === props.column.antennaId)?.id,
 	});
-	if (canceled || antenna == null) return;
 
-	if (antenna === '_CREATE_') {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAntennaEditorDialog.vue')), {}, {
+	if (canceled || antennaIdOrOperation == null) return;
+
+	if (antennaIdOrOperation === '_CREATE_') {
+		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkAntennaEditorDialog.vue').then(x => x.default), {}, {
 			created: (newAntenna: MisskeyEntities.Antenna) => {
 				antennasCache.delete();
 				updateColumn(props.column.id, {
 					antennaId: newAntenna.id,
+					timelineNameCache: newAntenna.name,
 				});
 			},
 			closed: () => {
@@ -87,17 +93,17 @@ async function setAntenna() {
 		return;
 	}
 
+	const selectedAntenna = antennas.find(x => x.id === antennaIdOrOperation);
+	if (selectedAntenna == null) return;
+
 	updateColumn(props.column.id, {
-		antennaId: antenna.id,
+		antennaId: selectedAntenna.id,
+		timelineNameCache: selectedAntenna.name,
 	});
 }
 
 function editAntenna() {
-	os.pageWindow('my/antennas/' + props.column.antennaId);
-}
-
-function onNote() {
-	sound.playMisskeySfxFile(soundSetting.value);
+	os.pageWindow('/my/antennas/' + props.column.antennaId);
 }
 
 const menu: MenuItem[] = [

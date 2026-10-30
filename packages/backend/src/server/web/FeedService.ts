@@ -16,6 +16,7 @@ import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import { MfmService } from "@/core/MfmService.js";
 import { parse as mfmParse } from 'mfm-js';
+import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
 
 @Injectable()
 export class FeedService {
@@ -56,7 +57,11 @@ export class FeedService {
 			},
 			order: { id: -1 },
 			take: 20,
-		});
+		}).then(notes => notes.filter(note => {
+			const createdAt = this.idService.parse(note.id).date;
+			return !shouldHideNoteByTime(user.makeNotesHiddenBefore, createdAt)
+				&& !shouldHideNoteByTime(user.makeNotesFollowersOnlyBefore, createdAt);
+		}));
 
 		const feed = new Feed({
 			id: author.link,
@@ -65,7 +70,7 @@ export class FeedService {
 			generator: 'Misskey',
 			description: `${user.notesCount} Notes, ${profile.followingVisibility === 'public' ? user.followingCount : '?'} Following, ${profile.followersVisibility === 'public' ? user.followersCount : '?'} Followers${profile.description ? ` · ${profile.description}` : ''}`,
 			link: author.link,
-			image: user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user),
+			image: (user.avatarId == null ? null : user.avatarUrl) ?? this.userEntityService.getIdenticonUrl(user),
 			feedLinks: {
 				json: `${author.link}.json`,
 				atom: `${author.link}.atom`,

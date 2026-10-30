@@ -4,24 +4,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :tabs="headerTabs" :actions="headerActions">
+<PageWithHeader v-model:tab="tab" :tabs="headerTabs" :actions="headerActions" :swipable="true">
 	<div v-if="user">
-		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<XHome v-if="tab === 'home'" :user="user" @unfoldFiles="() => { tab = 'files'; }"/>
-			<MkSpacer v-else-if="tab === 'notes'" :contentMax="800" style="padding-top: 0">
-				<XTimeline :user="user"/>
-			</MkSpacer>
-			<XFiles v-else-if="tab === 'files'" :user="user"/>
-			<XActivity v-else-if="tab === 'activity'" :user="user"/>
-			<XAchievements v-else-if="tab === 'achievements'" :user="user"/>
-			<XReactions v-else-if="tab === 'reactions'" :user="user"/>
-			<XClips v-else-if="tab === 'clips'" :user="user"/>
-			<XLists v-else-if="tab === 'lists'" :user="user"/>
-			<XPages v-else-if="tab === 'pages'" :user="user"/>
-			<XFlashs v-else-if="tab === 'flashs'" :user="user"/>
-			<XGallery v-else-if="tab === 'gallery'" :user="user"/>
-			<XRaw v-else-if="tab === 'raw'" :user="user"/>
-		</MkHorizontalSwipe>
+		<XHome v-if="tab === 'home'" :user="user" :refreshUser="refreshUser" @showMoreFiles="() => { tab = 'files'; }"/>
+		<XNotes v-else-if="tab === 'notes'" :user="user"/>
+		<XFiles v-else-if="tab === 'files'" :user="user"/>
+		<XActivity v-else-if="tab === 'activity'" :user="user"/>
+		<XAchievements v-else-if="tab === 'achievements'" :user="user"/>
+		<XReactions v-else-if="tab === 'reactions'" :user="user"/>
+		<XClips v-else-if="tab === 'clips'" :user="user"/>
+		<XLists v-else-if="tab === 'lists'" :user="user"/>
+		<XPages v-else-if="tab === 'pages'" :user="user"/>
+		<XFlashs v-else-if="tab === 'flashs'" :user="user"/>
+		<XGallery v-else-if="tab === 'gallery'" :user="user"/>
+		<XRaw v-else-if="tab === 'raw'" :user="user"/>
 	</div>
 	<MkError v-else-if="error" @retry="fetchUser()"/>
 	<MkLoading v-else/>
@@ -31,16 +27,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { acct as getAcct } from '@/filters/user.js';
+import { acct as getAcct } from '@@/js/user.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { serverContext, assertServerContext } from '@/server-context.js';
 
 const XHome = defineAsyncComponent(() => import('./home.vue'));
-const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
+const XNotes = defineAsyncComponent(() => import('./notes.vue'));
 const XFiles = defineAsyncComponent(() => import('./files.vue'));
 const XActivity = defineAsyncComponent(() => import('./activity.vue'));
 const XAchievements = defineAsyncComponent(() => import('./achievements.vue'));
@@ -67,6 +62,7 @@ const tab = ref(props.page);
 const user = ref<null | Misskey.entities.UserDetailed>(CTX_USER);
 const error = ref<any>(null);
 
+// 初回読込時専用（使える場合はサーバーコンテキストから取得する）
 function fetchUser(): void {
 	if (props.acct == null) return;
 
@@ -91,6 +87,14 @@ function fetchUser(): void {
 watch(() => props.acct, fetchUser, {
 	immediate: true,
 });
+
+// 再読込時専用（強制fetch）
+async function refreshUser(): Promise<void> {
+	if (props.acct == null) return;
+
+	const { username, host } = Misskey.acct.parse(props.acct);
+	user.value = await misskeyApi('users/show', { username, host });
+}
 
 const headerActions = computed(() => []);
 

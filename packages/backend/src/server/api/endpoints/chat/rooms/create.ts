@@ -15,7 +15,6 @@ export const meta = {
 	tags: ['chat'],
 
 	requireCredential: true,
-	requiredRolePolicy: 'canChat',
 
 	prohibitMoved: true,
 
@@ -52,6 +51,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private chatEntityService: ChatEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			await this.chatService.checkChatAvailability(me.id, 'write');
+
 			const room = await this.chatService.createRoom(me, {
 				name: ps.name,
 				description: ps.description ?? '',

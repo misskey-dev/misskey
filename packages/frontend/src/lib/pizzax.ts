@@ -5,14 +5,15 @@
 
 // PIZZAX --- A lightweight store
 
-import { onUnmounted, ref, watch } from 'vue';
+// TODO: Misskeyのドメイン知識があるのでutilityなどに移動する
+
+import { customRef, ref, watch, onScopeDispose } from 'vue';
 import { BroadcastChannel } from 'broadcast-channel';
 import type { Ref } from 'vue';
 import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { get, set } from '@/utility/idb-proxy.js';
 import { store } from '@/store.js';
-import { useStream } from '@/stream.js';
 import { deepClone } from '@/utility/clone.js';
 import { deepMerge } from '@/utility/merge.js';
 
@@ -58,7 +59,7 @@ export class Pizzax<T extends StateDef> {
 	private pizzaxChannel: BroadcastChannel<PizzaxChannelMessage<T>>;
 
 	// 簡易的にキューイングして占有ロックとする
-	private currentIdbJob: Promise<any> = Promise.resolve();
+	private currentIdbJob: Promise<unknown> = Promise.resolve();
 	private addIdbSetJob<T>(job: () => Promise<T>) {
 		const promise = this.currentIdbJob.then(job, err => {
 			console.error('Pizzax failed to save data to idb!', err);
@@ -81,8 +82,10 @@ export class Pizzax<T extends StateDef> {
 		this.r = {} as ReactiveState<T>;
 
 		for (const [k, v] of Object.entries(def) as [keyof T, T[keyof T]['default']][]) {
-			this.s[k] = v.default;
-			this.r[k] = ref(v.default);
+			// 参照渡しになるのを防ぐためclone
+			const defaultValue = deepClone(v.default);
+			this.s[k] = defaultValue;
+			this.r[k] = ref(defaultValue);
 		}
 
 		this.ready = this.init();
@@ -95,7 +98,7 @@ export class Pizzax<T extends StateDef> {
 
 	private mergeState<X>(value: X, def: X): X {
 		if (this.isPureObject(value) && this.isPureObject(def)) {
-			const merged = deepMerge(value, def);
+			const merged = deepMerge<Record<PropertyKey, unknown>>(value, def);
 
 			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def, ' Result: ', merged);
 
@@ -119,7 +122,8 @@ export class Pizzax<T extends StateDef> {
 			} else if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
 				this.r[k].value = this.s[k] = this.mergeState<T[keyof T]['default']>(deviceAccountState[k], v.default);
 			} else {
-				this.r[k].value = this.s[k] = v.default;
+				// 参照渡しになるのを防ぐためclone
+				this.r[k].value = this.s[k] = deepClone(v.default);
 			}
 		}
 
@@ -129,25 +133,6 @@ export class Pizzax<T extends StateDef> {
 			if (where === 'deviceAccount' && !($i && userId !== $i.id)) return;
 			this.r[key].value = this.s[key] = value;
 		});
-
-		if ($i) {
-			const connection = useStream().useChannel('main');
-
-			// streamingのuser storage updateイベントを監視して更新
-			connection.on('registryUpdated', ({ scope, key, value }: { scope?: string[], key: keyof T, value: T[typeof key]['default'] }) => {
-				if (!scope || scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.s[key] === value) return;
-
-				this.r[key].value = this.s[key] = value;
-
-				this.addIdbSetJob(async () => {
-					const cache = await get(this.registryCacheKeyName);
-					if (cache[key] !== value) {
-						cache[key] = value;
-						await set(this.registryCacheKeyName, cache);
-					}
-				});
-			});
-		}
 	}
 
 	private load(): Promise<void> {
@@ -166,7 +151,8 @@ export class Pizzax<T extends StateDef> {
 										this.r[k].value = this.s[k] = (kvs as Partial<T>)[k];
 										cache[k] = (kvs as Partial<T>)[k];
 									} else {
-										this.r[k].value = this.s[k] = v.default;
+										// 参照渡しになるのを防ぐためclone
+										this.r[k].value = this.s[k] = deepClone(v.default);
 									}
 								}
 							}
@@ -236,49 +222,50 @@ export class Pizzax<T extends StateDef> {
 	}
 
 	public reset(key: keyof T) {
-		this.set(key, this.def[key].default);
-		return this.def[key].default;
+		// 参照渡しになるのを防ぐためclone
+		const defaultValue = deepClone(this.def[key].default);
+		this.set(key, defaultValue);
+		return defaultValue;
 	}
 
 	/**
-	 * 特定のキーの、簡易的なgetter/setterを作ります
+	 * 特定のキーの、簡易的なcomputed refを作ります
 	 * 主にvue上で設定コントロールのmodelとして使う用
 	 */
-	// TODO: 廃止
-	public makeGetterSetter<K extends keyof T, R = T[K]['default']>(
+	public model<K extends keyof T, R = T[K]['default']>(
+		key: K,
+	): Ref<R>;
+	public model<K extends keyof T, R extends Exclude<any, T[K]['default']>>(
+		key: K,
+		getter: (v: T[K]['default']) => R,
+		setter: (v: R) => T[K]['default'],
+	): Ref<R>;
+
+	public model<K extends keyof T, R>(
 		key: K,
 		getter?: (v: T[K]['default']) => R,
 		setter?: (v: R) => T[K]['default'],
-	): {
-			get: () => R;
-			set: (value: R) => void;
-		} {
-		const valueRef = ref(this.s[key]);
+	): Ref<R> {
+		return customRef<R>((track, trigger) => {
+			const watchStop = watch(this.r[key], () => {
+				trigger();
+			});
 
-		const stop = watch(this.r[key], val => {
-			valueRef.value = val;
+			onScopeDispose(() => {
+				watchStop();
+			}, true);
+
+			return {
+				get: () => {
+					track();
+					return (getter != null ? getter(this.s[key]) : this.s[key]) as R;
+				},
+				set: (value) => {
+					const val = setter != null ? setter(value) : value;
+					this.set(key, val as T[K]['default']);
+				},
+			};
 		});
-
-		// NOTE: vueコンポーネント内で呼ばれない限りは、onUnmounted は無意味なのでメモリリークする
-		onUnmounted(() => {
-			stop();
-		});
-
-		// TODO: VueのcustomRef使うと良い感じになるかも
-		return {
-			get: () => {
-				if (getter) {
-					return getter(valueRef.value);
-				} else {
-					return valueRef.value;
-				}
-			},
-			set: (value) => {
-				const val = setter ? setter(value) : value;
-				this.set(key, val);
-				valueRef.value = val;
-			},
-		};
 	}
 
 	// localStorage => indexedDBのマイグレーション

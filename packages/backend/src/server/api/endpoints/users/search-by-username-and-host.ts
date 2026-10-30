@@ -26,17 +26,32 @@ export const meta = {
 } as const;
 
 export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		detail: { type: 'boolean', default: true },
-
-		username: { type: 'string', nullable: true },
-		host: { type: 'string', nullable: true },
-	},
-	anyOf: [
-		{ required: ['username'] },
-		{ required: ['host'] },
+	allOf: [
+		{
+			anyOf: [
+				{
+					type: 'object',
+					properties: {
+						username: { type: 'string', nullable: true },
+					},
+					required: ['username'],
+				},
+				{
+					type: 'object',
+					properties: {
+						host: { type: 'string', nullable: true },
+					},
+					required: ['host'],
+				},
+			],
+		},
+		{
+			type: 'object',
+			properties: {
+				limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+				detail: { type: 'boolean', default: true },
+			},
+		},
 	],
 } as const;
 
@@ -47,8 +62,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, (ps, me) => {
 			return this.userSearchService.searchByUsernameAndHost({
-				username: ps.username,
-				host: ps.host,
+				username: 'username' in ps ? ps.username : undefined,
+				host: 'host' in ps ? ps.host : undefined,
 			}, {
 				limit: ps.limit,
 				detail: ps.detail,

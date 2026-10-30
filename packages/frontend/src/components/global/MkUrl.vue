@@ -5,41 +5,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <component
-	:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel ?? 'nofollow noopener'" :target="target"
+	:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="maybeRelativeUrl" :rel="rel ?? 'nofollow noopener'" :target="target"
 	:behavior="props.navigationBehavior"
 	@contextmenu.stop="() => {}"
 >
 	<template v-if="!self">
-		<span :class="$style.schema">{{ schema }}//</span>
-		<span :class="$style.hostname">{{ hostname }}</span>
-		<span v-if="port != ''">:{{ port }}</span>
+		<span :class="$style.schema">{{ urlForDisplay.schema }}//</span>
+		<span :class="$style.hostname">{{ urlForDisplay.hostname }}</span>
+		<span v-if="urlForDisplay.port != ''">:{{ urlForDisplay.port }}</span>
 	</template>
-	<template v-if="pathname === '/' && self">
-		<span :class="$style.self">{{ hostname }}</span>
+	<template v-if="urlForDisplay.pathname === '/' && self">
+		<span :class="$style.self">{{ urlForDisplay.hostname }}</span>
 	</template>
-	<span v-if="pathname != ''" :class="$style.pathname">{{ self ? pathname.substring(1) : pathname }}</span>
-	<span :class="$style.query">{{ query }}</span>
-	<span :class="$style.hash">{{ hash }}</span>
+	<span v-if="urlForDisplay.pathname != ''" :class="$style.pathname">{{ self ? urlForDisplay.pathname.substring(1) : urlForDisplay.pathname }}</span>
+	<span :class="$style.query">{{ urlForDisplay.query }}</span>
+	<span :class="$style.hash">{{ urlForDisplay.hash }}</span>
 	<i v-if="target === '_blank'" :class="$style.icon" class="ti ti-external-link"></i>
 </component>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
-import { toUnicode as decodePunycode } from 'punycode.js';
+import { defineAsyncComponent, computed, ref, watch } from 'vue';
+import type { Ref } from 'vue';
 import { url as local } from '@@/js/config.js';
-import * as os from '@/os.js';
-import { useTooltip } from '@/use/use-tooltip.js';
-import { isEnabledUrlPreview } from '@/instance.js';
+import { maybeMakeRelative, parseUrlForDisplay } from '@@/js/url.js';
 import type { MkABehavior } from '@/components/global/MkA.vue';
-
-function safeURIDecode(str: string): string {
-	try {
-		return decodeURIComponent(str);
-	} catch {
-		return str;
-	}
-}
+import * as os from '@/os.js';
+import { useTooltip } from '@/composables/use-tooltip.js';
+import { isEnabledUrlPreview } from '@/utility/url-preview.js';
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -50,31 +43,34 @@ const props = withDefaults(defineProps<{
 	showUrlPreview: true,
 });
 
-const self = props.url.startsWith(local);
-const url = new URL(props.url);
-if (!['http:', 'https:'].includes(url.protocol)) throw new Error('invalid url');
+const maybeRelativeUrl = computed(() => maybeMakeRelative(props.url, local));
+const self = computed(() => maybeRelativeUrl.value !== props.url);
+const urlForDisplay = computed(() => parseUrlForDisplay(props.url));
+const attr = computed(() => self.value ? 'to' : 'href');
+const target = computed(() => self.value ? null : '_blank');
+
 const el = ref();
 
 if (props.showUrlPreview && isEnabledUrlPreview.value) {
+	// URL が変わったら古い URL のプレビューを閉じる
+	let previewShowing: Ref<boolean> | null = null;
+	watch(() => props.url, () => {
+		if (previewShowing != null) previewShowing.value = false;
+		previewShowing = null;
+	});
+
 	useTooltip(el, (showing) => {
+		previewShowing = showing;
 		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
 			showing,
 			url: props.url,
-			source: el.value instanceof HTMLElement ? el.value : el.value?.$el,
+			anchorElement: el.value instanceof HTMLElement ? el.value : el.value?.$el,
 		}, {
 			closed: () => dispose(),
 		});
 	});
 }
 
-const schema = url.protocol;
-const hostname = decodePunycode(url.hostname);
-const port = url.port;
-const pathname = safeURIDecode(url.pathname);
-const query = safeURIDecode(url.search);
-const hash = safeURIDecode(url.hash);
-const attr = self ? 'to' : 'href';
-const target = self ? null : '_blank';
 </script>
 
 <style lang="scss" module>
@@ -92,7 +88,7 @@ const target = self ? null : '_blank';
 }
 
 .schema {
-	opacity: 0.5;
+	color: color(from currentcolor srgb r g b / 0.5); // DOMノード全体をopacityで半透明化するより文字色を半透明化した方が若干レンダリングパフォーマンスが良い
 }
 
 .hostname {
@@ -100,11 +96,11 @@ const target = self ? null : '_blank';
 }
 
 .pathname {
-	opacity: 0.8;
+	color: color(from currentcolor srgb r g b / 0.8); // DOMノード全体をopacityで半透明化するより文字色を半透明化した方が若干レンダリングパフォーマンスが良い
 }
 
 .query {
-	opacity: 0.5;
+	color: color(from currentcolor srgb r g b / 0.5); // DOMノード全体をopacityで半透明化するより文字色を半透明化した方が若干レンダリングパフォーマンスが良い
 }
 
 .hash {

@@ -25,12 +25,12 @@ defineProps<{
 	showing: boolean;
 	x: number;
 	y: number;
-	title?: string;
+	title?: string | null;
 	series?: {
 		backgroundColor: string;
 		borderColor: string;
 		text: string;
-	}[];
+	}[] | null;
 }>();
 
 const emit = defineEmits<{

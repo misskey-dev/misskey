@@ -7,10 +7,10 @@ import { FORCE_RE_RENDER, FORCE_REMOUNT } from '@storybook/core-events';
 import { addons } from '@storybook/preview-api';
 import { type Preview, setup } from '@storybook/vue3';
 import isChromatic from 'chromatic/isChromatic';
-import { initialize, mswLoader } from 'msw-storybook-addon';
+import { setupWorker } from 'msw/browser';
+import { mswLoader } from 'msw-storybook-addon/csf3';
 import { userDetailed } from './fakes.js';
-import locale from './locale.js';
-import { commonHandlers, onUnhandledRequest } from './mocks.js';
+import { commonHandlers, onUnhandledFrame } from './mocks.js';
 import themes from './themes.js';
 import '../src/style.scss';
 
@@ -21,13 +21,13 @@ let moduleInitialized = false;
 let unobserve = () => {};
 let misskeyOS = null;
 
-function loadTheme(applyTheme: typeof import('../src/theme')['applyTheme']) {
+function loadTheme(themeMaganer: typeof import('../src/theme')['themeManager']) {
 	unobserve();
 	const theme = themes[window.document.documentElement.dataset.misskeyTheme];
 	if (theme) {
-		applyTheme(themes[window.document.documentElement.dataset.misskeyTheme]);
+		themeMaganer.updateTheme(themes[window.document.documentElement.dataset.misskeyTheme]);
 	} else {
-		applyTheme(themes['l-light']);
+		themeMaganer.updateTheme(themes['l-light']);
 	}
 	const observer = new MutationObserver((entries) => {
 		for (const entry of entries) {
@@ -35,7 +35,7 @@ function loadTheme(applyTheme: typeof import('../src/theme')['applyTheme']) {
 				const target = entry.target as HTMLElement;
 				const theme = themes[target.dataset.misskeyTheme];
 				if (theme) {
-					applyTheme(themes[target.dataset.misskeyTheme]);
+					themeMaganer.updateTheme(themes[target.dataset.misskeyTheme]);
 				} else {
 					target.removeAttribute('style');
 				}
@@ -55,12 +55,8 @@ function initLocalStorage() {
 		...userDetailed(),
 		policies: {},
 	}));
-	localStorage.setItem('locale', JSON.stringify(locale));
 }
 
-initialize({
-	onUnhandledRequest,
-});
 initLocalStorage();
 queueMicrotask(() => {
 	Promise.all([
@@ -83,7 +79,7 @@ queueMicrotask(() => {
 			widgets(app);
 			misskeyOS = os;
 			if (isChromatic()) {
-				prefer.set('animation', false);
+				prefer.commit('animation', false);
 			}
 		});
 	});
@@ -136,7 +132,11 @@ const preview = {
 			};
 		},
 	],
-	loaders: [mswLoader],
+	loaders: [mswLoader(async () => {
+		const worker = setupWorker();
+		await worker.start({ onUnhandledFrame });
+		return worker;
+	})],
 	parameters: {
 		controls: {
 			exclude: /^__/,

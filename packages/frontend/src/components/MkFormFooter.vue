@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div v-if="form.modified.value" :class="$style.root">
 	<div :class="$style.text">{{ i18n.tsx.thereAreNChanges({ n: form.modifiedCount.value }) }}</div>
 	<div style="margin-left: auto;" class="_buttons">
 		<MkButton danger rounded @click="form.discard"><i class="ti ti-x"></i> {{ i18n.ts.discard }}</MkButton>
@@ -16,16 +16,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import MkButton from './MkButton.vue';
+import type { useForm } from '@/composables/use-form.js';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	form: {
-		modifiedCount: {
-			value: number;
-		};
-		discard: () => void;
-		save: () => void;
-	};
+	form: ReturnType<typeof useForm>;
 	canSaving?: boolean;
 }>(), {
 	canSaving: true,

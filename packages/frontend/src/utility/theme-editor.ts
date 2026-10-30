@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 
-import type { Theme } from '@/theme.js';
-import { themeProps } from '@/theme.js';
+import type { Theme } from '@@/js/theme.js';
+import { themeProps } from '@@/js/theme.js';
 
 export type Default = null;
 export type Color = string;
@@ -66,7 +66,7 @@ export const convertToMisskeyTheme = (vm: ThemeViewModel, name: string, desc: st
 	}
 
 	return {
-		id: uuid(),
+		id: genId(),
 		name, desc, author, props, base,
 	};
 };

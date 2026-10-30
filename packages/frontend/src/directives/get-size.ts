@@ -37,8 +37,10 @@ function calc(src: Element) {
 	info.fn(width, height);
 }
 
-export default {
-	mounted(src, binding, vn) {
+type SizeCallback = (w: number, h: number) => void;
+
+export const getSizeDirective = {
+	mounted(src, binding) {
 		const resize = new ResizeObserver((entries, observer) => {
 			calc(src);
 		});
@@ -48,7 +50,7 @@ export default {
 		calc(src);
 	},
 
-	unmounted(src, binding, vn) {
+	unmounted(src, binding) {
 		binding.value(0, 0);
 		const info = mountings.get(src);
 		if (!info) return;
@@ -56,4 +58,4 @@ export default {
 		if (info.intersection) info.intersection.disconnect();
 		mountings.delete(src);
 	},
-} as Directive<Element, (w: number, h: number) => void>;
+} as Directive<Element, SizeCallback>;

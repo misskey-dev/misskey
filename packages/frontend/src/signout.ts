@@ -4,26 +4,49 @@
  */
 
 import { apiUrl } from '@@/js/config.js';
-import { defaultMemoryStorage } from '@/memory-storage';
+import { cloudBackup } from '@/preferences/utility.js';
+import { store } from '@/store.js';
 import { waiting } from '@/os.js';
-import { unisonReload, reloadChannel } from '@/utility/unison-reload.js';
+import { unisonReload } from '@/utility/unison-reload.js';
+import { clear } from '@/utility/idb-proxy.js';
 import { $i } from '@/i.js';
+import { encodePushSubscriptionKey } from '@/utility/encode-push-subscription-key.js';
 
 export async function signout() {
 	if (!$i) return;
 
-	// TODO: preferの自動バックアップがオンの場合、いろいろ消す前に強制バックアップ
-
 	waiting();
 
-	localStorage.clear();
-	defaultMemoryStorage.clear();
+	if (store.s.enablePreferencesAutoCloudBackup) {
+		await cloudBackup();
+	}
 
-	const idbPromises = ['MisskeyClient', 'keyval-store'].map((name, i, arr) => new Promise((res, rej) => {
-		indexedDB.deleteDatabase(name);
+	localStorage.clear();
+
+	const idbAbortController = new AbortController();
+	const timeout = window.setTimeout(() => idbAbortController.abort(), 5000);
+
+	const idbPromises = ['MisskeyClient'].map((name, i, arr) => new Promise<void>((res, rej) => {
+		const delidb = indexedDB.deleteDatabase(name);
+		delidb.onsuccess = () => res();
+		delidb.onerror = e => rej(e);
+		delidb.onblocked = () => idbAbortController.signal.aborted && rej(new Error('Operation aborted'));
 	}));
 
-	await Promise.all(idbPromises);
+	try {
+		await Promise.race([
+			Promise.all([
+				...idbPromises,
+				// idb keyval-storeはidb-keyvalライブラリによる別管理
+				clear(),
+			]),
+			new Promise((_, rej) => idbAbortController.signal.addEventListener('abort', () => rej(new Error('Operation timed out')))),
+		]);
+	} catch {
+		// nothing
+	} finally {
+		window.clearTimeout(timeout);
+	}
 
 	//#region Remove service worker registration
 	try {
@@ -31,11 +54,13 @@ export async function signout() {
 			const registration = await navigator.serviceWorker.ready;
 			const push = await registration.pushManager.getSubscription();
 			if (push) {
+				// Service Workerごと登録解除するので、この購読に紐づく全アカウントの登録を解除する
 				await window.fetch(`${apiUrl}/sw/unregister`, {
 					method: 'POST',
 					body: JSON.stringify({
-						i: $i.token,
 						endpoint: push.endpoint,
+						auth: encodePushSubscriptionKey(push.getKey('auth')),
+						publickey: encodePushSubscriptionKey(push.getKey('p256dh')),
 					}),
 					headers: {
 						'Content-Type': 'application/json',
@@ -48,7 +73,9 @@ export async function signout() {
 			.then(registrations => {
 				return Promise.all(registrations.map(registration => registration.unregister()));
 			});
-	} catch (err) {}
+	} catch {
+		// nothing
+	}
 	//#endregion
 
 	unisonReload('/');

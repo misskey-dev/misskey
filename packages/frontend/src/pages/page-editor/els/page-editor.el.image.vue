@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => emit('remove')">
+<XContainer :draggable="true" :dragStartCallback="dragStartCallback" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-photo"></i> {{ i18n.ts._pages.blocks.image }}</template>
 	<template #func>
 		<button @click="choose()">
@@ -20,16 +20,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-/* eslint-disable vue/no-mutating-props */
+
 import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
-import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import { chooseDriveFile } from '@/utility/drive.js';
 
 const props = defineProps<{
+	dragStartCallback?: (ev: DragEvent) => void;
 	modelValue: Misskey.entities.PageBlock & { type: 'image' };
 }>();
 
@@ -41,7 +42,7 @@ const emit = defineEmits<{
 const file = ref<Misskey.entities.DriveFile | null>(null);
 
 async function choose() {
-	os.selectDriveFile(false).then((fileResponse) => {
+	chooseDriveFile({ multiple: false }).then((fileResponse) => {
 		file.value = fileResponse[0];
 		emit('update:modelValue', {
 			...props.modelValue,

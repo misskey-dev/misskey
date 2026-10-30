@@ -5,6 +5,7 @@
 
 process.env.NODE_ENV = 'test';
 
+import { afterAll, beforeAll, beforeEach, describe, test, expect } from 'vitest';
 import { Test } from '@nestjs/testing';
 import {
 	DeleteObjectCommand,
@@ -53,7 +54,7 @@ describe('DriveService', () => {
 			s3Mock.on(DeleteObjectCommand)
 				.rejects(new InvalidObjectState({ $metadata: {}, message: '' }));
 
-			await expect(driveService.deleteObjectStorageFile('unexpected')).rejects.toThrowError(Error);
+			await expect(driveService.deleteObjectStorageFile('unexpected')).rejects.toThrow(Error);
 		});
 
 		test('delete a file with no valid key', async () => {

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { describe, test } from 'vitest';
 import * as assert from 'assert';
 import httpSignature from '@peertube/http-signature';
 
@@ -41,7 +42,7 @@ describe('ap-request', () => {
 			'User-Agent': 'UA',
 		};
 
-		const req = ApRequestCreator.createSignedPost({ key, url, body, additionalHeaders: headers });
+		const req = await ApRequestCreator.createSignedPost({ key, url, body, additionalHeaders: headers });
 
 		const parsed = buildParsedSignature(req.signingString, req.signature, 'rsa-sha256');
 
@@ -57,12 +58,77 @@ describe('ap-request', () => {
 			'User-Agent': 'UA',
 		};
 
-		const req = ApRequestCreator.createSignedGet({ key, url, additionalHeaders: headers });
+		const req = await ApRequestCreator.createSignedGet({ key, url, additionalHeaders: headers });
 
 		const parsed = buildParsedSignature(req.signingString, req.signature, 'rsa-sha256');
 
 		const result = httpSignature.verifySignature(parsed, keypair.publicKey);
 		assert.deepStrictEqual(result, true);
+	});
+
+	test('createSignedGet includes query string in request-target', async () => {
+		const keypair = await genRsaKeyPair();
+		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
+		const url = 'https://example.com/users/alice?page=2';
+
+		const req = await ApRequestCreator.createSignedGet({ key, url, additionalHeaders: { 'User-Agent': 'UA' } });
+
+		assert.ok(req.signingString.split('\n').includes('(request-target): get /users/alice?page=2'));
+
+		const parsed = buildParsedSignature(req.signingString, req.signature, 'rsa-sha256');
+		assert.deepStrictEqual(httpSignature.verifySignature(parsed, keypair.publicKey), true);
+	});
+
+	test('createSignedPost includes query string in request-target', async () => {
+		const keypair = await genRsaKeyPair();
+		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
+		const url = 'https://example.com/inbox?token=abc';
+		const body = JSON.stringify({ a: 1 });
+
+		const req = await ApRequestCreator.createSignedPost({
+			key,
+			url,
+			body,
+			additionalHeaders: { 'User-Agent': 'UA' },
+		});
+
+		assert.ok(req.signingString.split('\n').includes('(request-target): post /inbox?token=abc'));
+
+		const parsed = buildParsedSignature(req.signingString, req.signature, 'rsa-sha256');
+		assert.deepStrictEqual(httpSignature.verifySignature(parsed, keypair.publicKey), true);
+	});
+
+	test('request-target omits hash and preserves empty query delimiter', async () => {
+		const keypair = await genRsaKeyPair();
+		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
+
+		const withHash = await ApRequestCreator.createSignedGet({
+			key,
+			url: 'https://example.com/users/alice?page=2#ignored',
+			additionalHeaders: { 'User-Agent': 'UA' },
+		});
+		assert.ok(withHash.signingString.split('\n').includes('(request-target): get /users/alice?page=2'));
+
+		const emptyQueryWithHash = await ApRequestCreator.createSignedGet({
+			key,
+			url: 'https://example.com/outbox?#ignored',
+			additionalHeaders: { 'User-Agent': 'UA' },
+		});
+		assert.ok(emptyQueryWithHash.signingString.split('\n').includes('(request-target): get /outbox?'));
+
+		const emptyQuery = await ApRequestCreator.createSignedGet({
+			key,
+			url: 'https://example.com/outbox?',
+			additionalHeaders: { 'User-Agent': 'UA' },
+		});
+		assert.ok(emptyQuery.signingString.split('\n').includes('(request-target): get /outbox?'));
+
+		const withoutQuery = await ApRequestCreator.createSignedGet({
+			key,
+			url: 'https://example.com/outbox',
+			additionalHeaders: { 'User-Agent': 'UA' },
+		});
+		assert.ok(withoutQuery.signingString.split('\n').includes('(request-target): get /outbox'));
 	});
 
 	test('rejects non matching domain', () => {
@@ -78,7 +144,7 @@ describe('ap-request', () => {
 			'https://alice.example.com/abc',
 			FetchAllowSoftFailMask.Any,
 		), 'validation should fail no matter what if the response URL is inconsistent with the object ID');
-		
+
 		assert.doesNotThrow(() => assertActivityMatchesUrl(
 			'https://alice.example.com/abc#test',
 			{ id: 'https://alice.example.com/abc' } as IObject,

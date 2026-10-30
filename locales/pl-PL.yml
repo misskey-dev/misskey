@@ -230,7 +230,6 @@ noUsers: "Brak użytkowników"
 editProfile: "Edytuj profil"
 noteDeleteConfirm: "Czy na pewno chcesz usunąć ten wpis?"
 pinLimitExceeded: "Nie możesz przypiąć więcej wpisów."
-intro: "Zakończono instalację Misskey! Utwórz konto administratora."
 done: "Gotowe"
 processing: "Przetwarzanie"
 preview: "Podgląd"
@@ -749,7 +748,6 @@ thisIsExperimentalFeature: "Ta funkcja jest eksperymentalna. Jej funkcjonalnoś�
 developer: "Programista"
 makeExplorable: "Pokazuj konto na stronie „Eksploruj”"
 makeExplorableDescription: "Jeżeli wyłączysz tę opcję, Twoje konto nie będzie wyświetlać się w sekcji „Eksploruj”."
-showGapBetweenNotesInTimeline: "Pokazuj odstęp między wpisami na osi czasu."
 duplicate: "Duplikuj"
 left: "Lewo"
 center: "Wyśsrodkuj"
@@ -1042,6 +1040,19 @@ surrender: "Odrzuć"
 gameRetry: "Spróbuj ponownie"
 postForm: "Formularz tworzenia wpisu"
 information: "Informacje"
+inMinutes: "minuta"
+inDays: "dzień"
+widgets: "Widżety"
+presets: "Konfiguracja"
+previewingThemeRestore: "Przywróć"
+_imageEditing:
+  _vars:
+    filename: "Nazwa pliku"
+_imageFrameEditor:
+  header: "Nagłówek"
+  font: "Czcionka"
+  fontSerif: "Szeryfowa"
+  fontSansSerif: "Bezszeryfowa"
 _chat:
   invitations: "Zaproś"
   noHistory: "Brak historii"
@@ -1212,7 +1223,6 @@ _theme:
     header: "Nagłówek"
     navBg: "Tło paska bocznego"
     navFg: "Tekst paska bocznego"
-    navHoverFg: "Tekst paska bocznego (zbliżenie)"
     navActive: "Tekst paska bocznego (aktywny)"
     navIndicator: "Wskaźnik paska bocznego"
     link: "Odnośnik"
@@ -1234,12 +1244,8 @@ _theme:
     buttonBg: "Tło przycisku"
     buttonHoverBg: "Tło przycisku (po najechaniu)"
     inputBorder: "Obramowanie pola wejścia"
-    driveFolderBg: "Tło folderu na dysku"
-    wallpaperOverlay: "Nakładka tapety"
     badge: "Odznaka"
     messageBg: "Tło czatu"
-    accentDarken: "Akcent (ciemniejszy)"
-    accentLighten: "Akcent (jaśniejszy)"
     fgHighlighted: "Wyróżniony tekst"
 _sfx:
   note: "Wpisy"
@@ -1356,6 +1362,14 @@ _widgets:
   _userList:
     chooseList: "Wybierz listę"
   clicker: "Clicker"
+_widgetOptions:
+  height: "Wysokość"
+  _button:
+    colored: "Kolorowe"
+  _clock:
+    size: "Rozmiar"
+  _birthdayFollowings:
+    period: "Czas trwania"
 _cw:
   hide: "Ukryj"
   show: "Załaduj więcej"
@@ -1397,6 +1411,9 @@ _postForm:
   replyPlaceholder: "Odpowiedz na ten wpis..."
   quotePlaceholder: "Zacytuj ten wpis…"
   channelPlaceholder: "Publikuj na kanale..."
+  _howToUse:
+    visibility_title: "Widoczność"
+    menu_title: "Menu"
   _placeholders:
     a: "Co się dzieje?"
     b: "Co się wydarzyło?"
@@ -1561,6 +1578,7 @@ _deck:
     antenna: "Anteny"
     list: "Listy"
     channel: "Kanały"
+    clip: "Klip"
     mentions: "Wspomnienia"
     direct: "Bezpośredni"
 _webhookSettings:
@@ -1591,3 +1609,20 @@ _remoteLookupErrors:
 _search:
   searchScopeAll: "Wszystkie"
   searchScopeLocal: "Lokalne"
+_watermarkEditor:
+  opacity: "Przezroczystość"
+  scale: "Rozmiar"
+  text: "Tekst"
+  type: "Typ"
+  image: "Zdjęcia"
+  advanced: "Zaawansowane"
+_imageEffector:
+  _fxProps:
+    scale: "Rozmiar"
+    size: "Rozmiar"
+    color: "Kolor"
+    opacity: "Przezroczystość"
+    lightness: "Rozjaśnij"
+_qr:
+  showTabTitle: "Wyświetlanie"
+  raw: "Tekst"

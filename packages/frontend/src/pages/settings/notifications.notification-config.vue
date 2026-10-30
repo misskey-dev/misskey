@@ -5,13 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkSelect v-model="type">
-		<option v-for="type in props.configurableTypes ?? notificationConfigTypes" :key="type" :value="type">{{ notificationConfigTypesI18nMap[type] }}</option>
+	<MkSelect v-model="type" :items="typeDef">
 	</MkSelect>
 
-	<MkSelect v-if="type === 'list'" v-model="userListId">
+	<MkSelect v-if="type === 'list'" v-model="userListId" :items="userListIdDef">
 		<template #label>{{ i18n.ts.userList }}</template>
-		<option v-for="list in props.userLists" :key="list.id" :value="list.id">{{ list.name }}</option>
 	</MkSelect>
 
 	<div class="_buttons">
@@ -41,9 +39,10 @@ export type NotificationConfig = {
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -66,8 +65,26 @@ const notificationConfigTypesI18nMap: Record<typeof notificationConfigTypes[numb
 	never: i18n.ts.none,
 };
 
-const type = ref(props.value.type);
-const userListId = ref(props.value.type === 'list' ? props.value.userListId : null);
+const {
+	model: type,
+	def: typeDef,
+} = useMkSelect({
+	items: computed(() => (props.configurableTypes ?? notificationConfigTypes).map((t: NotificationConfig['type']) => ({
+		label: notificationConfigTypesI18nMap[t],
+		value: t,
+	}))),
+	initialValue: props.value.type,
+});
+const {
+	model: userListId,
+	def: userListIdDef,
+} = useMkSelect({
+	items: computed(() => props.userLists.map(list => ({
+		label: list.name,
+		value: list.id,
+	}))),
+	initialValue: props.value.type === 'list' ? props.value.userListId : null,
+});
 
 function save() {
 	emit('update', type.value === 'list' ? { type: type.value, userListId: userListId.value! } : { type: type.value });

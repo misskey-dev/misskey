@@ -22,5 +22,8 @@
 		mentionMe: '#de6161',
 		hashtag: '#68bad0',
 		link: '#a1c758',
+		error: '#ce5441',
+		warn: '#d0b868',
+		success: '#a1c758',
 	},
 }

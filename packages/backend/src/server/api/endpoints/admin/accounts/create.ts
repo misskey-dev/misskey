@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MiMeta, UsersRepository } from '@/models/_.js';
 import { SignupService } from '@/core/SignupService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { localUsernameSchema, passwordSchema } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
@@ -34,13 +35,22 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
-		ref: 'MeDetailed',
-		properties: {
-			token: {
-				type: 'string',
-				optional: false, nullable: false,
+		allOf: [
+			{
+				type: 'object',
+				ref: 'MeDetailed',
 			},
-		},
+			{
+				type: 'object',
+				optional: false, nullable: false,
+				properties: {
+					token: {
+						type: 'string',
+						optional: false, nullable: false,
+					},
+				},
+			}
+		],
 	},
 } as const;
 
@@ -68,6 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private userEntityService: UserEntityService,
 		private signupService: SignupService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, _me, token) => {
 			const me = _me ? await this.usersRepository.findOneByOrFail({ id: _me.id }) : null;
@@ -84,7 +95,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					// 初期パスワードが設定されていないのに初期パスワードが入力された場合
 					throw new ApiError(meta.errors.wrongInitialPassword);
 				}
-			} else if ((this.serverSettings.rootUserId != null && (this.serverSettings.rootUserId !== me?.id)) || token !== null) {
+			} else if (token !== null || !(await this.roleService.isAdministrator(me))) {
 				// 初回セットアップではなく、管理者でない場合 or 外部トークンを使用している場合
 				throw new ApiError(meta.errors.accessDenied);
 			}

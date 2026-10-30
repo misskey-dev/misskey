@@ -14,6 +14,7 @@ export default [
 	...pluginVue.configs['flat/recommended'],
 	{
 		files: ['src/**/*.{ts,vue}'],
+		ignores: ['**/*.stories.ts'],
 		languageOptions: {
 			globals: {
 				...Object.fromEntries(Object.entries(globals.node).map(([key]) => [key, 'off'])),
@@ -30,9 +31,6 @@ export default [
 				_VERSION_: false,
 				_ENV_: false,
 				_PERF_PREFIX_: false,
-				_DATA_TRANSFER_DRIVE_FILE_: false,
-				_DATA_TRANSFER_DRIVE_FOLDER_: false,
-				_DATA_TRANSFER_DECK_COLUMN_: false,
 			},
 			parser,
 			parserOptions: {
@@ -149,12 +147,23 @@ export default [
 			'vue/return-in-computed-property': 'warn',
 			'vue/no-setup-props-reactivity-loss': 'warn',
 			'vue/max-attributes-per-line': 'off',
-			'vue/html-self-closing': 'off',
+			'vue/html-self-closing': ['error', {
+				html: {
+					void: 'any',
+					normal: 'never',
+					component: 'any',
+				},
+				svg: 'any',
+				math: 'any',
+			}],
 			'vue/singleline-html-element-content-newline': 'off',
 			'vue/v-on-event-hyphenation': ['error', 'never', {
 				autofix: true,
 			}],
 			'vue/attribute-hyphenation': ['error', 'never'],
+			'vue/no-mutating-props': ['error', {
+				shallowOnly: true,
+			}],
 		},
 	},
 ];

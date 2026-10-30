@@ -51,7 +51,7 @@ export function onScrollTop(el: HTMLElement, cb: (topVisible: boolean) => unknow
 	// - toleranceの範囲内に収まる程度の微量なスクロールが発生した
 	let prevTopVisible = firstTopVisible;
 	const onScroll = () => {
-		if (!document.body.contains(el)) return;
+		if (!window.document.body.contains(el)) return;
 
 		const topVisible = isHeadVisible(el, tolerance);
 		if (topVisible !== prevTopVisible) {
@@ -78,7 +78,7 @@ export function onScrollBottom(el: HTMLElement, cb: () => unknown, tolerance = 1
 
 	const containerOrWindow = container ?? window;
 	const onScroll = () => {
-		if (!document.body.contains(el)) return;
+		if (!window.document.body.contains(el)) return;
 		if (isTailVisible(el, 1, container)) {
 			cb();
 			if (once) removeListener();
@@ -145,8 +145,8 @@ export function isTailVisible(el: HTMLElement, tolerance = 1, container = getScr
 // https://ja.javascript.info/size-and-scroll-window#ref-932
 export function getBodyScrollHeight() {
 	return Math.max(
-		document.body.scrollHeight, document.documentElement.scrollHeight,
-		document.body.offsetHeight, document.documentElement.offsetHeight,
-		document.body.clientHeight, document.documentElement.clientHeight,
+		window.document.body.scrollHeight, window.document.documentElement.scrollHeight,
+		window.document.body.offsetHeight, window.document.documentElement.offsetHeight,
+		window.document.body.clientHeight, window.document.documentElement.clientHeight,
 	);
 }

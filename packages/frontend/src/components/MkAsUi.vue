@@ -32,10 +32,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkInput>
-	<MkSelect v-else-if="c.type === 'select'" :small="size === 'small'" :modelValue="valueForSelect" @update:modelValue="onSelectUpdate">
+	<MkSelect v-else-if="c.type === 'select'" :small="size === 'small'" :modelValue="valueForSelect" :items="selectDef" @update:modelValue="onSelectUpdate">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
-		<option v-for="item in c.items" :key="item.value" :value="item.value">{{ item.text }}</option>
 	</MkSelect>
 	<MkButton v-else-if="c.type === 'postFormButton'" :primary="c.primary" :rounded="c.rounded" :small="size === 'small'" inline @click="openPostForm">{{ c.text }}</MkButton>
 	<div v-else-if="c.type === 'postForm'" :class="$style.postForm">
@@ -65,15 +64,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import type { Ref } from 'vue';
+import type { AsUiComponent, AsUiRoot, AsUiPostFormButton } from '@/aiscript/ui.js';
 import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import type { AsUiComponent, AsUiRoot, AsUiPostFormButton } from '@/aiscript/ui.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 
 const props = withDefaults(defineProps<{
 	component: AsUiComponent;
@@ -106,7 +106,7 @@ const containerStyle = computed(() => {
 	const isBordered = c.borderWidth ?? c.borderColor ?? c.borderStyle;
 
 	const border = isBordered ? {
-		borderWidth: c.borderWidth ?? '1px',
+		borderWidth: `${c.borderWidth ?? 1}px`,
 		borderColor: c.borderColor ?? 'var(--MI_THEME-divider)',
 		borderStyle: c.borderStyle ?? 'solid',
 	} : undefined;
@@ -130,9 +130,21 @@ function onSwitchUpdate(v: boolean) {
 	}
 }
 
-const valueForSelect = ref('default' in c && typeof c.default !== 'boolean' ? c.default ?? null : null);
+const {
+	model: valueForSelect,
+	def: selectDef,
+} = useMkSelect({
+	items: computed(() => {
+		if (c.type !== 'select') return [];
+		return (c.items ?? []).map(item => ({
+			value: item.value,
+			label: item.text,
+		}));
+	}),
+	initialValue: (c.type === 'select' && 'default' in c && typeof c.default !== 'boolean') ? c.default ?? null : null,
+});
 
-function onSelectUpdate(v) {
+function onSelectUpdate(v: string | null) {
 	valueForSelect.value = v;
 	if ('onChange' in c && c.onChange) {
 		c.onChange(v as never);

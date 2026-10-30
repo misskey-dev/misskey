@@ -219,7 +219,6 @@ noUsers: "Foydalanuvchilar yo‘q"
 editProfile: "Profilni o'zgartirish"
 noteDeleteConfirm: "Haqiqatan ham bu qaydni oʻchirib tashlamoqchimisiz?"
 pinLimitExceeded: "Siz boshqa qaydlarni mahkamlay olmaysiz"
-intro: "Misskeyni o'rnatish tugallandi! Iltimos, administrator foydalanuvchi yarating."
 done: "Bajarildi"
 processing: "Amaliyotda"
 preview: "Ko'rish"
@@ -838,6 +837,14 @@ replies: "Javob berish"
 renotes: "Qayta qayd etish"
 flip: "Teskari"
 information: "Haqida"
+_imageEditing:
+  _vars:
+    filename: "Fayl nomi"
+_imageFrameEditor:
+  header: "Sarlavha"
+  font: "Shrift"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
 _chat:
   invitations: "Taklif qilish"
   noHistory: "Tarix yo'q"
@@ -904,11 +911,9 @@ _theme:
     header: "Sarlavha"
     navBg: "Yon panel foni"
     navFg: "Yon panel matni"
-    mention: "Murojat"
+    mention: "Eslatib o'tish"
     renote: "Qayta qayd etish"
     divider: "Ajratrmoq"
-    accentDarken: "Urg'u (Qoraytirilgan)"
-    accentLighten: "Urg'u (Yoritilgan)"
     fgHighlighted: "Belgilangan matn"
 _sfx:
   note: "Qaydlar"
@@ -940,6 +945,12 @@ _widgets:
   jobQueue: "Vazifalar navbati"
   _userList:
     chooseList: "Ro'yxat tanlash"
+_widgetOptions:
+  height: "balandligi"
+  _button:
+    colored: "rangli"
+  _birthdayFollowings:
+    period: "Davomiylik"
 _cw:
   show: "Ko‘proq ko‘rish"
   chars: "{count} ta belgi(lar)"
@@ -967,6 +978,10 @@ _visibility:
   home: "Bosh sahifa"
   followers: "Obunachilar"
   specified: "Bevosita"
+_postForm:
+  _howToUse:
+    visibility_title: "Ko'rinishi"
+    menu_title: "Menyu"
 _profile:
   name: "Ism"
   username: "Foydalanuvchi nomi"
@@ -1048,7 +1063,7 @@ _notification:
   _types:
     all: "Barchasi"
     follow: "Obuna bo‘lish"
-    mention: "Murojat"
+    mention: "Eslatib o'tish"
     renote: "Qayta qayd etish"
     quote: "Iqtibos keltirish"
     reaction: "Reaktsiyalar"
@@ -1076,6 +1091,7 @@ _deck:
     antenna: "Antennalar"
     list: "Ro‘yxat"
     channel: "Kanal"
+    clip: "Klip"
     mentions: "Eslatib o'tish"
     direct: "Bevosita qaydlar"
     roleTimeline: "Rol xronologiyasi"
@@ -1100,3 +1116,15 @@ _remoteLookupErrors:
 _search:
   searchScopeAll: "Barcha"
   searchScopeLocal: "Mahalliy"
+_watermarkEditor:
+  text: "Matn"
+  type: "turi"
+  image: "Rasmlar"
+  advanced: "Murakkab"
+_imageEffector:
+  _fxProps:
+    color: "Rang"
+    lightness: "Yoritish"
+_qr:
+  showTabTitle: "Displey"
+  raw: "Matn"

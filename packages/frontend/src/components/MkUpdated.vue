@@ -4,10 +4,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :zPriority="'middle'" @click="modal?.close()" @closed="$emit('closed')">
+<MkModal ref="modal" preferType="dialog" :zPriority="'middle'" @click="modal?.close()" @closed="emit('closed')">
 	<div :class="$style.root">
 		<div :class="$style.title"><MkSparkle>{{ i18n.ts.misskeyUpdated }}</MkSparkle></div>
 		<div :class="$style.version">✨{{ version }}🚀</div>
+		<div v-if="isBeta" :class="$style.beta">{{ i18n.ts.thankYouForTestingBeta }}</div>
 		<MkButton full @click="whatIsNew">{{ i18n.ts.whatIsNew }}</MkButton>
 		<MkButton :class="$style.gotIt" primary full @click="modal?.close()">{{ i18n.ts.gotIt }}</MkButton>
 	</div>
@@ -25,9 +26,19 @@ import { confetti } from '@/utility/confetti.js';
 
 const modal = useTemplateRef('modal');
 
+const emit = defineEmits<{
+	(ev: 'closed'): void;
+}>();
+
+const isBeta = version.includes('-beta') || version.includes('-alpha') || version.includes('-rc');
+
 function whatIsNew() {
 	modal.value?.close();
-	window.open(`https://misskey-hub.net/docs/releases/#_${version.replace(/\./g, '')}`, '_blank');
+	if (isBeta) {
+		window.open(`https://github.com/misskey-dev/misskey/releases/tag/${version}`, '_blank');
+	} else {
+		window.open(`https://misskey-hub.net/docs/releases/#_${version.replace(/\./g, '')}`, '_blank');
+	}
 }
 
 onMounted(() => {
@@ -55,6 +66,10 @@ onMounted(() => {
 }
 
 .version {
+	margin: 1em 0;
+}
+
+.beta {
 	margin: 1em 0;
 }
 

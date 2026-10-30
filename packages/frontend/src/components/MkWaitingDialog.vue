@@ -22,12 +22,12 @@ const modal = useTemplateRef('modal');
 const props = defineProps<{
 	success: boolean;
 	showing: boolean;
-	text?: string;
+	text?: string | null;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'done');
-	(ev: 'closed');
+	(ev: 'done'): void;
+	(ev: 'closed'): void;
 }>();
 
 function done() {

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="700">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div v-if="list" class="_gaps">
 			<MkFolder>
 				<template #label>{{ i18n.ts.settings }}</template>
@@ -24,12 +24,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkFolder defaultOpen>
 				<template #label>{{ i18n.ts.members }}</template>
-				<template #caption>{{ i18n.tsx.nUsers({ n: `${list.userIds.length}/${$i.policies['userEachUserListsLimit']}` }) }}</template>
+				<template #caption>{{ i18n.tsx.nUsers({ n: `${list.userIds!.length}/${$i.policies['userEachUserListsLimit']}` }) }}</template>
 
-				<div class="_gaps_s">
-					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
+				<div class="_gaps">
+					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()"><i class="ti ti-plus"></i> {{ i18n.ts.addUser }}</MkButton>
 
-					<MkPagination ref="paginationEl" :pagination="membershipsPagination">
+					<MkPagination :paginator="membershipsPaginator">
 						<template #default="{ items }">
 							<div class="_gaps_s">
 								<div v-for="item in items" :key="item.id">
@@ -47,19 +47,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, markRaw, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { userPage } from '@/filters/user.js';
+import { userPage } from '@@/js/user.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -67,30 +67,26 @@ import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache.js';
 import { ensureSignin } from '@/i.js';
 import MkPagination from '@/components/MkPagination.vue';
-import { mainRouter } from '@/router.js';
-import { prefer } from '@/preferences.js';
+import { useRouter } from '@/router.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const $i = ensureSignin();
 
-const {
-	enableInfiniteScroll,
-} = prefer.r;
+const router = useRouter();
 
 const props = defineProps<{
 	listId: string;
 }>();
 
-const paginationEl = ref<InstanceType<typeof MkPagination>>();
 const list = ref<Misskey.entities.UserList | null>(null);
 const isPublic = ref(false);
 const name = ref('');
-const membershipsPagination = {
-	endpoint: 'users/lists/get-memberships' as const,
+const membershipsPaginator = markRaw(new Paginator('users/lists/get-memberships', {
 	limit: 30,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		listId: props.listId,
 	})),
-};
+}));
 
 function fetchList() {
 	misskeyApi('users/lists/show', {
@@ -103,35 +99,46 @@ function fetchList() {
 }
 
 function addUser() {
-	os.selectUser().then(user => {
+	os.selectUser({ includeSelf: true }).then(user => {
 		if (!list.value) return;
+		const listId = list.value.id;
 		os.apiWithDialog('users/lists/push', {
-			listId: list.value.id,
+			listId,
 			userId: user.id,
 		}).then(() => {
-			paginationEl.value?.reload();
+			if (list.value?.id === listId && !list.value.userIds?.includes(user.id)) {
+				list.value.userIds?.push(user.id);
+			}
+			membershipsPaginator.reload();
+			userListsCache.delete();
 		});
 	});
 }
 
-async function removeUser(item, ev) {
+async function removeUser(item: Misskey.entities.UsersListsGetMembershipsResponse[number], ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.remove,
 		icon: 'ti ti-x',
 		danger: true,
 		action: async () => {
 			if (!list.value) return;
+			const listId = list.value.id;
 			misskeyApi('users/lists/pull', {
-				listId: list.value.id,
+				listId,
 				userId: item.userId,
 			}).then(() => {
-				paginationEl.value?.removeItem(item.id);
+				if (list.value?.id === listId) {
+					const index = list.value.userIds?.indexOf(item.userId) ?? -1;
+					if (index !== -1) list.value.userIds?.splice(index, 1);
+				}
+				membershipsPaginator.removeItem(item.id);
+				userListsCache.delete();
 			});
 		},
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function showMembershipMenu(item, ev) {
+async function showMembershipMenu(item: Misskey.entities.UsersListsGetMembershipsResponse[number], ev: PointerEvent) {
 	const withRepliesRef = ref(item.withReplies);
 
 	os.popupMenu([{
@@ -147,7 +154,7 @@ async function showMembershipMenu(item, ev) {
 			userId: item.userId,
 			withReplies,
 		}).then(() => {
-			paginationEl.value!.updateItem(item.id, (old) => ({
+			membershipsPaginator.updateItem(item.id, (old) => ({
 				...old,
 				withReplies,
 			}));
@@ -167,7 +174,7 @@ async function deleteList() {
 		listId: list.value.id,
 	});
 	userListsCache.delete();
-	mainRouter.push('/my/lists');
+	router.push('/my/lists');
 }
 
 async function updateSettings() {
@@ -186,7 +193,17 @@ async function updateSettings() {
 
 watch(() => props.listId, fetchList, { immediate: true });
 
-const headerActions = computed(() => []);
+const headerActions = computed(() => list.value ? [{
+	icon: 'ti ti-timeline',
+	text: i18n.ts.timeline,
+	handler: () => {
+		router.push('/timeline/list/:listId', {
+			params: {
+				listId: list.value!.id,
+			},
+		});
+	},
+}] : []);
 
 const headerTabs = computed(() => []);
 

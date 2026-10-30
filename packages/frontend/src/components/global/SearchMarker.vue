@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="root" :class="[$style.root, { [$style.highlighted]: highlighted }]">
-	<slot></slot>
+	<slot :isParentOfTarget="isParentOfTarget"></slot>
 </div>
 </template>
 
@@ -21,7 +21,7 @@ import {
 	useTemplateRef,
 	inject,
 } from 'vue';
-import type { Ref } from 'vue';
+import { DI } from '@/di.js';
 
 const props = defineProps<{
 	markerId?: string;
@@ -36,12 +36,13 @@ const rootEl = useTemplateRef('root');
 const rootElMutationObserver = new MutationObserver(() => {
 	checkChildren();
 });
-const injectedSearchMarkerId = inject<Ref<string | null> | null>('inAppSearchMarkerId', null);
+const injectedSearchMarkerId = inject(DI.inAppSearchMarkerId, null);
 const searchMarkerId = computed(() => injectedSearchMarkerId?.value ?? window.location.hash.slice(1));
 const highlighted = ref(props.markerId === searchMarkerId.value);
+const isParentOfTarget = computed(() => props.children?.includes(searchMarkerId.value));
 
 function checkChildren() {
-	if (props.children?.includes(searchMarkerId.value)) {
+	if (isParentOfTarget.value) {
 		const el = window.document.querySelector(`[data-in-app-search-marker-id="${searchMarkerId.value}"]`);
 		highlighted.value = el == null;
 	}
@@ -105,8 +106,8 @@ onBeforeUnmount(dispose);
 
 @keyframes blink {
 	0%, 100% {
-		background: color(from var(--MI_THEME-accent) srgb r g b / 0.05);
-		border: 1px solid color(from var(--MI_THEME-accent) srgb r g b / 0.7);
+		background: color(from var(--MI_THEME-accent) srgb r g b / 0.1);
+		border: 1px solid color(from var(--MI_THEME-accent) srgb r g b / 0.75);
 	}
 	50% {
 		background: transparent;

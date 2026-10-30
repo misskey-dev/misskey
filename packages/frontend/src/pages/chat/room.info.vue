@@ -26,11 +26,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import MkInput from '@/components/MkInput.vue';
@@ -63,27 +62,23 @@ function save() {
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.areYouSure,
+		text: i18n.tsx.deleteAreYouSure({ x: name_.value }),
 	});
 	if (canceled) return;
 
-	misskeyApi('chat/rooms/delete', {
+	await os.apiWithDialog('chat/rooms/delete', {
 		roomId: props.room.id,
 	});
 	router.push('/chat');
 }
 
-const isMuted = ref(props.room.isMuted);
+const isMuted = ref(props.room.isMuted ?? false);
 
 watch(isMuted, async () => {
 	await os.apiWithDialog('chat/rooms/mute', {
 		roomId: props.room.id,
 		mute: isMuted.value,
 	});
-});
-
-onMounted(async () => {
-
 });
 </script>
 
