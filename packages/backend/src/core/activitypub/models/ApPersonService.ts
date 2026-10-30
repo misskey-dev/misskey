@@ -400,7 +400,7 @@ export class ApPersonService implements OnModuleInit {
 				if (person._misskey_summary) {
 					_description = truncate(person._misskey_summary, summaryLength);
 				} else if (person.summary) {
-					_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag);
+					_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), { tag: person.tag });
 				}
 
 				await transactionalEntityManager.save(new MiUserProfile({
@@ -610,7 +610,7 @@ export class ApPersonService implements OnModuleInit {
 		if (person._misskey_summary) {
 			_description = truncate(person._misskey_summary, summaryLength);
 		} else if (person.summary) {
-			_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag);
+			_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), { tag: person.tag });
 		}
 
 		await this.userProfilesRepository.update({ userId: exist.id }, {
