@@ -1,5 +1,8 @@
 ## Unreleased
 
+### Note
+- Node.js v22のサポートを終了しました。Node.js v22では動作しません。Node.js v24, v26をご利用ください。
+
 ### General
 - Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
 - Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
@@ -28,9 +31,6 @@
   - 詳細は https://docs.sentry.io/platforms/javascript/migration/v10-to-v11/ を参照してください。
 - Node.jsのセキュリティアップデートに伴い、最低動作バージョンを 22.23.4 / 24.22.1 / 26.12.1 に引き上げました。
   - Docker Image は Node.js 26.12.1-trixie に更新されています。
-
-### Note
-- Node.js v22のサポートを終了しました。Node.js v22では動作しません。Node.js v24, v26をご利用ください。
 
 ### General
 - Feat: お知らせに自動アーカイブ日時を設定できるように
