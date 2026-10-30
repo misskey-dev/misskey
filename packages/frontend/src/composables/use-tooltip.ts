@@ -104,8 +104,7 @@ export function useTooltip(
 	let boundEl: HTMLElement | null = null;
 
 	// 要素が差し替えられた場合 (動的コンポーネントの切り替え等) は旧要素のツールチップを閉じ、リスナーを付け替える
-	watch(elRef, () => {
-		const el = elRef.value == null ? null : elRef.value instanceof Element ? elRef.value : elRef.value.$el;
+	watch(() => elRef.value == null ? null : elRef.value instanceof Element ? elRef.value : elRef.value.$el, (el) => {
 		if (el === boundEl) return;
 		if (boundEl != null) {
 			removeListeners(boundEl);
