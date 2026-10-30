@@ -47,6 +47,7 @@ import { ClientLoggerService } from './ClientLoggerService.js';
 import { HtmlTemplateService } from './HtmlTemplateService.js';
 
 import { BasePage } from './views/base.js';
+import { htmlToPlainText } from '@/misc/html-to-plain-text.js';
 import { UserPage } from './views/user.js';
 import { NotePage } from './views/note.js';
 import { PagePage } from './views/page.js';
@@ -440,7 +441,7 @@ export class ClientServerService {
 			return await HtmlTemplateService.replyHtml(reply, BasePage({
 				img: this.meta.bannerUrl ?? undefined,
 				title: this.meta.name ?? 'Misskey',
-				desc: this.meta.description ?? undefined,
+				desc: this.meta.description == null ? undefined : htmlToPlainText(this.meta.description),
 				...(await this.htmlTemplateService.getCommonData()),
 				...data,
 			}));
@@ -458,7 +459,13 @@ export class ClientServerService {
 				requireSigninToViewContents: false,
 			});
 
-			return user && (await this.feedService.packFeed(user));
+			if (user == null) return null;
+
+			if (this.meta.ugcVisibilityForVisitor === 'none' || (this.meta.ugcVisibilityForVisitor === 'local' && user.host != null)) {
+				return null;
+			}
+
+			return await this.feedService.packFeed(user);
 		};
 
 		// Atom
