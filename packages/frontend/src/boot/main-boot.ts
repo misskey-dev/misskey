@@ -26,8 +26,7 @@ import { mainRouter } from '@/router.js';
 import { makeHotkey } from '@/utility/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
-import { updateCurrentAccountPartial } from '@/accounts.js';
-import { migrateOldSettings } from '@/pref-migrate.js';
+import { updateCurrentAccount } from '@/accounts.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { isBirthday } from '@/utility/is-birthday.js';
 
@@ -69,14 +68,6 @@ export async function mainBoot() {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {
 			closed: () => dispose(),
 		});
-
-		// prefereces migration
-		// TODO: そのうち消す
-		if (lastVersion && (compareVersions('2025.3.2-alpha.0', lastVersion) === 1)) {
-			console.log('Preferences migration');
-
-			migrateOldSettings();
-		}
 	}
 
 	try {
@@ -340,11 +331,11 @@ export async function mainBoot() {
 
 			// 自分の情報が更新されたとき
 			main.on('meUpdated', i => {
-				updateCurrentAccountPartial(i);
+				updateCurrentAccount(i);
 			});
 
 			main.on('readAllNotifications', () => {
-				updateCurrentAccountPartial({
+				updateCurrentAccount({
 					hasUnreadNotification: false,
 					unreadNotificationsCount: 0,
 				});
@@ -352,19 +343,19 @@ export async function mainBoot() {
 
 			main.on('unreadNotification', () => {
 				const unreadNotificationsCount = ($i?.unreadNotificationsCount ?? 0) + 1;
-				updateCurrentAccountPartial({
+				updateCurrentAccount({
 					hasUnreadNotification: true,
 					unreadNotificationsCount,
 				});
 			});
 
 			main.on('newChatMessage', () => {
-				updateCurrentAccountPartial({ hasUnreadChatMessages: true });
+				updateCurrentAccount({ hasUnreadChatMessages: true });
 				sound.playMisskeySfx('chatMessage');
 			});
 
 			main.on('readAllAnnouncements', () => {
-				updateCurrentAccountPartial({ hasUnreadAnnouncement: false });
+				updateCurrentAccount({ hasUnreadAnnouncement: false });
 			});
 
 			// 個人宛てお知らせが発行されたとき
@@ -380,8 +371,20 @@ export async function mainBoot() {
 			if ($i == null) return;
 			post();
 		},
-		'd': () => {
-			store.set('darkMode', !store.s.darkMode);
+		'd': async () => {
+			const value = !store.s.darkMode;
+			if (prefer.s.syncDeviceDarkMode) {
+				const { canceled } = await confirm({
+					type: 'question',
+					text: i18n.tsx.switchDarkModeManuallyWhenSyncEnabledConfirm({ x: i18n.ts.syncDeviceDarkMode }),
+				});
+				if (canceled) return;
+
+				prefer.commit('syncDeviceDarkMode', false);
+				store.set('darkMode', value);
+			} else {
+				store.set('darkMode', value);
+			}
 		},
 		's': () => {
 			mainRouter.push('/search');

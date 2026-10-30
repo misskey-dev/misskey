@@ -6,13 +6,15 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { describe, beforeAll, test, expect } from 'vitest';
+import { describe, beforeAll, test, expect, vi } from 'vitest';
 // node-fetch only supports it's own Blob yet
 // https://github.com/node-fetch/node-fetch/pull/1664
 import { Blob } from 'node-fetch';
 import { api, castAsError, initTestDb, post, role, signup, simpleGet, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
 import { MiUser } from '@/models/_.js';
+
+const waitForPushToTlOptions = { timeout: 3000, interval: 25 };
 
 describe('Endpoints', () => {
 	let alice: misskey.entities.SignupResponse;
@@ -1149,12 +1151,14 @@ describe('Endpoints', () => {
 				visibility: 'followers',
 			});
 
-			const res = await api('notes/timeline', {}, dave);
+			await vi.waitFor(async () => {
+				const res = await api('notes/timeline', {}, dave);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
-			assert.strictEqual(res.body.length, 1);
-			assert.strictEqual(res.body[0].id, carolPost.id);
+				assert.strictEqual(res.status, 200);
+				assert.strictEqual(Array.isArray(res.body), true);
+				assert.strictEqual(res.body.length, 1);
+				assert.strictEqual(res.body[0].id, carolPost.id);
+			}, waitForPushToTlOptions);
 		});
 	});
 

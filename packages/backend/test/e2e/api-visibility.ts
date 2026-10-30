@@ -6,9 +6,11 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { describe, beforeAll, beforeEach, test } from 'vitest';
-import { UserToken, api, post, signup } from '../utils.js';
+import { describe, beforeAll, beforeEach, test, vi } from 'vitest';
+import { UserToken, api, failedApiCall, post, signup } from '../utils.js';
 import type * as misskey from 'misskey-js';
+
+const waitForPushToTlOptions = { timeout: 3000, interval: 25 };
 
 describe('API visibility', () => {
 	describe('Note visibility', () => {
@@ -407,12 +409,98 @@ describe('API visibility', () => {
 		});
 		//#endregion
 
+		//#region reactions
+		describe('reactions', () => {
+			/** notes/reactions の noSuchNote エラー id */
+			const noSuchNote = '263fff3d-d0e1-4af4-bea7-8408059b451a';
+
+			const reactions = async (noteId: misskey.entities.Note['id'], by?: UserToken) => {
+				return await api('notes/reactions', { noteId }, by);
+			};
+
+			const cannotSeeReactions = async (noteId: misskey.entities.Note['id'], by?: UserToken) => {
+				return await failedApiCall({
+					endpoint: 'notes/reactions',
+					parameters: { noteId },
+					user: by,
+				}, {
+					status: 400,
+					code: 'NO_SUCH_NOTE',
+					id: noSuchNote,
+				});
+			};
+
+			beforeAll(async () => {
+				await api('notes/reactions/create', { noteId: pub.id, reaction: '👍' }, follower);
+				await api('notes/reactions/create', { noteId: fol.id, reaction: '👍' }, follower);
+				await api('notes/reactions/create', { noteId: spe.id, reaction: '👍' }, target);
+				await api('notes/reactions/create', { noteId: folR.id, reaction: '👍' }, follower);
+			});
+
+			test('[reactions] public-postのリアクションを未認証が見れる', async () => {
+				const res = await reactions(pub.id);
+				assert.strictEqual(res.status, 200);
+				assert.strictEqual(res.body.length, 1);
+			});
+
+			test('[reactions] followers-postのリアクションを自分が見れる', async () => {
+				const res = await reactions(fol.id, alice);
+				assert.strictEqual(res.status, 200);
+				assert.strictEqual(res.body.length, 1);
+			});
+
+			test('[reactions] followers-postのリアクションをフォロワーが見れる', async () => {
+				const res = await reactions(fol.id, follower);
+				assert.strictEqual(res.status, 200);
+				assert.strictEqual(res.body.length, 1);
+			});
+
+			test('[reactions] followers-postのリアクションを非フォロワーが見れない', async () => {
+				await cannotSeeReactions(fol.id, other);
+			});
+
+			test('[reactions] followers-postのリアクションを未認証が見れない', async () => {
+				await cannotSeeReactions(fol.id);
+			});
+
+			test('[reactions] specified-postのリアクションを指定ユーザーが見れる', async () => {
+				const res = await reactions(spe.id, target);
+				assert.strictEqual(res.status, 200);
+				assert.strictEqual(res.body.length, 1);
+			});
+
+			test('[reactions] specified-postのリアクションをフォロワーが見れない', async () => {
+				await cannotSeeReactions(spe.id, follower);
+			});
+
+			test('[reactions] specified-postのリアクションを未認証が見れない', async () => {
+				await cannotSeeReactions(spe.id);
+			});
+
+			test('[reactions] followers-replyのリアクションを非フォロワー (リプライ先である) が見れる', async () => {
+				const res = await reactions(folR.id, target);
+				assert.strictEqual(res.status, 200);
+				assert.strictEqual(res.body.length, 1);
+			});
+
+			test('[reactions] followers-replyのリアクションを非フォロワー (リプライ先ではない) が見れない', async () => {
+				await cannotSeeReactions(folR.id, other);
+			});
+
+			test('[reactions] 存在しないノートのリアクションは見れない', async () => {
+				await cannotSeeReactions('foo', alice);
+			});
+		});
+		//#endregion
+
 		//#region HTL
 		test('[HTL] public-post が 自分が見れる', async () => {
-			const res = await api('notes/timeline', { limit: 100 }, alice);
-			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter(n => n.id === pub.id);
-			assert.strictEqual(notes[0].text, 'x');
+			await vi.waitFor(async () => {
+				const res = await api('notes/timeline', { limit: 100 }, alice);
+				assert.strictEqual(res.status, 200);
+				const notes = res.body.filter(n => n.id === pub.id);
+				assert.strictEqual(notes[0].text, 'x');
+			}, waitForPushToTlOptions);
 		});
 
 		test('[HTL] public-post が 非フォロワーから見れない', async () => {
@@ -423,10 +511,12 @@ describe('API visibility', () => {
 		});
 
 		test('[HTL] followers-post が フォロワーから見れる', async () => {
-			const res = await api('notes/timeline', { limit: 100 }, follower);
-			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter(n => n.id === fol.id);
-			assert.strictEqual(notes[0].text, 'x');
+			await vi.waitFor(async () => {
+				const res = await api('notes/timeline', { limit: 100 }, follower);
+				assert.strictEqual(res.status, 200);
+				const notes = res.body.filter(n => n.id === fol.id);
+				assert.strictEqual(notes[0].text, 'x');
+			}, waitForPushToTlOptions);
 		});
 		//#endregion
 

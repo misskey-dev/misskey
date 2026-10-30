@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/notifications" :label="i18n.ts.notifications" :keywords="['notifications']" icon="ti ti-bell">
 	<div class="_gaps_m">
-		<MkFeatureBanner icon="/client-assets/bell_3d.png" color="#ffff00">
+		<MkFeatureBanner icon="/fluent-emoji/1f514.png" color="#ffff00">
 			<SearchText>{{ i18n.ts._settings.notificationsBanner }}</SearchText>
 		</MkFeatureBanner>
 
@@ -105,7 +105,7 @@ import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowB
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { Paginator } from '@/utility/paginator.js';
 import MkPagination from '@/components/MkPagination.vue';
-import { userPage } from '@/filters/user.js';
+import { userPage } from '@@/js/user.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
 const $i = ensureSignin();

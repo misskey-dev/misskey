@@ -23,7 +23,7 @@ import type { IPoll } from '@/models/Poll.js';
 import { MiPoll } from '@/models/Poll.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import type { MiChannel } from '@/models/Channel.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { normalizeTag } from '@/misc/normalize-tag.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { DI } from '@/di-symbols.js';
@@ -57,6 +57,7 @@ import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { CollapsedQueue } from '@/misc/collapsed-queue.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
+import { extractUrlsForKeyWordCheck } from '@/misc/extract-urls-for-keyword-check.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -182,6 +183,7 @@ type Option = {
 	visibleUsers?: MinimumUser[] | null;
 	channel?: MiChannel | null;
 	apMentions?: MinimumUser[] | null;
+	apMentionRawCount?: number | null;
 	apHashtags?: string[] | null;
 	apEmojis?: string[] | null;
 	uri?: string | null;
@@ -321,7 +323,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 			// Fetch renote to note
 			renote = await this.notesRepository.findOne({
 				where: { id: data.renoteId },
-				relations: ['user', 'renote', 'reply'],
+				relations: {
+					user: true,
+					renote: true,
+					reply: true,
+				},
 			});
 
 			if (renote == null) {
@@ -370,14 +376,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 			// Fetch reply
 			reply = await this.notesRepository.findOne({
 				where: { id: data.replyId },
-				relations: ['user'],
+				relations: { user: true },
 			});
 
 			if (reply == null) {
 				throw new IdentifiableError('60142edb-1519-408e-926d-4f108d27bee0', 'No such reply target');
 			} else if (isRenote(reply) && !isQuote(reply)) {
 				throw new IdentifiableError('f089e4e2-c0e7-4f60-8a23-e5a6bf786b36', 'Cannot reply to pure renote');
-			} else if (!await this.noteEntityService.isVisibleForMe(reply, user.id)) {
+			} else if (!(await this.noteEntityService.isVisibleForMe(reply, user.id))) {
 				throw new IdentifiableError('11cd37b3-a411-4f77-8633-c580ce6a8dce', 'No such reply target');
 			} else if (reply.visibility === 'specified' && data.visibility !== 'specified') {
 				throw new IdentifiableError('ced780a1-2012-4caf-bc7e-a95a291294cb', 'Cannot reply to specified note with different visibility');
@@ -466,7 +472,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (data.visibility === 'public' && data.channel == null) {
 			const sensitiveWords = this.meta.sensitiveWords;
-			if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', sensitiveWords)) {
+			const sensitiveWordsTarget = data.cw ?? data.text ?? '';
+			if (sensitiveWords.length > 0 && this.utilityService.isKeyWordIncluded([sensitiveWordsTarget, ...extractUrlsForKeyWordCheck(sensitiveWordsTarget)].join('\n'), sensitiveWords)) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
@@ -506,12 +513,19 @@ export class NoteCreateService implements OnApplicationShutdown {
 						throw new Error('Renote target is not public or home');
 					}
 
-					// Renote対象がfollowersならfollowersにする
-					data.visibility = 'followers';
+					// followers noteはfollowers以下にrenote可能
+					if (data.visibility === 'public' || data.visibility === 'home') {
+						data.visibility = 'followers';
+					}
 					break;
 				case 'specified':
 					// specified / direct noteはreject
 					throw new Error('Renote target is not public or home');
+			}
+
+			// ローカルのみをRenoteしたらローカルのみにする
+			if (data.renote.localOnly && data.channel == null) {
+				data.localOnly = true;
 			}
 		}
 
@@ -527,19 +541,35 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
-		// 返信対象がpublicではないならhomeにする
-		if (data.reply && data.reply.visibility !== 'public' && data.visibility === 'public') {
-			data.visibility = 'home';
-		}
+		if (data.reply) {
+			switch (data.reply.visibility) {
+				case 'public':
+					// public noteは無条件にreply可能
+					break;
+				case 'home':
+					// home noteはhome以下にreply可能
+					if (data.visibility === 'public') {
+						data.visibility = 'home';
+					}
+					break;
+				case 'followers':
+					// followers noteはfollowers以下にreply可能
+					if (data.visibility === 'public' || data.visibility === 'home') {
+						data.visibility = 'followers';
+					}
+					break;
+				case 'specified':
+					// specified / direct noteはspecifiedのみreply可能
+					if (data.visibility !== 'specified') {
+						data.visibility = 'specified';
+					}
+					break;
+			}
 
-		// ローカルのみをRenoteしたらローカルのみにする
-		if (data.renote && data.renote.localOnly && data.channel == null) {
-			data.localOnly = true;
-		}
-
-		// ローカルのみにリプライしたらローカルのみにする
-		if (data.reply && data.reply.localOnly && data.channel == null) {
-			data.localOnly = true;
+			// ローカルのみにリプライしたらローカルのみにする
+			if (data.reply.localOnly && data.channel == null) {
+				data.localOnly = true;
+			}
 		}
 
 		if (data.text) {
@@ -572,7 +602,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			emojis = data.apEmojis ?? extractCustomEmojisFromMfm(combinedTokens);
 
-			mentionedUsers = data.apMentions ?? await this.extractMentionedUsers(user, combinedTokens);
+			mentionedUsers = data.apMentions ?? (await this.extractMentionedUsers(user, combinedTokens));
 		}
 
 		// if the host is media-silenced, custom emojis are not allowed
@@ -598,7 +628,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
-		if (mentionedUsers.length > 0 && mentionedUsers.length > (await this.roleService.getUserPolicies(user.id)).mentionLimit) {
+		const effectiveMentionCount = Math.max(mentionedUsers.length, data.apMentionRawCount ?? 0);
+		if (effectiveMentionCount > 0 && effectiveMentionCount > (await this.roleService.getUserPolicies(user.id)).mentionLimit) {
 			throw new IdentifiableError('9f466dab-c856-48cd-9e65-ff90ff750580', 'Note contains too many mentions');
 		}
 
@@ -629,7 +660,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			text: data.text,
 			hasPoll: data.poll != null,
 			cw: data.cw ?? null,
-			tags: tags.map(tag => normalizeForSearch(tag)),
+			tags: tags.map(tag => normalizeTag(tag)),
 			emojis,
 			userId: user.id,
 			localOnly: data.localOnly!,
@@ -749,7 +780,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		this.pushToTl(note, user);
 
-		this.antennaService.addNoteToAntennas({
+		const matchedAntennas = this.antennaService.addNoteToAntennas({
 			...note,
 			channel: data.channel ?? null,
 		}, user);
@@ -813,6 +844,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 			this.globalEventService.publishNotesStream(noteObj);
 
 			this.roleService.addNoteToRoleTimeline(noteObj);
+
+			matchedAntennas.then(antennas => {
+				for (const antenna of antennas) {
+					this.globalEventService.publishAntennaStream(antenna.id, 'note', noteObj);
+				}
+			});
 
 			this.webhookService.enqueueUserWebhook(user.id, 'note', { note: noteObj });
 
@@ -1050,7 +1087,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				where: {
 					followeeId: note.channelId,
 				},
-				select: ['followerId'],
+				select: { followerId: true },
 			});
 
 			for (const channelFollowing of channelFollowings) {
@@ -1069,13 +1106,20 @@ export class NoteCreateService implements OnApplicationShutdown {
 						followerHost: IsNull(),
 						isFollowerHibernated: false,
 					},
-					select: ['followerId', 'withReplies'],
+					select: {
+						followerId: true,
+						withReplies: true,
+					},
 				}),
 				this.userListMembershipsRepository.find({
 					where: {
 						userId: user.id,
 					},
-					select: ['userListId', 'userListUserId', 'withReplies'],
+					select: {
+						userListId: true,
+						userListUserId: true,
+						withReplies: true,
+					},
 				}),
 			]);
 
@@ -1183,7 +1227,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				id: In(samples.map(x => x.followerId)),
 				lastActiveDate: LessThan(new Date(Date.now() - (1000 * 60 * 60 * 24 * 50))),
 			},
-			select: ['id'],
+			select: { id: true },
 		});
 
 		if (hibernatedUsers.length > 0) {
@@ -1206,9 +1250,20 @@ export class NoteCreateService implements OnApplicationShutdown {
 			prohibitedWords = this.meta.prohibitedWords;
 		}
 
+		if (prohibitedWords.length === 0) {
+			return false;
+		}
+
 		if (
 			this.utilityService.isKeyWordIncluded(
-				this.utilityService.concatNoteContentsForKeyWordCheck(content),
+				this.utilityService.concatNoteContentsForKeyWordCheck({
+					...content,
+					others: [
+						...(content.others ?? []),
+						...extractUrlsForKeyWordCheck(content.cw ?? ''),
+						...extractUrlsForKeyWordCheck(content.text ?? ''),
+					],
+				}),
 				prohibitedWords,
 			)
 		) {

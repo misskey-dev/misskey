@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div data-cy-mkw-digitalClock class="_monospace" :class="[$style.root, { _panel: !widgetProps.transparent }]" :style="{ fontSize: `${widgetProps.fontSize}em` }">
+<div data-testid="mkw-digitalClock" class="_monospace" :class="[$style.root, { _panel: !widgetProps.transparent }]" :style="{ fontSize: `${widgetProps.fontSize}em` }">
 	<div v-if="widgetProps.showLabel" :class="$style.label">{{ tzAbbrev }}</div>
 	<div>
 		<MkDigitalClock :showMs="widgetProps.showMs" :offset="tzOffset"/>

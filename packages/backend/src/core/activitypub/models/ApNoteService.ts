@@ -177,6 +177,7 @@ export class ApNoteService {
 			throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', 'actor has been suspended');
 		}
 
+		const apMentionRawCount = new Set(this.apMentionService.extractApMentionObjects(note.tag).map(x => x.href)).size;
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
 		const apHashtags = extractApHashtags(note.tag);
 
@@ -189,7 +190,7 @@ export class ApNoteService {
 		} else if (typeof note._misskey_content !== 'undefined') {
 			text = note._misskey_content;
 		} else if (typeof note.content === 'string') {
-			text = this.apMfmService.htmlToMfm(note.content, note.tag);
+			text = this.apMfmService.htmlToMfm(note.content, { tag: note.tag, hasQuote: !!(note._misskey_quote ?? note.quoteUrl) });
 		}
 
 		const poll = await this.apQuestionService.extractPollFromQuestion(note, resolver).catch(() => undefined);
@@ -324,6 +325,7 @@ export class ApNoteService {
 				visibility,
 				visibleUsers,
 				apMentions,
+				apMentionRawCount,
 				apHashtags,
 				apEmojis,
 				poll,

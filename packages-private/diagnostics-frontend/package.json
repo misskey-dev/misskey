@@ -1,0 +1,24 @@
+{
+	"name": "diagnostics-frontend",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"inspect-browser": "tsx src/inspect-browser.ts",
+		"lint": "pnpm typecheck && pnpm eslint",
+		"render-browser-html": "tsx src/render-browser-html.ts",
+		"render-md": "tsx src/render-md.ts",
+		"test": "vitest run",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"diagnostics-shared": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/node": "26.6.5",
+		"frontend": "workspace:*",
+		"playwright": "1.64.1",
+		"tsx": "4.23.15",
+		"vitest": "5.0.5"
+	}
+}

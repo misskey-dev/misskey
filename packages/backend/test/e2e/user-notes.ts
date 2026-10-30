@@ -6,9 +6,11 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { beforeAll, describe, test } from 'vitest';
+import { beforeAll, describe, test, vi } from 'vitest';
 import { api, post, signup, uploadUrl } from '../utils.js';
 import type * as misskey from 'misskey-js';
+
+const waitForPushToTlOptions = { timeout: 3000, interval: 25 };
 
 describe('users/notes', () => {
 	let alice: misskey.entities.SignupResponse;
@@ -32,16 +34,18 @@ describe('users/notes', () => {
 	}, 1000 * 60 * 2);
 
 	test('withFiles', async () => {
-		const res = await api('users/notes', {
-			userId: alice.id,
-			withFiles: true,
-		}, alice);
+		await vi.waitFor(async () => {
+			const res = await api('users/notes', {
+				userId: alice.id,
+				withFiles: true,
+			}, alice);
 
-		assert.strictEqual(res.status, 200);
-		assert.strictEqual(Array.isArray(res.body), true);
-		assert.strictEqual(res.body.length, 3);
-		assert.strictEqual(res.body.some((note: any) => note.id === jpgNote.id), true);
-		assert.strictEqual(res.body.some((note: any) => note.id === pngNote.id), true);
-		assert.strictEqual(res.body.some((note: any) => note.id === jpgPngNote.id), true);
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 3);
+			assert.strictEqual(res.body.some((note: any) => note.id === jpgNote.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === pngNote.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === jpgPngNote.id), true);
+		}, waitForPushToTlOptions);
 	});
 });

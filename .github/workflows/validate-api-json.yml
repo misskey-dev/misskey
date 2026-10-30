@@ -9,6 +9,8 @@ on:
       - packages/backend/**
       - .github/workflows/validate-api-json.yml
   pull_request:
+    branches-ignore:
+      - master
     paths:
       - packages/backend/**
       - .github/workflows/validate-api-json.yml
@@ -17,13 +19,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6.0.2
+    - uses: actions/checkout@v7.0.1
       with:
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.3
+      uses: pnpm/action-setup@v6.0.10
     - name: Use Node.js
-      uses: actions/setup-node@v6.4.0
+      uses: actions/setup-node@v7.0.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'

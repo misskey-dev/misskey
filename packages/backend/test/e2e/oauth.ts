@@ -809,6 +809,66 @@ describe('OAuth', () => {
 		});
 	});
 
+	describe('Token endpoint', () => {
+		test('Accept JSON payload', async () => {
+			const { code_challenge, code_verifier } = await pkceChallenge(128);
+			const { code } = await fetchAuthorizationCode(alice, 'write:notes', code_challenge);
+
+			const response = await fetch(new URL('/oauth/token', host), {
+				method: 'post',
+				headers: {
+					'content-type': 'application/json',
+				},
+				body: JSON.stringify({
+					grant_type: 'authorization_code',
+					code,
+					client_id: clientConfig.client.id,
+					redirect_uri,
+					code_verifier,
+				}),
+			});
+
+			assert.strictEqual(response.status, 200);
+			const tokenResponse = await response.json() as {
+				access_token: string;
+				token_type: string;
+				scope: string;
+			};
+			assert.strictEqual(typeof tokenResponse.access_token, 'string');
+			assert.strictEqual(tokenResponse.token_type, 'Bearer');
+			assert.strictEqual(tokenResponse.scope, 'write:notes');
+		});
+
+		test('Accept x-www-form-urlencoded payload', async () => {
+			const { code_challenge, code_verifier } = await pkceChallenge(128);
+			const { code } = await fetchAuthorizationCode(alice, 'write:notes', code_challenge);
+
+			const response = await fetch(new URL('/oauth/token', host), {
+				method: 'post',
+				headers: {
+					'content-type': 'application/x-www-form-urlencoded',
+				},
+				body: new URLSearchParams({
+					grant_type: 'authorization_code',
+					code,
+					client_id: clientConfig.client.id,
+					redirect_uri,
+					code_verifier,
+				}),
+			});
+
+			assert.strictEqual(response.status, 200);
+			const tokenResponse = await response.json() as {
+				access_token: string;
+				token_type: string;
+				scope: string;
+			};
+			assert.strictEqual(typeof tokenResponse.access_token, 'string');
+			assert.strictEqual(tokenResponse.token_type, 'Bearer');
+			assert.strictEqual(tokenResponse.scope, 'write:notes');
+		});
+	});
+
 	describe('Client Information Discovery', () => {
 		// https://indieauth.spec.indieweb.org/#client-information-discovery
 		describe('JSON client metadata (11 July 2024)', () => {

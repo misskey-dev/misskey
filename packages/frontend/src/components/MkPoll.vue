@@ -36,7 +36,7 @@ import { pleaseLogin } from '@/utility/please-login.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { useLowresTime } from '@/composables/use-lowres-time.js';
+import { useLowresTime } from '@@/js/use-lowres-time.js';
 
 const props = defineProps<{
 	noteId: string;

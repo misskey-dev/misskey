@@ -9,6 +9,7 @@ import MagicString from 'magic-string';
 import { collectModifications } from './locale-inliner/collect-modifications.js';
 import { applyWithLocale } from './locale-inliner/apply-with-locale.js';
 import { blankLogger } from './logger.js';
+import { detectI18nFacadeChunk } from './locale-inliner/facade-chunk-detection.js';
 import type { Logger } from './logger.js';
 import type { Locale } from 'i18n';
 import type { Manifest as ViteManifest } from 'vite';
@@ -18,6 +19,7 @@ export class LocaleInliner {
 	scriptsDir: string;
 	i18nFile: string;
 	i18nFileName: string;
+	i18nSymbol: string;
 	logger: Logger;
 	chunks: ScriptChunk[];
 
@@ -43,8 +45,10 @@ export class LocaleInliner {
 		this.i18nFile = options.i18nFile;
 		this.i18nFileName = this.stripScriptDir(options.manifest[this.i18nFile].file);
 		this.logger = options.logger;
+		this.i18nSymbol = 'i18n';
 		this.chunks = Object.values(options.manifest).filter(chunk => this.isScriptFile(chunk.file)).map(chunk => ({
 			fileName: this.stripScriptDir(chunk.file),
+			src: chunk.src,
 			chunkName: chunk.name,
 		}));
 	}
@@ -57,12 +61,40 @@ export class LocaleInliner {
 	}
 
 	collectsModifications() {
+		this.#detectI18nFacadeChunk();
+
 		for (const chunk of this.chunks) {
 			if (chunk.sourceCode == null) {
 				throw new Error(`Source code for ${chunk.fileName} is not loaded.`);
 			}
+			if (chunk.isFacadeOfI18n) {
+				chunk.modifications = [];
+				continue;
+			}
 			const fileLogger = this.logger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);
 			chunk.modifications = collectModifications(chunk.sourceCode, chunk.fileName, fileLogger, this);
+		}
+
+		if (!this.chunks.flatMap(x => x.modifications ?? []).some(x => x.type === 'localized')) {
+			throw new Error('No localizations are inlined! this should mean locale inliner is not working well!');
+		}
+	}
+
+	#detectI18nFacadeChunk() {
+		// For some reason, even with `preserveEntrySignatures: 'allow-extension'`, rolldown may generate facade chunk
+		// This method detects facade chunk and replace i18nFile / i18nFileName with correct file name
+		const chunk = this.chunks.find(x => x.fileName === this.i18nFileName);
+		if (chunk == null) throw new Error(`i18n script file '${this.i18nFile}' not found`);
+		if (chunk.sourceCode == null) throw new Error(`Source code for '${this.i18nFile}' not loaded`);
+		const fileLogger = this.logger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);
+		const facadeInfo = detectI18nFacadeChunk(chunk.sourceCode, chunk.fileName, fileLogger);
+		if (facadeInfo != null) {
+			const i18nSymbol = facadeInfo.nameMap[this.i18nSymbol];
+			if (i18nSymbol == null) throw new Error(`Facade module for i18n file does not map ${this.i18nSymbol}. mapping: ${JSON.stringify(facadeInfo.nameMap)}`);
+			this.logger.info(`We detected ${this.i18nFileName} is facade chunk maps ${facadeInfo.fileName} with ${i18nSymbol} as ${this.i18nSymbol}`);
+			chunk.isFacadeOfI18n = true;
+			this.i18nFileName = facadeInfo.fileName;
+			this.i18nSymbol = i18nSymbol;
 		}
 	}
 
@@ -107,6 +139,7 @@ interface ScriptChunk {
 	fileName: string;
 	chunkName?: string;
 	sourceCode?: string;
+	isFacadeOfI18n?: true;
 	modifications?: TextModification[];
 }
 

@@ -20,6 +20,7 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as checkMutedEmoji } from '@/utility/emoji-mute.js';
+import { addToEmojiPalette } from '@/utility/emoji-palette.js';
 
 const props = defineProps<{
 	emoji: string;
@@ -35,7 +36,7 @@ const char2path = prefer.s.emojiStyle === 'twemoji' ? char2twemojiFilePath : cha
 const useOsNativeEmojis = computed(() => prefer.s.emojiStyle === 'native');
 const url = computed(() => char2path(props.emoji));
 const colorizedNativeEmoji = computed(() => colorizeEmoji(props.emoji));
-const isMuted = checkMutedEmoji(props.emoji);
+const isMuted = checkMutedEmoji(() => props.emoji);
 const shouldMute = computed(() => isMuted.value && !props.ignoreMuted);
 
 // Searching from an array with 2000 items for every emoji felt like too energy-consuming, so I decided to do it lazily on pointerenter
@@ -94,17 +95,31 @@ function onClick(ev: PointerEvent) {
 
 		menuItems.push({
 			type: 'divider',
-		}, isMuted.value ? {
-			text: i18n.ts.emojiUnmute,
-			icon: 'ti ti-mood-smile',
+		});
+
+		if (isMuted.value) {
+			menuItems.push({
+				text: i18n.ts.emojiUnmute,
+				icon: 'ti ti-mood-smile',
+				action: () => {
+					unmute();
+				},
+			});
+		} else {
+			menuItems.push({
+				text: i18n.ts.emojiMute,
+				icon: 'ti ti-mood-off',
+				action: () => {
+					mute();
+				},
+			});
+		}
+
+		menuItems.push({
+			text: i18n.ts.addToEmojiPalette,
+			icon: 'ti ti-palette',
 			action: () => {
-				unmute();
-			},
-		} : {
-			text: i18n.ts.emojiMute,
-			icon: 'ti ti-mood-off',
-			action: () => {
-				mute();
+				addToEmojiPalette(props.emoji);
 			},
 		});
 
