@@ -10499,6 +10499,10 @@ export interface Locale extends ILocale {
              */
             "tooManyFilesDescription": string;
             /**
+             * お使いのアカウントにはリノートする権限がありません。
+             */
+            "renoteForbiddenDescription": string;
+            /**
              * お使いのアカウントにはノートを引用する権限がありません。
              */
             "quoteForbiddenDescription": string;

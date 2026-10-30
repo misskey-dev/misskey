@@ -1024,6 +1024,16 @@ async function post(ev?: PointerEvent) {
 			}
 		}
 
+		// ファイルアップロードにより条件が変わる可能性があるため、再度canPostを確認する
+		if (!canPost.value) {
+			await os.alert({
+				type: 'error',
+				title: i18n.ts._postForm.thisNoteCannotBePostedTitle,
+				text: i18n.ts._postForm.thisNoteCannotBePostedDescription,
+			});
+			return;
+		}
+
 		await postAsScheduled();
 		clear();
 		return;
@@ -1488,6 +1498,8 @@ function getErrorDescription(errId: string): string | null {
 			return i18n.ts._postForm._noteCreateErrors.containsTooManyMentionsDescription;
 		case '8d28ca32-a244-4cf7-bc29-97895fdc3604':
 			return i18n.ts._postForm._noteCreateErrors.tooManyFilesDescription;
+		case 'c5b0bcc1-9db1-4178-b130-920a4e150b58':
+			return i18n.ts._postForm._noteCreateErrors.renoteForbiddenDescription;
 		case 'ae77a039-588a-40c3-8358-cc9c15ec7bbb':
 			return i18n.ts._postForm._noteCreateErrors.quoteForbiddenDescription;
 		case 'fe35a6b4-f595-4cbc-ab56-f31fa68be1f0':

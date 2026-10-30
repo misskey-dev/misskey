@@ -2766,6 +2766,7 @@ _postForm:
     containsProhibitedWordsDescription: "ノートに禁止ワードが含まれているため投稿できません。"
     containsTooManyMentionsDescription: "ノートに付与できるメンション数の上限を超えているため投稿できません。"
     tooManyFilesDescription: "ノートに添付できるファイル数の上限を超えているため投稿できません。"
+    renoteForbiddenDescription: "お使いのアカウントにはリノートする権限がありません。"
     quoteForbiddenDescription: "お使いのアカウントにはノートを引用する権限がありません。"
     directNoteCreationForbiddenDescription: "お使いのアカウントには指名ノートを作成する権限がありません。"
     remoteDirectNoteCreationForbiddenDescription: "お使いのアカウントには連合するノートを作成する権限がありませんが、指名ノートの宛先にリモートのユーザーが含まれているため、投稿できません。"
