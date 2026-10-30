@@ -1,8 +1,8 @@
 ## Unreleased
 
 ### General
-- Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
 - Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
+- Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
 
 ### Client
 - Fix: 設定検索にプライバシー設定の項目が表示されない問題を修正
