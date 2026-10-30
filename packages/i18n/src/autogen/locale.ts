@@ -5685,6 +5685,10 @@ export interface Locale extends ILocale {
      */
     "previewingThemeRestore": string;
     /**
+     * 常に絶対時刻で表示する
+     */
+    "alwaysUseAbsoluteTime": string;
+    /**
      * アクセストークン
      */
     "accessToken": string;

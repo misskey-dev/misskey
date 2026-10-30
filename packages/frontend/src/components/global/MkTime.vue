@@ -6,9 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <time :title="absolute" :class="{ [$style.old1]: colored && (ago > 60 * 60 * 24 * 90), [$style.old2]: colored && (ago > 60 * 60 * 24 * 180) }">
 	<template v-if="invalid">{{ i18n.ts._ago.invalid }}</template>
-	<template v-else-if="mode === 'relative'">{{ relative }}</template>
-	<template v-else-if="mode === 'absolute'">{{ absolute }}</template>
-	<template v-else-if="mode === 'detail'">{{ absolute }} ({{ relative }})</template>
+	<template v-else-if="_mode === 'relative'">{{ relative }}</template>
+	<template v-else-if="_mode === 'absolute'">{{ absolute }}</template>
+	<template v-else-if="_mode === 'detail'">{{ absolute }} ({{ relative }})</template>
 </time>
 </template>
 
@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import isChromatic from 'chromatic/isChromatic';
 import { computed } from 'vue';
 import { i18n } from '@/i18n.js';
+import { prefer } from '@/preferences.js';
 import { dateTimeFormat } from '@@/js/intl-const.js';
 import { parseTime, formatRelativeTime } from '@@/js/relative-time.js';
 import { useLowresTime } from '@@/js/use-lowres-time.js';
@@ -25,9 +26,21 @@ const props = withDefaults(defineProps<{
 	origin?: Date | null;
 	mode?: 'relative' | 'absolute' | 'detail';
 	colored?: boolean;
+	allowOverrideByUser?: boolean;
 }>(), {
 	origin: isChromatic() ? () => new Date('2023-04-01T00:00:00Z') : null,
 	mode: 'relative',
+	allowOverrideByUser: true,
+});
+
+const _mode = computed(() => {
+	if (props.mode === 'detail') return 'detail';
+
+	if (props.allowOverrideByUser && prefer.s.alwaysUseAbsoluteTime) {
+		return 'absolute';
+	} else {
+		return props.mode;
+	}
 });
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
@@ -48,7 +61,7 @@ const now = computed(() => (props.origin ? props.origin.getTime() : actualNow.va
 const ago = computed(() => (now.value - _time.value) / 1000/*ms*/);
 
 const relative = computed<string>(() => {
-	if (props.mode === 'absolute') return ''; // absoluteではrelativeを使わないので計算しない
+	if (_mode.value === 'absolute') return ''; // absoluteではrelativeを使わないので計算しない
 	if (invalid.value) return i18n.ts._ago.invalid;
 
 	return formatRelativeTime(ago.value, relativeTimeLocale);

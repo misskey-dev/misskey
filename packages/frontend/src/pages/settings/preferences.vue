@@ -778,6 +778,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
+							<SearchMarker :keywords="['time']">
+								<MkPreferenceContainer k="alwaysUseAbsoluteTime">
+									<MkSwitch v-model="alwaysUseAbsoluteTime">
+										<template #label><SearchLabel>{{ i18n.ts.alwaysUseAbsoluteTime }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
 							<SearchMarker :keywords="['follow', 'replies']">
 								<MkPreferenceContainer k="defaultFollowWithReplies">
 									<MkSwitch v-model="defaultFollowWithReplies">
@@ -936,6 +944,7 @@ const reactionsDisplaySize = prefer.model('reactionsDisplaySize');
 const limitWidthOfReaction = prefer.model('limitWidthOfReaction');
 const squareAvatars = prefer.model('squareAvatars');
 const enableSeasonalScreenEffect = prefer.model('enableSeasonalScreenEffect');
+const alwaysUseAbsoluteTime = prefer.model('alwaysUseAbsoluteTime');
 const showAvatarDecorations = prefer.model('showAvatarDecorations');
 const nsfw = prefer.model('nsfw');
 const emojiStyle = prefer.model('emojiStyle');
@@ -1000,6 +1009,7 @@ watch([
 	squareAvatars,
 	highlightSensitiveMedia,
 	enableSeasonalScreenEffect,
+	alwaysUseAbsoluteTime,
 	chatShowSenderName,
 	useStickyIcons,
 	enableHighQualityImagePlaceholders,
