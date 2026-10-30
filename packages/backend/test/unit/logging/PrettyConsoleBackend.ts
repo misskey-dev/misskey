@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, test, vi } from 'vitest';
-import type { LogRecord } from '@/logging/types.js';
+import type { AccessLogRecord, LogRecord } from '@/logging/types.js';
 
 type Formatter = ((value: unknown) => string) & { white?: Formatter };
 
@@ -47,6 +47,23 @@ function createRecord(overrides: Partial<LogRecord> = {}): LogRecord {
 		isPrimary: true,
 		workerId: null,
 		...overrides,
+	};
+}
+
+/** Access logの表示確認用に、正規化後と同じnull prototypeの本文を作成します。 */
+function createAccessRecord(requestBody: AccessLogRecord['requestBody']): AccessLogRecord {
+	return {
+		type: 'access',
+		timestamp: '2025-01-02T03:04:05.678Z',
+		method: 'POST',
+		route: '/api/test',
+		statusCode: 200,
+		durationMs: 1,
+		responseSizeBytes: 10,
+		requestBody,
+		processId: 1234,
+		isPrimary: true,
+		workerId: null,
 	};
 }
 
@@ -163,5 +180,24 @@ describe('PrettyConsoleBackend', () => {
 				error: { type: 'TypeError', message: 'broken' },
 			},
 		);
+	});
+
+	test('shows normalized body maps as regular objects in pretty output', () => {
+		const output = vi.fn();
+		const backend = new PrettyConsoleBackend({ output, withLogTime: () => false });
+		const nested = Object.create(null) as Record<string, unknown>;
+		nested.visible = 'value';
+		const requestBody = Object.create(null) as Record<string, unknown>;
+		requestBody.nested = nested;
+		Object.defineProperty(requestBody, '__proto__', { value: 'safe', enumerable: true });
+
+		backend.writeAccess(createAccessRecord(requestBody as AccessLogRecord['requestBody']));
+
+		const details = output.mock.calls[0][1] as { requestBody: Record<string, unknown> };
+		expect(Object.getPrototypeOf(details.requestBody)).toBe(Object.prototype);
+		expect(Object.getPrototypeOf(details.requestBody.nested)).toBe(Object.prototype);
+		expect(details.requestBody).toHaveProperty('__proto__', 'safe');
+		expect(Object.getPrototypeOf(requestBody)).toBe(null);
+		expect(Object.getPrototypeOf(nested)).toBe(null);
 	});
 });

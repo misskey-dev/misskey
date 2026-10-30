@@ -29,7 +29,7 @@ export const clickAnimeDirective = {
 
 			target.addEventListener('mouseleave', () => {
 				target.classList.remove('_anime_bounce_ready');
-			});
+			}, { once: true, signal: abortController.signal });
 		}, { signal: abortController.signal });
 
 		el.addEventListener('click', () => {

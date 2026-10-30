@@ -1,6 +1,6 @@
 ---
 name: shipping-misskey-change
-description: Use at every finish moment of a Misskey change, before committing, opening a PR, merging, or handing work back, especially when validation, SPDX, locale safety, migrations, misskey-js generation, or CHANGELOG checks may apply.
+description: Use at every finish moment of a Misskey change, before committing, opening a PR, merging, or handing work back, especially when proportional validation, SPDX, locale safety, migrations, or misskey-js generation may apply.
 ---
 
 # shipping-misskey-change

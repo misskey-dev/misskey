@@ -76,6 +76,91 @@ describe('Logger', () => {
 		}));
 	});
 
+	test('supports structured input through every level-specific method', () => {
+		const logger = new Logger('root').createSubLogger('child');
+		const error = new Error('broken');
+		const input = {
+			eventName: 'example.failed',
+			message: 'failed',
+			attributes: { id: 'id' },
+			error,
+		};
+
+		logger.debug(input);
+		logger.info(input);
+		logger.warn(input);
+		logger.error(input);
+		logger.fatal(input);
+
+		expect(mocks.write.mock.calls.map(([entry]) => entry.level)).toEqual([
+			'debug',
+			'info',
+			'warn',
+			'error',
+			'fatal',
+		]);
+		for (const [entry] of mocks.write.mock.calls) {
+			expect(entry).toMatchObject({
+				...input,
+				context: [
+					{ name: 'root', color: undefined },
+					{ name: 'child', color: undefined },
+				],
+			});
+			expect(entry).not.toHaveProperty('compatibility');
+		}
+	});
+
+	test('level-specific methods own the level even for runtime-invalid input', () => {
+		const logger = new Logger('root');
+
+		// @ts-expect-error level is selected by the method rather than the input object
+		logger.warn({ level: 'error', message: 'warning' });
+
+		expect(mocks.write.mock.calls[0][0]).toMatchObject({
+			level: 'warn',
+			message: 'warning',
+		});
+	});
+
+	test('preserves the legacy string signatures for non-error levels', () => {
+		const logger = new Logger('root');
+		logger.debug('debug', { source: 'debug' }, true);
+		logger.info('info', null, true);
+		logger.warn('warn', { source: 'warn' });
+
+		expect(mocks.write.mock.calls.map(([entry]) => entry.compatibility)).toEqual([
+			{ legacyLevel: undefined, important: true, data: { source: 'debug' } },
+			{ legacyLevel: undefined, important: true, data: null },
+			{ legacyLevel: undefined, important: false, data: { source: 'warn' } },
+		]);
+	});
+
+	test('records a fatal string through the structured API', () => {
+		new Logger('root').fatal('fatal message');
+
+		expect(mocks.write).toHaveBeenCalledWith({
+			level: 'fatal',
+			message: 'fatal message',
+			context: [{ name: 'root', color: undefined }],
+		});
+	});
+
+	test('preserves the legacy error string signature', () => {
+		new Logger('root').error('failed', { requestId: 'request' }, true);
+
+		expect(mocks.write).toHaveBeenCalledWith({
+			level: 'error',
+			message: 'failed',
+			context: [{ name: 'root', color: undefined }],
+			compatibility: {
+				legacyLevel: undefined,
+				important: true,
+				data: { requestId: 'request' },
+			},
+		});
+	});
+
 	test('uses Error.toString and adds the Error to existing data', () => {
 		const logger = new Logger('root');
 		const error = new TypeError('broken');

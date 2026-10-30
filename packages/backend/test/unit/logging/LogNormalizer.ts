@@ -7,6 +7,7 @@ import { describe, expect, test } from 'vitest';
 import {
 	findLegacyLogError,
 	normalizeLogAttributes,
+	normalizeLogValue,
 	serializeLogError,
 } from '@/logging/LogNormalizer.js';
 
@@ -23,6 +24,13 @@ describe('LogNormalizer', () => {
 			infinity: 'Infinity',
 			undefinedValue: '[Unsupported]: undefined',
 		});
+	});
+
+	test('normalizes a standalone body value with the same redaction and size rules', () => {
+		const normalized = normalizeLogValue({ token: 'secret', text: 'x'.repeat(100) }, { limits: { maxBytes: 256 } });
+
+		expect(normalized).toMatchObject({ token: '[REDACTED]' });
+		expect(Buffer.byteLength(JSON.stringify(normalized), 'utf8')).toBeLessThanOrEqual(256);
 	});
 
 	test('marks unsupported objects and invalid dates without throwing', () => {
@@ -49,6 +57,7 @@ describe('LogNormalizer', () => {
 			i: 'top-level-token',
 			request: {
 				Authorization: 'bearer-token',
+				captcha: 'captcha-value',
 				password: 'password',
 				nested: [{ api_key: 'api-key' }],
 			},
@@ -57,6 +66,7 @@ describe('LogNormalizer', () => {
 			i: '[REDACTED]',
 			request: {
 				Authorization: '[REDACTED]',
+				captcha: '[REDACTED]',
 				password: '[REDACTED]',
 				nested: [{ api_key: '[REDACTED]' }],
 			},
