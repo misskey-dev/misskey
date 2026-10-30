@@ -295,6 +295,7 @@ onBeforeUnmount(() => {
 		autocompleteInstance.detach();
 		autocompleteInstance = null;
 	}
+	emojiPicker.closeWindow();
 });
 </script>
 

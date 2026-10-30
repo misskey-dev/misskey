@@ -20,6 +20,7 @@ class EmojiPicker {
 	private isWindow: boolean = false;
 	private windowComponentEl: ShallowRef<InstanceType<typeof MkEmojiPickerWindow_TypeOnly> | null> = shallowRef(null);
 	private windowShowing: boolean = false;
+	private windowDispose: (() => void) | null = null;
 
 	private emojisRef = ref<string[]>([]);
 
@@ -61,11 +62,11 @@ class EmojiPicker {
 				},
 				closed: () => {
 					if (opts.onClosed) opts.onClosed();
-					this.windowShowing = false;
-					dispose();
+					this.disposeWindow();
 				},
 			});
 			this.windowComponentEl = componentRef;
+			this.windowDispose = dispose;
 		} else {
 			// defineAsyncComponentはiOS等でユーザーアクティベーションが失われてfocusが効かなくなるため使用不可
 			const { dispose } = popup(MkEmojiPickerDialog, {
@@ -85,9 +86,19 @@ class EmojiPicker {
 		}
 	}
 
+	private disposeWindow() {
+		this.windowDispose?.();
+		this.windowDispose = null;
+		this.windowComponentEl = shallowRef(null);
+		this.windowShowing = false;
+	}
+
 	public closeWindow() {
 		if (this.windowComponentEl.value != null) {
 			this.windowComponentEl.value.close();
+		} else {
+			// 非同期ロード中でcomponentRefが未設定の場合は直接破棄する
+			this.disposeWindow();
 		}
 	}
 }
