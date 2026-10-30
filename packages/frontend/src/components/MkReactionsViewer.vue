@@ -33,7 +33,7 @@ import * as Misskey from 'misskey-js';
 import { inject, watch, ref } from 'vue';
 import { TransitionGroup } from 'vue';
 import { isSupportedEmoji } from '@@/js/emojilist.js';
-import { getEmojiNameFromReaction } from '@@/js/emoji-name.js';
+import { getEmojiNameFromReaction, isLocalCustomEmojiReaction } from '@@/js/emoji-name.js';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
@@ -74,13 +74,12 @@ function onMockToggleReaction(emoji: string, count: number) {
 	emit('mockUpdateMyReaction', emoji, (count - _reactions.value[i][1]));
 }
 
-const remoteReactionRegex = /@\w/;
-
 function canReact(reaction: string) {
 	if (!$i) return false;
-	const normalizedReaction = getEmojiNameFromReaction(reaction);
 	// TODO: CheckPermissions
-	return !remoteReactionRegex.test(normalizedReaction) && (customEmojisMap.has(normalizedReaction) || isSupportedEmoji(normalizedReaction));
+	return isLocalCustomEmojiReaction(reaction)
+		? customEmojisMap.has(getEmojiNameFromReaction(reaction))
+		: isSupportedEmoji(reaction);
 }
 
 watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {

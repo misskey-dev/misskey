@@ -13,7 +13,7 @@ import { host } from '@@/js/config.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
 import { checkWordMute } from '@/utility/check-word-mute.js';
-import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import * as sound from '@/utility/sound.js';
 import * as os from '@/os.js';
 import { reactionPicker } from '@/utility/reaction-picker.js';
@@ -33,7 +33,7 @@ import { globalEvents, useGlobalEvent } from '@/events.js';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkReactionsViewerDetails from '@/components/MkReactionsViewer.details.vue';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import { notePage } from '@/filters/note.js';
+import { notePage } from '@@/js/note.js';
 import type { DI as DIType } from '@/di.js';
 import type { ExtractInjectedType } from '@/types/misc.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -199,10 +199,9 @@ export function useNote(
 
 		if (appearNote.reactionAcceptance === 'likeOnly' && els.reactButton != null) {
 			useTooltip(els.reactButton, async (showing) => {
-				const reactions = await misskeyApiGet('notes/reactions', {
+				const reactions = await misskeyApi('notes/reactions', {
 					noteId: appearNote.id,
 					limit: 10,
-					_cacheKey_: $appearNote.reactionCount,
 				});
 				const users = reactions.map(x => x.user);
 				if (users.length < 1 || els.reactButton!.value == null) return;
