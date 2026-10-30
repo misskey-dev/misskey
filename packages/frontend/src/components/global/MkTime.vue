@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<{
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const _time = computed(() => parseTime(props.time));
 const invalid = computed(() => Number.isNaN(_time));
-const absolute = computed(() => (!invalid ? dateTimeFormat.format(_time.value) : i18n.ts._ago.invalid));
+const absolute = computed(() => (!invalid.value ? dateTimeFormat.format(_time.value) : i18n.ts._ago.invalid));
 
 // 10秒ごとの再計算のたびに作り直さないよう、インスタンスごとに一度だけ作る
 const relativeTimeLocale = {

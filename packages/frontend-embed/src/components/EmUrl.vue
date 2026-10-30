@@ -40,10 +40,10 @@ const props = withDefaults(defineProps<{
 const maybeRelativeUrl = computed(() => maybeMakeRelative(props.url, local));
 const self = computed(() => maybeRelativeUrl.value !== props.url);
 const urlForDisplay = computed(() => parseUrlForDisplay(props.url));
-const el = ref();
+const attr = computed(() => self.value ? 'to' : 'href');
+const target = computed(() => self.value ? null : '_blank');
 
-const attr = self ? 'to' : 'href';
-const target = self ? null : '_blank';
+const el = ref();
 </script>
 
 <style lang="scss" module>
