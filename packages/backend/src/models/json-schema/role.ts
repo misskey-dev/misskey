@@ -472,6 +472,9 @@ export const packedRoleSchema = {
 										{
 											type: 'boolean',
 										},
+										{
+											type: 'string',
+										},
 									],
 								},
 								priority: {

@@ -5346,7 +5346,7 @@ export type components = {
             canEditMembersByModerator: boolean;
             policies: {
                 [key: string]: {
-                    value?: number | boolean;
+                    value?: number | boolean | string;
                     priority?: number;
                     useDefault?: boolean;
                 };
