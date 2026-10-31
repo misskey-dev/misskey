@@ -50,6 +50,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkFolder>
 				</SearchMarker>
 
+				<SearchMarker :keywords="['default', 'forcibly', 'followed', 'following', 'users']">
+					<MkFolder>
+						<template #icon><SearchIcon><i class="ti ti-user-star"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts.defaultFollowedUsers }}</SearchLabel></template>
+
+						<div class="_gaps">
+							<MkTextarea v-model="defaultFollowedUsers">
+								<template #label>{{ i18n.ts.defaultFollowedUsers }}</template>
+								<template #caption>{{ i18n.ts.defaultFollowedUsersDescription }}</template>
+							</MkTextarea>
+							<MkTextarea v-model="forciblyFollowedUsers">
+								<template #label>{{ i18n.ts.forciblyFollowedUsers }}</template>
+								<template #caption>{{ i18n.ts.forciblyFollowedUsersDescription }}</template>
+							</MkTextarea>
+							<MkButton primary @click="save_defaultUsers">{{ i18n.ts.save }}</MkButton>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+
 				<SearchMarker :keywords="['sensitive', 'words']">
 					<MkFolder>
 						<template #icon><SearchIcon><i class="ti ti-message-exclamation"></i></SearchIcon></template>
@@ -191,6 +210,8 @@ const prohibitedWords = ref(meta.prohibitedWords.join('\n'));
 const prohibitedWordsForNameOfUser = ref(meta.prohibitedWordsForNameOfUser.join('\n'));
 const hiddenTags = ref(meta.hiddenTags.join('\n'));
 const preservedUsernames = ref(meta.preservedUsernames.join('\n'));
+const defaultFollowedUsers = ref(meta.defaultFollowedUsers.join('\n'));
+const forciblyFollowedUsers = ref(meta.forciblyFollowedUsers.join('\n'));
 const blockedHosts = ref(meta.blockedHosts.join('\n'));
 const silencedHosts = ref(meta.silencedHosts?.join('\n') ?? '');
 const mediaSilencedHosts = ref(meta.mediaSilencedHosts.join('\n'));
@@ -232,6 +253,23 @@ function onChange_ugcVisibilityForVisitor(value: typeof ugcVisibilityForVisitor.
 function save_preservedUsernames() {
 	os.apiWithDialog('admin/update-meta', {
 		preservedUsernames: preservedUsernames.value.split('\n'),
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function save_defaultUsers() {
+	os.apiWithDialog('admin/update-meta', {
+		// ユーザーIDの形式で検証されるため、空行は送らない
+		defaultFollowedUsers: defaultFollowedUsers.value.split('\n').map(x => x.trim()).filter(x => x !== ''),
+		forciblyFollowedUsers: forciblyFollowedUsers.value.split('\n').map(x => x.trim()).filter(x => x !== ''),
+	}, undefined, {
+		'bcf088ec-fec5-42d0-8b9e-16d3b4797a4d': {
+			text: i18n.ts.defaultFollowedUsersDuplicated,
+		},
+		'797fd84b-b6f6-4852-96ec-990b1e049a6c': {
+			text: i18n.ts.forciblyFollowedUsersCannotBeRemote,
+		},
 	}).then(() => {
 		fetchInstance(true);
 	});

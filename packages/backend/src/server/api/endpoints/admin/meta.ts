@@ -154,6 +154,20 @@ export const meta = {
 					type: 'string',
 				},
 			},
+			defaultFollowedUsers: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'string',
+				},
+			},
+			forciblyFollowedUsers: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'string',
+				},
+			},
 			hiddenTags: {
 				type: 'array',
 				optional: false, nullable: false,
@@ -694,6 +708,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				cacheRemoteFiles: instance.cacheRemoteFiles,
 				cacheRemoteSensitiveFiles: instance.cacheRemoteSensitiveFiles,
 				pinnedUsers: instance.pinnedUsers,
+				defaultFollowedUsers: instance.defaultFollowedUsers,
+				forciblyFollowedUsers: instance.forciblyFollowedUsers,
 				hiddenTags: instance.hiddenTags,
 				blockedHosts: instance.blockedHosts,
 				silencedHosts: instance.silencedHosts,

@@ -16,6 +16,7 @@ import { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import { RelationshipJobData } from '../types.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 @Injectable()
 export class RelationshipProcessorService {
@@ -50,7 +51,13 @@ export class RelationshipProcessorService {
 			this.usersRepository.findOneByOrFail({ id: job.data.from.id }),
 			this.usersRepository.findOneByOrFail({ id: job.data.to.id }),
 		]) as [MiLocalUser | MiRemoteUser, MiLocalUser | MiRemoteUser];
-		await this.userFollowingService.unfollow(follower, followee, job.data.silent);
+		await this.userFollowingService.unfollow(follower, followee, job.data.silent).catch((err) => {
+			if (err instanceof IdentifiableError && err.id === '19f25f61-0141-4683-99dc-217a88d633cb') {
+				// フォロー解除できないユーザー。動作は正常のため、エラーを無視する
+				return;
+			}
+			throw err;
+		});
 		return 'ok';
 	}
 
@@ -61,7 +68,13 @@ export class RelationshipProcessorService {
 			this.usersRepository.findOneByOrFail({ id: job.data.from.id }),
 			this.usersRepository.findOneByOrFail({ id: job.data.to.id }),
 		]);
-		await this.userBlockingService.block(blockee, blocker, job.data.silent);
+		await this.userBlockingService.block(blockee, blocker, job.data.silent).catch((err) => {
+			if (err instanceof IdentifiableError && err.id === 'e2f04d25-0d94-4ac3-a4d8-ba401062741b') {
+				// フォロー解除できない（＝ブロックもできない）ユーザー。動作は正常のため、エラーを無視する
+				return;
+			}
+			throw err;
+		});
 		return 'ok';
 	}
 

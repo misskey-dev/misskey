@@ -4,11 +4,14 @@
  */
 
 import { Injectable, Inject } from '@nestjs/common';
+import { In, IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta } from '@/models/Meta.js';
+import type { UsersRepository } from '@/models/_.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -16,6 +19,19 @@ export const meta = {
 	requireCredential: true,
 	requireAdmin: true,
 	kind: 'write:admin:meta',
+
+	errors: {
+		followedUserDuplicated: {
+			message: 'Some items in "defaultFollowedUsers" and "forciblyFollowedUsers" are duplicated.',
+			code: 'FOLLOWED_USER_DUPLICATED',
+			id: 'bcf088ec-fec5-42d0-8b9e-16d3b4797a4d',
+		},
+		forciblyFollowedUserIsRemote: {
+			message: 'Remote users cannot be specified in "forciblyFollowedUsers".',
+			code: 'FORCIBLY_FOLLOWED_USER_IS_REMOTE',
+			id: '797fd84b-b6f6-4852-96ec-990b1e049a6c',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -25,6 +41,18 @@ export const paramDef = {
 		pinnedUsers: {
 			type: 'array', nullable: true, items: {
 				type: 'string',
+			},
+		},
+		defaultFollowedUsers: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+				format: 'misskey:id',
+			},
+		},
+		forciblyFollowedUsers: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+				format: 'misskey:id',
 			},
 		},
 		hiddenTags: {
@@ -238,6 +266,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.meta)
 		private serverSettings: MiMeta,
 
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		private metaService: MetaService,
 		private moderationLogService: ModerationLogService,
 	) {
@@ -250,6 +281,31 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (Array.isArray(ps.pinnedUsers)) {
 				set.pinnedUsers = ps.pinnedUsers.filter(Boolean);
+			}
+
+			if (Array.isArray(ps.defaultFollowedUsers)) {
+				set.defaultFollowedUsers = ps.defaultFollowedUsers.filter(Boolean);
+			}
+
+			if (Array.isArray(ps.forciblyFollowedUsers)) {
+				set.forciblyFollowedUsers = ps.forciblyFollowedUsers.filter(Boolean);
+			}
+
+			if (set.defaultFollowedUsers != null || set.forciblyFollowedUsers != null) {
+				// 片方だけ更新する場合は、もう片方は現在の設定値と比較する
+				const defaultFollowedUsers = set.defaultFollowedUsers ?? this.serverSettings.defaultFollowedUsers;
+				const forciblyFollowedUsers = set.forciblyFollowedUsers ?? this.serverSettings.forciblyFollowedUsers;
+				if (defaultFollowedUsers.some(x => forciblyFollowedUsers.includes(x))) {
+					throw new ApiError(meta.errors.followedUserDuplicated);
+				}
+			}
+
+			if (set.forciblyFollowedUsers != null && set.forciblyFollowedUsers.length > 0) {
+				// リモートユーザーへのフォローは相手サーバーの承認が必要で、確実に成立させられないため指定できない
+				// （存在しないユーザーはサインアップ時のフォローで無視されるため検証しない）
+				if (await this.usersRepository.exists({ where: { id: In(set.forciblyFollowedUsers), host: Not(IsNull()) } })) {
+					throw new ApiError(meta.errors.forciblyFollowedUserIsRemote);
+				}
 			}
 
 			if (Array.isArray(ps.hiddenTags)) {

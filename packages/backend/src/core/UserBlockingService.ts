@@ -9,6 +9,8 @@ import { In } from 'typeorm';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiBlocking } from '@/models/Blocking.js';
+import type { MiMeta } from '@/models/Meta.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
@@ -21,6 +23,7 @@ import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { RoleService } from '@/core/RoleService.js';
 
 @Injectable()
 export class UserBlockingService implements OnModuleInit {
@@ -29,6 +32,9 @@ export class UserBlockingService implements OnModuleInit {
 
 	constructor(
 		private moduleRef: ModuleRef,
+
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
 
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
@@ -48,6 +54,7 @@ export class UserBlockingService implements OnModuleInit {
 		@Inject(DI.chatRoomInvitationsRepository)
 		private chatRoomInvitationsRepository: ChatRoomInvitationsRepository,
 
+		private roleService: RoleService,
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
@@ -66,11 +73,32 @@ export class UserBlockingService implements OnModuleInit {
 
 	@bindThis
 	public async block(blocker: MiUser, blockee: MiUser, silent = false) {
+		// フォロー解除できない（＝ブロックもできない）ユーザーの場合
+		if (
+			blocker.host == null &&
+			this.serverSettings.forciblyFollowedUsers.includes(blockee.id) &&
+			!await this.roleService.isModerator(blocker)
+		) {
+			throw new IdentifiableError('e2f04d25-0d94-4ac3-a4d8-ba401062741b', 'You cannot block that user due to server policy.');
+		}
+
+		// フォロー解除できないユーザー側からも、ローカルユーザーとの関係は断てない
+		// （リモートからのブロックは既に相手のサーバーで成立しているため制限しない）
+		if (
+			blocker.host == null &&
+			blockee.host == null &&
+			this.serverSettings.forciblyFollowedUsers.includes(blocker.id) &&
+			!await this.roleService.isModerator(blockee)
+		) {
+			throw new IdentifiableError('e2f04d25-0d94-4ac3-a4d8-ba401062741b', 'You cannot block that user due to server policy.');
+		}
+
 		await Promise.all([
 			this.cancelRequest(blocker, blockee, silent),
 			this.cancelRequest(blockee, blocker, silent),
-			this.userFollowingService.unfollow(blocker, blockee, silent),
-			this.userFollowingService.unfollow(blockee, blocker, silent),
+			// ブロックの可否は上で判定済み（リモートからのブロックを含む）のため、ここでのフォロー解除には制限を適用しない
+			this.userFollowingService.unfollow(blocker, blockee, silent, { ignoreServerPolicy: true }),
+			this.userFollowingService.unfollow(blockee, blocker, silent, { ignoreServerPolicy: true }),
 			this.removeFromList(blockee, blocker),
 			this.removeRoomInvitations(blocker, blockee),
 			this.removeRoomInvitations(blockee, blocker),

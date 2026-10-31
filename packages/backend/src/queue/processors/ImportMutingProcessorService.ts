@@ -17,6 +17,7 @@ import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { DbUserImportJobData } from '../types.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 @Injectable()
 export class ImportMutingProcessorService {
@@ -90,7 +91,13 @@ export class ImportMutingProcessorService {
 
 				this.logger.info(`Mute[${linenum}] ${target.id} ...`);
 
-				await this.userMutingService.mute(user, target);
+				await this.userMutingService.mute(user, target).catch((err) => {
+					if (err instanceof IdentifiableError && err.id === '15273a89-374d-49fa-8df6-8bb3feeea455') {
+						// フォロー解除できない（＝ミュートもできない）ユーザー。動作は正常のため、エラーを無視する
+						return;
+					}
+					throw err;
+				});
 			} catch (e) {
 				this.logger.warn(`Error in line:${linenum} ${e}`);
 			}

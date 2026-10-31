@@ -28,6 +28,7 @@ import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { RoleService } from '@/core/RoleService.js';
 import type { ThinUser } from '@/queue/types.js';
 import Logger from '../logger.js';
 
@@ -74,6 +75,7 @@ export class UserFollowingService implements OnModuleInit {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		private roleService: RoleService,
 		private cacheService: CacheService,
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
@@ -104,10 +106,12 @@ export class UserFollowingService implements OnModuleInit {
 	public async follow(
 		_follower: ThinUser,
 		_followee: ThinUser,
-		{ requestId, silent = false, withReplies }: {
+		{ requestId, silent = false, withReplies, skipApproval = false }: {
 			requestId?: string,
 			silent?: boolean,
 			withReplies?: boolean,
+			/** ローカルユーザー同士のフォローで、フォロー対象の承認制に関する設定を無視してフォローを成立させる */
+			skipApproval?: boolean,
 		} = {},
 	): Promise<void> {
 		/**
@@ -174,13 +178,15 @@ export class UserFollowingService implements OnModuleInit {
 		// フォロワーがローカルユーザーであり、フォロー対象がリモートユーザーである or
 		// フォロワーがローカルユーザーであり、フォロー対象がサイレンスされているサーバーである
 		// 上記のいずれかに当てはまる場合はすぐフォローせずにフォローリクエストを発行しておく
-		if (
+		// （承認をスキップする場合はローカルユーザー同士に限り、すぐフォローする）
+		const shouldSkipApproval = skipApproval && this.userEntityService.isLocalUser(follower) && this.userEntityService.isLocalUser(followee);
+		if (!shouldSkipApproval && (
 			followee.isLocked ||
 			requiresApprovalByAccountAge ||
 			(followeeProfile.carefulBot && follower.isBot) ||
 			(this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee) && process.env.FORCE_FOLLOW_REMOTE_USER_FOR_TESTING !== 'true') ||
 			(this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower) && this.utilityService.isSilencedHost(this.meta.silencedHosts, follower.host))
-		) {
+		)) {
 			let autoAccept = false;
 
 			// 鍵アカウントであっても、既にフォローされていた場合はスルー
@@ -368,7 +374,21 @@ export class UserFollowingService implements OnModuleInit {
 			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		silent = false,
+		{ ignoreServerPolicy = false }: {
+			/** 呼び出し元で判定済みの場合や、リモートで既に成立している解除の場合に、フォロー解除できないユーザーの制限を適用しない */
+			ignoreServerPolicy?: boolean,
+		} = {},
 	): Promise<void> {
+		// フォロー解除できないユーザーの場合
+		if (
+			!ignoreServerPolicy &&
+			follower.host == null &&
+			this.meta.forciblyFollowedUsers.includes(followee.id) &&
+			!await this.roleService.isModerator(follower)
+		) {
+			throw new IdentifiableError('19f25f61-0141-4683-99dc-217a88d633cb', 'You cannot unfollow that user due to server policy.');
+		}
+
 		const following = await this.followingsRepository.findOne({
 			relations: {
 				follower: true,

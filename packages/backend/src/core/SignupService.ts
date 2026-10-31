@@ -6,7 +6,7 @@
 import { generateKeyPair } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import { DataSource, IsNull } from 'typeorm';
+import { DataSource, EntityNotFoundError, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta, UsedUsernamesRepository, UsersRepository } from '@/models/_.js';
 import { MiUser } from '@/models/User.js';
@@ -20,8 +20,12 @@ import { bindThis } from '@/decorators.js';
 import UsersChart from '@/core/chart/charts/users.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserService } from '@/core/UserService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { MetaService } from '@/core/MetaService.js';
+import Logger from '@/logger.js';
+
+const logger = new Logger('signup');
 
 @Injectable()
 export class SignupService {
@@ -40,6 +44,7 @@ export class SignupService {
 
 		private utilityService: UtilityService,
 		private userService: UserService,
+		private userFollowingService: UserFollowingService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private systemAccountService: SystemAccountService,
@@ -164,6 +169,31 @@ export class SignupService {
 		});
 
 		this.usersChart.update(account, true);
+
+		//#region Default following
+		if (
+			this.meta.rootUserId != null &&
+			(this.meta.defaultFollowedUsers.length > 0 || this.meta.forciblyFollowedUsers.length > 0)
+		) {
+			const usersToFollow = [
+				...this.meta.defaultFollowedUsers.map(id => ({ id, forcibly: false })),
+				...this.meta.forciblyFollowedUsers.map(id => ({ id, forcibly: true })),
+			];
+
+			const results = await Promise.allSettled(usersToFollow.map(async ({ id, forcibly }) => {
+				// 交流を断てないユーザーは、相手の承認制に関する設定に関わらずフォローを成立させる
+				await this.userFollowingService.follow(account, { id }, { skipApproval: forcibly });
+			}));
+
+			for (const [i, result] of results.entries()) {
+				// 削除済みなど存在しないユーザーは想定内のため記録しない
+				if (result.status === 'rejected' && !(result.reason instanceof EntityNotFoundError)) {
+					logger.warn(`Failed to follow ${usersToFollow[i].id} by default: ${result.reason}`);
+				}
+			}
+		}
+		//#endregion
+
 		this.userService.notifySystemWebhook(account, 'userCreated');
 
 		if (this.meta.rootUserId == null) {
