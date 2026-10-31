@@ -6,7 +6,7 @@
 import * as fs from 'node:fs';
 import * as fileType from 'file-type';
 import isSvg from 'is-svg';
-import { fixMime } from './mime.js';
+import { fixMime } from '../common/mime.js';
 
 export type DetectedType = {
 	mime: string;

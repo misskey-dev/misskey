@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { StatusError } from './status-error.js';
+import { StatusError } from '../common/status-error.js';
 
 export type ProxyQuery = {
 	emoji?: string;

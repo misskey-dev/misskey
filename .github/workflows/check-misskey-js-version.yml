@@ -5,14 +5,14 @@ on:
     branches: [ develop ]
     paths:
       - packages/misskey-js/package.json
-      - packages/media-proxy-core/package.json
+      - packages/media-core/package.json
       - package.json
       - .github/workflows/check-misskey-js-version.yml
   pull_request:
     branches: [ develop ]
     paths:
       - packages/misskey-js/package.json
-      - packages/media-proxy-core/package.json
+      - packages/media-core/package.json
       - package.json
       - .github/workflows/check-misskey-js-version.yml
 jobs:
@@ -26,7 +26,7 @@ jobs:
       - name: Check version
         run: |
           root_version="$(jq -r '.version' package.json)"
-          for package_json in packages/misskey-js/package.json packages/media-proxy-core/package.json; do
+          for package_json in packages/misskey-js/package.json packages/media-core/package.json; do
             if [ "$root_version" != "$(jq -r '.version' "$package_json")" ]; then
               echo "Version mismatch! ($package_json)"
               exit 1

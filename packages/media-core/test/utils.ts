@@ -8,13 +8,13 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import sharp from 'sharp';
 import type { Readable } from 'node:stream';
-import type { IImageStreamable } from '../src/image.js';
+import type { IImageStreamable } from '../src/image/image.js';
 
 /**
  * テスト用のファイルを置く一時ディレクトリを作成する
  */
 export async function createTempDir(): Promise<{ dir: string; cleanup: () => Promise<void> }> {
-	const dir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'media-proxy-core-test-'));
+	const dir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'media-core-test-'));
 	return {
 		dir,
 		cleanup: () => fs.promises.rm(dir, { recursive: true, force: true }),

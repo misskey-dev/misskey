@@ -6,7 +6,6 @@
 import * as http from 'node:http';
 import * as https from 'node:https';
 import CacheableLookup from 'cacheable-lookup';
-import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
 import ipaddr from 'ipaddr.js';
 import type { LookupFunction } from 'node:net';
 
@@ -18,32 +17,9 @@ export type HttpAgents = {
 let defaultAgents: HttpAgents | null = null;
 
 /**
- * DNS キャッシュ付きの keep-alive エージェントを作成する
- *
- * proxy を指定した場合は HTTP プロキシ経由のエージェントを作成する
+ * DNS キャッシュ付きの keep-alive エージェントを返す
  */
-export function createHttpAgents(proxy?: string): HttpAgents {
-	if (proxy) {
-		return {
-			http: new HttpProxyAgent({
-				keepAlive: true,
-				keepAliveMsecs: 30 * 1000,
-				maxSockets: 256,
-				maxFreeSockets: 256,
-				scheduling: 'lifo',
-				proxy,
-			}),
-			https: new HttpsProxyAgent({
-				keepAlive: true,
-				keepAliveMsecs: 30 * 1000,
-				maxSockets: 256,
-				maxFreeSockets: 256,
-				scheduling: 'lifo',
-				proxy,
-			}),
-		};
-	}
-
+export function getDefaultAgents(): HttpAgents {
 	if (defaultAgents == null) {
 		const cache = new CacheableLookup({
 			maxTtl: 3600,	// 1hours

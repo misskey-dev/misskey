@@ -7,17 +7,18 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import fastifyStatic from '@fastify/static';
 import * as tmp from 'tmp';
-import { StatusError } from './status-error.js';
-import { detectType } from './file-type.js';
-import { downloadUrl } from './download.js';
-import { getProxyTargetUrl, validateProxyUserAgent } from './proxy-request.js';
-import { convertProxyImage } from './proxy-image.js';
-import { createProxyResponseHeaders } from './proxy-response.js';
-import type { DownloadOptions } from './download.js';
-import type { ProxyQuery } from './proxy-request.js';
+import { StatusError } from '../common/status-error.js';
+import { detectType } from '../file/file-type.js';
+import { downloadUrl } from '../download/download.js';
+import { createHttpAgents } from './agents.js';
+import { getProxyTargetUrl, validateProxyUserAgent } from '../proxy/proxy-request.js';
+import { convertProxyImage } from '../proxy/proxy-image.js';
+import { createProxyResponseHeaders } from '../proxy/proxy-response.js';
+import type { DownloadOptions } from '../download/download.js';
+import type { ProxyQuery } from '../proxy/proxy-request.js';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
-const assetsPath = fileURLToPath(new URL('../assets/', import.meta.url));
+const assetsPath = fileURLToPath(new URL('../../assets/', import.meta.url));
 
 export type MediaProxyLogger = {
 	warn(message: string, error?: unknown): void;
@@ -25,6 +26,13 @@ export type MediaProxyLogger = {
 };
 
 export type MediaProxyPluginOptions = Partial<Pick<DownloadOptions, 'userAgent' | 'maxSize'>> & Omit<DownloadOptions, 'userAgent' | 'maxSize' | 'logger'> & {
+	/**
+	 * フォワードプロキシの URL (例: http://127.0.0.1:3128)
+	 *
+	 * 指定するとプロキシ経由で接続し、接続先 IP アドレスの検証はプロキシ側に任せる。
+	 * getAgents を指定した場合はそちらが優先される
+	 */
+	proxy?: string;
 	'Access-Control-Allow-Origin'?: string;
 	'Access-Control-Allow-Headers'?: string;
 	'Content-Security-Policy'?: string;
@@ -54,10 +62,21 @@ export function mediaProxyPlugin(fastify: FastifyInstance, options: MediaProxyPl
 		error: (message, error) => console.error(message, ...(error != null ? [error] : [])),
 	};
 
+	// プロキシ経由のエージェントは keep-alive を効かせるために一度だけ作成する
+	// (keep-alive の接続が残るとプロセスが終了できないため、Fastify の終了時に破棄する)
+	const proxyAgents = options.proxy ? createHttpAgents(options.proxy) : null;
+	if (proxyAgents != null) {
+		fastify.addHook('onClose', (_instance, done) => {
+			proxyAgents.http.destroy();
+			proxyAgents.https.destroy();
+			done();
+		});
+	}
+
 	const downloadOptions: DownloadOptions = {
 		userAgent: options.userAgent ?? defaultMediaProxyUserAgent,
 		maxSize: options.maxSize ?? defaultMediaProxyMaxSize,
-		getAgents: options.getAgents,
+		getAgents: options.getAgents ?? (proxyAgents != null ? () => proxyAgents : undefined),
 		allowedPrivateNetworks: options.allowedPrivateNetworks,
 		logger,
 	};

@@ -205,7 +205,7 @@ try {
 			stdout: process.stdout,
 			stderr: process.stderr,
 		}),
-		runChildProcess('pnpm', ['--filter', '@misskey-dev/media-proxy-core', 'build'], {
+		runChildProcess('pnpm', ['--filter', '@misskey-dev/media-core', 'build'], {
 			cwd: _dirname + '/../',
 			stdout: process.stdout,
 			stderr: process.stderr,
@@ -254,7 +254,7 @@ try {
 		stderr: process.stderr,
 	});
 
-	startChildProcess('pnpm', ['--filter', '@misskey-dev/media-proxy-core', 'watch'], {
+	startChildProcess('pnpm', ['--filter', '@misskey-dev/media-core', 'watch'], {
 		cwd: _dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,

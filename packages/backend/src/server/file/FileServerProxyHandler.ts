@@ -4,8 +4,8 @@
  */
 
 import * as fs from 'node:fs';
-import { convertProxyImage, createProxyResponseHeaders, getProxyTargetUrl, validateProxyUserAgent } from '@misskey-dev/media-proxy-core';
-import type { ProxyQuery } from '@misskey-dev/media-proxy-core';
+import { convertProxyImage, createProxyResponseHeaders, getProxyTargetUrl, validateProxyUserAgent } from '@misskey-dev/media-core';
+import type { ProxyQuery } from '@misskey-dev/media-core';
 import type { Config } from '@/config.js';
 import { StatusError } from '@/misc/status-error.js';
 import type { IImageStreamable } from '@/core/ImageProcessingService.js';

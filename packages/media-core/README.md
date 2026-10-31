@@ -1,37 +1,68 @@
-# @misskey-dev/media-proxy-core
+# @misskey-dev/media-core
 
-Misskey のメディアプロキシのコア実装です。本体バックエンドとスタンドアロン版の両方で使用します。
+Misskey のメディア処理のライブラリです。Misskey 本体のバックエンドと、スタンドアロン版メディアプロキシ ([misskey-dev/media-proxy](https://github.com/misskey-dev/media-proxy)) の両方で使用します。
+
+このパッケージは Misskey 本体と同じバージョン番号でリリースされます。
+
+メディアプロキシの仕様は [SPECIFICATION.md](./SPECIFICATION.md) を参照してください。
 
 ## Peer dependencies
 
-`sharp`、`@misskey-dev/sharp-read-bmp`、`fastify` はピア依存関係です。利用側でインストールしてください。
+`sharp`、`@misskey-dev/sharp-read-bmp` はピア依存関係です。利用側でインストールしてください。
+`@misskey-dev/media-core/standalone` を使用する場合は `fastify` も必要です。
 
 ```bash
-npm install @misskey-dev/media-proxy-core sharp @misskey-dev/sharp-read-bmp fastify
+npm install @misskey-dev/media-core sharp @misskey-dev/sharp-read-bmp
+# スタンドアロン版メディアプロキシとして使う場合
+npm install fastify
 ```
 
 ## 提供するもの
 
-### `@misskey-dev/media-proxy-core`
+### `@misskey-dev/media-core`
 
-本体メディアプロキシとスタンドアロン版の両方で使用するものです。
-
-- `getProxyTargetUrl` / `validateProxyUserAgent`: リクエストの解釈と検証
+- `getProxyTargetUrl` / `validateProxyUserAgent`: メディアプロキシのリクエストの解釈と検証
 - `convertProxyImage`: `emoji` / `avatar` / `static` / `preview` / `badge` クエリに応じた画像変換
-- `createProxyResponseHeaders`: 正常レスポンスのヘッダー
+- `createProxyResponseHeaders`: メディアプロキシの正常レスポンスのヘッダー
 - `StatusError`
 
-### `@misskey-dev/media-proxy-core/standalone`
+### `@misskey-dev/media-core/standalone`
 
-スタンドアロン版でのみ使用するものです。
+スタンドアロン版メディアプロキシでのみ使用するものです。読み込むモジュール (と依存パッケージ) を限定するため、サブパスに分けています。
 
 - `mediaProxyPlugin`: スタンドアロンのメディアプロキシとして動作する Fastify プラグイン
-- `createHttpAgents`: HTTP プロキシ経由などのエージェントを作成する
+- `createHttpAgents`: ダウンロードに使用するエージェントを作成する
+
+```js
+import Fastify from 'fastify';
+import { mediaProxyPlugin } from '@misskey-dev/media-core/standalone';
+
+const fastify = Fastify();
+fastify.register(mediaProxyPlugin, {
+	userAgent: 'MisskeyMediaProxy',
+	allowedPrivateNetworks: [],
+	maxSize: 262144000,
+	// proxy: 'http://127.0.0.1:3128',
+});
+```
 
 ## 接続先の検証について
 
-`mediaProxyPlugin` に `getAgents` を渡した場合、接続先 IP アドレスの検証は渡したエージェント側の責務となります。
-省略した場合は既定のエージェントを使用し、レスポンス受信時に接続先が `allowedPrivateNetworks` に含まれないプライベートアドレスであればダウンロードを中断します (リクエスト送信後の判定であることに注意してください)。
+`mediaProxyPlugin` に `getAgents` または `proxy` を指定した場合、接続先 IP アドレスの検証はエージェント (プロキシ) 側の責務となります。
+どちらも省略した場合は既定のエージェントを使用し、レスポンス受信時に接続先が `allowedPrivateNetworks` に含まれないプライベートアドレスであればダウンロードを中断します (リクエスト送信後の判定であることに注意してください)。
+
+## ディレクトリ構成
+
+`src/` 以下のディレクトリ間の依存の向きは ESLint (`import/no-restricted-paths`) で固定しています。
+
+| ディレクトリ | 内容 | 依存してよいもの |
+| --- | --- | --- |
+| `common/` | エラー型、MIME タイプ、ファイル名などの共通処理 | なし |
+| `file/` | ファイルの形式判定 | `common/` |
+| `image/` | 画像の変換 | `common/` |
+| `download/` | ファイルのダウンロード | `common/` |
+| `proxy/` | メディアプロキシの仕様に基づく処理 | `common/` / `file/` / `image/` / `download/` |
+| `standalone/` | スタンドアロン版メディアプロキシ (`./standalone` から公開) | すべて |
 
 ## License
 

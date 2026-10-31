@@ -1,8 +1,8 @@
 {
 	"type": "module",
-	"name": "@misskey-dev/media-proxy-core",
-	"version": "2026.10.1-alpha.0",
-	"description": "Shared media proxy implementation for Misskey",
+	"name": "@misskey-dev/media-core",
+	"version": "2026.10.1",
+	"description": "Media processing library shared by Misskey and the standalone media proxy",
 	"license": "AGPL-3.0-only",
 	"main": "./built/index.js",
 	"types": "./built/index.d.ts",
@@ -30,13 +30,14 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git",
-		"directory": "packages/media-proxy-core"
+		"directory": "packages/media-core"
 	},
 	"files": [
 		"built",
 		"assets",
 		"LICENSE",
-		"README.md"
+		"README.md",
+		"SPECIFICATION.md"
 	],
 	"peerDependencies": {
 		"@misskey-dev/sharp-read-bmp": "^2.0.0",
@@ -49,11 +50,11 @@
 		}
 	},
 	"dependencies": {
-		"@fastify/static": "10.1.6",
+		"@fastify/static": "10.1.7",
 		"cacheable-lookup": "7.0.0",
 		"content-disposition": "3.0.0",
-		"file-type": "22.1.1",
-		"got": "16.0.0",
+		"file-type": "22.2.0",
+		"got": "16.1.0",
 		"hpagent": "1.2.0",
 		"ipaddr.js": "2.5.0",
 		"is-svg": "6.1.0",
@@ -63,9 +64,9 @@
 		"@misskey-dev/sharp-read-bmp": "2.0.0",
 		"@types/node": "26.6.5",
 		"@types/tmp": "0.2.6",
-		"@typescript-eslint/parser": "8.71.1",
-		"fastify": "5.12.5",
+		"@typescript-eslint/parser": "8.72.0",
+		"fastify": "5.12.7",
 		"sharp": "0.35.5",
-		"vitest": "5.0.3"
+		"vitest": "5.0.5"
 	}
 }

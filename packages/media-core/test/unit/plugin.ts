@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as http from 'node:http';
+import * as net from 'node:net';
 import Fastify from 'fastify';
 import sharp from 'sharp';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
@@ -11,7 +13,7 @@ import { createPatternPng } from '../utils.js';
 import type { FastifyInstance } from 'fastify';
 import type { MediaProxyPluginOptions } from '../../src/standalone.js';
 
-const userAgent = 'Mozilla/5.0 (media-proxy-core test)';
+const userAgent = 'Mozilla/5.0 (media-core test)';
 
 const silentLogger = {
 	warn: () => {},
@@ -196,6 +198,41 @@ describe('mediaProxyPlugin', () => {
 			await proxy.close();
 
 			expect(res.statusCode).toBe(200);
+		});
+
+		test('proxy を指定した場合はプロキシを経由し、検証をプロキシに任せる', async () => {
+			// CONNECT で TCP トンネルを張るだけのフォワードプロキシ (hpagent は http の接続先でも CONNECT を使う)
+			const tunneledHosts: string[] = [];
+			const forwardProxy = http.createServer((_req, res) => {
+				res.writeHead(405);
+				res.end();
+			});
+			forwardProxy.on('connect', (req: http.IncomingMessage, clientSocket: net.Socket) => {
+				tunneledHosts.push(req.url ?? '');
+				const [host, port] = (req.url ?? '').split(':');
+				const upstream = net.connect(Number(port), host, () => {
+					clientSocket.write('HTTP/1.1 200 Connection Established\r\n\r\n');
+					upstream.pipe(clientSocket);
+					clientSocket.pipe(upstream);
+				});
+				upstream.on('error', () => clientSocket.destroy());
+				clientSocket.on('error', () => upstream.destroy());
+			});
+			await new Promise<void>(resolve => forwardProxy.listen(0, '127.0.0.1', resolve));
+			const { port } = forwardProxy.address() as { port: number };
+
+			const proxy = await createProxy({ proxy: `http://127.0.0.1:${port}` });
+
+			const res = await proxy.inject({
+				method: 'GET',
+				url: `/image.png?url=${encodeURIComponent(pngUrl)}`,
+				headers: { 'user-agent': userAgent },
+			});
+			await proxy.close();
+			await new Promise(resolve => forwardProxy.close(resolve));
+
+			expect(res.statusCode).toBe(200);
+			expect(tunneledHosts).toEqual([new URL(pngUrl).host]);
 		});
 	});
 });

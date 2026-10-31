@@ -6,11 +6,11 @@
 import * as fs from 'node:fs';
 import sharp from 'sharp';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
-import { FILE_TYPE_BROWSERSAFE } from './const.js';
-import { StatusError } from './status-error.js';
-import { isMimeImage } from './mime.js';
-import { convertSharpToWebpStream, convertToWebpStream, webpDefault } from './image.js';
-import type { IImageStreamable } from './image.js';
+import { FILE_TYPE_BROWSERSAFE } from '../common/const.js';
+import { StatusError } from '../common/status-error.js';
+import { isMimeImage } from '../common/mime.js';
+import { convertSharpToWebpStream, convertToWebpStream, webpDefault } from '../image/image.js';
+import type { IImageStreamable } from '../image/image.js';
 import type { ProxyQuery } from './proxy-request.js';
 
 export type ProxySourceFile = {

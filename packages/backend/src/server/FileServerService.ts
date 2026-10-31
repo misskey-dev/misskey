@@ -6,7 +6,7 @@
 import * as fs from 'node:fs';
 import { resolve } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
-import { StatusError as MediaProxyStatusError } from '@misskey-dev/media-proxy-core';
+import { StatusError as MediaProxyStatusError } from '@misskey-dev/media-core';
 import type { Config } from '@/config.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -119,7 +119,7 @@ export class FileServerService {
 			return reply.sendFile('/dummy.png', this.assets);
 		}
 
-		// プロキシの画像変換などは media-proxy-core の StatusError (backend の StatusError とは別クラス) を投げる
+		// プロキシの画像変換などは media-core の StatusError (backend の StatusError とは別クラス) を投げる
 		if ((err instanceof StatusError || err instanceof MediaProxyStatusError) && (err.statusCode === 302 || err.isClientError)) {
 			reply.code(err.statusCode);
 			return;
