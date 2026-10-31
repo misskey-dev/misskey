@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, test } from 'vitest';
-import { contentDisposition } from '../../src/common/content-disposition.js';
+import { contentDisposition } from '@/common/content-disposition.js';
 
 describe(contentDisposition, () => {
 	test('inline', () => {

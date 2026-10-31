@@ -7,8 +7,8 @@ import * as fs from 'node:fs';
 import * as stream from 'node:stream/promises';
 import got, * as Got from 'got';
 import { parse } from 'content-disposition';
-import { StatusError } from '../common/status-error.js';
-import { getDefaultAgents, isPrivateIp } from './http-agent.js';
+import { StatusError } from '@/common/status-error.js';
+import { getDefaultAgents, isPrivateIp } from '@/download/http-agent.js';
 
 export type DownloadLogger = {
 	warn(message: string, error?: unknown): void;

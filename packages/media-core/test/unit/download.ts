@@ -7,12 +7,12 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import Fastify from 'fastify';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { downloadUrl } from '../../src/download/download.js';
-import { getDefaultAgents } from '../../src/download/http-agent.js';
-import { StatusError } from '../../src/common/status-error.js';
+import { downloadUrl } from '@/download/download.js';
+import { getDefaultAgents } from '@/download/http-agent.js';
+import { StatusError } from '@/common/status-error.js';
 import { createTempDir } from '../utils.js';
 import type { FastifyInstance } from 'fastify';
-import type { DownloadOptions } from '../../src/download/download.js';
+import type { DownloadOptions } from '@/download/download.js';
 
 const body = Buffer.from('0123456789', 'utf8');
 

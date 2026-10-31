@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FILE_TYPE_BROWSERSAFE } from './const.js';
+import { FILE_TYPE_BROWSERSAFE } from '@/common/const.js';
 
 const dictionary = {
 	'safe-file': FILE_TYPE_BROWSERSAFE,

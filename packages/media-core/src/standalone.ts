@@ -5,7 +5,7 @@
 
 // スタンドアロン版メディアプロキシでのみ使用するもの
 
-export { mediaProxyPlugin, defaultMediaProxyUserAgent, defaultMediaProxyMaxSize } from './standalone/plugin.js';
-export type { MediaProxyPluginOptions, MediaProxyLogger } from './standalone/plugin.js';
-export { createHttpAgents } from './standalone/agents.js';
-export type { HttpAgents } from './download/http-agent.js';
+export { mediaProxyPlugin, defaultMediaProxyUserAgent, defaultMediaProxyMaxSize } from '@/standalone/plugin.js';
+export type { MediaProxyPluginOptions, MediaProxyLogger } from '@/standalone/plugin.js';
+export { createHttpAgents } from '@/standalone/agents.js';
+export type { HttpAgents } from '@/download/http-agent.js';

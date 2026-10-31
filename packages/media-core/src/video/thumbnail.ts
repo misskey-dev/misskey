@@ -4,9 +4,9 @@
  */
 
 import FFmpeg from 'fluent-ffmpeg';
-import { createTempDir } from '../common/temp.js';
-import { convertToWebp } from '../image/image.js';
-import type { IImage } from '../image/image.js';
+import { createTempDir } from '@/common/temp.js';
+import { convertToWebp } from '@/image/image.js';
+import type { IImage } from '@/image/image.js';
 
 /**
  * 動画のサムネイルを WebP で生成する (ffmpeg が必要)

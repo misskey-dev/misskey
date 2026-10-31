@@ -8,6 +8,9 @@
 		"sourceMap": false,
 		"outDir": "./built",
 		"rootDir": "./src",
+		"paths": {
+			"@/*": ["./src/*"]
+		},
 		"removeComments": false,
 		"skipLibCheck": true,
 		"strict": true,

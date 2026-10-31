@@ -8,7 +8,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import sharp from 'sharp';
 import type { Readable } from 'node:stream';
-import type { IImageStreamable } from '../src/image/image.js';
+import type { IImageStreamable } from '@/image/image.js';
 
 /**
  * テスト用のファイルを置く一時ディレクトリを作成する

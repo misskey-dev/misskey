@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, test } from 'vitest';
-import { isPrivateIp } from '../../src/download/http-agent.js';
+import { isPrivateIp } from '@/download/http-agent.js';
 
 describe(isPrivateIp, () => {
 	test.each([

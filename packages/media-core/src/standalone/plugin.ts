@@ -6,16 +6,16 @@
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import fastifyStatic from '@fastify/static';
-import { StatusError } from '../common/status-error.js';
-import { createTemp } from '../common/temp.js';
-import { detectType } from '../file/file-type.js';
-import { downloadUrl } from '../download/download.js';
-import { createHttpAgents } from './agents.js';
-import { getProxyTargetUrl, validateProxyUserAgent } from '../proxy/proxy-request.js';
-import { convertProxyImage } from '../proxy/proxy-image.js';
-import { createProxyResponseHeaders } from '../proxy/proxy-response.js';
-import type { DownloadOptions } from '../download/download.js';
-import type { ProxyQuery } from '../proxy/proxy-request.js';
+import { StatusError } from '@/common/status-error.js';
+import { createTemp } from '@/common/temp.js';
+import { detectType } from '@/file/file-type.js';
+import { downloadUrl } from '@/download/download.js';
+import { createHttpAgents } from '@/standalone/agents.js';
+import { getProxyTargetUrl, validateProxyUserAgent } from '@/proxy/proxy-request.js';
+import { convertProxyImage } from '@/proxy/proxy-image.js';
+import { createProxyResponseHeaders } from '@/proxy/proxy-response.js';
+import type { DownloadOptions } from '@/download/download.js';
+import type { ProxyQuery } from '@/proxy/proxy-request.js';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
 const assetsPath = fileURLToPath(new URL('../../assets/', import.meta.url));

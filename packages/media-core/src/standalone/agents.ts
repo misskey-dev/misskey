@@ -4,8 +4,8 @@
  */
 
 import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
-import { getDefaultAgents } from '../download/http-agent.js';
-import type { HttpAgents } from '../download/http-agent.js';
+import { getDefaultAgents } from '@/download/http-agent.js';
+import type { HttpAgents } from '@/download/http-agent.js';
 
 /**
  * ダウンロードに使用するエージェントを作成する

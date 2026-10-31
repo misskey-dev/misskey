@@ -7,10 +7,10 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import sharp from 'sharp';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { convertSharpToPng, convertToAvif, convertToWebp, convertToWebpStream } from '../../src/image/image.js';
-import { getBlurhash } from '../../src/image/blurhash.js';
-import { calcHash } from '../../src/file/hash.js';
-import { detectImageSize } from '../../src/file/image-size.js';
+import { convertSharpToPng, convertToAvif, convertToWebp, convertToWebpStream } from '@/image/image.js';
+import { getBlurhash } from '@/image/blurhash.js';
+import { calcHash } from '@/file/hash.js';
+import { detectImageSize } from '@/file/image-size.js';
 import { createPatternPng, createTempDir } from '../utils.js';
 
 describe('image', () => {

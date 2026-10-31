@@ -6,8 +6,8 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { checkSvg, detectType, getFileSize } from '../../src/file/file-type.js';
-import { fixMime } from '../../src/common/mime.js';
+import { checkSvg, detectType, getFileSize } from '@/file/file-type.js';
+import { fixMime } from '@/common/mime.js';
 import { createPatternPng, createSvg, createTempDir } from '../utils.js';
 
 /**

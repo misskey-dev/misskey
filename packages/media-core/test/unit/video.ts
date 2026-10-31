@@ -8,7 +8,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import sharp from 'sharp';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { generateVideoThumbnail, hasVideoTrack } from '../../src/video.js';
+import { generateVideoThumbnail, hasVideoTrack } from '@/video.js';
 import { createTempDir } from '../utils.js';
 
 // ffmpeg / ffprobe が必要 (CI では apt でインストールする)

@@ -67,7 +67,9 @@ fastify.register(mediaProxyPlugin, {
 
 ## ディレクトリ構成
 
-`src/` 以下のディレクトリ間の依存の向きは ESLint (`import/no-restricted-paths`) で固定しています。
+`src/` 内のモジュールは相対パスではなく `@/` (`src/` を指すエイリアス) で参照します。ビルド時は `tsc-alias` で相対パスに書き換えます。
+
+ディレクトリ間の依存の向きは ESLint (`no-restricted-imports`) で固定しています。
 
 | ディレクトリ | 内容 | 依存してよいもの |
 | --- | --- | --- |

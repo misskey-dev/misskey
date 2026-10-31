@@ -7,11 +7,11 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import sharp from 'sharp';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { convertProxyImage } from '../../src/proxy/proxy-image.js';
-import { StatusError } from '../../src/common/status-error.js';
+import { convertProxyImage } from '@/proxy/proxy-image.js';
+import { StatusError } from '@/common/status-error.js';
 import { createFlatPng, createPatternPng, createSvg, createTempDir, imageToBuffer } from '../utils.js';
-import type { ProxyQuery } from '../../src/proxy/proxy-request.js';
-import type { ProxySourceFile } from '../../src/proxy/proxy-image.js';
+import type { ProxyQuery } from '@/proxy/proxy-request.js';
+import type { ProxySourceFile } from '@/proxy/proxy-image.js';
 
 describe(convertProxyImage, () => {
 	let cleanup: () => Promise<void>;

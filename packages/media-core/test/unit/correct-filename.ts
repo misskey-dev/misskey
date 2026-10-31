@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, it, test } from 'vitest';
-import { correctFilename } from '../../src/common/correct-filename.js';
+import { correctFilename } from '@/common/correct-filename.js';
 
 describe(correctFilename, () => {
 	it('no ext to null', () => {

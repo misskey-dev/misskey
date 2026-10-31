@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { contentDisposition } from '../common/content-disposition.js';
-import { correctFilename } from '../common/correct-filename.js';
-import type { IImageStreamable } from '../image/image.js';
+import { contentDisposition } from '@/common/content-disposition.js';
+import { correctFilename } from '@/common/correct-filename.js';
+import type { IImageStreamable } from '@/image/image.js';
 
 /**
  * プロキシの正常レスポンスに付与するヘッダーを作成する
