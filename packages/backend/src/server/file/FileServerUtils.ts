@@ -4,9 +4,8 @@
  */
 
 import * as fs from 'node:fs';
-import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
-import { contentDisposition } from '@/misc/content-disposition.js';
-import type { IImageStreamable } from '@/core/ImageProcessingService.js';
+import { contentDisposition, FILE_TYPE_BROWSERSAFE } from '@misskey-dev/media-core';
+import type { IImageStreamable } from '@misskey-dev/media-core';
 import type { FastifyReply } from 'fastify';
 
 export type RangeStream = {

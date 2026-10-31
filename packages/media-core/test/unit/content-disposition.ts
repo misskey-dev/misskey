@@ -4,9 +4,9 @@
  */
 
 import { describe, expect, test } from 'vitest';
-import { contentDisposition } from '@/misc/content-disposition.js';
+import { contentDisposition } from '@/common/content-disposition.js';
 
-describe('misc:content-disposition', () => {
+describe(contentDisposition, () => {
 	test('inline', () => {
 		expect(contentDisposition('inline', 'foo bar')).toMatch(/^inline; filename="?foo_bar"?; filename\*=UTF-8''foo%20bar$/);
 	});

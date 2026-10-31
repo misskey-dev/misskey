@@ -373,6 +373,9 @@ importers:
       '@misskey-dev/emoji-data':
         specifier: 17.0.3
         version: 17.0.3
+      '@misskey-dev/media-core':
+        specifier: workspace:*
+        version: link:../media-core
       '@misskey-dev/sharp-read-bmp':
         specifier: 2.0.0
         version: 2.0.0(sharp@0.35.5(@types/node@26.6.5))
@@ -1428,6 +1431,76 @@ importers:
       '@typescript-eslint/parser':
         specifier: 8.72.0
         version: 8.72.0(@typescript/typescript6@6.0.2)(eslint@9.39.5(supports-color@10.2.2))(supports-color@10.2.2)
+
+  packages/media-core:
+    dependencies:
+      '@fastify/static':
+        specifier: 10.1.7
+        version: 10.1.7
+      blurhash:
+        specifier: 2.0.5
+        version: 2.0.5
+      cacheable-lookup:
+        specifier: 7.0.0
+        version: 7.0.0
+      content-disposition:
+        specifier: 3.0.0
+        version: 3.0.0
+      file-type:
+        specifier: 22.2.0
+        version: 22.2.0(supports-color@10.2.2)
+      got:
+        specifier: 16.1.0
+        version: 16.1.0
+      hpagent:
+        specifier: 1.2.0
+        version: 1.2.0
+      ipaddr.js:
+        specifier: 2.5.0
+        version: 2.5.0
+      is-svg:
+        specifier: 6.1.0
+        version: 6.1.0
+      probe-image-size:
+        specifier: 7.4.0
+        version: 7.4.0(supports-color@10.2.2)
+      tmp:
+        specifier: 0.2.7
+        version: 0.2.7
+    devDependencies:
+      '@misskey-dev/sharp-read-bmp':
+        specifier: 2.0.0
+        version: 2.0.0(sharp@0.35.5(@types/node@26.6.5))
+      '@types/fluent-ffmpeg':
+        specifier: 2.1.28
+        version: 2.1.28
+      '@types/node':
+        specifier: 26.6.5
+        version: 26.6.5
+      '@types/tmp':
+        specifier: 0.2.6
+        version: 0.2.6
+      '@typescript-eslint/parser':
+        specifier: 8.72.0
+        version: 8.72.0(@typescript/typescript6@6.0.2)(eslint@9.39.5(supports-color@10.2.2))(supports-color@10.2.2)
+      fastify:
+        specifier: 5.12.7
+        version: 5.12.7
+      fluent-ffmpeg:
+        specifier: 2.1.3
+        version: 2.1.3
+      nodemon:
+        specifier: 3.1.14
+        version: 3.1.14
+      sharp:
+        specifier: 0.35.5
+        version: 0.35.5(@types/node@26.6.5)
+      tsc-alias:
+        specifier: 1.9.9
+        version: 1.9.9
+      vitest:
+        specifier: 5.0.5
+        version: 5.0.5(@opentelemetry/api@1.10.0)(@types/node@26.6.5)(@vitest/browser-playwright@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(happy-dom@21.0.4(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@3.0.3(@types/node@26.6.5)(@typescript/typescript6@6.0.2)(supports-color@10.2.2)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))
 
   packages/misskey-bubble-game:
     dependencies:
