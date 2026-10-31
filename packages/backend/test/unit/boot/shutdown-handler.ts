@@ -100,10 +100,10 @@ describe('shutdown-handler', () => {
 			const signalPromise = handlers.get('SIGTERM')!();
 			expect(exit).not.toHaveBeenCalled();
 
-			await vi.advanceTimersByTimeAsync(10_000);
+			await vi.advanceTimersByTimeAsync(20_000);
 			await signalPromise;
 
-			expect(consoleError).toHaveBeenCalledWith('Shutdown tasks timed out after 10000ms.');
+			expect(consoleError).toHaveBeenCalledWith('Shutdown tasks timed out after 20000ms.');
 			expect(exit).toHaveBeenCalledWith(0);
 		} finally {
 			consoleError.mockRestore();

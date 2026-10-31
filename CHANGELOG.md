@@ -13,6 +13,15 @@
 - Fix: AiScript 関連のウィジェットの削除時のリソース解放漏れを修正
 
 ### Server
+- Feat: OpenTelemetryサポート
+  - 詳細な設定はconfigファイルを参照してください。
+  - Sentryとの併用も可能です。Sentry併用時は、PostgreSQL Query と Redis command は Sentry で計装されます。
+  - 以下の自動計装をサポートしています。（計装対象にする項目は設定可能）
+    - PostgreSQL query
+    - Redis command
+    - 全ての受信HTTPリクエスト
+    - 全ての送信HTTPリクエスト
+    - ジョブキュー（エンキュー元のトレースを含む）
 - Fix: ジョブキューの同時実行数のコンフィグ設定値が不正な場合は起動時に安全に停止するように
 - Fix: アンテナのリアルタイム更新時に、既に投票済みのアンケートが未投票として表示される問題を修正
 

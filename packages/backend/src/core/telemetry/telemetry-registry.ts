@@ -5,9 +5,11 @@
 
 import Logger from '@/logger.js';
 import { setLogTraceContextProvider } from '@/logging/logging-runtime.js';
+import { OpenTelemetryAdapter } from './adapters/OpenTelemetryAdapter.js';
 import { SentryTelemetryAdapter } from './adapters/SentryTelemetryAdapter.js';
 import type { Config } from '@/config.js';
-import type { TelemetryAdapter, TelemetryCaptureMessageOptions } from './adapters/TelemetryAdapter.js';
+import type { OtelBackendRuntimeConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './adapters/TelemetryAdapter.js';
+import type { QueueTraceContextCarrier } from './queue-trace-context.js';
 
 const logger = new Logger('telemetry');
 
@@ -19,12 +21,34 @@ const logger = new Logger('telemetry');
 const adapters: TelemetryAdapter[] = [];
 
 export async function initTelemetry(config: Config): Promise<void> {
-	if (config.sentryForBackend) {
-		// 設定の不備はconsoleではなくMisskeyのロガーへ出す。configureLoggingはこの時点で完了している。
-		const adapter = await SentryTelemetryAdapter.create(config.sentryForBackend, message => logger.warn(message));
-		adapters.push(adapter);
-		// Telemetryの初期化後に登録し、初期化前のBootstrapログは従来どおり出力する。
-		setLogTraceContextProvider(() => adapter.getActiveTraceContext?.());
+	const otelForBackend: OtelBackendRuntimeConfig | undefined = config.otelForBackend == null ? undefined : {
+		...config.otelForBackend,
+		serviceVersion: config.version,
+	};
+
+	// 設定の不備はconsoleではなくMisskeyのロガーへ出す。configureLoggingはこの時点で完了している。
+	const warn = (message: string) => logger.warn(message);
+
+	if (config.sentryForBackend && otelForBackend) {
+		// Sentry SDK v11の推奨構成に従い、tracingはMisskeyのOTel provider 1つが所有する。
+		// spanはotelForBackendの送信先とSentryのOTLP endpointの両方へexportし、
+		// Sentry側はエラー通知をactiveなOTel spanへ紐付けるだけにする。
+		const sentryOtlpTarget = await SentryTelemetryAdapter.getOtlpExportTarget(config.sentryForBackend, warn);
+		adapters.push(await OpenTelemetryAdapter.create(otelForBackend, sentryOtlpTarget != null ? [sentryOtlpTarget] : []));
+		adapters.push(await SentryTelemetryAdapter.createLinkedToOpenTelemetry(config.sentryForBackend, otelForBackend, warn));
+	} else if (config.sentryForBackend) {
+		// Sentry単体時は既存のSentry adapterだけを登録する。
+		adapters.push(await SentryTelemetryAdapter.create(config.sentryForBackend, warn));
+	} else if (otelForBackend) {
+		// OTel単体時だけMisskey自身でNodeTracerProviderを立てる。
+		adapters.push(await OpenTelemetryAdapter.create(otelForBackend));
+	}
+
+	// Telemetryの初期化後に登録し、初期化前のBootstrapログは従来どおり出力する。
+	// 併用時もtrace contextはtracingを所有する先頭のadapter(OTel)から取る。
+	const traceContextAdapter = adapters.find(adapter => adapter.getActiveTraceContext != null);
+	if (traceContextAdapter != null) {
+		setLogTraceContextProvider(() => traceContextAdapter.getActiveTraceContext?.());
 	}
 }
 
@@ -41,12 +65,28 @@ export function startSpan<T>(name: string, fn: () => T): T {
 	if (adapters.length === 0) return fn();
 	if (adapters.length === 1) return adapters[0].startSpan(name, fn);
 
-	// 将来複数adapterを登録する場合でも同じ処理を入れ子にラップし、呼び出し側のAPIは1回のstartSpanに保つ。
+	// Sentry併用時など複数adapterを登録する場合も同じ処理を入れ子にラップし、呼び出し側のAPIは1回のstartSpanに保つ。
 	const wrapped = adapters.reduceRight<() => T>(
 		(inner, adapter) => () => adapter.startSpan(name, inner),
 		fn,
 	);
 	return wrapped();
+}
+
+export function injectTraceContext(carrier: QueueTraceContextCarrier): void {
+	// Queue の carrier は共有データなので、通知と異なり全 adapter にブロードキャストしない。
+	// OTel provider は現在 1 つだけなので、同じ header を上書きしないよう最初の対応 adapter だけを使う。
+	adapters.find(adapter => adapter.injectTraceContext != null)?.injectTraceContext?.(carrier);
+}
+
+export function startSpanWithTraceContext<T>(name: string, jobData: object, fn: () => T): T {
+	// Queue context を解釈できる adapter に span 作成を任せる。
+	// 対応 adapter が無い構成では通常の startSpan へフォールバックする。
+	const adapter = adapters.find(adapter => adapter.startSpanWithTraceContext != null);
+	if (adapter?.startSpanWithTraceContext != null) {
+		return adapter.startSpanWithTraceContext(name, jobData, fn);
+	}
+	return startSpan(name, fn);
 }
 
 export async function shutdownTelemetry(): Promise<void> {
