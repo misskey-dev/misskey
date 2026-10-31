@@ -22,7 +22,7 @@ import type { MiLocalUser } from '@/models/User.js';
 import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
-import { UserAuthService } from '@/core/UserAuthService.js';
+import { TotpService } from '@/core/TotpService.js';
 import { CaptchaService } from '@/core/CaptchaService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
@@ -58,7 +58,7 @@ export class SigninApiService {
 		private idService: IdService,
 		private rateLimiterService: RateLimiterService,
 		private signinService: SigninService,
-		private userAuthService: UserAuthService,
+		private totpService: TotpService,
 		private webAuthnService: WebAuthnService,
 		private captchaService: CaptchaService,
 	) {
@@ -230,7 +230,7 @@ export class SigninApiService {
 			}
 
 			try {
-				await this.userAuthService.twoFactorAuthenticate(profile, token);
+				await this.totpService.twoFactorAuthenticate(profile, token);
 			} catch (_) {
 				return await fail(403, {
 					id: 'cdf1235b-ac71-46d4-a3a6-84ccce48df6f',
