@@ -1172,7 +1172,6 @@ function insertMention() {
 }
 
 async function insertEmoji(ev: PointerEvent) {
-	textAreaReadOnly.value = true;
 	const target = ev.currentTarget ?? ev.target;
 	if (target == null) return;
 
@@ -1203,6 +1202,9 @@ async function insertEmoji(ev: PointerEvent) {
 			});
 		},
 	});
+
+	// show() は表示中のウィンドウを引き継ぐ際に以前の呼び出し元の onClosed を同期的に呼ぶため、その後で読み取り専用にする
+	textAreaReadOnly.value = true;
 }
 
 async function insertMfmFunction(ev: PointerEvent) {

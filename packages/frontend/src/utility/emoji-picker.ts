@@ -10,6 +10,12 @@ import MkEmojiPickerDialog from '@/components/MkEmojiPickerDialog.vue';
 import { popup } from '@/os.js';
 import { prefer } from '@/preferences.js';
 
+type EmojiPickerShowOptions = {
+	anchorElement: HTMLElement,
+	onChosen?: (emoji: string) => void,
+	onClosed?: () => void,
+};
+
 /**
  * 絵文字ピッカーを表示する。
  * 類似の機能として{@link ReactionPicker}が存在しているが、この機能とは動きが異なる。
@@ -21,6 +27,7 @@ class EmojiPicker {
 	private windowComponentEl: ShallowRef<InstanceType<typeof MkEmojiPickerWindow_TypeOnly> | null> = shallowRef(null);
 	private windowShowing: boolean = false;
 	private windowDispose: (() => void) | null = null;
+	private windowOpts: EmojiPickerShowOptions | null = null;
 
 	private emojisRef = ref<string[]>([]);
 
@@ -43,25 +50,28 @@ class EmojiPicker {
 		}
 	}
 
-	public show(opts: {
-		anchorElement: HTMLElement,
-		onChosen?: (emoji: string) => void,
-		onClosed?: () => void,
-	}) {
+	public show(opts: EmojiPickerShowOptions) {
 		const anchorRef = shallowRef(opts.anchorElement);
 
 		if (this.isWindow) {
-			if (this.windowShowing) return;
+			if (this.windowShowing) {
+				// 表示中のウィンドウの利用者を新しい呼び出し元へ切り替え、以前の呼び出し元には閉じたことを通知する
+				const prevOpts = this.windowOpts;
+				this.windowOpts = opts;
+				if (prevOpts?.onClosed) prevOpts.onClosed();
+				return;
+			}
 			this.windowShowing = true;
+			this.windowOpts = opts;
 			const { dispose, componentRef } = popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerWindow.vue')), {
 				pinnedEmojis: this.emojisRef,
 				asReactionPicker: false,
 			}, {
 				chosen: (emoji) => {
-					if (opts.onChosen) opts.onChosen(emoji);
+					if (this.windowOpts?.onChosen) this.windowOpts.onChosen(emoji);
 				},
 				closed: () => {
-					if (opts.onClosed) opts.onClosed();
+					if (this.windowOpts?.onClosed) this.windowOpts.onClosed();
 					this.disposeWindow();
 				},
 			});
@@ -89,6 +99,7 @@ class EmojiPicker {
 	private disposeWindow() {
 		this.windowDispose?.();
 		this.windowDispose = null;
+		this.windowOpts = null;
 		this.windowComponentEl = shallowRef(null);
 		this.windowShowing = false;
 	}

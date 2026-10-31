@@ -15,6 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<MkEmojiPicker
 		:showPinned="showPinned"
+		:pinnedEmojis="pinnedEmojis"
 		:asReactionPicker="asReactionPicker"
 		:targetNote="targetNote"
 		asWindow

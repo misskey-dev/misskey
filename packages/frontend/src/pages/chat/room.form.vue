@@ -249,7 +249,6 @@ function deleteDraft() {
 }
 
 async function insertEmoji(ev: MouseEvent) {
-	textareaReadOnly.value = true;
 	const target = ev.currentTarget ?? ev.target;
 	if (target == null) return;
 
@@ -275,6 +274,9 @@ async function insertEmoji(ev: MouseEvent) {
 			nextTick(() => focus());
 		},
 	});
+
+	// show() は表示中のウィンドウを引き継ぐ際に以前の呼び出し元の onClosed を同期的に呼ぶため、その後で読み取り専用にする
+	textareaReadOnly.value = true;
 }
 
 onMounted(() => {
