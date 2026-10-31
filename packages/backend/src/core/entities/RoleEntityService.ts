@@ -64,6 +64,7 @@ export class RoleEntityService {
 			target: role.target,
 			condFormula: role.condFormula,
 			isPublic: role.isPublic,
+			isPublicDisplayRequired: role.isPublicDisplayRequired,
 			isAdministrator: role.isAdministrator,
 			isModerator: role.isModerator,
 			isExplorable: role.isExplorable,
@@ -83,5 +84,32 @@ export class RoleEntityService {
 	) {
 		return Promise.all(roles.map(x => this.pack(x, me)));
 	}
-}
 
+	@bindThis
+	public async packLite(
+		src: MiRole['id'] | MiRole,
+	): Promise<Packed<'RoleLite'>> {
+		const role = typeof src === 'object' ? src : await this.rolesRepository.findOneByOrFail({ id: src });
+
+		return {
+			id: role.id,
+			name: role.name,
+			color: role.color,
+			iconUrl: role.iconUrl,
+			description: role.description,
+			isModerator: role.isModerator,
+			isAdministrator: role.isAdministrator,
+			asBadge: role.asBadge,
+			isPublicDisplayRequired: role.isPublicDisplayRequired,
+			isExplorable: role.isExplorable,
+			displayOrder: role.displayOrder,
+		};
+	}
+
+	@bindThis
+	public packLiteMany(
+		roles: (MiRole | MiRole['id'])[],
+	) {
+		return Promise.all(roles.map(x => this.packLite(x)));
+	}
+}
