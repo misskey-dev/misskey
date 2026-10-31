@@ -402,6 +402,71 @@ describe('Streaming', () => {
 
 				assert.strictEqual(fired, false);
 			});
+
+			test('withReplies: false のとき他人への返信が流れない', async () => {
+				const fired = await waitFire(
+					ayano, 'localTimeline',	// ayano:Local
+					() => api('notes/create', { text: 'foo', replyId: kanakoNote.id }, chitose),
+					msg => msg.type === 'note' && msg.body.userId === chitose.id && msg.body.replyId === kanakoNote.id,
+					{ withReplies: false },
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
+			test('withReplies: false のときフォローしているユーザーの他人への返信が流れない', async () => {
+				// erin は ayano を withReplies: true でフォローしている
+				const fired = await waitFire(
+					erin, 'localTimeline',	// erin:Local
+					() => api('notes/create', { text: 'foo', replyId: kanakoNote.id }, ayano),
+					msg => msg.type === 'note' && msg.body.userId === ayano.id && msg.body.replyId === kanakoNote.id,
+					{ withReplies: false },
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
+			test('ログインしていないとき他人への返信が流れない', async () => {
+				const received: string[] = [];
+				const ws = await connectStream(null, 'localTimeline', msg => {
+					if (msg.type === 'note') received.push(msg.body.id);
+				}, { withReplies: false });
+
+				try {
+					const note = await post(chitose, { text: 'foo' });
+					const reply = await post(chitose, { text: 'bar', replyId: kanakoNote.id });
+
+					await new Promise(r => setTimeout(r, 1000));
+
+					assert.strictEqual(received.includes(note.id), true);
+					assert.strictEqual(received.includes(reply.id), false);
+				} finally {
+					ws.close();
+				}
+			});
+
+			test('withReplies: true のとき他人への返信が流れる', async () => {
+				const fired = await waitFire(
+					ayano, 'localTimeline',	// ayano:Local
+					() => api('notes/create', { text: 'foo', replyId: kanakoNote.id }, chitose),
+					msg => msg.type === 'note' && msg.body.userId === chitose.id && msg.body.replyId === kanakoNote.id,
+					{ withReplies: true },
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
+			test('withReplies: false でも自分への返信が流れる', async () => {
+				const ayanoNote = await post(ayano, { text: 'hi' });
+				const fired = await waitFire(
+					ayano, 'localTimeline',	// ayano:Local
+					() => api('notes/create', { text: 'foo', replyId: ayanoNote.id }, chitose),
+					msg => msg.type === 'note' && msg.body.userId === chitose.id && msg.body.replyId === ayanoNote.id,
+					{ withReplies: false },
+				);
+
+				assert.strictEqual(fired, true);
+			});
 		});
 
 		describe('Hybrid Timeline', () => {
