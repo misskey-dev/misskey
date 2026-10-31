@@ -54,7 +54,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { parsePluginMeta, installPlugin } from '@/plugin.js';
 import { installTheme } from '@/theme.js';
-import { parseThemeCode } from '@@/js/theme.js';
+import { parseThemeCode } from '@@/js/theme-code.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
