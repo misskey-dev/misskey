@@ -2,12 +2,12 @@
  * typeorm migration:generate の前準備をまとめて実行する (冪等・クロスプラットフォーム)。
  * リポジトリルートから実行: node .claude/skills/working-on-backend/scripts/prepare-generate.mjs
  *
- * generate はエンティティのビルド出力 (built/)、コンパイル済み設定 (built/.config.json)、
- * 稼働中の DB を必要とする。手で 5 段並べると取りこぼすのでここに集約する。
+ * generate はエンティティのビルド出力 (built/)、設定ファイル (.config/default.yml)、
+ * 稼働中の DB を必要とする。手で 4 段並べると取りこぼすのでここに集約する。
  * migration:create (空雛形) しか使わないなら DB もビルドも不要なのでこのスクリプトは不要。
  *
  * Node で書いているのは pure Windows (bash の無い環境) でも動かすため。node はこのリポジトリの
- * ランタイムなので必ず存在し、build-pre.mjs / compile_config.js と同じ流儀に揃う。
+ * ランタイムなので必ず存在し、build-pre.mjs と同じ流儀に揃う。
  */
 
 import { execSync } from 'node:child_process';
