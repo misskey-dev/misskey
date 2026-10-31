@@ -1,10 +1,12 @@
 # @misskey-dev/media-core
 
-Misskey のメディア処理のライブラリです。Misskey 本体のバックエンドと、スタンドアロン版メディアプロキシ ([misskey-dev/media-proxy](https://github.com/misskey-dev/media-proxy)) の両方で使用します。
+Misskey のメディア処理関連をまとめたライブラリです。Misskey 本体のバックエンドと、スタンドアロン版メディアプロキシ ([misskey-dev/media-proxy](https://github.com/misskey-dev/media-proxy)) の両方で使用します。
 
 このパッケージは Misskey 本体と同じバージョン番号でリリースされます。
 
 メディアプロキシの仕様は [SPECIFICATION.md](./SPECIFICATION.md) を参照してください。
+
+**ほかのプロダクトで使用されることは想定していません。サポートや要望への対応は、Misskey 本体およびスタンドアロン版メディアプロキシに関わるものに限られます。**
 
 ## Peer dependencies
 
