@@ -731,6 +731,12 @@ describe('ユーザー', () => {
 		const expected = [await show(carol.id, alice)];
 		assert.deepStrictEqual(response, expected);
 	});
+	test('を検索することができる(未認証)', async () => {
+		const parameters = { query: 'carol', limit: 10 };
+		const response = await successfulApiCall({ endpoint: 'users/search', parameters, user: undefined });
+		const expected = [await successfulApiCall({ endpoint: 'users/show', parameters: { userId: carol.id }, user: undefined })];
+		assert.deepStrictEqual(response, expected);
+	});
 	test('を検索することができる(UserLite)', async () => {
 		const parameters = { query: 'carol', detail: false, limit: 10 };
 		const response = await successfulApiCall({ endpoint: 'users/search', parameters, user: alice });

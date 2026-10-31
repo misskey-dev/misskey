@@ -46,6 +46,7 @@ import type { EventEmitter } from 'events';
 
 const MAX_CHANNELS_PER_CONNECTION = 32;
 const MAX_SUBSCRIBING_NOTES_PER_CONNECTION = 1536;
+const MAX_BUFFERED_AMOUNT_PER_CONNECTION = 1024 * 1024 * 8; // 8MiB
 
 /**
  * Main stream connection
@@ -283,10 +284,18 @@ export default class Connection {
 	 */
 	@bindThis
 	public sendMessageToWs(type: string, payload: JsonObject) {
-		this.wsConnection.send(JSON.stringify({
+		const message = JSON.stringify({
 			type: type,
 			body: payload,
-		}));
+		});
+
+		// 受信が追いつかないクライアントのために送信バッファを溜め続けないよう、閾値を超えたら切断して再接続させる
+		if (this.wsConnection.bufferedAmount + Buffer.byteLength(message) > MAX_BUFFERED_AMOUNT_PER_CONNECTION) {
+			this.wsConnection.terminate();
+			return;
+		}
+
+		this.wsConnection.send(message);
 	}
 
 	/**

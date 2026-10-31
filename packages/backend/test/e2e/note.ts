@@ -781,6 +781,77 @@ describe('Note', () => {
 			assert.strictEqual(note1.status, 400);
 		});
 
+		test('禁止ワードに指定したドメインはURL中でパーセントエンコードされていてもエラーになる', async () => {
+			const prohibited = await api('admin/update-meta', {
+				prohibitedWords: [
+					'banned.example',
+				],
+			}, root);
+
+			assert.strictEqual(prohibited.status, 204);
+
+			await new Promise(x => setTimeout(x, 2));
+
+			const note1 = await api('notes/create', {
+				text: 'hoge https://%62anned.example/ huge',
+			}, alice);
+
+			assert.strictEqual(note1.status, 400);
+			assert.strictEqual(castAsError(note1.body).error.code, 'CONTAINS_PROHIBITED_WORDS');
+
+			const note2 = await api('notes/create', {
+				text: 'hoge <https://ｂａｎｎｅｄ．example/> huge',
+			}, alice);
+
+			assert.strictEqual(note2.status, 400);
+			assert.strictEqual(castAsError(note2.body).error.code, 'CONTAINS_PROHIBITED_WORDS');
+		});
+
+		test('禁止ワードはURLのパス以降でパーセントエンコードされていてもエラーになる', async () => {
+			const prohibited = await api('admin/update-meta', {
+				prohibitedWords: [
+					'禁止パス',
+				],
+			}, root);
+
+			assert.strictEqual(prohibited.status, 204);
+
+			await new Promise(x => setTimeout(x, 2));
+
+			const note1 = await api('notes/create', {
+				text: 'hoge https://example.com/%E7%A6%81%E6%AD%A2%E3%83%91%E3%82%B9 huge',
+			}, alice);
+
+			assert.strictEqual(note1.status, 400);
+			assert.strictEqual(castAsError(note1.body).error.code, 'CONTAINS_PROHIBITED_WORDS');
+
+			const note2 = await api('notes/create', {
+				text: 'hoge https://example.com/?q=%E7%A6%81%E6%AD%A2%E3%83%91%E3%82%B9 huge',
+			}, alice);
+
+			assert.strictEqual(note2.status, 400);
+			assert.strictEqual(castAsError(note2.body).error.code, 'CONTAINS_PROHIBITED_WORDS');
+		});
+
+		test('センシティブワードに指定したドメインはURL中でパーセントエンコードされていてもhomeになる', async () => {
+			const sensitive = await api('admin/update-meta', {
+				sensitiveWords: [
+					'sensitive.example',
+				],
+			}, root);
+
+			assert.strictEqual(sensitive.status, 204);
+
+			await new Promise(x => setTimeout(x, 2));
+
+			const note1 = await api('notes/create', {
+				text: 'hoge https://%73ensitive.example/ huge',
+			}, alice);
+
+			assert.strictEqual(note1.status, 200);
+			assert.strictEqual(note1.body.createdNote.visibility, 'home');
+		});
+
 		test('メンションの数が上限を超えるとエラーになる', async () => {
 			const res = await api('admin/roles/create', {
 				name: 'test',
