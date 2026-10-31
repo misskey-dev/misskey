@@ -12,7 +12,7 @@
 - Fix: AiScript 関連のウィジェットの削除時のリソース解放漏れを修正
 
 ### Server
--
+- Enhance: Preserve formatting and language hints in federated code blocks.
 
 
 ## 2026.10.1
