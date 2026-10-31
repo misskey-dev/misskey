@@ -343,6 +343,12 @@ id: 'aidx'
 # OpenTelemetry distributed tracing (Traces only, opt-in).
 # Existing API and Queue spans are exported to an OTLP http/protobuf endpoint.
 #
+# Before export, every span passes through an allowlist: only known span
+# attributes (HTTP method/route/status, outbound URL origin, DB system/operation,
+# etc.) and exception events are sent. Raw request paths, query strings and
+# outbound URL paths are never exported. This applies to every destination,
+# including Sentry's OTLP endpoint when sentryForBackend is also configured.
+#
 # Standard OTEL_* environment variables are honored for values omitted below:
 # OTEL_EXPORTER_OTLP_TRACES_ENDPOINT, OTEL_EXPORTER_OTLP_ENDPOINT,
 # OTEL_EXPORTER_OTLP_HEADERS, OTEL_TRACES_SAMPLER, OTEL_TRACES_SAMPLER_ARG, etc.
@@ -368,7 +374,8 @@ id: 'aidx'
 #  #capturePgSpans: false
 #  # Include raw SQL text in PostgreSQL spans. Requires capturePgSpans and is
 #  # disabled by default because non-parameterized queries can expose values to
-#  # the OTLP Collector.
+#  # the OTLP Collector. When enabled, the text is exported truncated to 8 KiB
+#  # with control characters removed.
 #  #capturePgStatement: false
 #  # Include PostgreSQL connection-pool spans with an existing parent span.
 #  # Requires capturePgSpans and is disabled by default to avoid noisy spans
