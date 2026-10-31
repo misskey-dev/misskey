@@ -1529,6 +1529,17 @@ _emojiPalette:
   enableSyncBetweenDevicesForPalettes: "啟用裝置與裝置之間的調色盤同步化"
   paletteForMain: "主要使用的調色盤"
   paletteForReaction: "反應用的調色盤"
+_unicodeEmojiCategory:
+  face: "表情與情感"
+  people: "人物與身體"
+  animals_and_nature: "動物與自然"
+  food_and_drink: "食物與飲料"
+  activity: "活動"
+  travel_and_places: "旅行與地點"
+  objects: "物品"
+  symbols: "符號"
+  flags: "旗幟"
+
 _settings:
   driveBanner: "您可以管理和設定雲端硬碟、確認使用量，以及調整上傳檔案時的設定。"
   pluginBanner: "可使用外掛擴充用戶端的功能。您可以安裝外掛，實施個別的設定與管理。"

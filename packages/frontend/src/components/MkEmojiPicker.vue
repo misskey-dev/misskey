@@ -103,7 +103,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.emoji }}</header>
-			<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" :hasChildSection="false" @chosen="chosen">{{ category }}</XSection>
+			<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" :hasChildSection="false" @chosen="chosen">{{ i18n.ts._unicodeEmojiCategory[category] }}</XSection>
 		</div>
 	</div>
 	<div class="tabs">
