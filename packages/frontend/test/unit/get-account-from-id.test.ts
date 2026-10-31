@@ -6,20 +6,30 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import * as idbKeyval from 'idb-keyval';
 import { host } from '@@/js/config.js';
+import { $i } from '@/i.js';
 import { store } from '@/store.js';
 import { prefer } from '@/preferences.js';
-import { login } from '@/accounts.js';
+import { getAccountMenu, login, refreshCurrentAccount, switchAccount } from '@/accounts.js';
 import { getAccountFromId as getFrontendAccountFromId } from '@/utility/get-account-from-id.js';
 import { getAccountFromId as getSwAccountFromId, getAccounts as getSwAccounts } from '../../../sw/src/scripts/get-account-from-id.js';
+import type { MenuButton } from '@/types/menu.js';
 
-const { idbMap, unisonReloadMock } = vi.hoisted(() => {
+type PopupConfig = {
+	done?: (res: { id: string; i: string; finished: true }) => Promise<void>;
+	closed?: () => void;
+};
+
+const { idbMap, unisonReloadMock, signoutMock, popupConfigs } = vi.hoisted(() => {
 	Object.defineProperty(window, 'indexedDB', {
 		value: { open: () => ({}) },
 		configurable: true,
 	});
+	localStorage.setItem('account', JSON.stringify({ id: 'current-user', token: 'current-token', username: 'current-user' }));
 	return {
 		idbMap: new Map<string, unknown>(),
 		unisonReloadMock: vi.fn(),
+		signoutMock: vi.fn(),
+		popupConfigs: [] as PopupConfig[],
 	};
 });
 
@@ -41,11 +51,22 @@ vi.mock('idb-keyval', () => ({
 }));
 
 vi.mock('@/os.js', () => ({
-	popup: () => ({ dispose: () => {} }),
+	popup: vi.fn((_component: unknown, _props: unknown, config: PopupConfig) => {
+		popupConfigs.push(config);
+		return { dispose: vi.fn() };
+	}),
 	waiting: () => () => {},
 	popupMenu: vi.fn(),
 	success: vi.fn(),
 	alert: vi.fn(),
+}));
+
+vi.mock('@/signout.js', () => ({
+	signout: signoutMock,
+}));
+
+vi.mock('@/utility/misskey-api.js', () => ({
+	misskeyApi: vi.fn(async () => ({})),
 }));
 
 vi.mock('@/utility/unison-reload.js', () => ({
@@ -56,12 +77,19 @@ vi.mock('@/utility/unison-reload.js', () => ({
 describe('getAccountFromId', () => {
 	beforeEach(async () => {
 		unisonReloadMock.mockReset();
+		signoutMock.mockReset();
+		popupConfigs.length = 0;
 		await idbKeyval.clear();
 		vi.stubGlobal('origin', `https://${host}`);
 		(prefer.s as Record<string, unknown>).accounts = [];
 		(prefer as unknown as Record<string, unknown>).commit = (key: string, val: unknown) => {
 			(prefer.s as Record<string, unknown>)[key] = val;
 		};
+		if ($i != null) {
+			$i.id = 'current-user';
+			$i.token = 'current-token';
+			$i.username = 'current-user';
+		}
 		await store.ready;
 		await store.set('accountTokens', {});
 	});
@@ -110,5 +138,52 @@ describe('getAccountFromId', () => {
 
 		expect(unisonReloadMock).toHaveBeenCalledOnce();
 		expect(savedTokensAtReload).toEqual({ [`${host}/user-login`]: 'token-login' });
+	});
+
+	test('refreshCurrentAccountで削除済みアカウントのトークンがIndexedDBから削除される', async () => {
+		if ($i == null) throw new Error('$i is not initialized');
+		$i.id = 'user-deleted';
+		$i.token = 'token-deleted';
+		await store.set('accountTokens', { [`${host}/user-deleted`]: 'token-deleted' });
+		vi.spyOn(window, 'fetch').mockResolvedValueOnce(new Response(JSON.stringify({ error: { id: 'e5b3b9f0-2b8f-4b9f-9c1f-8c5c1b2e1b1a' } }), { status: 200 }));
+
+		await refreshCurrentAccount();
+
+		const base = idbMap.get('pizzax::base') as { accountTokens?: Record<string, string> } | undefined;
+		expect(base?.accountTokens).toEqual({});
+		expect(signoutMock).toHaveBeenCalledOnce();
+	});
+
+	test('switchAccountのサインイン完了時にaccountTokensがIndexedDBへ保存される', async () => {
+		vi.spyOn(window, 'fetch').mockResolvedValueOnce(new Response(JSON.stringify({ id: 'user-switch', username: 'bob' }), { status: 200 }));
+
+		await switchAccount(host, 'user-switch');
+		const config = popupConfigs.at(-1);
+		if (config?.done == null) throw new Error('signin dialog was not opened');
+		await config.done({ id: 'user-switch', i: 'token-switch', finished: true });
+
+		await vi.waitFor(() => {
+			expect(unisonReloadMock).toHaveBeenCalledOnce();
+		});
+		const base = idbMap.get('pizzax::base') as { accountTokens?: Record<string, string> } | undefined;
+		expect(base?.accountTokens).toEqual({ [`${host}/user-switch`]: 'token-switch' });
+	});
+
+	test('getAccountMenuのサインイン完了時にaccountTokensがIndexedDBへ保存される', async () => {
+		(prefer.s as Record<string, unknown>).accounts = [[host, { id: 'user-menu', username: 'carol' }]];
+		vi.spyOn(window, 'fetch').mockResolvedValueOnce(new Response(JSON.stringify({ id: 'user-menu', username: 'carol' }), { status: 200 }));
+
+		const menuItems = await getAccountMenu({ withExtraOperation: false });
+		const item = menuItems[0] as MenuButton;
+		await item.action(new PointerEvent('click'));
+		const config = popupConfigs.at(-1);
+		if (config?.done == null) throw new Error('signin dialog was not opened');
+		await config.done({ id: 'user-menu', i: 'token-menu', finished: true });
+
+		await vi.waitFor(() => {
+			expect(unisonReloadMock).toHaveBeenCalledOnce();
+		});
+		const base = idbMap.get('pizzax::base') as { accountTokens?: Record<string, string> } | undefined;
+		expect(base?.accountTokens).toEqual({ [`${host}/user-menu`]: 'token-menu' });
 	});
 });
