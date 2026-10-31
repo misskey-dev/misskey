@@ -9,12 +9,14 @@ Misskey のメディア処理のライブラリです。Misskey 本体のバッ�
 ## Peer dependencies
 
 `sharp`、`@misskey-dev/sharp-read-bmp` はピア依存関係です。利用側でインストールしてください。
-`@misskey-dev/media-core/standalone` を使用する場合は `fastify` も必要です。
+`@misskey-dev/media-core/standalone` を使用する場合は `fastify` も、`@misskey-dev/media-core/video` を使用する場合は `fluent-ffmpeg` (と ffmpeg / ffprobe) も必要です。
 
 ```bash
 npm install @misskey-dev/media-core sharp @misskey-dev/sharp-read-bmp
 # スタンドアロン版メディアプロキシとして使う場合
 npm install fastify
+# 動画の処理を使う場合
+npm install fluent-ffmpeg
 ```
 
 ## 提供するもの
@@ -28,6 +30,13 @@ npm install fastify
 - ダウンロード: `downloadUrl` (サイズ制限・タイムアウト付き)
 - メディアプロキシ: `getProxyTargetUrl` / `validateProxyUserAgent` / `convertProxyImage` / `createProxyResponseHeaders`
 - 共通: `StatusError`、`FILE_TYPE_BROWSERSAFE`、`isMimeImage`、`correctFilename`、`contentDisposition` など
+
+### `@misskey-dev/media-core/video`
+
+動画の処理です。fluent-ffmpeg を必要としない利用側で読み込まれないよう、サブパスに分けています。
+
+- `generateVideoThumbnail`: 動画のサムネイルを WebP で生成する
+- `hasVideoTrack`: 映像トラックがあるかどうかを判定する (`detectType` の `hasVideoTrack` に渡す)
 
 ### `@misskey-dev/media-core/standalone`
 
@@ -60,12 +69,13 @@ fastify.register(mediaProxyPlugin, {
 
 | ディレクトリ | 内容 | 依存してよいもの |
 | --- | --- | --- |
-| `common/` | エラー型、MIME タイプ、ファイル名などの共通処理 | なし |
+| `common/` | エラー型、MIME タイプ、ファイル名、一時ファイルなどの共通処理 | なし |
 | `file/` | ファイルの形式判定、ハッシュ、画像サイズ | `common/` |
 | `image/` | 画像の変換、blurhash | `common/` |
 | `download/` | ファイルのダウンロード | `common/` |
 | `proxy/` | メディアプロキシの仕様に基づく処理 | `common/` / `file/` / `image/` / `download/` |
-| `standalone/` | スタンドアロン版メディアプロキシ (`./standalone` から公開) | すべて |
+| `video/` | 動画の処理 (`./video` から公開) | `common/` / `image/` |
+| `standalone/` | スタンドアロン版メディアプロキシ (`./standalone` から公開) | `video/` 以外すべて |
 
 ## License
 

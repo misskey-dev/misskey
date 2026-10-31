@@ -6,8 +6,8 @@
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import fastifyStatic from '@fastify/static';
-import * as tmp from 'tmp';
 import { StatusError } from '../common/status-error.js';
+import { createTemp } from '../common/temp.js';
 import { detectType } from '../file/file-type.js';
 import { downloadUrl } from '../download/download.js';
 import { createHttpAgents } from './agents.js';
@@ -43,15 +43,6 @@ export const defaultMediaProxyUserAgent = 'MisskeyMediaProxy';
 export const defaultMediaProxyMaxSize = 262144000;
 
 type ProxyRequest = FastifyRequest<{ Params: { url?: string }; Querystring: ProxyQuery & { fallback?: string } }>;
-
-function createTemp(): Promise<[string, () => void]> {
-	return new Promise((res, rej) => {
-		tmp.file((e, path, _fd, cleanup) => {
-			if (e) return rej(e);
-			res([path, cleanup]);
-		});
-	});
-}
 
 /**
  * スタンドアロンのメディアプロキシとして動作する Fastify プラグイン

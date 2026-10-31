@@ -15,7 +15,6 @@ import type { SensitiveMediaDetectionService } from '@/core/SensitiveMediaDetect
 import { DownloadService } from '@/core/DownloadService.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
-import { ImageProcessingService } from '@/core/ImageProcessingService.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -156,8 +155,7 @@ describe('FileServerService', () => {
 		const fileInfoService = new FileInfoService(sensitiveMediaDetectionService, loggerService);
 		const httpRequestService = new HttpRequestService(config);
 		const downloadService = new DownloadService(config, httpRequestService, loggerService);
-		const imageProcessingService = new ImageProcessingService();
-		const videoProcessingService = new VideoProcessingService(config, imageProcessingService);
+		const videoProcessingService = new VideoProcessingService(config);
 		internalStorageService = new InternalStorageService(config);
 		fileResolver = new FileServerFileResolver(driveFilesRepository as any, fileInfoService, downloadService, internalStorageService);
 		idService = new IdService(config);

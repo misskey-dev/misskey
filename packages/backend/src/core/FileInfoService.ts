@@ -10,6 +10,7 @@ import { FSWatcher } from 'chokidar';
 import FFmpeg from 'fluent-ffmpeg';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { calcHash, detectImageSize, detectType, getBlurhash, getFileSize, isMimeImage, TYPE_OCTET_STREAM } from '@misskey-dev/media-core';
+import { hasVideoTrack } from '@misskey-dev/media-core/video';
 import { createTempDir } from '@/misc/create-temp.js';
 import { SensitiveMediaDetectionService } from '@/core/SensitiveMediaDetectionService.js';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -337,21 +338,9 @@ export class FileInfoService {
 	@bindThis
 	private hasVideoTrackOnVideoFile(path: string): Promise<boolean> {
 		const sublogger = this.logger.createSubLogger('ffprobe');
-		sublogger.info(`Checking the video file. File path: ${path}`);
-		return new Promise((resolve) => {
-			try {
-				FFmpeg.ffprobe(path, (err, metadata) => {
-					if (err) {
-						sublogger.warn(`Could not check the video file. Returns true. File path: ${path}`, err);
-						resolve(true);
-						return;
-					}
-					resolve(metadata.streams.some((stream) => stream.codec_type === 'video'));
-				});
-			} catch (err) {
-				sublogger.warn(`Could not check the video file. Returns true. File path: ${path}`, err as Error);
-				resolve(true);
-			}
+		return hasVideoTrack(path, {
+			info: (message) => sublogger.info(message),
+			warn: (message, error) => sublogger.warn(message, error as Error),
 		});
 	}
 

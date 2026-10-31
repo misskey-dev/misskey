@@ -24,7 +24,8 @@ export default [
 	{
 		// ディレクトリ間の依存の向きを固定する
 		// common <- file / image / download <- proxy <- standalone
-		// (standalone/ と standalone.ts はどこからも import しない)
+		// common / image <- video
+		// (standalone/ と video/ はそれぞれのサブパスからのみ公開し、他のディレクトリからは import しない)
 		files: ['src/**/*.ts'],
 		rules: {
 			'import/no-restricted-paths': ['error', {
@@ -61,9 +62,20 @@ export default [
 						message: 'proxy/ は common/ / file/ / image/ / download/ にのみ依存できます',
 					},
 					{
-						target: './src/index.ts',
+						target: './src/video',
+						from: './src',
+						except: ['./common', './image', './video'],
+						message: 'video/ は common/ / image/ にのみ依存できます',
+					},
+					{
+						target: ['./src/index.ts', './src/video.ts'],
 						from: ['./src/standalone', './src/standalone.ts'],
 						message: 'スタンドアロン版専用のモジュールはサブパス (./standalone) からのみ公開します',
+					},
+					{
+						target: ['./src/index.ts', './src/standalone', './src/standalone.ts'],
+						from: ['./src/video', './src/video.ts'],
+						message: '動画の処理はサブパス (./video) からのみ公開します',
 					},
 				],
 			}],
