@@ -68,9 +68,7 @@ globalThis.addEventListener('install', (ev) => {
 		const addRoutes = (rules: unknown) => (ev.addRoutes as (rules: unknown) => Promise<void>).call(ev, rules);
 
 		// doc: https://developer.mozilla.org/ja/docs/Web/API/URLPattern
-		// @ts-expect-error 実験的なAPIなので型定義がない
 		const anyUrl = new URLPattern({});
-		// @ts-expect-error 実験的なAPIなので型定義がない
 		const urlEndsWithSlash = new URLPattern({ pathname: '*/', search: '' });
 
 		ev.waitUntil(addRoutes([
