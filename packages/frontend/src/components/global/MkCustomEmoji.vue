@@ -79,7 +79,7 @@ const rawUrl = computed(() => {
 		return props.url;
 	}
 	if (isLocal.value) {
-		return customEmojisMap.value.get(customEmojiName.value)?.url ?? null;
+		return customEmojisMap.get(customEmojiName.value)?.url ?? null;
 	}
 	return getCustomEmojiImagePath(customEmojiName.value, props.host);
 });
@@ -104,9 +104,10 @@ const url = computed(() => {
 const alt = computed(() => `:${customEmojiName.value}:`);
 const errored = ref(url.value == null);
 
-watch(url, (newUrl) => {
-	// 絵文字一覧の更新などでURLが変わったら読み込みを再試行する
-	errored.value = (newUrl == null);
+// url が差し替わったときに前の絵文字の読み込み失敗状態を引きずらないようにする
+// (errored が立っている間は <img> 自体が描画されないので load イベントでは復帰できない)
+watch(url, (v) => {
+	errored.value = v == null;
 });
 
 function onClick(ev: PointerEvent) {

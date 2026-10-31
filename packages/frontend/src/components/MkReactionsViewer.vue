@@ -37,7 +37,7 @@ import { getEmojiNameFromReaction, isLocalCustomEmojiReaction } from '@@/js/emoj
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
-import { customEmojis, customEmojisMap } from '@/custom-emojis.js';
+import { customEmojisMap } from '@/custom-emojis.js';
 import { DI } from '@/di.js';
 
 const props = withDefaults(defineProps<{
@@ -78,13 +78,11 @@ function canReact(reaction: string) {
 	if (!$i) return false;
 	// TODO: CheckPermissions
 	return isLocalCustomEmojiReaction(reaction)
-		? customEmojisMap.value.has(getEmojiNameFromReaction(reaction))
+		? customEmojisMap.has(getEmojiNameFromReaction(reaction))
 		: isSupportedEmoji(reaction);
 }
 
-let lastCanReact: Map<string, boolean> | null = null;
-
-function rebuildReactions(newSource: Misskey.entities.Note['reactions'], maxNumber: number) {
+watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
 	let newReactions: [string, number][] = [];
 	hasMoreReactions.value = Object.keys(newSource).length > maxNumber;
 
@@ -103,7 +101,6 @@ function rebuildReactions(newSource: Misskey.entities.Note['reactions'], maxNumb
 		for (const [emoji] of sorted) {
 			canReactCache.set(emoji, canReact(emoji));
 		}
-		lastCanReact = canReactCache;
 		sorted.sort(([emojiA, countA], [emojiB, countB]) => {
 			const canReactA = canReactCache.get(emojiA)!;
 			const canReactB = canReactCache.get(emojiB)!;
@@ -127,19 +124,7 @@ function rebuildReactions(newSource: Misskey.entities.Note['reactions'], maxNumb
 	}
 
 	_reactions.value = newReactions;
-}
-
-watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
-	rebuildReactions(newSource, maxNumber);
 }, { immediate: true, deep: true });
-
-watch(customEmojis, () => {
-	if (!prefer.s.showAvailableReactionsFirstInNote || lastCanReact == null) return;
-	const sortedWith = lastCanReact;
-	if (!Object.keys(props.reactions).some(r => sortedWith.has(r) && sortedWith.get(r) !== canReact(r))) return;
-	_reactions.value = [];
-	rebuildReactions(props.reactions, props.maxNumber);
-});
 </script>
 
 <style lang="scss" module>

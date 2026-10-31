@@ -86,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</section>
 		</div>
-		<div v-memo="[customEmojiFolderRoot]" class="group">
+		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.customEmojis }}</header>
 			<XSection
 				v-for="child in customEmojiFolderRoot.children"
@@ -189,6 +189,8 @@ const searchResultCustom = ref<Misskey.entities.EmojiSimple[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
 
+const customEmojiFolderRoot: CustomEmojiFolderTree = { value: '', category: '', children: [] };
+
 function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): CustomEmojiFolderTree {
 	const parts = input.split('/').map(p => p.trim());
 	let currentNode: CustomEmojiFolderTree = root;
@@ -208,22 +210,16 @@ function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): Cu
 	return currentNode;
 }
 
-const customEmojiFolderRoot = computed(() => {
-	const root: CustomEmojiFolderTree = { value: '', category: '', children: [] };
-
-	customEmojiCategories.value.forEach(ec => {
-		if (ec !== null) {
-			parseAndMergeCategories(ec, root);
-		}
-	});
-
-	parseAndMergeCategories('', root);
-
-	return root;
+customEmojiCategories.value.forEach(ec => {
+	if (ec !== null) {
+		parseAndMergeCategories(ec, customEmojiFolderRoot);
+	}
 });
 
-watch([q, customEmojis], (_, [oldQ]) => {
-	if (q.value !== oldQ && emojisEl.value) emojisEl.value.scrollTop = 0;
+parseAndMergeCategories('', customEmojiFolderRoot);
+
+watch(q, () => {
+	if (emojisEl.value) emojisEl.value.scrollTop = 0;
 
 	if (q.value === '') {
 		searchResultCustom.value = [];
@@ -261,9 +257,8 @@ watch([q, customEmojis], (_, [oldQ]) => {
 				}
 			}
 		} else {
-			const exactMatch = customEmojisMap.value.get(newQ);
-			if (exactMatch != null) {
-				matches.add(exactMatch);
+			if (customEmojisMap.has(newQ)) {
+				matches.add(customEmojisMap.get(newQ)!);
 			}
 			if (matches.size >= max) return matches;
 
@@ -410,7 +405,7 @@ function getDef(emoji: string): string | Misskey.entities.EmojiSimple | UnicodeE
 		// カスタム絵文字が存在する場合はその情報を持つオブジェクトを返し、
 		// サーバの管理画面から削除された等で情報が見つからない場合は名前の文字列をそのまま返しておく（undefinedを返すとエラーになるため）
 		const name = emoji.replaceAll(':', '');
-		return customEmojisMap.value.get(name) ?? emoji;
+		return customEmojisMap.get(name) ?? emoji;
 	} else {
 		return getUnicodeEmoji(emoji);
 	}
@@ -481,7 +476,7 @@ function done(query?: string): boolean | void {
 	if (query == null || typeof query !== 'string') return;
 
 	const q2 = query.replace(/:/g, '');
-	const exactMatchCustom = customEmojisMap.value.get(q2);
+	const exactMatchCustom = customEmojisMap.get(q2);
 	if (exactMatchCustom) {
 		chosen(exactMatchCustom);
 		return true;

@@ -3,33 +3,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { shallowRef, computed, markRaw } from 'vue';
+import { shallowRef, computed, markRaw, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import { get, set } from '@/utility/idb-proxy.js';
 
 const storageCache = await get('emojis');
 export const customEmojis = shallowRef<Misskey.entities.EmojiSimple[]>(Array.isArray(storageCache) ? storageCache : []);
-export const customEmojiCategories = computed<[ ...string[], null ]>((oldValue) => {
+export const customEmojiCategories = computed<[ ...string[], null ]>(() => {
 	const categories = new Set<string>();
 	for (const emoji of customEmojis.value) {
 		if (emoji.category && emoji.category !== 'null') {
 			categories.add(emoji.category);
 		}
 	}
-	const res: [ ...string[], null ] = [...Array.from(categories), null];
-	// カテゴリ構成が変わっていなければ同一参照を返し、依存先の再計算を抑える
-	if (oldValue != null && oldValue.length === res.length && oldValue.every((c, i) => c === res[i])) return oldValue;
-	return markRaw(res);
+	return markRaw([...Array.from(categories), null]);
 });
 
-export const customEmojisMap = computed(() => {
-	const map = new Map<string, Misskey.entities.EmojiSimple>();
-	for (const emoji of customEmojis.value) {
-		map.set(emoji.name, emoji);
+export const customEmojisMap = new Map<string, Misskey.entities.EmojiSimple>();
+watch(customEmojis, emojis => {
+	customEmojisMap.clear();
+	for (const emoji of emojis) {
+		customEmojisMap.set(emoji.name, emoji);
 	}
-	return markRaw(map);
-});
+}, { immediate: true });
 
 export function addCustomEmoji(emoji: Misskey.entities.EmojiSimple) {
 	customEmojis.value = [emoji, ...customEmojis.value];
@@ -44,15 +41,6 @@ export function updateCustomEmojis(emojis: Misskey.entities.EmojiSimple[]) {
 export function removeCustomEmojis(emojis: Misskey.entities.EmojiSimple[]) {
 	customEmojis.value = customEmojis.value.filter(item => !emojis.some(search => search.name === item.name));
 	set('emojis', customEmojis.value);
-}
-
-export async function initCustomEmojiCache() {
-	const fetchingPromise = fetchCustomEmojis()
-		.catch(() => { /* nop */ });
-
-	if (customEmojis.value.length === 0) {
-		await fetchingPromise;
-	}
 }
 
 export async function fetchCustomEmojis(force = false) {

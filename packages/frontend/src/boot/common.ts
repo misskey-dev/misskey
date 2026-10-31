@@ -26,7 +26,7 @@ import { getAccountFromId } from '@/utility/get-account-from-id.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { analytics, initAnalytics } from '@/analytics.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { initCustomEmojiCache } from '@/custom-emojis.js';
+import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
 import { $i } from '@/i.js';
 import { launchPlugins } from '@/plugin.js';
@@ -242,7 +242,9 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	}
 	//#endregion
 
-	await initCustomEmojiCache();
+	try {
+		await fetchCustomEmojis();
+	} catch (err) { /* empty */ }
 
 	// analytics
 	fetchInstanceMetaPromise.then(async () => {
