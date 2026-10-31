@@ -6,8 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<div v-if="c.type === 'root'" :class="$style.root">
-		<template v-for="child in c.children" :key="child">
-			<MkAsUi v-if="!g(child).hidden" :component="g(child)" :components="props.components" :size="size"/>
+		<template v-for="child in c.children" :key="`${child.id}:${child.type}`">
+			<MkAsUi v-if="!child.hidden" :component="child" :size="size"/>
 		</template>
 	</div>
 	<span v-else-if="c.type === 'text'" :class="{ [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace' }" :style="{ fontSize: c.size ? `${c.size * 100}%` : undefined, fontWeight: c.bold ? 'bold' : undefined, color: c.color }">{{ c.text }}</span>
@@ -49,13 +49,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<MkFolder v-else-if="c.type === 'folder'" :defaultOpen="c.opened">
 		<template #label>{{ c.title }}</template>
-		<template v-for="child in c.children" :key="child">
-			<MkAsUi v-if="!g(child).hidden" :component="g(child)" :components="props.components" :size="size"/>
+		<template v-for="child in c.children" :key="`${child.id}:${child.type}`">
+			<MkAsUi v-if="!child.hidden" :component="child" :size="size"/>
 		</template>
 	</MkFolder>
 	<div v-else-if="c.type === 'container'" :class="[$style.container, { [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace' }]" :style="containerStyle">
-		<template v-for="child in c.children" :key="child">
-			<MkAsUi v-if="!g(child).hidden" :component="g(child)" :components="props.components" :size="size" :align="c.align"/>
+		<template v-for="child in c.children" :key="`${child.id}:${child.type}`">
+			<MkAsUi v-if="!child.hidden" :component="child" :size="size" :align="c.align"/>
 		</template>
 	</div>
 </div>
@@ -63,8 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import type { Ref } from 'vue';
-import type { AsUiComponent, AsUiRoot, AsUiPostFormButton } from '@/aiscript/ui.js';
+import type { AsUiComponent, AsUiPostFormButton } from '@/aiscript/ui.js';
 import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -77,7 +76,6 @@ import { useMkSelect } from '@/composables/use-mkselect.js';
 
 const props = withDefaults(defineProps<{
 	component: AsUiComponent;
-	components: Ref<AsUiComponent>[];
 	size?: 'small' | 'medium' | 'large';
 	align?: 'left' | 'center' | 'right';
 }>(), {
@@ -86,17 +84,6 @@ const props = withDefaults(defineProps<{
 });
 
 const c = props.component;
-
-function g(id: string) {
-	const v = props.components.find(x => x.value.id === id)?.value;
-	if (v) return v;
-
-	return {
-		id: 'dummy',
-		type: 'root',
-		children: [],
-	} as AsUiRoot;
-}
 
 const containerStyle = computed(() => {
 	if (c.type !== 'container') return undefined;
