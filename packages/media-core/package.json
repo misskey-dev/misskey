@@ -51,6 +51,7 @@
 	},
 	"dependencies": {
 		"@fastify/static": "10.1.7",
+		"blurhash": "2.0.5",
 		"cacheable-lookup": "7.0.0",
 		"content-disposition": "3.0.0",
 		"file-type": "22.2.0",
@@ -58,6 +59,7 @@
 		"hpagent": "1.2.0",
 		"ipaddr.js": "2.5.0",
 		"is-svg": "6.1.0",
+		"probe-image-size": "7.4.0",
 		"tmp": "0.2.7"
 	},
 	"devDependencies": {

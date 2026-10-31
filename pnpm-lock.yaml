@@ -1437,6 +1437,9 @@ importers:
       '@fastify/static':
         specifier: 10.1.7
         version: 10.1.7
+      blurhash:
+        specifier: 2.0.5
+        version: 2.0.5
       cacheable-lookup:
         specifier: 7.0.0
         version: 7.0.0
@@ -1458,6 +1461,9 @@ importers:
       is-svg:
         specifier: 6.1.0
         version: 6.1.0
+      probe-image-size:
+        specifier: 7.4.0
+        version: 7.4.0(supports-color@10.2.2)
       tmp:
         specifier: 0.2.7
         version: 0.2.7

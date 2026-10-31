@@ -21,10 +21,13 @@ npm install fastify
 
 ### `@misskey-dev/media-core`
 
-- `getProxyTargetUrl` / `validateProxyUserAgent`: メディアプロキシのリクエストの解釈と検証
-- `convertProxyImage`: `emoji` / `avatar` / `static` / `preview` / `badge` クエリに応じた画像変換
-- `createProxyResponseHeaders`: メディアプロキシの正常レスポンスのヘッダー
-- `StatusError`
+本体バックエンドとスタンドアロン版メディアプロキシの両方で使用するものです。
+
+- ファイル: `detectType` (MIME タイプの判定)、`calcHash`、`detectImageSize`、`getFileSize` など
+- 画像: `convertToWebp` / `convertToAvif` / `convertToPng` などの変換、`getBlurhash`
+- ダウンロード: `downloadUrl` (サイズ制限・タイムアウト付き)
+- メディアプロキシ: `getProxyTargetUrl` / `validateProxyUserAgent` / `convertProxyImage` / `createProxyResponseHeaders`
+- 共通: `StatusError`、`FILE_TYPE_BROWSERSAFE`、`isMimeImage`、`correctFilename`、`contentDisposition` など
 
 ### `@misskey-dev/media-core/standalone`
 
@@ -58,8 +61,8 @@ fastify.register(mediaProxyPlugin, {
 | ディレクトリ | 内容 | 依存してよいもの |
 | --- | --- | --- |
 | `common/` | エラー型、MIME タイプ、ファイル名などの共通処理 | なし |
-| `file/` | ファイルの形式判定 | `common/` |
-| `image/` | 画像の変換 | `common/` |
+| `file/` | ファイルの形式判定、ハッシュ、画像サイズ | `common/` |
+| `image/` | 画像の変換、blurhash | `common/` |
 | `download/` | ファイルのダウンロード | `common/` |
 | `proxy/` | メディアプロキシの仕様に基づく処理 | `common/` / `file/` / `image/` / `download/` |
 | `standalone/` | スタンドアロン版メディアプロキシ (`./standalone` から公開) | すべて |

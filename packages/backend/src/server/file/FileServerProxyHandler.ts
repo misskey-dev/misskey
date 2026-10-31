@@ -5,10 +5,9 @@
 
 import * as fs from 'node:fs';
 import { convertProxyImage, createProxyResponseHeaders, getProxyTargetUrl, validateProxyUserAgent } from '@misskey-dev/media-core';
-import type { ProxyQuery } from '@misskey-dev/media-core';
+import type { IImageStreamable, ProxyQuery } from '@misskey-dev/media-core';
 import type { Config } from '@/config.js';
 import { StatusError } from '@/misc/status-error.js';
-import type { IImageStreamable } from '@/core/ImageProcessingService.js';
 import { createRangeStream, attachStreamCleanup, needsCleanup } from './FileServerUtils.js';
 import type { DownloadedFileResult, FileResolveResult, FileServerFileResolver } from './FileServerFileResolver.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
