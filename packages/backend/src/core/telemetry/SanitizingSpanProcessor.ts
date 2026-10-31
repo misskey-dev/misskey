@@ -90,8 +90,8 @@ export function createSanitizedReadableSpan(span: ReadableSpan, policy: Sanitize
 		}
 		const spanContext: SpanContext = { traceId: context.traceId, spanId: context.spanId, traceFlags: context.traceFlags, isRemote: context.isRemote };
 
-		const name = sanitizeSpanName(span.name);
 		const attributes = sanitizeAttributes(span.attributes, policy);
+		const name = sanitizeSpanName(span.name, attributes);
 		const parentSpanContext = sanitizeParentSpanContext(span.parentSpanContext, context.traceId);
 		const events = sanitizeEvents(span.events);
 		const links = sanitizeLinks(span.links);
@@ -138,12 +138,27 @@ export function createSanitizedReadableSpan(span: ReadableSpan, policy: Sanitize
 }
 
 /**
- * span 名から表示を操作する制御文字を除き、長さを制限する。
+ * span 名を決める。
  *
- * span 名は Misskey 自身と計装ライブラリがコード上で決める (`API: notes/create`、`POST /notes/:id`、`pg.query:SELECT` など)。
- * 生の path などリクエスト由来の値は属性側に入り、そちらを許可一覧で落とす。
+ * HTTP の span は、計装が付けた名前に生の path が含まれうるため使わず、許可済みの属性から作り直す。
+ * 受信 span は method と route、送信 span は method と `url.full` の host を使う。
+ * それ以外の span 名は Misskey 自身と計装ライブラリがコード上で決める (`API: notes/create`、`pg.query:SELECT` など) ため、
+ * 表示を操作する制御文字を除き、長さを制限するだけにする。
  */
-function sanitizeSpanName(value: unknown): string {
+function sanitizeSpanName(value: unknown, attributes: Record<string, string | number | boolean>): string {
+	const method = attributes['http.request.method'];
+	if (typeof method === 'string') {
+		// Fastify の hook span も http.route を持つが、method を持たないためここには来ない。
+		const route = attributes['http.route'];
+		if (typeof route === 'string') {
+			return `${method} ${route}`;
+		}
+		const url = attributes['url.full'];
+		if (typeof url === 'string') {
+			return `${method} ${new URL(url).host}`;
+		}
+	}
+
 	if (typeof value !== 'string') {
 		return marker;
 	}
