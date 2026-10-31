@@ -5,7 +5,7 @@
 
 import { sanitizeAttributes } from '@/core/telemetry/sanitizer/attributes.js';
 import type { SanitizeAttributesOptions } from '@/core/telemetry/sanitizer/attributes.js';
-import { exceptionMessageMaxBytes, exceptionStacktraceMaxBytes, stripLogInjectionControlChars, truncateUtf8Bytes } from '@/core/telemetry/sanitizer/text.js';
+import { exceptionMessageMaxBytes, exceptionStacktraceMaxBytes, redactEmbeddedUrls, stripLogInjectionControlChars, truncateUtf8Bytes } from '@/core/telemetry/sanitizer/text.js';
 import { isSpanId, isTraceId, isWithinObservabilityLimit, marker } from '@/core/telemetry/sanitizer/validation.js';
 import type { Context, Link, SpanContext } from '@opentelemetry/api';
 import type { ReadableSpan, SpanProcessor, TimedEvent } from '@opentelemetry/sdk-trace-base';
@@ -218,7 +218,7 @@ function sanitizeLinks(value: unknown): Link[] {
  * span event から、例外の種類・メッセージ・スタックトレースを残す。
  *
  * `exception.message` と `exception.stacktrace` は形式検証できない自由記述だが、OTLP での調査に必要なため意図して残す。
- * 自由記述の値から表示を操作する制御文字を除き、個別の上限まで切り詰める。
+ * 自由記述の値から表示を操作する制御文字を除き、埋め込まれた URL を origin だけにして、個別の上限まで切り詰める。
  * JSON 化後に全体上限を超えた場合は、`createSanitizedReadableSpan` が event 数を減らす。
  */
 function sanitizeEvents(value: unknown): TimedEvent[] {
@@ -239,11 +239,11 @@ function sanitizeEvents(value: unknown): TimedEvent[] {
 		}
 		const message = source.attributes?.['exception.message'];
 		if (typeof message === 'string') {
-			attributes['exception.message'] = truncateUtf8Bytes(stripLogInjectionControlChars(message), exceptionMessageMaxBytes);
+			attributes['exception.message'] = sanitizeExceptionText(message, exceptionMessageMaxBytes);
 		}
 		const stacktrace = source.attributes?.['exception.stacktrace'];
 		if (typeof stacktrace === 'string') {
-			attributes['exception.stacktrace'] = truncateUtf8Bytes(stripLogInjectionControlChars(stacktrace), exceptionStacktraceMaxBytes);
+			attributes['exception.stacktrace'] = sanitizeExceptionText(stacktrace, exceptionStacktraceMaxBytes);
 		}
 		events.push({
 			name: 'exception',
@@ -256,4 +256,14 @@ function sanitizeEvents(value: unknown): TimedEvent[] {
 		}
 	}
 	return events;
+}
+
+/**
+ * 例外の自由記述を公開可能な形にする。
+ *
+ * 改行を除去すると URL と後続の文字列がつながって host に混ざるため、URL の置換は制御文字の除去より先に行う。
+ * 置換で長さが変わるため、切り詰めは最後に行う。
+ */
+function sanitizeExceptionText(value: string, maxBytes: number): string {
+	return truncateUtf8Bytes(stripLogInjectionControlChars(redactEmbeddedUrls(value, marker)), maxBytes);
 }

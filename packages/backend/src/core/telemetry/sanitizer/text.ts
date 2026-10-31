@@ -32,6 +32,30 @@ export function stripLogInjectionControlChars(value: string): string {
 	return value.replace(/[\x00-\x08\x0a-\x1f\x7f-\x9f]/g, '');
 }
 
+/** 自由形式の文字列に埋め込まれた `scheme://...` 形式の URL。 */
+const embeddedUrlPattern = /\b[A-Za-z][A-Za-z0-9+.-]*:\/\/[^\s"'`<>()[\]{}]+/g;
+
+/**
+ * 自由形式の文字列に含まれる URL を、origin だけに置き換える。
+ *
+ * 例外メッセージには ActivityPub の URI や Webhook の送信先などが埋め込まれうるため、path・query・認証情報を残さない。
+ * origin を持たない URL (`postgres://user:pass@host` など) や解釈できない URL はマーカーに置き換える。
+ * `file://` はスタックトレースのフレームに現れるサーバー上のソースの位置で、利用者の情報を含まないため残す。
+ */
+export function redactEmbeddedUrls(value: string, replacement: string): string {
+	return value.replace(embeddedUrlPattern, match => {
+		if (/^file:\/\//i.test(match)) {
+			return match;
+		}
+		try {
+			const origin = new URL(match).origin;
+			return origin === 'null' ? replacement : origin;
+		} catch {
+			return replacement;
+		}
+	});
+}
+
 /**
  * 文字列をUTF-8バイト数の上限まで切り詰める。
  *
