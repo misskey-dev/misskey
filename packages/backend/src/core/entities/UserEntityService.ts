@@ -685,7 +685,7 @@ export class UserEntityService implements OnModuleInit {
 		let userMemos: Map<MiUser['id'], string | null> = new Map();
 		let pinNotes: Map<MiUser['id'], MiUserNotePining[]> = new Map();
 
-		const schema = options?.schema ?? 'UserLite';
+		const schema = (options?.schema ?? 'UserLite') as S;
 		if (schema !== 'UserLite') {
 			profilesMap = await this.userProfilesRepository.findBy({ userId: In(_userIds) })
 				.then(profiles => new Map(profiles.map(p => [p.userId, p])));
@@ -724,6 +724,7 @@ export class UserEntityService implements OnModuleInit {
 				me,
 				{
 					...options,
+					schema,
 					userProfile: profilesMap?.get(u.id),
 					userRelations: userRelations,
 					userMemos: userMemos,
