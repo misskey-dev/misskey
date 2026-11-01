@@ -94,10 +94,11 @@ describe('getAccountFromId', () => {
 		await store.set('accountTokens', {});
 	});
 
-	test('Service Worker側でpizzax::baseのaccountTokensからアカウントを取得できる', async () => {
+	test('Service Worker側でpizzax::baseのaccountTokensから現在のホストのアカウントのみ取得できる', async () => {
 		await store.set('accountTokens', {
 			[`${host}/user-1`]: 'token-1',
 			[`${host}/user-2`]: 'token-2',
+			'other.example/user-3': 'token-3',
 		});
 
 		await expect(getSwAccounts()).resolves.toEqual([
@@ -105,6 +106,7 @@ describe('getAccountFromId', () => {
 			{ id: 'user-2', token: 'token-2' },
 		]);
 		await expect(getSwAccountFromId('user-1')).resolves.toEqual({ id: 'user-1', token: 'token-1' });
+		await expect(getSwAccountFromId('user-3')).resolves.toBeUndefined();
 		await expect(getSwAccountFromId('unknown')).resolves.toBeUndefined();
 	});
 

@@ -28,7 +28,7 @@ export async function getAccounts(): Promise<StoredAccount[]> {
 		const keyHost = key.slice(0, slashIndex);
 		const id = key.slice(slashIndex + 1);
 		if (!id) continue;
-		if (keyHost === host || !accounts.has(id)) {
+		if (keyHost === host) {
 			accounts.set(id, token);
 		}
 	}
