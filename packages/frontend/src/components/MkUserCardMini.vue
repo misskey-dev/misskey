@@ -4,7 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-adaptive-bg :class="[$style.root, { [$style.isSilenced]: 'isSilenced' in user && user.isSilenced }]">
+<div
+	v-adaptive-bg
+	:class="[$style.root, {
+		[$style.isSilenced]: 'isSilenced' in user && user.isSilenced,
+		[$style.isSuspended]: 'isSuspended' in user && user.isSuspended,
+	}]"
+>
 	<MkAvatar :class="$style.avatar" :user="user" indicator/>
 	<div :class="$style.body">
 		<span :class="$style.name"><MkUserName :user="user"/></span>
@@ -54,6 +60,12 @@ $bodyInfoHieght: 16px;
 
 	&.isSilenced {
 		--c: rgba(0, 42, 255, 0.15);
+		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
+		background-size: 16px 16px;
+	}
+
+	&.isSuspended {
+		--c: var(--MI_THEME-bg);
 		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
 		background-size: 16px 16px;
 	}
