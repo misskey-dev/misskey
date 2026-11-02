@@ -4,7 +4,14 @@
  */
 
 import { entities } from 'misskey-js';
-import { beforeEach, describe, test } from '@jest/globals';
+import {
+	beforeEach,
+	beforeAll,
+	afterAll,
+	describe,
+	expect,
+	test,
+} from 'vitest';
 import {
 	api,
 	captureWebhook,
@@ -157,7 +164,6 @@ describe('[シナリオ] ユーザ通報', () => {
 			const webhookBody2 = await captureWebhook(async () => {
 				await resolveAbuseReport({
 					reportId: webhookBody1.body.id,
-					forward: false,
 				}, admin);
 			});
 
@@ -214,7 +220,6 @@ describe('[シナリオ] ユーザ通報', () => {
 			const webhookBody2 = await captureWebhook(async () => {
 				await resolveAbuseReport({
 					reportId: abuseReportId,
-					forward: false,
 				}, admin);
 			});
 
@@ -257,7 +262,6 @@ describe('[シナリオ] ユーザ通報', () => {
 			const webhookBody2 = await captureWebhook(async () => {
 				await resolveAbuseReport({
 					reportId: webhookBody1.body.id,
-					forward: false,
 				}, admin);
 			}).catch(e => e.message);
 
@@ -288,7 +292,6 @@ describe('[シナリオ] ユーザ通報', () => {
 			const webhookBody2 = await captureWebhook(async () => {
 				await resolveAbuseReport({
 					reportId: abuseReportId,
-					forward: false,
 				}, admin);
 			}).catch(e => e.message);
 
@@ -319,7 +322,6 @@ describe('[シナリオ] ユーザ通報', () => {
 			const webhookBody2 = await captureWebhook(async () => {
 				await resolveAbuseReport({
 					reportId: abuseReportId,
-					forward: false,
 				}, admin);
 			}).catch(e => e.message);
 
@@ -350,7 +352,6 @@ describe('[シナリオ] ユーザ通報', () => {
 			const webhookBody2 = await captureWebhook(async () => {
 				await resolveAbuseReport({
 					reportId: abuseReportId,
-					forward: false,
 				}, admin);
 			}).catch(e => e.message);
 

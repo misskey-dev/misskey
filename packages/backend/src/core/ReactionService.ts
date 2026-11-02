@@ -4,9 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
-import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/_.js';
+import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository, MiMeta } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { MiRemoteUser, MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
@@ -21,7 +20,6 @@ import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerServ
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
@@ -30,9 +28,10 @@ import { RoleService } from '@/core/RoleService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
+import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
+import { PER_NOTE_REACTION_USER_PAIR_CACHE_MAX } from '@/const.js';
 
 const FALLBACK = '\u2764';
-const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
 
 const legacies: Record<string, string> = {
 	'like': '👍',
@@ -71,8 +70,8 @@ const decodeCustomEmojiRegexp = /^:([\w+-]+)(?:@([\w.-]+))?:$/;
 @Injectable()
 export class ReactionService {
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -87,12 +86,12 @@ export class ReactionService {
 		private emojisRepository: EmojisRepository,
 
 		private utilityService: UtilityService,
-		private metaService: MetaService,
 		private customEmojiService: CustomEmojiService,
 		private roleService: RoleService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private userBlockingService: UserBlockingService,
+		private reactionsBufferingService: ReactionsBufferingService,
 		private idService: IdService,
 		private featuredService: FeaturedService,
 		private globalEventService: GlobalEventService,
@@ -105,8 +104,6 @@ export class ReactionService {
 
 	@bindThis
 	public async create(user: { id: MiUser['id']; host: MiUser['host']; isBot: MiUser['isBot'] }, note: MiNote, _reaction?: string | null) {
-		const meta = await this.metaService.fetch();
-
 		// Check blocking
 		if (note.userId !== user.id) {
 			const blocked = await this.userBlockingService.checkBlocked(note.userId, user.id);
@@ -143,7 +140,9 @@ export class ReactionService {
 					});
 
 				if (emoji) {
-					if (emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0 || (await this.roleService.getUserRoles(user.id)).some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id))) {
+					const canUseLocalOnlyEmoji = note.userHost === reacterHost && (note.renoteUserHost == null || note.renoteUserHost === reacterHost);
+
+					if ((!emoji.localOnly || canUseLocalOnlyEmoji) && (emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0 || (await this.roleService.getUserRoles(user.id)).some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id)))) {
 						reaction = reacterHost ? `:${name}@${reacterHost}:` : `:${name}:`;
 
 						// センシティブ
@@ -152,7 +151,7 @@ export class ReactionService {
 						}
 
 						// for media silenced host, custom emoji reactions are not allowed
-						if (reacterHost != null && this.utilityService.isMediaSilencedHost(meta.mediaSilencedHosts, reacterHost)) {
+						if (reacterHost != null && this.utilityService.isMediaSilencedHost(this.meta.mediaSilencedHosts, reacterHost)) {
 							reaction = FALLBACK;
 						}
 					} else {
@@ -174,7 +173,6 @@ export class ReactionService {
 			reaction,
 		};
 
-		// Create reaction
 		try {
 			await this.noteReactionsRepository.insert(record);
 		} catch (e) {
@@ -198,16 +196,20 @@ export class ReactionService {
 		}
 
 		// Increment reactions count
-		const sql = `jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + 1)::text::jsonb)`;
-		await this.notesRepository.createQueryBuilder().update()
-			.set({
-				reactions: () => sql,
-				...(note.reactionAndUserPairCache.length < PER_NOTE_REACTION_USER_PAIR_CACHE_MAX ? {
-					reactionAndUserPairCache: () => `array_append("reactionAndUserPairCache", '${user.id}/${reaction}')`,
-				} : {}),
-			})
-			.where('id = :id', { id: note.id })
-			.execute();
+		if (this.meta.enableReactionsBuffering) {
+			await this.reactionsBufferingService.create(note.id, user.id, reaction, note.reactionAndUserPairCache);
+		} else {
+			await this.notesRepository.createQueryBuilder().update()
+				.set({
+					reactions: () => `jsonb_set("reactions", ARRAY[:reaction], (COALESCE("reactions"->>:reaction, '0')::int + 1)::text::jsonb)`,
+					...(note.reactionAndUserPairCache.length < PER_NOTE_REACTION_USER_PAIR_CACHE_MAX ? {
+						reactionAndUserPairCache: () => `array_append("reactionAndUserPairCache", :pair)`,
+					} : {}),
+				})
+				.where('id = :id', { id: note.id })
+				.setParameters({ reaction, pair: `${user.id}/${reaction}` })
+				.execute();
+		}
 
 		// 30%の確率、セルフではない、3日以内に投稿されたノートの場合ハイライト用ランキング更新
 		if (
@@ -227,7 +229,7 @@ export class ReactionService {
 			}
 		}
 
-		if (meta.enableChartsForRemoteUser || (user.host == null)) {
+		if (this.meta.enableChartsForRemoteUser || (user.host == null)) {
 			this.perUserReactionsChart.update(user, note);
 		}
 
@@ -244,7 +246,7 @@ export class ReactionService {
 					},
 				});
 
-		this.globalEventService.publishNoteStream(note.id, 'reacted', {
+		this.globalEventService.publishNoteStream(note, 'reacted', {
 			reaction: decodedReaction.reaction,
 			emoji: customEmoji != null ? {
 				name: customEmoji.host ? `${customEmoji.name}@${customEmoji.host}` : `${customEmoji.name}@.`,
@@ -305,16 +307,20 @@ export class ReactionService {
 		}
 
 		// Decrement reactions count
-		const sql = `jsonb_set("reactions", '{${exist.reaction}}', (COALESCE("reactions"->>'${exist.reaction}', '0')::int - 1)::text::jsonb)`;
-		await this.notesRepository.createQueryBuilder().update()
-			.set({
-				reactions: () => sql,
-				reactionAndUserPairCache: () => `array_remove("reactionAndUserPairCache", '${user.id}/${exist.reaction}')`,
-			})
-			.where('id = :id', { id: note.id })
-			.execute();
+		if (this.meta.enableReactionsBuffering) {
+			await this.reactionsBufferingService.delete(note.id, user.id, exist.reaction);
+		} else {
+			await this.notesRepository.createQueryBuilder().update()
+				.set({
+					reactions: () => `jsonb_set("reactions", ARRAY[:reaction], (COALESCE("reactions"->>:reaction, '0')::int - 1)::text::jsonb)`,
+					reactionAndUserPairCache: () => `array_remove("reactionAndUserPairCache", :pair)`,
+				})
+				.where('id = :id', { id: note.id })
+				.setParameters({ reaction: exist.reaction, pair: `${user.id}/${exist.reaction}` })
+				.execute();
+		}
 
-		this.globalEventService.publishNoteStream(note.id, 'unreacted', {
+		this.globalEventService.publishNoteStream(note, 'unreacted', {
 			reaction: this.decodeReaction(exist.reaction).reaction,
 			userId: user.id,
 		});
@@ -334,8 +340,21 @@ export class ReactionService {
 	}
 
 	/**
-	 * 文字列タイプのレガシーな形式のリアクションを現在の形式に変換しつつ、
-	 * データベース上には存在する「0個のリアクションがついている」という情報を削除する。
+	 * - 文字列タイプのレガシーな形式のリアクションを現在の形式に変換する
+	 * - ローカルのリアクションのホストを `@.` にする（`decodeReaction()`の効果）
+	 */
+	@bindThis
+	public convertLegacyReaction(reaction: string): string {
+		reaction = this.decodeReaction(reaction).reaction;
+		if (Object.keys(legacies).includes(reaction)) return legacies[reaction];
+		return reaction;
+	}
+
+	// TODO: 廃止
+	/**
+	 * - 文字列タイプのレガシーな形式のリアクションを現在の形式に変換する
+	 * - ローカルのリアクションのホストを `@.` にする（`decodeReaction()`の効果）
+	 * - データベース上には存在する「0個のリアクションがついている」という情報を削除する
 	 */
 	@bindThis
 	public convertLegacyReactions(reactions: MiNote['reactions']): MiNote['reactions'] {
@@ -348,10 +367,7 @@ export class ReactionService {
 				return count > 0;
 			})
 			.map(([reaction, count]) => {
-				// unchecked indexed access
-				const convertedReaction = legacies[reaction] as string | undefined;
-
-				const key = this.decodeReaction(convertedReaction ?? reaction).reaction;
+				const key = this.convertLegacyReaction(reaction);
 
 				return [key, count] as const;
 			})
@@ -405,12 +421,5 @@ export class ReactionService {
 			name: undefined,
 			host: undefined,
 		};
-	}
-
-	@bindThis
-	public convertLegacyReaction(reaction: string): string {
-		reaction = this.decodeReaction(reaction).reaction;
-		if (Object.keys(legacies).includes(reaction)) return legacies[reaction];
-		return reaction;
 	}
 }

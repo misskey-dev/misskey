@@ -6,6 +6,7 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -13,6 +14,14 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 	kind: 'write:admin:announcements',
+
+	errors: {
+		invalidAutoArchiveAt: {
+			message: 'Invalid auto archive date.',
+			code: 'INVALID_AUTO_ARCHIVE_AT',
+			id: '2a892bd5-487d-46a2-a5fe-3d85ad51defe',
+		},
+	},
 
 	res: {
 		type: 'object',
@@ -55,13 +64,14 @@ export const paramDef = {
 	properties: {
 		title: { type: 'string', minLength: 1 },
 		text: { type: 'string', minLength: 1 },
-		imageUrl: { type: 'string', nullable: true, minLength: 1 },
+		imageUrl: { type: 'string', nullable: true, minLength: 0 },
 		icon: { type: 'string', enum: ['info', 'warning', 'error', 'success'], default: 'info' },
 		display: { type: 'string', enum: ['normal', 'banner', 'dialog'], default: 'normal' },
 		forExistingUsers: { type: 'boolean', default: false },
 		silence: { type: 'boolean', default: false },
 		needConfirmationToRead: { type: 'boolean', default: false },
 		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+		autoArchiveAt: { type: 'integer', nullable: true, default: null },
 	},
 	required: ['title', 'text', 'imageUrl'],
 } as const;
@@ -72,17 +82,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private announcementService: AnnouncementService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const { raw, packed } = await this.announcementService.create({
+			const autoArchiveAt = ps.autoArchiveAt != null ? new Date(ps.autoArchiveAt) : null;
+			if (ps.autoArchiveAt != null && (ps.autoArchiveAt <= Date.now() || Number.isNaN(autoArchiveAt?.getTime()))) {
+				throw new ApiError(meta.errors.invalidAutoArchiveAt);
+			}
+
+			const { packed } = await this.announcementService.create({
 				updatedAt: null,
 				title: ps.title,
 				text: ps.text,
-				imageUrl: ps.imageUrl,
+				/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- 空の文字列の場合、nullを渡すようにするため */
+				imageUrl: ps.imageUrl || null,
 				icon: ps.icon,
 				display: ps.display,
 				forExistingUsers: ps.forExistingUsers,
 				silence: ps.silence,
 				needConfirmationToRead: ps.needConfirmationToRead,
 				userId: ps.userId,
+				autoArchiveAt,
 			}, me);
 
 			return packed;

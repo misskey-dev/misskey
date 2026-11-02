@@ -4,24 +4,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe }]" :to="url" :style="{ background: bgCss }" :behavior="navigationBehavior">
+<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe }]" :to="url" :behavior="navigationBehavior">
 	<img :class="$style.icon" :src="avatarUrl" alt="">
 	<span>
 		<span>@{{ username }}</span>
-		<span v-if="(host != localHost) || defaultStore.state.showFullAcct" :class="$style.host">@{{ toUnicode(host) }}</span>
+		<span v-if="(host != localHost)" :class="$style.host">@{{ toUnicode(host) }}</span>
 	</span>
 </MkA>
 </template>
 
 <script lang="ts" setup>
-import { toUnicode } from 'punycode';
+import { toUnicode } from 'punycode.js';
 import { computed } from 'vue';
-import tinycolor from 'tinycolor2';
-import { host as localHost } from '@/config.js';
-import { $i } from '@/account.js';
-import { defaultStore } from '@/store.js';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import { MkABehavior } from '@/components/global/MkA.vue';
+import { host as localHost } from '@@/js/config.js';
+import type { MkABehavior } from '@/components/global/MkA.vue';
+import { $i } from '@/i.js';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	username: string;
@@ -29,19 +28,15 @@ const props = defineProps<{
 	navigationBehavior?: MkABehavior;
 }>();
 
-const canonical = props.host === localHost ? `@${props.username}` : `@${props.username}@${toUnicode(props.host)}`;
+const canonical = computed(() => (props.host === localHost ? `@${props.username}` : `@${props.username}@${toUnicode(props.host)}`));
 
-const url = `/${canonical}`;
+const url = computed(() => `/${canonical.value}`);
 
-const isMe = $i && (
-	`@${props.username}@${toUnicode(props.host)}` === `@${$i.username}@${toUnicode(localHost)}`.toLowerCase()
-);
+const isMe = computed(() => $i != null && (
+	`@${props.username}@${toUnicode(props.host)}`.toLowerCase() === `@${$i.username}@${toUnicode(localHost)}`.toLowerCase()
+));
 
-const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue(isMe ? '--mentionMe' : '--mention'));
-bg.setAlpha(0.1);
-const bgCss = bg.toRgbString();
-
-const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
+const avatarUrl = computed(() => prefer.s.disableShowingAnimatedImages || prefer.s.dataSaver.avatar
 	? getStaticImageUrl(`/avatar/@${props.username}@${props.host}`)
 	: `/avatar/@${props.username}@${props.host}`,
 );
@@ -52,10 +47,12 @@ const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
 	display: inline-block;
 	padding: 4px 8px 4px 4px;
 	border-radius: 999px;
-	color: var(--mention);
+	color: var(--MI_THEME-mention);
+	background: color(from var(--MI_THEME-mention) srgb r g b / 0.1);
 
 	&.isMe {
-		color: var(--mentionMe);
+		color: var(--MI_THEME-mentionMe);
+		background: color(from var(--MI_THEME-mentionMe) srgb r g b / 0.1);
 	}
 }
 

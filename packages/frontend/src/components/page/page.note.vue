@@ -15,10 +15,10 @@ import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const props = defineProps<{
-	block: Misskey.entities.PageBlock,
+	block: Extract<Misskey.entities.PageBlock, { type: 'note' }>,
 	page: Misskey.entities.Page,
 }>();
 
@@ -35,7 +35,7 @@ onMounted(() => {
 
 <style lang="scss" module>
 .root {
-	border: 1px solid var(--divider);
-	border-radius: var(--radius);
+	border: 1px solid var(--MI_THEME-divider);
+	border-radius: var(--MI-radius);
 }
 </style>

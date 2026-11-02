@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div data-cy-mkw-button class="mkw-button">
+<div data-testid="mkw-button" class="mkw-button">
 	<MkButton :primary="widgetProps.colored" full @click="run">
 		{{ widgetProps.label }}
 	</MkButton>
@@ -12,31 +12,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { onUnmounted } from 'vue';
 import { Interpreter, Parser } from '@syuilo/aiscript';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
-import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
-import { $i } from '@/account.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
+import { $i } from '@/i.js';
 import MkButton from '@/components/MkButton.vue';
+import { i18n } from '@/i18n.js';
 
 const name = 'button';
 
 const widgetPropsDef = {
 	label: {
-		type: 'string' as const,
+		type: 'string',
+		label: i18n.ts.label,
 		default: 'BUTTON',
 	},
 	colored: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions._button.colored,
 		default: true,
 	},
 	script: {
-		type: 'string' as const,
+		type: 'string',
+		label: i18n.ts.script,
 		multiline: true,
-		default: 'Mk:dialog("hello" "world")',
+		default: 'Mk:dialog("hello", "world")',
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -50,15 +56,25 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 );
 
 const parser = new Parser();
+let aiscript: Interpreter | null = null;
 
-const run = async () => {
-	const aiscript = new Interpreter(createAiScriptEnv({
+async function run() {
+	if (aiscript) aiscript.abort();
+
+	aiscript = new Interpreter(createAiScriptEnv({
 		storageKey: 'widget',
 		token: $i?.token,
 	}), {
 		in: aiScriptReadline,
 		out: (value) => {
 			// nop
+		},
+		err: (err) => {
+			os.alert({
+				type: 'error',
+				title: 'AiScript Error',
+				text: String(err),
+			});
 		},
 		log: (type, params) => {
 			// nop
@@ -71,7 +87,8 @@ const run = async () => {
 	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: 'Syntax error :(',
+			title: 'Syntax Error',
+			text: String(err),
 		});
 		return;
 	}
@@ -80,10 +97,15 @@ const run = async () => {
 	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: err,
+			title: 'AiScript Internal Error',
+			text: String(err),
 		});
 	}
-};
+}
+
+onUnmounted(() => {
+	if (aiscript) aiscript.abort();
+});
 
 defineExpose<WidgetComponentExpose>({
 	name,

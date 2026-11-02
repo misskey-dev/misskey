@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
@@ -68,9 +68,9 @@ async function onClick() {
 	position: relative;
 	display: inline-block;
 	font-weight: bold;
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 	background: transparent;
-	border: solid 1px var(--accent);
+	border: solid 1px var(--MI_THEME-accent);
 	padding: 0;
 	height: 31px;
 	font-size: 16px;
@@ -99,17 +99,17 @@ async function onClick() {
 	}
 
 	&.active {
-		color: var(--fgOnAccent);
-		background: var(--accent);
+		color: var(--MI_THEME-fgOnAccent);
+		background: var(--MI_THEME-accent);
 
 		&:hover {
-			background: var(--accentLighten);
-			border-color: var(--accentLighten);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
+			border-color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 		}
 
 		&:active {
-			background: var(--accentDarken);
-			border-color: var(--accentDarken);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
+			border-color: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
 		}
 	}
 

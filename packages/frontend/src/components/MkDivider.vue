@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		borderWidth ? { borderWidth: borderWidth } : {},
 		borderColor ? { borderColor: borderColor } : {},
 	]"
-/>
+></div>
 </template>
 
 <script setup lang="ts">
@@ -27,6 +27,6 @@ defineProps<{
 
 <style scoped lang="scss">
 .default {
-	border-top: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 </style>

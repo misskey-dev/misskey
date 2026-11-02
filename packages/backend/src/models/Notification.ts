@@ -3,11 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { userExportableEntities } from '@/types.js';
 import { MiUser } from './User.js';
 import { MiNote } from './Note.js';
 import { MiAccessToken } from './AccessToken.js';
 import { MiRole } from './Role.js';
+import { MiDriveFile } from './DriveFile.js';
+import { MiNoteDraft } from './NoteDraft.js';
 
+// misskey-js の notificationTypes と同期すべし
 export type MiNotification = {
 	type: 'note';
 	id: string;
@@ -58,6 +62,16 @@ export type MiNotification = {
 	notifierId: MiUser['id'];
 	noteId: MiNote['id'];
 } | {
+	type: 'scheduledNotePosted';
+	id: string;
+	createdAt: string;
+	noteId: MiNote['id'];
+} | {
+	type: 'scheduledNotePostFailed';
+	id: string;
+	createdAt: string;
+	noteDraftId: MiNoteDraft['id'];
+} | {
 	type: 'receiveFollowRequest';
 	id: string;
 	createdAt: string;
@@ -67,16 +81,37 @@ export type MiNotification = {
 	id: string;
 	createdAt: string;
 	notifierId: MiUser['id'];
+	message: string | null;
 } | {
 	type: 'roleAssigned';
 	id: string;
 	createdAt: string;
 	roleId: MiRole['id'];
 } | {
+	type: 'chatRoomInvitationReceived';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+	invitationId: string;
+} | {
 	type: 'achievementEarned';
 	id: string;
 	createdAt: string;
 	achievement: string;
+} | {
+	type: 'exportCompleted';
+	id: string;
+	createdAt: string;
+	exportedEntity: typeof userExportableEntities[number];
+	fileId: MiDriveFile['id'];
+} | {
+	type: 'login';
+	id: string;
+	createdAt: string;
+} | {
+	type: 'createToken';
+	id: string;
+	createdAt: string;
 } | {
 	type: 'app';
 	id: string;
@@ -85,7 +120,7 @@ export type MiNotification = {
 	/**
 	 * アプリ通知のbody
 	 */
-	customBody: string | null;
+	customBody: string;
 
 	/**
 	 * アプリ通知のheader

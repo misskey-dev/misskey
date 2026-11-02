@@ -5,11 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { IdService } from '@/core/IdService.js';
-import type { SwSubscriptionsRepository } from '@/models/_.js';
+import type { MiMeta, SwSubscriptionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['account'],
@@ -46,6 +46,14 @@ export const meta = {
 			},
 		},
 	},
+
+	errors: {
+		invalidEndpoint: {
+			message: 'Invalid push endpoint.',
+			code: 'INVALID_ENDPOINT',
+			id: '4432adbe-17c0-4f9f-b43c-9ceb2f8910fe',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -62,14 +70,20 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
+
 		@Inject(DI.swSubscriptionsRepository)
 		private swSubscriptionsRepository: SwSubscriptionsRepository,
 
 		private idService: IdService,
-		private metaService: MetaService,
 		private pushNotificationService: PushNotificationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			if (!this.pushNotificationService.isValidEndpoint(ps.endpoint)) {
+				throw new ApiError(meta.errors.invalidEndpoint);
+			}
+
 			// if already subscribed
 			const exist = await this.swSubscriptionsRepository.findOneBy({
 				userId: me.id,
@@ -78,12 +92,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				publickey: ps.publickey,
 			});
 
-			const instance = await this.metaService.fetch(true);
-
 			if (exist != null) {
 				return {
 					state: 'already-subscribed' as const,
-					key: instance.swPublicKey,
+					key: this.serverSettings.swPublicKey,
 					userId: me.id,
 					endpoint: exist.endpoint,
 					sendReadMessage: exist.sendReadMessage,
@@ -103,7 +115,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			return {
 				state: 'subscribed' as const,
-				key: instance.swPublicKey,
+				key: this.serverSettings.swPublicKey,
 				userId: me.id,
 				endpoint: ps.endpoint,
 				sendReadMessage: ps.sendReadMessage,

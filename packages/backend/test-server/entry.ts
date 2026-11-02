@@ -1,80 +1,92 @@
-import { portToPid } from 'pid-port';
-import fkill from 'fkill';
-import Fastify from 'fastify';
-import { NestFactory } from '@nestjs/core';
-import { MainModule } from '@/MainModule.js';
-import { ServerService } from '@/server/ServerService.js';
-import { loadConfig } from '@/config.js';
-import { NestLogger } from '@/NestLogger.js';
+import { findSourceMap } from 'node:module';
+import { fileURLToPath } from 'node:url';
+import { setupCoverage, startCoverage } from './coverage.js';
+import type { TestProject } from 'vitest/node';
 
-const config = loadConfig();
-const originEnv = JSON.stringify(process.env);
+/** バンドルの出力先 (このファイルもバンドルされてそこに置かれる) */
+const bundleUrlPrefix = new URL('./', import.meta.url).href;
 
-process.env.NODE_ENV = 'test';
+// NestJSのデコレータ適用などモジュール評価時に走るコードも計測対象にするため、
+// サーバ本体を読み込む前に開始する
+startCoverage();
+
+installPrepareStackTrace();
+
+/**
+ * サーバはvitestのメインプロセスで動くため、Errorのスタック整形にはViteのmodule runnerが
+ * 差し込んだ `Error.prepareStackTrace` が使われる。
+ * バンドルはmodule runnerを通さずNodeが直接読み込んでいる (vitest.config.e2e.ts) ので、
+ * Viteはその位置をsourcemapで変換できない。そこでNodeのsourcemapサポートで `src` の位置へ変換してから渡す。
+ *
+ * また、位置の変換やViteの整形処理が例外を投げると、`error.stack` を自前で読むライブラリ (gotのRequestErrorなど) では
+ * 捕捉されずにプロセスごと落ちてしまうため、失敗時はそこまでに得られた位置のままフォールバックさせる。
+ */
+function installPrepareStackTrace() {
+	// サーバ本体を読み込む前に有効にしないと、そのsourcemapが記録されない
+	process.setSourceMapsEnabled(true);
+
+	const prepare = Error.prepareStackTrace;
+
+	Error.prepareStackTrace = (error, callSites) => {
+		let mappedCallSites = callSites;
+		try {
+			mappedCallSites = callSites.map(mapBundledCallSite);
+			if (prepare != null) return prepare(error, mappedCallSites);
+		} catch {
+			// フォールバックする
+		}
+		return `${String(error)}${mappedCallSites.map(callSite => `\n    at ${callSite}`).join('')}`;
+	};
+}
+
+/** バンドルされたチャンク上の位置を指すCallSiteを、sourcemapで元のソースの位置へ変換する */
+function mapBundledCallSite(callSite: NodeJS.CallSite): NodeJS.CallSite {
+	const fileName = callSite.getFileName();
+	const line = callSite.getLineNumber();
+	const column = callSite.getColumnNumber();
+	if (fileName == null || line == null || column == null || !fileName.startsWith(bundleUrlPrefix)) return callSite;
+
+	const origin = findSourceMap(fileName)?.findOrigin(line, column);
+	if (origin == null || !('fileName' in origin)) return callSite;
+
+	const originFileName = origin.fileName.startsWith('file://') ? fileURLToPath(origin.fileName) : origin.fileName;
+	const location = `${originFileName}:${origin.lineNumber}:${origin.columnNumber}`;
+	const overrides: Partial<NodeJS.CallSite> & { toString(): string } = {
+		getFileName: () => originFileName,
+		getScriptNameOrSourceURL: () => originFileName,
+		getLineNumber: () => origin.lineNumber,
+		getColumnNumber: () => origin.columnNumber,
+		toString: () => callSite.toString().replace(`${fileName}:${line}:${column}`, location),
+	};
+
+	return new Proxy(callSite, {
+		get(target, property) {
+			if (Object.hasOwn(overrides, property)) return overrides[property as keyof typeof overrides];
+			const value = Reflect.get(target, property);
+			return typeof value === 'function' ? value.bind(target) : value;
+		},
+	});
+}
+
+// 静的importにするとバンドル後に別チャンクの評価がこのファイルの本体より先に走り、
+// startCoverage() が間に合わなくなるため動的importにしている
+let serverModule: Promise<typeof import('./server.js')> | undefined;
+
+function loadServer() {
+	return serverModule ??= import('./server.js');
+}
 
 /**
  * テスト用のサーバインスタンスを起動する
  */
-async function launch() {
-	await killTestServer();
-
-	console.log('starting application...');
-
-	const app = await NestFactory.createApplicationContext(MainModule, {
-		logger: new NestLogger(),
-	});
-	const serverService = app.get(ServerService);
-	await serverService.launch();
-
-	await startControllerEndpoints();
-
-	// ジョブキューは必要な時にテストコード側で起動する
-	// ジョブキューが動くとテスト結果の確認に支障が出ることがあるので意図的に動かさないでいる
-
-	console.log('application initialized.');
+export async function setup(project: TestProject) {
+	await setupCoverage(project);
+	await (await loadServer()).setup();
 }
 
 /**
- * 既に重複したポートで待ち受けしているサーバがある場合はkillする
+ * テスト用のサーバインスタンスを停止する
  */
-async function killTestServer() {
-	//
-	try {
-		const pid = await portToPid(config.port);
-		if (pid) {
-			await fkill(pid, { force: true });
-		}
-	} catch {
-		// NOP;
-	}
+export async function teardown() {
+	await (await loadServer()).teardown();
 }
-
-/**
- * 別プロセスに切り離してしまったが故に出来なくなった環境変数の書き換え等を実現するためのエンドポイントを作る
- * @param port
- */
-async function startControllerEndpoints(port = config.port + 1000) {
-	const fastify = Fastify();
-
-	fastify.post<{ Body: { key?: string, value?: string } }>('/env', async (req, res) => {
-		console.log(req.body);
-		const key = req.body['key'];
-		if (!key) {
-			res.code(400).send({ success: false });
-			return;
-		}
-
-		process.env[key] = req.body['value'];
-
-		res.code(200).send({ success: true });
-	});
-
-	fastify.post<{ Body: { key?: string, value?: string } }>('/env-reset', async (req, res) => {
-		process.env = JSON.parse(originEnv);
-		res.code(200).send({ success: true });
-	});
-
-	await fastify.listen({ port: port, host: 'localhost' });
-}
-
-export default launch;

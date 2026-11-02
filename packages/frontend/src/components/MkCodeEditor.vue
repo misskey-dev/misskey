@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, toRefs, shallowRef, nextTick } from 'vue';
+import { ref, watch, toRefs, useTemplateRef, nextTick } from 'vue';
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
@@ -40,7 +40,7 @@ import XCode from '@/components/MkCode.core.vue';
 
 const props = withDefaults(defineProps<{
 	modelValue: string | null;
-	lang: string;
+	lang?: string;
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'change', _ev: KeyboardEvent): void;
+	(ev: 'change', _ev: InputEvent): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
 	(ev: 'enter'): void;
 	(ev: 'update:modelValue', value: string): void;
@@ -61,17 +61,19 @@ const { modelValue } = toRefs(props);
 const v = ref<string>(modelValue.value ?? '');
 const focused = ref(false);
 const changed = ref(false);
-const inputEl = shallowRef<HTMLTextAreaElement>();
+const inputEl = useTemplateRef('inputEl');
 
-const focus = () => inputEl.value?.focus();
+function focus() {
+	inputEl.value?.focus();
+}
 
-const onInput = (ev) => {
-	v.value = ev.target?.value ?? v.value;
+function onInput(ev: InputEvent) {
+	v.value = (inputEl.value?.value) ?? '';
 	changed.value = true;
 	emit('change', ev);
-};
+}
 
-const onKeydown = (ev: KeyboardEvent) => {
+function onKeydown(ev: KeyboardEvent) {
 	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
 
 	emit('keydown', ev);
@@ -102,12 +104,12 @@ const onKeydown = (ev: KeyboardEvent) => {
 		});
 		ev.preventDefault();
 	}
-};
+}
 
-const updated = () => {
+function updated() {
 	changed.value = false;
 	emit('update:modelValue', v.value);
-};
+}
 
 const debouncedUpdated = debounce(1000, updated);
 
@@ -140,7 +142,7 @@ watch(v, newValue => {
 .caption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 
 	&:empty {
 		display: none;
@@ -160,17 +162,17 @@ watch(v, newValue => {
 	margin: 0;
 	border-radius: 6px;
 	padding: 0;
-	color: var(--fg);
-	border: solid 1px var(--panel);
+	color: var(--MI_THEME-fg);
+	border: solid 1px var(--MI_THEME-panel);
 	transition: border-color 0.1s ease-out;
 	font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
 	&:hover {
-		border-color: var(--inputBorderHover) !important;
+		border-color: var(--MI_THEME-inputBorderHover) !important;
 	}
 }
 
 .focused.codeEditorRoot {
-	border-color: var(--accent) !important;
+	border-color: var(--MI_THEME-accent) !important;
 	border-radius: 6px;
 }
 
@@ -196,7 +198,7 @@ watch(v, newValue => {
 	resize: none;
 	text-align: left;
 	color: transparent;
-	caret-color: var(--fg);
+	caret-color: var(--MI_THEME-fg);
 	background-color: transparent;
 	border: 0;
 	border-radius: 6px;
@@ -211,6 +213,6 @@ watch(v, newValue => {
 }
 
 .textarea::selection {
-	color: var(--bg);
+	color: var(--MI_THEME-bg);
 }
 </style>

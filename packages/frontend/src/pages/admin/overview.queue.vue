@@ -35,10 +35,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { markRaw, onMounted, onUnmounted, ref, shallowRef } from 'vue';
+import { markRaw, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
+import * as Misskey from 'misskey-js';
 import XChart from './overview.queue.chart.vue';
+import type { ApQueueDomain } from '@/pages/admin/federation-job-queue.vue';
 import number from '@/filters/number.js';
 import { useStream } from '@/stream.js';
+import { genId } from '@/utility/id.js';
 
 const connection = markRaw(useStream().useChannel('queueStats'));
 
@@ -46,32 +49,32 @@ const activeSincePrevTick = ref(0);
 const active = ref(0);
 const delayed = ref(0);
 const waiting = ref(0);
-const chartProcess = shallowRef<InstanceType<typeof XChart>>();
-const chartActive = shallowRef<InstanceType<typeof XChart>>();
-const chartDelayed = shallowRef<InstanceType<typeof XChart>>();
-const chartWaiting = shallowRef<InstanceType<typeof XChart>>();
+const chartProcess = useTemplateRef('chartProcess');
+const chartActive = useTemplateRef('chartActive');
+const chartDelayed = useTemplateRef('chartDelayed');
+const chartWaiting = useTemplateRef('chartWaiting');
 
 const props = defineProps<{
-	domain: string;
+	domain: ApQueueDomain;
 }>();
 
-const onStats = (stats) => {
+function onStats(stats: Misskey.entities.QueueStats) {
 	activeSincePrevTick.value = stats[props.domain].activeSincePrevTick;
 	active.value = stats[props.domain].active;
 	delayed.value = stats[props.domain].delayed;
 	waiting.value = stats[props.domain].waiting;
 
-	chartProcess.value.pushData(stats[props.domain].activeSincePrevTick);
-	chartActive.value.pushData(stats[props.domain].active);
-	chartDelayed.value.pushData(stats[props.domain].delayed);
-	chartWaiting.value.pushData(stats[props.domain].waiting);
-};
+	chartProcess.value?.pushData(stats[props.domain].activeSincePrevTick);
+	chartActive.value?.pushData(stats[props.domain].active);
+	chartDelayed.value?.pushData(stats[props.domain].delayed);
+	chartWaiting.value?.pushData(stats[props.domain].waiting);
+}
 
-const onStatsLog = (statsLog) => {
-	const dataProcess = [];
-	const dataActive = [];
-	const dataDelayed = [];
-	const dataWaiting = [];
+function onStatsLog(statsLog: Misskey.entities.QueueStatsLog) {
+	const dataProcess: Misskey.entities.QueueStats[ApQueueDomain]['activeSincePrevTick'][] = [];
+	const dataActive: Misskey.entities.QueueStats[ApQueueDomain]['active'][] = [];
+	const dataDelayed: Misskey.entities.QueueStats[ApQueueDomain]['delayed'][] = [];
+	const dataWaiting: Misskey.entities.QueueStats[ApQueueDomain]['waiting'][] = [];
 
 	for (const stats of [...statsLog].reverse()) {
 		dataProcess.push(stats[props.domain].activeSincePrevTick);
@@ -80,17 +83,17 @@ const onStatsLog = (statsLog) => {
 		dataWaiting.push(stats[props.domain].waiting);
 	}
 
-	chartProcess.value.setData(dataProcess);
-	chartActive.value.setData(dataActive);
-	chartDelayed.value.setData(dataDelayed);
-	chartWaiting.value.setData(dataWaiting);
-};
+	chartProcess.value?.setData(dataProcess);
+	chartActive.value?.setData(dataActive);
+	chartDelayed.value?.setData(dataDelayed);
+	chartWaiting.value?.setData(dataWaiting);
+}
 
 onMounted(() => {
 	connection.on('stats', onStats);
 	connection.on('statsLog', onStatsLog);
 	connection.send('requestLog', {
-		id: Math.random().toString().substring(2, 10),
+		id: genId(),
 		length: 100,
 	});
 });
@@ -117,8 +120,8 @@ onUnmounted(() => {
 			> .chart {
 				min-width: 0;
 				padding: 16px;
-				background: var(--panel);
-				border-radius: var(--radius);
+				background: var(--MI_THEME-panel);
+				border-radius: var(--MI-radius);
 
 				> .title {
 					font-size: 0.85em;

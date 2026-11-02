@@ -14,6 +14,8 @@ import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { NotificationService } from '@/core/NotificationService.js';
+import { ExportedAntenna } from '@/queue/processors/ImportAntennasProcessorService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DBExportAntennasData } from '../types.js';
 import type * as Bull from 'bullmq';
@@ -35,6 +37,7 @@ export class ExportAntennasProcessorService {
 		private driveService: DriveService,
 		private utilityService: UtilityService,
 		private queueLoggerService: QueueLoggerService,
+		private notificationService: NotificationService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('export-antennas');
 	}
@@ -84,7 +87,8 @@ export class ExportAntennasProcessorService {
 					excludeBots: antenna.excludeBots,
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,
-				}));
+					excludeNotesInSensitiveChannel: antenna.excludeNotesInSensitiveChannel,
+				} satisfies Required<ExportedAntenna>));
 				if (antennas.length - 1 !== index) {
 					write(', ');
 				}
@@ -95,6 +99,11 @@ export class ExportAntennasProcessorService {
 			const fileName = 'antennas-' + DateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.json';
 			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true, ext: 'json' });
 			this.logger.succ('Exported to: ' + driveFile.id);
+
+			this.notificationService.createNotification(user.id, 'exportCompleted', {
+				exportedEntity: 'antenna',
+				fileId: driveFile.id,
+			});
 		} finally {
 			cleanup();
 		}

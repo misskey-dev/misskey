@@ -15,6 +15,7 @@ import { ApiError } from '../../error.js';
 export const meta = {
 	secure: true,
 	requireCredential: true,
+	requiredRolePolicy: 'canImportUserLists',
 	prohibitMoved: true,
 	limit: {
 		duration: ms('1hour'),
@@ -66,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private accountMoveService: AccountMoveService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
+			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId, userId: me.id });
 
 			if (file == null) throw new ApiError(meta.errors.noSuchFile);
 			//if (!file.type.endsWith('/csv')) throw new ApiError(meta.errors.unexpectedFileType);

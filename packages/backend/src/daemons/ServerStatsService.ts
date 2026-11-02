@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
-import si from 'systeminformation';
+import { Inject, Injectable } from '@nestjs/common';
 import Xev from 'xev';
 import * as osUtils from 'os-utils';
 import { bindThis } from '@/decorators.js';
-import { MetaService } from '@/core/MetaService.js';
+import { MiMeta } from '@/models/_.js';
+import { DI } from '@/di-symbols.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 const ev = new Xev();
@@ -23,7 +23,8 @@ export class ServerStatsService implements OnApplicationShutdown {
 	private intervalId: NodeJS.Timeout | null = null;
 
 	constructor(
-		private metaService: MetaService,
+		@Inject(DI.meta)
+		private meta: MiMeta,
 	) {
 	}
 
@@ -32,7 +33,7 @@ export class ServerStatsService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public async start(): Promise<void> {
-		if (!(await this.metaService.fetch(true)).enableServerMachineStats) return;
+		if (!this.meta.enableServerMachineStats) return;
 
 		const log = [] as any[];
 
@@ -95,12 +96,14 @@ function cpuUsage(): Promise<number> {
 
 // MEMORY STAT
 async function mem() {
+	const si = await import('systeminformation');
 	const data = await si.mem();
 	return data;
 }
 
 // NETWORK STAT
 async function net() {
+	const si = await import('systeminformation');
 	const iface = await si.networkInterfaceDefault();
 	const data = await si.networkStats(iface);
 	return data[0];
@@ -108,5 +111,6 @@ async function net() {
 
 // FS STAT
 async function fs() {
+	const si = await import('systeminformation');
 	return await si.disksIO().catch(() => ({ rIO_sec: 0, wIO_sec: 0 }));
 }

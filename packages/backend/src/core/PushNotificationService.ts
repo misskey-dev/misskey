@@ -10,10 +10,10 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
-import type { MiSwSubscription, SwSubscriptionsRepository } from '@/models/_.js';
-import { MetaService } from '@/core/MetaService.js';
+import type { MiMeta, MiSwSubscription, SwSubscriptionsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { RedisKVCache } from '@/misc/cache.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 
 // Defined also packages/sw/types.ts#L13
 type PushNotificationsTypes = {
@@ -23,6 +23,7 @@ type PushNotificationsTypes = {
 		note: Packed<'Note'>;
 	};
 	'readAllNotifications': undefined;
+	newChatMessage: Packed<'ChatMessage'>;
 };
 
 // Reduce length because push message servers have character limits
@@ -54,13 +55,16 @@ export class PushNotificationService implements OnApplicationShutdown {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
 		@Inject(DI.swSubscriptionsRepository)
 		private swSubscriptionsRepository: SwSubscriptionsRepository,
 
-		private metaService: MetaService,
+		private httpRequestService: HttpRequestService,
 	) {
 		this.subscriptionsCache = new RedisKVCache<MiSwSubscription[]>(this.redisClient, 'userSwSubscriptions', {
 			lifetime: 1000 * 60 * 60 * 1, // 1h
@@ -72,15 +76,28 @@ export class PushNotificationService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async pushNotification<T extends keyof PushNotificationsTypes>(userId: string, type: T, body: PushNotificationsTypes[T]) {
-		const meta = await this.metaService.fetch();
+	public isValidEndpoint(endpoint: string): boolean {
+		let url: URL;
+		try {
+			url = new URL(endpoint);
+		} catch {
+			return false;
+		}
 
-		if (!meta.enableServiceWorker || meta.swPublicKey == null || meta.swPrivateKey == null) return;
+		if (url.protocol !== 'https:') return false;
+		if (url.username !== '' || url.password !== '') return false;
+
+		return true;
+	}
+
+	@bindThis
+	public async pushNotification<T extends keyof PushNotificationsTypes>(userId: string, type: T, body: PushNotificationsTypes[T]) {
+		if (!this.meta.enableServiceWorker || this.meta.swPublicKey == null || this.meta.swPrivateKey == null) return;
 
 		// アプリケーションの連絡先と、サーバーサイドの鍵ペアの情報を登録
 		push.setVapidDetails(this.config.url,
-			meta.swPublicKey,
-			meta.swPrivateKey);
+			this.meta.swPublicKey,
+			this.meta.swPrivateKey);
 
 		const subscriptions = await this.subscriptionsCache.fetch(userId);
 
@@ -88,6 +105,8 @@ export class PushNotificationService implements OnApplicationShutdown {
 			if ([
 				'readAllNotifications',
 			].includes(type) && !subscription.sendReadMessage) continue;
+
+			if (!this.isValidEndpoint(subscription.endpoint)) continue;
 
 			const pushSubscription = {
 				endpoint: subscription.endpoint,
@@ -103,7 +122,7 @@ export class PushNotificationService implements OnApplicationShutdown {
 				userId,
 				dateTime: Date.now(),
 			}), {
-				proxy: this.config.proxy,
+				agent: this.httpRequestService.getAgentForHttps(new URL(subscription.endpoint)),
 			}).catch((err: any) => {
 				//swLogger.info(err.statusCode);
 				//swLogger.info(err.headers);

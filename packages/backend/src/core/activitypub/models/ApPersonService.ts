@@ -8,13 +8,13 @@ import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
+import type { FollowingsRepository, InstancesRepository, MiMeta, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import { MiUser } from '@/models/User.js';
 import { truncate } from '@/misc/truncate.js';
 import type { CacheService } from '@/core/CacheService.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { normalizeTag } from '@/misc/normalize-tag.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import type Logger from '@/logger.js';
 import type { MiNote } from '@/models/Note.js';
@@ -35,7 +35,6 @@ import type { UtilityService } from '@/core/UtilityService.js';
 import type { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
-import { MetaService } from '@/core/MetaService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
@@ -46,7 +45,7 @@ import type { ApNoteService } from './ApNoteService.js';
 import type { ApMfmService } from '../ApMfmService.js';
 import type { ApResolverService, Resolver } from '../ApResolverService.js';
 import type { ApLoggerService } from '../ApLoggerService.js';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+
 import type { ApImageService } from './ApImageService.js';
 import type { IActor, ICollection, IObject, IOrderedCollection } from '../type.js';
 
@@ -62,7 +61,6 @@ export class ApPersonService implements OnModuleInit {
 	private driveFileEntityService: DriveFileEntityService;
 	private idService: IdService;
 	private globalEventService: GlobalEventService;
-	private metaService: MetaService;
 	private federatedInstanceService: FederatedInstanceService;
 	private fetchInstanceMetadataService: FetchInstanceMetadataService;
 	private cacheService: CacheService;
@@ -83,6 +81,9 @@ export class ApPersonService implements OnModuleInit {
 
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.db)
 		private db: DataSource,
@@ -112,7 +113,6 @@ export class ApPersonService implements OnModuleInit {
 		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
 		this.idService = this.moduleRef.get('IdService');
 		this.globalEventService = this.moduleRef.get('GlobalEventService');
-		this.metaService = this.moduleRef.get('MetaService');
 		this.federatedInstanceService = this.moduleRef.get('FederatedInstanceService');
 		this.fetchInstanceMetadataService = this.moduleRef.get('FetchInstanceMetadataService');
 		this.cacheService = this.moduleRef.get('CacheService');
@@ -129,12 +129,6 @@ export class ApPersonService implements OnModuleInit {
 		this.logger = this.apLoggerService.logger;
 	}
 
-	private punyHost(url: string): string {
-		const urlObj = new URL(url);
-		const host = `${this.utilityService.toPuny(urlObj.hostname)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
-		return host;
-	}
-
 	/**
 	 * Validate and convert to actor object
 	 * @param x Fetched object
@@ -142,7 +136,7 @@ export class ApPersonService implements OnModuleInit {
 	 */
 	@bindThis
 	private validateActor(x: IObject, uri: string): IActor {
-		const expectHost = this.punyHost(uri);
+		const expectHost = this.utilityService.punyHost(uri);
 
 		if (!isActor(x)) {
 			throw new Error(`invalid Actor type '${x.type}'`);
@@ -154,6 +148,36 @@ export class ApPersonService implements OnModuleInit {
 
 		if (!(typeof x.inbox === 'string' && x.inbox.length > 0)) {
 			throw new Error('invalid Actor: wrong inbox');
+		}
+
+		if (this.utilityService.punyHost(x.inbox) !== expectHost) {
+			throw new Error('invalid Actor: inbox has different host');
+		}
+
+		const sharedInboxObject = x.sharedInbox ?? (x.endpoints ? x.endpoints.sharedInbox : undefined);
+		if (sharedInboxObject != null) {
+			const sharedInbox = getApId(sharedInboxObject);
+			if (!(typeof sharedInbox === 'string' && sharedInbox.length > 0 && new URL(sharedInbox).host === expectHost)) {
+				this.logger.warn(`invalid Actor: skipping wrong shared inbox, expected host: ${expectHost}, actual URL: ${sharedInbox}`);
+				x.sharedInbox = undefined;
+				if (x.endpoints?.sharedInbox) {
+					x.endpoints.sharedInbox = undefined;
+				}
+			}
+		}
+
+		for (const collection of ['outbox', 'followers', 'following'] as (keyof IActor)[]) {
+			const xCollection = (x as IActor)[collection];
+			if (xCollection != null) {
+				const collectionUri = getApId(xCollection);
+				if (typeof collectionUri === 'string' && collectionUri.length > 0) {
+					if (this.utilityService.punyHost(collectionUri) !== expectHost) {
+						throw new Error(`invalid Actor: ${collection} has different host`);
+					}
+				} else if (collectionUri != null) {
+					throw new Error(`invalid Actor: wrong ${collection}`);
+				}
+			}
 		}
 
 		if (!(typeof x.preferredUsername === 'string' && x.preferredUsername.length > 0 && x.preferredUsername.length <= 128 && /^\w([\w-.]*\w)?$/.test(x.preferredUsername))) {
@@ -179,7 +203,7 @@ export class ApPersonService implements OnModuleInit {
 			x.summary = truncate(x.summary, summaryLength);
 		}
 
-		const idHost = this.punyHost(x.id);
+		const idHost = this.utilityService.punyHost(x.id);
 		if (idHost !== expectHost) {
 			throw new Error('invalid Actor: id has different host');
 		}
@@ -189,7 +213,7 @@ export class ApPersonService implements OnModuleInit {
 				throw new Error('invalid Actor: publicKey.id is not a string');
 			}
 
-			const publicKeyIdHost = this.punyHost(x.publicKey.id);
+			const publicKeyIdHost = this.utilityService.punyHost(x.publicKey.id);
 			if (publicKeyIdHost !== expectHost) {
 				throw new Error('invalid Actor: publicKey.id has different host');
 			}
@@ -232,6 +256,12 @@ export class ApPersonService implements OnModuleInit {
 		if (user == null) throw new Error('failed to create user: user is null');
 
 		const [avatar, banner] = await Promise.all([icon, image].map(img => {
+			// icon and image may be arrays
+			// see https://www.w3.org/TR/activitystreams-vocabulary/#dfn-icon
+			if (Array.isArray(img)) {
+				img = img.find(item => item && item.url) ?? null;
+			}
+
 			// if we have an explicitly missing image, return an
 			// explicitly-null set of values
 			if ((img == null) || (typeof img === 'object' && img.url == null)) {
@@ -274,12 +304,13 @@ export class ApPersonService implements OnModuleInit {
 	public async createPerson(uri: string, resolver?: Resolver): Promise<MiRemoteUser> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
-		if (uri.startsWith(this.config.url)) {
+		const host = this.utilityService.punyHost(uri);
+		if (host === this.utilityService.toPuny(this.config.host)) {
 			throw new StatusError('cannot resolve local user', 400, 'cannot resolve local user');
 		}
 
 		// eslint-disable-next-line no-param-reassign
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = await this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(uri);
 		if (object.id == null) throw new Error('invalid object.id: ' + object.id);
@@ -288,11 +319,9 @@ export class ApPersonService implements OnModuleInit {
 
 		this.logger.info(`Creating the Person: ${person.id}`);
 
-		const host = this.punyHost(object.id);
-
 		const fields = this.analyzeAttachments(person.attachment ?? []);
 
-		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
+		const tags = extractApHashtags(person.tag).splice(0, 32).map(normalizeTag);
 
 		const isBot = getApType(object) === 'Service' || getApType(object) === 'Application';
 
@@ -307,13 +336,17 @@ export class ApPersonService implements OnModuleInit {
 						this.logger.error('error occurred while fetching following/followers collection', { stack: err });
 					}
 					return 'private';
-				})
-			)
+				}),
+			),
 		);
 
 		const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
 
 		const url = getOneApHrefNullable(person.url);
+
+		if (person.id == null) {
+			throw new Error('Refusing to create person without id');
+		}
 
 		if (url && !checkHttps(url)) {
 			throw new Error('unexpected schema of person url: ' + url);
@@ -343,19 +376,22 @@ export class ApPersonService implements OnModuleInit {
 					isLocked: person.manuallyApprovesFollowers,
 					movedToUri: person.movedTo,
 					movedAt: person.movedTo ? new Date() : null,
-					alsoKnownAs: person.alsoKnownAs,
+					alsoKnownAs: toArray(person.alsoKnownAs),
 					isExplorable: person.discoverable,
 					username: person.preferredUsername,
 					usernameLower: person.preferredUsername?.toLowerCase(),
 					host,
 					inbox: person.inbox,
-					sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox,
+					sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox ?? null,
 					followersUri: person.followers ? getApId(person.followers) : undefined,
 					featured: person.featured ? getApId(person.featured) : undefined,
 					uri: person.id,
 					tags,
 					isBot,
 					isCat: (person as any).isCat === true,
+					requireSigninToViewContents: (person as any).requireSigninToViewContents === true,
+					makeNotesFollowersOnlyBefore: (person as any).makeNotesFollowersOnlyBefore ?? null,
+					makeNotesHiddenBefore: (person as any).makeNotesHiddenBefore ?? null,
 					emojis,
 				})) as MiRemoteUser;
 
@@ -364,12 +400,13 @@ export class ApPersonService implements OnModuleInit {
 				if (person._misskey_summary) {
 					_description = truncate(person._misskey_summary, summaryLength);
 				} else if (person.summary) {
-					_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag);
+					_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), { tag: person.tag });
 				}
 
 				await transactionalEntityManager.save(new MiUserProfile({
 					userId: user.id,
 					description: _description,
+					followedMessage: person._misskey_followedMessage != null ? truncate(person._misskey_followedMessage, 256) : null,
 					url,
 					fields,
 					followingVisibility,
@@ -407,13 +444,15 @@ export class ApPersonService implements OnModuleInit {
 		this.cacheService.uriPersonCache.set(user.uri, user);
 
 		// Register host
-		this.federatedInstanceService.fetch(host).then(async i => {
-			this.instancesRepository.increment({ id: i.id }, 'usersCount', 1);
-			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
-			if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
-				this.instanceChart.newUser(i.host);
-			}
-		});
+		if (this.meta.enableStatsForFederatedInstances) {
+			this.federatedInstanceService.fetchOrRegister(host).then(i => {
+				this.instancesRepository.increment({ id: i.id }, 'usersCount', 1);
+				if (this.meta.enableChartsForFederatedInstances) {
+					this.instanceChart.newUser(i.host);
+				}
+				this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
+			});
+		}
 
 		this.usersChart.update(user, true);
 
@@ -453,7 +492,7 @@ export class ApPersonService implements OnModuleInit {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		// URIがこのサーバーを指しているならスキップ
-		if (uri.startsWith(`${this.config.url}/`)) return;
+		if (this.utilityService.isUriLocal(uri)) return;
 
 		//#region このサーバーに既に登録されているか
 		const exist = await this.fetchPerson(uri) as MiRemoteUser | null;
@@ -461,7 +500,7 @@ export class ApPersonService implements OnModuleInit {
 		//#endregion
 
 		// eslint-disable-next-line no-param-reassign
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = await this.apResolverService.createResolver();
 
 		const object = hint ?? await resolver.resolve(uri);
 
@@ -479,7 +518,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const fields = this.analyzeAttachments(person.attachment ?? []);
 
-		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
+		const tags = extractApHashtags(person.tag).splice(0, 32).map(normalizeTag);
 
 		const [followingVisibility, followersVisibility] = await Promise.all(
 			[
@@ -494,24 +533,34 @@ export class ApPersonService implements OnModuleInit {
 						return undefined;
 					}
 					return 'private';
-				})
-			)
+				}),
+			),
 		);
 
 		const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
 
 		const url = getOneApHrefNullable(person.url);
 
-		if (url && !checkHttps(url)) {
-			throw new Error('unexpected schema of person url: ' + url);
+		if (person.id == null) {
+			throw new Error('Refusing to update person without id');
+		}
+
+		if (url != null) {
+			if (!checkHttps(url)) {
+				throw new Error('unexpected schema of person url: ' + url);
+			}
+
+			if (this.utilityService.punyHost(url) !== this.utilityService.punyHost(person.id)) {
+				throw new Error(`person url <> uri host mismatch: ${url} <> ${person.id}`);
+			}
 		}
 
 		const updates = {
 			lastFetchedAt: new Date(),
 			inbox: person.inbox,
-			sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox,
+			sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox ?? null,
 			followersUri: person.followers ? getApId(person.followers) : undefined,
-			featured: person.featured,
+			featured: person.featured ? getApId(person.featured) : undefined,
 			emojis: emojiNames,
 			name: truncate(person.name, nameLength),
 			tags,
@@ -519,7 +568,7 @@ export class ApPersonService implements OnModuleInit {
 			isCat: (person as any).isCat === true,
 			isLocked: person.manuallyApprovesFollowers,
 			movedToUri: person.movedTo ?? null,
-			alsoKnownAs: person.alsoKnownAs ?? null,
+			alsoKnownAs: person.alsoKnownAs ? toArray(person.alsoKnownAs) : null,
 			isExplorable: person.discoverable,
 			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
 		} as Partial<MiRemoteUser> & Pick<MiRemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
@@ -545,7 +594,9 @@ export class ApPersonService implements OnModuleInit {
 		if (moving) updates.movedAt = new Date();
 
 		// Update user
-		await this.usersRepository.update(exist.id, updates);
+		if (!(await this.usersRepository.update({ id: exist.id, isDeleted: false }, updates)).affected) {
+			return 'skip';
+		}
 
 		if (person.publicKey) {
 			await this.userPublickeysRepository.update({ userId: exist.id }, {
@@ -559,13 +610,14 @@ export class ApPersonService implements OnModuleInit {
 		if (person._misskey_summary) {
 			_description = truncate(person._misskey_summary, summaryLength);
 		} else if (person.summary) {
-			_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag);
+			_description = this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), { tag: person.tag });
 		}
 
 		await this.userProfilesRepository.update({ userId: exist.id }, {
 			url,
 			fields,
 			description: _description,
+			followedMessage: person._misskey_followedMessage != null ? truncate(person._misskey_followedMessage, 256) : null,
 			followingVisibility,
 			followersVisibility,
 			birthday: bday?.[0] ?? null,
@@ -580,7 +632,7 @@ export class ApPersonService implements OnModuleInit {
 		// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
 		await this.followingsRepository.update(
 			{ followerId: exist.id },
-			{ followerSharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox },
+			{ followerSharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox ?? null },
 		);
 
 		await this.updateFeatured(exist.id, resolver).catch(err => this.logger.error(err));
@@ -626,7 +678,7 @@ export class ApPersonService implements OnModuleInit {
 
 		// リモートサーバーからフェッチしてきて登録
 		// eslint-disable-next-line no-param-reassign
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = await this.apResolverService.createResolver();
 		return await this.createPerson(uri, resolver);
 	}
 
@@ -649,13 +701,13 @@ export class ApPersonService implements OnModuleInit {
 
 	@bindThis
 	public async updateFeatured(userId: MiUser['id'], resolver?: Resolver): Promise<void> {
-		const user = await this.usersRepository.findOneByOrFail({ id: userId });
+		const user = await this.usersRepository.findOneByOrFail({ id: userId, isDeleted: false });
 		if (!this.userEntityService.isRemoteUser(user)) return;
 		if (!user.featured) return;
 
 		this.logger.info(`Updating the featured: ${user.uri}`);
 
-		const _resolver = resolver ?? this.apResolverService.createResolver();
+		const _resolver = resolver ?? await this.apResolverService.createResolver();
 
 		// Resolve to (Ordered)Collection Object
 		const collection = await _resolver.resolveCollection(user.featured);
@@ -706,8 +758,8 @@ export class ApPersonService implements OnModuleInit {
 		let dst = await this.fetchPerson(src.movedToUri);
 
 		if (dst && this.userEntityService.isLocalUser(dst)) {
-			// targetがローカルユーザーだった場合データベースから引っ張ってくる
-			dst = await this.usersRepository.findOneByOrFail({ uri: src.movedToUri }) as MiLocalUser;
+			// ローカルユーザーの uri は null なので、ID で最新の移行設定を取得する
+			dst = await this.usersRepository.findOneByOrFail({ id: dst.id }) as MiLocalUser;
 		} else if (dst) {
 			if (movePreventUris.includes(src.movedToUri)) return 'skip: circular move';
 
@@ -715,7 +767,7 @@ export class ApPersonService implements OnModuleInit {
 			await this.updatePerson(src.movedToUri, undefined, undefined, [...movePreventUris, src.uri]);
 			dst = await this.fetchPerson(src.movedToUri) ?? dst;
 		} else {
-			if (src.movedToUri.startsWith(`${this.config.url}/`)) {
+			if (this.utilityService.isUriLocal(src.movedToUri)) {
 				// ローカルユーザーっぽいのにfetchPersonで見つからないということはmovedToUriが間違っている
 				return 'failed: movedTo is local but not found';
 			}
@@ -725,8 +777,9 @@ export class ApPersonService implements OnModuleInit {
 			dst = await this.resolvePerson(src.movedToUri);
 		}
 
-		if (dst.movedToUri === dst.uri) return 'skip: movedTo itself (dst)'; // ？？？
-		if (src.movedToUri !== dst.uri) return 'skip: missmatch uri'; // ？？？
+		const dstUri = this.userEntityService.getUserUri(dst);
+		if (dst.movedToUri === dstUri) return 'skip: movedTo itself (dst)'; // ？？？
+		if (src.movedToUri !== dstUri) return 'skip: missmatch uri'; // ？？？
 		if (dst.movedToUri === src.uri) return 'skip: dst.movedToUri === src.uri';
 		if (!dst.alsoKnownAs || dst.alsoKnownAs.length === 0) {
 			return 'skip: dst.alsoKnownAs is empty';

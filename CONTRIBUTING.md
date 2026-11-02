@@ -64,8 +64,28 @@ Thank you for your PR! Before creating a PR, please check the following:
 
 Thanks for your cooperation 🤗
 
+### Additional things for ActivityPub payload changes
+*This section is specific to misskey-dev implementation. Other fork or implementation may take different way. A significant difference is that non-"misskey-dev" extension is not described in the misskey-hub's document.*
+
+If PR includes changes to ActivityPub payload, please reflect it in [misskey-hub's document](https://github.com/misskey-dev/misskey-hub-next/blob/master/content/ns.md) by sending PR.
+
+The name of purporsed extension property (referred as "extended property" in later) to ActivityPub shall be prefixed by `_misskey_`. (i.e. `_misskey_quote`)
+
+The extended property in `packages/backend/src/core/activitypub/type.ts` **must** be declared as optional because ActivityPub payloads that comes from older Misskey or other implementation may not contain it.
+
+The extended property must be included in the context definition. Context is defined in `packages/backend/src/core/activitypub/misc/contexts.ts`.
+The key shall be same as the name of extended property, and the value shall be same as "short IRI".
+
+"Short IRI" is defined in misskey-hub's document, but usually takes form of `misskey:<name of extended property>`. (i.e. `misskey:_misskey_quote`)
+
+One should not add property that has defined before by other implementation, or add custom variant value to "well-known" property.
+
 ## Reviewers guide
 Be willing to comment on the good points and not just the things you want fixed 💯
+
+読んでおくといいやつ
+- https://blog.lacolaco.net/posts/1e2cf439b3c2/
+- https://konifar-zatsu.hatenadiary.jp/entry/2024/11/05/192421
 
 ### Review perspective
 - Scope
@@ -80,6 +100,22 @@ Be willing to comment on the good points and not just the things you want fixed 
 	- Does the test ensure the expected behavior?
 	- Are there any omissions or gaps?
 	- Does it check for anomalies?
+
+## Security Advisory
+### For reporter
+Thank you for your reporting!
+
+If you can also create a patch to fix the vulnerability, please create a PR on the private fork.
+
+> [!note]
+> There is a GitHub bug that prevents merging if a PR not following the develop branch of upstream, so please keep follow the develop branch.
+
+### For misskey-dev member
+修正PRがdevelopに追従されていないとマージできないので、マージできなかったら
+
+> Could you merge or rebase onto upstream develop branch?
+
+などと伝える。
 
 ## Deploy
 The `/deploy` command by issue comment can be used to deploy the contents of a PR to the preview environment.
@@ -116,7 +152,8 @@ You can improve our translations with your Crowdin account.
 Your changes in Crowdin are automatically submitted as a PR (with the title "New Crowdin translations") to the repository.
 The owner [@syuilo](https://github.com/syuilo) merges the PR into the develop branch before the next release.
 
-If your language is not listed in Crowdin, please open an issue.
+If your language is not listed in Crowdin, please open an issue. We will add it to Crowdin.
+For newly added languages, once the translation progress per language exceeds 70%, it will be officially introduced into Misskey and made available to users.
 
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
@@ -152,6 +189,14 @@ pnpm migrate
 
 After finishing the migration, you can proceed.
 
+#### Cloudflare tunnel
+Cloudflare tunnelを使うとローカルのMisskeyサーバーをインターネットに公開できます。
+HTTPSでしか動作しない機能を検証したい時や、スマホなど別のデバイスからローカルのMisskeyサーバーを検証したい時に便利です。
+
+##### Cloudflare warpと併用する際のtips
+
+> cloudflared (Cloudflare Tunnel) は region1.v2.argotunnel.com / region2.v2.argotunnel.com に QUIC/HTTP2 でアウトバウンド接続するのですが、WARP を有効化するとこのトラフィックが WARP 経由になってループ/切断します。これら 2 ホストを WARP のトンネル除外（split tunnel）に追加することで、cloudflared だけは WARP をバイパスして直接 Cloudflare エッジへ接続できるようになります。
+
 ### Start developing
 During development, it is useful to use the
 ```
@@ -160,52 +205,51 @@ pnpm dev
 command.
 
 - Server-side source files and automatically builds them if they are modified. Automatically start the server process(es).
-- Vite HMR (just the `vite` command) is available. The behavior may be different from production.
 - Service Worker is watched by esbuild.
-- The front end can be viewed by accessing `http://localhost:5173`.
-- The backend listens on the port configured with `port` in .config/default.yml.
-If you have not changed it from the default, it will be "http://localhost:3000".
-If "port" in .config/default.yml is set to something other than 3000, you need to change the proxy settings in packages/frontend/vite.config.local-dev.ts.
-
-### `MK_DEV_PREFER=backend pnpm dev`
-pnpm dev has another mode with `MK_DEV_PREFER=backend`.
-
-```
-MK_DEV_PREFER=backend pnpm dev
-```
-
-- This mode is closer to the production environment than the default mode.
-- Vite runs behind the backend (the backend will proxy Vite at /vite).
+- Vite HMR (just the `vite` command) is available. The behavior may be different from production.
+- Vite runs behind the backend (the backend will proxy Vite at /vite and /embed_vite except for websocket used for HMR).
 - You can see Misskey by accessing `http://localhost:3000` (Replace `3000` with the port configured with `port` in .config/default.yml).
-- To change the port of Vite, specify with `VITE_PORT` environment variable.
-- HMR may not work in some environments such as Windows.
 
 ## Testing
-- Test codes are located in [`/packages/backend/test`](/packages/backend/test).
-
-### Run test
-Create a config file.
+You can run non-backend tests by executing following commands:
+```sh
+pnpm --filter frontend test
+pnpm --filter misskey-js test
 ```
+
+Backend tests require manual preparation of servers. See the next section for more on this.
+
+### Backend
+There are three types of test codes for the backend:
+- Unit tests: [`/packages/backend/test/unit`](/packages/backend/test/unit)
+- Single-server E2E tests: [`/packages/backend/test/e2e`](/packages/backend/test/e2e)
+- Multiple-server E2E tests: [`/packages/backend/test-federation`](/packages/backend/test-federation)
+
+#### Running Unit Tests or Single-server E2E Tests
+1. Create a config file:
+```sh
 cp .github/misskey/test.yml .config/
 ```
-Prepare DB/Redis for testing.
-```
+
+2. Start DB and Redis servers for testing:
+```sh
 docker compose -f packages/backend/test/compose.yml up
 ```
-Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.yml`.
+Instead, you can prepare an empty (data can be erased) DB and edit `.config/test.yml` appropriately.
 
-Run all test.
+3. Run all tests:
+```sh
+pnpm --filter backend test     # unit tests
+pnpm --filter backend test:e2e # single-server E2E tests
 ```
-pnpm test
+If you want to run a specific test, run as a following command:
+```sh
+pnpm --filter backend test -- packages/backend/test/unit/activitypub.ts
+pnpm --filter backend test:e2e -- packages/backend/test/e2e/nodeinfo.ts
 ```
 
-#### Run specify test
-```
-pnpm jest -- foo.ts
-```
-
-### e2e tests
-TODO
+#### Running Multiple-server E2E Tests
+See [`/packages/backend/test-federation/README.md`](/packages/backend/test-federation/README.md).
 
 ## Environment Variable
 
@@ -222,6 +266,12 @@ Misskey uses Vue(v3) as its front-end framework.
 - **When creating a new component, please use the Composition API (with [setup sugar](https://v3.vuejs.org/api/sfc-script-setup.html) and [ref sugar](https://github.com/vuejs/rfcs/discussions/369)) instead of the Options API.**
 	- Some of the existing components are implemented in the Options API, but it is an old implementation. Refactors that migrate those components to the Composition API are also welcome.
 
+## Tabler Icons
+アイコンは、Production Build時に使用されていないものが削除されるようになっています。
+
+**アイコンを動的に設定する際には、 `ti-${someVal}` のような、アイコン名のみを動的に変化させる実装を行わないでください。**
+必ず `ti-xxx` のような完全なクラス名を含めるようにしてください。
+
 ## nirax
 niraxは、Misskeyで使用しているオリジナルのフロントエンドルーティングシステムです。
 **vue-routerから影響を多大に受けているので、まずはvue-routerについて学ぶことをお勧めします。**
@@ -237,7 +287,6 @@ niraxは、Misskeyで使用しているオリジナルのフロントエンド�
 	query?: Record<string, string>;
 	loginRequired?: boolean;
 	hash?: string;
-	globalCacheKey?: string;
 	children?: RouteDef[];
 }
 ```
@@ -440,6 +489,11 @@ describe('test', () => {
 コード上でMisskeyのドメイン固有の概念には`Mi`をprefixすることで、他のドメインの同様の概念と区別できるほか、名前の衝突を防ぐ。
 ただし、文脈上Misskeyのものを指すことが明らかであり、名前の衝突の恐れがない場合は、一時的なローカル変数に限って`Mi`を省略してもよい。
 
+### Misskey.jsの型生成
+```bash
+pnpm build-misskey-js-with-types
+```
+
 ### How to resolve conflictions occurred at pnpm-lock.yaml?
 
 Just execute `pnpm` to fix it.
@@ -529,32 +583,12 @@ enumの列挙の内容の削除は、その値をもつレコードを全て削�
 ### Migration作成方法
 packages/backendで:
 ```sh
-pnpm dlx typeorm migration:generate -d ormconfig.js -o <migration name>
+pnpm dlx typeorm migration:generate -d ormconfig.js -o --esm <migration name>
 ```
 
 - 生成後、ファイルをmigration下に移してください
 - 作成されたスクリプトは不必要な変更を含むため除去してください
-
-### JSON SchemaのobjectでanyOfを使うとき
-JSON Schemaで、objectに対してanyOfを使う場合、anyOfの中でpropertiesを定義しないこと。
-バリデーションが効かないため。（SchemaTypeもそのように作られており、objectのanyOf内のpropertiesは捨てられます）
-https://github.com/misskey-dev/misskey/pull/10082
-
-テキストhogeおよびfugaについて、片方を必須としつつ両方の指定もありうる場合:
-
-```ts
-export const paramDef = {
-	type: 'object',
-	properties: {
-		hoge: { type: 'string', minLength: 1 },
-		fuga: { type: 'string', minLength: 1 },
-	},
-	anyOf: [
-		{ required: ['hoge'] },
-		{ required: ['fuga'] },
-	],
-} as const;
-```
+- `-o` (`--outputJs`) で JS 形式、`--esm` で ESM 形式に生成する。Misskey の既存 migration はすべて ESM JS なので両方のオプションが必要
 
 ### コネクションには`markRaw`せよ
 **Vueのコンポーネントのdataオプションとして**misskey.jsのコネクションを設定するとき、必ず`markRaw`でラップしてください。インスタンスが不必要にリアクティブ化されることで、misskey.js内の処理で不具合が発生するとともに、パフォーマンス上の問題にも繋がる。なお、Composition APIを使う場合はこの限りではない(リアクティブ化はマニュアルなため)。
@@ -566,9 +600,140 @@ TypeScriptでjsonをimportすると、tscでコンパイルするときにその
 コンポーネント自身がmarginを設定するのは問題の元となることはよく知られている
 marginはそのコンポーネントを使う側が設定する
 
+### 命名規則
+
+本来それが略称であっても、通常それでひとつのワードとして用いられるものは、略称として扱わない。
+
+#### 例: IP address
+
+Good: `ipAddress` / `IpAddress`
+
+Bad: `IPAddress`
+
+#### 例: User ID
+
+Good: `userId` / `UserId`
+
+Bad: `userID` / `UserID`
+
+#### 例: XMLなHTTPのRequest
+
+Good: `xmlHttpRequest` / `XmlHttpRequest`
+
+Bad: `XMLHttpRequest` / `XMLHTTPRequest`
+
+### 関数化の基準
+
+汎用性が低く(例えばそれを関数化したとしてもその呼び出しが元の場所一か所しか存在しない)、内容も短い処理(例えば10行以下)は、かえって読みにくくなるため、関数化しない。
+
+また、関数化する場合でも、呼び出しがある特定のスコープに限られる場合は、そのスコープ内に閉じ込めた方が分かりやすく簡潔になる場合がある(ただし本来その処理に不要であっても、構造上親のスコープにある関係のない変数や引数にもアクセスできるようになるため、必ずしもそうすれば設計上綺麗になるというわけでもない。状況に応じて判断すべし)。
+
+Bad:
+
+``` ts
+function withBrankets(x) {
+	return `(${x})`;
+}
+
+function formatPercent(x) {
+	return `${x}%`;
+}
+
+function formatValue(x) {
+	return withBrankets(formatPercent(x));
+}
+
+function showData(a, b) {
+	console.log(formatValue(a));
+	console.log(formatValue(b));
+}
+```
+
+Good:
+
+``` ts
+function formatValue(x) {
+	return `(${x}%)`;
+}
+
+function showData(a, b) {
+	console.log(formatValue(a));
+	console.log(formatValue(b));
+}
+```
+
+or
+
+``` ts
+function showData(a, b) {
+	function formatValue(x) {
+		return `(${x}%)`;
+	}
+
+	console.log(formatValue(a));
+	console.log(formatValue(b));
+}
+```
+
+or
+
+``` ts
+function showData(a, b) {
+	console.log(`(${a}%)`);
+	console.log(`(${b}%)`);
+}
+```
+
 ## その他
 ### HTMLのクラス名で follow という単語は使わない
 広告ブロッカーで誤ってブロックされる
 
 ### indexというファイル名を使うな
 ESMではディレクトリインポートは廃止されているのと、ディレクトリインポートせずともファイル名が index だと何故か一部のライブラリ？でディレクトリインポートだと見做されてエラーになる
+
+## CSS Recipe
+
+### Lighten CSS vars
+
+``` css
+color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
+```
+
+### Darken CSS vars
+
+``` css
+color: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
+```
+
+### Add alpha to CSS vars
+
+``` css
+color: color(from var(--MI_THEME-accent) srgb r g b / 0.5);
+```
+
+## 考え方
+### DRYに囚われるな
+必要なのは一般化ではなく抽象化と考えます。
+盲信せず、誤った・不必要な共通化は避け、それが自然だと感じる場合は重複させる勇気を持ちましょう。
+
+### Misskeyを複雑にしない実装
+それがいくら複雑であっても、Misskey固有のコンテキストと関心が分離されている(もしくは事実上分離されていると見做すことができる)実装であれば、それはMisskeyのコードベースに対する複雑性に影響を与えないと考えます。
+
+例えるなら、VueやAiScriptといったMisskeyが使用しているライブラリの内部実装がいくら複雑だったとしても、「それを使用しているからMisskeyの実装は複雑である」ということにはならないのと同じです。
+
+Misskeyのドメイン知識から関心が分離されているということは、Misskeyの実装について考える時にそれらの内部実装を考慮する必要が無く、認知負荷を増やさないからです。
+
+また重要な点は、その実装が、Misskeyリポジトリの外部にあるか・内部にあるかということや、Misskeyがメンテナンスするものか・第三者がメンテナンスするものかといったことは複雑性を考える上ではほとんど無視できるという点です。
+
+もちろんその実装がMisskeyリポジトリにあり、Misskeyがメンテナンスしなければならないものは、保守のコストはかかります。
+しかし、Misskeyの本質的な設計・実装という観点で見たときは、その実装は実質的に外部ライブラリのように振る舞います。
+換言すれば「たまたまMisskeyの開発者と同じ人たちがメンテナンスしているし、たまたまMisskeyのリポジトリ内に置いてあるだけの外部ライブラリ」です。
+
+そのため、実装をなるべくMisskeyのドメイン知識から独立したものにすれば、Misskeyのコードベースの複雑性を上げることなく機能実装を行うことができ、お得であると言えます。
+もちろんそれにこだわって、些細な実装でもそのように分離してしまうとかえって認知負荷が増えたり、実装量が増えてメリットをデメリットが上回る場合もあるので、ケースバイケースではあります。
+
+### AIに誤解されにくいコードを書こう
+
+AI(LLM)によるレビューやコーディング補助時にハルシネーションのもとになるので、AIが誤解・混乱しそうなコードは避けるかコメントを残そう。
+
+AIにとって分かりやすいコードは、結果的に人間にとっても分かりやすいコードに繋がります。

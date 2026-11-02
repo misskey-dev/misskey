@@ -3,20 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { URLSearchParams } from 'node:url';
-import * as nodemailer from 'nodemailer';
+import { createTransport } from 'nodemailer';
+import juice from 'juice';
+import sanitizeHtml from 'sanitize-html';
 import { Inject, Injectable } from '@nestjs/common';
-import { validate as validateEmail } from 'deep-email-validator';
-import { MetaService } from '@/core/MetaService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import type { UserProfilesRepository } from '@/models/_.js';
+import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
-import { QueueService } from '@/core/QueueService.js';
+import { escapeHtml } from '@/misc/escape-html.js';
 
 @Injectable()
 export class EmailService {
@@ -26,53 +25,47 @@ export class EmailService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
-		private metaService: MetaService,
 		private loggerService: LoggerService,
 		private utilityService: UtilityService,
 		private httpRequestService: HttpRequestService,
-		private queueService: QueueService,
 	) {
 		this.logger = this.loggerService.getLogger('email');
 	}
 
 	@bindThis
 	public async sendEmail(to: string, subject: string, html: string, text: string) {
-		const meta = await this.metaService.fetch(true);
-
-		if (!meta.enableEmail) return;
+		if (!this.meta.enableEmail) return;
 
 		const iconUrl = `${this.config.url}/static-assets/mi-white.png`;
 		const emailSettingUrl = `${this.config.url}/settings/email`;
 
-		const enableAuth = meta.smtpUser != null && meta.smtpUser !== '';
+		const enableAuth = this.meta.smtpUser != null && this.meta.smtpUser !== '';
 
-		const transporter = nodemailer.createTransport({
-			host: meta.smtpHost,
-			port: meta.smtpPort,
-			secure: meta.smtpSecure,
+		const sanitizedHtml = sanitizeHtml(html);
+
+		const transporter = createTransport({
+			host: this.meta.smtpHost ?? undefined,
+			port: this.meta.smtpPort ?? undefined,
+			secure: this.meta.smtpSecure,
 			ignoreTLS: !enableAuth,
 			proxy: this.config.proxySmtp,
 			auth: enableAuth ? {
-				user: meta.smtpUser,
-				pass: meta.smtpPass,
+				user: this.meta.smtpUser!,
+				pass: this.meta.smtpPass ?? undefined,
 			} : undefined,
-		} as any);
+		});
 
-		try {
-			// TODO: htmlサニタイズ
-			const info = await transporter.sendMail({
-				from: meta.email!,
-				to: to,
-				subject: subject,
-				text: text,
-				html: `<!doctype html>
+		const htmlContent = `<!doctype html>
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>${ subject }</title>
+		<title>${ escapeHtml(subject) }</title>
 		<style>
 			html {
 				background: #eee;
@@ -133,21 +126,34 @@ export class EmailService {
 	<body>
 		<main>
 			<header>
-				<img src="${ meta.logoImageUrl ?? meta.iconUrl ?? iconUrl }"/>
+				<img src="${ escapeHtml(this.meta.logoImageUrl ?? this.meta.iconUrl ?? iconUrl) }"/>
 			</header>
 			<article>
-				<h1>${ subject }</h1>
-				<div>${ html }</div>
+				<h1>${ escapeHtml(subject) }</h1>
+				<div>${ sanitizedHtml }</div>
 			</article>
 			<footer>
-				<a href="${ emailSettingUrl }">${ 'Email setting' }</a>
+				<a href="${ escapeHtml(emailSettingUrl) }">${ 'Email setting' }</a>
 			</footer>
 		</main>
 		<nav>
-			<a href="${ this.config.url }">${ this.config.host }</a>
+			<a href="${ escapeHtml(this.config.url) }">${ escapeHtml(this.config.host) }</a>
 		</nav>
 	</body>
-</html>`,
+</html>`;
+
+		const inlinedHtml = juice(htmlContent);
+
+		try {
+			const info = await transporter.sendMail({
+				from: this.meta.name ? {
+					name: this.meta.name,
+					address: this.meta.email!,
+				} : this.meta.email!,
+				to: to,
+				subject: subject,
+				text: text,
+				html: inlinedHtml,
 			});
 
 			this.logger.info(`Message sent: ${info.messageId}`);
@@ -162,7 +168,12 @@ export class EmailService {
 		available: boolean;
 		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | 'banned' | 'network' | 'blacklist';
 	}> {
-		const meta = await this.metaService.fetch();
+		if (!this.utilityService.validateEmailFormat(emailAddress)) {
+			return {
+				available: false,
+				reason: 'format',
+			};
+		}
 
 		const exist = await this.userProfilesRepository.countBy({
 			emailVerified: true,
@@ -181,12 +192,13 @@ export class EmailService {
 			reason?: string | null,
 		} = { valid: true, reason: null };
 
-		if (meta.enableActiveEmailValidation) {
-			if (meta.enableVerifymailApi && meta.verifymailAuthKey != null) {
-				validated = await this.verifyMail(emailAddress, meta.verifymailAuthKey);
-			} else if (meta.enableTruemailApi && meta.truemailInstance && meta.truemailAuthKey != null) {
-				validated = await this.trueMail(meta.truemailInstance, emailAddress, meta.truemailAuthKey);
+		if (this.meta.enableActiveEmailValidation) {
+			if (this.meta.enableVerifymailApi && this.meta.verifymailAuthKey != null) {
+				validated = await this.verifyMail(emailAddress, this.meta.verifymailAuthKey);
+			} else if (this.meta.enableTruemailApi && this.meta.truemailInstance && this.meta.truemailAuthKey != null) {
+				validated = await this.trueMail(this.meta.truemailInstance, emailAddress, this.meta.truemailAuthKey);
 			} else {
+				const { validate: validateEmail } = await import('deep-email-validator');
 				validated = await validateEmail({
 					email: emailAddress,
 					validateRegex: true,
@@ -215,7 +227,7 @@ export class EmailService {
 		}
 
 		const emailDomain: string = emailAddress.split('@')[1];
-		const isBanned = this.utilityService.isBlockedHost(meta.bannedEmailDomains, emailDomain);
+		const isBanned = this.utilityService.isBlockedHost(this.meta.bannedEmailDomains, emailDomain);
 
 		if (isBanned) {
 			return {
@@ -312,6 +324,7 @@ export class EmailService {
 					Accept: 'application/json',
 					Authorization: truemailAuthKey,
 				},
+				isLocalAddressAllowed: true,
 			});
 
 			const json = (await res.json()) as {
@@ -355,7 +368,7 @@ export class EmailService {
 				valid: true,
 				reason: null,
 			};
-		} catch (error) {
+		} catch (_) {
 			return {
 				valid: false,
 				reason: 'network',

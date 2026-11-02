@@ -4,17 +4,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="900">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="_gaps">
 			<MkInfo>{{ i18n.ts._announcement.shouldNotBeUsedToPresentPermanentInfo }}</MkInfo>
-			<MkInfo v-if="announcements.length > 5" warn>{{ i18n.ts._announcement.tooManyActiveAnnouncementDescription }}</MkInfo>
+			<MkInfo v-if="announcementsStatus === 'active' && announcements.length > 5" warn>{{ i18n.ts._announcement.tooManyActiveAnnouncementDescription }}</MkInfo>
 
-			<MkSelect v-model="announcementsStatus">
+			<MkSelect v-model="announcementsStatus" :items="announcementsStatusDef">
 				<template #label>{{ i18n.ts.filter }}</template>
-				<option value="active">{{ i18n.ts.active }}</option>
-				<option value="archived">{{ i18n.ts.archived }}</option>
 			</MkSelect>
 
 			<MkLoading v-if="loading"/>
@@ -24,13 +21,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ announcement.title }}</template>
 					<template #icon>
 						<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
-						<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
-						<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--error);"></i>
-						<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
+						<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i>
+						<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i>
+						<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--MI_THEME-success);"></i>
 					</template>
-					<template #caption>{{ announcement.text }}</template>
+					<template #caption>
+						<span :class="$style.announcementText">{{ announcement.text }}</span>
+					</template>
+					<template #suffix>
+						<span v-if="announcement.autoArchiveAt" :class="$style.autoArchiveAt">
+							<i class="ti ti-calendar-time"></i> {{ i18n.ts._announcement.autoArchiveAt }}: <MkTime :key="announcement.autoArchiveAt" :time="announcement.autoArchiveAt" mode="absolute"/>
+						</span>
+					</template>
+					<template #footer>
+						<div class="_buttons">
+							<MkButton rounded primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+							<MkButton v-if="announcement.id != null && announcement.isActive" rounded @click="archive(announcement)"><i class="ti ti-check"></i> {{ i18n.ts._announcement.end }} ({{ i18n.ts.archive }})</MkButton>
+							<MkButton v-if="announcement.id != null && !announcement.isActive" rounded @click="unarchive(announcement)"><i class="ti ti-restore"></i> {{ i18n.ts.unarchive }}</MkButton>
+							<MkButton v-if="announcement.id != null" rounded danger @click="del(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+						</div>
+					</template>
 
-					<div class="_gaps_m">
+					<div class="_gaps">
 						<MkInput v-model="announcement.title">
 							<template #label>{{ i18n.ts.title }}</template>
 						</MkInput>
@@ -40,18 +52,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInput v-model="announcement.imageUrl" type="url">
 							<template #label>{{ i18n.ts.imageUrl }}</template>
 						</MkInput>
-						<MkRadios v-model="announcement.icon">
+						<MkInput v-model="announcement.autoArchiveAt" type="datetime-local">
+							<template #label>{{ i18n.ts._announcement.autoArchiveAt }}</template>
+							<template #caption>{{ i18n.ts._announcement.autoArchiveAtDescription }}</template>
+						</MkInput>
+						<MkRadios
+							v-model="announcement.icon"
+							:options="[
+								{ value: 'info', icon: 'ti ti-info-circle' },
+								{ value: 'warning', icon: 'ti ti-alert-triangle', iconStyle: 'color: var(--MI_THEME-warn);' },
+								{ value: 'error', icon: 'ti ti-circle-x', iconStyle: 'color: var(--MI_THEME-error);' },
+								{ value: 'success', icon: 'ti ti-check', iconStyle: 'color: var(--MI_THEME-success);' },
+							]"
+						>
 							<template #label>{{ i18n.ts.icon }}</template>
-							<option value="info"><i class="ti ti-info-circle"></i></option>
-							<option value="warning"><i class="ti ti-alert-triangle" style="color: var(--warn);"></i></option>
-							<option value="error"><i class="ti ti-circle-x" style="color: var(--error);"></i></option>
-							<option value="success"><i class="ti ti-check" style="color: var(--success);"></i></option>
 						</MkRadios>
-						<MkRadios v-model="announcement.display">
+						<MkRadios
+							v-model="announcement.display"
+							:options="[
+								{ value: 'normal', label: i18n.ts.normal },
+								{ value: 'banner', label: i18n.ts.banner },
+								{ value: 'dialog', label: i18n.ts.dialog },
+							]"
+						>
 							<template #label>{{ i18n.ts.display }}</template>
-							<option value="normal">{{ i18n.ts.normal }}</option>
-							<option value="banner">{{ i18n.ts.banner }}</option>
-							<option value="dialog">{{ i18n.ts.dialog }}</option>
 						</MkRadios>
 						<MkInfo v-if="announcement.display === 'dialog'" warn>{{ i18n.ts._announcement.dialogAnnouncementUxWarn }}</MkInfo>
 						<MkSwitch v-model="announcement.forExistingUsers" :helpText="i18n.ts._announcement.forExistingUsersDescription">
@@ -64,27 +88,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 							{{ i18n.ts._announcement.needConfirmationToRead }}
 						</MkSwitch>
 						<p v-if="announcement.reads">{{ i18n.tsx.nUsersRead({ n: announcement.reads }) }}</p>
-						<div class="buttons _buttons">
-							<MkButton class="button" inline primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-							<MkButton v-if="announcement.id != null && announcement.isActive" class="button" inline @click="archive(announcement)"><i class="ti ti-check"></i> {{ i18n.ts._announcement.end }} ({{ i18n.ts.archive }})</MkButton>
-							<MkButton v-if="announcement.id != null && !announcement.isActive" class="button" inline @click="unarchive(announcement)"><i class="ti ti-restore"></i> {{ i18n.ts.unarchive }}</MkButton>
-							<MkButton v-if="announcement.id != null" class="button" inline danger @click="del(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-						</div>
 					</div>
 				</MkFolder>
 				<MkLoading v-if="loadingMore"/>
-				<MkButton class="button" @click="more()">
+				<MkButton @click="more()">
 					<i class="ti ti-reload"></i>{{ i18n.ts.more }}
 				</MkButton>
 			</template>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
-import XHeader from './_header_.vue';
+import * as Misskey from 'misskey-js';
+import type { ApiWithDialogCustomErrors } from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -92,32 +111,76 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import { genId } from '@/utility/id.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { formatDateTimeString } from '@/utility/format-time-string.js';
 
-const announcementsStatus = ref<'active' | 'archived'>('active');
+const {
+	model: announcementsStatus,
+	def: announcementsStatusDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts.active, value: 'active' },
+		{ label: i18n.ts.archived, value: 'archived' },
+	],
+	initialValue: 'active',
+});
 
 const loading = ref(true);
 const loadingMore = ref(false);
 
-const announcements = ref<any[]>([]);
+const createAnnouncementErrors: ApiWithDialogCustomErrors = {
+	'2a892bd5-487d-46a2-a5fe-3d85ad51defe': {
+		title: i18n.ts._announcement.autoArchiveAt,
+		text: i18n.ts._announcement.autoArchiveAtMustBeInFuture,
+	},
+};
+
+type EditableAnnouncement = Omit<Misskey.entities.AdminAnnouncementsListResponse[number], 'id' | 'createdAt' | 'updatedAt' | 'reads' | 'isActive' | 'autoArchiveAt'> & {
+	id: string | null;
+	_id?: string;
+	isActive?: Misskey.entities.AdminAnnouncementsListResponse[number]['isActive'];
+	reads?: Misskey.entities.AdminAnnouncementsListResponse[number]['reads'];
+	autoArchiveAt: string;
+	originalAutoArchiveAt: Misskey.entities.AdminAnnouncementsListResponse[number]['autoArchiveAt'];
+};
+
+const announcements = ref<EditableAnnouncement[]>([]);
+
+function toEditableAnnouncement(announcement: Misskey.entities.AdminAnnouncementsListResponse[number]): EditableAnnouncement {
+	return {
+		...announcement,
+		autoArchiveAt: announcement.autoArchiveAt ? formatDateTimeString(new Date(announcement.autoArchiveAt), 'yyyy-MM-ddTHH:mm') : '',
+		originalAutoArchiveAt: announcement.autoArchiveAt,
+	};
+}
+
+function toAutoArchiveAt(value: string, originalValue: Misskey.entities.AdminAnnouncementsListResponse[number]['autoArchiveAt']): number | null {
+	if (originalValue != null && value === formatDateTimeString(new Date(originalValue), 'yyyy-MM-ddTHH:mm')) {
+		return new Date(originalValue).getTime();
+	}
+
+	return value === '' ? null : new Date(value).getTime();
+}
 
 watch(announcementsStatus, (to) => {
 	loading.value = true;
 	misskeyApi('admin/announcements/list', {
 		status: to,
 	}).then(announcementResponse => {
-		announcements.value = announcementResponse;
+		announcements.value = announcementResponse.map(toEditableAnnouncement);
 		loading.value = false;
 	});
 }, { immediate: true });
 
 function add() {
 	announcements.value.unshift({
-		_id: Math.random().toString(36),
+		_id: genId(),
 		id: null,
 		title: 'New announcement',
 		text: '',
@@ -127,42 +190,75 @@ function add() {
 		forExistingUsers: false,
 		silence: false,
 		needConfirmationToRead: false,
+		autoArchiveAt: '',
+		originalAutoArchiveAt: null,
+		userId: null,
 	});
 }
 
-function del(announcement) {
-	os.confirm({
+async function del(announcement: (typeof announcements)['value'][number]) {
+	if (announcement.id == null) return;
+	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.tsx.deleteAreYouSure({ x: announcement.title }),
-	}).then(({ canceled }) => {
-		if (canceled) return;
-		announcements.value = announcements.value.filter(x => x !== announcement);
-		misskeyApi('admin/announcements/delete', announcement);
+	});
+	if (canceled) return;
+	announcements.value = announcements.value.filter(x => x !== announcement);
+	misskeyApi('admin/announcements/delete', {
+		id: announcement.id,
 	});
 }
 
-async function archive(announcement) {
+async function archive(announcement: (typeof announcements)['value'][number]) {
+	if (announcement.id == null) return;
+	const { _id, id, autoArchiveAt, originalAutoArchiveAt, ...data } = announcement; // APIに不要な項目を消す
 	await os.apiWithDialog('admin/announcements/update', {
-		...announcement,
+		...data,
+		id,
 		isActive: false,
+		autoArchiveAt: toAutoArchiveAt(autoArchiveAt, originalAutoArchiveAt),
 	});
 	refresh();
 }
 
-async function unarchive(announcement) {
+async function unarchive(announcement: (typeof announcements)['value'][number]) {
+	if (announcement.id == null) return;
+	const { _id, id, autoArchiveAt, originalAutoArchiveAt, ...data } = announcement; // APIに不要な項目を消す
+	const autoArchiveAtMs = toAutoArchiveAt(autoArchiveAt, originalAutoArchiveAt);
 	await os.apiWithDialog('admin/announcements/update', {
-		...announcement,
+		...data,
+		id,
 		isActive: true,
+		autoArchiveAt: autoArchiveAtMs != null && autoArchiveAtMs <= Date.now() ? null : autoArchiveAtMs,
 	});
 	refresh();
 }
 
-async function save(announcement) {
-	if (announcement.id == null) {
-		await os.apiWithDialog('admin/announcements/create', announcement);
+async function save(announcement: (typeof announcements)['value'][number]) {
+	const { _id, id, isActive, reads, autoArchiveAt, originalAutoArchiveAt, ...data } = announcement; // APIに不要な項目を消す
+	const autoArchiveAtMs = toAutoArchiveAt(autoArchiveAt, originalAutoArchiveAt);
+	if (id == null) {
+		if (autoArchiveAtMs != null && (Number.isNaN(autoArchiveAtMs) || autoArchiveAtMs <= Date.now())) {
+			await os.alert({
+				type: 'error',
+				title: i18n.ts._announcement.autoArchiveAt,
+				text: i18n.ts._announcement.autoArchiveAtMustBeInFuture,
+			});
+			return;
+		}
+
+		await os.apiWithDialog('admin/announcements/create', {
+			...data,
+			autoArchiveAt: autoArchiveAtMs,
+		}, undefined, createAnnouncementErrors);
 		refresh();
 	} else {
-		os.apiWithDialog('admin/announcements/update', announcement);
+		await os.apiWithDialog('admin/announcements/update', {
+			...data,
+			id,
+			isActive,
+			autoArchiveAt: autoArchiveAtMs,
+		});
 	}
 }
 
@@ -170,9 +266,9 @@ function more() {
 	loadingMore.value = true;
 	misskeyApi('admin/announcements/list', {
 		status: announcementsStatus.value,
-		untilId: announcements.value.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id
+		untilId: announcements.value.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id!,
 	}).then(announcementResponse => {
-		announcements.value = announcements.value.concat(announcementResponse);
+		announcements.value = announcements.value.concat(announcementResponse.map(toEditableAnnouncement));
 		loadingMore.value = false;
 	});
 }
@@ -182,7 +278,7 @@ function refresh() {
 	misskeyApi('admin/announcements/list', {
 		status: announcementsStatus.value,
 	}).then(announcementResponse => {
-		announcements.value = announcementResponse;
+		announcements.value = announcementResponse.map(toEditableAnnouncement);
 		loading.value = false;
 	});
 }
@@ -197,8 +293,21 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.announcements,
 	icon: 'ti ti-speakerphone',
 }));
 </script>
+
+<style lang="scss" module>
+.announcementText {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.autoArchiveAt {
+	white-space: nowrap;
+}
+</style>

@@ -6,9 +6,16 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import * as fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+import { describe, beforeAll, beforeEach, test, vi } from 'vitest';
 import { Test } from '@nestjs/testing';
-import { jest } from '@jest/globals';
 
+import { MockResolver } from '../misc/mock-resolver.js';
+import type { IActor, IApDocument, ICollection, IObject, IPost } from '@/core/activitypub/type.js';
+import type { MiRemoteUser } from '@/models/User.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
 import { ApImageService } from '@/core/activitypub/models/ApImageService.js';
 import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
@@ -19,15 +26,14 @@ import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import type { IActor, IApDocument, ICollection, IObject, IPost } from '@/core/activitypub/type.js';
 import { MiMeta, MiNote, UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DownloadService } from '@/core/DownloadService.js';
-import { MetaService } from '@/core/MetaService.js';
-import type { MiRemoteUser } from '@/models/User.js';
 import { genAidx } from '@/misc/id/aidx.js';
-import { MockResolver } from '../misc/mock-resolver.js';
+
+const _filename = fileURLToPath(import.meta.url);
+const _dirname = dirname(_filename);
 
 const host = 'https://host1.test';
 
@@ -107,24 +113,34 @@ describe('ActivityPub', () => {
 		sensitiveWords: [] as string[],
 		prohibitedWords: [] as string[],
 	} as MiMeta;
-	let meta = metaInitial;
+	const meta = { ...metaInitial };
+
+	function updateMeta(newMeta: Partial<MiMeta>): void {
+		for (const key in meta) {
+			delete (meta as any)[key];
+		}
+		Object.assign(meta, newMeta);
+	}
 
 	beforeAll(async () => {
 		const app = await Test.createTestingModule({
 			imports: [GlobalModule, CoreModule],
 		})
 			.overrideProvider(DownloadService).useValue({
-				async downloadUrl(): Promise<{ filename: string }> {
+				async downloadUrl(url: string, path: string): Promise<{ filename: string }> {
+					if (url.endsWith('.png')) {
+						fs.copyFileSync(
+							_dirname + '/../resources/hw.png',
+							path,
+						);
+					}
 					return {
 						filename: 'dummy.tmp',
 					};
 				},
 			})
-			.overrideProvider(MetaService).useValue({
-				async fetch(): Promise<MiMeta> {
-					return meta;
-				},
-			}).compile();
+			.overrideProvider(DI.meta).useFactory({ factory: () => meta })
+			.compile();
 
 		await app.init();
 		app.enableShutdownHooks();
@@ -140,7 +156,7 @@ describe('ActivityPub', () => {
 
 		// Prevent ApPersonService from fetching instance, as it causes Jest import-after-test error
 		const federatedInstanceService = app.get<FederatedInstanceService>(FederatedInstanceService);
-		jest.spyOn(federatedInstanceService, 'fetch').mockImplementation(() => new Promise(() => { }));
+		vi.spyOn(federatedInstanceService, 'fetch').mockImplementation(() => new Promise(() => { }));
 	});
 
 	beforeEach(() => {
@@ -173,7 +189,7 @@ describe('ActivityPub', () => {
 			resolver.register(actor.id, actor);
 			resolver.register(post.id, post);
 
-			const note = await noteService.createNote(post.id, resolver, true);
+			const note = await noteService.createNote(post.id, undefined, resolver, true);
 
 			assert.deepStrictEqual(note?.uri, post.id);
 			assert.deepStrictEqual(note.visibility, 'public');
@@ -206,6 +222,51 @@ describe('ActivityPub', () => {
 			const user = await personService.createPerson(actor.id, resolver);
 
 			assert.strictEqual(user.name, null);
+		});
+	});
+
+	describe('alsoKnownAs field', () => {
+		test('Handle alsoKnownAs as an array', async () => {
+			const actor = {
+				...createRandomActor(),
+				alsoKnownAs: ['https://example.com/users/alice', 'https://example.com/users/alice2'],
+			};
+
+			resolver.register(actor.id, actor);
+
+			const user = await personService.createPerson(actor.id, resolver);
+
+			assert.deepStrictEqual(user.alsoKnownAs, actor.alsoKnownAs);
+		});
+
+		test('Handle alsoKnownAs as a string', async () => {
+			const actor = {
+				...createRandomActor(),
+				alsoKnownAs: 'https://example.com/users/alice',
+			};
+
+			resolver.register(actor.id, actor);
+
+			const user = await personService.createPerson(actor.id, resolver);
+
+			assert.deepStrictEqual(user.alsoKnownAs, [actor.alsoKnownAs]);
+		});
+
+		test('Update person with alsoKnownAs as a string', async () => {
+			const actor = createRandomActor();
+			resolver.register(actor.id, actor);
+			const user = await personService.createPerson(actor.id, resolver);
+
+			const updatedActor = {
+				...actor,
+				alsoKnownAs: 'https://example.com/users/alice',
+			};
+			resolver.register(actor.id, updatedActor);
+
+			await personService.updatePerson(actor.id, resolver, updatedActor);
+
+			const updatedUser = await personService.fetchPerson(actor.id);
+			assert.deepStrictEqual(updatedUser?.alsoKnownAs, [updatedActor.alsoKnownAs]);
 		});
 	});
 
@@ -333,12 +394,34 @@ describe('ActivityPub', () => {
 			resolver.register(actor.featured, featured);
 			resolver.register(firstNote.id, firstNote);
 
-			const note = await noteService.createNote(firstNote.id as string, resolver);
+			const note = await noteService.createNote(firstNote.id as string, undefined, resolver);
 			assert.strictEqual(note?.uri, firstNote.id);
 		});
 	});
 
 	describe('Images', () => {
+		test('Render image document with dimensions', () => {
+			const rendered = rendererService.renderDocument({
+				id: genAidx(Date.now()),
+				type: 'image/png',
+				webpublicType: null,
+				url: 'https://example.test/files/image.png',
+				webpublicUrl: null,
+				comment: null,
+				isSensitive: false,
+				properties: { width: 3600, height: 1890 },
+				uri: null,
+				userHost: null,
+				isLink: false,
+				webpublicAccessKey: null,
+			} as MiDriveFile);
+
+			assert.strictEqual(rendered.type, 'Document');
+			assert.strictEqual(rendered.mediaType, 'image/png');
+			assert.strictEqual(rendered.width, 3600);
+			assert.strictEqual(rendered.height, 1890);
+		});
+
 		test('Create images', async () => {
 			const imageObject: IApDocument = {
 				type: 'Document',
@@ -367,7 +450,7 @@ describe('ActivityPub', () => {
 		});
 
 		test('cacheRemoteFiles=false disables caching', async () => {
-			meta = { ...metaInitial, cacheRemoteFiles: false };
+			updateMeta({ ...metaInitial, cacheRemoteFiles: false });
 
 			const imageObject: IApDocument = {
 				type: 'Document',
@@ -396,7 +479,7 @@ describe('ActivityPub', () => {
 		});
 
 		test('cacheRemoteSensitiveFiles=false only affects sensitive files', async () => {
-			meta = { ...metaInitial, cacheRemoteSensitiveFiles: false };
+			updateMeta({ ...metaInitial, cacheRemoteSensitiveFiles: false });
 
 			const imageObject: IApDocument = {
 				type: 'Document',
@@ -437,7 +520,7 @@ describe('ActivityPub', () => {
 		});
 	});
 
-	describe('JSON-LD', () =>{
+	describe('JSON-LD', () => {
 		test('Compaction', async () => {
 			const jsonLd = jsonLdService.use();
 

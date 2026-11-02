@@ -4,10 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { AnnouncementsRepository, AnnouncementReadsRepository } from '@/models/_.js';
-import type { MiAnnouncement } from '@/models/Announcement.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
@@ -16,7 +13,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireRolePolicy: 'canManageAvatarDecorations',
+	requiredRolePolicy: 'canManageAvatarDecorations',
 	kind: 'read:admin:avatar-decorations',
 
 	res: {
@@ -63,6 +60,10 @@ export const meta = {
 						format: 'id',
 					},
 				},
+				category: {
+					type: 'string',
+					optional: true, nullable: true,
+				},
 			},
 		},
 	},
@@ -74,6 +75,8 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
 		userId: { type: 'string', format: 'misskey:id', nullable: true },
 	},
 	required: [],
@@ -96,6 +99,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				description: avatarDecoration.description,
 				url: avatarDecoration.url,
 				roleIdsThatCanBeUsedThisDecoration: avatarDecoration.roleIdsThatCanBeUsedThisDecoration,
+				category: avatarDecoration.category,
 			}));
 		});
 	}

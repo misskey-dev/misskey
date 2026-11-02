@@ -10,7 +10,7 @@ import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { readyRef } from '@/boot/ready.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import type { MeiliSearch } from 'meilisearch';
+import type { Meilisearch } from 'meilisearch';
 
 @Injectable()
 export class HealthServerService {
@@ -27,11 +27,14 @@ export class HealthServerService {
 		@Inject(DI.redisForTimelines)
 		private redisForTimelines: Redis.Redis,
 
+		@Inject(DI.redisForReactions)
+		private redisForReactions: Redis.Redis,
+
 		@Inject(DI.db)
 		private db: DataSource,
 
 		@Inject(DI.meilisearch)
-		private meilisearch: MeiliSearch | null,
+		private meilisearch: Meilisearch | null,
 	) {}
 
 	@bindThis
@@ -43,6 +46,7 @@ export class HealthServerService {
 				this.redisForPub.ping(),
 				this.redisForSub.ping(),
 				this.redisForTimelines.ping(),
+				this.redisForReactions.ping(),
 				this.db.query('SELECT 1'),
 				...(this.meilisearch ? [this.meilisearch.health()] : []),
 			]).then(() => 200, () => 503));

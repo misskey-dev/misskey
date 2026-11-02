@@ -13,6 +13,7 @@ import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
@@ -35,6 +36,7 @@ export class ExportUserListsProcessorService {
 		private utilityService: UtilityService,
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
+		private notificationService: NotificationService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('export-user-lists');
 	}
@@ -65,10 +67,12 @@ export class ExportUserListsProcessorService {
 				const users = await this.usersRepository.findBy({
 					id: In(memberships.map(j => j.userId)),
 				});
+				const usersWithReplies = new Set(memberships.filter(m => m.withReplies).map(m => m.userId));
 
 				for (const u of users) {
 					const acct = this.utilityService.getFullApAccount(u.username, u.host);
-					const content = `${list.name},${acct}`;
+					// 3rd column and later will be key=value pairs
+					const content = `${list.name},${acct},withReplies=${usersWithReplies.has(u.id)}`;
 					await new Promise<void>((res, rej) => {
 						stream.write(content + '\n', err => {
 							if (err) {
@@ -89,6 +93,11 @@ export class ExportUserListsProcessorService {
 			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true, ext: 'csv' });
 
 			this.logger.succ(`Exported to: ${driveFile.id}`);
+
+			this.notificationService.createNotification(user.id, 'exportCompleted', {
+				exportedEntity: 'userList',
+				fileId: driveFile.id,
+			});
 		} finally {
 			cleanup();
 		}

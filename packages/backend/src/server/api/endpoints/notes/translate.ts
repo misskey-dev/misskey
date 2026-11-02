@@ -4,13 +4,14 @@
  */
 
 import { URLSearchParams } from 'node:url';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { MiMeta } from '@/models/_.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -59,9 +60,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
+
 		private noteEntityService: NoteEntityService,
 		private getterService: GetterService,
-		private metaService: MetaService,
 		private httpRequestService: HttpRequestService,
 		private roleService: RoleService,
 	) {
@@ -80,13 +83,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.cannotTranslateInvisibleNote);
 			}
 
-			if (note.text == null) {
+			// makeNotesHiddenBefore などで中身が隠されるノート
+			const packedNote = await this.noteEntityService.pack(note, me);
+			if (packedNote.isHidden) {
+				throw new ApiError(meta.errors.cannotTranslateInvisibleNote);
+			}
+
+			let text = note.text ?? '';
+			if (note.cw != null) {
+				text = `${note.cw}\n-----\n${text}`;
+			}
+
+			if (text.trim() === '') {
 				return;
 			}
 
-			const instance = await this.metaService.fetch();
-
-			if (instance.deeplAuthKey == null) {
+			if (this.serverSettings.deeplAuthKey == null) {
 				throw new ApiError(meta.errors.unavailable);
 			}
 
@@ -94,15 +106,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (targetLang.includes('-')) targetLang = targetLang.split('-')[0];
 
 			const params = new URLSearchParams();
-			params.append('auth_key', instance.deeplAuthKey);
-			params.append('text', note.text);
+			params.append('text', text);
 			params.append('target_lang', targetLang);
 
-			const endpoint = instance.deeplIsPro ? 'https://api.deepl.com/v2/translate' : 'https://api-free.deepl.com/v2/translate';
+			const endpoint = this.serverSettings.deeplIsPro ? 'https://api.deepl.com/v2/translate' : 'https://api-free.deepl.com/v2/translate';
 
 			const res = await this.httpRequestService.send(endpoint, {
 				method: 'POST',
 				headers: {
+					'Authorization': `DeepL-Auth-Key ${this.serverSettings.deeplAuthKey}`,
 					'Content-Type': 'application/x-www-form-urlencoded',
 					Accept: 'application/json, */*',
 				},

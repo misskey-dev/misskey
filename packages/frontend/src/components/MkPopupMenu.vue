@@ -4,23 +4,48 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :manualShowing="manualShowing" :zPriority="'high'" :src="src" :transparentBg="true" :returnFocusTo="returnFocusTo" @click="click" @close="onModalClose" @closed="onModalClosed">
-	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :asDrawer="type === 'drawer'" :returnFocusTo="returnFocusTo" :class="{ [$style.drawer]: type === 'drawer' }" @close="onMenuClose" @hide="hide"/>
+<MkModal
+	ref="modal"
+	v-slot="{ type, maxHeight }"
+	:manualShowing="manualShowing"
+	:zPriority="'high'"
+	:anchorElement="anchorElement"
+	:transparentBg="true"
+	:returnFocusTo="returnFocusTo"
+	@click="click"
+	@close="onModalClose"
+	@closed="onModalClosed"
+>
+	<MkMenu
+		:items="items"
+		:align="align"
+		:width="width"
+		:max-height="maxHeight"
+		:asDrawer="type === 'drawer'"
+		:returnFocusTo="returnFocusTo"
+		:debugDisablePredictionCone="debugDisablePredictionCone"
+		:debugShowPredictionCone="debugShowPredictionCone"
+		:class="{ [$style.drawer]: type === 'drawer' }"
+		@close="onMenuClose"
+		@hide="hide"
+	/>
 </MkModal>
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import MkModal from './MkModal.vue';
 import MkMenu from './MkMenu.vue';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 
 defineProps<{
 	items: MenuItem[];
 	align?: 'center' | string;
 	width?: number;
-	src?: any;
+	anchorElement?: HTMLElement | null;
 	returnFocusTo?: HTMLElement | null;
+	debugDisablePredictionCone?: boolean;
+	debugShowPredictionCone?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -28,7 +53,7 @@ const emit = defineEmits<{
 	(ev: 'closing'): void;
 }>();
 
-const modal = shallowRef<InstanceType<typeof MkModal>>();
+const modal = useTemplateRef('modal');
 const manualShowing = ref(true);
 const hiding = ref(false);
 

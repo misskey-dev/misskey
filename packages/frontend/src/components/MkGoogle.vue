@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -19,6 +19,10 @@ const props = defineProps<{
 }>();
 
 const query = ref(props.q);
+
+watch(() => props.q, (v) => {
+	query.value = v;
+});
 
 const search = () => {
 	const sp = new URLSearchParams();
@@ -39,7 +43,7 @@ const search = () => {
 	width: 100%;
 	height: 40px;
 	font-size: 16px;
-	border: solid 1px var(--divider);
+	border: solid 1px var(--MI_THEME-divider);
 	border-radius: 4px 0 0 4px;
 	-webkit-appearance: textfield;
 }
@@ -48,7 +52,7 @@ const search = () => {
 	flex-shrink: 0;
 	margin: 0;
 	padding: 0 16px;
-	border: solid 1px var(--divider);
+	border: solid 1px var(--MI_THEME-divider);
 	border-left: none;
 	border-radius: 0 4px 4px 0;
 

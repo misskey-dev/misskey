@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="600" :marginMin="16" :marginMax="32">
+<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 	<div class="_gaps_m">
 		<div :class="$style.userMInfoRoot">
 			<MkAvatar :class="$style.userMInfoAvatar" :user="user" indicator link preview/>
@@ -35,20 +35,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkObjectView tall :value="user"></MkObjectView>
 		</FormSection>
 	</div>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import { acct } from '@/filters/user.js';
+import { acct } from '@@/js/user.js';
 import { i18n } from '@/i18n.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormSection from '@/components/form/section.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 
 const props = defineProps<{
-	user: Misskey.entities.User;
+	user: Misskey.entities.UserDetailed & { isModerator?: boolean; };
 }>();
 
 const moderator = computed(() => props.user.isModerator ?? false);
@@ -113,18 +113,18 @@ const suspended = computed(() => props.user.isSuspended ?? false);
 	}
 
 	> .suspended {
-		color: var(--error);
-		border-color: var(--error);
+		color: var(--MI_THEME-error);
+		border-color: var(--MI_THEME-error);
 	}
 
 	> .silenced {
-		color: var(--warn);
-		border-color: var(--warn);
+		color: var(--MI_THEME-warn);
+		border-color: var(--MI_THEME-warn);
 	}
 
 	> .moderator {
-		color: var(--success);
-		border-color: var(--success);
+		color: var(--MI_THEME-success);
+		border-color: var(--MI_THEME-success);
 	}
 }
 </style>

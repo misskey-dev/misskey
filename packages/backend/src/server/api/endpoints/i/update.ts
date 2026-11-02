@@ -7,22 +7,22 @@ import RE2 from 're2';
 import * as mfm from 'mfm-js';
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import { JSDOM } from 'jsdom';
+import * as htmlParser from 'node-html-parser';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import * as Acct from '@/misc/acct.js';
-import type { UsersRepository, DriveFilesRepository, UserProfilesRepository, PagesRepository } from '@/models/_.js';
+import type { UsersRepository, DriveFilesRepository, MiMeta, UserProfilesRepository, PagesRepository } from '@/models/_.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
-import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/User.js';
+import { birthdaySchema, descriptionSchema, followedMessageSchema, locationSchema, nameSchema } from '@/models/User.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
-import { notificationTypes } from '@/types.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { normalizeTag } from '@/misc/normalize-tag.js';
 import { langmap } from '@/misc/langmap.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { HashtagService } from '@/core/HashtagService.js';
 import { DI } from '@/di-symbols.js';
 import { RolePolicies, RoleService } from '@/core/RoleService.js';
@@ -31,7 +31,6 @@ import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { Config } from '@/config.js';
-import { safeForSql } from '@/misc/safe-for-sql.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { notificationRecieveConfig } from '@/models/json-schema/user.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
@@ -72,6 +71,18 @@ export const meta = {
 			message: 'The file specified as a banner is not an image.',
 			code: 'BANNER_NOT_AN_IMAGE',
 			id: '75aedb19-2afd-4e6d-87fc-67941256fa60',
+		},
+
+		avatarIsSensitive: {
+			message: 'The file specified as an avatar is marked as sensitive.',
+			code: 'AVATAR_IS_SENSITIVE',
+			id: '71bb5e53-4742-4609-b465-36081e131208',
+		},
+
+		bannerIsSensitive: {
+			message: 'The file specified as a banner is marked as sensitive.',
+			code: 'BANNER_IS_SENSITIVE',
+			id: 'e148b34c-9f33-4300-93e0-7817008fb366',
 		},
 
 		noSuchPage: {
@@ -115,6 +126,13 @@ export const meta = {
 			code: 'RESTRICTED_BY_ROLE',
 			id: '8feff0ba-5ab5-585b-31f4-4df816663fad',
 		},
+
+		nameContainsProhibitedWords: {
+			message: 'Your new name contains prohibited words.',
+			code: 'YOUR_NAME_CONTAINS_PROHIBITED_WORDS',
+			id: '0b3f9f6a-2f4d-4b1f-9fb4-49d3a2fd7191',
+			httpStatusCode: 422,
+		},
 	},
 
 	res: {
@@ -129,11 +147,15 @@ const muteWords = { type: 'array', items: { oneOf: [
 	{ type: 'string' },
 ] } } as const;
 
+/** 上限は30日程度にしておく */
+const FOLLOW_APPROVAL_MAX_SECONDS = 30 * 24 * 60 * 60;
+
 export const paramDef = {
 	type: 'object',
 	properties: {
 		name: { ...nameSchema, nullable: true },
 		description: { ...descriptionSchema, nullable: true },
+		followedMessage: { ...followedMessageSchema, nullable: true },
 		location: { ...locationSchema, nullable: true },
 		birthday: { ...birthdaySchema, nullable: true },
 		lang: { type: 'string', enum: [null, ...Object.keys(langmap)] as string[], nullable: true },
@@ -169,8 +191,13 @@ export const paramDef = {
 		publicReactions: { type: 'boolean' },
 		carefulBot: { type: 'boolean' },
 		autoAcceptFollowed: { type: 'boolean' },
+		followApprovalLocalSeconds: { type: 'integer', nullable: true, minimum: 0, maximum: FOLLOW_APPROVAL_MAX_SECONDS },
+		followApprovalRemoteSeconds: { type: 'integer', nullable: true, minimum: 0, maximum: FOLLOW_APPROVAL_MAX_SECONDS },
 		noCrawle: { type: 'boolean' },
 		preventAiLearning: { type: 'boolean' },
+		requireSigninToViewContents: { type: 'boolean' },
+		makeNotesFollowersOnlyBefore: { type: 'integer', nullable: true },
+		makeNotesHiddenBefore: { type: 'integer', nullable: true },
 		isBot: { type: 'boolean' },
 		isCat: { type: 'boolean' },
 		injectFeaturedNote: { type: 'boolean' },
@@ -179,6 +206,7 @@ export const paramDef = {
 		autoSensitive: { type: 'boolean' },
 		followingVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
 		followersVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
+		chatScope: { type: 'string', enum: ['everyone', 'followers', 'following', 'mutual', 'none'] },
 		pinnedPageId: { type: 'string', format: 'misskey:id', nullable: true },
 		mutedWords: muteWords,
 		hardMutedWords: muteWords,
@@ -197,9 +225,12 @@ export const paramDef = {
 				quote: notificationRecieveConfig,
 				reaction: notificationRecieveConfig,
 				pollEnded: notificationRecieveConfig,
+				scheduledNotePosted: notificationRecieveConfig,
+				scheduledNotePostFailed: notificationRecieveConfig,
 				receiveFollowRequest: notificationRecieveConfig,
 				followRequestAccepted: notificationRecieveConfig,
 				roleAssigned: notificationRecieveConfig,
+				chatRoomInvitationReceived: notificationRecieveConfig,
 				achievementEarned: notificationRecieveConfig,
 				app: notificationRecieveConfig,
 				test: notificationRecieveConfig,
@@ -222,6 +253,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.meta)
+		private instanceMeta: MiMeta,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -247,6 +281,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private cacheService: CacheService,
 		private httpRequestService: HttpRequestService,
 		private avatarDecorationService: AvatarDecorationService,
+		private utilityService: UtilityService,
 	) {
 		super(meta, paramDef, async (ps, _user, token) => {
 			const user = await this.usersRepository.findOneByOrFail({ id: _user.id }) as MiLocalUser;
@@ -267,15 +302,29 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 			if (ps.description !== undefined) profileUpdates.description = ps.description;
+			if (ps.followedMessage !== undefined) profileUpdates.followedMessage = ps.followedMessage;
 			if (ps.lang !== undefined) profileUpdates.lang = ps.lang;
 			if (ps.location !== undefined) profileUpdates.location = ps.location;
 			if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 			if (ps.followingVisibility !== undefined) profileUpdates.followingVisibility = ps.followingVisibility;
 			if (ps.followersVisibility !== undefined) profileUpdates.followersVisibility = ps.followersVisibility;
+			if (ps.chatScope !== undefined) updates.chatScope = ps.chatScope;
 
 			function checkMuteWordCount(mutedWords: (string[] | string)[], limit: number) {
-				// TODO: ちゃんと数える
-				const length = JSON.stringify(mutedWords).length;
+				const count = (arr: (string[] | string)[]) => {
+					let length = 0;
+					for (const item of arr) {
+						if (typeof item === 'string') {
+							length += item.length;
+						} else if (Array.isArray(item)) {
+							for (const subItem of item) {
+								length += subItem.length;
+							}
+						}
+					}
+					return length;
+				};
+				const length = count(mutedWords);
 				if (length > limit) {
 					throw new ApiError(meta.errors.tooManyMutedWords);
 				}
@@ -290,7 +339,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 					try {
 						new RE2(regexp[1], regexp[2]);
-					} catch (err) {
+					} catch (_) {
 						throw new ApiError(meta.errors.invalidRegexp);
 					}
 				}
@@ -319,8 +368,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (typeof ps.isBot === 'boolean') updates.isBot = ps.isBot;
 			if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
 			if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
+			if (ps.followApprovalLocalSeconds !== undefined) profileUpdates.followApprovalLocalSeconds = ps.followApprovalLocalSeconds;
+			if (ps.followApprovalRemoteSeconds !== undefined) profileUpdates.followApprovalRemoteSeconds = ps.followApprovalRemoteSeconds;
 			if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
 			if (typeof ps.preventAiLearning === 'boolean') profileUpdates.preventAiLearning = ps.preventAiLearning;
+			if (typeof ps.requireSigninToViewContents === 'boolean') updates.requireSigninToViewContents = ps.requireSigninToViewContents;
+			if ((typeof ps.makeNotesFollowersOnlyBefore === 'number') || (ps.makeNotesFollowersOnlyBefore === null)) updates.makeNotesFollowersOnlyBefore = ps.makeNotesFollowersOnlyBefore;
+			if ((typeof ps.makeNotesHiddenBefore === 'number') || (ps.makeNotesHiddenBefore === null)) updates.makeNotesHiddenBefore = ps.makeNotesHiddenBefore;
 			if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
 			if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 			if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
@@ -340,6 +394,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (avatar == null || avatar.userId !== user.id) throw new ApiError(meta.errors.noSuchAvatar);
 				if (!avatar.type.startsWith('image/')) throw new ApiError(meta.errors.avatarNotAnImage);
+				if (avatar.isSensitive) throw new ApiError(meta.errors.avatarIsSensitive);
 
 				updates.avatarId = avatar.id;
 				updates.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
@@ -358,6 +413,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (banner == null || banner.userId !== user.id) throw new ApiError(meta.errors.noSuchBanner);
 				if (!banner.type.startsWith('image/')) throw new ApiError(meta.errors.bannerNotAnImage);
+				if (banner.isSensitive) throw new ApiError(meta.errors.bannerIsSensitive);
 
 				updates.bannerId = banner.id;
 				updates.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
@@ -446,8 +502,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const newName = updates.name === undefined ? user.name : updates.name;
 			const newDescription = profileUpdates.description === undefined ? profile.description : profileUpdates.description;
 			const newFields = profileUpdates.fields === undefined ? profile.fields : profileUpdates.fields;
+			const newFollowedMessage = profileUpdates.followedMessage === undefined ? profile.followedMessage : profileUpdates.followedMessage;
 
 			if (newName != null) {
+				let hasProhibitedWords = false;
+				if (!await this.roleService.isModerator(user)) {
+					hasProhibitedWords = this.utilityService.isKeyWordIncluded(newName, this.instanceMeta.prohibitedWordsForNameOfUser);
+				}
+				if (hasProhibitedWords) {
+					throw new ApiError(meta.errors.nameContainsProhibitedWords);
+				}
+
 				const tokens = mfm.parseSimple(newName);
 				emojis = emojis.concat(extractCustomEmojisFromMfm(tokens));
 			}
@@ -455,7 +520,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (newDescription != null) {
 				const tokens = mfm.parse(newDescription);
 				emojis = emojis.concat(extractCustomEmojisFromMfm(tokens));
-				tags = extractHashtags(tokens).map(tag => normalizeForSearch(tag)).splice(0, 32);
+				tags = extractHashtags(tokens).map(tag => normalizeTag(tag)).splice(0, 32);
 			}
 
 			for (const field of newFields) {
@@ -465,6 +530,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					...extractCustomEmojisFromMfm(nameTokens),
 					...extractCustomEmojisFromMfm(valueTokens),
 				]);
+			}
+
+			if (newFollowedMessage != null) {
+				const tokens = mfm.parse(newFollowedMessage);
+				emojis = emojis.concat(extractCustomEmojisFromMfm(tokens));
 			}
 
 			updates.emojis = emojis;
@@ -496,9 +566,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// Publish meUpdated event
 			this.globalEventService.publishMainStream(user.id, 'meUpdated', iObj);
 
-			// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
+			// 鍵垢を解除したとき、期間による承認条件も考慮してフォローリクエストを承認
 			if (user.isLocked && ps.isLocked === false) {
-				this.userFollowingService.acceptAllFollowRequests(user);
+				await this.userFollowingService.acceptAllFollowRequests(user);
 			}
 
 			// フォロワーにUpdateを配信
@@ -514,33 +584,31 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	}
 
 	private async verifyLink(url: string, user: MiLocalUser) {
-		if (!safeForSql(url)) return;
+		if (!URL.canParse(url)) return;
 
 		try {
 			const html = await this.httpRequestService.getHtml(url);
 
-			const { window } = new JSDOM(html);
-			const doc = window.document;
+			const doc = htmlParser.parse(html);
 
 			const myLink = `${this.config.url}/@${user.username}`;
 
 			const aEls = Array.from(doc.getElementsByTagName('a'));
 			const linkEls = Array.from(doc.getElementsByTagName('link'));
 
-			const includesMyLink = aEls.some(a => a.href === myLink);
-			const includesRelMeLinks = [...aEls, ...linkEls].some(link => link.rel === 'me' && link.href === myLink);
+			const includesMyLink = aEls.some(a => a.attributes.href === myLink);
+			const includesRelMeLinks = [...aEls, ...linkEls].some(link => link.attributes.rel?.split(/\s+/).includes('me') && link.attributes.href === myLink);
 
 			if (includesMyLink || includesRelMeLinks) {
 				await this.userProfilesRepository.createQueryBuilder('profile').update()
 					.where('userId = :userId', { userId: user.id })
 					.set({
-						verifiedLinks: () => `array_append("verifiedLinks", '${url}')`, // ここでSQLインジェクションされそうなのでとりあえず safeForSql で弾いている
+						verifiedLinks: () => 'array_append("verifiedLinks", :url)',
 					})
+					.setParameter('url', url)
 					.execute();
 			}
-
-			window.close();
-		} catch (err) {
+		} catch (_) {
 			// なにもしない
 		}
 	}

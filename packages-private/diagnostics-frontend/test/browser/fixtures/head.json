@@ -1,0 +1,742 @@
+{
+	"label": "head",
+	"timestamp": "2026-07-18T00:00:00.000Z",
+	"url": "http://127.0.0.1:61812",
+	"scenario": "fresh browser signup, first timeline note, after the note becomes visible",
+	"sampleCount": 3,
+	"aggregation": "median",
+	"summary": {
+		"label": "head",
+		"timestamp": "2026-07-18T00:00:00.000Z",
+		"url": "http://127.0.0.1:61812",
+		"scenario": "fresh browser signup, first timeline note, after the note becomes visible",
+		"diagnostics": {
+			"pageErrorCount": 0,
+			"console": {
+				"log": 5,
+				"warning": 3,
+				"error": 0,
+				"info": 2
+			}
+		},
+		"durationMs": 22032,
+		"network": {
+			"requestCount": 20,
+			"webSocketConnectionCount": 1,
+			"webSocketSentBytes": 2203,
+			"webSocketReceivedBytes": 9914,
+			"finishedRequestCount": 18,
+			"failedRequestCount": 0,
+			"cachedRequestCount": 0,
+			"serviceWorkerRequestCount": 0,
+			"totalEncodedBytes": 1123632,
+			"totalDecodedBodyBytes": 3734424,
+			"sameOriginEncodedBytes": 1101600,
+			"thirdPartyEncodedBytes": 22032,
+			"byResourceType": {
+				"Script": {
+					"requests": 10,
+					"encodedBytes": 991440,
+					"decodedBodyBytes": 3304800
+				},
+				"Stylesheet": {
+					"requests": 2,
+					"encodedBytes": 88128,
+					"decodedBodyBytes": 330480
+				},
+				"Fetch": {
+					"requests": 6,
+					"encodedBytes": 44064,
+					"decodedBodyBytes": 99144
+				}
+			},
+			"largestRequests": [
+				{
+					"url": "http://127.0.0.1:61812/vite/a.js",
+					"method": "GET",
+					"resourceType": "Script",
+					"status": 200,
+					"encodedBytes": 300000,
+					"decodedBodyBytes": 900000
+				}
+			],
+			"failedRequests": []
+		},
+		"performance": {
+			"cdpMetrics": {
+				"Nodes": 5000,
+				"JSEventListeners": 400,
+				"LayoutCount": 30
+			},
+			"runtimeHeap": {
+				"usedSize": 33048000,
+				"totalSize": 55080000
+			},
+			"tabMemory": {
+				"totalBytes": 99144000
+			},
+			"webVitals": {
+				"firstPaintMs": 400,
+				"firstContentfulPaintMs": 450,
+				"domContentLoadedEventEndMs": 800,
+				"loadEventEndMs": 1200,
+				"longTaskCount": 3,
+				"longTaskDurationMs": 300,
+				"maxLongTaskDurationMs": 150,
+				"resourceEntryCount": 18,
+				"domElements": 2500
+			}
+		},
+		"heapSnapshot": {
+			"categories": {
+				"total": 1101600,
+				"code": 2203200,
+				"strings": 3304800,
+				"jsArrays": 4406400,
+				"typedArrays": 5508000,
+				"systemObjects": 6609600,
+				"otherJsObjects": 7711200,
+				"otherNonJsObjects": 8812800
+			},
+			"nodeCounts": {
+				"total": 100,
+				"code": 200,
+				"strings": 300,
+				"jsArrays": 400,
+				"typedArrays": 500,
+				"systemObjects": 600,
+				"otherJsObjects": 700,
+				"otherNonJsObjects": 800
+			},
+			"breakdowns": {
+				"code": {
+					"code: alpha": 1321920,
+					"Other": 881280
+				},
+				"strings": {
+					"strings: alpha": 1982880,
+					"Other": 1321920
+				},
+				"jsArrays": {
+					"jsArrays: alpha": 2643840,
+					"Other": 1762560
+				},
+				"typedArrays": {
+					"typedArrays: alpha": 3304800,
+					"Other": 2203200
+				},
+				"systemObjects": {
+					"systemObjects: alpha": 3965760,
+					"Other": 2643840
+				},
+				"otherJsObjects": {
+					"otherJsObjects: alpha": 4626720,
+					"Other": 3084480
+				},
+				"otherNonJsObjects": {
+					"otherNonJsObjects: alpha": 5287680,
+					"Other": 3525120
+				}
+			}
+		}
+	},
+	"samples": [
+		{
+			"label": "head",
+			"round": 1,
+			"timestamp": "2026-07-18T00:00:00.000Z",
+			"url": "http://127.0.0.1:61812",
+			"scenario": "fresh browser signup, first timeline note, after the note becomes visible",
+			"diagnostics": {
+				"pageErrorCount": 0,
+				"console": {
+					"log": 5,
+					"warning": 2,
+					"error": 0,
+					"info": 2
+				}
+			},
+			"durationMs": 21816,
+			"network": {
+				"requestCount": 19,
+				"webSocketConnectionCount": 1,
+				"webSocketSentBytes": 2182,
+				"webSocketReceivedBytes": 9817,
+				"finishedRequestCount": 18,
+				"failedRequestCount": 0,
+				"cachedRequestCount": 0,
+				"serviceWorkerRequestCount": 0,
+				"totalEncodedBytes": 1112616,
+				"totalDecodedBodyBytes": 3697812,
+				"sameOriginEncodedBytes": 1090800,
+				"thirdPartyEncodedBytes": 21816,
+				"byResourceType": {
+					"Script": {
+						"requests": 10,
+						"encodedBytes": 981720,
+						"decodedBodyBytes": 3272400
+					},
+					"Stylesheet": {
+						"requests": 2,
+						"encodedBytes": 87264,
+						"decodedBodyBytes": 327240
+					},
+					"Fetch": {
+						"requests": 6,
+						"encodedBytes": 43632,
+						"decodedBodyBytes": 98172
+					}
+				},
+				"largestRequests": [
+					{
+						"url": "http://127.0.0.1:61812/vite/a.js",
+						"method": "GET",
+						"resourceType": "Script",
+						"status": 200,
+						"encodedBytes": 300000,
+						"decodedBodyBytes": 900000
+					}
+				],
+				"failedRequests": []
+			},
+			"networkRequests": [
+				{
+					"requestId": "1-http://127.0.0.1:61812/vite/a.js",
+					"url": "http://127.0.0.1:61812/vite/a.js",
+					"method": "GET",
+					"resourceType": "Script",
+					"startedAt": 1,
+					"hasRequestBody": false,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200
+				},
+				{
+					"requestId": "1-http://127.0.0.1:61812/vite/b.js",
+					"url": "http://127.0.0.1:61812/vite/b.js",
+					"method": "GET",
+					"resourceType": "Script",
+					"startedAt": 1,
+					"hasRequestBody": false,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200
+				},
+				{
+					"requestId": "1-http://127.0.0.1:61812/vite/new-chunk.js",
+					"url": "http://127.0.0.1:61812/vite/new-chunk.js",
+					"method": "POST",
+					"resourceType": "Fetch",
+					"startedAt": 1,
+					"hasRequestBody": true,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200,
+					"requestBody": "{\"i\":1}"
+				}
+			],
+			"performance": {
+				"cdpMetrics": {
+					"Nodes": 5000,
+					"JSEventListeners": 400,
+					"LayoutCount": 30
+				},
+				"runtimeHeap": {
+					"usedSize": 32724000,
+					"totalSize": 54540000
+				},
+				"tabMemory": {
+					"totalBytes": 98172000
+				},
+				"webVitals": {
+					"firstPaintMs": 400,
+					"firstContentfulPaintMs": 450,
+					"domContentLoadedEventEndMs": 800,
+					"loadEventEndMs": 1200,
+					"longTaskCount": 3,
+					"longTaskDurationMs": 300,
+					"maxLongTaskDurationMs": 150,
+					"resourceEntryCount": 18,
+					"domElements": 2500
+				}
+			},
+			"heapSnapshot": {
+				"categories": {
+					"total": 1090800,
+					"code": 2181600,
+					"strings": 3272400,
+					"jsArrays": 4363200,
+					"typedArrays": 5454000,
+					"systemObjects": 6544800,
+					"otherJsObjects": 7635600,
+					"otherNonJsObjects": 8726400
+				},
+				"nodeCounts": {
+					"total": 100,
+					"code": 200,
+					"strings": 300,
+					"jsArrays": 400,
+					"typedArrays": 500,
+					"systemObjects": 600,
+					"otherJsObjects": 700,
+					"otherNonJsObjects": 800
+				},
+				"breakdowns": {
+					"code": {
+						"code: alpha": 1308960,
+						"Other": 872640
+					},
+					"strings": {
+						"strings: alpha": 1963440,
+						"Other": 1308960
+					},
+					"jsArrays": {
+						"jsArrays: alpha": 2617920,
+						"Other": 1745280
+					},
+					"typedArrays": {
+						"typedArrays: alpha": 3272400,
+						"Other": 2181600
+					},
+					"systemObjects": {
+						"systemObjects: alpha": 3926880,
+						"Other": 2617920
+					},
+					"otherJsObjects": {
+						"otherJsObjects: alpha": 4581360,
+						"Other": 3054240
+					},
+					"otherNonJsObjects": {
+						"otherNonJsObjects: alpha": 5235840,
+						"Other": 3490560
+					}
+				}
+			}
+		},
+		{
+			"label": "head",
+			"round": 2,
+			"timestamp": "2026-07-18T00:00:00.000Z",
+			"url": "http://127.0.0.1:61812",
+			"scenario": "fresh browser signup, first timeline note, after the note becomes visible",
+			"diagnostics": {
+				"pageErrorCount": 0,
+				"console": {
+					"log": 5,
+					"warning": 3,
+					"error": 0,
+					"info": 2
+				}
+			},
+			"durationMs": 22032,
+			"network": {
+				"requestCount": 20,
+				"webSocketConnectionCount": 1,
+				"webSocketSentBytes": 2203,
+				"webSocketReceivedBytes": 9914,
+				"finishedRequestCount": 18,
+				"failedRequestCount": 0,
+				"cachedRequestCount": 0,
+				"serviceWorkerRequestCount": 0,
+				"totalEncodedBytes": 1123632,
+				"totalDecodedBodyBytes": 3734424,
+				"sameOriginEncodedBytes": 1101600,
+				"thirdPartyEncodedBytes": 22032,
+				"byResourceType": {
+					"Script": {
+						"requests": 10,
+						"encodedBytes": 991440,
+						"decodedBodyBytes": 3304800
+					},
+					"Stylesheet": {
+						"requests": 2,
+						"encodedBytes": 88128,
+						"decodedBodyBytes": 330480
+					},
+					"Fetch": {
+						"requests": 6,
+						"encodedBytes": 44064,
+						"decodedBodyBytes": 99144
+					}
+				},
+				"largestRequests": [
+					{
+						"url": "http://127.0.0.1:61812/vite/a.js",
+						"method": "GET",
+						"resourceType": "Script",
+						"status": 200,
+						"encodedBytes": 300000,
+						"decodedBodyBytes": 900000
+					}
+				],
+				"failedRequests": []
+			},
+			"networkRequests": [
+				{
+					"requestId": "2-http://127.0.0.1:61812/vite/a.js",
+					"url": "http://127.0.0.1:61812/vite/a.js",
+					"method": "GET",
+					"resourceType": "Script",
+					"startedAt": 1,
+					"hasRequestBody": false,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200
+				},
+				{
+					"requestId": "2-http://127.0.0.1:61812/vite/b.js",
+					"url": "http://127.0.0.1:61812/vite/b.js",
+					"method": "GET",
+					"resourceType": "Script",
+					"startedAt": 1,
+					"hasRequestBody": false,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200
+				},
+				{
+					"requestId": "2-http://127.0.0.1:61812/vite/new-chunk.js",
+					"url": "http://127.0.0.1:61812/vite/new-chunk.js",
+					"method": "POST",
+					"resourceType": "Fetch",
+					"startedAt": 1,
+					"hasRequestBody": true,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200,
+					"requestBody": "{\"i\":2}"
+				}
+			],
+			"performance": {
+				"cdpMetrics": {
+					"Nodes": 5000,
+					"JSEventListeners": 400,
+					"LayoutCount": 30
+				},
+				"runtimeHeap": {
+					"usedSize": 33048000,
+					"totalSize": 55080000
+				},
+				"tabMemory": {
+					"totalBytes": 99144000
+				},
+				"webVitals": {
+					"firstPaintMs": 400,
+					"firstContentfulPaintMs": 450,
+					"domContentLoadedEventEndMs": 800,
+					"loadEventEndMs": 1200,
+					"longTaskCount": 3,
+					"longTaskDurationMs": 300,
+					"maxLongTaskDurationMs": 150,
+					"resourceEntryCount": 18,
+					"domElements": 2500
+				}
+			},
+			"heapSnapshot": {
+				"categories": {
+					"total": 1101600,
+					"code": 2203200,
+					"strings": 3304800,
+					"jsArrays": 4406400,
+					"typedArrays": 5508000,
+					"systemObjects": 6609600,
+					"otherJsObjects": 7711200,
+					"otherNonJsObjects": 8812800
+				},
+				"nodeCounts": {
+					"total": 100,
+					"code": 200,
+					"strings": 300,
+					"jsArrays": 400,
+					"typedArrays": 500,
+					"systemObjects": 600,
+					"otherJsObjects": 700,
+					"otherNonJsObjects": 800
+				},
+				"breakdowns": {
+					"code": {
+						"code: alpha": 1321920,
+						"Other": 881280
+					},
+					"strings": {
+						"strings: alpha": 1982880,
+						"Other": 1321920
+					},
+					"jsArrays": {
+						"jsArrays: alpha": 2643840,
+						"Other": 1762560
+					},
+					"typedArrays": {
+						"typedArrays: alpha": 3304800,
+						"Other": 2203200
+					},
+					"systemObjects": {
+						"systemObjects: alpha": 3965760,
+						"Other": 2643840
+					},
+					"otherJsObjects": {
+						"otherJsObjects: alpha": 4626720,
+						"Other": 3084480
+					},
+					"otherNonJsObjects": {
+						"otherNonJsObjects: alpha": 5287680,
+						"Other": 3525120
+					}
+				}
+			}
+		},
+		{
+			"label": "head",
+			"round": 3,
+			"timestamp": "2026-07-18T00:00:00.000Z",
+			"url": "http://127.0.0.1:61812",
+			"scenario": "fresh browser signup, first timeline note, after the note becomes visible",
+			"diagnostics": {
+				"pageErrorCount": 0,
+				"console": {
+					"log": 5,
+					"warning": 4,
+					"error": 0,
+					"info": 2
+				}
+			},
+			"durationMs": 22248,
+			"network": {
+				"requestCount": 21,
+				"webSocketConnectionCount": 1,
+				"webSocketSentBytes": 2225,
+				"webSocketReceivedBytes": 10012,
+				"finishedRequestCount": 18,
+				"failedRequestCount": 0,
+				"cachedRequestCount": 0,
+				"serviceWorkerRequestCount": 0,
+				"totalEncodedBytes": 1134648,
+				"totalDecodedBodyBytes": 3771036,
+				"sameOriginEncodedBytes": 1112400,
+				"thirdPartyEncodedBytes": 22248,
+				"byResourceType": {
+					"Script": {
+						"requests": 10,
+						"encodedBytes": 1001160,
+						"decodedBodyBytes": 3337200
+					},
+					"Stylesheet": {
+						"requests": 2,
+						"encodedBytes": 88992,
+						"decodedBodyBytes": 333720
+					},
+					"Fetch": {
+						"requests": 6,
+						"encodedBytes": 44496,
+						"decodedBodyBytes": 100116
+					}
+				},
+				"largestRequests": [
+					{
+						"url": "http://127.0.0.1:61812/vite/a.js",
+						"method": "GET",
+						"resourceType": "Script",
+						"status": 200,
+						"encodedBytes": 300000,
+						"decodedBodyBytes": 900000
+					}
+				],
+				"failedRequests": []
+			},
+			"networkRequests": [
+				{
+					"requestId": "3-http://127.0.0.1:61812/vite/a.js",
+					"url": "http://127.0.0.1:61812/vite/a.js",
+					"method": "GET",
+					"resourceType": "Script",
+					"startedAt": 1,
+					"hasRequestBody": false,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200
+				},
+				{
+					"requestId": "3-http://127.0.0.1:61812/vite/b.js",
+					"url": "http://127.0.0.1:61812/vite/b.js",
+					"method": "GET",
+					"resourceType": "Script",
+					"startedAt": 1,
+					"hasRequestBody": false,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200
+				},
+				{
+					"requestId": "3-http://127.0.0.1:61812/vite/new-chunk.js",
+					"url": "http://127.0.0.1:61812/vite/new-chunk.js",
+					"method": "POST",
+					"resourceType": "Fetch",
+					"startedAt": 1,
+					"hasRequestBody": true,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200,
+					"requestBody": "{\"i\":3}"
+				}
+			],
+			"performance": {
+				"cdpMetrics": {
+					"Nodes": 5000,
+					"JSEventListeners": 400,
+					"LayoutCount": 30
+				},
+				"runtimeHeap": {
+					"usedSize": 33372000,
+					"totalSize": 55620000
+				},
+				"tabMemory": {
+					"totalBytes": 100116000
+				},
+				"webVitals": {
+					"firstPaintMs": 400,
+					"firstContentfulPaintMs": 450,
+					"domContentLoadedEventEndMs": 800,
+					"loadEventEndMs": 1200,
+					"longTaskCount": 3,
+					"longTaskDurationMs": 300,
+					"maxLongTaskDurationMs": 150,
+					"resourceEntryCount": 18,
+					"domElements": 2500
+				}
+			},
+			"heapSnapshot": {
+				"categories": {
+					"total": 1112400,
+					"code": 2224800,
+					"strings": 3337200,
+					"jsArrays": 4449600,
+					"typedArrays": 5562000,
+					"systemObjects": 6674400,
+					"otherJsObjects": 7786800,
+					"otherNonJsObjects": 8899200
+				},
+				"nodeCounts": {
+					"total": 100,
+					"code": 200,
+					"strings": 300,
+					"jsArrays": 400,
+					"typedArrays": 500,
+					"systemObjects": 600,
+					"otherJsObjects": 700,
+					"otherNonJsObjects": 800
+				},
+				"breakdowns": {
+					"code": {
+						"code: alpha": 1334880,
+						"Other": 889920
+					},
+					"strings": {
+						"strings: alpha": 2002320,
+						"Other": 1334880
+					},
+					"jsArrays": {
+						"jsArrays: alpha": 2669760,
+						"Other": 1779840
+					},
+					"typedArrays": {
+						"typedArrays: alpha": 3337200,
+						"Other": 2224800
+					},
+					"systemObjects": {
+						"systemObjects: alpha": 4004640,
+						"Other": 2669760
+					},
+					"otherJsObjects": {
+						"otherJsObjects: alpha": 4672080,
+						"Other": 3114720
+					},
+					"otherNonJsObjects": {
+						"otherNonJsObjects: alpha": 5339520,
+						"Other": 3559680
+					}
+				}
+			}
+		}
+	]
+}

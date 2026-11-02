@@ -5,11 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import { IsNull } from 'typeorm';
+import { IsNull, LessThanOrEqual } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository, MiRegistrationTicket } from '@/models/_.js';
+import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository, MiRegistrationTicket, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import { MetaService } from '@/core/MetaService.js';
 import { CaptchaService } from '@/core/CaptchaService.js';
 import { IdService } from '@/core/IdService.js';
 import { SignupService } from '@/core/SignupService.js';
@@ -20,13 +19,19 @@ import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { SigninService } from './SigninService.js';
+import type { FindOptionsWhere } from 'typeorm';
 import type { FastifyRequest, FastifyReply } from 'fastify';
+
+const invitationCodeMailTimeoutMs = 1000 * 60 * 30;
 
 @Injectable()
 export class SignupApiService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -45,7 +50,6 @@ export class SignupApiService {
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,
-		private metaService: MetaService,
 		private captchaService: CaptchaService,
 		private signupService: SignupService,
 		private signinService: SigninService,
@@ -66,37 +70,42 @@ export class SignupApiService {
 				'g-recaptcha-response'?: string;
 				'turnstile-response'?: string;
 				'm-captcha-response'?: string;
+				'testcaptcha-response'?: string;
 			}
 		}>,
 		reply: FastifyReply,
 	) {
 		const body = request.body;
 
-		const instance = await this.metaService.fetch(true);
-
 		// Verify *Captcha
 		// ただしテスト時はこの機構は障害となるため無効にする
 		if (process.env.NODE_ENV !== 'test') {
-			if (instance.enableHcaptcha && instance.hcaptchaSecretKey) {
-				await this.captchaService.verifyHcaptcha(instance.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
+			if (this.meta.enableHcaptcha && this.meta.hcaptchaSecretKey) {
+				await this.captchaService.verifyHcaptcha(this.meta.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
 					throw new FastifyReplyError(400, err);
 				});
 			}
 
-			if (instance.enableMcaptcha && instance.mcaptchaSecretKey && instance.mcaptchaSitekey && instance.mcaptchaInstanceUrl) {
-				await this.captchaService.verifyMcaptcha(instance.mcaptchaSecretKey, instance.mcaptchaSitekey, instance.mcaptchaInstanceUrl, body['m-captcha-response']).catch(err => {
+			if (this.meta.enableMcaptcha && this.meta.mcaptchaSecretKey && this.meta.mcaptchaSitekey && this.meta.mcaptchaInstanceUrl) {
+				await this.captchaService.verifyMcaptcha(this.meta.mcaptchaSecretKey, this.meta.mcaptchaSitekey, this.meta.mcaptchaInstanceUrl, body['m-captcha-response']).catch(err => {
 					throw new FastifyReplyError(400, err);
 				});
 			}
 
-			if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
-				await this.captchaService.verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
+			if (this.meta.enableRecaptcha && this.meta.recaptchaSecretKey) {
+				await this.captchaService.verifyRecaptcha(this.meta.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
 					throw new FastifyReplyError(400, err);
 				});
 			}
 
-			if (instance.enableTurnstile && instance.turnstileSecretKey) {
-				await this.captchaService.verifyTurnstile(instance.turnstileSecretKey, body['turnstile-response']).catch(err => {
+			if (this.meta.enableTurnstile && this.meta.turnstileSecretKey) {
+				await this.captchaService.verifyTurnstile(this.meta.turnstileSecretKey, body['turnstile-response']).catch(err => {
+					throw new FastifyReplyError(400, err);
+				});
+			}
+
+			if (this.meta.enableTestcaptcha) {
+				await this.captchaService.verifyTestcaptcha(body['testcaptcha-response']).catch(err => {
 					throw new FastifyReplyError(400, err);
 				});
 			}
@@ -108,7 +117,7 @@ export class SignupApiService {
 		const invitationCode = body['invitationCode'];
 		const emailAddress = body['emailAddress'];
 
-		if (instance.emailRequiredForSignup) {
+		if (this.meta.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {
 				reply.code(400);
 				return;
@@ -123,12 +132,15 @@ export class SignupApiService {
 
 		let ticket: MiRegistrationTicket | null = null;
 
-		if (instance.disableRegistration) {
+		// テスト時はこの機構は障害となるため無効にする
+		if (process.env.NODE_ENV !== 'test' && this.meta.disableRegistration) {
 			if (invitationCode == null || typeof invitationCode !== 'string') {
 				reply.code(400);
 				return;
 			}
 
+			// ここでの検証はあくまで早期リジェクトのための事前チェックで、
+			// 実際の使用可否は消費直前の claimRegistrationTicket() が担保する
 			ticket = await this.registrationTicketsRepository.findOneBy({
 				code: invitationCode,
 			});
@@ -144,7 +156,7 @@ export class SignupApiService {
 			}
 
 			// メアド認証が有効の場合
-			if (instance.emailRequiredForSignup) {
+			if (this.meta.emailRequiredForSignup) {
 				// メアド認証済みならエラー
 				if (ticket.usedBy) {
 					reply.code(400);
@@ -152,7 +164,7 @@ export class SignupApiService {
 				}
 
 				// 認証しておらず、メール送信から30分以内ならエラー
-				if (ticket.usedAt && ticket.usedAt.getTime() + (1000 * 60 * 30) > Date.now()) {
+				if (ticket.usedAt && ticket.usedAt.getTime() + invitationCodeMailTimeoutMs > Date.now()) {
 					reply.code(400);
 					return;
 				}
@@ -162,7 +174,7 @@ export class SignupApiService {
 			}
 		}
 
-		if (instance.emailRequiredForSignup) {
+		if (this.meta.emailRequiredForSignup) {
 			if (await this.usersRepository.exists({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
 				throw new FastifyReplyError(400, 'DUPLICATED_USERNAME');
 			}
@@ -172,7 +184,7 @@ export class SignupApiService {
 				throw new FastifyReplyError(400, 'USED_USERNAME');
 			}
 
-			const isPreserved = instance.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
+			const isPreserved = this.meta.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
 			if (isPreserved) {
 				throw new FastifyReplyError(400, 'DENIED_USERNAME');
 			}
@@ -183,56 +195,143 @@ export class SignupApiService {
 			const salt = await bcrypt.genSalt(8);
 			const hash = await bcrypt.hash(password, salt);
 
-			const pendingUser = await this.userPendingsRepository.insertOne({
-				id: this.idService.gen(),
-				code,
-				email: emailAddress!,
-				username: username,
-				password: hash,
-			});
+			if (ticket && !await this.claimRegistrationTicket(ticket)) {
+				reply.code(400);
+				return;
+			}
 
-			const link = `${this.config.url}/signup-complete/${code}`;
-
-			this.emailService.sendEmail(emailAddress!, 'Signup',
-				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
-				`To complete signup, please click this link: ${link}`);
-
-			if (ticket) {
-				await this.registrationTicketsRepository.update(ticket.id, {
-					usedAt: new Date(),
-					pendingUserId: pendingUser.id,
+			try {
+				const pendingUser = await this.userPendingsRepository.insertOne({
+					id: this.idService.gen(),
+					code,
+					email: emailAddress!,
+					username: username,
+					password: hash,
 				});
+
+				const link = `${this.config.url}/signup-complete/${code}`;
+
+				this.emailService.sendEmail(emailAddress!, 'Signup',
+					`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
+					`To complete signup, please click this link: ${link}`);
+
+				if (ticket) {
+					await this.registrationTicketsRepository.update(ticket.id, {
+						pendingUserId: pendingUser.id,
+					});
+				}
+			} catch (err) {
+				// 確保したコードが無駄に消費されたままになるのを防ぐ
+				if (ticket) await this.releaseRegistrationTicket(ticket);
+				throw err;
 			}
 
 			reply.code(204);
 			return;
 		} else {
+			if (ticket && !await this.claimRegistrationTicket(ticket)) {
+				reply.code(400);
+				return;
+			}
+
 			try {
 				const { account, secret } = await this.signupService.signup({
 					username, password, host,
 				});
+
+				if (ticket) {
+					await this.registrationTicketsRepository.update(ticket.id, {
+						usedBy: account,
+						usedById: account.id,
+					});
+				}
 
 				const res = await this.userEntityService.pack(account, account, {
 					schema: 'MeDetailed',
 					includeSecrets: true,
 				});
 
-				if (ticket) {
-					await this.registrationTicketsRepository.update(ticket.id, {
-						usedAt: new Date(),
-						usedBy: account,
-						usedById: account.id,
-					});
-				}
-
 				return {
 					...res,
 					token: secret,
 				};
 			} catch (err) {
+				// 確保したコードが無駄に消費されたままになるのを防ぐ
+				// (アカウントと紐付け済みの場合は release 側の条件により戻らない)
+				if (ticket) await this.releaseRegistrationTicket(ticket);
 				throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
 			}
 		}
+	}
+
+	/**
+	 * 招待コードを使用中として確保する
+	 *
+	 * @returns 確保できた場合は true、既に他のリクエストが消費していた場合は false
+	 */
+	@bindThis
+	private async claimRegistrationTicket(ticket: MiRegistrationTicket): Promise<boolean> {
+		const where: FindOptionsWhere<MiRegistrationTicket>[] = [
+			{ id: ticket.id, usedById: IsNull(), usedAt: IsNull() },
+		];
+
+		// メアド認証が有効の場合、認証されないままメール送信から30分経過したコードは再び使用できる
+		if (this.meta.emailRequiredForSignup) {
+			where.push({
+				id: ticket.id,
+				usedById: IsNull(),
+				usedAt: LessThanOrEqual(new Date(Date.now() - invitationCodeMailTimeoutMs)),
+				// pendingUser は usedAt より後に作られるので、usedAt 起点だと pendingUser の有効期限内に再使用できてしまう
+				pendingUserId: IsNull(),
+			});
+		}
+
+		const result = await this.registrationTicketsRepository.update(where, {
+			usedAt: new Date(),
+		});
+
+		if ((result.affected ?? 0) > 0) return true;
+
+		// 期限切れの pendingUser に紐付いたままのコードは、紐付けを解除してから確保し直す
+		if (this.meta.emailRequiredForSignup) {
+			const stale = await this.registrationTicketsRepository.findOneBy({
+				id: ticket.id,
+				usedById: IsNull(),
+			});
+			if (stale?.pendingUserId != null) {
+				const pending = await this.userPendingsRepository.findOneBy({ id: stale.pendingUserId });
+				const pendingExpired = pending == null
+					|| this.idService.parse(pending.id).date.getTime() + invitationCodeMailTimeoutMs < Date.now();
+				if (pendingExpired) {
+					const detached = await this.registrationTicketsRepository.update({
+						id: stale.id,
+						pendingUserId: stale.pendingUserId,
+						usedById: IsNull(),
+					}, { pendingUserId: null });
+					if ((detached.affected ?? 0) === 0) return false;
+					if (pending != null) await this.userPendingsRepository.delete({ id: pending.id });
+					return this.claimRegistrationTicket(ticket);
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * {@link claimRegistrationTicket} で確保した招待コードを未使用に戻す
+	 *
+	 * 既にアカウントと紐付いた (= 消費が確定した) コードは戻さない
+	 */
+	@bindThis
+	private async releaseRegistrationTicket(ticket: MiRegistrationTicket): Promise<void> {
+		await this.registrationTicketsRepository.update({
+			id: ticket.id,
+			usedById: IsNull(),
+		}, {
+			usedAt: null,
+			pendingUserId: null,
+		});
 	}
 
 	@bindThis
@@ -244,11 +343,11 @@ export class SignupApiService {
 		try {
 			const pendingUser = await this.userPendingsRepository.findOneByOrFail({ code });
 
-			if (this.idService.parse(pendingUser.id).date.getTime() + (1000 * 60 * 30) < Date.now()) {
+			if (this.idService.parse(pendingUser.id).date.getTime() + invitationCodeMailTimeoutMs < Date.now()) {
 				throw new FastifyReplyError(400, 'EXPIRED');
 			}
 
-			const { account, secret } = await this.signupService.signup({
+			const { account } = await this.signupService.signup({
 				username: pendingUser.username,
 				passwordHash: pendingUser.password,
 			});

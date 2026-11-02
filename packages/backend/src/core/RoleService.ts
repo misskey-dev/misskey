@@ -8,6 +8,7 @@ import * as Redis from 'ioredis';
 import { In } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import type {
+	MiMeta,
 	MiRole,
 	MiRoleAssignment,
 	RoleAssignmentsRepository,
@@ -16,9 +17,9 @@ import type {
 } from '@/models/_.js';
 import { MemoryKVCache, MemorySingleCache } from '@/misc/cache.js';
 import type { MiUser } from '@/models/User.js';
+import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { MetaService } from '@/core/MetaService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { RoleCondFormulaValue } from '@/models/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -31,6 +32,7 @@ import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
+// misskey-js の rolePolicies と同期すべし
 export type RolePolicies = {
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
@@ -43,9 +45,12 @@ export type RolePolicies = {
 	canManageCustomEmojis: boolean;
 	canManageAvatarDecorations: boolean;
 	canSearchNotes: boolean;
+	canSearchUsers: boolean;
 	canUseTranslator: boolean;
 	canHideAds: boolean;
+	canCreateChannel: boolean;
 	driveCapacityMb: number;
+	maxFileSizeMb: number;
 	alwaysMarkNsfw: boolean;
 	canUpdateBioMedia: boolean;
 	pinLimit: number;
@@ -58,6 +63,16 @@ export type RolePolicies = {
 	userEachUserListsLimit: number;
 	rateLimitFactor: number;
 	avatarDecorationLimit: number;
+	canImportAntennas: boolean;
+	canImportBlocking: boolean;
+	canImportFollowing: boolean;
+	canImportMuting: boolean;
+	canImportUserLists: boolean;
+	chatAvailability: 'available' | 'readonly' | 'unavailable';
+	uploadableFileTypes: string[];
+	noteDraftLimit: number;
+	scheduledNoteLimit: number;
+	watermarkAvailable: boolean;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -72,9 +87,12 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canManageCustomEmojis: false,
 	canManageAvatarDecorations: false,
 	canSearchNotes: false,
+	canSearchUsers: true,
 	canUseTranslator: true,
 	canHideAds: false,
+	canCreateChannel: true,
 	driveCapacityMb: 100,
+	maxFileSizeMb: 30,
 	alwaysMarkNsfw: false,
 	canUpdateBioMedia: true,
 	pinLimit: 5,
@@ -87,6 +105,22 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	userEachUserListsLimit: 50,
 	rateLimitFactor: 1,
 	avatarDecorationLimit: 1,
+	canImportAntennas: false,
+	canImportBlocking: false,
+	canImportFollowing: false,
+	canImportMuting: false,
+	canImportUserLists: false,
+	chatAvailability: 'available',
+	uploadableFileTypes: [
+		'text/*',
+		'application/json',
+		'image/*',
+		'video/*',
+		'audio/*',
+	],
+	noteDraftLimit: 10,
+	scheduledNoteLimit: 1,
+	watermarkAvailable: true,
 };
 
 @Injectable()
@@ -101,8 +135,11 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	constructor(
 		private moduleRef: ModuleRef,
 
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		@Inject(DI.config)
+		private config: Config,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.redisForTimelines)
 		private redisForTimelines: Redis.Redis,
@@ -119,7 +156,6 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		@Inject(DI.roleAssignmentsRepository)
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
 
-		private metaService: MetaService,
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
@@ -284,7 +320,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				default:
 					return false;
 			}
-		} catch (err) {
+		} catch (_) {
 			// TODO: log error
 			return false;
 		}
@@ -339,15 +375,14 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public async getUserPolicies(userId: MiUser['id'] | null): Promise<RolePolicies> {
-		const meta = await this.metaService.fetch();
-		const basePolicies = { ...DEFAULT_POLICIES, ...meta.policies };
+		const basePolicies = { ...DEFAULT_POLICIES, ...this.meta.policies };
 
 		if (userId == null) return basePolicies;
 
 		const roles = await this.getUserRoles(userId);
 
 		function calc<T extends keyof RolePolicies>(name: T, aggregate: (values: RolePolicies[T][]) => RolePolicies[T]) {
-			if (roles.length === 0) return basePolicies[name];
+			if (roles.length === 0) return aggregate([basePolicies[name]]);
 
 			const policies = roles.map(role => role.policies[name] ?? { priority: 0, useDefault: true });
 
@@ -359,6 +394,14 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 			return aggregate(policies.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 		}
+
+		function aggregateChatAvailability(vs: RolePolicies['chatAvailability'][]) {
+			if (vs.some(v => v === 'available')) return 'available';
+			if (vs.some(v => v === 'readonly')) return 'readonly';
+			return 'unavailable';
+		}
+
+		const serverMaxFileSizeMb = Math.floor(this.config.maxFileSize / (1024 * 1024));
 
 		return {
 			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
@@ -372,9 +415,12 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
 			canManageAvatarDecorations: calc('canManageAvatarDecorations', vs => vs.some(v => v === true)),
 			canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
+			canSearchUsers: calc('canSearchUsers', vs => vs.some(v => v === true)),
 			canUseTranslator: calc('canUseTranslator', vs => vs.some(v => v === true)),
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
+			canCreateChannel: calc('canCreateChannel', vs => vs.some(v => v === true)),
 			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
+			maxFileSizeMb: calc('maxFileSizeMb', vs => Math.min(serverMaxFileSizeMb, Math.max(...vs))),
 			alwaysMarkNsfw: calc('alwaysMarkNsfw', vs => vs.some(v => v === true)),
 			canUpdateBioMedia: calc('canUpdateBioMedia', vs => vs.some(v => v === true)),
 			pinLimit: calc('pinLimit', vs => Math.max(...vs)),
@@ -387,65 +433,105 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
 			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
 			avatarDecorationLimit: calc('avatarDecorationLimit', vs => Math.max(...vs)),
+			canImportAntennas: calc('canImportAntennas', vs => vs.some(v => v === true)),
+			canImportBlocking: calc('canImportBlocking', vs => vs.some(v => v === true)),
+			canImportFollowing: calc('canImportFollowing', vs => vs.some(v => v === true)),
+			canImportMuting: calc('canImportMuting', vs => vs.some(v => v === true)),
+			canImportUserLists: calc('canImportUserLists', vs => vs.some(v => v === true)),
+			chatAvailability: calc('chatAvailability', aggregateChatAvailability),
+			uploadableFileTypes: calc('uploadableFileTypes', vs => {
+				const set = new Set<string>();
+				for (const v of vs) {
+					for (const type of v) {
+						if (type.trim() === '') continue;
+						set.add(type.trim());
+					}
+				}
+				return [...set];
+			}),
+			noteDraftLimit: calc('noteDraftLimit', vs => Math.max(...vs)),
+			scheduledNoteLimit: calc('scheduledNoteLimit', vs => Math.max(...vs)),
+			watermarkAvailable: calc('watermarkAvailable', vs => vs.some(v => v === true)),
 		};
 	}
 
 	@bindThis
-	public async isModerator(user: { id: MiUser['id']; isRoot: MiUser['isRoot'] } | null): Promise<boolean> {
+	public async isModerator(user: { id: MiUser['id'] } | null): Promise<boolean> {
 		if (user == null) return false;
-		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.isModerator || r.isAdministrator);
+		return (this.meta.rootUserId === user.id) || (await this.getUserRoles(user.id)).some(r => r.isModerator || r.isAdministrator);
 	}
 
 	@bindThis
-	public async isAdministrator(user: { id: MiUser['id']; isRoot: MiUser['isRoot'] } | null): Promise<boolean> {
+	public async isAdministrator(user: { id: MiUser['id'] } | null): Promise<boolean> {
 		if (user == null) return false;
-		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.isAdministrator);
+		return (this.meta.rootUserId === user.id) || (await this.getUserRoles(user.id)).some(r => r.isAdministrator);
 	}
 
 	@bindThis
-	public async isExplorable(role: { id: MiRole['id']} | null): Promise<boolean> {
+	public async isExplorable(role: { id: MiRole['id'] } | null): Promise<boolean> {
 		if (role == null) return false;
 		const check = await this.rolesRepository.findOneBy({ id: role.id });
 		if (check == null) return false;
 		return check.isExplorable;
 	}
 
+	/**
+	 * モデレーター権限のロールが割り当てられているユーザID一覧を取得する.
+	 *
+	 * @param opts.includeAdmins 管理者権限も含めるか(デフォルト: true)
+	 * @param opts.includeRoot rootユーザも含めるか(デフォルト: false)
+	 * @param opts.excludeExpire 期限切れのロールを除外するか(デフォルト: false)
+	 */
 	@bindThis
-	public async getModeratorIds(includeAdmins = true, excludeExpire = false): Promise<MiUser['id'][]> {
+	public async getModeratorIds(opts?: {
+		includeAdmins?: boolean,
+		includeRoot?: boolean,
+		excludeExpire?: boolean,
+	}): Promise<MiUser['id'][]> {
+		const includeAdmins = opts?.includeAdmins ?? true;
+		const includeRoot = opts?.includeRoot ?? false;
+		const excludeExpire = opts?.excludeExpire ?? false;
+
 		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
 		const moderatorRoles = includeAdmins
 			? roles.filter(r => r.isModerator || r.isAdministrator)
 			: roles.filter(r => r.isModerator);
 
-		// TODO: isRootなアカウントも含める
 		const assigns = moderatorRoles.length > 0
 			? await this.roleAssignmentsRepository.findBy({ roleId: In(moderatorRoles.map(r => r.id)) })
 			: [];
 
+		// Setを経由して重複を除去（ユーザIDは重複する可能性があるので）
 		const now = Date.now();
-		const result = [
-			// Setを経由して重複を除去（ユーザIDは重複する可能性があるので）
-			...new Set(
-				assigns
-					.filter(it =>
-						(excludeExpire)
-							? (it.expiresAt == null || it.expiresAt.getTime() > now)
-							: true,
-					)
-					.map(a => a.userId),
-			),
-		];
+		const resultSet = new Set(
+			assigns
+				.filter(it =>
+					(excludeExpire)
+						? (it.expiresAt == null || it.expiresAt.getTime() > now)
+						: true,
+				)
+				.map(a => a.userId),
+		);
 
-		return result.sort((x, y) => x.localeCompare(y));
+		if (includeRoot && this.meta.rootUserId) {
+			resultSet.add(this.meta.rootUserId);
+		}
+
+		return [...resultSet].sort((x, y) => x.localeCompare(y));
 	}
 
 	@bindThis
-	public async getModerators(includeAdmins = true): Promise<MiUser[]> {
-		const ids = await this.getModeratorIds(includeAdmins);
-		const users = ids.length > 0 ? await this.usersRepository.findBy({
-			id: In(ids),
-		}) : [];
-		return users;
+	public async getModerators(opts?: {
+		includeAdmins?: boolean,
+		includeRoot?: boolean,
+		excludeExpire?: boolean,
+	}): Promise<MiUser[]> {
+		const ids = await this.getModeratorIds(opts);
+		return ids.length > 0
+			? await this.usersRepository.findBy({
+				id: In(ids),
+			})
+			: [];
 	}
 
 	@bindThis
@@ -456,7 +542,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			roleId: In(administratorRoles.map(r => r.id)),
 		}) : [];
 		// TODO: isRootなアカウントも含める
-		return assigns.map(a => a.userId);
+		// Setを経由して重複を除去（ユーザIDは重複する可能性があるので）
+		return [...new Set(assigns.map(a => a.userId))].sort((x, y) => x.localeCompare(y));
 	}
 
 	@bindThis
@@ -593,6 +680,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			isModerator: values.isModerator,
 			isExplorable: values.isExplorable,
 			asBadge: values.asBadge,
+			preserveAssignmentOnMoveAccount: values.preserveAssignmentOnMoveAccount,
 			canEditMembersByModerator: values.canEditMembersByModerator,
 			displayOrder: values.displayOrder,
 			policies: values.policies,
