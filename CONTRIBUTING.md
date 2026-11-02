@@ -189,6 +189,14 @@ pnpm migrate
 
 After finishing the migration, you can proceed.
 
+#### Cloudflare tunnel
+Cloudflare tunnelを使うとローカルのMisskeyサーバーをインターネットに公開できます。
+HTTPSでしか動作しない機能を検証したい時や、スマホなど別のデバイスからローカルのMisskeyサーバーを検証したい時に便利です。
+
+##### Cloudflare warpと併用する際のtips
+
+> cloudflared (Cloudflare Tunnel) は region1.v2.argotunnel.com / region2.v2.argotunnel.com に QUIC/HTTP2 でアウトバウンド接続するのですが、WARP を有効化するとこのトラフィックが WARP 経由になってループ/切断します。これら 2 ホストを WARP のトンネル除外（split tunnel）に追加することで、cloudflared だけは WARP をバイパスして直接 Cloudflare エッジへ接続できるようになります。
+
 ### Start developing
 During development, it is useful to use the
 ```
@@ -258,6 +266,12 @@ Misskey uses Vue(v3) as its front-end framework.
 - **When creating a new component, please use the Composition API (with [setup sugar](https://v3.vuejs.org/api/sfc-script-setup.html) and [ref sugar](https://github.com/vuejs/rfcs/discussions/369)) instead of the Options API.**
 	- Some of the existing components are implemented in the Options API, but it is an old implementation. Refactors that migrate those components to the Composition API are also welcome.
 
+## Tabler Icons
+アイコンは、Production Build時に使用されていないものが削除されるようになっています。
+
+**アイコンを動的に設定する際には、 `ti-${someVal}` のような、アイコン名のみを動的に変化させる実装を行わないでください。**
+必ず `ti-xxx` のような完全なクラス名を含めるようにしてください。
+
 ## nirax
 niraxは、Misskeyで使用しているオリジナルのフロントエンドルーティングシステムです。
 **vue-routerから影響を多大に受けているので、まずはvue-routerについて学ぶことをお勧めします。**
@@ -273,7 +287,6 @@ niraxは、Misskeyで使用しているオリジナルのフロントエンド�
 	query?: Record<string, string>;
 	loginRequired?: boolean;
 	hash?: string;
-	globalCacheKey?: string;
 	children?: RouteDef[];
 }
 ```
@@ -570,32 +583,12 @@ enumの列挙の内容の削除は、その値をもつレコードを全て削�
 ### Migration作成方法
 packages/backendで:
 ```sh
-pnpm dlx typeorm migration:generate -d ormconfig.js -o <migration name>
+pnpm dlx typeorm migration:generate -d ormconfig.js -o --esm <migration name>
 ```
 
 - 生成後、ファイルをmigration下に移してください
 - 作成されたスクリプトは不必要な変更を含むため除去してください
-
-### JSON SchemaのobjectでanyOfを使うとき
-JSON Schemaで、objectに対してanyOfを使う場合、anyOfの中でpropertiesを定義しないこと。
-バリデーションが効かないため。（SchemaTypeもそのように作られており、objectのanyOf内のpropertiesは捨てられます）
-https://github.com/misskey-dev/misskey/pull/10082
-
-テキストhogeおよびfugaについて、片方を必須としつつ両方の指定もありうる場合:
-
-```ts
-export const paramDef = {
-	type: 'object',
-	properties: {
-		hoge: { type: 'string', minLength: 1 },
-		fuga: { type: 'string', minLength: 1 },
-	},
-	anyOf: [
-		{ required: ['hoge'] },
-		{ required: ['fuga'] },
-	],
-} as const;
-```
+- `-o` (`--outputJs`) で JS 形式、`--esm` で ESM 形式に生成する。Misskey の既存 migration はすべて ESM JS なので両方のオプションが必要
 
 ### コネクションには`markRaw`せよ
 **Vueのコンポーネントのdataオプションとして**misskey.jsのコネクションを設定するとき、必ず`markRaw`でラップしてください。インスタンスが不必要にリアクティブ化されることで、misskey.js内の処理で不具合が発生するとともに、パフォーマンス上の問題にも繋がる。なお、Composition APIを使う場合はこの限りではない(リアクティブ化はマニュアルなため)。
@@ -606,6 +599,90 @@ TypeScriptでjsonをimportすると、tscでコンパイルするときにその
 ### コンポーネントのスタイル定義でmarginを持たせない
 コンポーネント自身がmarginを設定するのは問題の元となることはよく知られている
 marginはそのコンポーネントを使う側が設定する
+
+### 命名規則
+
+本来それが略称であっても、通常それでひとつのワードとして用いられるものは、略称として扱わない。
+
+#### 例: IP address
+
+Good: `ipAddress` / `IpAddress`
+
+Bad: `IPAddress`
+
+#### 例: User ID
+
+Good: `userId` / `UserId`
+
+Bad: `userID` / `UserID`
+
+#### 例: XMLなHTTPのRequest
+
+Good: `xmlHttpRequest` / `XmlHttpRequest`
+
+Bad: `XMLHttpRequest` / `XMLHTTPRequest`
+
+### 関数化の基準
+
+汎用性が低く(例えばそれを関数化したとしてもその呼び出しが元の場所一か所しか存在しない)、内容も短い処理(例えば10行以下)は、かえって読みにくくなるため、関数化しない。
+
+また、関数化する場合でも、呼び出しがある特定のスコープに限られる場合は、そのスコープ内に閉じ込めた方が分かりやすく簡潔になる場合がある(ただし本来その処理に不要であっても、構造上親のスコープにある関係のない変数や引数にもアクセスできるようになるため、必ずしもそうすれば設計上綺麗になるというわけでもない。状況に応じて判断すべし)。
+
+Bad:
+
+``` ts
+function withBrankets(x) {
+	return `(${x})`;
+}
+
+function formatPercent(x) {
+	return `${x}%`;
+}
+
+function formatValue(x) {
+	return withBrankets(formatPercent(x));
+}
+
+function showData(a, b) {
+	console.log(formatValue(a));
+	console.log(formatValue(b));
+}
+```
+
+Good:
+
+``` ts
+function formatValue(x) {
+	return `(${x}%)`;
+}
+
+function showData(a, b) {
+	console.log(formatValue(a));
+	console.log(formatValue(b));
+}
+```
+
+or
+
+``` ts
+function showData(a, b) {
+	function formatValue(x) {
+		return `(${x}%)`;
+	}
+
+	console.log(formatValue(a));
+	console.log(formatValue(b));
+}
+```
+
+or
+
+``` ts
+function showData(a, b) {
+	console.log(`(${a}%)`);
+	console.log(`(${b}%)`);
+}
+```
 
 ## その他
 ### HTMLのクラス名で follow という単語は使わない
@@ -634,3 +711,29 @@ color: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
 color: color(from var(--MI_THEME-accent) srgb r g b / 0.5);
 ```
 
+## 考え方
+### DRYに囚われるな
+必要なのは一般化ではなく抽象化と考えます。
+盲信せず、誤った・不必要な共通化は避け、それが自然だと感じる場合は重複させる勇気を持ちましょう。
+
+### Misskeyを複雑にしない実装
+それがいくら複雑であっても、Misskey固有のコンテキストと関心が分離されている(もしくは事実上分離されていると見做すことができる)実装であれば、それはMisskeyのコードベースに対する複雑性に影響を与えないと考えます。
+
+例えるなら、VueやAiScriptといったMisskeyが使用しているライブラリの内部実装がいくら複雑だったとしても、「それを使用しているからMisskeyの実装は複雑である」ということにはならないのと同じです。
+
+Misskeyのドメイン知識から関心が分離されているということは、Misskeyの実装について考える時にそれらの内部実装を考慮する必要が無く、認知負荷を増やさないからです。
+
+また重要な点は、その実装が、Misskeyリポジトリの外部にあるか・内部にあるかということや、Misskeyがメンテナンスするものか・第三者がメンテナンスするものかといったことは複雑性を考える上ではほとんど無視できるという点です。
+
+もちろんその実装がMisskeyリポジトリにあり、Misskeyがメンテナンスしなければならないものは、保守のコストはかかります。
+しかし、Misskeyの本質的な設計・実装という観点で見たときは、その実装は実質的に外部ライブラリのように振る舞います。
+換言すれば「たまたまMisskeyの開発者と同じ人たちがメンテナンスしているし、たまたまMisskeyのリポジトリ内に置いてあるだけの外部ライブラリ」です。
+
+そのため、実装をなるべくMisskeyのドメイン知識から独立したものにすれば、Misskeyのコードベースの複雑性を上げることなく機能実装を行うことができ、お得であると言えます。
+もちろんそれにこだわって、些細な実装でもそのように分離してしまうとかえって認知負荷が増えたり、実装量が増えてメリットをデメリットが上回る場合もあるので、ケースバイケースではあります。
+
+### AIに誤解されにくいコードを書こう
+
+AI(LLM)によるレビューやコーディング補助時にハルシネーションのもとになるので、AIが誤解・混乱しそうなコードは避けるかコメントを残そう。
+
+AIにとって分かりやすいコードは、結果的に人間にとっても分かりやすいコードに繋がります。

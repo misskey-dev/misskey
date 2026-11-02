@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.buttons">
 		<div v-if="prevDotVisible" :class="$style.headTailButtons">
 			<MkButton @click="onToHeadButtonClicked">{{ min }}</MkButton>
-			<span class="ti ti-dots"/>
+			<span class="ti ti-dots"></span>
 		</div>
 
 		<MkButton
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkButton>
 
 		<div v-if="nextDotVisible" :class="$style.headTailButtons">
-			<span class="ti ti-dots"/>
+			<span class="ti ti-dots"></span>
 			<MkButton @click="onToTailButtonClicked">{{ max }}</MkButton>
 		</div>
 	</div>

@@ -7,39 +7,44 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkContainer :showHeader="widgetProps.showHeader" class="mkw-aiscriptApp">
 	<template #header>App</template>
 	<div :class="$style.root">
-		<MkAsUi v-if="root" :component="root" :components="components" size="small"/>
+		<div v-if="isSyntaxError">Syntax error :(</div>
+		<MkAsUi v-else-if="root" :component="root" :components="components" size="small"/>
 	</div>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue';
-import type { Ref } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { Interpreter, Parser } from '@syuilo/aiscript';
 import { useWidgetPropsManager } from './widget.js';
+import type { Ref } from 'vue';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/scripts/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import type { AsUiComponent, AsUiRoot } from '@/aiscript/ui.js';
 import * as os from '@/os.js';
-import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
-import { $i } from '@/account.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
+import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
 import MkAsUi from '@/components/MkAsUi.vue';
 import MkContainer from '@/components/MkContainer.vue';
-import { registerAsUiLib } from '@/scripts/aiscript/ui.js';
-import type { AsUiComponent, AsUiRoot } from '@/scripts/aiscript/ui.js';
+import { registerAsUiLib } from '@/aiscript/ui.js';
 
 const name = 'aiscriptApp';
 
 const widgetPropsDef = {
 	script: {
-		type: 'string' as const,
+		type: 'string',
+		label: i18n.ts.script,
 		multiline: true,
+		manualSave: true,
 		default: '',
 	},
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -54,11 +59,18 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 const parser = new Parser();
 
+let aiscript: Interpreter | null = null;
 const root = ref<AsUiRoot>();
 const components = ref<Ref<AsUiComponent>[]>([]);
+const isSyntaxError = ref(false);
 
 async function run() {
-	const aiscript = new Interpreter({
+	if (aiscript) aiscript.abort();
+	root.value = undefined;
+	components.value = [];
+	isSyntaxError.value = false;
+
+	aiscript = new Interpreter({
 		...createAiScriptEnv({
 			storageKey: 'widget',
 			token: $i?.token,
@@ -71,6 +83,13 @@ async function run() {
 		out: (value) => {
 			// nop
 		},
+		err: (err) => {
+			os.alert({
+				type: 'error',
+				title: 'AiScript Error',
+				text: String(err),
+			});
+		},
 		log: (type, params) => {
 			// nop
 		},
@@ -80,9 +99,11 @@ async function run() {
 	try {
 		ast = parser.parse(widgetProps.script);
 	} catch (err) {
+		isSyntaxError.value = true;
 		os.alert({
 			type: 'error',
-			text: 'Syntax error :(',
+			title: 'Syntax Error',
+			text: String(err),
 		});
 		return;
 	}
@@ -91,8 +112,8 @@ async function run() {
 	} catch (err) {
 		os.alert({
 			type: 'error',
-			title: 'AiScript Error',
-			text: err.message,
+			title: 'AiScript Internal Error',
+			text: String(err),
 		});
 	}
 }
@@ -103,6 +124,10 @@ watch(() => widgetProps.script, () => {
 
 onMounted(() => {
 	run();
+});
+
+onUnmounted(() => {
+	if (aiscript) aiscript.abort();
 });
 
 defineExpose<WidgetComponentExpose>({

@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div data-cy-mkw-onlineUsers :class="[$style.root, { _panel: !widgetProps.transparent, [$style.pad]: !widgetProps.transparent }]">
+<div data-testid="mkw-onlineUsers" :class="[$style.root, { _panel: !widgetProps.transparent, [$style.pad]: !widgetProps.transparent }]">
 	<span :class="$style.text">
 		<I18n v-if="onlineUsersCount" :src="i18n.ts.onlineUsersCount" textTag="span">
 			<template #n><b style="color: #41b781;">{{ number(onlineUsersCount) }}</b></template>
@@ -17,8 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/scripts/form.js';
-import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { useInterval } from '@@/js/use-interval.js';
 import { i18n } from '@/i18n.js';
 import number from '@/filters/number.js';
@@ -27,10 +27,11 @@ const name = 'onlineUsers';
 
 const widgetPropsDef = {
 	transparent: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -73,6 +74,6 @@ defineExpose<WidgetComponentExpose>({
 }
 
 .text {
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 }
 </style>

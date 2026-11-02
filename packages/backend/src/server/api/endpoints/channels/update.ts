@@ -50,7 +50,7 @@ export const paramDef = {
 	properties: {
 		channelId: { type: 'string', format: 'misskey:id' },
 		name: { type: 'string', minLength: 1, maxLength: 128 },
-		description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048 },
+		description: { type: 'string', nullable: true, maxLength: 2048 },
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
 		isArchived: { type: 'boolean', nullable: true },
 		pinnedNoteIds: {

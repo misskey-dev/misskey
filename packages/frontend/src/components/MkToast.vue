@@ -6,10 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style.transition_toast_enterActive : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style.transition_toast_leaveActive : ''"
-		:enterFromClass="defaultStore.state.animation ? $style.transition_toast_enterFrom : ''"
-		:leaveToClass="defaultStore.state.animation ? $style.transition_toast_leaveTo : ''"
+		:enterActiveClass="prefer.s.animation ? $style.transition_toast_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_toast_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_toast_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_toast_leaveTo : ''"
 		appear @afterLeave="emit('closed')"
 	>
 		<div v-if="showing" class="_acrylic" :class="$style.root" :style="{ zIndex }">
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 defineProps<{
 	message: string;

@@ -17,31 +17,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, ref, watch } from 'vue';
+import { createVisibilityAwareInterval } from '@@/js/interval.js';
 import { useWidgetPropsManager } from './widget.js';
+import { i18n } from '@/i18n.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/scripts/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 
 const name = 'unixClock';
 
 const widgetPropsDef = {
 	transparent: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 	fontSize: {
-		type: 'number' as const,
+		type: 'number',
+		label: i18n.ts.fontSize,
 		default: 1.5,
 		step: 0.1,
 	},
 	showMs: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions._clock.showMs,
 		default: true,
 	},
 	showLabel: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions._clock.showLabel,
 		default: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -54,7 +60,8 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-let intervalId;
+let disposeInterval: (() => void) | null = null;
+let rafRequestId: number | null = null;
 const ss = ref('');
 const ms = ref('');
 const showColon = ref(false);
@@ -76,15 +83,35 @@ const tick = () => {
 	prevSec = ss.value;
 };
 
+const clearTimers = () => {
+	if (disposeInterval) {
+		disposeInterval();
+		disposeInterval = null;
+	}
+	if (rafRequestId) {
+		window.cancelAnimationFrame(rafRequestId);
+		rafRequestId = null;
+	}
+};
+
 tick();
 
-watch(() => widgetProps.showMs, () => {
-	if (intervalId) window.clearInterval(intervalId);
-	intervalId = window.setInterval(tick, widgetProps.showMs ? 10 : 1000);
+watch(() => widgetProps.showMs, (to) => {
+	clearTimers();
+
+	if (to) {
+		// rafはdocumentが非表示の間はブラウザによって自動的に停止される
+		rafRequestId = window.requestAnimationFrame(function loop() {
+			tick();
+			rafRequestId = window.requestAnimationFrame(loop);
+		});
+	} else {
+		disposeInterval = createVisibilityAwareInterval(tick, 1000);
+	}
 }, { immediate: true });
 
 onUnmounted(() => {
-	window.clearInterval(intervalId);
+	clearTimers();
 });
 
 defineExpose<WidgetComponentExpose>({

@@ -6,7 +6,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable import/no-default-export */
 import type { StoryObj } from '@storybook/vue3';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import { expect, userEvent, within } from '@storybook/test';
 import { file } from '../../.storybook/fakes.js';
 import MkCwButton from './MkCwButton.vue';

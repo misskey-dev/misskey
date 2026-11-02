@@ -4,18 +4,33 @@
  */
 
 import type { Directive } from 'vue';
-import { getBgColor } from '@/scripts/get-bg-color.js';
+import { getBgColor } from '@/utility/get-bg-color.js';
+import { themeManager } from '@/theme.js';
 
-export default {
-	mounted(src, binding, vn) {
-		const parentBg = getBgColor(src.parentElement) ?? 'transparent';
+const handlerMap = new WeakMap<HTMLElement, () => void>();
 
-		const myBg = window.getComputedStyle(src).backgroundColor;
+export const adaptiveBorderDirective = {
+	mounted(src) {
+		function calc() {
+			const parentBg = getBgColor(src.parentElement) ?? 'transparent';
 
-		if (parentBg === myBg) {
-			src.style.borderColor = 'var(--MI_THEME-divider)';
-		} else {
-			src.style.borderColor = myBg;
+			const myBg = window.getComputedStyle(src).backgroundColor;
+
+			if (parentBg === myBg) {
+				src.style.borderColor = 'var(--MI_THEME-divider)';
+			} else {
+				src.style.borderColor = myBg;
+			}
 		}
+
+		handlerMap.set(src, calc);
+
+		calc();
+
+		themeManager.on('themeChanged', calc);
 	},
-} as Directive;
+
+	unmounted(src) {
+		themeManager.off('themeChanged', handlerMap.get(src));
+	},
+} as Directive<HTMLElement>;

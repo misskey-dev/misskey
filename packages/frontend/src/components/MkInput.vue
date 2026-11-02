@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
+<div class="_selectable">
 	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
 	<div :class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused }]">
 		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"></slot></div>
@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@input="onInput"
 		>
 		<datalist v-if="datalist" :id="id">
-			<option v-for="data in datalist" :key="data" :value="data"/>
+			<option v-for="data in datalist" :key="data" :value="data"></option>
 		</datalist>
 		<div ref="suffixEl" :class="$style.suffix"><slot name="suffix"></slot></div>
 	</div>
@@ -43,19 +43,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
-import { onMounted, onUnmounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
+<script lang="ts">
+type SupportedTypes = 'text' | 'password' | 'email' | 'url' | 'tel' | 'number' | 'search' | 'date' | 'time' | 'datetime-local' | 'color';
+type ModelValueType<T extends SupportedTypes> =
+	T extends 'number' ? number :
+	T extends 'text' | 'password' | 'email' | 'url' | 'tel' | 'search' | 'date' | 'time' | 'datetime-local' | 'color' ? string :
+	never;
+</script>
+
+<script lang="ts" setup generic="T extends SupportedTypes = 'text'">
+import { onMounted, onUnmounted, nextTick, ref, useTemplateRef, watch, computed, toRefs } from 'vue';
+import { throttle, debounce } from 'throttle-debounce';
 import type { InputHTMLAttributes } from 'vue';
-import { debounce } from 'throttle-debounce';
+import type { SuggestionType } from '@/utility/autocomplete.js';
 import MkButton from '@/components/MkButton.vue';
-import { useInterval } from '@@/js/use-interval.js';
 import { i18n } from '@/i18n.js';
-import { Autocomplete } from '@/scripts/autocomplete.js';
-import type { SuggestionType } from '@/scripts/autocomplete.js';
+import { Autocomplete } from '@/utility/autocomplete.js';
+import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
-	modelValue: string | number | null;
-	type?: InputHTMLAttributes['type'];
+	modelValue: ModelValueType<T> | null;
+	type?: T;
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
@@ -72,29 +80,31 @@ const props = defineProps<{
 	min?: number;
 	max?: number;
 	inline?: boolean;
-	debounce?: boolean;
+	debounce?: boolean | number;
+	throttle?: boolean | number;
 	manualSave?: boolean;
 	small?: boolean;
 	large?: boolean;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'change', _ev: KeyboardEvent): void;
+	(ev: 'change', _ev: InputEvent): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
 	(ev: 'enter', _ev: KeyboardEvent): void;
-	(ev: 'update:modelValue', value: string | number): void;
+	(ev: 'update:modelValue', value: ModelValueType<T>): void;
+	(ev: 'savingStateChange', saved: boolean, invalid: boolean): void;
 }>();
 
-const { modelValue, type, autofocus } = toRefs(props);
-const v = ref(modelValue.value);
-const id = Math.random().toString(); // TODO: uuid?
+const { modelValue } = toRefs(props);
+const v = ref<ModelValueType<T> | null>(modelValue.value);
+const id = genId();
 const focused = ref(false);
 const changed = ref(false);
 const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
-const inputEl = shallowRef<HTMLInputElement>();
-const prefixEl = shallowRef<HTMLElement>();
-const suffixEl = shallowRef<HTMLElement>();
+const inputEl = useTemplateRef('inputEl');
+const prefixEl = useTemplateRef('prefixEl');
+const suffixEl = useTemplateRef('suffixEl');
 const height =
 	props.small ? 33 :
 	props.large ? 39 :
@@ -102,10 +112,9 @@ const height =
 let autocompleteWorker: Autocomplete | null = null;
 
 const focus = () => inputEl.value?.focus();
-const onInput = (event: Event) => {
-	const ev = event as KeyboardEvent;
+const onInput = (event: InputEvent) => {
 	changed.value = true;
-	emit('change', ev);
+	emit('change', event);
 };
 const onKeydown = (ev: KeyboardEvent) => {
 	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
@@ -119,14 +128,15 @@ const onKeydown = (ev: KeyboardEvent) => {
 
 const updated = () => {
 	changed.value = false;
-	if (type.value === 'number') {
-		emit('update:modelValue', typeof v.value === 'number' ? v.value : parseFloat(v.value ?? '0'));
+	if (props.type === 'number') {
+		emit('update:modelValue', typeof v.value === 'number' ? v.value as ModelValueType<T> : parseFloat(v.value ?? '0') as ModelValueType<T>);
 	} else {
 		emit('update:modelValue', v.value ?? '');
 	}
 };
 
-const debouncedUpdated = debounce(1000, updated);
+const throttledUpdated = throttle(typeof props.throttle === 'number' ? props.throttle : 1000, updated);
+const debouncedUpdated = debounce(typeof props.debounce === 'number' ? props.debounce : 1000, updated);
 
 watch(modelValue, newValue => {
 	v.value = newValue;
@@ -134,7 +144,9 @@ watch(modelValue, newValue => {
 
 watch(v, () => {
 	if (!props.manualSave) {
-		if (props.debounce) {
+		if (props.throttle === true || typeof props.throttle === 'number') {
+			throttledUpdated();
+		} else if (props.debounce === true || typeof props.debounce === 'number') {
 			debouncedUpdated();
 		} else {
 			updated();
@@ -144,29 +156,35 @@ watch(v, () => {
 	invalid.value = inputEl.value?.validity.badInput ?? true;
 });
 
+watch([changed, invalid], ([newChanged, newInvalid]) => {
+	emit('savingStateChange', newChanged, newInvalid);
+}, { immediate: true });
+
 // このコンポーネントが作成された時、非表示状態である場合がある
-// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
-useInterval(() => {
+// 非表示状態だと要素の幅などは0になってしまうので、ResizeObserverでサイズの変化を監視して計算する
+const updatePadding = (entries: ResizeObserverEntry[]) => {
 	if (inputEl.value == null) return;
 
-	if (prefixEl.value) {
-		if (prefixEl.value.offsetWidth) {
-			inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
+	for (const entry of entries) {
+		const width = entry.borderBoxSize[0].inlineSize;
+		if (width === 0) continue;
+		if (entry.target === prefixEl.value) {
+			inputEl.value.style.paddingLeft = width + 'px';
+		} else if (entry.target === suffixEl.value) {
+			inputEl.value.style.paddingRight = width + 'px';
 		}
 	}
-	if (suffixEl.value) {
-		if (suffixEl.value.offsetWidth) {
-			inputEl.value.style.paddingRight = suffixEl.value.offsetWidth + 'px';
-		}
-	}
-}, 100, {
-	immediate: true,
-	afterMounted: true,
-});
+};
+
+let paddingObserver: ResizeObserver | null = null;
 
 onMounted(() => {
+	paddingObserver = new ResizeObserver(updatePadding);
+	if (prefixEl.value) paddingObserver.observe(prefixEl.value);
+	if (suffixEl.value) paddingObserver.observe(suffixEl.value);
+
 	nextTick(() => {
-		if (autofocus.value) {
+		if (props.autofocus) {
 			focus();
 		}
 	});
@@ -177,6 +195,9 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+	paddingObserver?.disconnect();
+	paddingObserver = null;
+
 	if (autocompleteWorker) {
 		autocompleteWorker.detach();
 	}
@@ -201,7 +222,7 @@ defineExpose({
 .caption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 
 	&:empty {
 		display: none;

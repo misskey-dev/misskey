@@ -5,7 +5,8 @@
  */
 
 import { setTimeout } from 'node:timers/promises';
-import { afterEach, beforeEach, describe, expect, jest } from '@jest/globals';
+import { afterEach, beforeEach, afterAll, beforeAll, describe, test, expect, vi } from 'vitest';
+import type { Mocked } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomString } from '../utils.js';
 import { MiUser } from '@/models/User.js';
@@ -29,7 +30,7 @@ describe('SystemWebhookService', () => {
 	let usersRepository: UsersRepository;
 	let systemWebhooksRepository: SystemWebhooksRepository;
 	let idService: IdService;
-	let queueService: jest.Mocked<QueueService>;
+	let queueService: Mocked<QueueService>;
 
 	// --------------------------------------------------------------------------------------
 
@@ -73,7 +74,7 @@ describe('SystemWebhookService', () => {
 					LoggerService,
 					GlobalEventService,
 					{
-						provide: QueueService, useFactory: () => ({ systemWebhookDeliver: jest.fn() }),
+						provide: QueueService, useFactory: () => ({ systemWebhookDeliver: vi.fn() }),
 					},
 					{
 						provide: ModerationLogService, useFactory: () => ({ log: () => Promise.resolve() }),
@@ -87,7 +88,7 @@ describe('SystemWebhookService', () => {
 
 		service = app.get(SystemWebhookService);
 		idService = app.get(IdService);
-		queueService = app.get(QueueService) as jest.Mocked<QueueService>;
+		queueService = app.get(QueueService) as Mocked<QueueService>;
 
 		app.enableShutdownHooks();
 	}
@@ -97,12 +98,12 @@ describe('SystemWebhookService', () => {
 	}
 
 	async function beforeEachImpl() {
-		root = await createUser({ isRoot: true, username: 'root', usernameLower: 'root' });
+		root = await createUser({ username: 'root', usernameLower: 'root' });
 	}
 
 	async function afterEachImpl() {
-		await usersRepository.delete({});
-		await systemWebhooksRepository.delete({});
+		await usersRepository.createQueryBuilder().delete().execute();
+		await systemWebhooksRepository.createQueryBuilder().delete().execute();
 	}
 
 	// --------------------------------------------------------------------------------------

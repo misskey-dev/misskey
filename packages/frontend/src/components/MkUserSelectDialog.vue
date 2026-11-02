@@ -61,16 +61,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, computed, shallowRef } from 'vue';
+import { onMounted, ref, computed, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host as currentHost, hostname } from '@@/js/config.js';
 import MkInput from '@/components/MkInput.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 
 const emit = defineEmits<{
@@ -94,7 +94,7 @@ const host = ref('');
 const users = ref<Misskey.entities.UserLite[]>([]);
 const recentUsers = ref<Misskey.entities.UserDetailed[]>([]);
 const selected = ref<Misskey.entities.UserLite | null>(null);
-const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialogEl = useTemplateRef('dialogEl');
 
 function search() {
 	if (username.value === '' && host.value === '') {
@@ -128,10 +128,10 @@ async function ok() {
 	dialogEl.value?.close();
 
 	// 最近使ったユーザー更新
-	let recents = defaultStore.state.recentlyUsedUsers;
+	let recents = store.s.recentlyUsedUsers;
 	recents = recents.filter(x => x !== selected.value?.id);
 	recents.unshift(selected.value.id);
-	defaultStore.set('recentlyUsedUsers', recents.splice(0, 16));
+	store.set('recentlyUsedUsers', recents.splice(0, 16));
 }
 
 function cancel() {
@@ -141,7 +141,7 @@ function cancel() {
 
 onMounted(() => {
 	misskeyApi('users/show', {
-		userIds: defaultStore.state.recentlyUsedUsers,
+		userIds: store.s.recentlyUsedUsers,
 	}).then(foundUsers => {
 		let _users = foundUsers;
 		_users = _users.filter((u) => {

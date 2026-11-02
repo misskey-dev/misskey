@@ -3,25 +3,34 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { throttle } from 'throttle-debounce';
 import type { Directive } from 'vue';
+import type { Awaitable } from '@/types/misc.js';
 
-export default {
-	mounted(src, binding, vn) {
+const observers = new WeakMap<HTMLElement, IntersectionObserver>();
+
+export const appearDirective = {
+	mounted(src, binding) {
 		const fn = binding.value;
 		if (fn == null) return;
 
-		const observer = new IntersectionObserver(entries => {
+		const check = throttle<IntersectionObserverCallback>(500, (entries) => {
 			if (entries.some(entry => entry.isIntersecting)) {
 				fn();
 			}
 		});
 
+		const observer = new IntersectionObserver(check);
 		observer.observe(src);
 
-		src._observer_ = observer;
+		observers.set(src, observer);
 	},
 
-	unmounted(src, binding, vn) {
-		if (src._observer_) src._observer_.disconnect();
+	beforeUnmount(src) {
+		const observer = observers.get(src);
+		if (observer) {
+			observer.disconnect();
+			observers.delete(src);
+		}
 	},
-} as Directive;
+} as Directive<HTMLElement, (() => Awaitable<void>) | null | undefined>;

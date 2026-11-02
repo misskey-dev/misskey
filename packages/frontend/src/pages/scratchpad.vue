@@ -4,11 +4,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
-
-	<MkSpacer :contentMax="800">
-		<div :class="$style.root">
+<PageWithHeader>
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
+		<div class="_gaps">
 			<div class="_gaps_s">
 				<div :class="$style.editor" class="_panel">
 					<MkCodeEditor v-model="code" lang="aiscript"/>
@@ -26,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkContainer :foldable="true" class="">
 				<template #header>{{ i18n.ts.output }}</template>
 				<div :class="$style.logs">
-					<div v-for="log in logs" :key="log.id" class="log" :class="{ print: log.print }">{{ log.text }}</div>
+					<div v-for="log in logs" :key="log.id" class="log" :class="log.type">{{ log.text }}</div>
 				</div>
 			</MkContainer>
 
@@ -52,30 +50,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts.scratchpadDescription }}
 			</div>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { onDeactivated, onUnmounted, ref, watch, computed } from 'vue';
-import type { Ref } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
+import type { Ref } from 'vue';
+import type { AsUiComponent } from '@/aiscript/ui.js';
+import type { AsUiRoot } from '@/aiscript/ui.js';
+import type { Value } from '@syuilo/aiscript/interpreter/value.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
-import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { registerAsUiLib } from '@/scripts/aiscript/ui.js';
-import type { AsUiComponent } from '@/scripts/aiscript/ui.js';
+import { definePage } from '@/page.js';
+import { registerAsUiLib } from '@/aiscript/ui.js';
 import MkAsUi from '@/components/MkAsUi.vue';
 import { miLocalStorage } from '@/local-storage.js';
-import { claimAchievement } from '@/scripts/achievements.js';
-
-import type { AsUiRoot } from '@/scripts/aiscript/ui.js';
+import { claimAchievement } from '@/utility/achievements.js';
 
 const parser = new Parser();
 let aiscript: Interpreter;
@@ -83,27 +81,37 @@ const code = ref('');
 const logs = ref<{
 	id: number;
 	text: string;
-	print: boolean;
+	type: 'print' | 'end' | 'error';
 }[]>([]);
-const root = ref<AsUiRoot>();
+const root = ref<AsUiRoot | undefined>();
 const components = ref<Ref<AsUiComponent>[]>([]);
 const uiKey = ref(0);
-const uiInspectorOpenedComponents = ref(new Map<string, boolean>);
+const uiInspectorOpenedComponents = ref(new WeakMap<AsUiComponent | Ref<AsUiComponent>, boolean>);
 
 const saved = miLocalStorage.getItem('scratchpad');
 if (saved) {
 	code.value = saved;
 }
 
+function pushLog(type: 'print' | 'end' | 'error', text: string): void {
+	logs.value.push({ id: Math.random(), text, type });
+}
+
+function processError(title: string, err: unknown): void {
+	const text = String(err);
+	pushLog('error', text);
+	os.alert({ type: 'error', title, text });
+}
+
 watch(code, () => {
 	miLocalStorage.setItem('scratchpad', code.value);
 });
 
-function stringifyUiProps(uiProps) {
+function stringifyUiProps(uiProps: AsUiComponent) {
 	return JSON.stringify(
 		{ ...uiProps, type: undefined, id: undefined },
 		(k, v) => typeof v === 'function' ? '<function>' : v,
-		2
+		2,
 	);
 }
 
@@ -113,6 +121,7 @@ async function run() {
 	components.value = [];
 	uiKey.value++;
 	logs.value = [];
+
 	aiscript = new Interpreter(({
 		...createAiScriptEnv({
 			storageKey: 'widget',
@@ -127,26 +136,17 @@ async function run() {
 			if (value.type === 'str' && value.value.toLowerCase().replace(',', '').includes('hello world')) {
 				claimAchievement('outputHelloWorldOnScratchpad');
 			}
-			logs.value.push({
-				id: Math.random(),
-				text: value.type === 'str' ? value.value : utils.valToString(value),
-				print: true,
-			});
+			pushLog('print', value.type === 'str' ? value.value : utils.valToString(value));
 		},
 		err: (err) => {
-			os.alert({
-				type: 'error',
-				title: 'AiScript Error',
-				text: err.toString(),
-			});
+			processError('AiScript Error', err);
 		},
 		log: (type, params) => {
 			switch (type) {
-				case 'end': logs.value.push({
-					id: Math.random(),
-					text: utils.valToString(params.val, true),
-					print: false,
-				}); break;
+				case 'end': {
+					pushLog('end', utils.valToString(params.val as Value, true));
+					break;
+				}
 				default: break;
 			}
 		},
@@ -156,23 +156,14 @@ async function run() {
 	try {
 		ast = parser.parse(code.value);
 	} catch (err: any) {
-		os.alert({
-			type: 'error',
-			title: 'Syntax Error',
-			text: err.toString(),
-		});
+		processError('Syntax Error', err);
 		return;
 	}
 	try {
 		await aiscript.exec(ast);
 	} catch (err: any) {
-		// AiScript runtime errors should be processed by error callback function
-		// so errors caught here are AiScript's internal errors.
-		os.alert({
-			type: 'error',
-			title: 'Internal Error',
-			text: err.toString(),
-		});
+		// in case AiScript Interpreter has some bug
+		processError('AiScript Internal Error', err);
 	}
 }
 
@@ -189,11 +180,13 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 const showns = computed(() => {
+	if (root.value == null) return new Set<string>();
 	const result = new Set<string>();
 	(function addChildrenToResult(c: AsUiComponent) {
 		result.add(c.id);
-		if (c.children) {
-			const childComponents = components.value.filter(v => c.children.includes(v.value.id));
+		const children = c.children;
+		if (children) {
+			const childComponents = components.value.filter(v => children.includes(v.value.id));
 			for (const child of childComponents) {
 				addChildrenToResult(child.value);
 			}
@@ -202,7 +195,7 @@ const showns = computed(() => {
 	return result;
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.scratchpad,
 	icon: 'ti ti-terminal-2',
 }));
@@ -210,9 +203,6 @@ definePageMetadata(() => ({
 
 <style lang="scss" module>
 .root {
-	display: flex;
-	flex-direction: column;
-	gap: var(--MI-margin);
 }
 
 .editor {
@@ -235,10 +225,13 @@ definePageMetadata(() => ({
 	padding: 16px;
 
 	&:global {
-		> .log {
-			&:not(.print) {
-				opacity: 0.7;
-			}
+		> .log.print {
+		}
+		> .log.end {
+			opacity: 0.7;
+		}
+		> .log.error {
+			color: var(--MI_THEME-error);
 		}
 	}
 }
@@ -250,7 +243,7 @@ definePageMetadata(() => ({
 }
 
 .uiInspectorUnShown {
-	color: var(--MI_THEME-fgTransparent);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.5);
 }
 
 .uiInspectorType {

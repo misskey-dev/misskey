@@ -43,14 +43,21 @@ export const meta = {
 } as const;
 
 export const paramDef = {
-	type: 'object',
-	properties: {
-		fileId: { type: 'string', format: 'misskey:id' },
-		url: { type: 'string' },
-	},
 	anyOf: [
-		{ required: ['fileId'] },
-		{ required: ['url'] },
+		{
+			type: 'object',
+			properties: {
+				fileId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['fileId'],
+		},
+		{
+			type: 'object',
+			properties: {
+				url: { type: 'string' },
+			},
+			required: ['url'],
+		},
 	],
 } as const;
 
@@ -64,21 +71,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			let file: MiDriveFile | null = null;
-
-			if (ps.fileId) {
-				file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
-			} else if (ps.url) {
-				file = await this.driveFilesRepository.findOne({
-					where: [{
-						url: ps.url,
-					}, {
-						webpublicUrl: ps.url,
-					}, {
-						thumbnailUrl: ps.url,
-					}],
-				});
-			}
+			const file = await this.driveFilesRepository.findOneBy(
+				'fileId' in ps
+					? { id: ps.fileId }
+					: [{ url: ps.url }, { webpublicUrl: ps.url }, { thumbnailUrl: ps.url }],
+			);
 
 			if (file == null) {
 				throw new ApiError(meta.errors.noSuchFile);

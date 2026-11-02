@@ -5,10 +5,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { FlashLikesRepository } from '@/models/_.js';
-import { QueryService } from '@/core/QueryService.js';
 import { FlashLikeEntityService } from '@/core/entities/FlashLikeEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { FlashService } from '@/core/FlashService.js';
 
 export const meta = {
 	tags: ['account', 'flash'],
@@ -44,6 +43,9 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
+		search: { type: 'string', minLength: 1, maxLength: 100, nullable: true },
 	},
 	required: [],
 } as const;
@@ -51,20 +53,18 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.flashLikesRepository)
-		private flashLikesRepository: FlashLikesRepository,
-
 		private flashLikeEntityService: FlashLikeEntityService,
-		private queryService: QueryService,
+		private flashService: FlashService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(this.flashLikesRepository.createQueryBuilder('like'), ps.sinceId, ps.untilId)
-				.andWhere('like.userId = :meId', { meId: me.id })
-				.leftJoinAndSelect('like.flash', 'flash');
-
-			const likes = await query
-				.limit(ps.limit)
-				.getMany();
+			const likes = await this.flashService.myLikes(me.id, {
+				sinceId: ps.sinceId,
+				untilId: ps.untilId,
+				sinceDate: ps.sinceDate,
+				untilDate: ps.untilDate,
+				limit: ps.limit,
+				search: ps.search,
+			});
 
 			return this.flashLikeEntityService.packMany(likes, me);
 		});

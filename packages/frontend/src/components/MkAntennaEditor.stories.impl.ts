@@ -4,7 +4,7 @@
  */
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import type { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
 import { commonHandlers } from '../../.storybook/mocks.js';

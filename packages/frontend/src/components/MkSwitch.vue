@@ -30,6 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { toRefs } from 'vue';
 import type { Ref } from 'vue';
 import XButton from '@/components/MkSwitch.button.vue';
+import { haptic } from '@/utility/haptic.js';
 
 const props = defineProps<{
 	modelValue: boolean | Ref<boolean>;
@@ -48,6 +49,8 @@ const toggle = () => {
 	if (props.disabled) return;
 	emit('update:modelValue', !checked.value);
 	emit('change', !checked.value);
+
+	haptic();
 };
 </script>
 
@@ -100,7 +103,7 @@ const toggle = () => {
 
 .caption {
 	margin: 8px 0 0 0;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	font-size: 0.85em;
 
 	&:empty {
