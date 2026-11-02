@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpened]: expandedItemIds.includes(item.id) }]">
 									<div :class="$style.userItemMain">
 										<MkA :class="$style.userItemMainBody" :to="`/admin/user/${item.user.id}`">
-											<MkUserCardMini :user="item.user" withChart/>
+											<MkUserCardMini :user="item.user"/>
 										</MkA>
 										<button class="_button" :class="$style.userToggle" @click="toggleItem(item.id)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
 										<button class="_button" :class="$style.unassign" @click="unassign(item.user.id, $event)"><i class="ti ti-x"></i></button>

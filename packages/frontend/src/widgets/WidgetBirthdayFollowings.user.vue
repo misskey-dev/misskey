@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<MkA :to="userPage(item.user)" style="overflow: clip;">
-		<MkUserCardMini :user="item.user" style="text-overflow: ellipsis; background: inherit; border-radius: unset;">
+		<MkUserCardMini :user="item.user" :withChart="false" style="text-overflow: ellipsis; background: inherit; border-radius: unset;">
 			<template #sub>
 				<span>{{ countdownDate }}</span>
 				<span> / </span>

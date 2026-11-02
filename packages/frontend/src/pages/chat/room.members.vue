@@ -8,14 +8,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkButton v-if="isOwner" primary rounded style="margin: 0 auto;" @click="emit('inviteUser')"><i class="ti ti-plus"></i> {{ i18n.ts._chat.inviteUser }}</MkButton>
 
 	<MkA :class="$style.membershipBody" :to="`${userPage(room.owner)}`">
-		<MkUserCardMini :user="room.owner" withChart/>
+		<MkUserCardMini :user="room.owner"/>
 	</MkA>
 
 	<hr v-if="memberships.length > 0">
 
 	<div v-for="membership in memberships" :key="membership.id" :class="$style.membership">
 		<MkA :class="$style.membershipBody" :to="`${userPage(membership.user!)}`">
-			<MkUserCardMini :user="membership.user!" withChart/>
+			<MkUserCardMini :user="membership.user!"/>
 		</MkA>
 	</div>
 
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div v-for="invitation in invitations" :key="invitation.id" :class="$style.invitation">
 			<MkA :class="$style.invitationBody" :to="`${userPage(invitation.user)}`">
-				<MkUserCardMini :user="invitation.user" withChart/>
+				<MkUserCardMini :user="invitation.user"/>
 			</MkA>
 		</div>
 	</template>

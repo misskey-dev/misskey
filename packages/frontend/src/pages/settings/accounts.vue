@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<template v-for="x in accounts" :key="x.host + x.id">
-			<MkUserCardMini v-if="x.user" :user="x.user" withChart :class="$style.user" @click.prevent="showMenu(x.host, x.id, $event)"/>
+			<MkUserCardMini v-if="x.user" :user="x.user" :class="$style.user" @click.prevent="showMenu(x.host, x.id, $event)"/>
 		</template>
 	</div>
 </SearchMarker>
