@@ -56,10 +56,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				emailVerifyCode: null,
 			});
 
-			this.globalEventService.publishMainStream(profile.userId, 'meUpdated', await this.userEntityService.pack(profile.userId, { id: profile.userId }, {
-				schema: 'MeDetailed',
-				includeSecrets: true,
-			}));
+			this.globalEventService.publishMainStream(profile.userId, 'meUpdated');
 		});
 	}
 }
