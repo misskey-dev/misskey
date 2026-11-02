@@ -71,6 +71,9 @@ export const packedMetaLiteSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 		},
+		clientOptions: {
+			ref: 'MetaClientOptions',
+		},
 		disableRegistration: {
 			type: 'boolean',
 			optional: false, nullable: false,
@@ -118,6 +121,10 @@ export const packedMetaLiteSchema = {
 		enableTestcaptcha: {
 			type: 'boolean',
 			optional: false, nullable: false,
+		},
+		googleAnalyticsMeasurementId: {
+			type: 'string',
+			optional: false, nullable: true,
 		},
 		swPublickey: {
 			type: 'string',
@@ -187,6 +194,10 @@ export const packedMetaLiteSchema = {
 						type: 'integer',
 						optional: false, nullable: false,
 					},
+					isSensitive: {
+						type: 'boolean',
+						optional: true, nullable: false,
+					},
 				},
 			},
 		},
@@ -206,6 +217,38 @@ export const packedMetaLiteSchema = {
 		translatorAvailable: {
 			type: 'boolean',
 			optional: false, nullable: false,
+		},
+		sentryForFrontend: {
+			type: 'object',
+			optional: false, nullable: true,
+			properties: {
+				options: {
+					type: 'object',
+					optional: false, nullable: false,
+					properties: {
+						dsn: {
+							type: 'string',
+							optional: false, nullable: false,
+						},
+					},
+					additionalProperties: true,
+				},
+				vueIntegration: {
+					type: 'object',
+					optional: true, nullable: true,
+					additionalProperties: true,
+				},
+				browserTracingIntegration: {
+					type: 'object',
+					optional: true, nullable: true,
+					additionalProperties: true,
+				},
+				replayIntegration: {
+					type: 'object',
+					optional: true, nullable: true,
+					additionalProperties: true,
+				},
+			},
 		},
 		mediaProxy: {
 			type: 'string',
@@ -259,6 +302,11 @@ export const packedMetaLiteSchema = {
 		},
 		maxFileSize: {
 			type: 'number',
+			optional: false, nullable: false,
+		},
+		federation: {
+			type: 'string',
+			enum: ['all', 'specified', 'none'],
 			optional: false, nullable: false,
 		},
 	},
@@ -347,4 +395,24 @@ export const packedMetaDetailedSchema = {
 			ref: 'MetaDetailedOnly',
 		},
 	],
+} as const;
+
+export const packedMetaClientOptionsSchema = {
+	type: 'object',
+	optional: false, nullable: false,
+	properties: {
+		entrancePageStyle: {
+			type: 'string',
+			enum: ['classic', 'simple'],
+			optional: false, nullable: false,
+		},
+		showTimelineForVisitor: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		showActivitiesForVisitor: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+	},
 } as const;

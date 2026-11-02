@@ -3,13 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { jest } from '@jest/globals';
+import { describe, expect, beforeAll, afterAll, beforeEach, afterEach, test, vi } from 'vitest';
+import type { Mocked } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomString } from '../utils.js';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 import {
 	AbuseReportNotificationRecipientRepository,
 	MiAbuseReportNotificationRecipient,
+	MiAbuseUserReport,
 	MiSystemWebhook,
 	MiUser,
 	SystemWebhooksRepository,
@@ -41,9 +43,9 @@ describe('AbuseReportNotificationService', () => {
 	let systemWebhooksRepository: SystemWebhooksRepository;
 	let abuseReportNotificationRecipientRepository: AbuseReportNotificationRecipientRepository;
 	let idService: IdService;
-	let roleService: jest.Mocked<RoleService>;
-	let emailService: jest.Mocked<EmailService>;
-	let webhookService: jest.Mocked<SystemWebhookService>;
+	let roleService: Mocked<RoleService>;
+	let emailService: Mocked<EmailService>;
+	let webhookService: Mocked<SystemWebhookService>;
 
 	// --------------------------------------------------------------------------------------
 
@@ -106,25 +108,28 @@ describe('AbuseReportNotificationService', () => {
 					AbuseReportNotificationService,
 					IdService,
 					{
-						provide: RoleService, useFactory: () => ({ getModeratorIds: jest.fn() }),
+						provide: RoleService, useFactory: () => ({ getModeratorIds: vi.fn() }),
 					},
 					{
-						provide: SystemWebhookService, useFactory: () => ({ enqueueSystemWebhook: jest.fn() }),
+						provide: SystemWebhookService, useFactory: () => ({ enqueueSystemWebhook: vi.fn() }),
 					},
 					{
-						provide: UserEntityService, useFactory: () => ({ pack: (v: any) => v }),
+						provide: UserEntityService, useFactory: () => ({
+							pack: (v: any) => Promise.resolve(v),
+							packMany: (v: any) => Promise.resolve(v),
+						}),
 					},
 					{
-						provide: EmailService, useFactory: () => ({ sendEmail: jest.fn() }),
+						provide: EmailService, useFactory: () => ({ sendEmail: vi.fn() }),
 					},
 					{
-						provide: MetaService, useFactory: () => ({ fetch: jest.fn() }),
+						provide: MetaService, useFactory: () => ({ fetch: vi.fn() }),
 					},
 					{
 						provide: ModerationLogService, useFactory: () => ({ log: () => Promise.resolve() }),
 					},
 					{
-						provide: GlobalEventService, useFactory: () => ({ publishAdminStream: jest.fn() }),
+						provide: GlobalEventService, useFactory: () => ({ publishAdminStream: vi.fn() }),
 					},
 				],
 			})
@@ -137,17 +142,17 @@ describe('AbuseReportNotificationService', () => {
 
 		service = app.get(AbuseReportNotificationService);
 		idService = app.get(IdService);
-		roleService = app.get(RoleService) as jest.Mocked<RoleService>;
-		emailService = app.get<EmailService>(EmailService) as jest.Mocked<EmailService>;
-		webhookService = app.get<SystemWebhookService>(SystemWebhookService) as jest.Mocked<SystemWebhookService>;
+		roleService = app.get(RoleService) as Mocked<RoleService>;
+		emailService = app.get<EmailService>(EmailService) as Mocked<EmailService>;
+		webhookService = app.get<SystemWebhookService>(SystemWebhookService) as Mocked<SystemWebhookService>;
 
 		app.enableShutdownHooks();
 	});
 
 	beforeEach(async () => {
-		root = await createUser({ username: 'root', usernameLower: 'root', isRoot: true });
-		alice = await createUser({ username: 'alice', usernameLower: 'alice', isRoot: false });
-		bob = await createUser({ username: 'bob', usernameLower: 'bob', isRoot: false });
+		root = await createUser({ username: 'root', usernameLower: 'root' });
+		alice = await createUser({ username: 'alice', usernameLower: 'alice' });
+		bob = await createUser({ username: 'bob', usernameLower: 'bob' });
 		systemWebhook1 = await createWebhook();
 		systemWebhook2 = await createWebhook();
 
@@ -158,10 +163,10 @@ describe('AbuseReportNotificationService', () => {
 		emailService.sendEmail.mockClear();
 		webhookService.enqueueSystemWebhook.mockClear();
 
-		await usersRepository.delete({});
-		await userProfilesRepository.delete({});
-		await systemWebhooksRepository.delete({});
-		await abuseReportNotificationRecipientRepository.delete({});
+		await usersRepository.createQueryBuilder().delete().execute();
+		await userProfilesRepository.createQueryBuilder().delete().execute();
+		await systemWebhooksRepository.createQueryBuilder().delete().execute();
+		await abuseReportNotificationRecipientRepository.createQueryBuilder().delete().execute();
 	});
 
 	afterAll(async () => {
@@ -342,6 +347,48 @@ describe('AbuseReportNotificationService', () => {
 
 			const recipients = await service.fetchRecipients({ ids: [recipient1.id, recipient3.id], method: ['webhook'] });
 			expect(recipients).toEqual([recipient3]);
+		});
+	});
+
+	describe('notifySystemWebhook', () => {
+		test('非アクティブな通報通知はWebhook送信から除外される', async () => {
+			const recipient1 = await createRecipient({
+				method: 'webhook',
+				systemWebhookId: systemWebhook1.id,
+				isActive: true,
+			});
+			const recipient2 = await createRecipient({
+				method: 'webhook',
+				systemWebhookId: systemWebhook2.id,
+				isActive: false,
+			});
+
+			const reports: MiAbuseUserReport[] = [
+				{
+					id: idService.gen(),
+					targetUserId: alice.id,
+					targetUser: alice,
+					reporterId: bob.id,
+					reporter: bob,
+					assigneeId: null,
+					assignee: null,
+					resolved: false,
+					forwarded: false,
+					comment: 'test',
+					moderationNote: '',
+					resolvedAs: null,
+					targetUserHost: null,
+					reporterHost: null,
+				},
+			];
+
+			await service.notifySystemWebhook(reports, 'abuseReport');
+
+			// 実際に除外されるかはSystemWebhookService側で確認する.
+			// ここでは非アクティブな通報通知を除外設定できているかを確認する
+			expect(webhookService.enqueueSystemWebhook).toHaveBeenCalledTimes(1);
+			expect(webhookService.enqueueSystemWebhook.mock.calls[0][0]).toBe('abuseReport');
+			expect(webhookService.enqueueSystemWebhook.mock.calls[0][2]).toEqual({ excludes: [systemWebhook2.id] });
 		});
 	});
 });

@@ -21,7 +21,7 @@ export class MiClipNote {
 	})
 	public noteId: MiNote['id'];
 
-	@ManyToOne(type => MiNote, {
+	@ManyToOne(() => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -34,7 +34,7 @@ export class MiClipNote {
 	})
 	public clipId: MiClip['id'];
 
-	@ManyToOne(type => MiClip, {
+	@ManyToOne(() => MiClip, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

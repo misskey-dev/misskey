@@ -39,13 +39,14 @@ import { onBeforeUnmount, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { pleaseLogin } from '@/scripts/please-login.js';
-import { $i } from '@/account.js';
-import { defaultStore } from '@/store.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { pleaseLogin } from '@/utility/please-login.js';
+import { $i } from '@/i.js';
+import { prefer } from '@/preferences.js';
+import { haptic } from '@/utility/haptic.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,
@@ -80,9 +81,17 @@ function onFollowChange(user: Misskey.entities.UserDetailed) {
 }
 
 async function onClick() {
-	pleaseLogin({ openOnRemote: { type: 'web', path: `/@${props.user.username}@${props.user.host ?? host}` } });
+	const isLoggedIn = await pleaseLogin({
+		openOnRemote: {
+			type: 'web',
+			path: `/@${props.user.username}@${props.user.host ?? host}`,
+		},
+	});
+	if (!isLoggedIn) return;
 
 	wait.value = true;
+
+	haptic();
 
 	try {
 		if (isFollowing.value) {
@@ -99,8 +108,23 @@ async function onClick() {
 			await misskeyApi('following/delete', {
 				userId: props.user.id,
 			});
+		} else if (hasPendingFollowRequestFromYou.value) {
+			const { canceled } = await os.confirm({
+				type: 'question',
+				text: i18n.tsx.cancelFollowRequestConfirm({ name: props.user.name || props.user.username }),
+			});
+
+			if (canceled) {
+				wait.value = false;
+				return;
+			}
+
+			await misskeyApi('following/requests/cancel', {
+				userId: props.user.id,
+			});
+			hasPendingFollowRequestFromYou.value = false;
 		} else {
-			if (defaultStore.state.alwaysConfirmFollow) {
+			if (prefer.s.alwaysConfirmFollow) {
 				const { canceled } = await os.confirm({
 					type: 'question',
 					text: i18n.tsx.followConfirm({ name: props.user.name || props.user.username }),
@@ -112,41 +136,34 @@ async function onClick() {
 				}
 			}
 
-			if (hasPendingFollowRequestFromYou.value) {
-				await misskeyApi('following/requests/cancel', {
-					userId: props.user.id,
-				});
-				hasPendingFollowRequestFromYou.value = false;
-			} else {
-				await misskeyApi('following/create', {
-					userId: props.user.id,
-					withReplies: defaultStore.state.defaultWithReplies,
-				});
-				emit('update:user', {
-					...props.user,
-					withReplies: defaultStore.state.defaultWithReplies,
-				});
-				hasPendingFollowRequestFromYou.value = true;
+			await misskeyApi('following/create', {
+				userId: props.user.id,
+				withReplies: prefer.s.defaultFollowWithReplies,
+			});
+			emit('update:user', {
+				...props.user,
+				withReplies: prefer.s.defaultFollowWithReplies,
+			});
+			hasPendingFollowRequestFromYou.value = true;
 
-				if ($i == null) {
-					wait.value = false;
-					return;
-				}
+			if ($i == null) {
+				wait.value = false;
+				return;
+			}
 
-				claimAchievement('following1');
+			claimAchievement('following1');
 
-				if ($i.followingCount >= 10) {
-					claimAchievement('following10');
-				}
-				if ($i.followingCount >= 50) {
-					claimAchievement('following50');
-				}
-				if ($i.followingCount >= 100) {
-					claimAchievement('following100');
-				}
-				if ($i.followingCount >= 300) {
-					claimAchievement('following300');
-				}
+			if ($i.followingCount >= 10) {
+				claimAchievement('following10');
+			}
+			if ($i.followingCount >= 50) {
+				claimAchievement('following50');
+			}
+			if ($i.followingCount >= 100) {
+				claimAchievement('following100');
+			}
+			if ($i.followingCount >= 300) {
+				claimAchievement('following300');
 			}
 		}
 	} catch (err) {
@@ -211,13 +228,13 @@ onBeforeUnmount(() => {
 		background: var(--MI_THEME-accent);
 
 		&:hover {
-			background: var(--MI_THEME-accentLighten);
-			border-color: var(--MI_THEME-accentLighten);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
+			border-color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 		}
 
 		&:active {
-			background: var(--MI_THEME-accentDarken);
-			border-color: var(--MI_THEME-accentDarken);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
+			border-color: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
 		}
 	}
 

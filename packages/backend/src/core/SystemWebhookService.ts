@@ -50,7 +50,6 @@ export type SystemWebhookPayload<T extends SystemWebhookEventType> =
 
 @Injectable()
 export class SystemWebhookService implements OnApplicationShutdown {
-	private logger: Logger;
 	private activeSystemWebhooksFetched = false;
 	private activeSystemWebhooks: MiSystemWebhook[] = [];
 
@@ -62,11 +61,9 @@ export class SystemWebhookService implements OnApplicationShutdown {
 		private idService: IdService,
 		private queueService: QueueService,
 		private moderationLogService: ModerationLogService,
-		private loggerService: LoggerService,
 		private globalEventService: GlobalEventService,
 	) {
 		this.redisForSub.on('message', this.onMessage);
-		this.logger = this.loggerService.getLogger('webhook');
 	}
 
 	@bindThis
@@ -193,28 +190,24 @@ export class SystemWebhookService implements OnApplicationShutdown {
 	/**
 	 * SystemWebhook をWebhook配送キューに追加する
 	 * @see QueueService.systemWebhookDeliver
-	 * // TODO: contentの型を厳格化する
 	 */
 	@bindThis
 	public async enqueueSystemWebhook<T extends SystemWebhookEventType>(
-		webhook: MiSystemWebhook | MiSystemWebhook['id'],
 		type: T,
 		content: SystemWebhookPayload<T>,
+		opts?: {
+			excludes?: MiSystemWebhook['id'][];
+		},
 	) {
-		const webhookEntity = typeof webhook === 'string'
-			? (await this.fetchActiveSystemWebhooks()).find(a => a.id === webhook)
-			: webhook;
-		if (!webhookEntity || !webhookEntity.isActive) {
-			this.logger.info(`SystemWebhook is not active or not found : ${webhook}`);
-			return;
-		}
-
-		if (!webhookEntity.on.includes(type)) {
-			this.logger.info(`SystemWebhook ${webhookEntity.id} is not listening to ${type}`);
-			return;
-		}
-
-		return this.queueService.systemWebhookDeliver(webhookEntity, type, content);
+		const webhooks = await this.fetchActiveSystemWebhooks()
+			.then(webhooks => {
+				return webhooks.filter(webhook => !opts?.excludes?.includes(webhook.id) && webhook.on.includes(type));
+			});
+		return Promise.all(
+			webhooks.map(webhook => {
+				return this.queueService.systemWebhookDeliver(webhook, type, content);
+			}),
+		);
 	}
 
 	@bindThis

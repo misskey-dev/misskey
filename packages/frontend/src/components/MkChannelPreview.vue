@@ -27,6 +27,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</template>
 					</I18n>
 				</div>
+				<div v-if="$i != null && $i.id === channel.userId" style="color: var(--MI_THEME-warn)">
+					<i class="ti ti-user-star ti-fw"></i>
+					<span style="margin-left: 4px;">{{ i18n.ts.youAreAdmin }}</span>
+				</div>
 			</div>
 		</div>
 		<article v-if="channel.description">
@@ -48,6 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 
@@ -125,7 +130,9 @@ const bannerStyle = computed(() => {
 			position: absolute;
 			top: 16px;
 			left: 16px;
+			max-width: calc(100% - 32px);
 			padding: 12px 16px;
+			box-sizing: border-box;
 			background: rgba(0, 0, 0, 0.7);
 			color: #fff;
 			font-size: 1.2em;
