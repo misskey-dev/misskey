@@ -5,6 +5,8 @@ import {
 	AdminRolesCreateResponse,
 	EmptyRequest,
 	EmptyResponse,
+	I2faRegisterKeyRequest,
+	I2faKeyDoneResponse,
 	UsersShowRequest,
 } from './autogen/entities.js';
 import {
@@ -18,6 +20,8 @@ import {
 	SignupPendingResponse,
 	SignupRequest,
 	SignupResponse,
+	I2faRegisterKeyResponse,
+	I2faKeyDoneRequest,
 } from './entities.js';
 
 type Overwrite<T, U extends { [Key in keyof T]?: unknown }> = Omit<
@@ -108,6 +112,14 @@ export type Endpoints = Overwrite<
 					$default: SigninWithPasskeyInitResponse;
 				},
 			},
+		},
+		'i/2fa/register-key': {
+			req: I2faRegisterKeyRequest;
+			res: I2faRegisterKeyResponse;
+		},
+		'i/2fa/key-done': {
+			req: I2faKeyDoneRequest;
+			res: I2faKeyDoneResponse;
 		},
 		'admin/roles/create': {
 			req: Overwrite<AdminRolesCreateRequest, { policies: PartialRolePolicyOverride }>;

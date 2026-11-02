@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		[$style.buttonChecked]: checked,
 		[$style.buttonDisabled]: props.disabled
 	}"
-	data-cy-switch-toggle
+	data-testid="switch-toggle"
 	@click.prevent.stop="toggle"
 >
 	<div :class="{ [$style.knob]: true, [$style.knobChecked]: checked }"></div>

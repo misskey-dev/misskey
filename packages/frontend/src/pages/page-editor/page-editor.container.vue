@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-if="removable" class="_button" @click="remove()">
 				<i class="ti ti-trash"></i>
 			</button>
-			<button v-if="draggable" class="drag-handle _button">
+			<button v-if="draggable" class="drag-handle _button" tabindex="-1" :draggable="true" @dragstart.stop="dragStartCallback">
 				<i class="ti ti-menu-2"></i>
 			</button>
 			<button class="_button" @click="toggleContent(!showBody)">
@@ -34,6 +34,7 @@ const props = withDefaults(defineProps<{
 	expanded?: boolean;
 	removable?: boolean;
 	draggable?: boolean;
+	dragStartCallback?: (ev: DragEvent) => void;
 }>(), {
 	expanded: true,
 	removable: true,

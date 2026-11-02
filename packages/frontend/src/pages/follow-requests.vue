@@ -38,7 +38,7 @@ import * as Misskey from 'misskey-js';
 import { computed, markRaw, ref, watch } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
-import { userPage, acct } from '@/filters/user.js';
+import { userPage, acct } from '@@/js/user.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';

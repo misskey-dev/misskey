@@ -74,30 +74,47 @@ export class RelayService {
 	}
 
 	@bindThis
-	public async relayAccepted(id: string): Promise<string> {
-		const result = await this.relaysRepository.update(id, {
-			status: 'accepted',
-		});
-
-		return JSON.stringify(result);
+	public async relayAccepted(id: string, actor: { inbox: string | null; sharedInbox: string | null; }): Promise<string> {
+		return JSON.stringify(await this.updateRequestingRelayStatus(id, actor, 'accepted'));
 	}
 
 	@bindThis
-	public async relayRejected(id: string): Promise<string> {
-		const result = await this.relaysRepository.update(id, {
-			status: 'rejected',
-		});
+	public async relayRejected(id: string, actor: { inbox: string | null; sharedInbox: string | null; }): Promise<string> {
+		return JSON.stringify(await this.updateRequestingRelayStatus(id, actor, 'rejected'));
+	}
 
-		return JSON.stringify(result);
+	@bindThis
+	private async updateRequestingRelayStatus(id: string, actor: { inbox: string | null; sharedInbox: string | null; }, status: 'accepted' | 'rejected') {
+		const relay = await this.relaysRepository.findOneBy({ id });
+		if (relay == null) return { affected: 0 };
+		// 応答してきたのがリレー自身でなければ受け付けない
+		if (actor.inbox !== relay.inbox && actor.sharedInbox !== relay.inbox) return { affected: 0 };
+
+		const result = await this.relaysRepository.update({ id, status: 'requesting' }, { status });
+		return { affected: result.affected ?? 0 };
+	}
+
+	@bindThis
+	private getAcceptedRelays(): Promise<MiRelay[]> {
+		return this.relaysCache.fetch(() => this.relaysRepository.findBy({
+			status: 'accepted',
+		}));
+	}
+
+	@bindThis
+	public async isRelayActor(actor: { inbox: string | null; sharedInbox: string | null }): Promise<boolean> {
+		const relays = await this.getAcceptedRelays();
+		return relays.some(relay =>
+			(actor.inbox != null && relay.inbox === actor.inbox)
+			|| (actor.sharedInbox != null && relay.inbox === actor.sharedInbox),
+		);
 	}
 
 	@bindThis
 	public async deliverToRelays(user: { id: MiUser['id']; host: null; }, activity: any): Promise<void> {
 		if (activity == null) return;
 
-		const relays = await this.relaysCache.fetch(() => this.relaysRepository.findBy({
-			status: 'accepted',
-		}));
+		const relays = await this.getAcceptedRelays();
 		if (relays.length === 0) return;
 
 		const copy = deepClone(activity);

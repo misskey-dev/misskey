@@ -5,7 +5,7 @@
 
 import type { Directive } from 'vue';
 import { getBgColor } from '@/utility/get-bg-color.js';
-import { globalEvents } from '@/events.js';
+import { themeManager } from '@/theme.js';
 
 const handlerMap = new WeakMap<HTMLElement, () => void>();
 
@@ -27,10 +27,10 @@ export const adaptiveBorderDirective = {
 
 		calc();
 
-		globalEvents.on('themeChanged', calc);
+		themeManager.on('themeChanged', calc);
 	},
 
 	unmounted(src) {
-		globalEvents.off('themeChanged', handlerMap.get(src));
+		themeManager.off('themeChanged', handlerMap.get(src));
 	},
 } as Directive<HTMLElement>;

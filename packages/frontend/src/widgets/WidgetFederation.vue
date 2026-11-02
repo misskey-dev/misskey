@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-federation class="mkw-federation">
+<MkContainer :showHeader="widgetProps.showHeader" data-testid="mkw-federation" class="mkw-federation">
 	<template #icon><i class="ti ti-whirl"></i></template>
 	<template #header>{{ i18n.ts._widgets.federation }}</template>
 

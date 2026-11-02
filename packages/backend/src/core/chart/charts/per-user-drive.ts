@@ -56,6 +56,10 @@ export default class PerUserDriveChart extends Chart<typeof schema> { // eslint-
 
 	@bindThis
 	public async update(file: MiDriveFile, isAdditional: boolean): Promise<void> {
+		// MiDriveFile.userId is nullable (system-owned files such as the instance
+		// icon/banner, fetched system avatars, custom emoji image uploads, etc.).
+		// Per-user drive accounting is not defined for ownerless files, so skip.
+		if (file.userId == null) return;
 		const fileSizeKb = file.size / 1000;
 		await this.commit({
 			'totalCount': isAdditional ? 1 : -1,

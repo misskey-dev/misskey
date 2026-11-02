@@ -1,6 +1,0 @@
-build:
-  misskey:
-    args:
-      - NODE_ENV=development
-deploy:
-  - helm upgrade --install misskey chart --set image=${OKTETO_BUILD_MISSKEY_IMAGE} --set url="https://misskey-$(kubectl config view --minify -o jsonpath='{..namespace}').cloud.okteto.net" --set environment=development

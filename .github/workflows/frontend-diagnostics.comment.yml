@@ -1,0 +1,75 @@
+name: Frontend diagnostics (comment)
+
+on:
+  workflow_run:
+    workflows:
+      - Frontend diagnostics (inspect)
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  comment:
+    name: Comment frontend diagnostics report
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: frontend-diagnostics-report-${{ github.event.workflow_run.id }}
+      cancel-in-progress: true
+    steps:
+      - name: Download frontend diagnostics report
+        uses: actions/download-artifact@v8
+        with:
+          name: frontend-diagnostics
+          path: ${{ runner.temp }}/frontend-diagnostics
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Resolve current pull request
+        id: resolve-pr
+        uses: actions/github-script@v9
+        env:
+          PR_NUMBER_FILE: ${{ runner.temp }}/frontend-diagnostics/pr-number.txt
+        with:
+          script: |
+            const fs = require('fs/promises');
+            const { owner, repo } = context.repo;
+            const workflowRun = context.payload.workflow_run;
+            const pullRequestNumberText = (await fs.readFile(process.env.PR_NUMBER_FILE, 'utf8')).trim();
+            if (!/^[1-9]\d*$/.test(pullRequestNumberText)) {
+              throw new Error('Invalid pull request number in frontend diagnostics artifact.');
+            }
+
+            const pullRequestNumber = Number(pullRequestNumberText);
+            if (!Number.isSafeInteger(pullRequestNumber)) {
+              throw new Error('Pull request number in frontend diagnostics artifact is not a safe integer.');
+            }
+
+            const { data: currentPullRequest } = await github.rest.pulls.get({
+              owner,
+              repo,
+              pull_number: pullRequestNumber,
+            });
+
+            if (currentPullRequest.state !== 'open' || currentPullRequest.head.sha !== workflowRun.head_sha) {
+              core.notice(`Skipping stale frontend diagnostics report for pull request #${pullRequestNumber}.`);
+              core.setOutput('is-current', 'false');
+              return;
+            }
+
+            core.setOutput('is-current', 'true');
+            core.setOutput('pr-number', String(pullRequestNumber));
+
+      - name: Comment on pull request
+        if: steps.resolve-pr.outputs.is-current == 'true'
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          pr-number: ${{ steps.resolve-pr.outputs.pr-number }}
+          comment-tag: frontend-diagnostics
+          file-path: ${{ runner.temp }}/frontend-diagnostics/frontend-diagnostics.md

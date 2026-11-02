@@ -5,6 +5,7 @@
 
 import { notificationTypes } from 'misskey-js';
 import { ref } from 'vue';
+import { EventEmitter } from 'eventemitter3';
 import { i18n } from './i18n.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { SoundStore } from '@/preferences/def.js';
@@ -13,6 +14,13 @@ import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
+
+type DeckEvents = {
+	'column.dragStart': () => void;
+	'column.dragEnd': () => void;
+};
+
+export const deckGlobalEvents = new EventEmitter<DeckEvents>();
 
 export type DeckProfile = {
 	name: string;
@@ -35,6 +43,7 @@ export const columnTypes = [
 	'antenna',
 	'list',
 	'channel',
+	'clip',
 	'mentions',
 	'direct',
 	'roleTimeline',
@@ -54,6 +63,7 @@ export type Column = {
 	antennaId?: string;
 	listId?: string;
 	channelId?: string;
+	clipId?: string;
 	roleId?: string;
 	excludeTypes?: typeof notificationTypes[number][];
 	tl?: BasicTimelineType;
@@ -62,7 +72,7 @@ export type Column = {
 	withSensitive?: boolean;
 	onlyFiles?: boolean;
 	soundSetting?: SoundStore;
-	// The cache for the name of the antenna, channel, list, or role
+	// The cache for the name of the antenna, channel, list, clip, or role
 	timelineNameCache?: string;
 };
 

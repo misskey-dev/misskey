@@ -6,12 +6,12 @@
 process.env.NODE_ENV = 'test';
 
 import { setTimeout } from 'node:timers/promises';
-import { describe, jest } from '@jest/globals';
-import { ModuleMocker } from 'jest-mock';
+import { describe, beforeEach, afterEach, test, expect, vi } from 'vitest';
+import type { Mocked } from 'vitest';
+import { mockDeep } from 'vitest-mock-extended';
 import { Test } from '@nestjs/testing';
 import * as lolex from '@sinonjs/fake-timers';
 import type { TestingModule } from '@nestjs/testing';
-import type { MockMetadata } from 'jest-mock';
 import { GlobalModule } from '@/GlobalModule.js';
 import { RoleService } from '@/core/RoleService.js';
 import {
@@ -34,17 +34,15 @@ import { NotificationService } from '@/core/NotificationService.js';
 import { RoleCondFormulaValue } from '@/models/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
-const moduleMocker = new ModuleMocker(global);
-
 describe('RoleService', () => {
 	let app: TestingModule;
 	let roleService: RoleService;
 	let usersRepository: UsersRepository;
 	let rolesRepository: RolesRepository;
 	let roleAssignmentsRepository: RoleAssignmentsRepository;
-	let meta: jest.Mocked<MiMeta>;
-	let notificationService: jest.Mocked<NotificationService>;
-	let clock: lolex.InstalledClock;
+	let meta: Mocked<MiMeta>;
+	let notificationService: Mocked<NotificationService>;
+	let clock: lolex.Clock;
 
 	async function createUser(data: Partial<MiUser> = {}) {
 		const un = secureRndstr(16);
@@ -123,7 +121,7 @@ describe('RoleService', () => {
 				{
 					provide: NotificationService,
 					useFactory: () => ({
-						createNotification: jest.fn(),
+						createNotification: vi.fn(),
 					}),
 				},
 				{
@@ -134,12 +132,10 @@ describe('RoleService', () => {
 		})
 			.useMocker((token) => {
 				if (token === MetaService) {
-					return { fetch: jest.fn() };
+					return { fetch: vi.fn() };
 				}
 				if (typeof token === 'function') {
-					const mockMetadata = moduleMocker.getMetadata(token) as MockMetadata<any, any>;
-					const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-					return new Mock();
+					return mockDeep<typeof token>();
 				}
 			})
 			.compile();
@@ -151,8 +147,8 @@ describe('RoleService', () => {
 		rolesRepository = app.get<RolesRepository>(DI.rolesRepository);
 		roleAssignmentsRepository = app.get<RoleAssignmentsRepository>(DI.roleAssignmentsRepository);
 
-		meta = app.get<MiMeta>(DI.meta) as jest.Mocked<MiMeta>;
-		notificationService = app.get<NotificationService>(NotificationService) as jest.Mocked<NotificationService>;
+		meta = app.get<MiMeta>(DI.meta) as Mocked<MiMeta>;
+		notificationService = app.get<NotificationService>(NotificationService) as Mocked<NotificationService>;
 
 		await roleService.onModuleInit();
 	});
@@ -163,7 +159,7 @@ describe('RoleService', () => {
 		/**
 		 * Delete meta and roleAssignment first to avoid deadlock due to schema dependencies
 		 * https://github.com/misskey-dev/misskey/issues/16783
-		 */ 
+		 */
 		await app.get(DI.metasRepository).createQueryBuilder().delete().execute();
 		await roleAssignmentsRepository.createQueryBuilder().delete().execute();
 		await Promise.all([
@@ -698,6 +694,19 @@ describe('RoleService', () => {
 			await createUser(); // create user to ensure not empty db
 			const adminIds = await roleService.getAdministratorIds();
 			expect(adminIds).toHaveLength(0);
+		});
+
+		test('should not include duplicate user IDs if a user has multiple administrator roles', async () => {
+			const adminUser = await createUser();
+			const adminRole1 = await createRole({ name: 'admin1', isAdministrator: true });
+			const adminRole2 = await createRole({ name: 'admin2', isAdministrator: true });
+
+			await roleService.assign(adminUser.id, adminRole1.id);
+			await roleService.assign(adminUser.id, adminRole2.id);
+
+			const adminIds = await roleService.getAdministratorIds();
+
+			expect(adminIds).toEqual([adminUser.id]);
 		});
 
 		// TODO: rootユーザーは現在実装に含まれていないため、テストもそれに倣う

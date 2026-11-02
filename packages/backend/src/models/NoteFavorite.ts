@@ -24,6 +24,7 @@ export class MiNoteFavorite {
 	@JoinColumn()
 	public user: MiUser | null;
 
+	@Index()
 	@Column(id())
 	public noteId: MiNote['id'];
 

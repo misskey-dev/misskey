@@ -53,21 +53,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div><b>{{ i18n.ts._serverSetupWizard.installCompleted }}</b></div>
 						<div>{{ i18n.ts._serverSetupWizard.firstCreateAccount }}</div>
 					</div>
-					<MkInput v-model="setupPassword" type="password" data-cy-admin-initial-password>
+					<MkInput v-model="setupPassword" type="password" data-testid="admin-initial-password">
 						<template #label>{{ i18n.ts.initialPasswordForSetup }} <div v-tooltip:dialog="i18n.ts.initialPasswordForSetupDescription" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
 						<template #prefix><i class="ti ti-lock"></i></template>
 					</MkInput>
-					<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
+					<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-testid="admin-username">
 						<template #label>{{ i18n.ts.username }} <div v-tooltip:dialog="i18n.ts.usernameInfo" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
 						<template #prefix>@</template>
 						<template #suffix>@{{ host }}</template>
 					</MkInput>
-					<MkInput v-model="password" type="password" data-cy-admin-password>
+					<MkInput v-model="password" type="password" data-testid="admin-password">
 						<template #label>{{ i18n.ts.password }}</template>
 						<template #prefix><i class="ti ti-lock"></i></template>
 					</MkInput>
 					<div>
-						<MkButton gradate large rounded :disabled="accountCreating" data-cy-admin-ok style="margin: 0 auto;" type="submit">
+						<MkButton gradate large rounded :disabled="accountCreating" data-testid="admin-ok" style="margin: 0 auto;" type="submit">
 							{{ accountCreating ? i18n.ts.processing : i18n.ts.next }}<MkEllipsis v-if="accountCreating"/>
 						</MkButton>
 					</div>
@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div style="text-align: center;" class="_gaps_s">
 						<div><b>{{ i18n.ts._serverSetupWizard.accountCreated }}</b></div>
 					</div>
-					<MkButton gradate large rounded data-cy-next style="margin: 0 auto;" @click="step++">
+					<MkButton gradate large rounded data-testid="next" style="margin: 0 auto;" @click="step++">
 						{{ i18n.ts.next }}
 					</MkButton>
 				</div>
@@ -112,7 +112,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkLink target="_blank" url="https://misskey-hub.net/docs/donate/" style="margin: 0 auto;">{{ i18n.ts.learnMore }}</MkLink>
 					</div>
 					<div class="_buttonsCenter">
-						<MkButton gradate large rounded data-cy-next style="margin: 0 auto;" @click="finish">
+						<MkButton gradate large rounded data-testid="next" style="margin: 0 auto;" @click="finish">
 							{{ i18n.ts.start }}
 						</MkButton>
 					</div>

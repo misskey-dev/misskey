@@ -89,7 +89,7 @@ export class SystemAccountService implements OnApplicationShutdown {
 
 		const systemAccount = await this.systemAccountsRepository.findOne({
 			where: { type: type },
-			relations: ['user'],
+			relations: { user: true },
 		});
 
 		if (systemAccount) {

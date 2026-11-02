@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<SearchMarker :keywords="['avatar', 'icon', 'change']">
 						<MkButton primary rounded @click="changeAvatar"><SearchLabel>{{ i18n.ts._profile.changeAvatar }}</SearchLabel></MkButton>
 					</SearchMarker>
-					<MkButton primary rounded link to="/settings/avatar-decoration">{{ i18n.ts.decorate }} <i class="ti ti-sparkles"></i></MkButton>
+					<MkButton primary rounded type="routerLink" to="/settings/avatar-decoration">{{ i18n.ts.decorate }} <i class="ti ti-sparkles"></i></MkButton>
 				</div>
 			</div>
 		</div>
@@ -184,6 +184,7 @@ import { store } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import { genId } from '@/utility/id.js';
+import { replaceCurrentAccountData, updateCurrentAccount } from '@/accounts.js';
 
 const $i = ensureSignin();
 
@@ -257,7 +258,12 @@ function save() {
 			title: i18n.ts.yourNameContainsProhibitedWords,
 			text: i18n.ts.yourNameContainsProhibitedWordsDescription,
 		},
+	}).then((res) => {
+		replaceCurrentAccountData(res);
+	}).catch(() => {
+		// エラーダイアログは apiWithDialog 側で表示済み
 	});
+
 	claimAchievement('profileFilled');
 	if (profile.name === 'syuilo' || profile.name === 'しゅいろ') {
 		claimAchievement('setNameToSyuilo');
@@ -271,9 +277,19 @@ function changeAvatar(ev: PointerEvent) {
 	async function done(driveFile: Misskey.entities.DriveFile) {
 		const i = await os.apiWithDialog('i/update', {
 			avatarId: driveFile.id,
+		}, undefined, {
+			'71bb5e53-4742-4609-b465-36081e131208': {
+				title: i18n.ts.cannotSelectSensitiveMedia,
+				text: i18n.ts.cannotSelectSensitiveMediaDescription,
+			},
+		}).catch(() => null); // エラーダイアログは apiWithDialog 側で表示済み
+		if (i == null) return;
+
+		updateCurrentAccount({
+			avatarId: i.avatarId,
+			avatarUrl: i.avatarUrl,
+			avatarBlurhash: i.avatarBlurhash,
 		});
-		$i.avatarId = i.avatarId;
-		$i.avatarUrl = i.avatarUrl;
 		claimAchievement('profileFilled');
 	}
 
@@ -309,20 +325,48 @@ function changeAvatar(ev: PointerEvent) {
 		text: i18n.ts.fromDrive,
 		icon: 'ti ti-cloud',
 		action: () => {
-			chooseDriveFile({ multiple: false }).then(files => {
+			chooseDriveFile({ multiple: false, excludeSensitive: true }).then(files => {
 				done(files[0]);
 			});
 		},
-	}], ev.currentTarget ?? ev.target);
+	}, ...($i.avatarId != null ? [
+			{ type: 'divider' as const },
+			{
+				type: 'button' as const,
+				text: i18n.ts.detach,
+				icon: 'ti ti-circle-x',
+				action: () => {
+					os.apiWithDialog('i/update', {
+						avatarId: null,
+					}).then((res) => {
+						updateCurrentAccount({
+							avatarId: res.avatarId,
+							avatarUrl: res.avatarUrl,
+							avatarBlurhash: res.avatarBlurhash,
+						});
+					}).catch(() => {
+						// エラーダイアログは apiWithDialog 側で表示済み
+					});
+				},
+			},
+		] : [])], ev.currentTarget ?? ev.target);
 }
 
 function changeBanner(ev: PointerEvent) {
 	async function done(driveFile: Misskey.entities.DriveFile) {
 		const i = await os.apiWithDialog('i/update', {
 			bannerId: driveFile.id,
+		}, undefined, {
+			'e148b34c-9f33-4300-93e0-7817008fb366': {
+				title: i18n.ts.cannotSelectSensitiveMedia,
+				text: i18n.ts.cannotSelectSensitiveMediaDescription,
+			},
+		}).catch(() => null); // エラーダイアログは apiWithDialog 側で表示済み
+		if (i == null) return;
+		updateCurrentAccount({
+			bannerId: i.bannerId,
+			bannerUrl: i.bannerUrl,
 		});
-		$i.bannerId = i.bannerId;
-		$i.bannerUrl = i.bannerUrl;
 	}
 
 	os.popupMenu([{
@@ -357,11 +401,30 @@ function changeBanner(ev: PointerEvent) {
 		text: i18n.ts.fromDrive,
 		icon: 'ti ti-cloud',
 		action: () => {
-			chooseDriveFile({ multiple: false }).then(files => {
+			chooseDriveFile({ multiple: false, excludeSensitive: true }).then(files => {
 				done(files[0]);
 			});
 		},
-	}], ev.currentTarget ?? ev.target);
+	}, ...($i.bannerId ? [
+			{ type: 'divider' as const },
+			{
+				type: 'button' as const,
+				text: i18n.ts.detach,
+				icon: 'ti ti-circle-x',
+				action: () => {
+					os.apiWithDialog('i/update', {
+						bannerId: null,
+					}).then((res) => {
+						updateCurrentAccount({
+							bannerId: res.bannerId,
+							bannerUrl: res.bannerUrl,
+						});
+					}).catch(() => {
+						// エラーダイアログは apiWithDialog 側で表示済み
+					});
+				},
+			},
+		] : [])], ev.currentTarget ?? ev.target);
 }
 
 const headerActions = computed(() => []);

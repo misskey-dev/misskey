@@ -72,6 +72,8 @@ misskeyApiGet('federation/instances', {
 	right: 0;
 	width: 80vw; // 100%からshapeの幅を引いている
 	height: 100vh;
+	// 固定レイヤがホイール操作を奪い、コンテンツ列以外の上でページをスクロールできなくなるのを防ぐ (issue #17680)
+	pointer-events: none;
 }
 
 .tl {
@@ -100,6 +102,7 @@ misskeyApiGet('federation/instances', {
 	height: 100vh;
 	background: var(--MI_THEME-accent);
 	clip-path: polygon(0% 0%, 45% 0%, 20% 100%, 0% 100%);
+	pointer-events: none; // 装飾レイヤ。ホイール操作を透過させる (→ .bg 参照)
 }
 .shape2 {
 	position: fixed;
@@ -110,6 +113,7 @@ misskeyApiGet('federation/instances', {
 	background: var(--MI_THEME-accent);
 	clip-path: polygon(0% 0%, 25% 0%, 35% 100%, 0% 100%);
 	opacity: 0.5;
+	pointer-events: none; // 装飾レイヤ。ホイール操作を透過させる (→ .bg 参照)
 }
 
 .logoWrapper {

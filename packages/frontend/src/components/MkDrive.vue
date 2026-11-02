@@ -69,6 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-for="(f, i) in foldersPaginator.items.value"
 					:key="f.id"
 					v-anim="i"
+					:data-scroll-anchor="f.id"
 					:folder="f"
 					:selectMode="select === 'folder'"
 					:isSelected="selectedFolders.some(x => x.id === f.id)"
@@ -80,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@dragend="isDragSource = false"
 				/>
 			</div>
-			<MkButton v-if="foldersPaginator.canFetchOlder.value" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+			<MkButton v-if="foldersPaginator.canFetchOlder.value" :class="$style.loadMore" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 
 			<template v-if="shouldBeGroupedByDate">
 				<MkStickyContainer v-for="(item, i) in filesTimeline" :key="`${item.date.getFullYear()}/${item.date.getMonth() + 1}`">
@@ -101,9 +102,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 						<XFile
 							v-for="file in item.items" :key="file.id"
+							:data-scroll-anchor="file.id"
 							:file="file"
 							:folder="folder"
 							:isSelected="selectedFiles.some(x => x.id === file.id)"
+							:isDisabled="excludeSensitive && file.isSensitive"
 							@click="onFileClick($event, file)"
 							@dragstart="onFileDragstart(file, $event)"
 							@dragend="isDragSource = false"
@@ -123,9 +126,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<XFile
 					v-for="file in filesPaginator.items.value" :key="file.id"
+					:data-scroll-anchor="file.id"
 					:file="file"
 					:folder="folder"
 					:isSelected="selectedFiles.some(x => x.id === file.id)"
+					:isDisabled="excludeSensitive && file.isSensitive"
 					@click="onFileClick($event, file)"
 					@dragstart="onFileDragstart(file, $event)"
 					@dragend="isDragSource = false"
@@ -187,11 +192,13 @@ const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id'] | null;
 	type?: string;
 	multiple?: boolean;
+	excludeSensitive?: boolean;
 	select?: 'file' | 'folder' | null;
 	forceDisableInfiniteScroll?: boolean;
 }>(), {
 	initialFolder: null,
 	multiple: false,
+	excludeSensitive: false,
 	select: null,
 	forceDisableInfiniteScroll: false,
 });
@@ -494,6 +501,8 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 }
 
 function onFileClick(ev: PointerEvent, file: Misskey.entities.DriveFile) {
+	if (props.excludeSensitive && file.isSensitive) return;
+
 	if (ev.shiftKey) {
 		isEditMode.value = true;
 	}

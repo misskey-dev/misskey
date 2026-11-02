@@ -21,6 +21,8 @@ export async function initIntlString(forceWanakana = false) {
 	isWanakanaLoaded = true;
 }
 
+const graphemeSegmenter = new Intl.Segmenter(versatileLang, { granularity: 'grapheme' });
+
 /**
  * - 全角英数字を半角に
  * - 半角カタカナを全角に
@@ -30,8 +32,11 @@ export async function initIntlString(forceWanakana = false) {
  * - 文字列のトリム
  */
 export function normalizeString(str: string) {
-	const segmenter = new Intl.Segmenter(versatileLang, { granularity: 'grapheme' });
-	return [...segmenter.segment(str)].map(({ segment }) => segment.normalize('NFKC')).join('').toLowerCase().trim();
+	let normalized = '';
+	for (const { segment } of graphemeSegmenter.segment(str)) {
+		normalized += segment.normalize('NFKC');
+	}
+	return normalized.toLowerCase().trim();
 }
 
 // https://qiita.com/non-caffeine/items/77360dda05c8ce510084

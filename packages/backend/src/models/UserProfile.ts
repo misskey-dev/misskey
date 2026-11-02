@@ -145,7 +145,7 @@ export class MiUserProfile {
 
 	@Column('varchar', {
 		length: 128, nullable: true,
-		comment: 'The password hash of the User. It will be null if the origin of the user is local.',
+		comment: 'The password hash of the User. It will be null if the origin of the user is remote.',
 	})
 	public password: string | null;
 
@@ -172,6 +172,12 @@ export class MiUserProfile {
 		default: false,
 	})
 	public autoAcceptFollowed: boolean;
+
+	@Column('integer', { nullable: true })
+	public followApprovalLocalSeconds: number | null;
+
+	@Column('integer', { nullable: true })
+	public followApprovalRemoteSeconds: number | null;
 
 	@Column('boolean', {
 		default: false,

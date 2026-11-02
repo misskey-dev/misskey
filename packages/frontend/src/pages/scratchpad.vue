@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkContainer :foldable="true" class="">
 				<template #header>{{ i18n.ts.output }}</template>
 				<div :class="$style.logs">
-					<div v-for="log in logs" :key="log.id" class="log" :class="{ print: log.print }">{{ log.text }}</div>
+					<div v-for="log in logs" :key="log.id" class="log" :class="log.type">{{ log.text }}</div>
 				</div>
 			</MkContainer>
 
@@ -81,7 +81,7 @@ const code = ref('');
 const logs = ref<{
 	id: number;
 	text: string;
-	print: boolean;
+	type: 'print' | 'end' | 'error';
 }[]>([]);
 const root = ref<AsUiRoot | undefined>();
 const components = ref<Ref<AsUiComponent>[]>([]);
@@ -91,6 +91,16 @@ const uiInspectorOpenedComponents = ref(new WeakMap<AsUiComponent | Ref<AsUiComp
 const saved = miLocalStorage.getItem('scratchpad');
 if (saved) {
 	code.value = saved;
+}
+
+function pushLog(type: 'print' | 'end' | 'error', text: string): void {
+	logs.value.push({ id: Math.random(), text, type });
+}
+
+function processError(title: string, err: unknown): void {
+	const text = String(err);
+	pushLog('error', text);
+	os.alert({ type: 'error', title, text });
 }
 
 watch(code, () => {
@@ -111,6 +121,7 @@ async function run() {
 	components.value = [];
 	uiKey.value++;
 	logs.value = [];
+
 	aiscript = new Interpreter(({
 		...createAiScriptEnv({
 			storageKey: 'widget',
@@ -125,26 +136,17 @@ async function run() {
 			if (value.type === 'str' && value.value.toLowerCase().replace(',', '').includes('hello world')) {
 				claimAchievement('outputHelloWorldOnScratchpad');
 			}
-			logs.value.push({
-				id: Math.random(),
-				text: value.type === 'str' ? value.value : utils.valToString(value),
-				print: true,
-			});
+			pushLog('print', value.type === 'str' ? value.value : utils.valToString(value));
 		},
 		err: (err) => {
-			os.alert({
-				type: 'error',
-				title: 'AiScript Error',
-				text: err.toString(),
-			});
+			processError('AiScript Error', err);
 		},
 		log: (type, params) => {
 			switch (type) {
-				case 'end': logs.value.push({
-					id: Math.random(),
-					text: utils.valToString(params.val as Value, true),
-					print: false,
-				}); break;
+				case 'end': {
+					pushLog('end', utils.valToString(params.val as Value, true));
+					break;
+				}
 				default: break;
 			}
 		},
@@ -154,23 +156,14 @@ async function run() {
 	try {
 		ast = parser.parse(code.value);
 	} catch (err: any) {
-		os.alert({
-			type: 'error',
-			title: 'Syntax Error',
-			text: err.toString(),
-		});
+		processError('Syntax Error', err);
 		return;
 	}
 	try {
 		await aiscript.exec(ast);
 	} catch (err: any) {
-		// AiScript runtime errors should be processed by error callback function
-		// so errors caught here are AiScript's internal errors.
-		os.alert({
-			type: 'error',
-			title: 'Internal Error',
-			text: err.toString(),
-		});
+		// in case AiScript Interpreter has some bug
+		processError('AiScript Internal Error', err);
 	}
 }
 
@@ -232,10 +225,13 @@ definePage(() => ({
 	padding: 16px;
 
 	&:global {
-		> .log {
-			&:not(.print) {
-				opacity: 0.7;
-			}
+		> .log.print {
+		}
+		> .log.end {
+			opacity: 0.7;
+		}
+		> .log.error {
+			color: var(--MI_THEME-error);
 		}
 	}
 }

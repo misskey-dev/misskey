@@ -12,13 +12,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkDraggable
 					v-model="items"
 					direction="vertical"
+					manualDragStart
 				>
-					<template #default="{ item }">
+					<template #default="{ item, dragStart }">
 						<div
 							v-if="item.type === '-' || navbarItemDef[item.type]"
 							:class="$style.item"
 						>
-							<button class="_button" :class="$style.itemHandle"><i class="ti ti-menu"></i></button>
+							<button class="_button" :class="$style.itemHandle" tabindex="-1" :draggable="true" @dragstart.stop="dragStart"><i class="ti ti-menu"></i></button>
 							<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item.type]?.icon]"></i><span :class="$style.itemText">{{ navbarItemDef[item.type]?.title ?? i18n.ts.divider }}</span>
 							<button class="_button" :class="$style.itemRemove" @click="removeItem(item.id)"><i class="ti ti-x"></i></button>
 						</div>

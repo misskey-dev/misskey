@@ -79,14 +79,15 @@ import JSON5 from 'json5';
 import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
 import { host } from '@@/js/config.js';
-import type { Theme } from '@/theme.js';
+import type { Theme } from '@@/js/theme.js';
 import { genId } from '@/utility/id.js';
 import MkButton from '@/components/MkButton.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { ensureSignin } from '@/i.js';
-import { addTheme, applyTheme } from '@/theme.js';
+import { addTheme, themeManager } from '@/theme.js';
+import { deepClone } from '@/utility/clone.js';
 import * as os from '@/os.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -130,7 +131,7 @@ const theme = ref<Theme>({
 	name: 'untitled',
 	author: `@${$i.username}@${toUnicode(host)}`,
 	base: 'light',
-	props: lightTheme.props,
+	props: deepClone(lightTheme.props),
 });
 const description = ref<string | null>(null);
 const themeCode = ref<string>('');
@@ -170,7 +171,7 @@ function setFgColor(color: typeof fgColors[number]) {
 
 function apply() {
 	themeCode.value = JSON5.stringify(theme.value, null, '\t');
-	applyTheme(theme.value, false);
+	themeManager.previewTheme(theme.value);
 	changed.value = true;
 }
 
@@ -201,7 +202,7 @@ async function saveAs() {
 	theme.value.name = name;
 	if (description.value) theme.value.desc = description.value;
 	await addTheme(theme.value);
-	applyTheme(theme.value);
+	themeManager.updateTheme(theme.value);
 	if (store.s.darkMode) {
 		prefer.commit('darkTheme', theme.value);
 	} else {

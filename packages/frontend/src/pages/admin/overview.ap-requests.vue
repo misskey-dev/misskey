@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef, ref } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import isChromatic from 'chromatic';
@@ -32,6 +32,10 @@ import { alpha } from '@/utility/color.js';
 import { initChart } from '@/utility/init-chart.js';
 
 initChart();
+
+let chartInstance1: Chart | null = null;
+let chartInstance2: Chart | null = null;
+let disposed = false;
 
 const chartLimit = 50;
 const chartEl = useTemplateRef('chartEl');
@@ -71,6 +75,8 @@ onMounted(async () => {
 
 	const raw = await misskeyApi('charts/ap-request', { limit: chartLimit, span: 'day' });
 
+	if (disposed || chartEl.value == null || chartEl2.value == null) return;
+
 	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 	const succColor = '#87e000';
 	const failColor = '#ff4400';
@@ -78,7 +84,7 @@ onMounted(async () => {
 	const succMax = Math.max(...raw.deliverSucceeded);
 	const failMax = Math.max(...raw.deliverFailed);
 
-	new Chart(chartEl.value, {
+	chartInstance1 = new Chart(chartEl.value, {
 		type: 'line',
 		data: {
 			datasets: [{
@@ -183,7 +189,7 @@ onMounted(async () => {
 		plugins: [chartVLine(vLineColor)],
 	});
 
-	new Chart(chartEl2.value, {
+	chartInstance2 = new Chart(chartEl2.value, {
 		type: 'bar',
 		data: {
 			datasets: [{
@@ -272,6 +278,12 @@ onMounted(async () => {
 	});
 
 	fetching.value = false;
+});
+
+onUnmounted(() => {
+	disposed = true;
+	chartInstance1?.destroy();
+	chartInstance2?.destroy();
 });
 </script>
 

@@ -25,11 +25,10 @@
 		"isolatedModules": true,
 		"jsx": "react-jsx",
 		"jsxImportSource": "@kitajs/html",
-		"rootDir": "../src",
-		"baseUrl": "./",
 		"paths": {
 			"@/*": ["../src/*"]
 		},
+		"rootDir": "../",
 		"outDir": "../built-test",
 		"types": [
 			"node"

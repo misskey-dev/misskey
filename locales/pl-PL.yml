@@ -1044,6 +1044,7 @@ inMinutes: "minuta"
 inDays: "dzień"
 widgets: "Widżety"
 presets: "Konfiguracja"
+previewingThemeRestore: "Przywróć"
 _imageEditing:
   _vars:
     filename: "Nazwa pliku"
@@ -1577,6 +1578,7 @@ _deck:
     antenna: "Anteny"
     list: "Listy"
     channel: "Kanały"
+    clip: "Klip"
     mentions: "Wspomnienia"
     direct: "Bezpośredni"
 _webhookSettings:

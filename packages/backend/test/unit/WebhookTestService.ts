@@ -5,7 +5,8 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { beforeAll, describe, jest } from '@jest/globals';
+import { beforeAll, afterAll, beforeEach, afterEach, test, expect, describe, vi } from 'vitest';
+import type { Mocked } from 'vitest';
 import { WebhookTestService } from '@/core/WebhookTestService.js';
 import { UserWebhookPayload, UserWebhookService } from '@/core/UserWebhookService.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
@@ -24,9 +25,9 @@ describe('WebhookTestService', () => {
 
 	let usersRepository: UsersRepository;
 	let userProfilesRepository: UserProfilesRepository;
-	let queueService: jest.Mocked<QueueService>;
-	let userWebhookService: jest.Mocked<UserWebhookService>;
-	let systemWebhookService: jest.Mocked<SystemWebhookService>;
+	let queueService: Mocked<QueueService>;
+	let userWebhookService: Mocked<UserWebhookService>;
+	let systemWebhookService: Mocked<SystemWebhookService>;
 	let idService: IdService;
 
 	let root: MiUser;
@@ -59,23 +60,23 @@ describe('WebhookTestService', () => {
 				IdService,
 				{
 					provide: CustomEmojiService, useFactory: () => ({
-						populateEmojis: jest.fn(),
+						populateEmojis: vi.fn(),
 					}),
 				},
 				{
 					provide: QueueService, useFactory: () => ({
-						systemWebhookDeliver: jest.fn(),
-						userWebhookDeliver: jest.fn(),
+						systemWebhookDeliver: vi.fn(),
+						userWebhookDeliver: vi.fn(),
 					}),
 				},
 				{
 					provide: UserWebhookService, useFactory: () => ({
-						fetchWebhooks: jest.fn(),
+						fetchWebhooks: vi.fn(),
 					}),
 				},
 				{
 					provide: SystemWebhookService, useFactory: () => ({
-						fetchSystemWebhooks: jest.fn(),
+						fetchSystemWebhooks: vi.fn(),
 					}),
 				},
 			],
@@ -86,9 +87,9 @@ describe('WebhookTestService', () => {
 
 		service = app.get(WebhookTestService);
 		idService = app.get(IdService);
-		queueService = app.get(QueueService) as jest.Mocked<QueueService>;
-		userWebhookService = app.get(UserWebhookService) as jest.Mocked<UserWebhookService>;
-		systemWebhookService = app.get(SystemWebhookService) as jest.Mocked<SystemWebhookService>;
+		queueService = app.get(QueueService) as Mocked<QueueService>;
+		userWebhookService = app.get(UserWebhookService) as Mocked<UserWebhookService>;
+		systemWebhookService = app.get(SystemWebhookService) as Mocked<SystemWebhookService>;
 
 		app.enableShutdownHooks();
 	});

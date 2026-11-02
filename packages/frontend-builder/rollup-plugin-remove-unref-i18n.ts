@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as estreeWalker from 'estree-walker';
+import { walk } from 'oxc-walker';
 import { RolldownMagicString } from 'rolldown';
 import { assertType } from './utils.js';
 import type { ESTree } from 'rolldown/utils';
@@ -27,8 +27,7 @@ export function pluginRemoveUnrefI18n(
 			if (!code.includes('unref(i18n)')) return null;
 			const ast = this.parse(code);
 			const magicString = meta.magicString ?? new RolldownMagicString(code);
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(estreeWalker.walk as any)(ast, {
+			walk(ast, {
 				enter(node: ESTree.Node) {
 					if (node.type === 'CallExpression' && node.callee.type === 'Identifier' && node.callee.name === 'unref'
 						&& node.arguments.length === 1) {

@@ -1091,6 +1091,7 @@ _deck:
     antenna: "Antennalar"
     list: "Ro‘yxat"
     channel: "Kanal"
+    clip: "Klip"
     mentions: "Eslatib o'tish"
     direct: "Bevosita qaydlar"
     roleTimeline: "Rol xronologiyasi"

@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div
 		v-if="isHiding(file)"
 		:class="[$style.filePreview, { [$style.square]: square }]"
+		:data-scroll-anchor="`${note.id}:${file.id}`"
 		@click="reveal(file)"
 	>
 		<MkDriveFileThumbnail
@@ -26,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-	<MkA v-else :class="[$style.filePreview, { [$style.square]: square }]" :to="notePage(note)">
+	<MkA v-else :class="[$style.filePreview, { [$style.square]: square }]" :data-scroll-anchor="`${note.id}:${file.id}`" :to="notePage(note)">
 		<MkDriveFileThumbnail
 			:file="file"
 			fit="cover"
@@ -41,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { notePage } from '@/filters/note.js';
+import { notePage } from '@@/js/note.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';

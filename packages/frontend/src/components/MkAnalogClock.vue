@@ -81,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
 import tinycolor from 'tinycolor2';
-import { globalEvents } from '@/events.js';
+import { themeManager } from '@/theme.js';
 import { defaultIdlingRenderScheduler } from '@/utility/idle-render.js';
 
 // https://stackoverflow.com/questions/1878907/how-can-i-find-the-difference-between-two-angles
@@ -192,13 +192,13 @@ function tick() {
 tick();
 
 function calcColors() {
-	const computedStyle = getComputedStyle(window.document.documentElement);
-	const dark = tinycolor(computedStyle.getPropertyValue('--MI_THEME-bg')).isDark();
-	const accent = tinycolor(computedStyle.getPropertyValue('--MI_THEME-accent')).toHexString();
+	const themeValue = themeManager.currentCompiledTheme!;
+	const dark = tinycolor(themeValue.bg).isDark();
+	const accent = tinycolor(themeValue.accent).toHexString();
 	majorGraduationColor.value = dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
 	//minorGraduationColor = dark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 	sHandColor.value = dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
-	mHandColor.value = tinycolor(computedStyle.getPropertyValue('--MI_THEME-fg')).toHexString();
+	mHandColor.value = tinycolor(themeValue.fg).toHexString();
 	hHandColor.value = accent;
 	nowColor.value = accent;
 }
@@ -207,13 +207,13 @@ calcColors();
 
 onMounted(() => {
 	defaultIdlingRenderScheduler.add(tick);
-	globalEvents.on('themeChanged', calcColors);
+	themeManager.on('themeChanged', calcColors);
 });
 
 onBeforeUnmount(() => {
 	enabled = false;
 	defaultIdlingRenderScheduler.delete(tick);
-	globalEvents.off('themeChanged', calcColors);
+	themeManager.off('themeChanged', calcColors);
 });
 </script>
 
