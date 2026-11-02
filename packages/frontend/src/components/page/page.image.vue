@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<MkMediaList v-if="image" :mediaList="[image]" :class="$style.mediaList"/>
+	<MkMediaList v-if="image" :mediaList="[image]" :user="page.user" :class="$style.mediaList"/>
 </div>
 </template>
 
@@ -15,7 +15,7 @@ import * as Misskey from 'misskey-js';
 import MkMediaList from '@/components/MkMediaList.vue';
 
 const props = defineProps<{
-	block: Misskey.entities.PageBlock,
+	block: Extract<Misskey.entities.PageBlock, { type: 'image' }>,
 	page: Misskey.entities.Page,
 }>();
 

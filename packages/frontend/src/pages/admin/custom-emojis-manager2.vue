@@ -4,26 +4,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<!-- コンテナが入れ子になるのでz-indexが被らないよう大きめの数値を設定する-->
-	<MkStickyContainer :headerZIndex="2000">
-		<template #header>
-			<MkPageHeader v-model:tab="headerTab" :tabs="headerTabs"/>
-		</template>
-		<XGridLocalComponent v-if="headerTab === 'local'"/>
-		<XGridRemoteComponent v-else/>
-	</MkStickyContainer>
-</div>
+<PageWithHeader v-model:tab="headerTab" :tabs="headerTabs">
+	<XGridLocalComponent v-if="headerTab === 'local'" :class="$style.local"/>
+	<XGridRemoteComponent v-else-if="headerTab === 'remote'"/>
+	<XRegisterComponent v-else-if="headerTab === 'register'"/>
+</PageWithHeader>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import XGridLocalComponent from '@/pages/admin/custom-emojis-manager.local.vue';
+import { definePage } from '@/page.js';
+import XGridLocalComponent from '@/pages/admin/custom-emojis-manager.local.list.vue';
 import XGridRemoteComponent from '@/pages/admin/custom-emojis-manager.remote.vue';
-import MkPageHeader from '@/components/global/MkPageHeader.vue';
-import MkStickyContainer from '@/components/global/MkStickyContainer.vue';
+import XRegisterComponent from '@/pages/admin/custom-emojis-manager.register.vue';
 
 type PageMode = 'local' | 'remote';
 
@@ -35,10 +29,21 @@ const headerTabs = computed(() => [{
 }, {
 	key: 'remote',
 	title: i18n.ts.remote,
+}, {
+	key: 'register',
+	title: i18n.ts._customEmojisManager._local.tabTitleRegister,
 }]);
 
-definePageMetadata(computed(() => ({
+definePage(computed(() => ({
 	title: i18n.ts.customEmojis,
 	icon: 'ti ti-icons',
+	needWideArea: true,
 })));
 </script>
+
+<style lang="css" module>
+.local {
+	height: calc(100dvh - var(--MI-stickyTop) - var(--MI-stickyBottom));
+	overflow: clip;
+}
+</style>

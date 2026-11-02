@@ -28,9 +28,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 import MkMiniChart from '@/components/MkMiniChart.vue';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
+import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 
 const props = defineProps<{
 	instance: Misskey.entities.FederationInstance;
@@ -54,11 +54,9 @@ watch(() => props.instance.host, (host) => {
 	immediate: true,
 });
 
-const getInstanceIcon = (instance: Misskey.entities.FederationInstance) => (
-	getProxiedImageUrlNullable(instance.iconUrl, 'preview')
-		?? getProxiedImageUrlNullable(instance.faviconUrl, 'preview')
-		?? '/client-assets/dummy.png'
-);
+function getInstanceIcon(instance: Misskey.entities.FederationInstance): string {
+	return getProxiedImageUrlNullable(instance.iconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png';
+}
 </script>
 
 <style lang="scss" module>
@@ -131,7 +129,7 @@ $bodyInfoHieght: 16px;
 	flex: 1;
 	overflow: hidden;
 	font-size: 0.9em;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	padding-right: 8px;
 }
 

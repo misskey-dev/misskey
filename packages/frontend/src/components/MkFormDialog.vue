@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:width="450"
 	:canClose="false"
 	:withOkButton="true"
-	:okButtonDisabled="false"
+	:okButtonDisabled="!canSave"
 	@click="cancel()"
 	@ok="ok()"
 	@close="cancel()"
@@ -19,71 +19,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		{{ title }}
 	</template>
 
-	<MkSpacer :marginMin="20" :marginMax="32">
-		<div v-if="Object.keys(form).filter(item => !form[item].hidden).length > 0" class="_gaps_m">
-			<template v-for="(v, k) in Object.fromEntries(Object.entries(form))">
-				<template v-if="typeof v.hidden == 'function' ? v.hidden(values) : v.hidden"></template>
-				<MkInput v-else-if="v.type === 'number'" v-model="values[k]" type="number" :step="v.step || 1">
-					<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
-					<template v-if="v.description" #caption>{{ v.description }}</template>
-				</MkInput>
-				<MkInput v-else-if="v.type === 'string' && !v.multiline" v-model="values[k]" type="text" :mfmAutocomplete="v.treatAsMfm">
-					<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
-					<template v-if="v.description" #caption>{{ v.description }}</template>
-				</MkInput>
-				<MkTextarea v-else-if="v.type === 'string' && v.multiline" v-model="values[k]" :mfmAutocomplete="v.treatAsMfm" :mfmPreview="v.treatAsMfm">
-					<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
-					<template v-if="v.description" #caption>{{ v.description }}</template>
-				</MkTextarea>
-				<MkSwitch v-else-if="v.type === 'boolean'" v-model="values[k]">
-					<span v-text="v.label || k"></span>
-					<template v-if="v.description" #caption>{{ v.description }}</template>
-				</MkSwitch>
-				<MkSelect v-else-if="v.type === 'enum'" v-model="values[k]">
-					<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
-					<option v-for="option in v.enum" :key="option.value" :value="option.value">{{ option.label }}</option>
-				</MkSelect>
-				<MkRadios v-else-if="v.type === 'radio'" v-model="values[k]">
-					<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
-					<option v-for="option in v.options" :key="option.value" :value="option.value">{{ option.label }}</option>
-				</MkRadios>
-				<MkRange v-else-if="v.type === 'range'" v-model="values[k]" :min="v.min" :max="v.max" :step="v.step" :textConverter="v.textConverter">
-					<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
-					<template v-if="v.description" #caption>{{ v.description }}</template>
-				</MkRange>
-				<MkButton v-else-if="v.type === 'button'" @click="v.action($event, values)">
-					<span v-text="v.content || k"></span>
-				</MkButton>
-				<XFile
-					v-else-if="v.type === 'drive-file'"
-					:fileId="v.defaultFileId"
-					:validate="async f => !v.validate || await v.validate(f)"
-					@update="f => values[k] = f"
-				/>
-			</template>
-		</div>
-		<div v-else class="_fullinfo">
-			<img :src="infoImageUrl" class="_ghost"/>
-			<div>{{ i18n.ts.nothing }}</div>
-		</div>
-	</MkSpacer>
+	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 32px;">
+		<MkForm v-model="values" :form="form" @canSaveStateChange="onCanSaveStateChanged"/>
+	</div>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
-import { reactive, shallowRef } from 'vue';
-import MkInput from './MkInput.vue';
-import MkTextarea from './MkTextarea.vue';
-import MkSwitch from './MkSwitch.vue';
-import MkSelect from './MkSelect.vue';
-import MkRange from './MkRange.vue';
-import MkButton from './MkButton.vue';
-import MkRadios from './MkRadios.vue';
-import XFile from './MkFormDialog.file.vue';
-import type { Form } from '@/scripts/form.js';
+import { ref, useTemplateRef } from 'vue';
+import type { Form } from '@/utility/form.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n.js';
-import { infoImageUrl } from '@/instance.js';
+import MkForm from '@/components/MkForm.vue';
 
 const props = defineProps<{
 	title: string;
@@ -99,16 +45,31 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
-const values = reactive({});
+const dialog = useTemplateRef('dialog');
 
-for (const item in props.form) {
-	values[item] = props.form[item].default ?? null;
+const values = ref((() => {
+	const obj: Record<string, any> = {};
+	for (const item in props.form) {
+		if ('default' in props.form[item]) {
+			obj[item] = props.form[item].default ?? null;
+		} else {
+			obj[item] = null;
+		}
+	}
+	return obj;
+})());
+
+const canSave = ref(true);
+
+function onCanSaveStateChanged(newCanSave: boolean) {
+	canSave.value = newCanSave;
 }
 
 function ok() {
+	if (!canSave.value) return;
+
 	emit('done', {
-		result: values,
+		result: values.value,
 	});
 	dialog.value?.close();
 }

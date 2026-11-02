@@ -152,6 +152,11 @@ id: 'aidx'
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
 #sentryForFrontend:
+#  vueIntegration:
+#    tracingOptions:
+#      trackComponents: true
+#  browserTracingIntegration:
+#  replayIntegration:
 #  options:
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
@@ -163,6 +168,9 @@ id: 'aidx'
 
 # Number of worker processes
 #clusterLimit: 1
+
+# Number of threads of extra thread pool for CPU-intensive tasks (per worker)
+#threadPoolSize: 1
 
 # Job concurrency per worker
 # deliverJobConcurrency: 128
@@ -197,15 +205,8 @@ proxyBypassHosts:
 # Media Proxy
 #mediaProxy: https://example.com/proxy
 
-# Proxy remote files (default: true)
-proxyRemoteFiles: true
-
-# Sign to ActivityPub GET request (default: true)
-signToActivityPubGet: true
-
-allowedPrivateNetworks: [
-  '127.0.0.1/32'
-]
+allowedPrivateNetworks:
+ - '127.0.0.1/32'
 
 # Upload or download file size limits (bytes)
 #maxFileSize: 262144000

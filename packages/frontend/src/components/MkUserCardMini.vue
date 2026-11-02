@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkAvatar :class="$style.avatar" :user="user" indicator/>
 	<div :class="$style.body">
 		<span :class="$style.name"><MkUserName :user="user"/></span>
-		<span :class="$style.sub"><span class="_monospace">@{{ acct(user) }}</span></span>
+		<span :class="$style.sub"><slot name="sub"><span class="_monospace">@{{ acct(user) }}</span></slot></span>
 	</div>
 	<MkMiniChart v-if="chartValues" :class="$style.chart" :src="chartValues"/>
 </div>
@@ -22,9 +22,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
-import { acct } from '@/filters/user.js';
 import MkMiniChart from '@/components/MkMiniChart.vue';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
+import { acct } from '@@/js/user.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
@@ -68,7 +68,7 @@ $bodyInfoHieght: 16px;
 	align-items: center;
 	padding: 16px;
 	border-radius: 8px;
-	background-color: var(--MI-THEME-panel);
+	background-color: var(--MI_THEME-panel);
 	background-image: repeating-linear-gradient(
 		135deg,
 		transparent,

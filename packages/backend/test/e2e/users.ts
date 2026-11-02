@@ -6,6 +6,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import { beforeAll, beforeEach, describe, test } from 'vitest';
 import { inspect } from 'node:util';
 import { api, post, role, signup, successfulApiCall, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
@@ -15,7 +16,7 @@ describe('ユーザー', () => {
 	// エンティティとしてのユーザーを主眼においたテストを記述する
 	// (Userを返すエンドポイントとUserエンティティを書き換えるエンドポイントをテストする)
 
-	const stripUndefined = <T extends { [key: string]: any }, >(orig: T): Partial<T> => {
+	const stripUndefined = <T extends { [key: string]: any } >(orig: T): Partial<T> => {
 		return Object.entries({ ...orig })
 			.filter(([, value]) => value !== undefined)
 			.reduce((obj: Partial<T>, [key, value]) => {
@@ -83,6 +84,8 @@ describe('ユーザー', () => {
 			publicReactions: user.publicReactions,
 			followingVisibility: user.followingVisibility,
 			followersVisibility: user.followersVisibility,
+			chatScope: user.chatScope,
+			canChat: user.canChat,
 			roles: user.roles,
 			memo: user.memo,
 		});
@@ -121,6 +124,8 @@ describe('ユーザー', () => {
 			autoSensitive: user.autoSensitive,
 			carefulBot: user.carefulBot,
 			autoAcceptFollowed: user.autoAcceptFollowed,
+			followApprovalLocalSeconds: user.followApprovalLocalSeconds,
+			followApprovalRemoteSeconds: user.followApprovalRemoteSeconds,
 			noCrawle: user.noCrawle,
 			preventAiLearning: user.preventAiLearning,
 			isExplorable: user.isExplorable,
@@ -132,6 +137,7 @@ describe('ユーザー', () => {
 			hasUnreadAnnouncement: user.hasUnreadAnnouncement,
 			hasUnreadAntenna: user.hasUnreadAntenna,
 			hasUnreadChannel: user.hasUnreadChannel,
+			hasUnreadChatMessages: user.hasUnreadChatMessages,
 			hasUnreadNotification: user.hasUnreadNotification,
 			unreadNotificationsCount: user.unreadNotificationsCount,
 			hasPendingReceivedFollowRequest: user.hasPendingReceivedFollowRequest,
@@ -343,6 +349,8 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.publicReactions, true);
 		assert.strictEqual(response.followingVisibility, 'public');
 		assert.strictEqual(response.followersVisibility, 'public');
+		assert.strictEqual(response.chatScope, 'mutual');
+		assert.strictEqual(response.canChat, true);
 		assert.deepStrictEqual(response.roles, []);
 		assert.strictEqual(response.memo, null);
 
@@ -358,6 +366,8 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.autoSensitive, false);
 		assert.strictEqual(response.carefulBot, false);
 		assert.strictEqual(response.autoAcceptFollowed, true);
+		assert.strictEqual(response.followApprovalLocalSeconds, null);
+		assert.strictEqual(response.followApprovalRemoteSeconds, null);
 		assert.strictEqual(response.noCrawle, false);
 		assert.strictEqual(response.preventAiLearning, true);
 		assert.strictEqual(response.isExplorable, true);
@@ -369,6 +379,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.hasUnreadAnnouncement, false);
 		assert.strictEqual(response.hasUnreadAntenna, false);
 		assert.strictEqual(response.hasUnreadChannel, false);
+		assert.strictEqual(response.hasUnreadChatMessages, false);
 		assert.strictEqual(response.hasUnreadNotification, false);
 		assert.strictEqual(response.unreadNotificationsCount, 0);
 		assert.strictEqual(response.hasPendingReceivedFollowRequest, false);
@@ -720,6 +731,12 @@ describe('ユーザー', () => {
 		const expected = [await show(carol.id, alice)];
 		assert.deepStrictEqual(response, expected);
 	});
+	test('を検索することができる(未認証)', async () => {
+		const parameters = { query: 'carol', limit: 10 };
+		const response = await successfulApiCall({ endpoint: 'users/search', parameters, user: undefined });
+		const expected = [await successfulApiCall({ endpoint: 'users/show', parameters: { userId: carol.id }, user: undefined })];
+		assert.deepStrictEqual(response, expected);
+	});
 	test('を検索することができる(UserLite)', async () => {
 		const parameters = { query: 'carol', detail: false, limit: 10 };
 		const response = await successfulApiCall({ endpoint: 'users/search', parameters, user: alice });
@@ -728,7 +745,7 @@ describe('ユーザー', () => {
 	});
 	test.each([
 		{ label: '「見つけやすくする」がOFFのユーザーが含まれる', user: () => userNotExplorable },
-		{ label: 'ミュートユーザーが含まれる', user: () => userMutedByAlice },
+		{ label: 'ミュートユーザーが含まれない', user: () => userMutedByAlice, excluded: true },
 		{ label: 'ブロックされているユーザーが含まれる', user: () => userBlockedByAlice },
 		{ label: 'ブロックしてきているユーザーが含まれる', user: () => userBlockingAlice },
 		{ label: '承認制ユーザーが含まれる', user: () => userLocking },

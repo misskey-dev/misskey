@@ -22,7 +22,8 @@ export const gridSortOrderKeys = [
 	'isSensitive',
 	'localOnly',
 	'updatedAt',
-];
+] as const satisfies string[];
+
 export type GridSortOrderKey = typeof gridSortOrderKeys[number];
 
 export function emptyStrToUndefined(value: string | null) {

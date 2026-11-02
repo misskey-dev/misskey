@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CellValue, GridCell } from '@/components/grid/cell.js';
-import { GridColumn } from '@/components/grid/column.js';
-import { GridRow } from '@/components/grid/row.js';
+import type { CellValue, GridCell } from '@/components/grid/cell.js';
+import type { GridColumn } from '@/components/grid/column.js';
+import type { GridRow } from '@/components/grid/row.js';
 import { i18n } from '@/i18n.js';
 
 export type ValidatorParams = {
@@ -18,25 +18,25 @@ export type ValidatorParams = {
 export type ValidatorResult = {
 	valid: boolean;
 	message?: string;
-}
+};
 
 export type GridCellValidator = {
 	name?: string;
 	ignoreViolation?: boolean;
 	validate: (params: ValidatorParams) => ValidatorResult;
-}
+};
 
 export type ValidateViolation = {
 	valid: boolean;
 	params: ValidatorParams;
 	violations: ValidateViolationItem[];
-}
+};
 
 export type ValidateViolationItem = {
 	valid: boolean;
 	validator: GridCellValidator;
 	result: ValidatorResult;
-}
+};
 
 export function cellValidation(allCells: GridCell[], cell: GridCell, newValue: CellValue): ValidateViolation {
 	const { column, row } = cell;

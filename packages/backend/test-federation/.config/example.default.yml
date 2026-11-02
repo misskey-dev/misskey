@@ -7,6 +7,7 @@ db:
   user: postgres
   pass: postgres
 dbReplications: false
+trustProxy: true
 redis:
   host: redis.test
   port: 6379
@@ -17,8 +18,6 @@ proxyBypassHosts:
   - www.recaptcha.net
   - hcaptcha.com
   - challenges.cloudflare.com
-proxyRemoteFiles: true
-signToActivityPubGet: true
 allowedPrivateNetworks:
   - 127.0.0.1/32
   - 172.20.0.0/16
