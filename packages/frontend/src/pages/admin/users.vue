@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkPagination v-slot="{items}" :paginator="paginator">
 				<div :class="$style.users">
 					<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${user.updatedAt ? dateString(user.updatedAt) : 'Unknown'}`" :class="$style.user" :to="`/admin/user/${user.id}`">
-						<MkUserCardMini :user="user" withChart/>
+						<MkUserCardMini :user="user"/>
 					</MkA>
 				</div>
 			</MkPagination>

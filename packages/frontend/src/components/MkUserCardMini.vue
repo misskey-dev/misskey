@@ -15,8 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import { onMounted, ref } from 'vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { acct } from '@@/js/user.js';
@@ -25,32 +25,19 @@ const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
 	withChart?: boolean;
 }>(), {
-	withChart: false,
+	withChart: true,
 });
 
-const chartValues = shallowRef<number[] | null>(null);
+const chartValues = ref<number[] | null>(null);
 
-watch([
-	() => props.user.id,
-	() => props.withChart,
-], ([userId, withChart]) => {
-	if (withChart) {
-		misskeyApiGet('charts/user/notes', {
-			userId,
-			limit: 16 + 1,
-			span: 'day',
-		}).then(res => {
+onMounted(() => {
+	if (props.withChart) {
+		misskeyApiGet('charts/user/notes', { userId: props.user.id, limit: 16 + 1, span: 'day' }).then(res => {
 			// 今日のぶんの値はまだ途中の値であり、それも含めると大抵の場合前日よりも下降しているようなグラフになってしまうため今日は弾く
-			res.inc.shift();
+			res.inc.splice(0, 1);
 			chartValues.value = res.inc;
-		}).catch(() => {
-			chartValues.value = null;
 		});
-	} else {
-		chartValues.value = null;
 	}
-}, {
-	immediate: true,
 });
 </script>
 
