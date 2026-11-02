@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<MkStickyContainer>
 		<template #header>
-			<div :class="$style.view">
+			<div :class="['_stripe', $style.view]">
 				<video ref="videoEl" :class="$style.video" autoplay muted playsinline></video>
 				<div ref="overlayEl"></div>
 				<div :class="$style.controls">
@@ -358,15 +358,8 @@ onUnmounted(() => {
 	position: sticky;
 	top: var(--MI-stickyTop, 0);
 	z-index: 1;
-	--c: light-dark(rgb(0 0 0 / 0.02), rgb(255 255 255 / 0.02));
+	--MI_STRIPE-color: light-dark(rgb(0 0 0 / 0.02), rgb(255 255 255 / 0.02));
 	background-color: var(--MI_THEME-bg);
-	background-image: repeating-linear-gradient(
-		135deg,
-		transparent,
-		transparent 10px,
-		var(--c) 6px,
-		var(--c) 16px
-	);
 	width: 100%;
 	height: var(--MI-QrReadVideoHeight);
 }

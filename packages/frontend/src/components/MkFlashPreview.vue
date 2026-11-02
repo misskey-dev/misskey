@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkA :to="`/play/${flash.id}`" class="vhpxefrk _panel" :class="[{ gray: flash.visibility === 'private' }]">
+<MkA :to="`/play/${flash.id}`" class="vhpxefrk _panel _stripe" :class="[{ gray: flash.visibility === 'private' }]">
 	<article>
 		<header>
 			<h1 :title="flash.title">{{ flash.title }}</h1>
@@ -91,13 +91,7 @@ const props = defineProps<{
 	}
 
 	&:global(.gray) {
-		background-image: repeating-linear-gradient(
-			135deg,
-			transparent,
-			transparent 10px,
-			var(--MI_THEME-bg) 6px,
-			var(--MI_THEME-bg) 16px
-		);
+		--MI_STRIPE-color: var(--MI_THEME-bg);
 	}
 
 	@media (max-width: 700px) {

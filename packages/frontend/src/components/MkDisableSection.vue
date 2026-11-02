@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :inert="disabled" :class="[{ [$style.disabled]: disabled }]">
 		<slot></slot>
 	</div>
-	<div v-if="disabled" :class="[$style.cover]"></div>
+	<div v-if="disabled" :class="['_stripe', $style.cover]"></div>
 </div>
 </template>
 
@@ -35,13 +35,6 @@ defineProps<{
 	width: 100%;
 	height: 100%;
 	cursor: not-allowed;
-	--c: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
-	background-image: repeating-linear-gradient(
-		135deg,
-		transparent,
-		transparent 10px,
-		var(--c) 6px,
-		var(--c) 16px
-	);
+	--MI_STRIPE-color: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 }
 </style>

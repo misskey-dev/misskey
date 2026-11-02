@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div v-else-if="note._shouldInsertAd_" :data-scroll-anchor="note.id">
 					<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
-					<div :class="$style.ad">
+					<div :class="['_stripe', $style.ad]">
 						<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 					</div>
 				</div>
@@ -558,13 +558,7 @@ defineExpose({
 
 .ad {
 	padding: 8px;
-	background-image: repeating-linear-gradient(
-		135deg,
-		transparent,
-		transparent 10px,
-		var(--MI_THEME-bg) 6px,
-		var(--MI_THEME-bg) 16px
-	);
+	--MI_STRIPE-color: var(--MI_THEME-bg);
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
 
 	&:empty {

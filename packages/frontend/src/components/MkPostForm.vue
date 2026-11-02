@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkUploaderItems :items="uploader.items.value" @showMenu="(item, ev) => showPerUploadItemMenu(item, ev)" @showMenuViaContextmenu="(item, ev) => showPerUploadItemMenuViaContextmenu(item, ev)"/>
 	</div>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
-	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
+	<MkNotePreview v-if="showPreview" :class="['_stripe', $style.preview]" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
 	</div>
 	<footer ref="footerEl" :class="$style.footer">
@@ -1650,14 +1650,7 @@ defineExpose({
 	min-height: 75px;
 	max-height: 150px;
 	overflow: auto;
-	--c: light-dark(rgb(0 0 0 / 0.02), rgb(255 255 255 / 0.02));
-	background-image: repeating-linear-gradient(
-		135deg,
-		transparent,
-		transparent 10px,
-		var(--c) 6px,
-		var(--c) 16px
-	);
+	--MI_STRIPE-color: light-dark(rgb(0 0 0 / 0.02), rgb(255 255 255 / 0.02));
 }
 
 .targetNote {

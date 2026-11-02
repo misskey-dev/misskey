@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="note == null" :class="$style.deleted">
+<div v-if="note == null" :class="['_stripe', $style.deleted]">
 	{{ i18n.ts.deletedNote }}
 </div>
 <div v-else-if="!muted" :class="[$style.root, { [$style.children]: depth > 1 }]">
@@ -168,14 +168,7 @@ if (props.detail && props.note) {
 	text-align: center;
 	padding: 8px !important;
 	margin: 8px 8px 0 8px;
-	--c: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
-	background-image: repeating-linear-gradient(
-		135deg,
-		transparent,
-		transparent 10px,
-		var(--c) 6px,
-		var(--c) 16px
-	);
+	--MI_STRIPE-color: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
 	border-radius: 8px;
 }
 </style>

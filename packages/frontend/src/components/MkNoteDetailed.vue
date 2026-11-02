@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 		</div>
 	</div>
-	<div v-if="isRenote && note.renote == null" :class="$style.deleted">
+	<div v-if="isRenote && note.renote == null" :class="['_stripe', $style.deleted]">
 		{{ i18n.ts.deletedNote }}
 	</div>
 	<template v-else>
@@ -739,14 +739,7 @@ const keymap = {
 	text-align: center;
 	padding: 32px;
 	margin: 6px 32px 32px;
-	--c: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
-	background-image: repeating-linear-gradient(
-		135deg,
-		transparent,
-		transparent 10px,
-		var(--c) 6px,
-		var(--c) 16px
-	);
+	--MI_STRIPE-color: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
 	border-radius: 8px;
 }
 </style>

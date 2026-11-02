@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div :class="$style.container">
-		<div :class="[$style.preview, prefer.s.animation ? $style.animatedBg : null]">
+		<div :class="['_stripe', $style.preview, prefer.s.animation ? $style.animatedBg : null]">
 			<div :class="$style.previewContent">
 				<slot name="preview"></slot>
 			</div>
@@ -37,6 +37,11 @@ defineSlots<{
 </script>
 
 <style lang="scss" module>
+@use "sass:math";
+
+// ._stripe の斜線2周期 (16px * 2) を水平方向の移動量に換算したもの
+$stripeShift: 32px * math.sqrt(2);
+
 .root {
 	container-type: inline-size;
 	height: 100%;
@@ -51,13 +56,7 @@ defineSlots<{
 .preview {
 	position: relative;
 	background-color: var(--MI_THEME-bg);
-	background-image: repeating-linear-gradient(
-		135deg,
-		transparent,
-		transparent 10px,
-		var(--MI_THEME-panel) 6px,
-		var(--MI_THEME-panel) 16px
-	);
+	--MI_STRIPE-color: var(--MI_THEME-panel);
 }
 
 .previewContent {
@@ -77,12 +76,15 @@ defineSlots<{
 }
 
 .animatedBg {
+	// タイル境界で斜線が途切れないよう、移動量分だけ大きい1枚の背景をずらす
+	background-repeat: no-repeat;
+	background-size: calc(100% + #{$stripeShift}) 100%;
 	animation: bg 1.2s linear infinite;
 }
 
 @keyframes bg {
 	0% { background-position: 0 0; }
-	100% { background-position: -20px -20px; }
+	100% { background-position: (-$stripeShift) 0; }
 }
 
 .controls {

@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[hide ? $style.hidden : $style.visible]" @click="onclick">
+<div :class="['_stripe', hide ? $style.hidden : $style.visible]" @click="onclick">
 	<a
 		:title="image.name"
 		:class="$style.imageContainer"
@@ -116,21 +116,14 @@ async function onclick(ev: PointerEvent) {
 	position: relative;
 	//box-shadow: 0 0 0 1px var(--MI_THEME-divider) inset;
 	background-color: var(--MI_THEME-bg);
-	background-image: repeating-linear-gradient(
-		135deg,
-		transparent,
-		transparent 10px,
-		var(--c) 6px,
-		var(--c) 16px
-	);
 
 	&,
 	html[data-color-scheme=light] & {
-		--c: rgb(0 0 0 / 0.02);
+		--MI_STRIPE-color: rgb(0 0 0 / 0.02);
 	}
 
 	html[data-color-scheme=dark] & {
-		--c: rgb(255 255 255 / 0.02);
+		--MI_STRIPE-color: rgb(255 255 255 / 0.02);
 	}
 }
 

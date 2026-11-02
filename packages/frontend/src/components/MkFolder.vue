@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 
 					<template #footer>
-						<div v-if="$slots.footer" :class="$style.inBodyFooter">
+						<div v-if="$slots.footer" :class="['_stripe', $style.inBodyFooter]">
 							<slot name="footer"></slot>
 						</div>
 					</template>
@@ -82,7 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 
 							<template #footer>
-								<div v-if="$slots.footer" :class="$style.inBodyFooter">
+								<div v-if="$slots.footer" :class="['_stripe', $style.inBodyFooter]">
 									<slot name="footer"></slot>
 								</div>
 							</template>
@@ -346,13 +346,7 @@ watch(opened, (isOpened) => {
 	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
-	background-image: repeating-linear-gradient(
-		135deg,
-		transparent,
-		transparent 10px,
-		var(--MI_THEME-panel) 6px,
-		var(--MI_THEME-panel) 16px
-	);
+	--MI_STRIPE-color: var(--MI_THEME-panel);
 	border-radius: 0 0 6px 6px;
 }
 </style>

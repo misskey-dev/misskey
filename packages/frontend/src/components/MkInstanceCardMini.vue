@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	:class="[$style.root, {
+	:class="['_stripe', $style.root, {
 		[$style.isNotResponding]: instance.isNotResponding,
 		[$style.isSilenced]: instance.isSilenced,
 		[$style.isSuspended]: instance.isSuspended,
@@ -68,39 +68,31 @@ $bodyInfoHieght: 16px;
 	align-items: center;
 	padding: 16px;
 	border-radius: 8px;
-	--c: transparent;
 	background-color: var(--MI_THEME-panel);
-	background-image: repeating-linear-gradient(
-		135deg,
-		transparent,
-		transparent 10px,
-		var(--c) 6px,
-		var(--c) 16px
-	);
 
 	&.isNotResponding {
-		--c: light-dark(
+		--MI_STRIPE-color: light-dark(
 			color(from color-mix(in srgb, var(--MI_THEME-panel), orange 50%) srgb r g b / 0.25),
 			color(from color-mix(in srgb, var(--MI_THEME-panel), orange 50%) srgb r g b / 0.5)
 		);
 	}
 
 	&.isSilenced {
-		--c: light-dark(
+		--MI_STRIPE-color: light-dark(
 			color(from color-mix(in srgb, var(--MI_THEME-panel), blue 50%) srgb r g b / 0.25),
 			color(from color-mix(in srgb, var(--MI_THEME-panel), blue 50%) srgb r g b / 0.5)
 		);
 	}
 
 	&.isSuspended {
-		--c: light-dark(
+		--MI_STRIPE-color: light-dark(
 			color(from color-mix(in srgb, var(--MI_THEME-panel), black 15%) srgb r g b / 0.25),
 			color(from color-mix(in srgb, var(--MI_THEME-panel), white 15%) srgb r g b / 0.5)
 		);
 	}
 
 	&.isBlocked {
-		--c: light-dark(
+		--MI_STRIPE-color: light-dark(
 			color(from color-mix(in srgb, var(--MI_THEME-panel), red 50%) srgb r g b / 0.25),
 			color(from color-mix(in srgb, var(--MI_THEME-panel), red 50%) srgb r g b / 0.5)
 		);
