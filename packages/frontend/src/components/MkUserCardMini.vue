@@ -4,12 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div
-	v-adaptive-bg
-	:class="[$style.root, {
-		[$style.isSuspended]: 'isSuspended' in user && user.isSuspended,
-	}]"
->
+<div v-adaptive-bg :class="[$style.root]">
 	<MkAvatar :class="$style.avatar" :user="user" indicator/>
 	<div :class="$style.body">
 		<span :class="$style.name"><MkUserName :user="user"/></span>
@@ -67,23 +62,8 @@ $bodyInfoHieght: 16px;
 	display: flex;
 	align-items: center;
 	padding: 16px;
+	background: var(--MI_THEME-panel);
 	border-radius: 8px;
-	--c: transparent;
-	background-color: var(--MI_THEME-panel);
-	background-image: repeating-linear-gradient(
-		135deg,
-		transparent,
-		transparent 10px,
-		var(--c) 6px,
-		var(--c) 16px
-	);
-
-	&.isSuspended {
-		--c: light-dark(
-			color(from color-mix(in srgb, var(--MI_THEME-panel), black 15%) srgb r g b / 0.25),
-			color(from color-mix(in srgb, var(--MI_THEME-panel), white 15%) srgb r g b / 0.5)
-		);
-	}
 }
 
 .avatar {
