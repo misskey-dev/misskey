@@ -115,18 +115,23 @@ async function onclick(ev: PointerEvent) {
 .visible {
 	position: relative;
 	//box-shadow: 0 0 0 1px var(--MI_THEME-divider) inset;
-	background: var(--MI_THEME-bg);
-	background-size: 16px 16px;
-}
+	background-color: var(--MI_THEME-bg);
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--c) 6px,
+		var(--c) 16px
+	);
 
-html[data-color-scheme=dark] .visible {
-	--c: rgb(255 255 255 / 2%);
-	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--MI_THEME-bg) 16.67%, var(--MI_THEME-bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--MI_THEME-bg) 66.67%, var(--MI_THEME-bg) 100%);
-}
+	&,
+	html[data-color-scheme=light] & {
+		--c: rgb(0 0 0 / 0.02);
+	}
 
-html[data-color-scheme=light] .visible {
-	--c: rgb(0 0 0 / 2%);
-	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--MI_THEME-bg) 16.67%, var(--MI_THEME-bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--MI_THEME-bg) 66.67%, var(--MI_THEME-bg) 100%);
+	html[data-color-scheme=dark] & {
+		--c: rgb(255 255 255 / 0.02);
+	}
 }
 
 .imageContainer {

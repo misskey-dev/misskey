@@ -201,7 +201,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #default="{ items }">
 						<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); grid-gap: 12px;">
 							<MkA v-for="item in items" :key="item.id" :to="userPage(item.user)">
-								<MkUserCardMini :user="item.user" :withChart="false"/>
+								<MkUserCardMini :user="item.user"/>
 							</MkA>
 						</div>
 					</template>
@@ -218,7 +218,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #default="{ items }">
 						<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); grid-gap: 12px;">
 							<MkA v-for="item in items" :key="item.id" :to="userPage(item.user)">
-								<MkUserCardMini :user="item.user" :withChart="false"/>
+								<MkUserCardMini :user="item.user"/>
 							</MkA>
 						</div>
 					</template>
@@ -739,9 +739,14 @@ const keymap = {
 	text-align: center;
 	padding: 32px;
 	margin: 6px 32px 32px;
-	--color: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
-	background-size: auto auto;
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 10px, var(--color) 4px, var(--color) 14px);
+	--c: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--c) 6px,
+		var(--c) 16px
+	);
 	border-radius: 8px;
 }
 </style>

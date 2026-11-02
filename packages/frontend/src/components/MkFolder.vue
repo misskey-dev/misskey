@@ -346,8 +346,13 @@ watch(opened, (isOpened) => {
 	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
-	background-size: auto auto;
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, var(--MI_THEME-panel) 5px, var(--MI_THEME-panel) 10px);
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--MI_THEME-panel) 6px,
+		var(--MI_THEME-panel) 16px
+	);
 	border-radius: 0 0 6px 6px;
 }
 </style>

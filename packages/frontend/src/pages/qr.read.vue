@@ -358,8 +358,15 @@ onUnmounted(() => {
 	position: sticky;
 	top: var(--MI-stickyTop, 0);
 	z-index: 1;
-	background: var(--MI_THEME-bg);
-	background-size: 16px 16px;
+	--c: light-dark(rgb(0 0 0 / 0.02), rgb(255 255 255 / 0.02));
+	background-color: var(--MI_THEME-bg);
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--c) 6px,
+		var(--c) 16px
+	);
 	width: 100%;
 	height: var(--MI-QrReadVideoHeight);
 }
@@ -379,16 +386,6 @@ onUnmounted(() => {
 	justify-content: end;
 	align-items: center;
 	gap: 10px;
-}
-
-html[data-color-scheme=dark] .view {
-	--c: rgb(255 255 255 / 2%);
-	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--MI_THEME-bg) 16.67%, var(--MI_THEME-bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--MI_THEME-bg) 66.67%, var(--MI_THEME-bg) 100%);
-}
-
-html[data-color-scheme=light] .view {
-	--c: rgb(0 0 0 / 2%);
-	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--MI_THEME-bg) 16.67%, var(--MI_THEME-bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--MI_THEME-bg) 66.67%, var(--MI_THEME-bg) 100%);
 }
 
 .contents {

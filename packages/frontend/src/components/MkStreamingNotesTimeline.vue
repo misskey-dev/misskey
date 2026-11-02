@@ -558,8 +558,13 @@ defineExpose({
 
 .ad {
 	padding: 8px;
-	background-size: auto auto;
-	background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--MI_THEME-bg) 8px, var(--MI_THEME-bg) 14px);
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--MI_THEME-bg) 6px,
+		var(--MI_THEME-bg) 16px
+	);
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
 
 	&:empty {

@@ -76,10 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<div v-else :class="$style.userSelectedButtons">
 							<div style="overflow: hidden;">
-								<MkUserCardMini
-									:user="user"
-									:withChart="false"
-								/>
+								<MkUserCardMini :user="user"/>
 							</div>
 							<div>
 								<button

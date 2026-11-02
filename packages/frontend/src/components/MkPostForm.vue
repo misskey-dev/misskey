@@ -1650,15 +1650,14 @@ defineExpose({
 	min-height: 75px;
 	max-height: 150px;
 	overflow: auto;
-	background-size: auto auto;
-}
-
-html[data-color-scheme=dark] .preview {
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, #0004 5px, #0004 10px);
-}
-
-html[data-color-scheme=light] .preview {
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, #00000005 5px, #00000005 10px);
+	--c: light-dark(rgb(0 0 0 / 0.02), rgb(255 255 255 / 0.02));
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--c) 6px,
+		var(--c) 16px
+	);
 }
 
 .targetNote {

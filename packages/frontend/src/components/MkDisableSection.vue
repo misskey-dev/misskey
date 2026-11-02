@@ -35,8 +35,13 @@ defineProps<{
 	width: 100%;
 	height: 100%;
 	cursor: not-allowed;
-	--color: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
-	background-size: auto auto;
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 10px, var(--color) 4px, var(--color) 14px);
+	--c: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--c) 6px,
+		var(--c) 16px
+	);
 }
 </style>

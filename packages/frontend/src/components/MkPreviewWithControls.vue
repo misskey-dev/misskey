@@ -51,8 +51,13 @@ defineSlots<{
 .preview {
 	position: relative;
 	background-color: var(--MI_THEME-bg);
-	background-image: linear-gradient(135deg, transparent 30%, var(--MI_THEME-panel) 30%, var(--MI_THEME-panel) 50%, transparent 50%, transparent 80%, var(--MI_THEME-panel) 80%, var(--MI_THEME-panel) 100%);
-	background-size: 20px 20px;
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--MI_THEME-panel) 6px,
+		var(--MI_THEME-panel) 16px
+	);
 }
 
 .previewContent {
