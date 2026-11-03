@@ -11777,6 +11777,19 @@ snapshots:
       - vite
     optional: true
 
+  '@vitest/browser-playwright@5.0.5(bufferutil@4.1.0)(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(playwright@1.64.1)(utf-8-validate@6.0.6)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))(vitest@5.0.5)':
+    dependencies:
+      '@vitest/browser': 5.0.5(bufferutil@4.1.0)(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(utf-8-validate@6.0.6)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))(vitest@5.0.5)
+      '@vitest/mocker': 5.0.5(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))
+      playwright: 1.64.1
+      tinyrainbow: 3.2.0
+      vitest: 5.0.5(@opentelemetry/api@1.10.0)(@types/node@26.6.5)(@vitest/browser-playwright@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(happy-dom@21.0.4(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))
+    transitivePeerDependencies:
+      - bufferutil
+      - msw
+      - utf-8-validate
+      - vite
+
   '@vitest/browser-playwright@5.0.5(bufferutil@4.1.0)(msw@3.0.3(@types/node@26.6.5)(supports-color@5.5.0)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(playwright@1.64.1)(utf-8-validate@6.0.6)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))(vitest@5.0.5)':
     dependencies:
       '@vitest/browser': 5.0.5(bufferutil@4.1.0)(msw@3.0.3(@types/node@26.6.5)(supports-color@5.5.0)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(utf-8-validate@6.0.6)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))(vitest@5.0.5)
@@ -11808,6 +11821,24 @@ snapshots:
       - utf-8-validate
       - vite
     optional: true
+
+  '@vitest/browser@5.0.5(bufferutil@4.1.0)(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(utf-8-validate@6.0.6)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))(vitest@5.0.5)':
+    dependencies:
+      '@blazediff/core': 1.10.0
+      '@vitest/mocker': 5.0.5(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))
+      '@vitest/ui': 5.0.5(vitest@5.0.5)
+      '@vitest/utils': 5.0.5
+      magic-string: 1.4.3
+      pngjs: 7.0.0
+      sirv: 3.0.2
+      tinyrainbow: 3.2.0
+      vitest: 5.0.5(@opentelemetry/api@1.10.0)(@types/node@26.6.5)(@vitest/browser-playwright@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(happy-dom@21.0.4(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))
+      ws: 8.22.0(bufferutil@4.1.0)(utf-8-validate@6.0.6)
+    transitivePeerDependencies:
+      - bufferutil
+      - msw
+      - utf-8-validate
+      - vite
 
   '@vitest/browser@5.0.5(bufferutil@4.1.0)(msw@3.0.3(@types/node@26.6.5)(supports-color@5.5.0)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(utf-8-validate@6.0.6)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))(vitest@5.0.5)':
     dependencies:
@@ -11870,6 +11901,16 @@ snapshots:
       magic-string: 1.4.3
     optionalDependencies:
       msw: 3.0.3(@types/node@26.6.5)(@typescript/typescript6@6.0.2)(supports-color@10.2.2)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))
+      vite: 8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)
+
+  '@vitest/mocker@5.0.5(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))':
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      '@vitest/spy': 5.0.5
+      estree-walker: 3.0.3
+      magic-string: 1.4.3
+    optionalDependencies:
+      msw: 3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))
       vite: 8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)
 
   '@vitest/mocker@5.0.5(msw@3.0.3(@types/node@26.6.5)(supports-color@5.5.0)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))':
@@ -14954,6 +14995,27 @@ snapshots:
       - supports-color
     optional: true
 
+  msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)):
+    dependencies:
+      '@inquirer/confirm': 6.3.4(@types/node@26.6.5)
+      '@msw/url': 0.1.2
+      '@mswjs/interceptors': 0.45.9(supports-color@10.2.2)
+      cookie: 2.0.1
+      headers-polyfill: 5.0.1
+      is-node-process: 1.2.0
+      outvariant: 1.4.3
+      rettime: 0.11.12
+      tough-cookie: 6.0.2
+      type-fest: 5.10.0
+      until-async: 3.0.2
+      yargs: 18.2.0
+    optionalDependencies:
+      typescript: 6.0.3
+      vite: 8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)
+    transitivePeerDependencies:
+      - '@types/node'
+      - supports-color
+
   msw@3.0.3(@types/node@26.6.5)(supports-color@5.5.0)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)):
     dependencies:
       '@inquirer/confirm': 6.3.4(@types/node@26.6.5)
@@ -16953,6 +17015,32 @@ snapshots:
       '@opentelemetry/api': 1.10.0
       '@types/node': 26.6.5
       '@vitest/browser-playwright': 5.0.5(bufferutil@4.1.0)(msw@3.0.3(@types/node@26.6.5)(@typescript/typescript6@6.0.2)(supports-color@10.2.2)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(playwright@1.64.1)(utf-8-validate@6.0.6)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))(vitest@5.0.5)
+      '@vitest/coverage-v8': 5.0.5(@vitest/browser@5.0.5)(vitest@5.0.5)
+      '@vitest/ui': 5.0.5(vitest@5.0.5)
+      happy-dom: 21.0.4(bufferutil@4.1.0)(utf-8-validate@6.0.6)
+    transitivePeerDependencies:
+      - msw
+
+  vitest@5.0.5(@opentelemetry/api@1.10.0)(@types/node@26.6.5)(@vitest/browser-playwright@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(happy-dom@21.0.4(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)):
+    dependencies:
+      '@types/chai': 5.2.3
+      '@vitest/mocker': 5.0.5(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))
+      chai: 6.3.0
+      es-module-lexer: 2.3.2
+      expect-type: 1.4.0
+      magic-string: 1.4.3
+      obug: 3.0.0
+      picomatch: 4.0.7
+      std-env: 4.3.0
+      tinybench: 6.2.2
+      tinyexec: 1.3.1
+      tinyglobby: 0.2.17
+      vite: 8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)
+      why-is-node-running: 3.2.1
+    optionalDependencies:
+      '@opentelemetry/api': 1.10.0
+      '@types/node': 26.6.5
+      '@vitest/browser-playwright': 5.0.5(bufferutil@4.1.0)(msw@3.0.3(@types/node@26.6.5)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15)))(playwright@1.64.1)(utf-8-validate@6.0.6)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(sass-embedded@1.106.1)(sass@1.106.1)(tsx@4.23.15))(vitest@5.0.5)
       '@vitest/coverage-v8': 5.0.5(@vitest/browser@5.0.5)(vitest@5.0.5)
       '@vitest/ui': 5.0.5(vitest@5.0.5)
       happy-dom: 21.0.4(bufferutil@4.1.0)(utf-8-validate@6.0.6)
