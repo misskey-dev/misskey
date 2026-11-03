@@ -167,7 +167,6 @@ export class ImageFrameRenderer {
 				const qrImageBitmap = await qrcodeImageBitmap(`${url}/users/${$i.id}`, {
 					...qrOptions,
 					size: labelCanvasCtx.canvas.height,
-					ecLevel: 'H',
 					color: `rgb(${Math.floor(fgColor[0] * 255)}, ${Math.floor(fgColor[1] * 255)}, ${Math.floor(fgColor[2] * 255)})`,
 					background: 'transparent',
 				});

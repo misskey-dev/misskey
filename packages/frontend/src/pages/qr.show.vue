@@ -64,7 +64,6 @@ const qrSvg = computed(() => {
 		...qrOptions,
 		size: 600,
 		margin: 3,
-		ecLevel: 'H',
 		color: tinycolor(`hsl(${qrHsl.value.h}, 100, 18)`).toRgbString(),
 		background: tinycolor(`hsl(${qrHsl.value.h}, 100, 97)`).toRgbString(),
 		logo: {
