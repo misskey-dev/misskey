@@ -55,17 +55,18 @@ function parseChunks(png: Buffer) {
 
 describe(genIdenticon, () => {
 	test('有効なPNGを生成する', async () => {
-		const png = await genIdenticon('carol@example.com');
+		const png = genIdenticon('carol@example.com');
 
 		expect(png.subarray(0, 8)).toEqual(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
 
 		const chunks = parseChunks(png);
-		expect(chunks.map(c => c.type)).toEqual(['IHDR', 'IDAT', 'IEND']);
+		expect(chunks.map(c => c.type)).toEqual(['IHDR', 'PLTE', 'IDAT', 'IEND']);
 		const ihdr = chunks[0].data;
 		expect(ihdr.readUInt32BE(0)).toBe(size);
 		expect(ihdr.readUInt32BE(4)).toBe(size);
 		expect(ihdr[8]).toBe(8); // bit depth
-		expect(ihdr[9]).toBe(2); // color type: truecolor (RGB)
+		expect(ihdr[9]).toBe(3); // color type: indexed-color
+		expect(chunks[1].data.length).toBe(256 * 3); // 256色のパレット
 
 		const metadata = await sharp(png, { failOn: 'warning' }).metadata();
 		expect(metadata.format).toBe('png');
@@ -73,16 +74,16 @@ describe(genIdenticon, () => {
 		expect(metadata.height).toBe(size);
 	});
 
-	test('同じseedからは同じ画像を生成する', async () => {
+	test('同じseedからは同じ画像を生成する', () => {
 		for (const seed of seeds) {
-			expect(await genIdenticon(seed)).toEqual(await genIdenticon(seed));
+			expect(genIdenticon(seed)).toEqual(genIdenticon(seed));
 		}
 	});
 
 	test('異なるseedからは異なる画像を生成する', async () => {
 		const hashes = new Set<string>();
 		for (const seed of seeds) {
-			const { data } = await decode(await genIdenticon(seed));
+			const { data } = await decode(genIdenticon(seed));
 			hashes.add(createHash('sha256').update(data).digest('hex'));
 		}
 		expect(hashes.size).toBe(seeds.length);
@@ -90,7 +91,7 @@ describe(genIdenticon, () => {
 
 	test('余白にはセルが描画されない', async () => {
 		for (const seed of seeds) {
-			const { isWhite } = await decode(await genIdenticon(seed));
+			const { isWhite } = await decode(genIdenticon(seed));
 			for (let y = 0; y < size; y++) {
 				for (let x = 0; x < size; x++) {
 					const inside = x >= margin && x < size - margin && y >= margin && y < size - margin;
@@ -102,7 +103,7 @@ describe(genIdenticon, () => {
 
 	test('各セルは継ぎ目なく単色で塗られ、左右対称になる', async () => {
 		for (const seed of seeds) {
-			const { isWhite } = await decode(await genIdenticon(seed));
+			const { isWhite } = await decode(genIdenticon(seed));
 			const cells: boolean[][] = [];
 			for (let cx = 0; cx < n; cx++) {
 				cells[cx] = [];
@@ -128,7 +129,7 @@ describe(genIdenticon, () => {
 		['carol@example.com', '4b6010bffe237109c0814c3303a3b9b23ca0d61f6d8b8c1613775988b5eb86bf'],
 		['alice@example.com', '49aa5dd99926d6ad367a95e257668d50eda6de4df3aaa680fd1bcd903eaba00e'],
 	])('%s のピクセルが変化しない', async (seed, expected) => {
-		const { data } = await decode(await genIdenticon(seed));
+		const { data } = await decode(genIdenticon(seed));
 		expect(createHash('sha256').update(data).digest('hex')).toBe(expected);
 	});
 });
