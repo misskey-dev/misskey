@@ -155,7 +155,7 @@ export default defineConfig((args) => {
 			external: allExternalModulesRegex,
 		}, workerBuildConfig];
 	} else {
-		return [{
+		const backendBuildConfig: RolldownOptions = {
 			input: [
 				'./src/boot/entry.ts',
 				'./src/boot/cli.ts',
@@ -186,6 +186,11 @@ export default defineConfig((args) => {
 			},
 			// ビルドの高速化のために、watchモードのときは外部モジュールは全てバンドルしないようにする
 			external: isWatchMode ? allExternalModulesRegex : externalModules,
-		}, workerBuildConfig];
+		};
+
+		// 設定は配列の順にビルドされ、前の設定のcloseBundleが終わるまで次は始まらない。
+		// watchモードではcloseBundleでbuilt/entry.jsを起動するので、先にワーカーをビルドしておく。
+		// 通常のビルドではバックエンド側のcleanDirがbuilt/workersを消してしまうので、ワーカーを後にビルドする
+		return isWatchMode ? [workerBuildConfig, backendBuildConfig] : [backendBuildConfig, workerBuildConfig];
 	}
 });
