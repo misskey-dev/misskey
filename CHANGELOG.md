@@ -1,5 +1,8 @@
 ## 2026.10.2
 
+### Note
+- Node.js v22のサポートを終了しました。Node.js v22では動作しません。Node.js v24, v26をご利用ください。
+
 ### General
 - Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
 - Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
