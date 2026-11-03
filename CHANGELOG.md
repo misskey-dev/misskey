@@ -1,5 +1,12 @@
 ## 2026.10.2
 
+### Note
+- 本番環境においてMisskeyを正しく起動するためのスクリプトを新設しました。こちらを利用して起動することで、余計なプロセスが常駐することを防ぎ、メモリ使用量を70MB～140MB削減することが可能です。
+  - `node ./scripts/start.mjs` でMisskeyを起動できます。 `pnpm start` と同等の動作をします。
+  - `node ./scripts/start.mjs --migrate` でマイグレーションを実行してからMisskeyを起動できます。 `pnpm migrateandstart` と同等の動作をします。
+	- 今までの起動方法（ `pnpm start` や `pnpm migrateandstart` ）も引き続き利用可能ですが、メモリ使用量の削減効果は得られません。
+	- 公式Docker Imageや同梱のDockerfileをご利用の場合は、何もしなくても新しい起動スクリプトが使用されます（起動時のメモリ消費量が削減されます）。
+
 ### General
 - Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
 - Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
