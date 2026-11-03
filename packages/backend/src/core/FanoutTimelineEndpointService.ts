@@ -151,6 +151,16 @@ export class FanoutTimelineEndpointService {
 				};
 			}
 
+			if (ps.me == null && this.meta.ugcVisibilityForVisitor !== 'all') {
+				const parentFilter = filter;
+				filter = (note) => {
+					if (this.meta.ugcVisibilityForVisitor === 'none') return false;
+					if (this.meta.ugcVisibilityForVisitor === 'local' && note.userHost != null) return false;
+
+					return parentFilter(note);
+				};
+			}
+
 			{
 				const parentFilter = filter;
 				filter = (note) => {

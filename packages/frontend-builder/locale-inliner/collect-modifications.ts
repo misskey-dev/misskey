@@ -393,7 +393,7 @@ function isAwaitFetchLocaleThenJson(awaitNode: ESTree.Node): boolean {
 
 	const fetchCall = thenFunction.object;
 	if (fetchCall.type !== 'CallExpression') return false;
-	if (fetchCall.arguments.length !== 1) return false;
+	if (fetchCall.arguments.length !== 1 && fetchCall.arguments.length !== 2) return false;
 
 	// `/assets/locales/${d}.${x}.json`
 	const assetLocaleTemplate = fetchCall.arguments[0];

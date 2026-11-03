@@ -7,9 +7,10 @@ import { FORCE_RE_RENDER, FORCE_REMOUNT } from '@storybook/core-events';
 import { addons } from '@storybook/preview-api';
 import { type Preview, setup } from '@storybook/vue3';
 import isChromatic from 'chromatic/isChromatic';
-import { initialize, mswLoader } from 'msw-storybook-addon';
+import { setupWorker } from 'msw/browser';
+import { mswLoader } from 'msw-storybook-addon/csf3';
 import { userDetailed } from './fakes.js';
-import { commonHandlers, onUnhandledRequest } from './mocks.js';
+import { commonHandlers, onUnhandledFrame } from './mocks.js';
 import themes from './themes.js';
 import '../src/style.scss';
 
@@ -56,9 +57,6 @@ function initLocalStorage() {
 	}));
 }
 
-initialize({
-	onUnhandledRequest,
-});
 initLocalStorage();
 queueMicrotask(() => {
 	Promise.all([
@@ -134,7 +132,11 @@ const preview = {
 			};
 		},
 	],
-	loaders: [mswLoader],
+	loaders: [mswLoader(async () => {
+		const worker = setupWorker();
+		await worker.start({ onUnhandledFrame });
+		return worker;
+	})],
 	parameters: {
 		controls: {
 			exclude: /^__/,

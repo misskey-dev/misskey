@@ -8,13 +8,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import mime from 'mime-types';
-import { ZipArchive } from 'archiver';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp, createTempDir } from '@/misc/create-temp.js';
+import { ZipArchive } from '@/misc/zip.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
@@ -56,7 +56,8 @@ export class ExportCustomEmojisProcessorService {
 
 		this.logger.info(`Temp dir is ${path}`);
 
-		const metaPath = path + '/meta.json';
+		const metaFileName = 'meta.json';
+		const metaPath = path + '/' + metaFileName;
 
 		fs.writeFileSync(metaPath, '', 'utf-8');
 
@@ -86,6 +87,11 @@ export class ExportCustomEmojisProcessorService {
 			},
 		});
 
+		// ZIP のエントリ名 (meta.json 以外) → 実ファイルのパス
+		// name と host: null が同じレコードは DB 上で重複し得て、その場合 fileName も同じになるため、
+		// fileName ごとに最後にダウンロードに成功したファイルだけを保持する
+		const emojiFiles = new Map<string, string>();
+
 		for (const emoji of customEmojis) {
 			if (!/^[a-zA-Z0-9_]+$/.test(emoji.name)) {
 				this.logger.error(`invalid emoji name: ${emoji.name}`);
@@ -93,7 +99,8 @@ export class ExportCustomEmojisProcessorService {
 			}
 			const ext = mime.extension(emoji.type ?? 'image/png');
 			const fileName = emoji.name + (ext ? '.' + ext : '');
-			const emojiPath = path + '/' + fileName;
+			// 失敗時に同じ fileName の別レコードのファイルを消さないよう、一時パスはレコードごとに分ける
+			const emojiPath = path + '/emoji-' + emoji.id;
 			fs.writeFileSync(emojiPath, '', 'binary');
 			let downloaded = false;
 
@@ -104,7 +111,13 @@ export class ExportCustomEmojisProcessorService {
 				this.logger.error(e instanceof Error ? e : new Error(e as string));
 			}
 
-			if (!downloaded) {
+			if (downloaded) {
+				const prevPath = emojiFiles.get(fileName);
+				if (prevPath != null) {
+					fs.unlinkSync(prevPath);
+				}
+				emojiFiles.set(fileName, emojiPath);
+			} else {
 				fs.unlinkSync(emojiPath);
 			}
 
@@ -120,35 +133,42 @@ export class ExportCustomEmojisProcessorService {
 
 		await writeMeta(']}');
 
-		metaStream.end();
+		// ZIP に入れる前に確実にディスクへ書き出しておく
+		await new Promise<void>((res, rej) => {
+			metaStream.on('error', rej);
+			metaStream.end(res);
+		});
 
 		// Create archive
 		const [archivePath, archiveCleanup] = await createTemp();
-		await new Promise<void>((resolve) => {
-			const archiveStream = fs.createWriteStream(archivePath);
-			const archive = new ZipArchive({
-				zlib: { level: 0 },
+		try {
+			const archive = await ZipArchive.create(archivePath);
+			try {
+				// エントリを 1 件ずつ直列に追加する
+				await archive.addFile(metaFileName, metaPath);
+				for (const [fileName, emojiPath] of emojiFiles) {
+					await archive.addFile(fileName, emojiPath);
+				}
+			} catch (e) {
+				await archive.abort();
+				throw e;
+			}
+			await archive.close();
+
+			this.logger.succ(`Exported to: ${archivePath}`);
+
+			const fileName = 'custom-emojis-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.zip';
+			const driveFile = await this.driveService.addFile({ user, path: archivePath, name: fileName, force: true });
+
+			this.logger.succ(`Exported to: ${driveFile.id}`);
+
+			this.notificationService.createNotification(user.id, 'exportCompleted', {
+				exportedEntity: 'customEmoji',
+				fileId: driveFile.id,
 			});
-			archiveStream.on('close', async () => {
-				this.logger.succ(`Exported to: ${archivePath}`);
-
-				const fileName = 'custom-emojis-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.zip';
-				const driveFile = await this.driveService.addFile({ user, path: archivePath, name: fileName, force: true });
-
-				this.logger.succ(`Exported to: ${driveFile.id}`);
-
-				this.notificationService.createNotification(user.id, 'exportCompleted', {
-					exportedEntity: 'customEmoji',
-					fileId: driveFile.id,
-				});
-
-				cleanup();
-				archiveCleanup();
-				resolve();
-			});
-			archive.pipe(archiveStream);
-			archive.directory(path, false);
-			archive.finalize();
-		});
+		} finally {
+			cleanup();
+			archiveCleanup();
+		}
 	}
 }

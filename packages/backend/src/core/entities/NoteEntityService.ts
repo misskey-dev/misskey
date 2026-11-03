@@ -16,6 +16,7 @@ import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
 import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
+import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -133,6 +134,9 @@ export class NoteEntityService implements OnModuleInit {
 		if (meId === packedNote.userId) return false;
 		// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
 
+		// TODO: ugcVisibilityForVisitor が local の場合も、付随するリモートのノートをリンクだけ残して内容を隠せるようにする
+		if (meId == null && this.meta.ugcVisibilityForVisitor === 'none') return true;
+
 		if (packedNote.user.requireSigninToViewContents && meId == null) {
 			return true;
 		}
@@ -191,7 +195,7 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	private async populatePoll(note: MiNote, meId: MiUser['id'] | null) {
+	private async populatePoll(note: Pick<MiNote, 'id'>, meId: MiUser['id'] | null) {
 		const poll = await this.pollsRepository.findOneByOrFail({ noteId: note.id });
 		const choices = poll.choices.map(c => ({
 			text: c,
@@ -227,6 +231,19 @@ export class NoteEntityService implements OnModuleInit {
 			expiresAt: poll.expiresAt?.toISOString() ?? null,
 			choices,
 		};
+	}
+
+	@bindThis
+	public async withMyPollVotes(note: Packed<'Note'>, meId: MiUser['id'] | null): Promise<Packed<'Note'>> {
+		const [poll, renote, reply] = await Promise.all([
+			note.poll ? this.populatePoll(note, meId) : note.poll,
+			note.renote ? this.withMyPollVotes(note.renote, meId) : note.renote,
+			note.reply ? this.withMyPollVotes(note.reply, meId) : note.reply,
+		]);
+
+		if (poll === note.poll && renote === note.renote && reply === note.reply) return note;
+
+		return { ...note, poll, renote, reply };
 	}
 
 	@bindThis
@@ -268,6 +285,23 @@ export class NoteEntityService implements OnModuleInit {
 		}
 
 		return undefined;
+	}
+
+	@bindThis
+	public async withMyRenoteReaction(note: Packed<'Note'>, meId: MiUser['id'] | null): Promise<Packed<'Note'>> {
+		if (meId == null) return note;
+		if (!isRenotePacked(note) || isQuotePacked(note)) return note;
+		if (note.renote == null || Object.keys(note.renote.reactions).length === 0) return note;
+
+		const myReaction = await this.populateMyReaction(note.renote, meId);
+
+		return {
+			...note,
+			renote: {
+				...note.renote,
+				myReaction,
+			},
+		};
 	}
 
 	@bindThis
@@ -598,20 +632,34 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async fetchDiffs(noteIds: MiNote['id'][]) {
+	public async fetchDiffs(noteIds: MiNote['id'][], meId: MiUser['id'] | null = null) {
 		if (noteIds.length === 0) return [];
+		// TODO: ugcVisibilityForVisitor が local の場合の扱いを shouldHideNote と揃える
+		if (meId == null && this.meta.ugcVisibilityForVisitor === 'none') return [];
 
-		const notes = await this.notesRepository.find({
+		const fetched = await this.notesRepository.find({
 			where: {
 				id: In(noteIds),
 			},
 			select: {
 				id: true,
+				userId: true,
 				userHost: true,
+				visibility: true,
+				visibleUserIds: true,
+				mentions: true,
+				replyUserId: true,
 				reactions: true,
 				reactionAndUserPairCache: true,
 			},
 		});
+
+		const notes: MiNote[] = [];
+		for (const note of fetched) {
+			if (await this.isVisibleForMe(note, meId)) {
+				notes.push(note);
+			}
+		}
 
 		const bufferedReactionsMap = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany(noteIds) : null;
 

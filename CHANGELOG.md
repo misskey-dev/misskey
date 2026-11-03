@@ -1,13 +1,75 @@
 ## Unreleased
 
 ### General
--
+- Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
+- Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
 
 ### Client
--　Enhance: 入力フォームの注釈欄に絵文字パレットから絵文字を入力可能に 
+- Fix: 入力フォームの注釈欄に絵文字パレットから絵文字を入力できない問題を修正
+- Fix: 設定検索にプライバシー設定の項目が表示されない問題を修正
+- Fix: デッキでノートのアイコンが横スクロールに追従する問題を修正
+- Fix: 存在しない・アクセス権のないチャットを開いたときにエラーが表示されない問題を修正
+- Fix: デッキのクリップカラムで、対象クリップを切り替えた際に表示が正しく更新されないことがある問題を修正
+- Fix: Unicode絵文字とカスタム絵文字の名前が重複したときにカスタム絵文字がオートコンプリートにサジェストされない問題を修正
+- Fix: AiScript 関連のウィジェットの削除時のリソース解放漏れを修正
 
 ### Server
--
+- Fix: ジョブキューの同時実行数のコンフィグ設定値が不正な場合は起動時に安全に停止するように
+- Fix: アンテナのリアルタイム更新時に、既に投票済みのアンケートが未投票として表示される問題を修正
+- Fix: ノートや通知などでユーザーの情報を取得する際に、本来は不要なデータの問い合わせが行われる問題を修正
+- Fix: プッシュ通知の購読が正しく解除されないことがある問題を修正
+
+
+## 2026.10.1
+
+### Note
+
+**今回のリリースではMisskeyの動作要件やSentryの設定方法などが変更されます。必ずアップグレード前にお使いの環境をご確認ください。**
+
+- Sentry SDKをv11に更新したため、Sentryを利用しているサーバーでは設定の変更が必要になる場合があります。
+  - Sentry v11で`sendDefaultPii`が削除され、収集する項目を個別に指定する`dataCollection`に置き換えられました。
+  	- **`sentryForBackend.options.sendDefaultPii` / `sentryForFrontend.options.sendDefaultPii`を設定しているサーバーは対応が必要です。** このオプションは無視されるようになり、設定されている場合は起動時に警告を出力します。同じ収集範囲を維持するには`dataCollection: {}`に書き換えてください。
+  	- 設定していない場合、対応は不要です。Sentry v11は`dataCollection`未指定時にすべてを収集しますが、Misskeyは利用者の情報が意図せず送信されないよう、収集範囲を絞った既定を適用します（ユーザー情報・Cookie・URLクエリパラメータ・HTTPボディ・DBクエリの値を送信せず、中継元を特定できるヘッダーを除外）。
+  	- 収集範囲を変更する場合は`dataCollection`を明示してください。Misskeyの既定をすべて置き換えるため、`dataCollection: {}`と書くとSentry本来の既定（すべて収集）に戻ります。
+  - `sentryForBackend.options.profilesSampleRate`を設定している場合、v11で削除されたため無視されます。プロファイリングの有効化は引き続き`sentryForBackend.enableNodeProfiling`で行います。
+  - 詳細は https://docs.sentry.io/platforms/javascript/migration/v10-to-v11/ を参照してください。
+- Node.jsのセキュリティアップデートに伴い、最低動作バージョンを 22.23.4 / 24.22.1 / 26.12.1 に引き上げました。
+  - Docker Image は Node.js 26.12.1-trixie に更新されています。
+
+### General
+- Feat: お知らせに自動アーカイブ日時を設定できるように
+- Feat: アカウント作成から一定期間経っていないアカウントからのフォローを自動的にフォロー申請にできるように
+- Enhance: 依存関係の更新
+- Fix: センシティブな画像をアイコン・バナーに指定できないように
+- Fix: セキュリティに関する修正
+
+### Client
+- Feat: デッキにクリップのカラムを追加できるように
+- Enhance: アイコン画像・バナー画像を外せるように	
+
+### Server
+- Enhance: ノート中のURLを正規化して禁止ワードを判定するように
+- Fix: ローカル限定絵文字でリモートノートのリノートにリアクションできてしまう問題を修正
+- Fix: サーバーの紹介にHTMLを使うとリンクプレビューの説明文にHTMLタグが表示される問題を修正
+- Fix: ルーム招待時にブロック状態を考慮するように
+
+
+## 2026.10.0
+
+### General
+- Enhance: 翻訳の更新
+
+### Client
+- Fix: 初期設定ダイアログの表示が一部乱れる問題を修正  
+  (Cherry-picked from https://github.com/Zel9278/misskey-juice/commit/25d65914f629936f33d7e41a1369eda1f6c4cd1d, https://github.com/Zel9278/misskey-juice/commit/6ff1ce752c4494f4889ec23ca5419645e3db98e0)
+- Fix: ユーザーの「概要」ページで引っ張って更新しても何も更新されない問題を修正  
+  (Cherry-picked from https://github.com/shiroha-a/misskey-ts/commit/c946a42dbb71234dd9d9bbc14474853f0709431c)
+
+### Server
+- Fix: HTTP Signaturesの`(request-target)`にクエリ文字列が含まれない問題を修正
+- Fix: クリップから同じノートを繰り返し削除すると、ノートの被クリップ数が負の値を取る問題を修正
+- Fix: 添付ファイルの配信に関する挙動の修正
+- Fix: セキュリティに関する修正
 
 
 ## 2026.9.1

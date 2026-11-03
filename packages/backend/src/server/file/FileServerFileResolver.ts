@@ -98,6 +98,8 @@ export class FileServerFileResolver {
 			};
 		}
 
+		if (!/^[a-zA-Z0-9._-]+$/.test(key) || key === '.' || key === '..') return { kind: 'not-found' };
+
 		const path = this.internalStorageService.resolvePath(key);
 
 		if (isThumbnail || isWebpublic) {

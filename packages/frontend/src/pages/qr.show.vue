@@ -33,7 +33,7 @@ import { url, host } from '@@/js/config.js';
 import type { Directive } from 'vue';
 import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
-import { userPage, userName } from '@/filters/user.js';
+import { userPage, userName } from '@@/js/user.js';
 import misskeysvg from '/client-assets/misskey.svg';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { i18n } from '@/i18n.js';

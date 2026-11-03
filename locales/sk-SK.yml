@@ -1453,6 +1453,7 @@ _deck:
     antenna: "Antény"
     list: "Zoznam"
     channel: "Kanály"
+    clip: "Klip"
     mentions: "Zmienky"
     direct: "Priame poznámky"
 _webhookSettings:

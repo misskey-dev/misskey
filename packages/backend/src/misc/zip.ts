@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { promises as fsp } from 'node:fs';
-import { Reader, ZipReader } from '@zip.js/zip.js';
+import { constants as fsConstants, promises as fsp } from 'node:fs';
+import { Reader, Writer, ZipReader, ZipWriter } from '@zip.js/zip.js';
 import type { FileEntry } from '@zip.js/zip.js';
 
 /**
@@ -28,6 +28,19 @@ class FileHandleReader extends Reader<fsp.FileHandle> {
 			read += bytesRead;
 		}
 		return read === length ? buffer : buffer.subarray(0, read);
+	}
+}
+
+/**
+ * zip.js の Writer を Node.js の FileHandle で実装したもの
+ */
+class FileHandleWriter extends Writer<fsp.FileHandle> {
+	constructor(private readonly handle: fsp.FileHandle) {
+		super();
+	}
+
+	public override async writeUint8Array(array: Uint8Array): Promise<void> {
+		await writeAll(this.handle, array);
 	}
 }
 
@@ -140,6 +153,115 @@ export class ZipFile {
 
 	public async close(): Promise<void> {
 		await this.reader.close();
+		await this.handle.close();
+	}
+}
+
+export class ZipArchiveError extends Error {
+	constructor(message: string) {
+		super(message);
+		this.name = 'ZipArchiveError';
+	}
+}
+
+/**
+ * ZIP のエントリ名として安全でないものを弾く。
+ *
+ * zip.js の `filenameValidation` は読み取り側にしか無く、ZipWriter は渡された名前をそのまま格納する
+ * (\ も区切り文字に変換されない) ため、ZipFile 相当の検査を書き出し側にも用意する。
+ */
+function assertSafeEntryName(name: string): void {
+	// eslint-disable-next-line no-control-regex
+	if (name === '' || /[\u0000-\u001f\u007f]/.test(name)) {
+		throw new ZipArchiveError(`invalid entry name: ${JSON.stringify(name)}`);
+	}
+	// ZIP の区切り文字は '/' のみ。'\' を含む名前は展開ツールによって区切りとして解釈され得る
+	if (name.includes('\\')) {
+		throw new ZipArchiveError(`entry name must not contain a backslash: ${name}`);
+	}
+	// 絶対パス (POSIX / Windows のドライブレター)
+	if (name.startsWith('/') || /^[a-zA-Z]:/.test(name)) {
+		throw new ZipArchiveError(`entry name must be relative: ${name}`);
+	}
+	const parts = name.split('/');
+	if (parts.includes('..') || parts.includes('.') || parts.includes('')) {
+		throw new ZipArchiveError(`entry name must not contain a '.', '..' or empty path segment: ${name}`);
+	}
+}
+
+/**
+ * ZIP ファイルを書き出すためのラッパー
+ */
+export class ZipArchive {
+	private constructor(
+		private readonly handle: fsp.FileHandle,
+		private readonly writer: ZipWriter<unknown>,
+	) {}
+
+	/**
+	 * path に ZIP を作成します。既にファイルがある場合は切り詰めて上書きします。
+	 */
+	public static async create(path: string): Promise<ZipArchive> {
+		// O_NOFOLLOW: path 自体がシンボリックリンクなら ELOOP で失敗させ、そのリンク先を切り詰めてしまうのを防ぐ
+		const handle = await fsp.open(path, fsConstants.O_WRONLY | fsConstants.O_CREAT | fsConstants.O_TRUNC | fsConstants.O_NOFOLLOW);
+		try {
+			const writer = new ZipWriter(new FileHandleWriter(handle), {
+				// Node.js には Web Worker が無いのでインラインで処理する
+				useWebWorkers: false,
+				// 画像等の既に圧縮済みのデータを想定しているので無圧縮 (格納) にする
+				level: 0,
+				// エントリを一旦メモリに溜めてから書き出すのを防ぐ (add() を直列に呼ぶ限り既定値のまま false)
+				bufferedWrite: false,
+			});
+			return new ZipArchive(handle, writer);
+		} catch (e) {
+			await handle.close();
+			throw e;
+		}
+	}
+
+	/**
+	 * srcPath のファイルを name というエントリ名で追加します。
+	 *
+	 * bufferedWrite を無効に保つため、シーケンシャルに実行すること。
+	 */
+	public async addFile(name: string, srcPath: string): Promise<void> {
+		assertSafeEntryName(name);
+
+		// O_NOFOLLOW: srcPath がシンボリックリンクなら ELOOP で失敗させ、リンク先を ZIP に取り込むのを防ぐ
+		const handle = await fsp.open(srcPath, fsConstants.O_RDONLY | fsConstants.O_NOFOLLOW);
+		try {
+			const stats = await handle.stat();
+			// FIFO を開くと読み取りが永久にブロックし得るので、通常ファイル以外は受け付けない
+			if (!stats.isFile()) {
+				throw new ZipArchiveError(`not a regular file: ${srcPath}`);
+			}
+			// サイズを渡しておくと zip.js が不要な zip64 拡張を使わずに済む。
+			// stat 後にファイルが変化しても、実際に読めたバイト数と CRC-32 がデータディスクリプタに記録されるため
+			// ヘッダと中身が食い違う ZIP にはならない
+			await this.writer.add(name, new FileHandleReader(handle, stats.size));
+		} finally {
+			await handle.close();
+		}
+	}
+
+	/**
+	 * セントラルディレクトリを書き出して ZIP を完成させます。
+	 */
+	public async close(): Promise<void> {
+		try {
+			await this.writer.close();
+		} finally {
+			await this.handle.close();
+		}
+	}
+
+	/**
+	 * 書きかけの ZIP を完成させずに破棄し、ファイルハンドルだけを閉じます。
+	 *
+	 * path のファイルは中途半端な状態で残るので、呼び出し側で始末すること。
+	 */
+	public async abort(): Promise<void> {
 		await this.handle.close();
 	}
 }

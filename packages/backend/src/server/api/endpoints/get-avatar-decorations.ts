@@ -73,13 +73,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const decorations = await this.avatarDecorationService.getAll(true);
 			const allRoles = await this.roleService.getRoles();
+			const visibleRoles = me == null ? allRoles.filter(role => role.isPublic) : allRoles;
 
 			return decorations.map(decoration => ({
 				id: decoration.id,
 				name: decoration.name,
 				description: decoration.description,
 				url: decoration.url,
-				roleIdsThatCanBeUsedThisDecoration: decoration.roleIdsThatCanBeUsedThisDecoration.filter(roleId => allRoles.some(role => role.id === roleId)),
+				roleIdsThatCanBeUsedThisDecoration: decoration.roleIdsThatCanBeUsedThisDecoration.filter(roleId => visibleRoles.some(role => role.id === roleId)),
 				category: decoration.category,
 			}));
 		});

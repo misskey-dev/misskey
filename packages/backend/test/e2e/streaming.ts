@@ -725,6 +725,68 @@ describe('Streaming', () => {
 			});
 		});
 
+		describe('Antenna', () => {
+			/**
+			 * Oracle: an accepted vote belongs to its voter. HTTP and antenna deliveries
+			 * of the same quoted poll must mark B for the voter and neither choice for
+			 * a different user who receives the same quote.
+			 */
+			test('引用されたアンケートの投票済み状態を閲覧者ごとに返す', async () => {
+				const poll = await post(kyoko, { poll: { choices: ['A', 'B'] } });
+				const vote = await api('notes/polls/vote', { noteId: poll.id, choice: 1 }, ayano);
+				assert.strictEqual(vote.status, 204);
+
+				const sockets: WebSocket[] = [];
+				const deliveries: Promise<misskey.entities.Note>[] = [];
+				const timeouts: ReturnType<typeof setTimeout>[] = [];
+				try {
+					for (const viewer of [ayano, erin]) {
+						const antenna = await api('antennas/create', {
+							name: 'poll viewer state',
+							src: 'all',
+							keywords: [['pollcheck']],
+							excludeKeywords: [],
+							users: [],
+							caseSensitive: false,
+							withReplies: false,
+							withFile: false,
+						}, viewer);
+						assert.strictEqual(antenna.status, 200);
+						const delivered = Promise.withResolvers<misskey.entities.Note>();
+						const socket = await connectStream(viewer, 'antenna', message => {
+							if (message.type === 'note' && message.body.renoteId === poll.id) {
+								delivered.resolve(message.body);
+							}
+						}, { antennaId: antenna.body.id });
+						sockets.push(socket);
+						deliveries.push(delivered.promise);
+					}
+
+					const quote = await post(chitose, { text: 'pollcheck', renoteId: poll.id });
+					const httpVoter = await api('notes/show', { noteId: quote.id }, ayano);
+					const httpOther = await api('notes/show', { noteId: quote.id }, erin);
+					assert.strictEqual(httpVoter.status, 200);
+					assert.strictEqual(httpOther.status, 200);
+					assert.deepStrictEqual(httpVoter.body.renote?.poll?.choices.map(choice => choice.isVoted), [false, true]);
+					assert.deepStrictEqual(httpOther.body.renote?.poll?.choices.map(choice => choice.isVoted), [false, false]);
+
+					const [streamVoter, streamOther] = await Promise.all(deliveries.map(delivery => Promise.race([
+						delivery,
+						new Promise<never>((resolve, reject) => {
+							timeouts.push(setTimeout(() => reject(new Error('Antenna quote was not delivered')), 5000));
+						}),
+					])));
+					assert.strictEqual(streamVoter.id, quote.id);
+					assert.strictEqual(streamOther.id, quote.id);
+					assert.deepStrictEqual(streamOther.renote?.poll?.choices.map(choice => choice.isVoted), [false, false]);
+					assert.deepStrictEqual(streamVoter.renote?.poll?.choices.map(choice => choice.isVoted), [false, true]);
+				} finally {
+					for (const timeout of timeouts) clearTimeout(timeout);
+					for (const socket of sockets) socket.close();
+				}
+			});
+		});
+
 		test('Authentication', async () => {
 			const application = await createAppToken(ayano, []);
 			const application2 = await createAppToken(ayano, ['read:account']);

@@ -42,6 +42,8 @@ import { TickChartsProcessorService } from './processors/TickChartsProcessorServ
 import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
 import { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';
 import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
+import { ArchiveAnnouncementProcessorService } from './processors/ArchiveAnnouncementProcessorService.js';
+import type { ArchiveAnnouncementJobData } from './types.js';
 import { BakeBufferedReactionsProcessorService } from './processors/BakeBufferedReactionsProcessorService.js';
 import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
@@ -126,6 +128,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private cleanChartsProcessorService: CleanChartsProcessorService,
 		private aggregateRetentionProcessorService: AggregateRetentionProcessorService,
 		private checkExpiredMutingsProcessorService: CheckExpiredMutingsProcessorService,
+		private archiveAnnouncementProcessorService: ArchiveAnnouncementProcessorService,
 		private bakeBufferedReactionsProcessorService: BakeBufferedReactionsProcessorService,
 		private checkModeratorsActivityProcessorService: CheckModeratorsActivityProcessorService,
 		private cleanProcessorService: CleanProcessorService,
@@ -169,6 +172,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					case 'cleanCharts': return this.cleanChartsProcessorService.process();
 					case 'aggregateRetention': return this.aggregateRetentionProcessorService.process();
 					case 'checkExpiredMutings': return this.checkExpiredMutingsProcessorService.process();
+					case 'archiveAnnouncement': return this.archiveAnnouncementProcessorService.process(job as Bull.Job<ArchiveAnnouncementJobData>);
 					case 'bakeBufferedReactions': return this.bakeBufferedReactionsProcessorService.process();
 					case 'checkModeratorsActivity': return this.checkModeratorsActivityProcessorService.process();
 					case 'clean': return this.cleanProcessorService.process();
