@@ -21,50 +21,10 @@ const require = createRequire(resolve(backendDir, 'package.json'));
 const forwardedSignals = ['SIGTERM', 'SIGHUP'];
 let stopRequested = false;
 
-// SIGINT は端末から子プロセスにも直接届くので、このプロセスが先に終了しないよう無視するだけにする
-process.on('SIGINT', () => {});
-
-/**
- * 停止シグナルを子プロセスへ転送する
- * @param {import('node:child_process').ChildProcess} child
- * @returns {() => void} 転送を解除する関数
- */
-function forwardSignals(child) {
-	const handlers = forwardedSignals.map(signal => {
-		const handler = () => {
-			stopRequested = true;
-			child.kill(signal);
-		};
-		process.on(signal, handler);
-		return [signal, handler];
-	});
-	return () => {
-		for (const [signal, handler] of handlers) process.off(signal, handler);
-	};
-}
-
-/**
- * 前処理を子プロセスで実行し、失敗または停止要求があればその終了コードで終了する
- * @param {string[]} args
- */
-async function runStep(args) {
-	const child = spawn(process.execPath, args, {
-		cwd: backendDir,
-		stdio: 'inherit',
-	});
-	const stopForwarding = forwardSignals(child);
-	const code = await new Promise((res, rej) => {
-		child.once('error', rej);
-		child.once('exit', res);
-	}).finally(stopForwarding);
-	if (stopRequested || code !== 0) process.exit(code ?? 1);
-}
-
-if (process.argv.includes('--migrate')) {
-	await runStep([require.resolve('typeorm/cli.js'), 'migration:run', '-d', 'ormconfig.js']);
-}
-
-await runStep(['./scripts/check_connect.js']);
+// 端末からの SIGINT は子プロセスにも直接届くので、このプロセスが先に終了しないよう既定の動作は無効にしておく
+process.on('SIGINT', () => {
+	stopRequested = true;
+});
 
 // モジュールを指定するオプション。パッケージ名の指定もできるため、相対パスの値だけを解決する
 const moduleOptions = new Set([
@@ -105,18 +65,122 @@ function resolveOptionValue(name, value) {
 	return value;
 }
 
+/**
+ * Node.js のオプション列に含まれる相対パスを解決する
+ * @param {string[]} args
+ */
+function resolveOptionArgs(args) {
+	return args.map((arg, i) => {
+		const eq = arg.indexOf('=');
+		if (arg.startsWith('--') && eq !== -1) {
+			const name = arg.slice(0, eq);
+			return `${name}=${resolveOptionValue(name, arg.slice(eq + 1))}`;
+		}
+		const prev = args[i - 1];
+		if (prev != null && (moduleOptions.has(prev) || pathOptions.has(prev))) return resolveOptionValue(prev, arg);
+		return arg;
+	});
+}
+
+/**
+ * NODE_OPTIONS に含まれる相対パスを解決する。変更しない引数は元の記述（クォートを含む）のまま残す
+ * @param {string} nodeOptions
+ */
+function resolveNodeOptions(nodeOptions) {
+	// 空白区切りで `"` によるクォートと、クォート内の `\` によるエスケープを解釈する
+	const tokens = [];
+	let token = null;
+	let inQuote = false;
+	for (let i = 0; i < nodeOptions.length; i++) {
+		const c = nodeOptions[i];
+		if (c === ' ' && !inQuote) {
+			if (token != null) tokens.push(token);
+			token = null;
+			continue;
+		}
+		token ??= { raw: '', value: '', quoted: false };
+		if (inQuote && c === '\\' && i + 1 < nodeOptions.length) {
+			token.raw += c + nodeOptions[i + 1];
+			token.value += nodeOptions[++i];
+		} else if (c === '"') {
+			inQuote = !inQuote;
+			token.quoted = true;
+			token.raw += c;
+		} else {
+			token.raw += c;
+			token.value += c;
+		}
+	}
+	if (token != null) tokens.push(token);
+
+	const resolved = resolveOptionArgs(tokens.map(t => t.value));
+	return tokens.map((t, i) => {
+		if (resolved[i] === t.value) return t.raw;
+		return t.quoted || /[\s"\\]/.test(resolved[i]) ? `"${resolved[i].replace(/[\\"]/g, '\\$&')}"` : resolved[i];
+	}).join(' ');
+}
+
+if (process.env.NODE_OPTIONS) {
+	process.env.NODE_OPTIONS = resolveNodeOptions(process.env.NODE_OPTIONS);
+}
+
+/**
+ * 停止シグナルを子プロセスへ転送する
+ * @param {import('node:child_process').ChildProcess} child
+ * @returns {() => void} 転送を解除する関数
+ */
+function forwardSignals(child) {
+	const handlers = forwardedSignals.map(signal => {
+		const handler = () => {
+			stopRequested = true;
+			child.kill(signal);
+		};
+		process.on(signal, handler);
+		return [signal, handler];
+	});
+	return () => {
+		for (const [signal, handler] of handlers) process.off(signal, handler);
+	};
+}
+
+/**
+ * 前処理を子プロセスで実行し、失敗または停止要求があればその終了コードで終了する
+ * @param {string[]} args
+ */
+async function runStep(args) {
+	const child = spawn(process.execPath, args, {
+		cwd: backendDir,
+		stdio: 'inherit',
+	});
+	const stopForwarding = forwardSignals(child);
+
+	// 端末からの SIGINT なら子プロセスにも届いて即座に終了するので、終了していない場合だけ転送する
+	const onSigint = () => {
+		setTimeout(() => {
+			if (child.exitCode == null && child.signalCode == null) child.kill('SIGINT');
+		}, 100);
+	};
+	process.on('SIGINT', onSigint);
+
+	const code = await new Promise((res, rej) => {
+		child.once('error', rej);
+		child.once('exit', res);
+	}).finally(() => {
+		stopForwarding();
+		process.off('SIGINT', onSigint);
+	});
+	if (stopRequested || code !== 0) process.exit(code ?? 1);
+}
+
+if (process.argv.includes('--migrate')) {
+	await runStep([require.resolve('typeorm/cli.js'), 'migration:run', '-d', 'ormconfig.js']);
+}
+
+await runStep(['./scripts/check_connect.js']);
+
 // `node --max-old-space-size=... scripts/start.mjs` のように渡された Node.js のオプションを本体にも引き継ぐ。
 // 作業ディレクトリを移動するので、相対パスは元の作業ディレクトリ基準で解決しておく
-const execArgv = process.execArgv.map((arg, i, args) => {
-	const eq = arg.indexOf('=');
-	if (arg.startsWith('--') && eq !== -1) {
-		const name = arg.slice(0, eq);
-		return `${name}=${resolveOptionValue(name, arg.slice(eq + 1))}`;
-	}
-	const prev = args[i - 1];
-	if (prev != null && (moduleOptions.has(prev) || pathOptions.has(prev))) return resolveOptionValue(prev, arg);
-	return arg;
-});
+const execArgv = resolveOptionArgs(process.execArgv);
 
 process.chdir(backendDir);
 
@@ -128,6 +192,10 @@ try {
 } catch {
 	// Windows など process.execve が使えない環境では子プロセスとして起動する
 }
+
+// 本体が同じデバッグポートを使えるよう、このプロセスの Inspector を閉じておく
+const inspector = await import('node:inspector');
+if (inspector.url() != null) inspector.close();
 
 const child = spawn(process.execPath, entryArgs, { stdio: 'inherit' });
 forwardSignals(child);
