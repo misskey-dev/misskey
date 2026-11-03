@@ -8,12 +8,13 @@
  * https://en.wikipedia.org/wiki/Identicon
  */
 
-import { createCanvas } from '@napi-rs/canvas';
+import { promisify } from 'node:util';
+import * as zlib from 'node:zlib';
 import gen from 'random-seed';
 
 const size = 128; // px
 const n = 5; // resolution
-const margin = (size / 4);
+const margin = 34; // size - margin * 2 / 整数でないといけないので明示
 const colors = [
 	['#FF512F', '#DD2476'],
 	['#FF61D2', '#FE9090'],
@@ -41,25 +42,41 @@ const actualSize = size - (margin * 2);
 const cellSize = actualSize / n;
 const sideN = Math.floor(n / 2);
 
+// 各行の先頭にフィルタタイプ (0 = None) の1バイトを持つRGBの生データ
+const stride = 1 + (size * 3);
+
+const deflate = promisify(zlib.deflate);
+const pngSignature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+const pngHeader = Buffer.alloc(13);
+pngHeader.writeUInt32BE(size, 0); // width
+pngHeader.writeUInt32BE(size, 4); // height
+pngHeader[8] = 8; // bit depth
+pngHeader[9] = 2; // color type: truecolor (RGB)
+
+function parseHexColor(color: string): [number, number, number] {
+	return [
+		parseInt(color.slice(1, 3), 16),
+		parseInt(color.slice(3, 5), 16),
+		parseInt(color.slice(5, 7), 16),
+	];
+}
+
+function pngChunk(type: string, data: Buffer): Buffer {
+	const chunk = Buffer.alloc(12 + data.length);
+	chunk.writeUInt32BE(data.length, 0);
+	chunk.write(type, 4, 'ascii');
+	data.copy(chunk, 8);
+	chunk.writeUInt32BE(zlib.crc32(chunk.subarray(4, 8 + data.length)), 8 + data.length);
+	return chunk;
+}
+
 /**
  * Generate buffer of an identicon by seed
  */
 export async function genIdenticon(seed: string): Promise<Buffer> {
 	const rand = gen.create(seed);
-	const canvas = createCanvas(size, size);
-	const ctx = canvas.getContext('2d');
 
-	const bgColors = colors[rand(colors.length)];
-
-	const bg = ctx.createLinearGradient(0, 0, size, size);
-	bg.addColorStop(0, bgColors[0]);
-	bg.addColorStop(1, bgColors[1]);
-
-	ctx.fillStyle = bg as any;
-	ctx.beginPath();
-	ctx.fillRect(0, 0, size, size);
-
-	ctx.fillStyle = '#ffffff';
+	const [bgFrom, bgTo] = colors[rand(colors.length)].map(parseHexColor);
 
 	// side bitmap (filled by false)
 	const side: boolean[][] = new Array(sideN);
@@ -81,6 +98,19 @@ export async function genIdenticon(seed: string): Promise<Buffer> {
 		center[i] = rand(3) === 0;
 	}
 
+	const pixels = Buffer.alloc(stride * size);
+
+	// 左上から右下への線形グラデーション (ピクセル中心で評価)
+	for (let y = 0; y < size; y++) {
+		for (let x = 0; x < size; x++) {
+			const t = (x + y + 1) / (size * 2);
+			const offset = (y * stride) + 1 + (x * 3);
+			for (let c = 0; c < 3; c++) {
+				pixels[offset + c] = Math.round(bgFrom[c] + ((bgTo[c] - bgFrom[c]) * t));
+			}
+		}
+	}
+
 	// Draw
 	for (let x = 0; x < n; x++) {
 		for (let y = 0; y < n; y++) {
@@ -95,10 +125,17 @@ export async function genIdenticon(seed: string): Promise<Buffer> {
 
 			const actualX = margin + (cellSize * x);
 			const actualY = margin + (cellSize * y);
-			ctx.beginPath();
-			ctx.fillRect(actualX, actualY, cellSize, cellSize);
+			for (let py = actualY; py < actualY + cellSize; py++) {
+				const rowStart = (py * stride) + 1;
+				pixels.fill(0xff, rowStart + (actualX * 3), rowStart + ((actualX + cellSize) * 3));
+			}
 		}
 	}
 
-	return await canvas.encode('png');
+	return Buffer.concat([
+		pngSignature,
+		pngChunk('IHDR', pngHeader),
+		pngChunk('IDAT', await deflate(pixels)),
+		pngChunk('IEND', Buffer.alloc(0)),
+	]);
 }
