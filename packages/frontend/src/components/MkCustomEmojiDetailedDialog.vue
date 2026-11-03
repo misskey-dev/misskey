@@ -88,7 +88,7 @@ function cancel() {
 	border-radius: var(--MI-radius);
 	margin: auto;
 	overflow-y: hidden;
-	--MI_STRIPE-color: light-dark(rgb(0 0 0 / 0.02), rgb(255 255 255 / 0.02));
+	--MI_STRIPE-color: light-dark(rgb(0 0 0 / 0.05), rgb(255 255 255 / 0.05));
 }
 
 .aliases {

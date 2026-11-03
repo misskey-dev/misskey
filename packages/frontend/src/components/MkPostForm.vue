@@ -1650,7 +1650,7 @@ defineExpose({
 	min-height: 75px;
 	max-height: 150px;
 	overflow: auto;
-	--MI_STRIPE-color: light-dark(rgb(0 0 0 / 0.02), rgb(255 255 255 / 0.02));
+	--MI_STRIPE-color: light-dark(rgb(0 0 0 / 0.02), rgb(0 0 0 / 0.27));
 }
 
 .targetNote {
