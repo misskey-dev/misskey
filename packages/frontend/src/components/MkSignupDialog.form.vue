@@ -127,8 +127,8 @@ const mCaptchaResponse = ref<string | null>(null);
 const reCaptchaResponse = ref<string | null>(null);
 const turnstileResponse = ref<string | null>(null);
 const testcaptchaResponse = ref<string | null>(null);
-const usernameAbortController = ref<null | AbortController>(null);
-const emailAbortController = ref<null | AbortController>(null);
+let usernameAbortController: AbortController | null = null;
+let emailAbortController: AbortController | null = null;
 
 const shouldDisableSubmitting = computed((): boolean => {
 	return submitting.value ||
@@ -168,6 +168,10 @@ function getPasswordStrength(source: string): number {
 }
 
 function onChangeUsername(): void {
+	// 前の値の問い合わせの結果で状態を上書きしないよう中断する
+	usernameAbortController?.abort();
+	usernameAbortController = null;
+
 	if (username.value === '') {
 		usernameState.value = null;
 		return;
@@ -186,17 +190,17 @@ function onChangeUsername(): void {
 		}
 	}
 
-	if (usernameAbortController.value != null) {
-		usernameAbortController.value.abort();
-	}
 	usernameState.value = 'wait';
-	usernameAbortController.value = new AbortController();
+	const abortController = new AbortController();
+	usernameAbortController = abortController;
 
 	misskeyApi('username/available', {
 		username: username.value,
-	}, undefined, usernameAbortController.value.signal).then(result => {
+	}, undefined, abortController.signal).then(result => {
+		if (abortController.signal.aborted) return;
 		usernameState.value = result.available ? 'ok' : 'unavailable';
 	}).catch((err) => {
+		if (abortController.signal.aborted) return;
 		if (err.name !== 'AbortError') {
 			usernameState.value = 'error';
 		}
@@ -204,20 +208,23 @@ function onChangeUsername(): void {
 }
 
 function onChangeEmail(): void {
+	// 前の値の問い合わせの結果で状態を上書きしないよう中断する
+	emailAbortController?.abort();
+	emailAbortController = null;
+
 	if (email.value === '') {
 		emailState.value = null;
 		return;
 	}
 
-	if (emailAbortController.value != null) {
-		emailAbortController.value.abort();
-	}
 	emailState.value = 'wait';
-	emailAbortController.value = new AbortController();
+	const abortController = new AbortController();
+	emailAbortController = abortController;
 
 	misskeyApi('email-address/available', {
 		emailAddress: email.value,
-	}, undefined, emailAbortController.value.signal).then(result => {
+	}, undefined, abortController.signal).then(result => {
+		if (abortController.signal.aborted) return;
 		emailState.value = result.available ? 'ok' :
 			result.reason === 'used' ? 'unavailable:used' :
 			result.reason === 'format' ? 'unavailable:format' :
@@ -227,6 +234,7 @@ function onChangeEmail(): void {
 			result.reason === 'smtp' ? 'unavailable:smtp' :
 			'unavailable';
 	}).catch((err) => {
+		if (abortController.signal.aborted) return;
 		if (err.name !== 'AbortError') {
 			emailState.value = 'error';
 		}
