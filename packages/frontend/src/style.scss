@@ -436,13 +436,17 @@ rt {
 
 /* 色は --MI_STRIPE-color で指定する */
 ._stripe {
-	background-image: repeating-linear-gradient(
-		135deg,
-		transparent,
-		transparent 10px,
-		var(--MI_STRIPE-color) 6px,
-		var(--MI_STRIPE-color) 16px
+	background-image: linear-gradient(
+		45deg,
+		var(--MI_STRIPE-color) 16.67%,
+		transparent 16.67%,
+		transparent 50%,
+		var(--MI_STRIPE-color) 50%,
+		var(--MI_STRIPE-color) 66.67%,
+		transparent 66.67%,
+		transparent 100%
 	) !important;
+	background-size: 16px 16px !important;
 }
 
 ._formLinksGrid {

@@ -37,11 +37,6 @@ defineSlots<{
 </script>
 
 <style lang="scss" module>
-@use "sass:math";
-
-// ._stripe の斜線2周期 (16px * 2) を水平方向の移動量に換算したもの
-$stripeShift: 32px * math.sqrt(2);
-
 .root {
 	container-type: inline-size;
 	height: 100%;
@@ -76,15 +71,12 @@ $stripeShift: 32px * math.sqrt(2);
 }
 
 .animatedBg {
-	// タイル境界で斜線が途切れないよう、移動量分だけ大きい1枚の背景をずらす
-	background-repeat: no-repeat;
-	background-size: calc(100% + #{$stripeShift}) 100%;
 	animation: bg 1.2s linear infinite;
 }
 
 @keyframes bg {
 	0% { background-position: 0 0; }
-	100% { background-position: (-$stripeShift) 0; }
+	100% { background-position: -16px -16px; }
 }
 
 .controls {
