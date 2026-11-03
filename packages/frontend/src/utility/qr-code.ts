@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { qrcode } from 'etiket/qr';
 import type { QRCodeOptions, QRCodeSVGOptions, CornerOptions } from 'etiket/qr';
 
 const qrCornerOptions: CornerOptions = {
@@ -24,6 +23,7 @@ export const qrOptions: QRCodeOptions & QRCodeSVGOptions = {
 };
 
 export async function qrcodeImageBitmap(text: string, options: QRCodeOptions & QRCodeSVGOptions & { size: number }): Promise<ImageBitmap> {
+	const { qrcode } = await import('etiket/qr');
 	const svgUrl = URL.createObjectURL(new Blob([qrcode(text, options)], { type: 'image/svg+xml' }));
 	try {
 		const img = new Image();
