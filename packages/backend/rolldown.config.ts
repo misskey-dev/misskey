@@ -126,7 +126,7 @@ export default defineConfig((args) => {
 			keepNames: true,
 			minify: !isWatchMode && !isE2E,
 			sourcemap: isWatchMode || isE2E,
-			dir: './built/workers',
+			dir: isE2E ? './built-test/workers' : './built/workers',
 			cleanDir: !isWatchMode && !isE2E,
 			format: 'esm',
 		},
