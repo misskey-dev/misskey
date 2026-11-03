@@ -70,15 +70,7 @@ For ActivityPub payload changes, see [additional requirements](docs/contributing
 
 ## Security Advisory
 
-### For reporter
-Thank you for your reporting!
-
-If you can also create a patch to fix the vulnerability, please create a PR on the private fork.
-
-> [!note]
-> There is a GitHub bug that prevents merging if a PR not following the develop branch of upstream, so please keep follow the develop branch.
-
-For maintainers: [handling advisories](docs/contributing/maintainer-guide.md#security-advisory).
+To report a vulnerability or submit a patch for one, see [SECURITY.md](SECURITY.md).
 
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
