@@ -1,4 +1,4 @@
-## 2026.11.0
+## Unreleased
 
 ### General
 - Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
