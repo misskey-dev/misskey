@@ -564,7 +564,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			this.cacheService.userProfileCache.set(user.id, updatedProfile);
 
 			// Publish meUpdated event
-			this.globalEventService.publishMainStream(user.id, 'meUpdated', iObj);
+			this.globalEventService.publishMainStream(user.id, 'meUpdated');
 
 			// 鍵垢を解除したとき、期間による承認条件も考慮してフォローリクエストを承認
 			if (user.isLocked && ps.isLocked === false) {

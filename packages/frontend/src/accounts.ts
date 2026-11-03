@@ -122,8 +122,13 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 	});
 }
 
+// $i がローカルで更新されるたびに増える。取得中に更新された場合に古い応答を捨てるために使う
+let currentAccountRevision = 0;
+let latestRefresh: Promise<void> | null = null;
+
 export function replaceCurrentAccountData(accountData: Misskey.entities.MeDetailed) {
 	if (!$i) return;
+	currentAccountRevision++;
 	const token = $i.token;
 	for (const key of Object.keys($i)) {
 		delete $i[key as keyof typeof $i];
@@ -138,6 +143,7 @@ export function replaceCurrentAccountData(accountData: Misskey.entities.MeDetail
 
 export function updateCurrentAccount(accountData: Partial<Misskey.entities.MeDetailed>) {
 	if (!$i) return;
+	currentAccountRevision++;
 	for (const [key, value] of Object.entries(accountData)) {
 		($i[key as keyof typeof accountData] as any) = value;
 	}
@@ -147,10 +153,17 @@ export function updateCurrentAccount(accountData: Partial<Misskey.entities.MeDet
 	miLocalStorage.setItem('account', JSON.stringify($i));
 }
 
-export async function refreshCurrentAccount() {
+export async function refreshCurrentAccount(): Promise<void> {
 	if (!$i) return;
 	const me = $i;
-	return fetchAccount($i.token, $i.id).then(replaceCurrentAccountData).catch(reason => {
+	const revision = currentAccountRevision;
+	const refresh: Promise<void> = fetchAccount($i.token, $i.id).then((accountData): Promise<void> | void => {
+		// 取得中に新しい取得が始まった場合、この応答は古いので捨てる
+		if (refresh !== latestRefresh) return;
+		// 取得中にローカルで更新された場合、この応答は古い可能性があるので取り直す
+		if (revision !== currentAccountRevision) return refreshCurrentAccount();
+		replaceCurrentAccountData(accountData);
+	}).catch(reason => {
 		if (reason === isAccountDeleted) {
 			removeAccount(host, me.id);
 			if (Object.keys(store.s.accountTokens).length > 0) {
@@ -160,6 +173,8 @@ export async function refreshCurrentAccount() {
 			}
 		}
 	});
+	latestRefresh = refresh;
+	return refresh;
 }
 
 export async function login(token: AccountWithToken['token'], redirect?: string) {

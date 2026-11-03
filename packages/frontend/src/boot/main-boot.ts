@@ -26,7 +26,7 @@ import { mainRouter } from '@/router.js';
 import { makeHotkey } from '@/utility/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
-import { updateCurrentAccount } from '@/accounts.js';
+import { refreshCurrentAccount, updateCurrentAccount } from '@/accounts.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { isBirthday } from '@/utility/is-birthday.js';
 
@@ -330,8 +330,8 @@ export async function mainBoot() {
 			const main = markRaw(stream.useChannel('main', null, 'System'));
 
 			// 自分の情報が更新されたとき
-			main.on('meUpdated', i => {
-				updateCurrentAccount(i);
+			main.on('meUpdated', () => {
+				refreshCurrentAccount();
 			});
 
 			main.on('readAllNotifications', () => {

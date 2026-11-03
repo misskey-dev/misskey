@@ -1,5 +1,8 @@
 ## Unreleased
 
+### Note
+- **Breaking Change**: WebSocketの`meUpdated`イベントに更新後のアカウント情報を含まないようになりました。このペイロードを期待してユーザー情報を更新している場合は、このイベントを受信した時に `api/i` 経由でユーザー情報の更新をトリガーする処理に変更してください。これはWebSocket API仕様の変更であり、Misskey Webを利用している場合やその他（サーバーの動作要件）には影響ありません。サードパーティクライアントを使用している場合は、本件対応後のバージョンにアップデートする必要があります。
+
 ### General
 - Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
 - Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
@@ -13,6 +16,8 @@
 - Fix: AiScript 関連のウィジェットの削除時のリソース解放漏れを修正
 
 ### Server
+- Enhance: WebSocketの`meUpdated`イベントに更新後のアカウント情報を含まないように  
+  (Cherry-picked from https://github.com/okayurisotto/wisteria/commit/0d4cf43e61887c110a840f108ea5fea9afb1263b)
 - Fix: ジョブキューの同時実行数のコンフィグ設定値が不正な場合は起動時に安全に停止するように
 - Fix: アンテナのリアルタイム更新時に、既に投票済みのアンケートが未投票として表示される問題を修正
 - Fix: ノートや通知などでユーザーの情報を取得する際に、本来は不要なデータの問い合わせが行われる問題を修正
