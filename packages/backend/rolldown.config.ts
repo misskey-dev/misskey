@@ -1,6 +1,7 @@
 import { defineConfig } from 'rolldown';
+import { globSync } from 'node:fs';
 import { version as summalyVersion } from '@misskey-dev/summaly';
-import type { Plugin, ExternalOption } from 'rolldown';
+import type { Plugin, ExternalOption, RolldownOptions } from 'rolldown';
 import { execa, execaNode } from 'execa';
 import type { ResultPromise } from 'execa';
 import fkill from 'fkill';
@@ -111,8 +112,29 @@ export default defineConfig((args) => {
 		'_SUMMALY_VERSION_': JSON.stringify(summalyVersion),
 	};
 
+	const workerBuildConfig: RolldownOptions = {
+		input: globSync('./src/workers/*.{ts,js}'),
+		platform: 'node',
+		tsconfig: true,
+		plugins: [
+			esmShim(),
+		],
+		transform: {
+			define,
+		},
+		output: {
+			keepNames: true,
+			minify: !isWatchMode && !isE2E,
+			sourcemap: isWatchMode || isE2E,
+			dir: './built/workers',
+			cleanDir: !isWatchMode && !isE2E,
+			format: 'esm',
+		},
+		external: isWatchMode ? allExternalModulesRegex : externalModules,
+	};
+
 	if (isE2E) {
-		return {
+		return [{
 			input: './test-server/entry.ts',
 			platform: 'node',
 			tsconfig: './test-server/tsconfig.json',
@@ -131,9 +153,9 @@ export default defineConfig((args) => {
 			},
 			// node_modulesまでバンドルしてしまうとカバレッジの収集に時間がかかるので全部外す
 			external: allExternalModulesRegex,
-		};
+		}, workerBuildConfig];
 	} else {
-		return {
+		return [{
 			input: [
 				'./src/boot/entry.ts',
 				'./src/boot/cli.ts',
@@ -164,6 +186,6 @@ export default defineConfig((args) => {
 			},
 			// ビルドの高速化のために、watchモードのときは外部モジュールは全てバンドルしないようにする
 			external: isWatchMode ? allExternalModulesRegex : externalModules,
-		};
+		}, workerBuildConfig];
 	}
 });

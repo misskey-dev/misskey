@@ -5,14 +5,15 @@
 
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
-import { load as loadYaml } from 'js-yaml';
+import { dirname, extname, resolve } from 'node:path';
+import { MessageChannel, Worker, receiveMessageOnPort } from 'node:worker_threads';
 import { type FastifyServerOptions } from 'fastify';
 import type * as Sentry from '@sentry/node';
 import type * as SentryVue from '@sentry/vue';
 import type { RedisOptions as IoRedisRedisOptions } from 'ioredis';
 import type { RedisOptions as BullMqRedisOptions } from 'bullmq';
 import type { AccessLogConfiguration, LogFormat, LogLevelSetting } from './logging/types.js';
+import type { YamlWorkerData, YamlWorkerResult } from '@/workers/config-loader.js';
 
 type RedisOptionsRequiredFields = {
 	host: string;
@@ -263,13 +264,55 @@ export const path = process.env.MISSKEY_CONFIG_YML
 		? resolve(configDir, 'test.yml')
 		: resolve(configDir, 'default.yml');
 
+/**
+ * YAMLパース用ワーカーのパス。
+ * ビルド後はこのモジュールと同じディレクトリに別エントリとして出力され、テスト時はソースの.tsを直接実行する
+ */
+const yamlWorkerPath = resolve(_dirname, `workers/config-loader${extname(_filename)}`);
+
+/** ワーカーが起動できなかった場合などに、起動処理が永久に止まるのを防ぐためのタイムアウト */
+const YAML_WORKER_TIMEOUT_MS = 30_000;
+
+/**
+ * YAMLをワーカー上でパースし、その完了を同期的に待って結果を返す。
+ * js-yamlをメインスレッドに読み込ませないためにワーカーを使い、パース後は破棄する
+ */
+function loadYamlInWorker(source: string): unknown {
+	const signal = new Int32Array(new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT));
+	const { port1, port2 } = new MessageChannel();
+	const worker = new Worker(yamlWorkerPath, {
+		workerData: { source, port: port2, signal } satisfies YamlWorkerData,
+		transferList: [port2],
+	});
+	worker.unref();
+
+	try {
+		if (Atomics.wait(signal, 0, 0, YAML_WORKER_TIMEOUT_MS) === 'timed-out') {
+			throw new Error(`Timed out while parsing the configuration file (worker: ${yamlWorkerPath})`);
+		}
+
+		// ワーカーはsignalを立てる前にpostMessageしているので、ここで必ず受信できる
+		const result = receiveMessageOnPort(port1)?.message as YamlWorkerResult | undefined;
+		if (result == null) {
+			throw new Error('The YAML worker exited without returning a result');
+		}
+		if (!result.ok) {
+			throw result.error;
+		}
+		return result.value;
+	} finally {
+		port1.close();
+		void worker.terminate();
+	}
+}
+
 export function loadConfig(): Config {
 	const meta = JSON.parse(fs.readFileSync(resolve(projectBuiltDir, 'meta.json'), 'utf-8'));
 
 	const frontendManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_vite_/manifest.json'));
 	const frontendEmbedManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_embed_vite_/manifest.json'));
 
-	const config = loadYaml(fs.readFileSync(path, 'utf-8')) as Source;
+	const config = loadYamlInWorker(fs.readFileSync(path, 'utf-8')) as Source;
 
 	const url = tryCreateUrl(config.url ?? process.env.MISSKEY_URL ?? '');
 	const version = meta.version;
