@@ -1,10 +1,10 @@
 {
 	"name": "misskey",
-	"version": "2026.10.1",
+	"version": "2026.10.1+fitting-korea-pipa",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/misskey-dev/misskey.git"
+		"url": "https://github.com/lhs9842/misskey-fitting-korea-personal-information-protection-act"
 	},
 	"packageManager": "pnpm@12.14.0",
 	"workspaces": [
