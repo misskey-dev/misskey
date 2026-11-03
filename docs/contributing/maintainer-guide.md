@@ -41,7 +41,7 @@ Be willing to comment on the good points and not just the things you want fixed 
 
 ## Security Advisory
 
-報告者向けの案内は [SECURITY.md](../../SECURITY.md) を参照。
+報告者向けの案内は [Contribution guide](../../CONTRIBUTING.md#security-advisory) を参照。
 
 ### For misskey-dev member
 修正PRがdevelopに追従されていないとマージできないので、マージできなかったら
