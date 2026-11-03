@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</I18n>
 							<div>{{ i18n.ts._2fa.step2 }}</div>
 							<div>
-								<a :class="$style.qrRoot" :href="twoFactorData.url"><img :class="$style.qr" :src="twoFactorData.qr"></a>
+								<a :class="$style.qrRoot" :href="twoFactorData.url" v-html="qrSvg"></a>
 								<!-- QRコード側にマージンが入っているので直下でOK -->
 								<div><MkButton inline rounded type="routerLink" :to="twoFactorData.url" :linkBehavior="'browser'">{{ i18n.ts.launchApp }}</MkButton></div>
 							</div>
@@ -107,7 +107,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { hostname, port } from '@@/js/config';
-import { useTemplateRef, ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { qrcode } from 'etiket/qr';
+import { useTemplateRef, computed, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -118,15 +120,13 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkLink from '@/components/MkLink.vue';
 import { confetti } from '@/utility/confetti.js';
+import { qrOptions } from '@/utility/qr-code.js';
 import { ensureSignin } from '@/i.js';
 
 const $i = ensureSignin();
 
-defineProps<{
-	twoFactorData: {
-		qr: string;
-		url: string;
-	};
+const props = defineProps<{
+	twoFactorData: Misskey.entities.I2faRegisterResponse;
 }>();
 
 const emit = defineEmits<{
@@ -136,6 +136,9 @@ const emit = defineEmits<{
 const dialog = useTemplateRef('dialog');
 const page = ref(0);
 const token = ref<string | null>(null);
+const qrSvg = computed(() => {
+	return qrcode(props.twoFactorData.url, qrOptions);
+});
 const backupCodes = ref<string[]>();
 
 function cancel() {

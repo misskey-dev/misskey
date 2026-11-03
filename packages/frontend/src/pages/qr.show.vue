@@ -7,10 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.root">
 	<div :class="[$style.content]">
 		<div
-			ref="qrCodeEl" v-flip :style="{
+			v-flip :style="{
 				'cursor': canShare ? 'pointer' : 'default',
 			}"
 			:class="$style.qr" @click="share"
+			v-html="qrSvg"
 		></div>
 		<div v-flip :class="$style.user">
 			<MkAvatar :class="$style.avatar" :user="$i" :indicator="false"/>
@@ -27,8 +28,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import tinycolor from 'tinycolor2';
-import QRCodeStyling from 'qr-code-styling';
-import { computed, ref, shallowRef, watch, onMounted, onUnmounted, useTemplateRef } from 'vue';
+import { qrcode } from 'etiket/qr';
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue';
 import { url, host } from '@@/js/config.js';
 import type { Directive } from 'vue';
 import { instance } from '@/instance.js';
@@ -37,6 +38,7 @@ import { userPage, userName } from '@@/js/user.js';
 import misskeysvg from '/client-assets/misskey.svg';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { i18n } from '@/i18n.js';
+import { qrOptions } from '@/utility/qr-code.js';
 
 const $i = ensureSignin();
 
@@ -49,8 +51,6 @@ const shareData = computed(() => ({
 }));
 const canShare = computed(() => navigator.canShare && navigator.canShare(shareData.value));
 
-const qrCodeEl = useTemplateRef('qrCodeEl');
-
 const qrColor = computed(() => tinycolor(instance.themeColor ?? '#86b300'));
 const qrHsl = computed(() => qrColor.value.toHsl());
 
@@ -59,43 +59,20 @@ function share() {
 	return navigator.share(shareData.value);
 }
 
-const qrCodeInstance = new QRCodeStyling({
-	width: 600,
-	height: 600,
-	margin: 42,
-	type: 'canvas',
-	data: `${url}/users/${$i.id}`,
-	image: instance.iconUrl ? getStaticImageUrl(instance.iconUrl) : '/favicon.ico',
-	qrOptions: {
-		typeNumber: 0,
-		mode: 'Byte',
-		errorCorrectionLevel: 'H',
-	},
-	imageOptions: {
-		hideBackgroundDots: true,
-		imageSize: 0.3,
-		margin: 16,
-		crossOrigin: 'anonymous',
-	},
-	dotsOptions: {
-		type: 'dots',
+const qrSvg = computed(() => {
+	return qrcode(`${url}/users/${$i.id}`, {
+		...qrOptions,
+		size: 600,
+		margin: 3,
+		ecLevel: 'H',
 		color: tinycolor(`hsl(${qrHsl.value.h}, 100, 18)`).toRgbString(),
-	},
-	cornersDotOptions: {
-		type: 'dot',
-	},
-	cornersSquareOptions: {
-		type: 'extra-rounded',
-	},
-	backgroundOptions: {
-		color: tinycolor(`hsl(${qrHsl.value.h}, 100, 97)`).toRgbString(),
-	},
-});
-
-onMounted(() => {
-	if (qrCodeEl.value != null) {
-		qrCodeInstance.append(qrCodeEl.value);
-	}
+		background: tinycolor(`hsl(${qrHsl.value.h}, 100, 97)`).toRgbString(),
+		logo: {
+			imageUrl: instance.iconUrl ? getStaticImageUrl(instance.iconUrl) : `${url}/favicon.ico`,
+			size: 0.25,
+			margin: 16,
+		},
+	});
 });
 
 //#region flip
@@ -178,8 +155,7 @@ $avatarSize: 58px;
 	overflow: clip;
 	aspect-ratio: 1;
 
-	> svg,
-	> canvas {
+	> svg {
 		position: absolute;
 		top: 0;
 		left: 0;
