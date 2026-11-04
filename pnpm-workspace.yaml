@@ -53,6 +53,9 @@ minimumReleaseAgeExclude:
   - slacc-linux-x64-musl
   - slacc-win32-arm64-msvc
   - slacc-win32-x64-msvc
+  - '@vizejs/native'
+  - '@vizejs/native-*'
+  - vize
   - '@isaacs/nonrecursive-glob-match@1.0.1'
   - minimatch@11.0.1
 overrides:

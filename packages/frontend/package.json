@@ -13,7 +13,7 @@
 		"test-and-coverage": "vitest --run --coverage --globals --config vitest.config.unit.ts",
 		"test:e2e": "playwright test --config playwright.config.ts",
 		"test:browser": "vitest --run --globals --config vitest.config.browser.ts",
-		"typecheck": "vue-tsc --noEmit",
+		"typecheck": "tsc --runExternalCode --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
@@ -133,15 +133,14 @@
 		"storybook": "10.6.3",
 		"storybook-addon-misskey-theme": "github:misskey-dev/storybook-addon-misskey-theme",
 		"tsx": "4.23.15",
-		"typescript": "6.0.3",
 		"vite": "8.3.5",
 		"vite-plugin-glsl": "1.6.2",
 		"vite-plugin-turbosnap": "1.0.3",
 		"vitest": "5.0.5",
 		"vitest-fetch-mock": "0.4.5",
+		"vize": "0.680.0",
 		"vue-component-type-helpers": "3.3.13",
-		"vue-eslint-parser": "10.4.1",
-		"vue-tsc": "3.3.11"
+		"vue-eslint-parser": "10.4.1"
 	},
 	"msw": {
 		"workerDirectory": [
