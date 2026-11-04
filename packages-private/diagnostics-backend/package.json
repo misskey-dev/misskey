@@ -9,7 +9,7 @@
 		"measure": "tsx src/measure-once.ts",
 		"render-md": "tsx src/render-md.ts",
 		"test": "vitest run",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsrs --noEmit"
 	},
 	"dependencies": {
 		"diagnostics-shared": "workspace:*",

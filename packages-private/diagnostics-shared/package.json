@@ -14,7 +14,7 @@
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
 		"lint": "pnpm typecheck && pnpm eslint",
 		"test": "vitest run",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsrs --noEmit"
 	},
 	"devDependencies": {
 		"@types/node": "26.6.5",

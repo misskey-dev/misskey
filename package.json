@@ -65,12 +65,12 @@
 		"@types/node": "26.6.5",
 		"@typescript-eslint/eslint-plugin": "8.72.0",
 		"@typescript-eslint/parser": "8.72.0",
-		"@typescript/native": "npm:typescript@7.1.0-beta",
 		"cross-env": "10.1.0",
 		"eslint": "9.39.5",
 		"globals": "17.13.0",
 		"ncp": "2.0.0",
 		"start-server-and-test": "3.0.13",
+		"tsrs": "0.21.0-ts7.1.0-beta",
 		"typescript": "npm:@typescript/typescript6@6.0.2"
 	}
 }

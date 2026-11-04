@@ -13,7 +13,7 @@
 		"test-and-coverage": "vitest --run --coverage --globals --config vitest.config.unit.ts",
 		"test:e2e": "playwright test --config playwright.config.ts",
 		"test:browser": "vitest --run --globals --config vitest.config.browser.ts",
-		"typecheck": "tsc --runExternalCode --noEmit",
+		"typecheck": "tsrs --runExternalCode --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},

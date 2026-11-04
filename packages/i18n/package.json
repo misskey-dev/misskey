@@ -20,7 +20,7 @@
 		"build": "tsx ./build.ts",
 		"watch": "nodemon -w package.json -e json --exec \"tsx ./build.ts --watch\"",
 		"tsd": "tsd",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsrs --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint",
 		"lint:fix": "pnpm eslint --fix"
 	},
