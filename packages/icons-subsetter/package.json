@@ -7,7 +7,7 @@
 	"scripts": {
 		"build": "tsx src/generator.ts",
 		"eslint": "eslint src/**/*.ts",
-		"typecheck": "tsrs --noEmit",
+		"typecheck": "tsrs --fast --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {

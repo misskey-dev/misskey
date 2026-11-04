@@ -5,7 +5,7 @@
 	"scripts": {
 		"watch": "vite",
 		"build": "tsx build.ts",
-		"typecheck": "tsrs --runExternalCode --noEmit",
+		"typecheck": "tsrs --fast --runExternalCode --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},

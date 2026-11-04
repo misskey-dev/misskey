@@ -25,7 +25,7 @@
 		"api": "pnpm api-extractor run --local --verbose",
 		"api-prod": "pnpm api-extractor run --verbose",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"typecheck": "tsrs --noEmit",
+		"typecheck": "tsrs --fast --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint",
 		"vitest": "vitest run --coverage",
 		"test": "pnpm vitest && pnpm tsd",

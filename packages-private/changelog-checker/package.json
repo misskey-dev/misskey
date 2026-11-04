@@ -8,7 +8,7 @@
 		"lint": "pnpm typecheck && pnpm eslint",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
-		"typecheck": "tsrs --noEmit"
+		"typecheck": "tsrs --fast --noEmit"
 	},
 	"devDependencies": {
 		"@types/mdast": "4.0.4",

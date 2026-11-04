@@ -4,7 +4,7 @@
 	"scripts": {
 		"watch": "nodemon -w ../../package.json -e json --exec \"node build.js watch\"",
 		"build": "node build.js",
-		"typecheck": "tsrs --noEmit",
+		"typecheck": "tsrs --fast --noEmit",
 		"eslint": "eslint --quiet src/**/*.ts",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},

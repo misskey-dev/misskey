@@ -9,7 +9,7 @@
 		"render-browser-html": "tsx src/render-browser-html.ts",
 		"render-md": "tsx src/render-md.ts",
 		"test": "vitest run",
-		"typecheck": "tsrs --noEmit"
+		"typecheck": "tsrs --fast --noEmit"
 	},
 	"dependencies": {
 		"diagnostics-shared": "workspace:*"
