@@ -24,6 +24,15 @@ export class FooService {
 #### OnModuleInit
 できなければ`OnModuleInit`を使う
 
+`moduleRef.get(BarService.name)` は文字列トークンで解決するため、`BarService` の通常の登録に加え、同じモジュールの `providers` に alias を登録する必要がある。Misskey では [CoreModule](../../packages/backend/src/core/CoreModule.ts) に登録している。
+
+```typescript
+providers: [
+	BarService,
+	{ provide: BarService.name, useExisting: BarService },
+],
+```
+
 ```typescript
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
@@ -86,7 +95,7 @@ describe('test', () => {
 		await fooService.onModuleInit();
 	});
 
-	test('nice', () => {
+	test('nice', async () => {
 		await fooService.niceMethod();
 
 		expect(barService.incredibleMethod).toHaveBeenCalled();
@@ -186,11 +195,11 @@ enumの列挙の内容の削除は、その値をもつレコードを全て削�
 削除が重たかったり不可能だったりする場合は、削除しないでおく
 
 ## Migration作成方法
-packages/backendで:
+リポジトリルートから:
 ```sh
-pnpm dlx typeorm migration:generate -d ormconfig.js -o --esm <migration name>
+pnpm --filter backend exec typeorm migration:generate -d ormconfig.js -o --esm migration/<PascalName>
 ```
 
-- 生成後、ファイルをmigration下に移してください
+- ワークスペースにインストール済みの TypeORM CLI を使う。設定ファイルと出力先は `packages/backend/` 基準で解決され、生成ファイルは `packages/backend/migration/` に配置される
 - 作成されたスクリプトは不必要な変更を含むため除去してください
 - `-o` (`--outputJs`) で JS 形式、`--esm` で ESM 形式に生成する。Misskey の既存 migration はすべて ESM JS なので両方のオプションが必要
