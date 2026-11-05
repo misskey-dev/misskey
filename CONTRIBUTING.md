@@ -37,6 +37,8 @@ Before creating an issue, please check the following:
 ### Recommended discussing before implementation
 We welcome your proposal.
 
+For security-related reports, follow [SECURITY.md](SECURITY.md) instead of the general process below.
+
 When you want to add a feature or fix a bug, **first have the design and policy reviewed in an Issue** (if it is not there, please make one). Without this step, there is a high possibility that the PR will not be merged even if it is implemented.
 
 At this point, you also need to clarify the goals of the PR you will create, and make sure that the other members of the team are aware of them.
@@ -80,6 +82,8 @@ Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization man
 You can improve our translations with your Crowdin account.
 Your changes in Crowdin are automatically submitted as a PR (with the title "New Crowdin translations") to the repository.
 The owner [@syuilo](https://github.com/syuilo) merges the PR into the develop branch before the next release.
+
+For Japanese source strings, edit [`locales/ja-JP.yml`](locales/ja-JP.yml). Do not edit other locale YAML files directly; submit translations through Crowdin. See [locales/README.md](locales/README.md) for the locale editing rules.
 
 If your language is not listed in Crowdin, please open an issue. We will add it to Crowdin.
 For newly added languages, once the translation progress per language exceeds 70%, it will be officially introduced into Misskey and made available to users.
