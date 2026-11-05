@@ -5,7 +5,7 @@
 ## 最重要事実 (見落とすと CI / 本番が壊れる)
 
 1. **エンドポイントは glob 自動収集されない**。[endpoint-list.ts](../../../../../packages/backend/src/server/api/endpoint-list.ts) への 1 行追加が必須 → [knowledge/endpoint-list.md](../knowledge/endpoint-list.md)
-2. **`meta` / `paramDef` / `res` を変えたら misskey-js 再生成が必須**。`pnpm build-misskey-js-with-types` を忘れると CI の `check-misskey-js-autogen` で必ず落ちる
+2. **`meta` / `paramDef` / `res` を変えたら misskey-js 再生成が必須**。`pnpm build-misskey-js-with-types` の生成結果を反映しないと、差分がある場合に CI の `check-misskey-js-autogen` で落ちる
 3. **`meta.errors` の各 `id` は UUID v4 で、リポジトリ内で一意**。`crypto.randomUUID()` で生成し、`grep -r "id: '<UUID>'" packages/backend/src/server/api/endpoints/` で衝突確認
 
 ## ワークフロー全体図
@@ -249,7 +249,7 @@ pnpm --filter backend lint
 pnpm build-misskey-js-with-types
 ```
 
-PR に `packages/misskey-js/src/autogen/` 配下の差分が含まれていないと CI の `check-misskey-js-autogen` で必ず落ちる (最頻ミス)。詳細手順は [shipping-misskey-change/references/tasks/regenerate-misskey-js.md](../../../shipping-misskey-change/references/tasks/regenerate-misskey-js.md)。
+再生成で `packages/misskey-js/src/autogen/` 配下に差分が出た場合は PR に含める。内部専用の `meta` フィールドだけの変更など、生成結果に影響しない場合は差分がなくても正常。CI の `check-misskey-js-autogen` は再生成結果と生成物の不一致を検出する。詳細手順は [shipping-misskey-change/references/tasks/regenerate-misskey-js.md](../../../shipping-misskey-change/references/tasks/regenerate-misskey-js.md)。
 
 ---
 

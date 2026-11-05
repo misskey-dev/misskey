@@ -2,7 +2,7 @@
 
 backend の API endpoint やスキーマ (`meta` / `paramDef` / `res`) を変更した後、`packages/misskey-js/src/autogen/` の自動生成型を最新化するための手順。
 
-**忘れると CI の `check-misskey-js-autogen` で必ず落ちる**。最頻ミスのひとつ。
+**再生成結果と生成物が一致しないと CI の `check-misskey-js-autogen` で落ちる**。
 
 ## いつ実行するか
 
@@ -45,7 +45,7 @@ git diff -- packages/misskey-js/src/autogen/
 
 ## 差分のパターン
 
-- **差分なし** → backend の変更は misskey-js の公開型に影響していない (内部リファクタなど)。追加コミット不要
+- **差分なし** → backend の変更は misskey-js の生成結果に影響していない。たとえば内部リファクタや、OpenAPI に反映されない `meta` の `requireModerator` / `requireAdmin` / `requiredRolePolicy` / `prohibitMoved` / `cacheSec` / `stability` だけの変更では正常。追加コミット不要で、差分ゼロだけを実行漏れの根拠にしない
 - **差分あり** → `packages/misskey-js/src/autogen/` 配下のファイルを **必ず commit に含める**
 
   ```bash

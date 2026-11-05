@@ -41,7 +41,7 @@ BASE=$(git merge-base origin/develop HEAD)
 
 - `tags`: OpenAPI タグ (機能領域)。
 - `requireCredential`: 明示必須 (boolean)。
-- `kind`: OAuth scope。`requireCredential: true` のとき必須 (`read:account` / `write:notes` 等)。
+- `kind`: OAuth scope。`requireCredential: true` のとき通常は必須 (`read:account` / `write:notes` 等)。ただし `secure: true` の内部専用エンドポイントは `kind` 不要。
 - `requireModerator` / `requireAdmin`: 権限制限が要るか。
 - `prohibitMoved`: 移行済アカウントを拒否するか (write 系で要検討)。
 - `limit`: レート制限 `{ duration, max, key?, minInterval? }`。書き込み系 / コスト高い処理で未指定なら指摘。
@@ -98,14 +98,14 @@ grep -F "'<category>/<name>'" packages/backend/src/server/api/endpoint-list.ts
 
 ### 6. `misskey-js` 再生成 (Critical)
 
-`meta` / `paramDef` / `res` を変更したら、PR / ブランチに `packages/misskey-js/src/autogen/` 配下の差分が含まれているか確認する:
+`meta` / `paramDef` / `res` を変更したら、`pnpm build-misskey-js-with-types` の実行結果と、PR / ブランチの `packages/misskey-js/src/autogen/` 配下の差分を確認する:
 
 ```bash
 BASE=$(git merge-base origin/develop HEAD)
 git diff --name-only "$BASE"...HEAD -- packages/misskey-js/src/autogen/
 ```
 
-差分ゼロなら `pnpm build-misskey-js-with-types` の実行漏れ。CI の `check-misskey-js-autogen` ワークフローで必ず落ちるため Critical 扱い。
+差分ゼロだけを実行漏れの根拠にしない。`requireModerator` / `requireAdmin` / `requiredRolePolicy` / `prohibitMoved` / `cacheSec` / `stability` など、OpenAPI に反映されない内部フィールドだけの変更では、生成差分がないことは正常。公開スキーマや生成型に影響する変更では、再生成結果がコミット済み・未コミットの生成物と一致するか確認し、未反映の差分がある場合に Critical とする。
 
 ### 7. e2e テスト (Major)
 

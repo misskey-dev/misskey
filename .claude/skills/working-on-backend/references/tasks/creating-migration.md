@@ -57,7 +57,7 @@ export class PascalCaseName1234567890123 {
 pnpm --filter backend exec typeorm migration:generate -d ormconfig.js -o --esm migration/<PascalName>
 ```
 
-**[Backend ガイド](../../../../../docs/contributing/backend.md#migration作成方法)との違い**: Backend ガイドは `pnpm dlx typeorm ...` を案内しているが、`dlx` はパッケージを一時ダウンロードするため、バージョンが backend の依存関係と揃わない可能性がある。`pnpm --filter backend exec typeorm` はワークスペースにインストール済みの typeorm を使うため **こちらを推奨**。
+**[Backend ガイド](../../../../../docs/contributing/backend.md#migration作成方法)と共通**: `pnpm --filter backend exec typeorm` でワークスペースにインストール済みの TypeORM CLI を使う。
 
 **`-o --esm` について**: `-o` (`--outputJs`) は「TS ではなく JS を出力する」オプション、`--esm` は「ESM 形式 (`export class ...`) で出力する」オプション。Misskey の既存 migration はすべて ESM JS であるため **両方が必須**。`--esm` を省略すると CommonJS 形式の JS が生成されスタイルが揃わない。
 

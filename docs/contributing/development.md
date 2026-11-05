@@ -15,7 +15,7 @@ There are a few ways to proceed.
 You could install them in system-wide (such as from package manager).
 
 ### Use `docker compose`
-You could obtain middleware container by typing `docker compose -f $PROJECT_ROOT/compose.local-db.yml up -d`.
+From the repository root, you could obtain middleware containers by typing `docker compose -f compose.local-db.yml up -d`.
 
 ### Use Devcontainer
 Devcontainer also has necessary setting. This method can be done by connecting from VSCode.
