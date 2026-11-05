@@ -90,7 +90,7 @@ git diff "$BASE"...HEAD -- 'packages/frontend/src/**/*.vue' \
 ```bash
 BASE=$(git merge-base origin/develop HEAD)
 git diff "$BASE"...HEAD -- 'packages/frontend/src/**/*.vue' \
-  | grep -E '^\+' | grep -E '(^|[^.[:alnum:]_$])(alert|confirm|prompt)\s*\(|(^|[^.[:alnum:]_$])window\.(alert|confirm|prompt)\s*\('
+  | grep -E '^\+' | grep -E '\b(alert|confirm|prompt)\s*\('
 ```
 
 ### 6. アクセシビリティ (Major)
@@ -110,9 +110,10 @@ git diff "$BASE"...HEAD -- 'packages/frontend/src/**/*.vue' \
 
 ```bash
 BASE=$(git merge-base origin/develop HEAD)
-git diff --name-only -z --diff-filter=A "$BASE"...HEAD -- \
+git diff --name-only --diff-filter=A "$BASE"...HEAD -- \
   'packages/frontend/src/components/**/Mk*.vue' \
-  | xargs -0 -r -n 1 sh -c 'story_path="${1%.vue}.stories.impl.ts"; test -f "$story_path" || printf "missing: %s\n" "$story_path"' sh
+  | sed 's/\.vue$/.stories.impl.ts/' \
+  | xargs -I {} sh -c 'test -f {} || echo "missing: {}"'
 ```
 
 ### 8. アイコン (Minor)
