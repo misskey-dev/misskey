@@ -71,12 +71,7 @@ For ActivityPub payload changes, see [additional requirements](docs/contributing
 ## Security Advisory
 
 ### For reporter
-Thank you for your reporting!
-
-If you can also create a patch to fix the vulnerability, please create a PR on the private fork.
-
-> [!note]
-> There is a GitHub bug that prevents merging if a PR not following the develop branch of upstream, so please keep follow the develop branch.
+Please follow [SECURITY.md](SECURITY.md) for reporting security issues and submitting patches.
 
 For maintainers: [handling advisories](docs/contributing/maintainer-guide.md#security-advisory).
 
