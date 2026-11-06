@@ -64,7 +64,7 @@ const emojiName = computed(() => getEmojiNameFromReaction(props.reaction));
 const isLocalCustomEmoji = computed(() => isLocalCustomEmojiReaction(props.reaction));
 
 const canToggle = computed(() => {
-	const emoji = isLocalCustomEmoji.value ? customEmojisMap.get(emojiName.value) : getUnicodeEmojiOrNull(props.reaction);
+	const emoji = isLocalCustomEmoji.value ? customEmojisMap.value.get(emojiName.value) : getUnicodeEmojiOrNull(props.reaction);
 
 	// TODO
 	//return $i != null && emoji != null && checkReactionPermissions($i, props.note, emoji);
@@ -107,7 +107,7 @@ async function toggleReaction() {
 					noteId: props.noteId,
 					reaction: props.reaction,
 				}).then(() => {
-					const emoji = customEmojisMap.get(emojiName.value);
+					const emoji = customEmojisMap.value.get(emojiName.value);
 					if (emoji == null && getUnicodeEmojiOrNull(props.reaction) == null) {
 						return;
 					}
@@ -141,7 +141,7 @@ async function toggleReaction() {
 			noteId: props.noteId,
 			reaction: props.reaction,
 		}).then(() => {
-			const emoji = customEmojisMap.get(emojiName.value);
+			const emoji = customEmojisMap.value.get(emojiName.value);
 			if (emoji == null && getUnicodeEmojiOrNull(props.reaction) == null) {
 				return;
 			}
