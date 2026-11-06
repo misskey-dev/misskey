@@ -55,6 +55,7 @@ function generateDummyUser(override?: Partial<MiUser>): MiUser {
 		makeNotesHiddenBefore: null,
 		chatScope: 'mutual',
 		emojis: [],
+		hiddenRoleIds: [],
 		score: 0,
 		host: null,
 		inbox: null,
