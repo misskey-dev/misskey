@@ -375,6 +375,9 @@ export const PREF_DEF = definePreferences({
 	skipNoteRender: {
 		default: true,
 	},
+	alwaysUseAbsoluteTime: {
+		default: false,
+	},
 	showSoftWordMutedWord: {
 		default: false,
 	},
