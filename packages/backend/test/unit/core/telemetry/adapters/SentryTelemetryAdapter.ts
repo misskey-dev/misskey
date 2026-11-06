@@ -4,7 +4,14 @@
  */
 
 import { describe, expect, test, vi } from 'vitest';
-import { DEFAULT_SENTRY_DATA_COLLECTION, SentryTelemetryAdapter, buildSentryIntegrations, buildSentryNodeOptions } from '@/core/telemetry/adapters/SentryTelemetryAdapter.js';
+import * as Sentry from '@sentry/node';
+import {
+	DEFAULT_SENTRY_DATA_COLLECTION,
+	SentryTelemetryAdapter,
+	buildSentryIntegrations,
+	buildSentryNodeOptions,
+	buildSentryOpenTelemetryLinkedInitOptions,
+} from '@/core/telemetry/adapters/SentryTelemetryAdapter.js';
 
 type SentryIntegrationFactory = ReturnType<typeof buildSentryIntegrations>;
 type TestIntegration = Parameters<SentryIntegrationFactory>[0][number];
@@ -36,7 +43,9 @@ describe('SentryTelemetryAdapter', () => {
 			nodeProfilingIntegration: () => testIntegration('ProfilingIntegration'),
 		});
 
-		const result = integrations([testIntegration('Http')]);
+		const result = integrations([
+			testIntegration('Http'),
+		]);
 
 		expect(result.map((integration: TestIntegration) => integration.name)).toEqual(['Http', 'ProfilingIntegration']);
 	});
@@ -49,7 +58,9 @@ describe('SentryTelemetryAdapter', () => {
 			warn,
 		});
 
-		const result = integrations([testIntegration('Http')]);
+		const result = integrations([
+			testIntegration('Http'),
+		]);
 
 		expect(result.map((integration: TestIntegration) => integration.name)).toEqual(['Http']);
 		expect(warn).toHaveBeenCalledWith('Unknown Sentry integration configured in sentryForBackend.disabledIntegrations: Unknown');
@@ -141,6 +152,83 @@ describe('SentryTelemetryAdapter', () => {
 
 		expect(options.profileSessionSampleRate).toBe(1.0);
 		expect(options.profileLifecycle).toBe('trace');
+	});
+});
+
+describe('buildSentryOpenTelemetryLinkedInitOptions', () => {
+	test.each([
+		{ defaultIntegrations: undefined },
+		{ defaultIntegrations: false as const },
+		{ defaultIntegrations: [] },
+	])('does not warn about tracing integrations already excluded in linked mode with defaults %j', ({ defaultIntegrations }) => {
+		const warn = vi.fn();
+		const options = buildSentryOpenTelemetryLinkedInitOptions({
+			sentry: Sentry,
+			sentryConfig: {
+				enableNodeProfiling: false,
+				disabledIntegrations: ['Postgres', 'Fastify', 'ProfilingIntegration'],
+				options: { defaultIntegrations },
+			},
+			warn,
+		});
+		const integrations = (options.integrations as SentryIntegrationFactory)(options.defaultIntegrations as TestIntegration[]);
+		expect(warn).not.toHaveBeenCalled();
+		for (const name of ['Postgres', 'Fastify', 'ProfilingIntegration']) {
+			expect(integrations.map(integration => integration.name)).not.toContain(name);
+		}
+	});
+
+	test('keeps HTTP integration opt-outs and warns only for genuinely unknown names', () => {
+		const warn = vi.fn();
+		const options = buildSentryOpenTelemetryLinkedInitOptions({
+			sentry: Sentry,
+			sentryConfig: {
+				enableNodeProfiling: false,
+				disabledIntegrations: ['Postgres', 'Http', 'NodeFetch', 'Postgrse'],
+				options: {},
+			},
+			warn,
+		});
+		const integrations = (options.integrations as SentryIntegrationFactory)(options.defaultIntegrations as TestIntegration[]);
+		const names = integrations.map(integration => integration.name);
+		expect(names).not.toContain('Http');
+		expect(names).not.toContain('NodeFetch');
+		expect(warn).toHaveBeenCalledExactlyOnceWith('Unknown Sentry integration configured in sentryForBackend.disabledIntegrations: Postgrse');
+	});
+
+	test('warns when linked mode overrides tracing, propagation and profiling options', () => {
+		const warn = vi.fn();
+		buildSentryOpenTelemetryLinkedInitOptions({
+			sentry: Sentry,
+			sentryConfig: {
+				enableNodeProfiling: true,
+				options: {
+					tracesSampleRate: 1,
+					tracesSampler: () => 1,
+					enableOpenTelemetrySetup: true,
+					tracePropagationTargets: ['.*'],
+				},
+			},
+			warn,
+		});
+		expect(warn).toHaveBeenCalledWith(expect.stringContaining('tracesSampleRate / tracesSampler are ignored'));
+		expect(warn).toHaveBeenCalledWith(expect.stringContaining('enableOpenTelemetrySetup is ignored'));
+		expect(warn).toHaveBeenCalledWith(expect.stringContaining('tracePropagationTargets is ignored'));
+		expect(warn).toHaveBeenCalledWith(expect.stringContaining('enableNodeProfiling is ignored'));
+	});
+
+	test('uses the same warning path for removed SDK options in linked mode', () => {
+		const warn = vi.fn();
+		buildSentryOpenTelemetryLinkedInitOptions({
+			sentry: Sentry,
+			sentryConfig: {
+				enableNodeProfiling: false,
+				options: { sendDefaultPii: true } as Record<string, unknown>,
+			},
+			warn,
+		});
+		expect(warn).toHaveBeenCalledOnce();
+		expect(warn.mock.calls[0][0]).toContain('sendDefaultPii');
 	});
 });
 
