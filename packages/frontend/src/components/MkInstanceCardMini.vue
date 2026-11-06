@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { yellow: instance.isNotResponding, red: instance.isBlocked, gray: instance.isSuspended, blue: instance.isSilenced }]">
+<div :class="['_stripe', $style.root, { yellow: instance.isNotResponding, red: instance.isBlocked, gray: instance.isSuspended, blue: instance.isSilenced }]">
 	<img class="icon" :src="getInstanceIcon(instance)" alt="" loading="lazy"/>
 	<div class="body">
 		<span class="host">{{ instance.name ?? instance.host }}</span>
@@ -90,28 +90,20 @@ function getInstanceIcon(instance: Misskey.entities.FederationInstance): string 
 		height: 30px;
 	}
 
-  &:global(.blue) {
-    --c: rgba(0, 42, 255, 0.15);
-    background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
-    background-size: 16px 16px;
-  }
+	&:global(.blue) {
+		--MI_STRIPE-color: rgba(0, 42, 255, 0.15);
+	}
 
 	&:global(.yellow) {
-		--c: rgb(255 196 0 / 15%);
-		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
-		background-size: 16px 16px;
+		--MI_STRIPE-color: rgb(255 196 0 / 15%);
 	}
 
 	&:global(.red) {
-		--c: rgb(255 0 0 / 15%);
-		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
-		background-size: 16px 16px;
+		--MI_STRIPE-color: rgb(255 0 0 / 15%);
 	}
 
 	&:global(.gray) {
-		--c: var(--MI_THEME-bg);
-		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
-		background-size: 16px 16px;
+		--MI_STRIPE-color: var(--MI_THEME-bg);
 	}
 }
 </style>

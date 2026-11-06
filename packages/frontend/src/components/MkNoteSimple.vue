@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 </div>
-<div v-else :class="$style.deleted">
+<div v-else :class="['_stripe', $style.deleted]">
 	{{ i18n.ts.deletedNote }}
 </div>
 </template>
@@ -112,9 +112,7 @@ const showContent = ref(false);
 .deleted {
 	text-align: center;
 	padding: 8px !important;
-	--color: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
-	background-size: auto auto;
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 10px, var(--color) 4px, var(--color) 14px);
+	--MI_STRIPE-color: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
 	border-radius: 8px;
 }
 </style>

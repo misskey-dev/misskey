@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #default>
 		<div class="_spacer">
 			<div style="display: flex; flex-direction: column; gap: 1em;">
-				<div :class="$style.emojiImgWrapper">
+				<div :class="['_stripe', $style.emojiImgWrapper]">
 					<MkCustomEmoji :name="emoji.name" :normal="true" :useOriginalSize="true" style="height: 100%;"></MkCustomEmoji>
 				</div>
 				<MkKeyValue :copy="`:${emoji.name}:`">
@@ -83,12 +83,12 @@ function cancel() {
 
 <style lang="scss" module>
 .emojiImgWrapper {
-  max-width: 100%;
-  height: 40cqh;
-  background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05)) 8px, light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05)) 14px);
-  border-radius: var(--MI-radius);
-  margin: auto;
-  overflow-y: hidden;
+	max-width: 100%;
+	height: 40cqh;
+	border-radius: var(--MI-radius);
+	margin: auto;
+	overflow-y: hidden;
+	--MI_STRIPE-color: light-dark(rgb(0 0 0 / 0.05), rgb(255 255 255 / 0.05));
 }
 
 .aliases {

@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkUploaderItems :items="uploader.items.value" @showMenu="(item, ev) => showPerUploadItemMenu(item, ev)" @showMenuViaContextmenu="(item, ev) => showPerUploadItemMenuViaContextmenu(item, ev)"/>
 	</div>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
-	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
+	<MkNotePreview v-if="showPreview" :class="['_stripe', $style.preview]" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
 	</div>
 	<footer ref="footerEl" :class="$style.footer">
@@ -1650,15 +1650,7 @@ defineExpose({
 	min-height: 75px;
 	max-height: 150px;
 	overflow: auto;
-	background-size: auto auto;
-}
-
-html[data-color-scheme=dark] .preview {
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, #0004 5px, #0004 10px);
-}
-
-html[data-color-scheme=light] .preview {
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, #00000005 5px, #00000005 10px);
+	--MI_STRIPE-color: light-dark(rgb(0 0 0 / 0.02), rgb(0 0 0 / 0.27));
 }
 
 .targetNote {

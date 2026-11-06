@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div :class="$style.container">
-		<div :class="[$style.preview, prefer.s.animation ? $style.animatedBg : null]">
+		<div :class="['_stripe', $style.preview, prefer.s.animation ? $style.animatedBg : null]">
 			<div :class="$style.previewContent">
 				<slot name="preview"></slot>
 			</div>
@@ -51,8 +51,7 @@ defineSlots<{
 .preview {
 	position: relative;
 	background-color: var(--MI_THEME-bg);
-	background-image: linear-gradient(135deg, transparent 30%, var(--MI_THEME-panel) 30%, var(--MI_THEME-panel) 50%, transparent 50%, transparent 80%, var(--MI_THEME-panel) 80%, var(--MI_THEME-panel) 100%);
-	background-size: 20px 20px;
+	--MI_STRIPE-color: var(--MI_THEME-panel);
 }
 
 .previewContent {
@@ -77,7 +76,7 @@ defineSlots<{
 
 @keyframes bg {
 	0% { background-position: 0 0; }
-	100% { background-position: -20px -20px; }
+	100% { background-position: -16px -16px; }
 }
 
 .controls {
