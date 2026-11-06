@@ -6125,6 +6125,44 @@ export interface Locale extends ILocale {
          */
         "paletteForReaction": string;
     };
+    "_unicodeEmojiCategory": {
+        /**
+         * 顔と感情
+         */
+        "face": string;
+        /**
+         * 人と体
+         */
+        "people": string;
+        /**
+         * 動物と自然
+         */
+        "animals_and_nature": string;
+        /**
+         * 食べ物と飲み物
+         */
+        "food_and_drink": string;
+        /**
+         * アクティビティ
+         */
+        "activity": string;
+        /**
+         * 旅行と場所
+         */
+        "travel_and_places": string;
+        /**
+         * オブジェクト
+         */
+        "objects": string;
+        /**
+         * 記号
+         */
+        "symbols": string;
+        /**
+         * 旗
+         */
+        "flags": string;
+    };
     "_settings": {
         /**
          * ドライブの管理と設定、使用量の確認、ファイルをアップロードする際の設定を行えます。
