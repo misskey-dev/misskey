@@ -7,6 +7,7 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { FollowingsRepository } from '@/models/_.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
@@ -42,6 +43,13 @@ export const meta = {
 			message: 'The other use is not following you.',
 			code: 'NOT_FOLLOWING',
 			id: '918faac3-074f-41ae-9c43-ed5d2946770d',
+		},
+
+		cannotBreakFollowDueToServerPolicy: {
+			message: 'You cannot break the follow from that user due to server policy.',
+			code: 'CANNOT_BREAK_FOLLOW_DUE_TO_SERVER_POLICY',
+			id: '0cb6fb08-355c-40af-b176-4a6ba136c390',
+			httpStatusCode: 403,
 		},
 	},
 
@@ -94,7 +102,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.notFollowing);
 			}
 
-			await this.userFollowingService.unfollow(follower, followee);
+			await this.userFollowingService.unfollow(follower, followee).catch((err) => {
+				if (err instanceof IdentifiableError && err.id === '19f25f61-0141-4683-99dc-217a88d633cb') {
+					throw new ApiError(meta.errors.cannotBreakFollowDueToServerPolicy);
+				}
+				throw err;
+			});
 
 			return await this.userEntityService.pack(follower.id, me);
 		});
