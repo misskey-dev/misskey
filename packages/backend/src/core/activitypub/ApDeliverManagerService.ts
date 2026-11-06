@@ -119,6 +119,7 @@ class DeliverManager {
 				where: {
 					followeeId: this.actor.id,
 					followerHost: Not(IsNull()),
+					isFollowerSuspended: false,
 				},
 				select: {
 					followerSharedInbox: true,
