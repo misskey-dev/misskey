@@ -1,5 +1,12 @@
 ## Unreleased
 
+### Note
+- 本番環境においてMisskeyを正しく起動するためのスクリプトを新設しました。こちらを利用して起動することで、余計なプロセスが常駐することを防ぎ、メモリ使用量を70MB～140MB削減することが可能です。
+  - `node ./scripts/start.mjs` でMisskeyを起動できます。 `pnpm start` と同等の動作をします。
+  - `node ./scripts/start.mjs --migrate` でマイグレーションを実行してからMisskeyを起動できます。 `pnpm migrateandstart` と同等の動作をします。
+	- 今までの起動方法（ `pnpm start` や `pnpm migrateandstart` ）も引き続き利用可能ですが、メモリ使用量の削減効果は得られません。
+	- 公式Docker Imageや同梱のDockerfileをご利用の場合は、何もしなくても新しい起動スクリプトが使用されます（起動時のメモリ消費量が削減されます）。
+
 ### General
 - Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
 - Fix: Dev Containerの構築時に`pnpm build`が失敗する問題を修正
@@ -15,15 +22,19 @@
 ### Server
 - Feat: OpenTelemetryサポート
   - 詳細な設定はconfigファイルを参照してください。
-  - Sentryとの併用も可能です。Sentry併用時は、PostgreSQL Query と Redis command は Sentry で計装されます。
+  - Sentryとの併用も可能です。併用時はOpenTelemetryがトレースを計装し、Sentryはエラーをそのトレースに紐付けて収集します。
   - 以下の自動計装をサポートしています。（計装対象にする項目は設定可能）
     - PostgreSQL query
     - Redis command
     - 全ての受信HTTPリクエスト
     - 全ての送信HTTPリクエスト
     - ジョブキュー（エンキュー元のトレースを含む）
+- Enhance: メモリ使用量の削減
 - Fix: ジョブキューの同時実行数のコンフィグ設定値が不正な場合は起動時に安全に停止するように
 - Fix: アンテナのリアルタイム更新時に、既に投票済みのアンケートが未投票として表示される問題を修正
+- Fix: ノートや通知などでユーザーの情報を取得する際に、本来は不要なデータの問い合わせが行われる問題を修正
+- Fix: プッシュ通知の購読が正しく解除されないことがある問題を修正
+- Fix: ユーザーのidenticonの正方形同士の間に僅かな隙間ができる問題を修正
 
 
 ## 2026.10.1

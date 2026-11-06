@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { BroadcastChannel } from 'broadcast-channel';
 import { createVisibilityAwareInterval } from '@@/js/interval.js';
 import type { StorageProvider } from '@/preferences/manager.js';
 import { cloudBackup } from '@/preferences/utility.js';
@@ -11,6 +10,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { isSameScope, PreferencesManager } from '@/preferences/manager.js';
 import { store } from '@/store.js';
 import { $i } from '@/i.js';
+import { TypedBroadcastChannel as BroadcastChannel } from '@/utility/typed-broadcast-channel.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { TAB_ID } from '@/tab-id.js';
 
@@ -125,7 +125,8 @@ prefer.on('committed', () => {
 	});
 });
 
-preferencesChannel.addEventListener('message', (msg) => {
+preferencesChannel.addEventListener('message', (ev) => {
+	const msg = ev.data;
 	if (msg.type === 'preferencesUpdate') {
 		if (msg.tabId === TAB_ID) return;
 		if (latestPreferencesUpdate != null) {
