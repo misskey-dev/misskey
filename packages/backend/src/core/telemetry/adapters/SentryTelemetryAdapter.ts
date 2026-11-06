@@ -139,8 +139,15 @@ export function buildSentryOpenTelemetryLinkedInitOptions(options: BuildSentryOp
 		warn('sentryForBackend.enableNodeProfiling is ignored when otelForBackend is also configured, because trace-based profiling requires Sentry to own tracing.');
 	}
 
+	const tracingIntegrationNames = new Set([
+		...SENTRY_FRAMEWORK_INTEGRATIONS,
+		...options.sentry.getAutoPerformanceIntegrations().map(integration => integration.name),
+		'ProfilingIntegration',
+	]);
 	const nodeOptions = buildSentryNodeOptions({
 		...options.sentryConfig,
+		// These integrations are already removed below and may be absent from the SDK defaults.
+		disabledIntegrations: options.sentryConfig.disabledIntegrations?.filter(name => !tracingIntegrationNames.has(name)),
 		enableNodeProfiling: false,
 		options: sentryOptions,
 	}, undefined, warn);
@@ -150,11 +157,6 @@ export function buildSentryOpenTelemetryLinkedInitOptions(options: BuildSentryOp
 	const integrations = nodeOptions.integrations as SentryIntegrationFactory;
 	const defaults = sentryOptions.defaultIntegrations === false ? []
 		: sentryOptions.defaultIntegrations ?? options.sentry.getDefaultIntegrationsWithoutPerformance();
-	const tracingIntegrationNames = new Set([
-		...SENTRY_FRAMEWORK_INTEGRATIONS,
-		...options.sentry.getAutoPerformanceIntegrations().map(integration => integration.name),
-		'ProfilingIntegration',
-	]);
 	return {
 		...nodeOptions,
 		// Explicit defaults prevent SENTRY_TRACES_SAMPLE_RATE from enabling tracing integrations.

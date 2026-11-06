@@ -156,6 +156,46 @@ describe('SentryTelemetryAdapter', () => {
 });
 
 describe('buildSentryOpenTelemetryLinkedInitOptions', () => {
+	test.each([
+		{ defaultIntegrations: undefined },
+		{ defaultIntegrations: false as const },
+		{ defaultIntegrations: [] },
+	])('does not warn about tracing integrations already excluded in linked mode with defaults %j', ({ defaultIntegrations }) => {
+		const warn = vi.fn();
+		const options = buildSentryOpenTelemetryLinkedInitOptions({
+			sentry: Sentry,
+			sentryConfig: {
+				enableNodeProfiling: false,
+				disabledIntegrations: ['Postgres', 'Fastify', 'ProfilingIntegration'],
+				options: { defaultIntegrations },
+			},
+			warn,
+		});
+		const integrations = (options.integrations as SentryIntegrationFactory)(options.defaultIntegrations as TestIntegration[]);
+		expect(warn).not.toHaveBeenCalled();
+		for (const name of ['Postgres', 'Fastify', 'ProfilingIntegration']) {
+			expect(integrations.map(integration => integration.name)).not.toContain(name);
+		}
+	});
+
+	test('keeps HTTP integration opt-outs and warns only for genuinely unknown names', () => {
+		const warn = vi.fn();
+		const options = buildSentryOpenTelemetryLinkedInitOptions({
+			sentry: Sentry,
+			sentryConfig: {
+				enableNodeProfiling: false,
+				disabledIntegrations: ['Postgres', 'Http', 'NodeFetch', 'Postgrse'],
+				options: {},
+			},
+			warn,
+		});
+		const integrations = (options.integrations as SentryIntegrationFactory)(options.defaultIntegrations as TestIntegration[]);
+		const names = integrations.map(integration => integration.name);
+		expect(names).not.toContain('Http');
+		expect(names).not.toContain('NodeFetch');
+		expect(warn).toHaveBeenCalledExactlyOnceWith('Unknown Sentry integration configured in sentryForBackend.disabledIntegrations: Postgrse');
+	});
+
 	test('warns when linked mode overrides tracing, propagation and profiling options', () => {
 		const warn = vi.fn();
 		buildSentryOpenTelemetryLinkedInitOptions({
