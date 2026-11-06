@@ -249,7 +249,6 @@ function deleteDraft() {
 }
 
 async function insertEmoji(ev: MouseEvent) {
-	textareaReadOnly.value = true;
 	const target = ev.currentTarget ?? ev.target;
 	if (target == null) return;
 
@@ -261,20 +260,23 @@ async function insertEmoji(ev: MouseEvent) {
 
 	let pos = textareaEl.value?.selectionStart ?? 0;
 	let posEnd = textareaEl.value?.selectionEnd ?? text.value.length;
-	emojiPicker.show(
-		target as HTMLElement,
-		emoji => {
+	emojiPicker.show({
+		anchorElement: target as HTMLElement,
+		onChosen: (emoji) => {
 			const textBefore = text.value.substring(0, pos);
 			const textAfter = text.value.substring(posEnd);
 			text.value = textBefore + emoji + textAfter;
 			pos += emoji.length;
 			posEnd += emoji.length;
 		},
-		() => {
+		onClosed: () => {
 			textareaReadOnly.value = false;
 			nextTick(() => focus());
 		},
-	);
+	});
+
+	// show() は表示中のウィンドウを引き継ぐ際に以前の呼び出し元の onClosed を同期的に呼ぶため、その後で読み取り専用にする
+	textareaReadOnly.value = true;
 }
 
 onMounted(() => {
@@ -295,6 +297,7 @@ onBeforeUnmount(() => {
 		autocompleteInstance.detach();
 		autocompleteInstance = null;
 	}
+	emojiPicker.closeWindow();
 });
 </script>
 

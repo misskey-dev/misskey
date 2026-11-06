@@ -5,9 +5,9 @@
 
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
+import { markRaw, ref, shallowRef, defineAsyncComponent, nextTick } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { Component, MaybeRef } from 'vue';
+import type { Component, ComponentInstance, MaybeRef, ShallowRef } from 'vue';
 import type { ComponentEmit, ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/utility/form.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -145,6 +145,7 @@ let popupIdCount = 0;
 export const popups = ref<{
 	id: number;
 	component: Component;
+	componentRef: ShallowRef<Component | null>;
 	props: Record<string, any>;
 	events: Record<string, any>;
 }[]>([]);
@@ -183,14 +184,21 @@ type ComponentEmitsObject<C extends Component, IE = OverloadToUnion<ComponentEmi
 		: (...args: any[]) => void;
 }>;
 
+type PopupReturnType<T extends Component> = {
+	dispose: () => void;
+	componentRef: ShallowRef<ComponentInstance<T> | null>;
+};
+
 // NOTE: ジェネリック型つきのコンポーネントでは、emitsの型推論がうまく働かない（型変数を取り出すことはできないため）
 // NOTE: emitsがOverloadToUnionで対応しているオーバーロードの数を超える場合は、OverloadToUnionの個数を増やせばOK
 export function popup<T extends Component>(
 	component: T,
 	props: ComponentProps<T>,
 	events: Partial<ComponentEmitsObject<T>> = {},
-): { dispose: () => void } {
+): PopupReturnType<T> {
 	markRaw(component);
+
+	const componentRef = shallowRef<ComponentInstance<T> | null>(null);
 
 	const id = ++popupIdCount;
 	const dispose = () => {
@@ -200,6 +208,7 @@ export function popup<T extends Component>(
 	};
 	const state = {
 		component,
+		componentRef,
 		props,
 		events,
 		id,
@@ -209,6 +218,7 @@ export function popup<T extends Component>(
 
 	return {
 		dispose,
+		componentRef,
 	};
 }
 
@@ -216,7 +226,7 @@ export async function popupAsyncWithDialog<T extends Component>(
 	componentFetching: Promise<T>,
 	props: ComponentProps<T>,
 	events: Partial<ComponentEmitsObject<T>> = {},
-): Promise<{ dispose: () => void }> {
+): Promise<PopupReturnType<T>> {
 	let component: T;
 	let closeWaiting = () => { };
 

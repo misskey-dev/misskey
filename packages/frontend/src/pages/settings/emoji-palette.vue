@@ -97,14 +97,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<SearchMarker :keywords="['emoji', 'picker', 'style']">
 						<MkPreferenceContainer k="emojiPickerStyle">
 							<MkSelect
-								v-model="emojiPickerStyle" :items="[
+								v-model="emojiPickerStyle"
+								:items="[
+									{ label: i18n.ts.auto, value: 'auto' },
+									{ label: i18n.ts.popup, value: 'popup' },
+									{ label: i18n.ts.drawer, value: 'drawer' },
+									{ label: i18n.ts.window, value: 'window' },
+								]"
+							>
+								<template #label><SearchLabel>{{ i18n.ts.style }} ({{ i18n.ts.emojiPicker }})</SearchLabel></template>
+							</MkSelect>
+						</MkPreferenceContainer>
+					</SearchMarker>
+
+					<SearchMarker :keywords="['reaction', 'emoji', 'picker', 'style']">
+						<MkPreferenceContainer k="reactionPickerStyle">
+							<MkSelect
+								v-model="reactionPickerStyle"
+								:items="[
 									{ label: i18n.ts.auto, value: 'auto' },
 									{ label: i18n.ts.popup, value: 'popup' },
 									{ label: i18n.ts.drawer, value: 'drawer' },
 								]"
 							>
-								<template #label><SearchLabel>{{ i18n.ts.style }}</SearchLabel></template>
-								<template #caption>{{ i18n.ts.needReloadToApply }}</template>
+								<template #label><SearchLabel>{{ i18n.ts.style }} ({{ i18n.ts.reactionPicker }})</SearchLabel></template>
 							</MkSelect>
 						</MkPreferenceContainer>
 					</SearchMarker>
@@ -136,6 +152,7 @@ import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { emojiPicker } from '@/utility/emoji-picker.js';
+import { suggestReload } from '@/utility/reload-suggest.js';
 
 const emojiPaletteForReaction = prefer.model('emojiPaletteForReaction');
 const emojiPaletteForReactionDef = computed<MkSelectItem[]>(() => [
@@ -180,6 +197,7 @@ const emojiPickerHeightDef = [
 ] as MkRadiosOption<number>[];
 
 const emojiPickerStyle = prefer.model('emojiPickerStyle');
+const reactionPickerStyle = prefer.model('reactionPickerStyle');
 
 const palettesSyncEnabled = ref(prefer.isSyncEnabled('emojiPalettes'));
 
@@ -251,8 +269,17 @@ function getHTMLElement(ev: PointerEvent): HTMLElement {
 }
 
 function previewPicker(ev: PointerEvent) {
-	emojiPicker.show(getHTMLElement(ev));
+	emojiPicker.show({
+		anchorElement: getHTMLElement(ev),
+	});
 }
+
+watch([
+	emojiPickerStyle,
+	reactionPickerStyle,
+], () => {
+	suggestReload();
+});
 
 definePage(() => ({
 	title: i18n.ts.emojiPalette,
