@@ -30,12 +30,10 @@ export async function initTelemetry(config: Config): Promise<void> {
 	const warn = (message: string) => logger.warn(message);
 
 	if (config.sentryForBackend && otelForBackend) {
-		// Sentry SDK v11の推奨構成に従い、tracingはMisskeyのOTel provider 1つが所有する。
-		// spanはotelForBackendの送信先とSentryのOTLP endpointの両方へexportし、
-		// Sentry側はエラー通知をactiveなOTel spanへ紐付けるだけにする。
-		const sentryOtlpTarget = await SentryTelemetryAdapter.getOtlpExportTarget(config.sentryForBackend, warn);
-		adapters.push(await OpenTelemetryAdapter.create(otelForBackend, sentryOtlpTarget != null ? [sentryOtlpTarget] : []));
-		adapters.push(await SentryTelemetryAdapter.createLinkedToOpenTelemetry(config.sentryForBackend, otelForBackend, warn));
+		adapters.push(await OpenTelemetryAdapter.create(otelForBackend));
+		if (config.sentryForBackend.options.enabled !== false) {
+			adapters.push(await SentryTelemetryAdapter.createLinkedToOpenTelemetry(config.sentryForBackend, warn));
+		}
 	} else if (config.sentryForBackend) {
 		// Sentry単体時は既存のSentry adapterだけを登録する。
 		adapters.push(await SentryTelemetryAdapter.create(config.sentryForBackend, warn));
@@ -84,7 +82,11 @@ export function startSpanWithTraceContext<T>(name: string, jobData: object, fn: 
 	// 対応 adapter が無い構成では通常の startSpan へフォールバックする。
 	const adapter = adapters.find(adapter => adapter.startSpanWithTraceContext != null);
 	if (adapter?.startSpanWithTraceContext != null) {
-		return adapter.startSpanWithTraceContext(name, jobData, fn);
+		// OTel context and error-reporting scope have independent lifetimes.
+		const isolated = adapters.reduceRight<() => T>((inner, candidate) => {
+			return candidate.runWithIsolationScope == null ? inner : () => candidate.runWithIsolationScope!(inner);
+		}, fn);
+		return adapter.startSpanWithTraceContext(name, jobData, isolated);
 	}
 	return startSpan(name, fn);
 }

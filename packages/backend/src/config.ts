@@ -46,7 +46,6 @@ type OtelBackendConfig = {
 	captureRedisConnectionSpans?: boolean;
 	captureRedisRootSpans?: boolean;
 	resourceAttributes?: Record<string, string>;
-	propagateTraceToRemote?: boolean;
 	jobTraceContextMode?: 'link' | 'parent';
 };
 

@@ -43,13 +43,13 @@ describe('http-server-instrumentation', () => {
 		expect(unmatchedSpan.setAttribute).toHaveBeenCalledWith('url.path', '/');
 	});
 
-	test('registers request instrumentation when used with Sentry', async () => {
+	test('registers request instrumentation even when Sentry is disabled', async () => {
 		const fastify = { register: vi.fn().mockResolvedValue(undefined) };
 
-		await registerHttpServerInstrumentation(fastify as any, { otelForBackend: {}, sentryForBackend: {} } as any);
+		await registerHttpServerInstrumentation(fastify as any, { otelForBackend: {}, sentryForBackend: { options: { enabled: false } } } as any);
 
 		expect(fastify.register).toHaveBeenCalledTimes(1);
-		expect(shouldRegisterHttpServerInstrumentation({ otelForBackend: {}, sentryForBackend: {} } as any)).toBe(true);
+		expect(shouldRegisterHttpServerInstrumentation({ otelForBackend: {}, sentryForBackend: { options: { enabled: false } } } as any)).toBe(true);
 	});
 
 	test('does not register instrumentation without OpenTelemetry', () => {

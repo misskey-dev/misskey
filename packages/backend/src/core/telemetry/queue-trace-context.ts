@@ -14,7 +14,7 @@ import type { Context, PropagationAPI, Span, SpanContext, SpanOptions, SpanStatu
  * 2. carrier をジョブデータの内部フィールドに保存し、BullMQ/Redis 経由で worker へ渡す。
  * 3. worker 側で carrier を context へ戻し、設定に応じて Link または parent に使う。
  *
- * OTel API への依存を引数にしているのは、OTel 単体構成と Sentry + OTLP 構成で
+ * OTel API への依存を引数にしているのは、OTel 単体構成と Sentry 併用構成で
  * 同じ伝播処理を使うため。
  */
 /** Redis 上のジョブデータにだけ保存する、OpenTelemetry propagator 用の carrier。 */

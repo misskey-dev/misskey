@@ -350,13 +350,15 @@ id: 'aidx'
 # When this is enabled together with sentryForBackend, OpenTelemetry owns
 # tracing and Sentry only links its errors to the active OpenTelemetry span
 # (Sentry SDK v11's recommended setup). In that mode:
-# - spans are exported both to the endpoint below and to Sentry's OTLP
-#   endpoint derived from sentryForBackend.options.dsn.
-# - sampleRate below applies to both destinations; sentryForBackend.options
-#   tracesSampleRate / tracesSampler and enableNodeProfiling are ignored.
-# - sentry-trace / baggage propagation to outbound remote requests is disabled
-#   by default while OTel is enabled. Set propagateTraceToRemote: true only if
-#   you intentionally want Sentry trace propagation for your deployment.
+# - spans are exported only to the OTel endpoint below; Sentry receives errors
+#   linked to the active OTel trace/span IDs, without an additional OTLP export.
+# - sampleRate below controls OTel spans. Sentry tracesSampleRate / tracesSampler,
+#   enableOpenTelemetrySetup, tracePropagationTargets and profiling settings are
+#   ignored with a warning. enableNodeProfiling remains available in Sentry-only mode.
+# - Sentry's HTTP/Fetch span creation and outbound trace-header propagation are
+#   disabled. HTTP request isolation and Fastify error capture remain enabled,
+#   unless their integrations are explicitly listed in disabledIntegrations.
+# - sentryForBackend.options.enabled: false disables Sentry while OTel keeps running.
 
 #otelForBackend:
 #  endpoint: 'http://localhost:4318/v1/traces'
@@ -389,7 +391,6 @@ id: 'aidx'
 #  #captureRedisRootSpans: false
 #  #resourceAttributes:
 #  #  deployment.environment: 'production'
-#  #propagateTraceToRemote: false
 #  # Queue worker spans are independent traces linked to their enqueuer by default.
 #  # Set to 'parent' to make them child spans instead. This can create very large
 #  # traces for high-fan-out queues such as federation delivery.

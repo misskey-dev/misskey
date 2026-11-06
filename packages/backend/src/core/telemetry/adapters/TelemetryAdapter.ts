@@ -13,12 +13,6 @@ export type OtelBackendRuntimeConfig = OtelBackendConfig & {
 	serviceVersion: string;
 };
 
-/** otelForBackend.endpoint とは別に、同じspanを送るOTLP送信先(Sentry併用時のSentry OTLP endpointなど)。 */
-export type OtlpExportTarget = {
-	url: string;
-	headers: Record<string, string>;
-};
-
 export interface TelemetryCaptureMessageOptions {
 	/** 現在はエラー通知用途だけに絞る。追加する場合は各adapterでの扱いを揃えること。 */
 	level: 'error';
@@ -62,6 +56,9 @@ export interface TelemetryAdapter {
 	 * context を持たないジョブの互換性は adapter 側で保つ。
 	 */
 	startSpanWithTraceContext?<T>(name: string, jobData: object, fn: () => T): T;
+
+	/** Run a queue job in an isolated error-reporting scope without creating another span. */
+	runWithIsolationScope?<T>(fn: () => T): T;
 
 	/**
 	 * プロセス終了時にtelemetry backendへ残りのデータをflushする。
