@@ -71,7 +71,7 @@
 		"globals": "17.13.0",
 		"ncp": "2.0.0",
 		"start-server-and-test": "3.0.13",
-		"tsrs": "0.21.0-ts7.1.0-beta",
+		"tsrs": "0.22.0-ts7.1.0-beta",
 		"typescript": "npm:@typescript/typescript6@6.0.2"
 	}
 }
