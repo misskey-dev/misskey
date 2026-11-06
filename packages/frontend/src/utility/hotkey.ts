@@ -50,21 +50,28 @@ let latestHotkey: Pattern & { callback: CallbackFunction } | null = null;
 //#endregion
 
 //#region impl
+/**
+ * キー入力を処理する関数を返す。
+ * 返り値の関数は、いずれかのアクションを実行したときに true を返す。
+ */
 export const makeHotkey = (keymap: Keymap, ignoreElements = IGNORE_ELEMENTS) => {
 	const actions = parseKeymap(keymap);
-	return (ev: KeyboardEvent) => {
+	return (ev: KeyboardEvent): boolean => {
 		if (window.document.activeElement != null) {
-			if (ignoreElements.includes(window.document.activeElement.tagName.toLowerCase())) return;
-			if (getHTMLElementOrNull(window.document.activeElement)?.isContentEditable) return;
+			if (ignoreElements.includes(window.document.activeElement.tagName.toLowerCase())) return false;
+			if (getHTMLElementOrNull(window.document.activeElement)?.isContentEditable) return false;
 		}
+		let handled = false;
 		for (const action of actions) {
 			if (matchPatterns(ev, action)) {
 				ev.preventDefault();
 				ev.stopPropagation();
 				action.callback(ev);
 				storePattern(ev, action.callback);
+				handled = true;
 			}
 		}
+		return handled;
 	};
 };
 
