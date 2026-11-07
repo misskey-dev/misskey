@@ -56,9 +56,15 @@ minimumReleaseAgeExclude:
   - slacc-win32-x64-msvc
   - '@isaacs/nonrecursive-glob-match@1.0.1'
   - minimatch@11.0.1
+  - '@seydx/node-av-darwin-arm64@6.2.0'
+  - '@seydx/node-av-darwin-x64@6.2.0'
+  - '@seydx/node-av-linux-arm64@6.2.0'
+  - '@seydx/node-av-linux-x64@6.2.0'
+  - '@seydx/node-av-win32-arm64-msvc@6.2.0'
+  - '@seydx/node-av-win32-x64-msvc@6.2.0'
+  - node-av@6.2.0
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
-  'node-av>werift': '-' # node-av の WebRTC でしか使われない optional dependency で使用しないためインストール抑止。今後のバージョンで公式に optional peer dependency に移行するため、タイミングを見て消す
   chokidar: 5.0.0
   lodash: 4.18.1
   undici@^7: 7.30.1
