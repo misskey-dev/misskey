@@ -15,7 +15,6 @@
 2. 実装    : meta / paramDef / クラス本体を書く (SPDX ヘッダー付き)
 3. 配線    : endpoint-list.ts に登録 (★ 忘れると 404)
 4. 検証    : e2e テスト + lint + misskey-js 再生成
-5. 仕上げ  : CHANGELOG エントリ (shipping-misskey-change で確認)
 ```
 
 ---
@@ -251,12 +250,6 @@ pnpm build-misskey-js-with-types
 ```
 
 PR に `packages/misskey-js/src/autogen/` 配下の差分が含まれていないと CI の `check-misskey-js-autogen` で必ず落ちる (最頻ミス)。詳細手順は [shipping-misskey-change/references/tasks/regenerate-misskey-js.md](../../../shipping-misskey-change/references/tasks/regenerate-misskey-js.md)。
-
----
-
-## 5. 仕上げフェーズ — CHANGELOG
-
-ユーザー影響がある (新機能 / 既存挙動変更) なら `CHANGELOG.md` の `## Unreleased` → `### Server` に 1 行追加する。詳細は [shipping-misskey-change スキル](../../../shipping-misskey-change/SKILL.md) に従う。
 
 ---
 

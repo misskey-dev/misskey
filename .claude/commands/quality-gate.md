@@ -1,5 +1,5 @@
 ---
-description: Misskey の lint / typecheck / 高速テストを順に実行して品質ゲートを通すコマンド。完了前の軽量検証用。
+description: Misskey の lint / typecheck / 高速テストを順に実行する任意の広域品質検証。
 argument-hint: "[repo|backend|frontend|<path/to/file.ts>]"
 ---
 
@@ -14,33 +14,35 @@ project-level notice: see .claude/THIRD_PARTY_LICENSES.md (Misskey 内サード�
 
 Imported into Misskey .claude/ on 2026-05-10. Pipeline 概念 (lint → typecheck → test) は upstream ECC 版から借用 (MIT)。実コマンド層は Misskey の pnpm + tsc + ESLint + Vitest に固定し、formatter (Prettier/Biome) フェーズは削除した。
 
-note: 元 ECC 版は言語自動判定 + format/lint/type のジェネリック版だったが、Misskey 専用に pnpm + tsc + ESLint + Vitest の組み合わせに固定。重い test:e2e / test:fed は含まない (CI 側で実行される)。
+note: 元 ECC 版は言語自動判定 + format/lint/type のジェネリック版だったが、Misskey 専用に pnpm + tsc + ESLint + Vitest の組み合わせに固定。
+重い test:e2e / test:fed は含めず、変更内容または明示依頼に応じて個別実行する。
 -->
 
-# /quality-gate — Misskey 軽量品質ゲート
+# /quality-gate — Misskey 広域品質検証
 
 `/quality-gate [scope]`
 
-完了前の **軽量** 品質チェック。重い E2E / 連合テスト (test:e2e / test:fed / Playwright) は CI 側で実行されるため、本コマンドには含めない。
+package または repo 全体の状態が必要なときに任意で使う。
+完了時に必須の変更ファイル lint は [shipping-misskey-change](../skills/shipping-misskey-change/SKILL.md) が担当する。
 
 ## Scope
 
-- `repo` (default) — 全パッケージ
+- `repo` (default) — 全 workspace の lint + backend / frontend の unit test
 - `backend` — `packages/backend` のみ
 - `frontend` — `packages/frontend` のみ
-- `path/to/file.ts` — 単一ファイルへの ESLint --fix のみ
+- `path/to/file.ts` — 単一ファイルへの ESLint `--quiet` のみ
 
 ## Pipeline
 
-### Repo scope (全部)
+### Repo scope
 
-各パッケージの `lint` スクリプト実体は `pnpm typecheck && pnpm eslint` ([packages/backend/package.json](../../packages/backend/package.json), [packages/frontend/package.json](../../packages/frontend/package.json)) で、ルートの `pnpm lint` は `pnpm --no-bail -r lint` (= 全パッケージで lint を `--no-bail` で実行)。**typecheck は lint に含まれている**ため、通常はこの 2 コマンドで十分:
+各パッケージの `lint` スクリプト実体は `pnpm typecheck && pnpm eslint` ([packages/backend/package.json](../../packages/backend/package.json), [packages/frontend/package.json](../../packages/frontend/package.json))。
+ルートの `pnpm lint` は `pnpm --no-bail -r lint && pnpm check-dts` なので、そのまま実行すると workspace lint の失敗時に `check-dts` が実行されない。
+次の 4 コマンドをそれぞれ独立した Bash 呼び出しとして実行し、先の失敗にかかわらず全結果を収集する:
 
 ```bash
-# 1. Lint (= typecheck + ESLint、全パッケージ。--no-bail で最初の失敗で止まらず全結果を集める)
-pnpm lint
-
-# 2. Unit test (高速、e2e は含まない)
+pnpm --no-bail -r lint
+pnpm check-dts
 pnpm --filter backend test
 pnpm --filter frontend test
 ```
@@ -56,7 +58,8 @@ pnpm --filter frontend typecheck   # vue-tsc 単体 (Vue SFC の型を見るた�
 
 ### Backend scope
 
-`pnpm --filter backend lint` は内部で `pnpm typecheck && pnpm eslint` を実行する ([packages/backend/package.json](../../packages/backend/package.json)) ので、`lint` を回せば typecheck も終わる。軽量ゲートでは typecheck の二重実行を避けるため `lint` + `test` のみ:
+`pnpm --filter backend lint` は内部で `pnpm typecheck && pnpm eslint` を実行する ([packages/backend/package.json](../../packages/backend/package.json)) ので、`lint` を回せば typecheck も終わる。
+広域検証では typecheck の二重実行を避けるため `lint` + `test` のみ:
 
 ```bash
 pnpm --filter backend lint
@@ -67,7 +70,7 @@ pnpm --filter backend test
 
 ### Frontend scope
 
-`pnpm --filter frontend lint` も内部で `pnpm typecheck && pnpm eslint` を実行する ([packages/frontend/package.json](../../packages/frontend/package.json)) ため、軽量ゲートでは Backend 同様に `lint` + `test` のみ:
+`pnpm --filter frontend lint` も内部で `pnpm typecheck && pnpm eslint` を実行する ([packages/frontend/package.json](../../packages/frontend/package.json)) ため、広域検証では Backend 同様に `lint` + `test` のみ:
 
 ```bash
 pnpm --filter frontend lint
@@ -78,46 +81,38 @@ pnpm --filter frontend test
 
 ### Single file scope
 
+repo-relative path を package-relative path に変換し、該当 package root で実行する。
+
 ```bash
-pnpm exec eslint --fix <path>
+(cd packages/backend && pnpm exec eslint --quiet -- src/path/to/file.ts)
+(cd packages/frontend && pnpm exec eslint --quiet -- src/path/to/component.vue)
 ```
 
 ## Output
 
-実行したフェーズの pass/fail と件数を集計する。標準パイプラインは `pnpm lint` (typecheck 内包) と unit test のみなので、デフォルトの出力は以下のようになる:
+各コマンドの終了コードを保持し、実行項目を `PASS / FAIL / BASELINE / SKIPPED` で集計する。
+`BASELINE` は同じ失敗が base 側でも再現し、今回の変更と無関係と確認できた場合だけ使う。
 
 ```text
 Quality Gate (repo):
 
-Lint:        PASS  (0 errors, 2 warnings)
-Backend ut:  PASS  (412/412)
-Frontend ut: PASS  (87/87)
-
-→ 完了前の軽量チェック OK。重い e2e / 連合テストは CI 側で実行される。
+Lint:        PASS
+Backend ut:  BASELINE (base 側でも同じ既存失敗)
+Frontend ut: PASS
+Other tests: SKIPPED (repo scope の対象外)
 ```
 
-`#### 詳細を分けて見たい時のみ (optional)` で個別 typecheck (`pnpm --filter backend typecheck` / `pnpm --filter frontend typecheck`) も回した場合のみ、その結果を追加行として表示する:
-
-```text
-Quality Gate (repo):
-
-Lint:        PASS  (0 errors, 2 warnings)
-Backend tc:  PASS  (0 errors)        # optional 実行時のみ
-Frontend tc: PASS  (0 errors)        # optional 実行時のみ
-Backend ut:  PASS  (412/412)
-Frontend ut: PASS  (87/87)
-```
-
-失敗時は最初に落ちたフェーズで停止して詳細を見せる。
+一つが失敗しても独立した残りの検証は続ける。
+`BASELINE` を `PASS` と表示せず、未実行の項目は理由とともに `SKIPPED` とする。
 
 ## 関連 skill / コマンド
 
-- [`shipping-misskey-change` スキル](../skills/shipping-misskey-change/SKILL.md) — commit / PR 直前の最終チェックリスト (misskey-js 再生成 / SPDX / CHANGELOG 等)
+- [`shipping-misskey-change` スキル](../skills/shipping-misskey-change/SKILL.md) — commit / PR 直前の最終チェックリスト
 - [`shipping-misskey-change/references/tasks/regenerate-misskey-js.md`](../skills/shipping-misskey-change/references/tasks/regenerate-misskey-js.md) — API 変更時の `pnpm build-misskey-js-with-types` 実行手順
 - [.github/copilot-instructions.md §Validation コマンド](../../.github/copilot-instructions.md) — pnpm コマンド一覧 (Copilot / Codex 向けに再掲)
 
 ## 元 ECC 版との差分
 
 - ジェネリックな言語自動判定を排除し、Misskey 固定 pipeline に。
-- formatter フェーズなし (Misskey は ESLint --fix のみ採用)。
-- e2e / federation / Playwright は重いため除外し CI 側に委譲。
+- formatter フェーズなし (変更ファイル lint は ESLint `--quiet`)。
+- e2e / federation / Playwright は scope に自動追加せず、変更内容または明示依頼に応じて個別実行。

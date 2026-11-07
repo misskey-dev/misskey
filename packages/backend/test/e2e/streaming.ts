@@ -402,6 +402,77 @@ describe('Streaming', () => {
 
 				assert.strictEqual(fired, false);
 			});
+
+			test('withReplies: false のとき他人への返信が流れない', async () => {
+				const fired = await waitFire(
+					ayano, 'localTimeline',	// ayano:Local
+					() => api('notes/create', { text: 'foo', replyId: kanakoNote.id }, chitose).then(res => {
+						assert.strictEqual(res.status, 200);
+						return res;
+					}),
+					msg => msg.type === 'note' && msg.body.userId === chitose.id && msg.body.replyId === kanakoNote.id,
+					{ withReplies: false },
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
+			test('withReplies: false のときフォローしているユーザーの他人への返信が流れない', async () => {
+				// erin は ayano を withReplies: true でフォローしている
+				const fired = await waitFire(
+					erin, 'localTimeline',	// erin:Local
+					() => api('notes/create', { text: 'foo', replyId: kanakoNote.id }, ayano).then(res => {
+						assert.strictEqual(res.status, 200);
+						return res;
+					}),
+					msg => msg.type === 'note' && msg.body.userId === ayano.id && msg.body.replyId === kanakoNote.id,
+					{ withReplies: false },
+				);
+
+				assert.strictEqual(fired, false);
+			});
+
+			test('ログインしていないとき他人への返信が流れない', async () => {
+				const received: string[] = [];
+				const ws = await connectStream(null, 'localTimeline', msg => {
+					if (msg.type === 'note') received.push(msg.body.id);
+				}, { withReplies: false });
+
+				try {
+					const note = await post(chitose, { text: 'foo' });
+					const reply = await post(chitose, { text: 'bar', replyId: kanakoNote.id });
+
+					await new Promise(r => setTimeout(r, 1000));
+
+					assert.strictEqual(received.includes(note.id), true);
+					assert.strictEqual(received.includes(reply.id), false);
+				} finally {
+					ws.close();
+				}
+			});
+
+			test('withReplies: true のとき他人への返信が流れる', async () => {
+				const fired = await waitFire(
+					ayano, 'localTimeline',	// ayano:Local
+					() => api('notes/create', { text: 'foo', replyId: kanakoNote.id }, chitose),
+					msg => msg.type === 'note' && msg.body.userId === chitose.id && msg.body.replyId === kanakoNote.id,
+					{ withReplies: true },
+				);
+
+				assert.strictEqual(fired, true);
+			});
+
+			test('withReplies: false でも自分への返信が流れる', async () => {
+				const ayanoNote = await post(ayano, { text: 'hi' });
+				const fired = await waitFire(
+					ayano, 'localTimeline',	// ayano:Local
+					() => api('notes/create', { text: 'foo', replyId: ayanoNote.id }, chitose),
+					msg => msg.type === 'note' && msg.body.userId === chitose.id && msg.body.replyId === ayanoNote.id,
+					{ withReplies: false },
+				);
+
+				assert.strictEqual(fired, true);
+			});
 		});
 
 		describe('Hybrid Timeline', () => {
@@ -722,6 +793,68 @@ describe('Streaming', () => {
 				);
 
 				assert.strictEqual(fired, false);
+			});
+		});
+
+		describe('Antenna', () => {
+			/**
+			 * Oracle: an accepted vote belongs to its voter. HTTP and antenna deliveries
+			 * of the same quoted poll must mark B for the voter and neither choice for
+			 * a different user who receives the same quote.
+			 */
+			test('引用されたアンケートの投票済み状態を閲覧者ごとに返す', async () => {
+				const poll = await post(kyoko, { poll: { choices: ['A', 'B'] } });
+				const vote = await api('notes/polls/vote', { noteId: poll.id, choice: 1 }, ayano);
+				assert.strictEqual(vote.status, 204);
+
+				const sockets: WebSocket[] = [];
+				const deliveries: Promise<misskey.entities.Note>[] = [];
+				const timeouts: ReturnType<typeof setTimeout>[] = [];
+				try {
+					for (const viewer of [ayano, erin]) {
+						const antenna = await api('antennas/create', {
+							name: 'poll viewer state',
+							src: 'all',
+							keywords: [['pollcheck']],
+							excludeKeywords: [],
+							users: [],
+							caseSensitive: false,
+							withReplies: false,
+							withFile: false,
+						}, viewer);
+						assert.strictEqual(antenna.status, 200);
+						const delivered = Promise.withResolvers<misskey.entities.Note>();
+						const socket = await connectStream(viewer, 'antenna', message => {
+							if (message.type === 'note' && message.body.renoteId === poll.id) {
+								delivered.resolve(message.body);
+							}
+						}, { antennaId: antenna.body.id });
+						sockets.push(socket);
+						deliveries.push(delivered.promise);
+					}
+
+					const quote = await post(chitose, { text: 'pollcheck', renoteId: poll.id });
+					const httpVoter = await api('notes/show', { noteId: quote.id }, ayano);
+					const httpOther = await api('notes/show', { noteId: quote.id }, erin);
+					assert.strictEqual(httpVoter.status, 200);
+					assert.strictEqual(httpOther.status, 200);
+					assert.deepStrictEqual(httpVoter.body.renote?.poll?.choices.map(choice => choice.isVoted), [false, true]);
+					assert.deepStrictEqual(httpOther.body.renote?.poll?.choices.map(choice => choice.isVoted), [false, false]);
+
+					const [streamVoter, streamOther] = await Promise.all(deliveries.map(delivery => Promise.race([
+						delivery,
+						new Promise<never>((resolve, reject) => {
+							timeouts.push(setTimeout(() => reject(new Error('Antenna quote was not delivered')), 5000));
+						}),
+					])));
+					assert.strictEqual(streamVoter.id, quote.id);
+					assert.strictEqual(streamOther.id, quote.id);
+					assert.deepStrictEqual(streamOther.renote?.poll?.choices.map(choice => choice.isVoted), [false, false]);
+					assert.deepStrictEqual(streamVoter.renote?.poll?.choices.map(choice => choice.isVoted), [false, true]);
+				} finally {
+					for (const timeout of timeouts) clearTimeout(timeout);
+					for (const socket of sockets) socket.close();
+				}
 			});
 		});
 

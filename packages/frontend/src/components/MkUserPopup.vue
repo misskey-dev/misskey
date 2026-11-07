@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
-import { userPage } from '@/filters/user.js';
+import { userPage } from '@@/js/user.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { getUserMenu } from '@/utility/get-user-menu.js';

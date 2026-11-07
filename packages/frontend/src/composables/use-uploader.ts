@@ -18,6 +18,7 @@ import { isWebpSupported } from '@/utility/isWebpSupported.js';
 import { uploadFile, UploadAbortedError } from '@/utility/drive.js';
 import type { Content } from '@/components/MkLightbox.item.vue';
 import * as os from '@/os.js';
+import { isPreviewable, getType } from '@/utility/lightbox.js';
 import { ensureSignin } from '@/i.js';
 
 export type UploaderFeatures = {
@@ -234,29 +235,35 @@ export function useUploader(options: {
 						closed: () => dispose(),
 					});
 				},
-			}, {
-				text: i18n.ts.preview,
-				icon: 'ti ti-photo-search',
-				action: async () => {
-					const contents = items.value
-						.filter(item => item.file.type.startsWith('image/') || item.file.type.startsWith('video/'))
-						.map<Content>(item => ({
-							id: item.id,
-							type: item.file.type.startsWith('video/') ? 'video' : 'image',
-							url: item.objectUrl,
-							thumbnail: item.thumbnail,
-							filename: getUploadName(item),
-							caption: item.caption ?? null,
-						}));
+			});
 
-					const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
-						defaultIndex: contents.findIndex(x => x.id === item.id),
-						contents,
-					}, {
-						closed: () => dispose(),
-					});
-				},
-			}, {
+			if (isPreviewable(item.file.type)) {
+				menu.push({
+					text: i18n.ts.preview,
+					icon: 'ti ti-photo-search',
+					action: async () => {
+						const contents = items.value
+							.filter(item => isPreviewable(item.file.type))
+							.map<Content>(item => ({
+								id: item.id,
+								type: getType(item.file.type),
+								url: item.objectUrl,
+								thumbnail: item.thumbnail,
+								filename: getUploadName(item),
+								caption: item.caption ?? null,
+							}));
+
+						const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
+							defaultIndex: contents.findIndex(x => x.id === item.id),
+							contents,
+						}, {
+							closed: () => dispose(),
+						});
+					},
+				});
+			}
+
+			menu.push({
 				type: 'divider',
 			});
 		}

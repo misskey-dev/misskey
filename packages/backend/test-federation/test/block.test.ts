@@ -1,9 +1,16 @@
-import { describe, test, beforeAll } from 'vitest';
+import { describe, test, beforeAll, vi } from 'vitest';
 import { deepStrictEqual, rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { assertNotificationReceived, createAccount, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep } from './utils.js';
+import { assertNotificationReceived, createAccount, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, WAIT_FOR_FEDERATION } from './utils.js';
 
 describe('Block', () => {
+	async function waitForBlocked(blocked: LoginUser, blockerId: string): Promise<void> {
+		await vi.waitFor(async () => {
+			const blocker = await blocked.client.request('users/show', { userId: blockerId });
+			strictEqual(blocker.isBlocked, true);
+		}, WAIT_FOR_FEDERATION);
+	}
+
 	describe('Check follow', () => {
 		let alice: LoginUser, bob: LoginUser;
 		let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
@@ -22,7 +29,7 @@ describe('Block', () => {
 
 		test('Cannot follow if blocked', async () => {
 			await alice.client.request('blocking/create', { userId: bobInA.id });
-			await sleep();
+			await waitForBlocked(bob, aliceInB.id);
 			await rejects(
 				async () => await bob.client.request('following/create', { userId: aliceInB.id }),
 				(err: any) => {
@@ -104,7 +111,7 @@ describe('Block', () => {
 
 		test('Cannot reply if blocked', async () => {
 			await alice.client.request('blocking/create', { userId: bobInA.id });
-			await sleep();
+			await waitForBlocked(bob, aliceInB.id);
 
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote('a.test', note.id, bob);
@@ -147,7 +154,7 @@ describe('Block', () => {
 
 		test('Cannot reaction if blocked', async () => {
 			await alice.client.request('blocking/create', { userId: bobInA.id });
-			await sleep();
+			await waitForBlocked(bob, aliceInB.id);
 
 			const note = (await alice.client.request('notes/create', { text: 'a' })).createdNote;
 			const resolvedNote = await resolveRemoteNote('a.test', note.id, bob);
@@ -211,7 +218,7 @@ describe('Block', () => {
 		/** NOTE: You should mute the target to stop receiving notifications */
 		test('Can mention and notified even if blocked', async () => {
 			await alice.client.request('blocking/create', { userId: bobInA.id });
-			await sleep();
+			await waitForBlocked(bob, aliceInB.id);
 
 			const text = `@${alice.username}@a.test plz unblock me!`;
 			await assertNotificationReceived(

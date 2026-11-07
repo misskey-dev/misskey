@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed } from 'vue';
+import { computed, toValue } from 'vue';
+import type { MaybeRefOrGetter } from 'vue';
+import { normalizeCustomEmojiName } from '@@/js/emoji-name.js';
 import { prefer } from '@/preferences.js';
 
 // custom絵文字の情報からキーを作成する
@@ -12,7 +14,7 @@ export function makeEmojiMuteKey(props: { name: string; host?: string | null }) 
 }
 
 export function extractCustomEmojiName (name:string) {
-	return (name[0] === ':' ? name.substring(1, name.length - 1) : name).replace('@.', '').split('@')[0];
+	return normalizeCustomEmojiName(name).split('@')[0];
 }
 
 export function extractCustomEmojiHost (name:string) {
@@ -52,10 +54,14 @@ export function unmute(emoji:string) {
 	prefer.commit('mutingEmojis', mutedEmojis.filter((e) => e !== emojiMuteKey));
 }
 
-export function checkMuted(emoji: string) {
-	const isCustomEmoji = emoji.startsWith(':') && emoji.endsWith(':');
-	const emojiMuteKey = isCustomEmoji ?
-		makeEmojiMuteKey({ name: extractCustomEmojiName(emoji), host: extractCustomEmojiHost(emoji) }) :
-		emoji;
-	return computed(() => prefer.r.mutingEmojis.value.includes(emojiMuteKey));
+// 絵文字が変化しうる呼び出し元 (MFM のプレビュー等) のために ref / getter も受け付ける
+export function checkMuted(emoji: MaybeRefOrGetter<string>) {
+	return computed(() => {
+		const target = toValue(emoji);
+		const isCustomEmoji = target.startsWith(':') && target.endsWith(':');
+		const emojiMuteKey = isCustomEmoji ?
+			makeEmojiMuteKey({ name: extractCustomEmojiName(target), host: extractCustomEmojiHost(target) }) :
+			target;
+		return prefer.r.mutingEmojis.value.includes(emojiMuteKey);
+	});
 }

@@ -111,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 					<div v-if="appearNote.files && appearNote.files.length > 0">
-						<MkMediaList ref="galleryEl" :mediaList="appearNote.files"/>
+						<MkMediaList ref="galleryEl" :mediaList="appearNote.files" :user="appearNote.user"/>
 					</div>
 					<MkPoll
 						v-if="appearNote.poll"
@@ -244,8 +244,8 @@ import * as Misskey from 'misskey-js';
 import { useNote } from '@/composables/use-note.js';
 import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
-import { userPage } from '@/filters/user.js';
-import { notePage } from '@/filters/note.js';
+import { userPage } from '@@/js/user.js';
+import { notePage } from '@@/js/note.js';
 import { isEnabledUrlPreview } from '@/utility/url-preview.js';
 import { Paginator } from '@/utility/paginator.js';
 import { misskeyApi } from '@/utility/misskey-api.js';

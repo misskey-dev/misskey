@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkLoading v-if="fetching"/>
 	<div v-else-if="file" class="_gaps">
 		<div :class="$style.filePreviewRoot">
-			<MkMediaList :mediaList="[file]"></MkMediaList>
+			<MkMediaList :mediaList="[file]" :user="file.user"></MkMediaList>
 		</div>
 		<div :class="$style.fileQuickActionsRoot">
 			<button class="_button" :class="$style.fileNameEditBtn" @click="rename()">

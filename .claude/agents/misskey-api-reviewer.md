@@ -1,6 +1,6 @@
 ---
 name: misskey-api-reviewer
-description: Misskey backend の REST API エンドポイント (packages/backend/src/server/api/endpoints/) 追加・変更を機械レビューする。endpoint-list 登録漏れ・misskey-js 再生成漏れ・meta/paramDef/UUID/SPDX を検査。backend API を変更した PR レビューで呼ぶ。
+description: Misskey backend の REST API エンドポイント (packages/backend/src/server/api/endpoints/) 追加・変更を機械レビューする。endpoint-list 登録漏れ・misskey-js 再生成漏れ・meta/paramDef/UUID を検査。backend API を変更した PR レビューで呼ぶ。
 tools: Read, Grep, Glob, Bash
 ---
 
@@ -30,26 +30,12 @@ BASE=$(git merge-base origin/develop HEAD)
 - `packages/backend/src/server/api/endpoint-list.ts`
 - `packages/backend/test/e2e/**` (とくに `endpoints.ts` と `<area>.ts`)
 - `packages/misskey-js/src/autogen/**`
-- `CHANGELOG.md`
 
 差分対象が空なら「レビュー対象の API エンドポイント変更なし」と短く報告して終了。
 
 ## チェックリスト
 
-### 1. SPDX ヘッダー (Critical)
-
-新規 `.ts` ファイル冒頭に以下があるか:
-
-```
-/*
- * SPDX-FileCopyrightText: syuilo and misskey-project
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-```
-
-欠落すると CI の `spdx` ジョブが落ちる。
-
-### 2. `meta` の必須・推奨フィールド (Major)
+### 1. `meta` の必須・推奨フィールド (Major)
 
 [endpoints.ts の型定義](../../packages/backend/src/server/api/endpoints.ts) を真とする。
 
@@ -63,7 +49,7 @@ BASE=$(git merge-base origin/develop HEAD)
 - `res`: JSON Schema または `ref: '<EntityName>'`。各プロパティに `optional` / `nullable` が **明示** されているか。
 - `requireFile` / `secure` / `allowGet` / `cacheSec` / `description`: 該当するエンドポイントで使い分けているか。
 
-### 3. `meta.errors` の UUID 検証 (Critical)
+### 2. `meta.errors` の UUID 検証 (Critical)
 
 各 `errors[*].id` が:
 
@@ -78,14 +64,14 @@ grep -rn "id: '<生成された UUID>'" packages/backend/src/server/api/endpoint
 
 新規エンドポイントの全 `id` を抽出して衝突を確認する。
 
-### 4. `paramDef` (Major)
+### 3. `paramDef` (Major)
 
 - JSON Schema 形式 (`type: 'object'`, `properties`, `required`)
 - ID 文字列は `format: 'misskey:id'`
 - `required` 配列で必須プロパティを明示
 - `as const` または `as const satisfies Schema` で型推論を効かせる (既存実装は前者多数。`as const` 自体が無く `Schema` 型注釈もない場合のみ指摘)
 
-### 5. エンドポイント実装本体 (Major)
+### 4. エンドポイント実装本体 (Major)
 
 - `Endpoint<typeof meta, typeof paramDef>` を継承しているか。
 - `@Injectable()` デコレータ + `export default class` 形式か (`// eslint-disable-line import/no-default-export` が必要)。
@@ -94,7 +80,7 @@ grep -rn "id: '<生成された UUID>'" packages/backend/src/server/api/endpoint
 - 防御的アサーション・「起きるはずがない」内部不整合・テスト用 ENV ガード等の **想定外フェイルファスト** は `throw new Error('...')` で構わない。既存実装でも `admin/reset-password.ts` などが採用しているパターン (例: `cannot reset password of root`)。`meta.errors` に対応がない `throw new Error` を一律で指摘しない。
 - 同期 `throw` は許容。非同期処理での例外伝搬を確認する。
 
-### 6. ★ `endpoint-list.ts` への登録 (Critical)
+### 5. ★ `endpoint-list.ts` への登録 (Critical)
 
 最も忘れやすい。**忘れると 404**。[endpoint-list.ts](../../packages/backend/src/server/api/endpoint-list.ts) に 1 行追加されているか:
 
@@ -110,7 +96,7 @@ grep -F "'<category>/<name>'" packages/backend/src/server/api/endpoint-list.ts
 
 **並び順の補足**: ファイル全体は厳密なアルファベット順では並んでおらず、同カテゴリ内 (`admin/queue/*` など) でも追加された経緯どおりの順になっている箇所が多い。**順序逸脱は指摘根拠にしない** (誤検知の元)。「行が存在するか」のみを Critical 観点として扱う。
 
-### 7. `misskey-js` 再生成 (Critical)
+### 6. `misskey-js` 再生成 (Critical)
 
 `meta` / `paramDef` / `res` を変更したら、PR / ブランチに `packages/misskey-js/src/autogen/` 配下の差分が含まれているか確認する:
 
@@ -121,21 +107,11 @@ git diff --name-only "$BASE"...HEAD -- packages/misskey-js/src/autogen/
 
 差分ゼロなら `pnpm build-misskey-js-with-types` の実行漏れ。CI の `check-misskey-js-autogen` ワークフローで必ず落ちるため Critical 扱い。
 
-### 8. e2e テスト (Major)
+### 7. e2e テスト (Major)
 
 [test/e2e/endpoints.ts](../../packages/backend/test/e2e/endpoints.ts) または `test/e2e/<area>.ts` (`note.ts`, `users.ts` 等) 配下に、対応する `api('<category>/<name>', ...)` 呼び出しを含む `test(...)` ケースが追加されているか確認する。複雑な分岐 (権限チェック・エラーケース) の網羅も確認する。
 
 **describe ラベルの形式は問わない**: 既存テストは `describe('Note', () => { test('投稿できる', ...) })` のように人間可読ラベルで構造化されており、`<category>/<name>` 形式の describe は使われていない。describe 名の規約違反としては指摘しない。
-
-### 9. CHANGELOG エントリ (Minor)
-
-ユーザー影響がある (新エンドポイント / 既存挙動変更) 場合、`CHANGELOG.md` の `## Unreleased` → `### Server` に 1 行追加されているか確認する。
-
-```
-- Feat: /api/<category>/<name> を追加
-```
-
-純粋な内部リファクタなら不要。
 
 ## 出力形式
 
@@ -166,4 +142,4 @@ git diff --name-only "$BASE"...HEAD -- packages/misskey-js/src/autogen/
 - [endpoint-base.ts (Endpoint 基底クラス)](../../packages/backend/src/server/api/endpoint-base.ts)
 - [error.ts (ApiError)](../../packages/backend/src/server/api/error.ts)
 - [test/e2e/endpoints.ts](../../packages/backend/test/e2e/endpoints.ts)
-- [AGENTS.md](../../AGENTS.md) — SPDX / マイグレーション履歴 / CHANGELOG 書式などの最低限ルール (Codex / Copilot と共通)
+- [AGENTS.md](../../AGENTS.md) — 共通の安全規約と検証方針

@@ -6,9 +6,9 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
 import { NoteStreamingHidingService } from '../NoteStreamingHidingService.js';
-import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
+import { DI } from '@/di-symbols.js';
+import type { RolesRepository } from '@/models/_.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type ChannelRequest } from '../channel.js';
@@ -25,8 +25,10 @@ export class RoleTimelineChannel extends Channel {
 		@Inject(REQUEST)
 		request: ChannelRequest,
 
+		@Inject(DI.rolesRepository)
+		private rolesRepository: RolesRepository,
+
 		private noteEntityService: NoteEntityService,
-		private roleservice: RoleService,
 		private noteStreamingHidingService: NoteStreamingHidingService,
 	) {
 		super(request);
@@ -35,20 +37,29 @@ export class RoleTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: JsonObject) {
-		if (typeof params.roleId !== 'string') return;
+		if (typeof params.roleId !== 'string') return false;
 		this.roleId = params.roleId;
 
+		if (!await this.isAvailable()) return false;
+
 		this.subscriber.on(`roleTimelineStream:${this.roleId}`, this.onEvent);
+		return true;
+	}
+
+	@bindThis
+	private async isAvailable() {
+		return await this.rolesRepository.exists({
+			where: { id: this.roleId, isPublic: true, isExplorable: true },
+		});
 	}
 
 	@bindThis
 	private async onEvent(data: GlobalEvents['roleTimeline']['payload']) {
+		if (!await this.isAvailable()) return;
+
 		if (data.type === 'note') {
 			let note = data.body;
 
-			if (!(await this.roleservice.isExplorable({ id: this.roleId }))) {
-				return;
-			}
 			if (note.visibility !== 'public') return;
 			if (note.user.requireSigninToViewContents && this.user == null) return;
 			if (note.renote && note.renote.user.requireSigninToViewContents && this.user == null) return;
@@ -60,16 +71,7 @@ export class RoleTimelineChannel extends Channel {
 			if (!filtered) return;
 			note = filtered;
 
-			if (this.user) {
-				if (isRenotePacked(note) && !isQuotePacked(note)) {
-					if (note.renote && Object.keys(note.renote.reactions).length > 0) {
-						const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
-						note.renote.myReaction = myRenoteReaction;
-					}
-				}
-			}
-
-			this.send('note', note);
+			this.send('note', await this.noteEntityService.withMyRenoteReaction(note, this.user?.id ?? null));
 		} else {
 			this.send(data.type, data.body);
 		}

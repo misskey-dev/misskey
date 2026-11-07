@@ -35,19 +35,19 @@ jobs:
 
     steps:
     - name: Checkout base
-      uses: actions/checkout@v7.0.0
+      uses: actions/checkout@v7.0.1
       with:
         ref: ${{ github.base_ref }}
         path: base
         submodules: true
     - name: Checkout head
-      uses: actions/checkout@v7.0.0
+      uses: actions/checkout@v7.0.1
       with:
         ref: refs/pull/${{ github.event.number }}/merge
         path: head
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.9
+      uses: pnpm/action-setup@v6.0.10
       with:
         package_json_file: head/package.json
     - name: Use Node.js
@@ -66,9 +66,7 @@ jobs:
       run: git diff --exit-code pnpm-lock.yaml
     - name: Configure base
       working-directory: base
-      run: |
-        cp .github/misskey/test.yml .config/default.yml
-        pnpm compile-config
+      run: cp .github/misskey/test.yml .config/default.yml
     - name: Build base
       working-directory: base
       run: pnpm build
@@ -80,9 +78,7 @@ jobs:
       run: git diff --exit-code pnpm-lock.yaml
     - name: Configure head
       working-directory: head
-      run: |
-        cp .github/misskey/test.yml .config/default.yml
-        pnpm compile-config
+      run: cp .github/misskey/test.yml .config/default.yml
     - name: Build head
       working-directory: head
       run: pnpm build
