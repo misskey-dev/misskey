@@ -406,7 +406,10 @@ describe('Streaming', () => {
 			test('withReplies: false のとき他人への返信が流れない', async () => {
 				const fired = await waitFire(
 					ayano, 'localTimeline',	// ayano:Local
-					() => api('notes/create', { text: 'foo', replyId: kanakoNote.id }, chitose),
+					() => api('notes/create', { text: 'foo', replyId: kanakoNote.id }, chitose).then(res => {
+						assert.strictEqual(res.status, 200);
+						return res;
+					}),
 					msg => msg.type === 'note' && msg.body.userId === chitose.id && msg.body.replyId === kanakoNote.id,
 					{ withReplies: false },
 				);
@@ -418,7 +421,10 @@ describe('Streaming', () => {
 				// erin は ayano を withReplies: true でフォローしている
 				const fired = await waitFire(
 					erin, 'localTimeline',	// erin:Local
-					() => api('notes/create', { text: 'foo', replyId: kanakoNote.id }, ayano),
+					() => api('notes/create', { text: 'foo', replyId: kanakoNote.id }, ayano).then(res => {
+						assert.strictEqual(res.status, 200);
+						return res;
+					}),
 					msg => msg.type === 'note' && msg.body.userId === ayano.id && msg.body.replyId === kanakoNote.id,
 					{ withReplies: false },
 				);
