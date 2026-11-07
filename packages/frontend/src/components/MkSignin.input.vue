@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.wrapper" data-cy-signin-page-input>
+<div :class="$style.wrapper" data-testid="signin-page-input">
 	<div :class="$style.root">
 		<div :class="$style.avatar">
 			<i class="ti ti-user"></i>
@@ -32,11 +32,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<!-- username入力 -->
 		<form class="_gaps_s" @submit.prevent="emit('usernameSubmitted', username)">
-			<MkInput v-model="username" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autocomplete="username webauthn" autofocus required data-cy-signin-username>
+			<MkInput v-model="username" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autocomplete="username webauthn" autofocus required data-testid="signin-username">
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>
-			<MkButton type="submit" large primary rounded style="margin: 0 auto;" data-cy-signin-page-input-continue>{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+			<MkButton type="submit" large primary rounded style="margin: 0 auto;" data-testid="signin-page-input-continue">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 		</form>
 
 		<!-- パスワードレスログイン -->

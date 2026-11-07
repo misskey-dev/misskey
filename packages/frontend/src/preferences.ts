@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { BroadcastChannel } from 'broadcast-channel';
+import { createVisibilityAwareInterval } from '@@/js/interval.js';
 import type { StorageProvider } from '@/preferences/manager.js';
 import { cloudBackup } from '@/preferences/utility.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { isSameScope, PreferencesManager } from '@/preferences/manager.js';
 import { store } from '@/store.js';
 import { $i } from '@/i.js';
+import { TypedBroadcastChannel as BroadcastChannel } from '@/utility/typed-broadcast-channel.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { TAB_ID } from '@/tab-id.js';
 
@@ -124,7 +125,8 @@ prefer.on('committed', () => {
 	});
 });
 
-preferencesChannel.addEventListener('message', (msg) => {
+preferencesChannel.addEventListener('message', (ev) => {
+	const msg = ev.data;
 	if (msg.type === 'preferencesUpdate') {
 		if (msg.tabId === TAB_ID) return;
 		if (latestPreferencesUpdate != null) {
@@ -143,10 +145,10 @@ preferencesChannel.addEventListener('message', (msg) => {
 //#region 定期クラウドバックアップ
 let latestBackupAt = 0;
 
-window.setInterval(() => {
+// documentが非表示の間は実行されない (同期されていない古い値がバックアップされるのを防ぐ意味もある)
+createVisibilityAwareInterval(() => {
 	if ($i == null) return;
 	if (!store.s.enablePreferencesAutoCloudBackup) return;
-	if (window.document.visibilityState !== 'visible') return; // 同期されていない古い値がバックアップされるのを防ぐ
 	if (prefer.profile.modifiedAt <= latestBackupAt) return;
 
 	cloudBackup().then(() => {

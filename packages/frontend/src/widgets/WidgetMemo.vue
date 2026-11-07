@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-memo class="mkw-memo">
+<MkContainer :showHeader="widgetProps.showHeader" data-testid="mkw-memo" class="mkw-memo">
 	<template #icon><i class="ti ti-note"></i></template>
 	<template #header>{{ i18n.ts._widgets.memo }}</template>
 

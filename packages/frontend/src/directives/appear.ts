@@ -7,9 +7,7 @@ import { throttle } from 'throttle-debounce';
 import type { Directive } from 'vue';
 import type { Awaitable } from '@/types/misc.js';
 
-interface HTMLElementWithObserver extends HTMLElement {
-	_observer_?: IntersectionObserver;
-}
+const observers = new WeakMap<HTMLElement, IntersectionObserver>();
 
 export const appearDirective = {
 	mounted(src, binding) {
@@ -23,13 +21,16 @@ export const appearDirective = {
 		});
 
 		const observer = new IntersectionObserver(check);
-
 		observer.observe(src);
 
-		src._observer_ = observer;
+		observers.set(src, observer);
 	},
 
-	unmounted(src) {
-		if (src._observer_) src._observer_.disconnect();
+	beforeUnmount(src) {
+		const observer = observers.get(src);
+		if (observer) {
+			observer.disconnect();
+			observers.delete(src);
+		}
 	},
-} as Directive<HTMLElementWithObserver, (() => Awaitable<void>) | null | undefined>;
+} as Directive<HTMLElement, (() => Awaitable<void>) | null | undefined>;

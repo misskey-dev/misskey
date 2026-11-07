@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</MkUserCardMini>
 	</MkA>
-	<button v-tooltip.noDelay="i18n.ts.note" class="_button" :class="$style.post" @click="os.post({initialText: `@${item.user.username}${item.user.host ? `@${item.user.host}` : ''} `})">
+	<button v-tooltip.noDelay="i18n.ts.note" class="_button" :class="$style.post" @click="os.post({initialText: `@${item.user.username}${item.user.host ? `@${item.user.host}` : ''} `, instant: true})">
 		<i class="ti-fw ti ti-confetti" :class="$style.postIcon"></i>
 	</button>
 </div>
@@ -26,8 +26,8 @@ import * as Misskey from 'misskey-js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { useLowresTime } from '@/composables/use-lowres-time.js';
-import { userPage, acct } from '@/filters/user.js';
+import { useLowresTime } from '@@/js/use-lowres-time.js';
+import { userPage, acct } from '@@/js/user.js';
 
 const props = defineProps<{
 	item: Misskey.entities.UsersGetFollowingUsersByBirthdayResponse[number];

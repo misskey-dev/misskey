@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef, watch } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef, watch } from 'vue';
 import { Chart } from 'chart.js';
 import { store } from '@/store.js';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
@@ -125,5 +125,9 @@ onMounted(() => {
 	});
 
 	setData();
+});
+
+onUnmounted(() => {
+	chartInstance?.destroy();
 });
 </script>

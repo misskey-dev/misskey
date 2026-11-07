@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
 import type { ScatterDataPoint } from 'chart.js';
 import tinycolor from 'tinycolor2';
@@ -138,5 +138,9 @@ onMounted(async () => {
 		},
 		plugins: [chartVLine(vLineColor)],
 	});
+});
+
+onUnmounted(() => {
+	chartInstance?.destroy();
 });
 </script>

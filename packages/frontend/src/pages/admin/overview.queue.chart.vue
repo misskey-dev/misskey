@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
 import { store } from '@/store.js';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
@@ -132,6 +132,10 @@ onMounted(() => {
 		},
 		plugins: [chartVLine(vLineColor)],
 	});
+});
+
+onUnmounted(() => {
+	chartInstance?.destroy();
 });
 
 defineExpose({

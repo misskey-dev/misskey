@@ -225,7 +225,7 @@ import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { acct } from '@/filters/user.js';
+import { acct } from '@@/js/user.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
@@ -533,7 +533,7 @@ watch(user, () => {
 	}).then(res => {
 		ap.value = res;
 	});
-});
+}, { immediate: true });
 
 const headerActions = computed(() => []);
 

@@ -1,0 +1,679 @@
+{
+	"label": "base",
+	"timestamp": "2026-07-18T00:00:00.000Z",
+	"url": "http://127.0.0.1:61812",
+	"scenario": "fresh browser signup, first timeline note, after the note becomes visible",
+	"sampleCount": 3,
+	"aggregation": "median",
+	"summary": {
+		"label": "base",
+		"timestamp": "2026-07-18T00:00:00.000Z",
+		"url": "http://127.0.0.1:61812",
+		"scenario": "fresh browser signup, first timeline note, after the note becomes visible",
+		"diagnostics": {
+			"pageErrorCount": 0,
+			"console": {
+				"log": 5,
+				"warning": 3,
+				"error": 0,
+				"info": 2
+			}
+		},
+		"durationMs": 20400,
+		"network": {
+			"requestCount": 20,
+			"webSocketConnectionCount": 1,
+			"webSocketSentBytes": 2040,
+			"webSocketReceivedBytes": 9180,
+			"finishedRequestCount": 18,
+			"failedRequestCount": 0,
+			"cachedRequestCount": 0,
+			"serviceWorkerRequestCount": 0,
+			"totalEncodedBytes": 1040400,
+			"totalDecodedBodyBytes": 3457800,
+			"sameOriginEncodedBytes": 1020000,
+			"thirdPartyEncodedBytes": 20400,
+			"byResourceType": {
+				"Script": {
+					"requests": 10,
+					"encodedBytes": 918000,
+					"decodedBodyBytes": 3060000
+				},
+				"Stylesheet": {
+					"requests": 2,
+					"encodedBytes": 81600,
+					"decodedBodyBytes": 306000
+				},
+				"Fetch": {
+					"requests": 6,
+					"encodedBytes": 40800,
+					"decodedBodyBytes": 91800
+				}
+			},
+			"largestRequests": [
+				{
+					"url": "http://127.0.0.1:61812/vite/a.js",
+					"method": "GET",
+					"resourceType": "Script",
+					"status": 200,
+					"encodedBytes": 300000,
+					"decodedBodyBytes": 900000
+				}
+			],
+			"failedRequests": []
+		},
+		"performance": {
+			"cdpMetrics": {
+				"Nodes": 5000,
+				"JSEventListeners": 400,
+				"LayoutCount": 30
+			},
+			"runtimeHeap": {
+				"usedSize": 30600000,
+				"totalSize": 51000000
+			},
+			"tabMemory": {
+				"totalBytes": 91800000
+			},
+			"webVitals": {
+				"firstPaintMs": 400,
+				"firstContentfulPaintMs": 450,
+				"domContentLoadedEventEndMs": 800,
+				"loadEventEndMs": 1200,
+				"longTaskCount": 3,
+				"longTaskDurationMs": 300,
+				"maxLongTaskDurationMs": 150,
+				"resourceEntryCount": 18,
+				"domElements": 2500
+			}
+		},
+		"heapSnapshot": {
+			"categories": {
+				"total": 1020000,
+				"code": 2040000,
+				"strings": 3060000,
+				"jsArrays": 4080000,
+				"typedArrays": 5100000,
+				"systemObjects": 6120000,
+				"otherJsObjects": 7140000,
+				"otherNonJsObjects": 8160000
+			},
+			"nodeCounts": {
+				"total": 100,
+				"code": 200,
+				"strings": 300,
+				"jsArrays": 400,
+				"typedArrays": 500,
+				"systemObjects": 600,
+				"otherJsObjects": 700,
+				"otherNonJsObjects": 800
+			},
+			"breakdowns": {
+				"code": {
+					"code: alpha": 1224000,
+					"Other": 816000
+				},
+				"strings": {
+					"strings: alpha": 1836000,
+					"Other": 1224000
+				},
+				"jsArrays": {
+					"jsArrays: alpha": 2448000,
+					"Other": 1632000
+				},
+				"typedArrays": {
+					"typedArrays: alpha": 3060000,
+					"Other": 2040000
+				},
+				"systemObjects": {
+					"systemObjects: alpha": 3672000,
+					"Other": 2448000
+				},
+				"otherJsObjects": {
+					"otherJsObjects: alpha": 4284000,
+					"Other": 2856000
+				},
+				"otherNonJsObjects": {
+					"otherNonJsObjects: alpha": 4896000,
+					"Other": 3264000
+				}
+			}
+		}
+	},
+	"samples": [
+		{
+			"label": "base",
+			"round": 1,
+			"timestamp": "2026-07-18T00:00:00.000Z",
+			"url": "http://127.0.0.1:61812",
+			"scenario": "fresh browser signup, first timeline note, after the note becomes visible",
+			"diagnostics": {
+				"pageErrorCount": 0,
+				"console": {
+					"log": 5,
+					"warning": 2,
+					"error": 0,
+					"info": 2
+				}
+			},
+			"durationMs": 20200,
+			"network": {
+				"requestCount": 19,
+				"webSocketConnectionCount": 1,
+				"webSocketSentBytes": 2020,
+				"webSocketReceivedBytes": 9090,
+				"finishedRequestCount": 18,
+				"failedRequestCount": 0,
+				"cachedRequestCount": 0,
+				"serviceWorkerRequestCount": 0,
+				"totalEncodedBytes": 1030200,
+				"totalDecodedBodyBytes": 3423900,
+				"sameOriginEncodedBytes": 1010000,
+				"thirdPartyEncodedBytes": 20200,
+				"byResourceType": {
+					"Script": {
+						"requests": 10,
+						"encodedBytes": 909000,
+						"decodedBodyBytes": 3030000
+					},
+					"Stylesheet": {
+						"requests": 2,
+						"encodedBytes": 80800,
+						"decodedBodyBytes": 303000
+					},
+					"Fetch": {
+						"requests": 6,
+						"encodedBytes": 40400,
+						"decodedBodyBytes": 90900
+					}
+				},
+				"largestRequests": [
+					{
+						"url": "http://127.0.0.1:61812/vite/a.js",
+						"method": "GET",
+						"resourceType": "Script",
+						"status": 200,
+						"encodedBytes": 300000,
+						"decodedBodyBytes": 900000
+					}
+				],
+				"failedRequests": []
+			},
+			"networkRequests": [
+				{
+					"requestId": "1-http://127.0.0.1:61812/vite/a.js",
+					"url": "http://127.0.0.1:61812/vite/a.js",
+					"method": "GET",
+					"resourceType": "Script",
+					"startedAt": 1,
+					"hasRequestBody": false,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200
+				},
+				{
+					"requestId": "1-http://127.0.0.1:61812/vite/b.js",
+					"url": "http://127.0.0.1:61812/vite/b.js",
+					"method": "GET",
+					"resourceType": "Script",
+					"startedAt": 1,
+					"hasRequestBody": false,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200
+				}
+			],
+			"performance": {
+				"cdpMetrics": {
+					"Nodes": 5000,
+					"JSEventListeners": 400,
+					"LayoutCount": 30
+				},
+				"runtimeHeap": {
+					"usedSize": 30300000,
+					"totalSize": 50500000
+				},
+				"tabMemory": {
+					"totalBytes": 90900000
+				},
+				"webVitals": {
+					"firstPaintMs": 400,
+					"firstContentfulPaintMs": 450,
+					"domContentLoadedEventEndMs": 800,
+					"loadEventEndMs": 1200,
+					"longTaskCount": 3,
+					"longTaskDurationMs": 300,
+					"maxLongTaskDurationMs": 150,
+					"resourceEntryCount": 18,
+					"domElements": 2500
+				}
+			},
+			"heapSnapshot": {
+				"categories": {
+					"total": 1010000,
+					"code": 2020000,
+					"strings": 3030000,
+					"jsArrays": 4040000,
+					"typedArrays": 5050000,
+					"systemObjects": 6060000,
+					"otherJsObjects": 7070000,
+					"otherNonJsObjects": 8080000
+				},
+				"nodeCounts": {
+					"total": 100,
+					"code": 200,
+					"strings": 300,
+					"jsArrays": 400,
+					"typedArrays": 500,
+					"systemObjects": 600,
+					"otherJsObjects": 700,
+					"otherNonJsObjects": 800
+				},
+				"breakdowns": {
+					"code": {
+						"code: alpha": 1212000,
+						"Other": 808000
+					},
+					"strings": {
+						"strings: alpha": 1818000,
+						"Other": 1212000
+					},
+					"jsArrays": {
+						"jsArrays: alpha": 2424000,
+						"Other": 1616000
+					},
+					"typedArrays": {
+						"typedArrays: alpha": 3030000,
+						"Other": 2020000
+					},
+					"systemObjects": {
+						"systemObjects: alpha": 3636000,
+						"Other": 2424000
+					},
+					"otherJsObjects": {
+						"otherJsObjects: alpha": 4242000,
+						"Other": 2828000
+					},
+					"otherNonJsObjects": {
+						"otherNonJsObjects: alpha": 4848000,
+						"Other": 3232000
+					}
+				}
+			}
+		},
+		{
+			"label": "base",
+			"round": 2,
+			"timestamp": "2026-07-18T00:00:00.000Z",
+			"url": "http://127.0.0.1:61812",
+			"scenario": "fresh browser signup, first timeline note, after the note becomes visible",
+			"diagnostics": {
+				"pageErrorCount": 0,
+				"console": {
+					"log": 5,
+					"warning": 3,
+					"error": 0,
+					"info": 2
+				}
+			},
+			"durationMs": 20400,
+			"network": {
+				"requestCount": 20,
+				"webSocketConnectionCount": 1,
+				"webSocketSentBytes": 2040,
+				"webSocketReceivedBytes": 9180,
+				"finishedRequestCount": 18,
+				"failedRequestCount": 0,
+				"cachedRequestCount": 0,
+				"serviceWorkerRequestCount": 0,
+				"totalEncodedBytes": 1040400,
+				"totalDecodedBodyBytes": 3457800,
+				"sameOriginEncodedBytes": 1020000,
+				"thirdPartyEncodedBytes": 20400,
+				"byResourceType": {
+					"Script": {
+						"requests": 10,
+						"encodedBytes": 918000,
+						"decodedBodyBytes": 3060000
+					},
+					"Stylesheet": {
+						"requests": 2,
+						"encodedBytes": 81600,
+						"decodedBodyBytes": 306000
+					},
+					"Fetch": {
+						"requests": 6,
+						"encodedBytes": 40800,
+						"decodedBodyBytes": 91800
+					}
+				},
+				"largestRequests": [
+					{
+						"url": "http://127.0.0.1:61812/vite/a.js",
+						"method": "GET",
+						"resourceType": "Script",
+						"status": 200,
+						"encodedBytes": 300000,
+						"decodedBodyBytes": 900000
+					}
+				],
+				"failedRequests": []
+			},
+			"networkRequests": [
+				{
+					"requestId": "2-http://127.0.0.1:61812/vite/a.js",
+					"url": "http://127.0.0.1:61812/vite/a.js",
+					"method": "GET",
+					"resourceType": "Script",
+					"startedAt": 1,
+					"hasRequestBody": false,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200
+				},
+				{
+					"requestId": "2-http://127.0.0.1:61812/vite/b.js",
+					"url": "http://127.0.0.1:61812/vite/b.js",
+					"method": "GET",
+					"resourceType": "Script",
+					"startedAt": 1,
+					"hasRequestBody": false,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200
+				}
+			],
+			"performance": {
+				"cdpMetrics": {
+					"Nodes": 5000,
+					"JSEventListeners": 400,
+					"LayoutCount": 30
+				},
+				"runtimeHeap": {
+					"usedSize": 30600000,
+					"totalSize": 51000000
+				},
+				"tabMemory": {
+					"totalBytes": 91800000
+				},
+				"webVitals": {
+					"firstPaintMs": 400,
+					"firstContentfulPaintMs": 450,
+					"domContentLoadedEventEndMs": 800,
+					"loadEventEndMs": 1200,
+					"longTaskCount": 3,
+					"longTaskDurationMs": 300,
+					"maxLongTaskDurationMs": 150,
+					"resourceEntryCount": 18,
+					"domElements": 2500
+				}
+			},
+			"heapSnapshot": {
+				"categories": {
+					"total": 1020000,
+					"code": 2040000,
+					"strings": 3060000,
+					"jsArrays": 4080000,
+					"typedArrays": 5100000,
+					"systemObjects": 6120000,
+					"otherJsObjects": 7140000,
+					"otherNonJsObjects": 8160000
+				},
+				"nodeCounts": {
+					"total": 100,
+					"code": 200,
+					"strings": 300,
+					"jsArrays": 400,
+					"typedArrays": 500,
+					"systemObjects": 600,
+					"otherJsObjects": 700,
+					"otherNonJsObjects": 800
+				},
+				"breakdowns": {
+					"code": {
+						"code: alpha": 1224000,
+						"Other": 816000
+					},
+					"strings": {
+						"strings: alpha": 1836000,
+						"Other": 1224000
+					},
+					"jsArrays": {
+						"jsArrays: alpha": 2448000,
+						"Other": 1632000
+					},
+					"typedArrays": {
+						"typedArrays: alpha": 3060000,
+						"Other": 2040000
+					},
+					"systemObjects": {
+						"systemObjects: alpha": 3672000,
+						"Other": 2448000
+					},
+					"otherJsObjects": {
+						"otherJsObjects: alpha": 4284000,
+						"Other": 2856000
+					},
+					"otherNonJsObjects": {
+						"otherNonJsObjects: alpha": 4896000,
+						"Other": 3264000
+					}
+				}
+			}
+		},
+		{
+			"label": "base",
+			"round": 3,
+			"timestamp": "2026-07-18T00:00:00.000Z",
+			"url": "http://127.0.0.1:61812",
+			"scenario": "fresh browser signup, first timeline note, after the note becomes visible",
+			"diagnostics": {
+				"pageErrorCount": 0,
+				"console": {
+					"log": 5,
+					"warning": 4,
+					"error": 0,
+					"info": 2
+				}
+			},
+			"durationMs": 20600,
+			"network": {
+				"requestCount": 21,
+				"webSocketConnectionCount": 1,
+				"webSocketSentBytes": 2060,
+				"webSocketReceivedBytes": 9270,
+				"finishedRequestCount": 18,
+				"failedRequestCount": 0,
+				"cachedRequestCount": 0,
+				"serviceWorkerRequestCount": 0,
+				"totalEncodedBytes": 1050600,
+				"totalDecodedBodyBytes": 3491700,
+				"sameOriginEncodedBytes": 1030000,
+				"thirdPartyEncodedBytes": 20600,
+				"byResourceType": {
+					"Script": {
+						"requests": 10,
+						"encodedBytes": 927000,
+						"decodedBodyBytes": 3090000
+					},
+					"Stylesheet": {
+						"requests": 2,
+						"encodedBytes": 82400,
+						"decodedBodyBytes": 309000
+					},
+					"Fetch": {
+						"requests": 6,
+						"encodedBytes": 41200,
+						"decodedBodyBytes": 92700
+					}
+				},
+				"largestRequests": [
+					{
+						"url": "http://127.0.0.1:61812/vite/a.js",
+						"method": "GET",
+						"resourceType": "Script",
+						"status": 200,
+						"encodedBytes": 300000,
+						"decodedBodyBytes": 900000
+					}
+				],
+				"failedRequests": []
+			},
+			"networkRequests": [
+				{
+					"requestId": "3-http://127.0.0.1:61812/vite/a.js",
+					"url": "http://127.0.0.1:61812/vite/a.js",
+					"method": "GET",
+					"resourceType": "Script",
+					"startedAt": 1,
+					"hasRequestBody": false,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200
+				},
+				{
+					"requestId": "3-http://127.0.0.1:61812/vite/b.js",
+					"url": "http://127.0.0.1:61812/vite/b.js",
+					"method": "GET",
+					"resourceType": "Script",
+					"startedAt": 1,
+					"hasRequestBody": false,
+					"encodedDataLength": 50000,
+					"decodedBodyLength": 120000,
+					"fromDiskCache": false,
+					"fromServiceWorker": false,
+					"finished": true,
+					"failed": false,
+					"mimeType": "text/javascript",
+					"protocol": "h2",
+					"responseHeaders": {
+						"content-type": "text/javascript"
+					},
+					"status": 200
+				}
+			],
+			"performance": {
+				"cdpMetrics": {
+					"Nodes": 5000,
+					"JSEventListeners": 400,
+					"LayoutCount": 30
+				},
+				"runtimeHeap": {
+					"usedSize": 30900000,
+					"totalSize": 51500000
+				},
+				"tabMemory": {
+					"totalBytes": 92700000
+				},
+				"webVitals": {
+					"firstPaintMs": 400,
+					"firstContentfulPaintMs": 450,
+					"domContentLoadedEventEndMs": 800,
+					"loadEventEndMs": 1200,
+					"longTaskCount": 3,
+					"longTaskDurationMs": 300,
+					"maxLongTaskDurationMs": 150,
+					"resourceEntryCount": 18,
+					"domElements": 2500
+				}
+			},
+			"heapSnapshot": {
+				"categories": {
+					"total": 1030000,
+					"code": 2060000,
+					"strings": 3090000,
+					"jsArrays": 4120000,
+					"typedArrays": 5150000,
+					"systemObjects": 6180000,
+					"otherJsObjects": 7210000,
+					"otherNonJsObjects": 8240000
+				},
+				"nodeCounts": {
+					"total": 100,
+					"code": 200,
+					"strings": 300,
+					"jsArrays": 400,
+					"typedArrays": 500,
+					"systemObjects": 600,
+					"otherJsObjects": 700,
+					"otherNonJsObjects": 800
+				},
+				"breakdowns": {
+					"code": {
+						"code: alpha": 1236000,
+						"Other": 824000
+					},
+					"strings": {
+						"strings: alpha": 1854000,
+						"Other": 1236000
+					},
+					"jsArrays": {
+						"jsArrays: alpha": 2472000,
+						"Other": 1648000
+					},
+					"typedArrays": {
+						"typedArrays: alpha": 3090000,
+						"Other": 2060000
+					},
+					"systemObjects": {
+						"systemObjects: alpha": 3708000,
+						"Other": 2472000
+					},
+					"otherJsObjects": {
+						"otherJsObjects: alpha": 4326000,
+						"Other": 2884000
+					},
+					"otherNonJsObjects": {
+						"otherNonJsObjects: alpha": 4944000,
+						"Other": 3296000
+					}
+				}
+			}
+		}
+	]
+}

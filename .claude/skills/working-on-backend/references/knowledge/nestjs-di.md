@@ -6,7 +6,7 @@ Misskey の backend は NestJS 11 + Fastify 5 + TypeORM 1 (PostgreSQL) + Redis �
 
 - **DI コンテナ**: NestJS の `@Injectable()` サービス + Repository (TypeORM) パターン
 - **DI トークン**: [`@/di-symbols.js`](../../../../../packages/backend/src/di-symbols.ts) の `DI` から `@Inject(DI.xxx)` で注入
-- **ビルド**: `rolldown -c` で `built/` にバンドル。型チェックは `tsgo`
+- **ビルド**: `rolldown -c` で `built/` にバンドル。型チェックは `tsc`
 
 ## エンドポイント内での DI
 

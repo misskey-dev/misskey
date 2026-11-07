@@ -1,4 +1,3 @@
-/// <reference types="vitest/config" />
 import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
 import pluginGlsl from 'vite-plugin-glsl';
@@ -222,9 +221,6 @@ export function getConfig(): UserConfig {
 							name: 'vue',
 							test: /node_modules[\\/]vue/,
 						}, {
-							name: 'photoswipe',
-							test: /node_modules[\\/]photoswipe/,
-						}, {
 							// split i18n related module to distinct module
 							name: 'i18n',
 							includeDependenciesRecursively: false,
@@ -260,22 +256,6 @@ export function getConfig(): UserConfig {
 
 		worker: {
 			format: 'es',
-		},
-
-		test: {
-			environment: 'happy-dom',
-			setupFiles: ['./test/init.ts'],
-			deps: {
-				optimizer: {
-					web: {
-						include: [
-							// XXX: misskey-dev/browser-image-resizer has no "type": "module"
-							'browser-image-resizer',
-						],
-					},
-				},
-			},
-			includeSource: ['src/**/*.ts'],
 		},
 	};
 }

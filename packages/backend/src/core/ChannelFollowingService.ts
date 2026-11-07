@@ -13,6 +13,8 @@ import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
 import { bindThis } from '@/decorators.js';
 import type { MiLocalUser } from '@/models/User.js';
 import { RedisKVCache } from '@/misc/cache.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 
 @Injectable()
 export class ChannelFollowingService implements OnModuleInit {
@@ -96,11 +98,18 @@ export class ChannelFollowingService implements OnModuleInit {
 		requestUser: MiLocalUser,
 		targetChannel: MiChannel,
 	): Promise<void> {
-		await this.channelFollowingsRepository.insert({
-			id: this.idService.gen(),
-			followerId: requestUser.id,
-			followeeId: targetChannel.id,
-		});
+		try {
+			await this.channelFollowingsRepository.insert({
+				id: this.idService.gen(),
+				followerId: requestUser.id,
+				followeeId: targetChannel.id,
+			});
+		} catch (e) {
+			if (isDuplicateKeyValueError(e)) {
+				throw new IdentifiableError('6e335e39-0203-4418-a936-b3f2dc987845', 'already following');
+			}
+			throw e;
+		}
 
 		this.globalEventService.publishInternalEvent('followChannel', {
 			userId: requestUser.id,

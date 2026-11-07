@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, toRefs, useTemplateRef, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, toRefs, useTemplateRef, watch } from 'vue';
 import type { DataSource, GridSetting, GridState, Size } from '@/components/grid/grid.js';
 import type { CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
 import type { GridContext, GridEvent } from '@/components/grid/grid-event.js';
@@ -120,6 +120,10 @@ const { data } = toRefs(props);
  */
 const bus = new GridEventEmitter();
 /**
+ * {@link resizeObserver}が発行した、まだ実行されていない{@link setTimeout}のID。アンマウント時にまとめて破棄するために保持する。
+ */
+const resizeTimeoutIds = new Set<number>();
+/**
  * テーブルコンポーネントのリサイズイベントを監視するための{@link ResizeObserver}。
  * 表示切替を検知し、サイズの再計算要求を発行するために使用する（マウント時にコンテンツが表示されていない場合、初手のサイズの自動計算が正常に働かないため）
  *
@@ -128,7 +132,13 @@ const bus = new GridEventEmitter();
  *
  * @see {@link onResize}
  */
-const resizeObserver = new ResizeObserver((entries) => window.setTimeout(() => onResize(entries)));
+const resizeObserver = new ResizeObserver((entries) => {
+	const timeoutId = window.setTimeout(() => {
+		resizeTimeoutIds.delete(timeoutId);
+		onResize(entries);
+	});
+	resizeTimeoutIds.add(timeoutId);
+});
 
 const rootEl = useTemplateRef('rootEl');
 /**
@@ -1264,6 +1274,18 @@ onMounted(() => {
 	}
 
 	refreshData();
+});
+
+onUnmounted(() => {
+	resizeObserver.disconnect();
+	for (const timeoutId of resizeTimeoutIds) {
+		window.clearTimeout(timeoutId);
+	}
+	resizeTimeoutIds.clear();
+
+	// 選択操作の途中でアンマウントされた場合、windowに登録したままのリスナーが残ってしまうので解除しておく
+	unregisterMouseMove();
+	unregisterMouseUp();
 });
 </script>
 

@@ -174,10 +174,6 @@ pnpm --filter frontend storybook-dev    # localhost:6006
 pnpm --filter frontend test
 ```
 
-## CHANGELOG エントリ
-
-ユーザーから見える変更 (新規コンポーネントが新しい UI として露出する、既存 UI の挙動を変える) なら、`CHANGELOG.md` に追記する。判定方法と書式は [shipping-misskey-change スキル](../../../shipping-misskey-change/SKILL.md) で確認。
-
 ## 既存コンポーネントとの整合性
 
 - 似た用途の既存 `Mk*` を 1-2 個読んで、props 命名 (`primary` / `danger` / `small` 等の形容詞、`onClose` ではなく `emit('close')` 等) を揃える

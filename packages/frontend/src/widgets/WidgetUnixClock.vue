@@ -17,6 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, ref, watch } from 'vue';
+import { createVisibilityAwareInterval } from '@@/js/interval.js';
 import { useWidgetPropsManager } from './widget.js';
 import { i18n } from '@/i18n.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
@@ -59,7 +60,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-let intervalId: number | null = null;
+let disposeInterval: (() => void) | null = null;
 let rafRequestId: number | null = null;
 const ss = ref('');
 const ms = ref('');
@@ -83,9 +84,9 @@ const tick = () => {
 };
 
 const clearTimers = () => {
-	if (intervalId) {
-		window.clearInterval(intervalId);
-		intervalId = null;
+	if (disposeInterval) {
+		disposeInterval();
+		disposeInterval = null;
 	}
 	if (rafRequestId) {
 		window.cancelAnimationFrame(rafRequestId);
@@ -99,12 +100,13 @@ watch(() => widgetProps.showMs, (to) => {
 	clearTimers();
 
 	if (to) {
+		// rafはdocumentが非表示の間はブラウザによって自動的に停止される
 		rafRequestId = window.requestAnimationFrame(function loop() {
 			tick();
 			rafRequestId = window.requestAnimationFrame(loop);
 		});
 	} else {
-		intervalId = window.setInterval(tick, 1000);
+		disposeInterval = createVisibilityAwareInterval(tick, 1000);
 	}
 }, { immediate: true });
 

@@ -61,7 +61,6 @@ it('Composition API (standard)', () => {
 import { c as api, d as store, i as i18n, aD as notePage, bN as ImgWithBlurhash, bY as getStaticImageUrl, _ as _export_sfc } from './app-!~{001}~.js';
 import { M as MkContainer } from './MkContainer-!~{03M}~.js';
 import { b as defineComponent, a as ref, e as onMounted, z as resolveComponent, g as openBlock, h as createBlock, i as withCtx, K as createTextVNode, E as toDisplayString, u as unref, l as createBaseVNode, q as normalizeClass, B as createCommentVNode, k as createElementBlock, F as Fragment, C as renderList, A as createVNode } from './vue-!~{002}~.js';
-import './photoswipe-!~{003}~.js';
 
 const _hoisted_1 = /* @__PURE__ */ createBaseVNode("i", { class: "ti ti-photo" }, null, -1);
 const _sfc_main = /* @__PURE__ */ defineComponent({
@@ -179,7 +178,6 @@ export { index_photos as default };
 import { c as api, d as store, i as i18n, aD as notePage, bN as ImgWithBlurhash, bY as getStaticImageUrl, _ as _export_sfc } from './app-!~{001}~.js';
 import { M as MkContainer } from './MkContainer-!~{03M}~.js';
 import { b as defineComponent, a as ref, e as onMounted, z as resolveComponent, g as openBlock, h as createBlock, i as withCtx, K as createTextVNode, E as toDisplayString, u as unref, l as createBaseVNode, q as normalizeClass, B as createCommentVNode, k as createElementBlock, F as Fragment, C as renderList, A as createVNode } from './vue-!~{002}~.js';
-import './photoswipe-!~{003}~.js';
 
 const _hoisted_1 = /* @__PURE__ */ createBaseVNode("i", { class: "ti ti-photo" }, null, -1);
 const index_photos = /* @__PURE__ */ defineComponent({

@@ -10,6 +10,7 @@ import { ApiError } from '@/server/api/error.js';
 import type { UsersRepository, UserProfilesRepository, MiMeta } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 export const meta = {
@@ -25,10 +26,10 @@ export const meta = {
 			code: 'NO_SUCH_USER',
 			id: 'ccafc7fe-5074-4edd-9dc0-8ef9ef6a701d',
 		},
-		cannotResetPasswordOfRootUser: {
-			message: 'Cannot reset password of the root user.',
-			code: 'CANNOT_RESET_PASSWORD_OF_ROOT_USER',
-			id: 'f28fc207-42ca-44c7-a577-44b4f0ec5999',
+		accessDenied: {
+			message: 'Access denied.',
+			code: 'ACCESS_DENIED',
+			id: 'cda8f8ce-89a6-4f92-8055-33bbe0c1464d',
 		},
 	},
 
@@ -66,6 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
+		private roleService: RoleService,
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -75,8 +77,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchUser);
 			}
 
-			if (this.serverSettings.rootUserId === user.id) {
-				throw new ApiError(meta.errors.cannotResetPasswordOfRootUser);
+			if (await this.roleService.isAdministrator(user) && me.id !== user.id) {
+				throw new ApiError(meta.errors.accessDenied);
 			}
 
 			const passwd = secureRndstr(8);

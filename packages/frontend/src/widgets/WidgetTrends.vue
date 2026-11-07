@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-trends class="mkw-trends">
+<MkContainer :showHeader="widgetProps.showHeader" data-testid="mkw-trends" class="mkw-trends">
 	<template #icon><i class="ti ti-hash"></i></template>
 	<template #header>{{ i18n.ts._widgets.trends }}</template>
 

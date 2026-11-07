@@ -6,12 +6,15 @@
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { load as loadYaml } from 'js-yaml';
 import { type FastifyServerOptions } from 'fastify';
 import type * as Sentry from '@sentry/node';
 import type * as SentryVue from '@sentry/vue';
-import type { RedisOptions } from 'ioredis';
+import type { RedisOptions as IoRedisRedisOptions } from 'ioredis';
+import type { RedisOptions as BullMqRedisOptions } from 'bullmq';
+import type { AccessLogConfiguration, LogFormat, LogLevelSetting } from './logging/types.js';
 
-type RedisOptionsSource = Partial<RedisOptions> & {
+type RedisOptionsRequiredFields = {
 	host: string;
 	port: number;
 	family?: number;
@@ -19,6 +22,8 @@ type RedisOptionsSource = Partial<RedisOptions> & {
 	db?: number;
 	prefix?: string;
 };
+type RedisOptionsSource = Partial<IoRedisRedisOptions & BullMqRedisOptions> & RedisOptionsRequiredFields;
+type RedisOptionsResolved = IoRedisRedisOptions & BullMqRedisOptions & RedisOptionsRequiredFields;
 
 type SentryBackendConfig = {
 	options: Partial<Sentry.NodeOptions>;
@@ -116,6 +121,10 @@ type Source = {
 	pidFile: string;
 
 	logging?: {
+		format?: LogFormat;
+		level?: LogLevelSetting;
+		domains?: Record<string, LogLevelSetting> | null;
+		access?: AccessLogConfiguration;
 		sql?: {
 			disableQueryTruncation?: boolean,
 			enableQueryParamLogging?: boolean,
@@ -178,6 +187,10 @@ export type Config = {
 	deliverJobMaxAttempts: number | undefined;
 	inboxJobMaxAttempts: number | undefined;
 	logging?: {
+		format?: LogFormat;
+		level?: LogLevelSetting;
+		domains?: Record<string, LogLevelSetting> | null;
+		access?: AccessLogConfiguration;
 		sql?: {
 			disableQueryTruncation?: boolean,
 			enableQueryParamLogging?: boolean,
@@ -202,11 +215,11 @@ export type Config = {
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
 	videoThumbnailGenerator: string | null;
-	redis: RedisOptions & RedisOptionsSource;
-	redisForPubsub: RedisOptions & RedisOptionsSource;
-	redisForJobQueue: RedisOptions & RedisOptionsSource;
-	redisForTimelines: RedisOptions & RedisOptionsSource;
-	redisForReactions: RedisOptions & RedisOptionsSource;
+	redis: RedisOptionsResolved;
+	redisForPubsub: RedisOptionsResolved;
+	redisForJobQueue: RedisOptionsResolved;
+	redisForTimelines: RedisOptionsResolved;
+	redisForReactions: RedisOptionsResolved;
 	sentryForBackend: SentryBackendConfig | undefined;
 	sentryForFrontend: {
 		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
@@ -241,23 +254,22 @@ const configDir = resolve(rootDir, '.config');
 /** Path of built directory */
 const projectBuiltDir = resolve(rootDir, 'built');
 
-const compiledConfigFilePathForTest = resolve(projectBuiltDir, '._config_.json');
-
-export const compiledConfigFilePath = fs.existsSync(compiledConfigFilePathForTest)
-	? compiledConfigFilePathForTest
-	: resolve(projectBuiltDir, '.config.json');
+/**
+ * Path of configuration file
+ */
+export const path = process.env.MISSKEY_CONFIG_YML
+	? resolve(configDir, process.env.MISSKEY_CONFIG_YML)
+	: process.env.NODE_ENV === 'test'
+		? resolve(configDir, 'test.yml')
+		: resolve(configDir, 'default.yml');
 
 export function loadConfig(): Config {
-	if (!fs.existsSync(compiledConfigFilePath)) {
-		throw new Error('Compiled configuration file not found. Try running \'pnpm compile-config\'.');
-	}
-
 	const meta = JSON.parse(fs.readFileSync(resolve(projectBuiltDir, 'meta.json'), 'utf-8'));
 
 	const frontendManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_vite_/manifest.json'));
 	const frontendEmbedManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_embed_vite_/manifest.json'));
 
-	const config = JSON.parse(fs.readFileSync(compiledConfigFilePath, 'utf-8')) as Source;
+	const config = loadYaml(fs.readFileSync(path, 'utf-8')) as Source;
 
 	const url = tryCreateUrl(config.url ?? process.env.MISSKEY_URL ?? '');
 	const version = meta.version;
@@ -324,9 +336,9 @@ export function loadConfig(): Config {
 		threadPoolSize: config.threadPoolSize ?? 1,
 		outgoingAddress: config.outgoingAddress,
 		outgoingAddressFamily: config.outgoingAddressFamily,
-		deliverJobConcurrency: config.deliverJobConcurrency,
-		inboxJobConcurrency: config.inboxJobConcurrency,
-		relationshipJobConcurrency: config.relationshipJobConcurrency,
+		deliverJobConcurrency: validateJobConcurrency('deliverJobConcurrency', config.deliverJobConcurrency),
+		inboxJobConcurrency: validateJobConcurrency('inboxJobConcurrency', config.inboxJobConcurrency),
+		relationshipJobConcurrency: validateJobConcurrency('relationshipJobConcurrency', config.relationshipJobConcurrency),
 		deliverJobPerSec: config.deliverJobPerSec,
 		inboxJobPerSec: config.inboxJobPerSec,
 		relationshipJobPerSec: config.relationshipJobPerSec,
@@ -357,7 +369,16 @@ function tryCreateUrl(url: string) {
 	}
 }
 
-function convertRedisOptions(options: RedisOptionsSource, host: string): RedisOptions & RedisOptionsSource {
+function validateJobConcurrency(key: string, value: number | undefined) {
+	if (value == null) return undefined;
+	// BullMQ の Worker は 1 未満の concurrency を受け付けないため、起動時に設定キーを明示して落とす
+	if (typeof value !== 'number' || !Number.isFinite(value) || value < 1) {
+		throw new Error(`${key}=${JSON.stringify(value)} is invalid. It must be a finite number greater than or equal to 1.`);
+	}
+	return value;
+}
+
+function convertRedisOptions(options: RedisOptionsSource, host: string): RedisOptionsResolved {
 	return {
 		...options,
 		password: options.pass,

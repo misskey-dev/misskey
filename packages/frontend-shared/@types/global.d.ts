@@ -14,9 +14,3 @@ declare const _PERF_PREFIX_: string;
 
 // for dev-mode
 declare const _LANGS_FULL_: string[][];
-
-// TagCanvas
-interface Window {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	TagCanvas: any;
-}

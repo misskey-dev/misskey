@@ -57,7 +57,7 @@ export class PascalCaseName1234567890123 {
 pnpm --filter backend exec typeorm migration:generate -d ormconfig.js -o --esm migration/<PascalName>
 ```
 
-**CONTRIBUTING.md との違い**: CONTRIBUTING.md は `pnpm dlx typeorm ...` を案内しているが、`dlx` はパッケージを一時ダウンロードするため、バージョンが backend の依存関係と揃わない可能性がある。`pnpm --filter backend exec typeorm` はワークスペースにインストール済みの typeorm を使うため **こちらを推奨**。
+**[Backend ガイド](../../../../../docs/contributing/backend.md#migration作成方法)との違い**: Backend ガイドは `pnpm dlx typeorm ...` を案内しているが、`dlx` はパッケージを一時ダウンロードするため、バージョンが backend の依存関係と揃わない可能性がある。`pnpm --filter backend exec typeorm` はワークスペースにインストール済みの typeorm を使うため **こちらを推奨**。
 
 **`-o --esm` について**: `-o` (`--outputJs`) は「TS ではなく JS を出力する」オプション、`--esm` は「ESM 形式 (`export class ...`) で出力する」オプション。Misskey の既存 migration はすべて ESM JS であるため **両方が必須**。`--esm` を省略すると CommonJS 形式の JS が生成されスタイルが揃わない。
 
@@ -72,7 +72,6 @@ node .claude/skills/working-on-backend/scripts/prepare-generate.mjs
 スクリプトがやること:
 
 - `pnpm build-pre` → `built/meta.json` を生成 (`loadConfig()` が要求)
-- `pnpm --filter backend compile-config` → `built/.config.json` を生成 (`ormconfig.js` の `loadConfig()` が要求するのはこれ。ソースの `.config/default.yml` はその入力なので、無ければ `.config/example.yml` から作っておく)
 - `pnpm --filter backend build` → エンティティを `built/` に反映 (CLI は `built/` を読む)
 - `docker compose -f compose.local-db.yml up -d --wait db` → ローカル DB (postgres) を起動。`--wait` は Docker Compose v2.1.1 (2021-11) 以降が必要 (v2 の `docker compose` 前提。EOL の `docker-compose` v1 は対象外)
 
@@ -161,12 +160,6 @@ pnpm migrate
 
 ---
 
-## CHANGELOG (ユーザー影響がある場合)
-
-スキーマ変更がユーザーに見える挙動を生む場合のみ、`CHANGELOG.md` に追記する。内部リファクタや純粋なインデックス追加は不要。詳細は [shipping-misskey-change スキル](../../../shipping-misskey-change/SKILL.md) で確認。
-
----
-
 ## 提出前セルフレビューチェックリスト
 
 完了前に以下を上から確認する (各項目を TodoWrite 化してよい):
@@ -177,4 +170,3 @@ pnpm migrate
 - [ ] `up()` の各文に対応する巻き戻しが `down()` にあり、**`down()` が空でない** (難ケースは [knowledge/typeorm-patterns.md](../knowledge/typeorm-patterns.md) を確認済み)
 - [ ] `pnpm --filter backend check-migrations` が **0 件 (pending DDL なし)** で通る
 - [ ] (可能なら) `pnpm migrate` → `pnpm revert` → `pnpm migrate` が通る
-- [ ] ユーザーに見える変更なら CHANGELOG 追記 → [shipping-misskey-change](../../../shipping-misskey-change/SKILL.md)

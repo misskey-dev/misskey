@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref, watch, onUnmounted } from 'vue';
+import { ref, watch, onBeforeUnmount } from 'vue';
 import type { Ref } from 'vue';
 
 export function useTooltip(
@@ -85,22 +85,43 @@ export function useTooltip(
 		close();
 	};
 
-	const stop = watch(elRef, () => {
-		if (elRef.value) {
-			stop();
-			const el = elRef.value instanceof Element ? elRef.value : elRef.value.$el;
-			el.addEventListener('mouseover', onMouseover, { passive: true });
-			el.addEventListener('mouseleave', onMouseleave, { passive: true });
-			el.addEventListener('touchstart', onTouchstart, { passive: true });
-			el.addEventListener('touchend', onTouchend, { passive: true });
-			el.addEventListener('click', close, { passive: true });
+	const addListeners = (el: HTMLElement) => {
+		el.addEventListener('mouseover', onMouseover, { passive: true });
+		el.addEventListener('mouseleave', onMouseleave, { passive: true });
+		el.addEventListener('touchstart', onTouchstart, { passive: true });
+		el.addEventListener('touchend', onTouchend, { passive: true });
+		el.addEventListener('click', close, { passive: true });
+	};
+
+	const removeListeners = (el: HTMLElement) => {
+		el.removeEventListener('mouseover', onMouseover);
+		el.removeEventListener('mouseleave', onMouseleave);
+		el.removeEventListener('touchstart', onTouchstart);
+		el.removeEventListener('touchend', onTouchend);
+		el.removeEventListener('click', close);
+	};
+
+	let boundEl: HTMLElement | null = null;
+
+	// 要素が差し替えられた場合 (動的コンポーネントの切り替え等) は旧要素のツールチップを閉じ、リスナーを付け替える
+	watch(() => elRef.value == null ? null : elRef.value instanceof Element ? elRef.value : elRef.value.$el, (el) => {
+		if (el === boundEl) return;
+		if (boundEl != null) {
+			removeListeners(boundEl);
+			onMouseleave();
 		}
+		boundEl = el;
+		if (boundEl != null) addListeners(boundEl);
 	}, {
 		immediate: true,
 		flush: 'post',
 	});
 
-	onUnmounted(() => {
+	onBeforeUnmount(() => {
 		close();
+		if (boundEl != null) {
+			removeListeners(boundEl);
+			boundEl = null;
+		}
 	});
 }

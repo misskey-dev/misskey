@@ -616,7 +616,7 @@ export type paths = {
          * admin/queue/stats
          * @description No description provided.
          *
-         *     **Credential required**: *Yes* / **Permission**: *read:admin:emoji*
+         *     **Credential required**: *Yes* / **Permission**: *read:admin:queue*
          */
         post: operations['admin___queue___stats'];
     };
@@ -1992,7 +1992,7 @@ export type paths = {
          * federation/update-remote-user
          * @description No description provided.
          *
-         *     **Credential required**: *No*
+         *     **Credential required**: *Yes* / **Permission**: *read:account*
          */
         post: operations['federation___update-remote-user'];
     };
@@ -2802,10 +2802,9 @@ export type paths = {
     '/i/revoke-token': {
         /**
          * i/revoke-token
-         * @description No description provided.
+         * @description Revoke an access token of the authenticated user. Requires credential. When called with an access token (third-party app), only the token currently in use can be revoked.
          *
-         *     **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
-         *     **Credential required**: *Yes*
+         *     **Credential required**: *No*
          */
         post: operations['i___revoke-token'];
     };
@@ -4147,6 +4146,8 @@ export type components = {
             autoSensitive: boolean;
             carefulBot: boolean;
             autoAcceptFollowed: boolean;
+            followApprovalLocalSeconds: number | null;
+            followApprovalRemoteSeconds: number | null;
             noCrawle: boolean;
             preventAiLearning: boolean;
             isExplorable: boolean;
@@ -6690,6 +6691,8 @@ export interface operations {
                      * @default null
                      */
                     userId?: string | null;
+                    /** @default null */
+                    autoArchiveAt?: number | null;
                 };
             };
         };
@@ -6872,6 +6875,8 @@ export interface operations {
                         /** @enum {string} */
                         display: 'normal' | 'banner' | 'dialog';
                         isActive: boolean;
+                        /** Format: date-time */
+                        autoArchiveAt: string | null;
                         forExistingUsers: boolean;
                         silence: boolean;
                         needConfirmationToRead: boolean;
@@ -6945,6 +6950,7 @@ export interface operations {
                     silence?: boolean;
                     needConfirmationToRead?: boolean;
                     isActive?: boolean;
+                    autoArchiveAt?: number | null;
                 };
             };
         };
@@ -9882,7 +9888,7 @@ export interface operations {
                 'application/json': {
                     /** @enum {string} */
                     queue: 'system' | 'endedPollNotification' | 'postScheduledNote' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
-                    state: ('active' | 'wait' | 'delayed' | 'completed' | 'failed' | 'paused')[];
+                    state: ('active' | 'wait' | 'delayed' | 'completed' | 'failed')[];
                     search?: string;
                 };
             };
@@ -21615,6 +21621,15 @@ export interface operations {
                     'application/json': components['schemas']['Error'];
                 };
             };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
             /** @description Internal server error */
             500: {
                 headers: {
@@ -21872,6 +21887,15 @@ export interface operations {
             };
             /** @description I'm Ai */
             418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Too many requests */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -27872,6 +27896,8 @@ export interface operations {
                     publicReactions?: boolean;
                     carefulBot?: boolean;
                     autoAcceptFollowed?: boolean;
+                    followApprovalLocalSeconds?: number | null;
+                    followApprovalRemoteSeconds?: number | null;
                     noCrawle?: boolean;
                     preventAiLearning?: boolean;
                     requireSigninToViewContents?: boolean;
@@ -34499,6 +34525,8 @@ export interface operations {
             content: {
                 'application/json': {
                     endpoint: string;
+                    auth: string;
+                    publickey: string;
                 };
             };
         };
@@ -34538,6 +34566,15 @@ export interface operations {
             };
             /** @description I'm Ai */
             418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Too many requests */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
