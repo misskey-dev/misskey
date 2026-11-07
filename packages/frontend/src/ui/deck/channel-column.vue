@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div v-if="column.channelId" class="_gaps_s">
-		<MkPostForm v-if="$i && channel != null && channel.id === column.channelId && prefer.r.showFixedPostFormInChannel.value" :key="channel.id" :channel="channel" :class="$style.postForm" fixed :autofocus="deviceKind === 'desktop'"/>
+		<MkPostForm v-if="$i && channel != null && channel.id === column.channelId && prefer.r.showFixedPostFormInChannel.value" :key="channel.id" :channel="channel" :class="$style.postForm" fixed :autofocus="false"/>
 		<div v-else style="padding: 10px 8px 0; text-align: center;">
 			<MkButton primary gradate rounded inline small @click="post"><i class="ti ti-pencil"></i></MkButton>
 		</div>
@@ -36,7 +36,6 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { deviceKind } from '@/utility/device-kind.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
 
 const props = defineProps<{
@@ -48,21 +47,27 @@ const timeline = useTemplateRef('timeline');
 const channel = shallowRef<Misskey.entities.Channel>();
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 
-watch(() => props.column.channelId, (newChannelId, _oldChannelId, onCleanup) => {
+watch([() => props.column.channelId, () => prefer.r.showFixedPostFormInChannel.value], ([newChannelId, showFixedPostForm], oldValue, onCleanup) => {
 	if (newChannelId == null) {
-		setChannel();
-	} else if (channel.value == null || channel.value.id !== newChannelId) {
-		let invalidated = false;
-		onCleanup(() => {
-			invalidated = true;
-		});
-		misskeyApi('channels/show', { channelId: newChannelId })
-			.then(value => {
-				if (invalidated || props.column.channelId !== newChannelId) return;
-				updateColumn(props.column.id, { timelineNameCache: value.name });
-				channel.value = value;
-			});
+		// 設定値の変更だけで選択ダイアログを開かないよう、channelId が変わったときのみ
+		if (oldValue == null || oldValue[0] !== newChannelId) setChannel();
+		return;
 	}
+	if (!showFixedPostForm && props.column.name) return;
+	if (channel.value != null && channel.value.id === newChannelId) return;
+
+	let invalidated = false;
+	onCleanup(() => {
+		invalidated = true;
+	});
+	misskeyApi('channels/show', { channelId: newChannelId })
+		.then(value => {
+			if (invalidated || props.column.channelId !== newChannelId) return;
+			if (value.name !== props.column.timelineNameCache) {
+				updateColumn(props.column.id, { timelineNameCache: value.name });
+			}
+			channel.value = value;
+		});
 }, { immediate: true });
 
 watch(soundSetting, v => {
