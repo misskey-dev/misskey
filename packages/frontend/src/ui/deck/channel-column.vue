@@ -67,6 +67,10 @@ watch([() => props.column.channelId, () => prefer.r.showFixedPostFormInChannel.v
 				updateColumn(props.column.id, { timelineNameCache: value.name });
 			}
 			channel.value = value;
+		})
+		.catch(err => {
+			if (invalidated || props.column.channelId !== newChannelId) return;
+			console.error('Failed to fetch channel:', err);
 		});
 }, { immediate: true });
 
