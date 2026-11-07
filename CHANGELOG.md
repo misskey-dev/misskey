@@ -1,6 +1,9 @@
 ## 2026.11.0
 
 ### Note
+
+**今回のリリースではMisskeyの動作要件が変更されます。必ずアップグレード前にお使いの環境をご確認ください。**
+
 - 本番環境においてMisskeyを正しく起動するためのスクリプトを新設しました。こちらを利用して起動することで、余計なプロセスが常駐することを防ぎ、メモリ使用量を70MB～140MB削減することが可能です。
   - `node ./scripts/start.mjs` でMisskeyを起動できます。 `pnpm start` と同等の動作をします。
   - `node ./scripts/start.mjs --migrate` でマイグレーションを実行してからMisskeyを起動できます。 `pnpm migrateandstart` と同等の動作をします。
