@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,7 +8,7 @@ process.env.NODE_ENV = 'test';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
-import { describe, test, expect } from '@jest/globals';
+import { describe, test, expect } from 'vitest';
 import { getValidator } from '../../../../../test/prelude/get-api-validator.js';
 import { paramDef } from './create.js';
 
@@ -34,11 +34,10 @@ describe('api:notes/create', () => {
 					.toBe(VALID);
 			});
 
-			// TODO
-			//test('null post', () => {
-			//	expect(v({ text: null }))
-			//		.toBe(INVALID);
-			//});
+			test('null post', () => {
+				expect(v({ text: null }))
+					.toBe(INVALID);
+			});
 
 			test('0 characters post', () => {
 				expect(v({ text: '' }))
@@ -47,6 +46,11 @@ describe('api:notes/create', () => {
 
 			test('over 3000 characters post', async () => {
 				expect(v({ text: await tooLong }))
+					.toBe(INVALID);
+			});
+
+			test('whitespace-only post', () => {
+				expect(v({ text: ' ' }))
 					.toBe(INVALID);
 			});
 		});

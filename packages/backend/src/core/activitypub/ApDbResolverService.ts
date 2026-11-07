@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,6 +10,7 @@ import type { Config } from '@/config.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
 import { CacheService } from '@/core/CacheService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import { MiLocalUser, MiRemoteUser } from '@/models/User.js';
@@ -53,9 +54,10 @@ export class ApDbResolverService implements OnApplicationShutdown {
 
 		private cacheService: CacheService,
 		private apPersonService: ApPersonService,
+		private utilityService: UtilityService,
 	) {
-		this.publicKeyCache = new MemoryKVCache<MiUserPublickey | null>(Infinity);
-		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey | null>(Infinity);
+		this.publicKeyCache = new MemoryKVCache<MiUserPublickey | null>(1000 * 60 * 60 * 12); // 12h
+		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey | null>(1000 * 60 * 60 * 12); // 12h
 	}
 
 	@bindThis
@@ -63,7 +65,9 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		const separator = '/';
 
 		const uri = new URL(getApId(value));
-		if (uri.origin !== this.config.url) return { local: false, uri: uri.href };
+		if (this.utilityService.toPuny(uri.host) !== this.utilityService.toPuny(this.config.host)) {
+			return { local: false, uri: uri.href };
+		}
 
 		const [, type, id, ...rest] = uri.pathname.split(separator);
 		return {
@@ -106,12 +110,12 @@ export class ApDbResolverService implements OnApplicationShutdown {
 
 			return await this.cacheService.userByIdCache.fetchMaybe(
 				parsed.id,
-				() => this.usersRepository.findOneBy({ id: parsed.id }).then(x => x ?? undefined),
+				() => this.usersRepository.findOneBy({ id: parsed.id, isDeleted: false }).then(x => x ?? undefined),
 			) as MiLocalUser | undefined ?? null;
 		} else {
 			return await this.cacheService.uriPersonCache.fetch(
 				parsed.uri,
-				() => this.usersRepository.findOneBy({ uri: parsed.uri }),
+				() => this.usersRepository.findOneBy({ uri: parsed.uri, isDeleted: false }),
 			) as MiRemoteUser | null;
 		}
 	}
@@ -136,8 +140,12 @@ export class ApDbResolverService implements OnApplicationShutdown {
 
 		if (key == null) return null;
 
+		const user = await this.cacheService.findUserById(key.userId).catch(() => null) as MiRemoteUser | null;
+		if (user == null) return null;
+		if (user.isDeleted) return null;
+
 		return {
-			user: await this.cacheService.findUserById(key.userId) as MiRemoteUser,
+			user,
 			key,
 		};
 	}
@@ -151,6 +159,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		key: MiUserPublickey | null;
 	} | null> {
 		const user = await this.apPersonService.resolvePerson(uri) as MiRemoteUser;
+		if (user.isDeleted) return null;
 
 		const key = await this.publicKeyByUserIdCache.fetch(
 			user.id,

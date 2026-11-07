@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -60,7 +60,7 @@ onMounted(() => {
 	right: 0;
 	bottom: 0;
 	margin: auto;
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 	font-size: 18px;
 	font-weight: bold;
 	transform: translateY(-30px);

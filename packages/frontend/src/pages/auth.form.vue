@@ -1,17 +1,17 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <section>
-	<div v-if="app.permission.length > 0">
-		<p>{{ i18n.t('_auth.permission', { name }) }}</p>
+	<div v-if="permissions.length > 0">
+		<p>{{ i18n.tsx._auth.permission({ name }) }}</p>
 		<ul>
-			<li v-for="p in app.permission" :key="p">{{ i18n.t(`_permissions.${p}`) }}</li>
+			<li v-for="p in permissions" :key="p">{{ i18n.ts._permissions[p] ?? p }}</li>
 		</ul>
 	</div>
-	<div>{{ i18n.t('_auth.shareAccess', { name: `${name} (${app.id})` }) }}</div>
+	<div>{{ i18n.tsx._auth.shareAccess({ name: `${name} (${app.id})` }) }}</div>
 	<div :class="$style.buttons">
 		<MkButton inline @click="cancel">{{ i18n.ts.cancel }}</MkButton>
 		<MkButton inline primary @click="accept">{{ i18n.ts.accept }}</MkButton>
@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -37,22 +37,28 @@ const emit = defineEmits<{
 
 const app = computed(() => props.session.app);
 
+const permissions = computed(() => {
+	return props.session.app.permission.filter((p): p is typeof Misskey.permissions[number] => typeof p === 'string');
+});
+
 const name = computed(() => {
-	const el = document.createElement('div');
+	const el = window.document.createElement('div');
 	el.textContent = app.value.name;
 	return el.innerHTML;
 });
 
 function cancel() {
-	os.api('auth/deny', {
-		token: props.session.token,
-	}).then(() => {
-		emit('denied');
-	});
+	//misskeyApi('auth/deny', {
+	//	token: props.session.token,
+	//}).then(() => {
+	//	emit('denied');
+	//});
+
+	emit('denied');
 }
 
 function accept() {
-	os.api('auth/accept', {
+	misskeyApi('auth/accept', {
 		token: props.session.token,
 	}).then(() => {
 		emit('accepted');

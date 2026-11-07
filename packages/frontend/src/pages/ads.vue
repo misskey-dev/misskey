@@ -1,30 +1,27 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
-
-	<MkSpacer :contentMax="500">
-		<div class="_gaps">
+<PageWithHeader>
+	<div class="_spacer" style="--MI_SPACER-w: 500px;">
+		<div v-if="instance.ads.length > 0" class="_gaps">
 			<MkAd v-for="ad in instance.ads" :key="ad.id" :specify="ad"/>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+		<MkResult v-else type="empty"/>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
-import * as os from '@/os.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 
-definePageMetadata({
+definePage(() => ({
 	title: i18n.ts.ads,
 	icon: 'ti ti-ad',
-});
+}));
 </script>
 

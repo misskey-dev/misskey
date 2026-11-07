@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -58,7 +58,7 @@ const exampleCWNote = reactive<Misskey.entities.Note>({
 		isBot: false,
 		isCat: true,
 		emojis: {},
-		onlineStatus: null,
+		onlineStatus: 'unknown',
 		badgeRoles: [],
 	},
 	text: i18n.ts._initialTutorial._postNote._cw._exampleNote.note,
@@ -68,6 +68,7 @@ const exampleCWNote = reactive<Misskey.entities.Note>({
 	reactionAcceptance: null,
 	renoteCount: 0,
 	repliesCount: 1,
+	reactionCount: 0,
 	reactions: {},
 	reactionEmojis: {},
 	fileIds: [],
@@ -80,14 +81,14 @@ const exampleCWNote = reactive<Misskey.entities.Note>({
 <style lang="scss" module>
 .exampleRoot {
 	max-width: none!important;
-	border-radius: var(--radius);
-	border: var(--panelBorder);
-	background: var(--panel);
+	border-radius: var(--MI-radius);
+	border: var(--MI_THEME-panelBorder);
+	background: var(--MI_THEME-panel);
 }
 
 .divider {
 	height: 1px;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 
 .image {
@@ -100,11 +101,11 @@ const exampleCWNote = reactive<Misskey.entities.Note>({
 	display: block;
 	width: 100%;
 	height: 40px;
-	color: var(--fgOnAccent);
+	color: var(--MI_THEME-fgOnAccent);
 	font-weight: bold;
 	text-align: left;
 
-	&:before {
+	&::before {
 		content: "";
 		display: block;
 		width: calc(100% - 38px);
@@ -116,7 +117,7 @@ const exampleCWNote = reactive<Misskey.entities.Note>({
 		right: 0;
 		bottom: 0;
 		border-radius: 999px;
-		background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+		background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 	}
 
 }

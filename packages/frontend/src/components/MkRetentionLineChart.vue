@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -8,23 +8,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
+import type { ScatterDataPoint } from 'chart.js';
 import tinycolor from 'tinycolor2';
-import { defaultStore } from '@/store.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
-import { chartVLine } from '@/scripts/chart-vline.js';
-import { alpha } from '@/scripts/color.js';
-import { initChart } from '@/scripts/init-chart.js';
-import * as os from '@/os.js';
+import { store } from '@/store.js';
+import { themeManager } from '@/theme.js';
+import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
+import { chartVLine } from '@/utility/chart-vline.js';
+import { alpha } from '@/utility/color.js';
+import { initChart } from '@/utility/init-chart.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+
+interface RetentionPoint extends ScatterDataPoint {
+	x: number;
+	y: number;
+	d: string;
+}
 
 initChart();
 
-const chartEl = shallowRef<HTMLCanvasElement>(null);
+const chartEl = useTemplateRef('chartEl');
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 
-let chartInstance: Chart;
+let chartInstance: Chart | null = null;
 
 const getYYYYMMDD = (date: Date) => {
 	const y = date.getFullYear().toString().padStart(2, '0');
@@ -40,12 +48,14 @@ const getDate = (ymd: string) => {
 };
 
 onMounted(async () => {
-	let raw = await os.api('retention', { });
+	let raw = await misskeyApi('retention', { });
 
-	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
-	const accent = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--accent'));
+	const accent = tinycolor(themeManager.currentCompiledTheme!.accent);
 	const color = accent.toHex();
+
+	if (chartEl.value == null) return;
 
 	chartInstance = new Chart(chartEl.value, {
 		type: 'line',
@@ -60,11 +70,11 @@ onMounted(async () => {
 				fill: false,
 				tension: 0.4,
 				data: [{
-					x: '0',
+					x: 0,
 					y: 100,
 					d: getYYYYMMDD(new Date(record.createdAt)),
 				}, ...Object.entries(record.data).sort((a, b) => getDate(a[0]) > getDate(b[0]) ? 1 : -1).map(([k, v], i) => ({
-					x: (i + 1).toString(),
+					x: i + 1,
 					y: (v / record.users) * 100,
 					d: getYYYYMMDD(new Date(record.createdAt)),
 				}))],
@@ -109,11 +119,11 @@ onMounted(async () => {
 					enabled: false,
 					callbacks: {
 						title(context) {
-							const v = context[0].dataset.data[context[0].dataIndex];
+							const v = context[0].dataset.data[context[0].dataIndex] as RetentionPoint;
 							return `${v.x} days later`;
 						},
 						label(context) {
-							const v = context.dataset.data[context.dataIndex];
+							const v = context.dataset.data[context.dataIndex] as RetentionPoint;
 							const p = Math.round(v.y) + '%';
 							return `${v.d} ${p}`;
 						},
@@ -128,5 +138,9 @@ onMounted(async () => {
 		},
 		plugins: [chartVLine(vLineColor)],
 	});
+});
+
+onUnmounted(() => {
+	chartInstance?.destroy();
 });
 </script>

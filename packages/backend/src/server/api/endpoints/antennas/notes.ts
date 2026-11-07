@@ -1,19 +1,21 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
+import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { NotesRepository, AntennasRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
-import { NoteReadService } from '@/core/NoteReadService.js';
 import { DI } from '@/di-symbols.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { trackPromise } from '@/misc/promise-tracker.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -58,9 +60,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.redisForTimelines)
-		private redisForTimelines: Redis.Redis,
-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
@@ -70,9 +69,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
-		private noteReadService: NoteReadService,
 		private fanoutTimelineService: FanoutTimelineService,
 		private globalEventService: GlobalEventService,
+		private channelMutingService: ChannelMutingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
@@ -92,7 +91,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			antenna.isActive = true;
 			antenna.lastUsedAt = new Date();
-			this.antennasRepository.update(antenna.id, antenna);
+			trackPromise(this.antennasRepository.update(antenna.id, antenna));
 
 			if (needPublishEvent) {
 				this.globalEventService.publishInternalEvent('antennaUpdated', antenna);
@@ -112,19 +111,32 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
+			// -- ミュートされたチャンネル対策
+			const mutingChannelIds = await this.channelMutingService
+				.list({ requestUserId: me.id }, { idOnly: true })
+				.then(x => x.map(x => x.id));
+			if (mutingChannelIds.length > 0) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.channelId IS NULL');
+					qb.orWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+				}));
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.renoteChannelId IS NULL');
+					qb.orWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+				}));
+			}
+
+			// NOTE: センシティブ除外の設定はこのエンドポイントでは無視する。
+			// https://github.com/misskey-dev/misskey/pull/15346#discussion_r1929950255
+
 			this.queryService.generateVisibilityQuery(query, me);
-			this.queryService.generateMutedUserQuery(query, me);
-			this.queryService.generateBlockedUserQuery(query, me);
+			this.queryService.generateBaseNoteFilteringQuery(query, me);
 
 			const notes = await query.getMany();
 			if (sinceId != null && untilId == null) {
 				notes.sort((a, b) => a.id < b.id ? -1 : 1);
 			} else {
 				notes.sort((a, b) => a.id > b.id ? -1 : 1);
-			}
-
-			if (notes.length > 0) {
-				this.noteReadService.read(me.id, notes);
 			}
 
 			return await this.noteEntityService.packMany(notes, me);

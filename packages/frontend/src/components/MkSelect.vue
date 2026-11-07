@@ -1,121 +1,136 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div>
 	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
-	<div ref="container" :class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused }]" @mousedown.prevent="show">
+	<div
+		ref="container"
+		tabindex="0"
+		:class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused || opening }]"
+		@focus="focused = true"
+		@blur="focused = false"
+		@mousedown.prevent="show"
+		@keydown.space.enter="show"
+	>
 		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"></slot></div>
-		<select
+		<div
 			ref="inputEl"
-			v-model="v"
 			v-adaptive-border
+			tabindex="-1"
 			:class="$style.inputCore"
 			:disabled="disabled"
 			:required="required"
 			:readonly="readonly"
 			:placeholder="placeholder"
-			@focus="focused = true"
-			@blur="focused = false"
-			@input="onInput"
+			@mousedown.prevent="() => {}"
+			@keydown.prevent="() => {}"
 		>
-			<slot></slot>
-		</select>
+			<div style="pointer-events: none;">{{ currentValueText ?? '' }}</div>
+			<div style="display: none;">
+				<slot></slot>
+			</div>
+		</div>
 		<div ref="suffixEl" :class="$style.suffix"><i class="ti ti-chevron-down" :class="[$style.chevron, { [$style.chevronOpening]: opening }]"></i></div>
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
-
-	<MkButton v-if="manualSave && changed" primary @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
-<script lang="ts" setup>
-import { onMounted, nextTick, ref, watch, computed, toRefs, VNode, useSlots } from 'vue';
-import MkButton from '@/components/MkButton.vue';
+<script lang="ts">
+import type { OptionValue } from '@/types/option-value.js';
+
+export type ItemOption<T extends OptionValue = OptionValue> = {
+	type?: 'option';
+	value: T;
+	label: string;
+	caption?: string;
+};
+
+export type ItemGroup<T extends OptionValue = OptionValue> = {
+	type: 'group';
+	label?: string;
+	items: ItemOption<T>[];
+};
+
+export type MkSelectItem<T extends OptionValue = OptionValue> = ItemOption<T> | ItemGroup<T>;
+
+export type GetMkSelectValueType<T extends MkSelectItem> = T extends ItemGroup
+	? T['items'][number]['value']
+	: T extends ItemOption
+		? T['value']
+		: never;
+
+export type GetMkSelectValueTypesFromDef<T extends MkSelectItem[]> = T[number] extends MkSelectItem
+	? GetMkSelectValueType<T[number]>
+	: never;
+</script>
+
+<script lang="ts" setup generic="const ITEMS extends MkSelectItem[], MODELT extends OptionValue">
+import { onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs, useTemplateRef } from 'vue';
+import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	modelValue: string | null;
+	items: ITEMS;
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
 	placeholder?: string;
 	autofocus?: boolean;
 	inline?: boolean;
-	manualSave?: boolean;
 	small?: boolean;
 	large?: boolean;
 }>();
 
-const emit = defineEmits<{
-	(ev: 'change', _ev: KeyboardEvent): void;
-	(ev: 'update:modelValue', value: string | null): void;
-}>();
+type ModelTChecked = MODELT & (
+	MODELT extends GetMkSelectValueTypesFromDef<ITEMS>
+		? unknown
+		: 'Error: The type of model does not match the type of items.'
+);
 
-const slots = useSlots();
+const model = defineModel<ModelTChecked>({ required: true });
 
-const { modelValue, autofocus } = toRefs(props);
-const v = ref(modelValue.value);
+const { autofocus } = toRefs(props);
 const focused = ref(false);
 const opening = ref(false);
-const changed = ref(false);
-const invalid = ref(false);
-const filled = computed(() => v.value !== '' && v.value != null);
-const inputEl = ref(null);
-const prefixEl = ref(null);
-const suffixEl = ref(null);
-const container = ref(null);
+const currentValueText = ref<string | null>(null);
+const inputEl = useTemplateRef('inputEl');
+const prefixEl = useTemplateRef('prefixEl');
+const suffixEl = useTemplateRef('suffixEl');
+const container = useTemplateRef('container');
 const height =
 	props.small ? 33 :
 	props.large ? 39 :
 	36;
 
-const focus = () => inputEl.value.focus();
-const onInput = (ev) => {
-	changed.value = true;
-	emit('change', ev);
-};
-
-const updated = () => {
-	changed.value = false;
-	emit('update:modelValue', v.value);
-};
-
-watch(modelValue, newValue => {
-	v.value = newValue;
-});
-
-watch(v, newValue => {
-	if (!props.manualSave) {
-		updated();
-	}
-
-	invalid.value = inputEl.value.validity.badInput;
-});
+const focus = () => container.value?.focus();
 
 // このコンポーネントが作成された時、非表示状態である場合がある
-// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
-useInterval(() => {
-	if (prefixEl.value) {
-		if (prefixEl.value.offsetWidth) {
-			inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
+// 非表示状態だと要素の幅などは0になってしまうので、ResizeObserverでサイズの変化を監視して計算する
+const updatePadding = (entries: ResizeObserverEntry[]) => {
+	if (inputEl.value == null) return;
+
+	for (const entry of entries) {
+		const width = entry.borderBoxSize[0].inlineSize;
+		if (width === 0) continue;
+		if (entry.target === prefixEl.value) {
+			inputEl.value.style.paddingLeft = width + 'px';
+		} else if (entry.target === suffixEl.value) {
+			inputEl.value.style.paddingRight = width + 'px';
 		}
 	}
-	if (suffixEl.value) {
-		if (suffixEl.value.offsetWidth) {
-			inputEl.value.style.paddingRight = suffixEl.value.offsetWidth + 'px';
-		}
-	}
-}, 100, {
-	immediate: true,
-	afterMounted: true,
-});
+};
+
+let paddingObserver: ResizeObserver | null = null;
 
 onMounted(() => {
+	paddingObserver = new ResizeObserver(updatePadding);
+	if (prefixEl.value) paddingObserver.observe(prefixEl.value);
+	if (suffixEl.value) paddingObserver.observe(suffixEl.value);
+
 	nextTick(() => {
 		if (autofocus.value) {
 			focus();
@@ -123,53 +138,76 @@ onMounted(() => {
 	});
 });
 
-function show(ev: MouseEvent) {
-	focused.value = true;
-	opening.value = true;
+onUnmounted(() => {
+	paddingObserver?.disconnect();
+	paddingObserver = null;
+});
 
-	const menu = [];
-	let options = slots.default!();
-
-	const pushOption = (option: VNode) => {
-		menu.push({
-			text: option.children,
-			active: computed(() => v.value === option.props.value),
-			action: () => {
-				v.value = option.props.value;
-			},
-		});
-	};
-
-	const scanOptions = (options: VNode[]) => {
-		for (const vnode of options) {
-			if (vnode.type === 'optgroup') {
-				const optgroup = vnode;
-				menu.push({
-					type: 'label',
-					text: optgroup.props.label,
-				});
-				scanOptions(optgroup.children);
-			} else if (Array.isArray(vnode.children)) { // 何故かフラグメントになってくることがある
-				const fragment = vnode;
-				scanOptions(fragment.children);
-			} else if (vnode.props == null) { // v-if で条件が false のときにこうなる
-				// nop?
-			} else {
-				const option = vnode;
-				pushOption(option);
+watch([model, () => props.items], () => {
+	let found: ItemOption | null = null;
+	for (const item of props.items) {
+		if (item.type === 'group') {
+			for (const option of item.items) {
+				if (option.value === model.value) {
+					found = option;
+					break;
+				}
+			}
+		} else {
+			if (item.value === model.value) {
+				found = item;
+				break;
 			}
 		}
-	};
+	}
+	if (found) {
+		currentValueText.value = found.label;
+	}
+}, { immediate: true, deep: true });
 
-	scanOptions(options);
+function show() {
+	if (opening.value || props.disabled || props.readonly) return;
+	focus();
+
+	opening.value = true;
+
+	const menu: MenuItem[] = [];
+
+	for (const item of props.items) {
+		if (item.type === 'group') {
+			if (item.label != null) {
+				menu.push({
+					type: 'label',
+					text: item.label,
+				});
+			}
+			for (const option of item.items) {
+				menu.push({
+					text: option.label,
+					caption: option.caption,
+					active: computed(() => model.value === option.value),
+					action: () => {
+						model.value = option.value as ModelTChecked;
+					},
+				});
+			}
+		} else {
+			menu.push({
+				text: item.label,
+				caption: item.caption,
+				active: computed(() => model.value === item.value),
+				action: () => {
+					model.value = item.value as ModelTChecked;
+				},
+			});
+		}
+	}
 
 	os.popupMenu(menu, container.value, {
-		width: container.value.offsetWidth,
+		width: container.value?.offsetWidth,
 		onClosing: () => {
 			opening.value = false;
 		},
-	}).then(() => {
-		focused.value = false;
 	});
 }
 </script>
@@ -188,7 +226,7 @@ function show(ev: MouseEvent) {
 .caption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 
 	&:empty {
 		display: none;
@@ -206,8 +244,8 @@ function show(ev: MouseEvent) {
 
 	&.focused {
 		> .inputCore {
-			border-color: var(--accent) !important;
-			//box-shadow: 0 0 0 4px var(--focus);
+			border-color: var(--MI_THEME-accent) !important;
+			//box-shadow: 0 0 0 4px var(--MI_THEME-focus);
 		}
 	}
 
@@ -220,9 +258,13 @@ function show(ev: MouseEvent) {
 		}
 	}
 
+	&:focus {
+		outline: none;
+	}
+
 	&:hover {
 		> .inputCore {
-			border-color: var(--inputBorderHover) !important;
+			border-color: var(--MI_THEME-inputBorderHover) !important;
 		}
 	}
 }
@@ -230,7 +272,8 @@ function show(ev: MouseEvent) {
 .inputCore {
 	appearance: none;
 	-webkit-appearance: none;
-	display: block;
+	display: flex;
+	align-items: center;
 	height: v-bind("height + 'px'");
 	width: 100%;
 	margin: 0;
@@ -238,9 +281,9 @@ function show(ev: MouseEvent) {
 	font: inherit;
 	font-weight: normal;
 	font-size: 1em;
-	color: var(--fg);
-	background: var(--panel);
-	border: solid 1px var(--panel);
+	color: var(--MI_THEME-fg);
+	background: var(--MI_THEME-panel);
+	border: solid 1px var(--MI_THEME-panel);
 	border-radius: 6px;
 	outline: none;
 	box-shadow: none;
@@ -282,6 +325,10 @@ function show(ev: MouseEvent) {
 .suffix {
 	right: 0;
 	padding-left: 6px;
+}
+
+.save {
+	margin: 8px 0 0 0;
 }
 
 .chevron {

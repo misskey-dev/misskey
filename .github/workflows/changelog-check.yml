@@ -1,0 +1,47 @@
+name: Check the description in CHANGELOG.md
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  check-changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout head
+        uses: actions/checkout@v7.0.1
+
+      - name: setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: '.node-version'
+          cache: pnpm
+
+      - name: Checkout base
+        run: |
+          mkdir _base
+          cp -r .git _base/.git
+          cd _base
+          git fetch --depth 1 origin ${{ github.base_ref }}
+          git checkout origin/${{ github.base_ref }} CHANGELOG.md
+
+      - name: Copy to Checker directory for CHANGELOG-base.md
+        run: cp _base/CHANGELOG.md packages-private/changelog-checker/CHANGELOG-base.md
+      - name: Copy to Checker directory for CHANGELOG-head.md
+        run: cp CHANGELOG.md packages-private/changelog-checker/CHANGELOG-head.md
+      - name: diff
+        continue-on-error: true
+        run: diff -u CHANGELOG-base.md CHANGELOG-head.md
+        working-directory: packages-private/changelog-checker
+
+      - name: Install dependencies
+        run: pnpm --filter changelog-checker... install --frozen-lockfile
+
+      - name: Run Checker
+        run: pnpm --filter changelog-checker check

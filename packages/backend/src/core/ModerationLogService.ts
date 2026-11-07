@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,7 +9,8 @@ import type { ModerationLogsRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
-import { ModerationLogPayloads, moderationLogTypes } from '@/types.js';
+import type { ModerationLogPayloads } from '@/types.js';
+import { moderationLogTypes } from '@/types.js';
 
 @Injectable()
 export class ModerationLogService {

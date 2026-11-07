@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,6 +16,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:show-user',
 
 	res: {
 		type: 'array',
@@ -70,13 +71,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					break;
 				}
 				case 'moderator': {
-					const moderatorIds = await this.roleService.getModeratorIds(false);
+					const moderatorIds = await this.roleService.getModeratorIds({ includeAdmins: false });
 					if (moderatorIds.length === 0) return [];
 					query.where('user.id IN (:...moderatorIds)', { moderatorIds: moderatorIds });
 					break;
 				}
 				case 'adminOrModerator': {
-					const adminOrModeratorIds = await this.roleService.getModeratorIds();
+					const adminOrModeratorIds = await this.roleService.getModeratorIds({ includeAdmins: true });
 					if (adminOrModeratorIds.length === 0) return [];
 					query.where('user.id IN (:...adminOrModeratorIds)', { adminOrModeratorIds: adminOrModeratorIds });
 					break;
@@ -113,7 +114,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const users = await query.getMany();
 
-			return await this.userEntityService.packMany(users, me, { detail: true });
+			return await this.userEntityService.packMany(users, me, { schema: 'UserDetailed' });
 		});
 	}
 }

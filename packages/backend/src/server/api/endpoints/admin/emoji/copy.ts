@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -17,7 +17,8 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireRolePolicy: 'canManageCustomEmojis',
+	requiredRolePolicy: 'canManageCustomEmojis',
+	kind: 'write:admin:emoji',
 
 	errors: {
 		noSuchEmoji: {
@@ -75,7 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			try {
 				// Create file
 				driveFile = await this.driveService.uploadFromUrl({ url: emoji.originalUrl, user: null, force: true });
-			} catch (e) {
+			} catch (_) {
 				// TODO: need to return Drive Error
 				throw new ApiError();
 			}
@@ -85,7 +86,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (isDuplicate) throw new ApiError(meta.errors.duplicateName);
 
 			const addedEmoji = await this.customEmojiService.add({
-				driveFile,
+				originalUrl: driveFile.url,
+				publicUrl: driveFile.webpublicUrl ?? driveFile.url,
+				fileType: driveFile.webpublicType ?? driveFile.type,
 				name: emoji.name,
 				category: emoji.category,
 				aliases: emoji.aliases,

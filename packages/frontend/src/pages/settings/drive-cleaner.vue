@@ -1,16 +1,15 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div class="_gaps">
-	<MkSelect v-model="sortModeSelect">
+	<MkSelect v-model="sortModeSelect" :items="sortModeSelectDef">
 		<template #label>{{ i18n.ts.sort }}</template>
-		<option v-for="x in sortOptions" :key="x.value" :value="x.value">{{ x.displayName }}</option>
 	</MkSelect>
 	<div v-if="!fetching">
-		<MkPagination v-slot="{items}" :pagination="pagination">
+		<MkPagination v-slot="{items}" :paginator="paginator">
 			<div class="_gaps">
 				<div
 					v-for="file in items" :key="file.id"
@@ -48,34 +47,42 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
+import { computed, markRaw, ref, watch } from 'vue';
 import tinycolor from 'tinycolor2';
+import type { StyleValue } from 'vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import { i18n } from '@/i18n.js';
 import bytes from '@/filters/bytes.js';
-import { dateString } from '@/filters/date.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkSelect from '@/components/MkSelect.vue';
-import { getDriveFileMenu } from '@/scripts/get-drive-file-menu.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { useGlobalEvent } from '@/events.js';
+import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
+import { Paginator } from '@/utility/paginator.js';
 
-const sortMode = ref('+size');
-const pagination = {
-	endpoint: 'drive/files' as const,
+const sortMode = ref<Misskey.entities.DriveFilesRequest['sort']>('+size');
+const paginator = markRaw(new Paginator('drive/files', {
 	limit: 10,
-	params: computed(() => ({ sort: sortMode.value })),
-};
-
-const sortOptions = [
-	{ value: 'sizeDesc', displayName: i18n.ts._drivecleaner.orderBySizeDesc },
-	{ value: 'createdAtAsc', displayName: i18n.ts._drivecleaner.orderByCreatedAtAsc },
-];
+	computedParams: computed(() => ({ sort: sortMode.value })),
+}));
 
 const capacity = ref<number>(0);
 const usage = ref<number>(0);
 const fetching = ref(true);
-const sortModeSelect = ref('sizeDesc');
+const {
+	model: sortModeSelect,
+	def: sortModeSelectDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._drivecleaner.orderBySizeDesc, value: 'sizeDesc' },
+		{ label: i18n.ts._drivecleaner.orderByCreatedAtAsc, value: 'createdAtAsc' },
+	],
+	initialValue: 'sizeDesc',
+});
 
 fetchDriveInfo();
 
@@ -95,32 +102,38 @@ watch(sortModeSelect, () => {
 
 function fetchDriveInfo(): void {
 	fetching.value = true;
-	os.api('drive').then(info => {
+	misskeyApi('drive').then(info => {
 		capacity.value = info.capacity;
 		usage.value = info.usage;
 		fetching.value = false;
 	});
 }
 
-function genUsageBar(fsize: number): object {
+function genUsageBar(fsize: number): StyleValue {
 	return {
 		width: `${fsize / usage.value * 100}%`,
-		background: tinycolor({ h: 180 - (fsize / usage.value * 180), s: 0.7, l: 0.5 }),
+		background: tinycolor({ h: 180 - (fsize / usage.value * 180), s: 0.7, l: 0.5 }).toHslString(),
 	};
 }
 
-function onClick(ev: MouseEvent, file) {
+function onClick(ev: PointerEvent, file: Misskey.entities.DriveFile) {
 	os.popupMenu(getDriveFileMenu(file), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 
-function onContextMenu(ev: MouseEvent, file): void {
+function onContextMenu(ev: PointerEvent, file: Misskey.entities.DriveFile): void {
 	os.contextMenu(getDriveFileMenu(file), ev);
 }
 
-definePageMetadata({
+useGlobalEvent('driveFilesDeleted', (files) => {
+	for (const f of files) {
+		paginator.removeItem(f.id);
+	}
+});
+
+definePage(() => ({
 	title: i18n.ts.drivecleaner,
 	icon: 'ti ti-trash',
-});
+}));
 </script>
 
 <style lang="scss" module>
@@ -132,7 +145,7 @@ definePageMetadata({
 	align-items: center;
 
 	&:hover {
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 	}
 }
 

@@ -1,10 +1,10 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj" tabindex="-1">
+<MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj">
 	<div v-if="page.eyeCatchingImage" class="thumbnail">
 		<MediaImage
 			:image="page.eyeCatchingImage"
@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</header>
 		<p v-if="page.summary" :title="page.summary">{{ page.summary.length > 85 ? page.summary.slice(0, 85) + '…' : page.summary }}</p>
 		<footer>
-			<img class="icon" :src="page.user.avatarUrl"/>
+			<img v-if="page.user.avatarUrl" class="icon" :src="page.user.avatarUrl"/>
 			<p>{{ userName(page.user) }}</p>
 		</footer>
 	</article>
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
-import { userName } from '@/filters/user.js';
+import { userName } from '@@/js/user.js';
 import MediaImage from '@/components/MkMediaImage.vue';
 
 const props = defineProps<{
@@ -42,7 +42,7 @@ const props = defineProps<{
 .eyeCatchingImageRoot {
 	width: 100%;
 	height: 200px;
-	border-radius: var(--radius) var(--radius) 0 0;
+	border-radius: var(--MI-radius) var(--MI-radius) 0 0;
 	overflow: hidden;
 }
 </style>
@@ -50,22 +50,39 @@ const props = defineProps<{
 <style lang="scss" scoped>
 .vhpxefrj {
 	display: block;
+	position: relative;
 
 	&:hover {
 		text-decoration: none;
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
+	}
+
+	&:focus-within {
+		outline: none;
+
+		&::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			border-radius: var(--MI-radius);
+			pointer-events: none;
+			box-shadow: inset 0 0 0 2px var(--MI_THEME-focus);
+		}
 	}
 
 	> .thumbnail {
 		& + article {
-			border-radius: 0 0 var(--radius) var(--radius);
+			border-radius: 0 0 var(--MI-radius) var(--MI-radius);
 		}
 	}
 
 	> article {
-		background-color: var(--panel);
+		background-color: var(--MI_THEME-panel);
 		padding: 16px;
-		border-radius: var(--radius);
+		border-radius: var(--MI-radius);
 
 		> header {
 			margin-bottom: 8px;
@@ -98,7 +115,6 @@ const props = defineProps<{
 			> p {
 				display: inline-block;
 				margin: 0;
-				color: var(--urlPreviewInfo);
 				font-size: 0.8em;
 				line-height: 16px;
 				vertical-align: top;

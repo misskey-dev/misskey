@@ -1,7 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
+/// <reference lib="esnext" />
+/// <reference lib="webworker" />
 
 import { render } from 'buraha';
 
@@ -18,5 +21,5 @@ onmessage = (event) => {
 
 	render(event.data.hash, canvas);
 	const bitmap = canvas.transferToImageBitmap();
-	postMessage({ id: event.data.id, bitmap });
+	self.postMessage({ id: event.data.id, bitmap }, [bitmap]);
 };

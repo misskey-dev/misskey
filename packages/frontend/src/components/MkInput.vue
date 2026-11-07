@@ -1,10 +1,10 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
+<div class="_selectable">
 	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
 	<div :class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused }]">
 		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"></slot></div>
@@ -22,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:autocomplete="autocomplete"
 			:autocapitalize="autocapitalize"
 			:spellcheck="spellcheck"
+			:inputmode="inputmode"
 			:step="step"
 			:list="id"
 			:min="min"
@@ -32,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@input="onInput"
 		>
 		<datalist v-if="datalist" :id="id">
-			<option v-for="data in datalist" :key="data" :value="data"/>
+			<option v-for="data in datalist" :key="data" :value="data"></option>
 		</datalist>
 		<div ref="suffixEl" :class="$style.suffix"><slot name="suffix"></slot></div>
 	</div>
@@ -42,16 +43,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
-import { onMounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
-import { debounce } from 'throttle-debounce';
+<script lang="ts">
+type SupportedTypes = 'text' | 'password' | 'email' | 'url' | 'tel' | 'number' | 'search' | 'date' | 'time' | 'datetime-local' | 'color';
+type ModelValueType<T extends SupportedTypes> =
+	T extends 'number' ? number :
+	T extends 'text' | 'password' | 'email' | 'url' | 'tel' | 'search' | 'date' | 'time' | 'datetime-local' | 'color' ? string :
+	never;
+</script>
+
+<script lang="ts" setup generic="T extends SupportedTypes = 'text'">
+import { onMounted, onUnmounted, nextTick, ref, useTemplateRef, watch, computed, toRefs } from 'vue';
+import { throttle, debounce } from 'throttle-debounce';
+import type { InputHTMLAttributes } from 'vue';
+import type { SuggestionType } from '@/utility/autocomplete.js';
 import MkButton from '@/components/MkButton.vue';
-import { useInterval } from '@/scripts/use-interval.js';
 import { i18n } from '@/i18n.js';
+import { Autocomplete } from '@/utility/autocomplete.js';
+import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
-	modelValue: string | number | null;
-	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
+	modelValue: ModelValueType<T> | null;
+	type?: T;
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
@@ -59,45 +71,50 @@ const props = defineProps<{
 	placeholder?: string;
 	autofocus?: boolean;
 	autocomplete?: string;
+	mfmAutocomplete?: boolean | SuggestionType[],
 	autocapitalize?: string;
 	spellcheck?: boolean;
-	step?: any;
+	inputmode?: InputHTMLAttributes['inputmode'];
+	step?: InputHTMLAttributes['step'];
 	datalist?: string[];
 	min?: number;
 	max?: number;
 	inline?: boolean;
-	debounce?: boolean;
+	debounce?: boolean | number;
+	throttle?: boolean | number;
 	manualSave?: boolean;
 	small?: boolean;
 	large?: boolean;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'change', _ev: KeyboardEvent): void;
+	(ev: 'change', _ev: InputEvent): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
-	(ev: 'enter'): void;
-	(ev: 'update:modelValue', value: string | number): void;
+	(ev: 'enter', _ev: KeyboardEvent): void;
+	(ev: 'update:modelValue', value: ModelValueType<T>): void;
+	(ev: 'savingStateChange', saved: boolean, invalid: boolean): void;
 }>();
 
-const { modelValue, type, autofocus } = toRefs(props);
-const v = ref(modelValue.value);
-const id = Math.random().toString(); // TODO: uuid?
+const { modelValue } = toRefs(props);
+const v = ref<ModelValueType<T> | null>(modelValue.value);
+const id = genId();
 const focused = ref(false);
 const changed = ref(false);
 const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
-const inputEl = shallowRef<HTMLElement>();
-const prefixEl = shallowRef<HTMLElement>();
-const suffixEl = shallowRef<HTMLElement>();
+const inputEl = useTemplateRef('inputEl');
+const prefixEl = useTemplateRef('prefixEl');
+const suffixEl = useTemplateRef('suffixEl');
 const height =
 	props.small ? 33 :
 	props.large ? 39 :
 	36;
+let autocompleteWorker: Autocomplete | null = null;
 
-const focus = () => inputEl.value.focus();
-const onInput = (ev: KeyboardEvent) => {
+const focus = () => inputEl.value?.focus();
+const onInput = (event: InputEvent) => {
 	changed.value = true;
-	emit('change', ev);
+	emit('change', event);
 };
 const onKeydown = (ev: KeyboardEvent) => {
 	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
@@ -105,61 +122,85 @@ const onKeydown = (ev: KeyboardEvent) => {
 	emit('keydown', ev);
 
 	if (ev.code === 'Enter') {
-		emit('enter');
+		emit('enter', ev);
 	}
 };
 
 const updated = () => {
 	changed.value = false;
-	if (type.value === 'number') {
-		emit('update:modelValue', parseFloat(v.value));
+	if (props.type === 'number') {
+		emit('update:modelValue', typeof v.value === 'number' ? v.value as ModelValueType<T> : parseFloat(v.value ?? '0') as ModelValueType<T>);
 	} else {
-		emit('update:modelValue', v.value);
+		emit('update:modelValue', v.value ?? '');
 	}
 };
 
-const debouncedUpdated = debounce(1000, updated);
+const throttledUpdated = throttle(typeof props.throttle === 'number' ? props.throttle : 1000, updated);
+const debouncedUpdated = debounce(typeof props.debounce === 'number' ? props.debounce : 1000, updated);
 
 watch(modelValue, newValue => {
 	v.value = newValue;
 });
 
-watch(v, newValue => {
+watch(v, () => {
 	if (!props.manualSave) {
-		if (props.debounce) {
+		if (props.throttle === true || typeof props.throttle === 'number') {
+			throttledUpdated();
+		} else if (props.debounce === true || typeof props.debounce === 'number') {
 			debouncedUpdated();
 		} else {
 			updated();
 		}
 	}
 
-	invalid.value = inputEl.value.validity.badInput;
+	invalid.value = inputEl.value?.validity.badInput ?? true;
 });
+
+watch([changed, invalid], ([newChanged, newInvalid]) => {
+	emit('savingStateChange', newChanged, newInvalid);
+}, { immediate: true });
 
 // このコンポーネントが作成された時、非表示状態である場合がある
-// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
-useInterval(() => {
-	if (prefixEl.value) {
-		if (prefixEl.value.offsetWidth) {
-			inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
+// 非表示状態だと要素の幅などは0になってしまうので、ResizeObserverでサイズの変化を監視して計算する
+const updatePadding = (entries: ResizeObserverEntry[]) => {
+	if (inputEl.value == null) return;
+
+	for (const entry of entries) {
+		const width = entry.borderBoxSize[0].inlineSize;
+		if (width === 0) continue;
+		if (entry.target === prefixEl.value) {
+			inputEl.value.style.paddingLeft = width + 'px';
+		} else if (entry.target === suffixEl.value) {
+			inputEl.value.style.paddingRight = width + 'px';
 		}
 	}
-	if (suffixEl.value) {
-		if (suffixEl.value.offsetWidth) {
-			inputEl.value.style.paddingRight = suffixEl.value.offsetWidth + 'px';
-		}
-	}
-}, 100, {
-	immediate: true,
-	afterMounted: true,
-});
+};
+
+let paddingObserver: ResizeObserver | null = null;
 
 onMounted(() => {
+	paddingObserver = new ResizeObserver(updatePadding);
+	if (prefixEl.value) paddingObserver.observe(prefixEl.value);
+	if (suffixEl.value) paddingObserver.observe(suffixEl.value);
+
 	nextTick(() => {
-		if (autofocus.value) {
+		if (props.autofocus) {
 			focus();
 		}
 	});
+
+	if (props.mfmAutocomplete && inputEl.value) {
+		autocompleteWorker = new Autocomplete(inputEl.value, v, props.mfmAutocomplete === true ? undefined : props.mfmAutocomplete);
+	}
+});
+
+onUnmounted(() => {
+	paddingObserver?.disconnect();
+	paddingObserver = null;
+
+	if (autocompleteWorker) {
+		autocompleteWorker.detach();
+	}
 });
 
 defineExpose({
@@ -181,7 +222,7 @@ defineExpose({
 .caption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 
 	&:empty {
 		display: none;
@@ -198,8 +239,8 @@ defineExpose({
 
 	&.focused {
 		> .inputCore {
-			border-color: var(--accent) !important;
-			//box-shadow: 0 0 0 4px var(--focus);
+			border-color: var(--MI_THEME-accent) !important;
+			//box-shadow: 0 0 0 4px var(--MI_THEME-focus);
 		}
 	}
 
@@ -224,9 +265,9 @@ defineExpose({
 	font: inherit;
 	font-weight: normal;
 	font-size: 1em;
-	color: var(--fg);
-	background: var(--panel);
-	border: solid 1px var(--panel);
+	color: var(--MI_THEME-fg);
+	background: var(--MI_THEME-panel);
+	border: solid 1px var(--MI_THEME-panel);
 	border-radius: 6px;
 	outline: none;
 	box-shadow: none;
@@ -234,7 +275,7 @@ defineExpose({
 	transition: border-color 0.1s ease-out;
 
 	&:hover {
-		border-color: var(--inputBorderHover) !important;
+		border-color: var(--MI_THEME-inputBorderHover) !important;
 	}
 }
 

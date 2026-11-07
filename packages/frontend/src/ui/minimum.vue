@@ -1,41 +1,47 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div :class="$style.root">
-	<div style="container-type: inline-size;">
-		<RouterView/>
-	</div>
+	<RouterView/>
 
 	<XCommon/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { provide, ComputedRef, ref } from 'vue';
+import { computed, provide, ref } from 'vue';
+import { instanceName } from '@@/js/config.js';
 import XCommon from './_common_/common.vue';
+import type { PageMetadata } from '@/page.js';
+import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { mainRouter } from '@/router.js';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
-import { instanceName } from '@/config.js';
+import { DI } from '@/di.js';
 
-const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
+const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
-provide('router', mainRouter);
-provideMetadataReceiver((info) => {
+const pageMetadata = ref<null | PageMetadata>(null);
+
+provide(DI.router, mainRouter);
+provideMetadataReceiver((metadataGetter) => {
+	const info = metadataGetter();
 	pageMetadata.value = info;
-	if (pageMetadata.value.value) {
-		document.title = `${pageMetadata.value.value.title} | ${instanceName}`;
+	if (pageMetadata.value) {
+		if (isRoot.value && pageMetadata.value.title === instanceName) {
+			window.document.title = pageMetadata.value.title;
+		} else {
+			window.document.title = `${pageMetadata.value.title} | ${instanceName}`;
+		}
 	}
 });
-
-document.documentElement.style.overflowY = 'scroll';
+provideReactiveMetadata(pageMetadata);
 </script>
 
 <style lang="scss" module>
 .root {
-	min-height: 100dvh;
-	box-sizing: border-box;
+	position: relative;
+	height: 100dvh;
 }
 </style>

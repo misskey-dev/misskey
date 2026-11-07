@@ -1,11 +1,14 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="!muted" :class="$style.root">
-	<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
+<div v-if="note == null" :class="$style.deleted">
+	{{ i18n.ts.deletedNote }}
+</div>
+<div v-else-if="!muted" :class="$style.root">
+	<MkAvatar :class="[$style.avatar, prefer.s.useStickyIcons ? $style.useSticky : null]" :user="note.user" link preview/>
 	<div :class="$style.main">
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 		<div>
@@ -20,11 +23,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 </div>
 <div v-else :class="$style.muted" @click="muted = false">
-	<I18n :src="i18n.ts.userSaysSomething" tag="small">
+	<I18n v-if="prefer.r.showSoftWordMutedWord.value !== true" :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="note.userId" :to="userPage(note.user)">
 				<MkUserName :user="note.user"/>
 			</MkA>
+		</template>
+	</I18n>
+	<I18n v-else :src="i18n.ts.userSaysSomethingAbout" tag="small">
+		<template #name>
+			<MkA v-user-preview="note.userId" :to="userPage(note.user)">
+				<MkUserName :user="note.user"/>
+			</MkA>
+		</template>
+		<template #word>
+			{{ Array.isArray(muted) ? muted.map(words => Array.isArray(words) ? words.join() : words).slice(0, 3).join(' ') : muted }}
 		</template>
 	</I18n>
 </div>
@@ -37,26 +50,20 @@ import { i18n } from '@/i18n.js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
-import { $i } from '@/account.js';
-import { checkWordMute } from '@/scripts/check-word-mute.js';
-import { userPage } from '@/filters/user.js';
-import { deepClone } from '@/scripts/clone.js';
+import { $i } from '@/i.js';
+import { userPage } from '@@/js/user.js';
+import { deepClone } from '@/utility/clone.js';
+import { checkNoteWordMute } from '@/composables/use-note.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note | null;
 }>();
 
 const note = ref(deepClone(props.note));
 
 const showContent = ref(false);
-const muted = ref(checkMute(note.value, $i?.mutedWords));
-
-function checkMute(note: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null): boolean {
-	if (mutedWords == null) return false;
-
-	if (checkWordMute(note, $i, mutedWords)) return true;
-	return false;
-}
+const muted = ref(note.value != null && ($i ? checkNoteWordMute(note.value, $i, $i?.mutedWords) : false));
 </script>
 
 <style lang="scss" module>
@@ -74,9 +81,11 @@ function checkMute(note: Misskey.entities.Note, mutedWords: Array<string | strin
 	width: 34px;
 	height: 34px;
 	border-radius: 8px;
-	position: sticky !important;
-	top: calc(16px + var(--stickyTop, 0px));
-	left: 0;
+
+	&.useSticky {
+		position: sticky !important;
+		top: calc(16px + var(--MI-stickyTop, 0px));
+	}
 }
 
 .main {
@@ -130,5 +139,14 @@ function checkMute(note: Misskey.entities.Note, mutedWords: Array<string | strin
 		width: 48px;
 		height: 48px;
 	}
+}
+
+.deleted {
+	text-align: center;
+	padding: 8px !important;
+	--color: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
+	background-size: auto auto;
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 10px, var(--color) 4px, var(--color) 14px);
+	border-radius: 8px;
 }
 </style>

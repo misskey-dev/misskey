@@ -1,10 +1,9 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import * as os from 'node:os';
-import si from 'systeminformation';
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import * as Redis from 'ioredis';
@@ -14,6 +13,7 @@ import { DI } from '@/di-symbols.js';
 export const meta = {
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:server-info',
 
 	tags: ['admin', 'meta'],
 
@@ -111,6 +111,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 	) {
 		super(meta, paramDef, async () => {
+			const si = await import('systeminformation');
+
 			const memStats = await si.mem();
 			const fsStats = await si.fsSize();
 			const netInterface = await si.networkInterfaceDefault();

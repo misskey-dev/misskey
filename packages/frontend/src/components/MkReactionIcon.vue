@@ -1,16 +1,16 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkCustomEmoji v-if="reaction[0] === ':'" ref="elRef" :name="reaction" :normal="true" :noStyle="noStyle" :url="emojiUrl"/>
+<MkCustomEmoji v-if="reaction[0] === ':'" ref="elRef" :name="reaction" :normal="true" :noStyle="noStyle" :url="emojiUrl" :fallbackToImage="true"/>
 <MkEmoji v-else ref="elRef" :emoji="reaction" :normal="true" :noStyle="noStyle"/>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, shallowRef } from 'vue';
-import { useTooltip } from '@/scripts/use-tooltip.js';
+import { defineAsyncComponent, useTemplateRef } from 'vue';
+import { useTooltip } from '@/composables/use-tooltip.js';
 import * as os from '@/os.js';
 
 const props = defineProps<{
@@ -20,15 +20,18 @@ const props = defineProps<{
 	withTooltip?: boolean;
 }>();
 
-const elRef = shallowRef();
+const elRef = useTemplateRef('elRef');
 
 if (props.withTooltip) {
 	useTooltip(elRef, (showing) => {
-		os.popup(defineAsyncComponent(() => import('@/components/MkReactionTooltip.vue')), {
+		if (elRef.value == null) return;
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkReactionTooltip.vue')), {
 			showing,
 			reaction: props.reaction.replace(/^:(\w+):$/, ':$1@.:'),
-			targetElement: elRef.value.$el,
-		}, {}, 'closed');
+			anchorElement: elRef.value.$el,
+		}, {
+			closed: () => dispose(),
+		});
 	});
 }
 </script>

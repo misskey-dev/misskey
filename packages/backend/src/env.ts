@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,6 +11,7 @@ const envOption = {
 	verbose: false,
 	withLogTime: false,
 	quiet: false,
+	enableCrossOriginIsolation: false,
 };
 
 for (const key of Object.keys(envOption) as (keyof typeof envOption)[]) {

@@ -1,13 +1,13 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import Ajv from 'ajv';
-import { Schema } from '@/misc/schema';
+import { Schema } from '@/misc/json-schema.js';
 
 export const getValidator = (paramDef: Schema) => {
-	const ajv = new Ajv({
+	const ajv = new Ajv.default({
 		useDefaults: true,
 	});
 	ajv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);

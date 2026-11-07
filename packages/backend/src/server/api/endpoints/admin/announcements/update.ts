@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,12 +15,18 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:announcements',
 
 	errors: {
 		noSuchAnnouncement: {
 			message: 'No such announcement.',
 			code: 'NO_SUCH_ANNOUNCEMENT',
 			id: 'd3aae5a7-6372-4cb4-b61c-f511ffc2d7cc',
+		},
+		invalidAutoArchiveAt: {
+			message: 'Invalid auto archive date.',
+			code: 'INVALID_AUTO_ARCHIVE_AT',
+			id: '01b83d7b-2fd5-4d7c-86c4-d03144d16355',
 		},
 	},
 } as const;
@@ -38,6 +44,7 @@ export const paramDef = {
 		silence: { type: 'boolean' },
 		needConfirmationToRead: { type: 'boolean' },
 		isActive: { type: 'boolean' },
+		autoArchiveAt: { type: 'integer', nullable: true },
 	},
 	required: ['id'],
 } as const;
@@ -51,6 +58,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private announcementService: AnnouncementService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const autoArchiveAt = ps.autoArchiveAt != null ? new Date(ps.autoArchiveAt) : ps.autoArchiveAt;
+			if (ps.autoArchiveAt != null && (ps.autoArchiveAt < 0 || Number.isNaN(autoArchiveAt?.getTime()))) {
+				throw new ApiError(meta.errors.invalidAutoArchiveAt);
+			}
+
 			const announcement = await this.announcementsRepository.findOneBy({ id: ps.id });
 
 			if (announcement == null) throw new ApiError(meta.errors.noSuchAnnouncement);
@@ -67,6 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				silence: ps.silence,
 				needConfirmationToRead: ps.needConfirmationToRead,
 				isActive: ps.isActive,
+				autoArchiveAt,
 			}, me);
 		});
 	}

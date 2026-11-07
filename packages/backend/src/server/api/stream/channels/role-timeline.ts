@@ -1,59 +1,77 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
-import { isUserRelated } from '@/misc/is-user-related.js';
-import type { Packed } from '@/misc/json-schema.js';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
+import { NoteStreamingHidingService } from '../NoteStreamingHidingService.js';
+import { DI } from '@/di-symbols.js';
+import type { RolesRepository } from '@/models/_.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import Channel from '../channel.js';
+import type { JsonObject } from '@/misc/json-value.js';
+import Channel, { type ChannelRequest } from '../channel.js';
+import { REQUEST } from '@nestjs/core';
 
-class RoleTimelineChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class RoleTimelineChannel extends Channel {
 	public readonly chName = 'roleTimeline';
 	public static shouldShare = false;
-	public static requireCredential = false;
+	public static requireCredential = false as const;
 	private roleId: string;
 
 	constructor(
-		private noteEntityService: NoteEntityService,
-		private roleservice: RoleService,
+		@Inject(REQUEST)
+		request: ChannelRequest,
 
-		id: string,
-		connection: Channel['connection'],
+		@Inject(DI.rolesRepository)
+		private rolesRepository: RolesRepository,
+
+		private noteEntityService: NoteEntityService,
+		private noteStreamingHidingService: NoteStreamingHidingService,
 	) {
-		super(id, connection);
+		super(request);
 		//this.onNote = this.onNote.bind(this);
 	}
 
 	@bindThis
-	public async init(params: any) {
-		this.roleId = params.roleId as string;
+	public async init(params: JsonObject) {
+		if (typeof params.roleId !== 'string') return false;
+		this.roleId = params.roleId;
+
+		if (!await this.isAvailable()) return false;
 
 		this.subscriber.on(`roleTimelineStream:${this.roleId}`, this.onEvent);
+		return true;
+	}
+
+	@bindThis
+	private async isAvailable() {
+		return await this.rolesRepository.exists({
+			where: { id: this.roleId, isPublic: true, isExplorable: true },
+		});
 	}
 
 	@bindThis
 	private async onEvent(data: GlobalEvents['roleTimeline']['payload']) {
+		if (!await this.isAvailable()) return;
+
 		if (data.type === 'note') {
-			const note = data.body;
+			let note = data.body;
 
-			if (!(await this.roleservice.isExplorable({ id: this.roleId }))) {
-				return;
-			}
 			if (note.visibility !== 'public') return;
+			if (note.user.requireSigninToViewContents && this.user == null) return;
+			if (note.renote && note.renote.user.requireSigninToViewContents && this.user == null) return;
+			if (note.reply && note.reply.user.requireSigninToViewContents && this.user == null) return;
 
-			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-			if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
-			// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-			if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
+			if (this.isNoteMutedOrBlocked(note)) return;
 
-			if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+			const filtered = await this.noteStreamingHidingService.filter(note, this.user?.id ?? null);
+			if (!filtered) return;
+			note = filtered;
 
-			this.send('note', note);
+			this.send('note', await this.noteEntityService.withMyRenoteReaction(note, this.user?.id ?? null));
 		} else {
 			this.send(data.type, data.body);
 		}
@@ -63,27 +81,5 @@ class RoleTimelineChannel extends Channel {
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off(`roleTimelineStream:${this.roleId}`, this.onEvent);
-	}
-}
-
-@Injectable()
-export class RoleTimelineChannelService {
-	public readonly shouldShare = RoleTimelineChannel.shouldShare;
-	public readonly requireCredential = RoleTimelineChannel.requireCredential;
-
-	constructor(
-		private noteEntityService: NoteEntityService,
-		private roleservice: RoleService,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): RoleTimelineChannel {
-		return new RoleTimelineChannel(
-			this.noteEntityService,
-			this.roleservice,
-			id,
-			connection,
-		);
 	}
 }

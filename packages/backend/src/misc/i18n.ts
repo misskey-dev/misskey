@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -26,7 +26,7 @@ export class I18n<T extends Record<string, any>> {
 				}
 			}
 			return str;
-		} catch (e) {
+		} catch (_) {
 			console.warn(`missing localization '${key}'`);
 			return key;
 		}

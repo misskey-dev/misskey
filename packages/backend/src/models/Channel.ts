@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -27,7 +27,7 @@ export class MiChannel {
 	})
 	public userId: MiUser['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
@@ -52,7 +52,7 @@ export class MiChannel {
 	})
 	public bannerId: MiDriveFile['id'] | null;
 
-	@ManyToOne(type => MiDriveFile, {
+	@ManyToOne(() => MiDriveFile, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()

@@ -1,31 +1,47 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div class="_gaps_m">
-	<MkTextarea v-model="installThemeCode">
+	<MkCodeEditor v-model="installThemeCode" lang="json5">
 		<template #label>{{ i18n.ts._theme.code }}</template>
-	</MkTextarea>
+	</MkCodeEditor>
 
 	<div class="_buttons">
-		<MkButton :disabled="installThemeCode == null" inline @click="() => previewTheme(installThemeCode)"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
-		<MkButton :disabled="installThemeCode == null" primary inline @click="() => install(installThemeCode)"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
+		<MkButton :disabled="installThemeCode == null || installThemeCode.trim() === ''" inline @click="() => previewTheme(installThemeCode!)"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
+		<MkButton :disabled="installThemeCode == null || installThemeCode.trim() === ''" primary inline @click="() => install(installThemeCode!)"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import MkTextarea from '@/components/MkTextarea.vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkButton from '@/components/MkButton.vue';
-import { parseThemeCode, previewTheme, installTheme } from '@/scripts/install-theme.js';
+import { themeManager, installTheme, handleThemeInstallError } from '@/theme.js';
+import { parseThemeCode } from '@@/js/theme-code.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
+import { useRouter } from '@/router.js';
 
-const installThemeCode = ref(null);
+const router = useRouter();
+const installThemeCode = ref<string | null>(null);
+
+function previewTheme(code: string): void {
+	try {
+		const theme = parseThemeCode(code);
+		themeManager.previewTheme(theme);
+	} catch (err) {
+		os.alert({
+			type: 'error',
+			text: i18n.ts._theme.invalid,
+		});
+		console.error(err);
+	}
+}
 
 async function install(code: string): Promise<void> {
 	try {
@@ -33,25 +49,12 @@ async function install(code: string): Promise<void> {
 		await installTheme(code);
 		os.alert({
 			type: 'success',
-			text: i18n.t('_theme.installed', { name: theme.name }),
+			text: i18n.tsx._theme.installed({ name: theme.name }),
 		});
-	} catch (err) {
-		switch (err.message.toLowerCase()) {
-			case 'this theme is already installed':
-				os.alert({
-					type: 'info',
-					text: i18n.ts._theme.alreadyInstalled,
-				});
-				break;
-
-			default:
-				os.alert({
-					type: 'error',
-					text: i18n.ts._theme.invalid,
-				});
-				break;
-		}
-		console.error(err);
+		installThemeCode.value = null;
+		router.push('/settings/theme');
+	} catch (err: any) {
+		handleThemeInstallError(err);
 	}
 }
 
@@ -59,8 +62,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePage(() => ({
 	title: i18n.ts._theme.install,
 	icon: 'ti ti-download',
-});
+}));
 </script>

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -8,8 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="dialog"
 	:width="500"
 	:height="600"
-	@close="dialog.close()"
-	@closed="$emit('closed')"
+	@close="onClose"
+	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.signup }}</template>
 
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:leaveToClass="$style.transition_x_leaveTo"
 		>
 			<template v-if="!isAcceptedServerRule">
-				<XServerRules @done="isAcceptedServerRule = true" @cancel="dialog.close()"/>
+				<XServerRules @done="isAcceptedServerRule = true" @cancel="onClose"/>
 			</template>
 			<template v-else>
 				<XSignup :autoSet="autoSet" @signup="onSignup" @signupEmailPending="onSignupEmailPending"/>
@@ -33,13 +33,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, ref } from 'vue';
-
+import { useTemplateRef, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XSignup from '@/components/MkSignupDialog.form.vue';
 import XServerRules from '@/components/MkSignupDialog.rules.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;
@@ -48,21 +47,27 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done'): void;
+	(ev: 'done', res: Misskey.entities.SignupResponse): void;
+	(ev: 'cancelled'): void;
 	(ev: 'closed'): void;
 }>();
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = useTemplateRef('dialog');
 
 const isAcceptedServerRule = ref(false);
 
-function onSignup(res) {
+function onClose() {
+	emit('cancelled');
+	dialog.value?.close();
+}
+
+function onSignup(res: Misskey.entities.SignupResponse) {
 	emit('done', res);
-	dialog.value.close();
+	dialog.value?.close();
 }
 
 function onSignupEmailPending() {
-	dialog.value.close();
+	dialog.value?.close();
 }
 </script>
 

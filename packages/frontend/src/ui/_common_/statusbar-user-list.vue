@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -13,15 +13,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:leaveToClass="$style.transition_change_leaveTo"
 			mode="default"
 		>
-			<MarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
+			<MkMarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
 				<span v-for="note in notes" :key="note.id" :class="$style.item">
-					<img :class="$style.avatar" :src="note.user.avatarUrl" decoding="async"/>
+					<img v-if="note.user.avatarUrl" :class="$style.avatar" :src="note.user.avatarUrl" decoding="async"/>
 					<MkA :class="$style.text" :to="notePage(note)">
 						<Mfm :text="getNoteSummary(note)" :plain="true" :nowrap="true"/>
 					</MkA>
 					<span :class="$style.divider"></span>
 				</span>
-			</MarqueeText>
+			</MkMarqueeText>
 		</Transition>
 	</template>
 	<template v-else-if="display === 'oneByOne'">
@@ -33,11 +33,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import MarqueeText from '@/components/MkMarquee.vue';
-import * as os from '@/os.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import { getNoteSummary } from '@/scripts/get-note-summary.js';
-import { notePage } from '@/filters/note.js';
+import { useInterval } from '@@/js/use-interval.js';
+import MkMarqueeText from '@/components/MkMarqueeText.vue';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { getNoteSummary } from '@/utility/get-note-summary.js';
+import { notePage } from '@@/js/note.js';
 
 const props = defineProps<{
 	userListId?: string;
@@ -45,7 +45,7 @@ const props = defineProps<{
 	marqueeDuration?: number;
 	marqueeReverse?: boolean;
 	oneByOneInterval?: number;
-	refreshIntervalSec?: number;
+	refreshIntervalSec: number;
 }>();
 
 const notes = ref<Misskey.entities.Note[]>([]);
@@ -54,7 +54,7 @@ const key = ref(0);
 
 const tick = () => {
 	if (props.userListId == null) return;
-	os.api('notes/user-list-timeline', {
+	misskeyApi('notes/user-list-timeline', {
 		listId: props.userListId,
 	}).then(res => {
 		notes.value = res;

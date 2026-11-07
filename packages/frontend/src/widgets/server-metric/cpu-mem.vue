@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<rect
 			x="-2" y="-2"
 			:width="viewBoxX + 4" :height="viewBoxY + 4"
-			:style="`stroke: none; fill: url(#${ cpuGradientId }); mask: url(#${ cpuMaskId })`"
+			:style="{ stroke: 'none', fill: `url(#${ cpuGradientId })`, mask: `url(#${ cpuMaskId })` }"
 		/>
 		<text x="1" y="5">CPU <tspan>{{ cpuP }}%</tspan></text>
 	</svg>
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<rect
 			x="-2" y="-2"
 			:width="viewBoxX + 4" :height="viewBoxY + 4"
-			:style="`stroke: none; fill: url(#${ memGradientId }); mask: url(#${ memMaskId })`"
+			:style="{ stroke: 'none', fill: `url(#${ memGradientId })`, mask: `url(#${ memMaskId })` }"
 		/>
 		<text x="1" y="5">MEM <tspan>{{ memP }}%</tspan></text>
 	</svg>
@@ -76,28 +76,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount, ref } from 'vue';
-import { v4 as uuid } from 'uuid';
+import * as Misskey from 'misskey-js';
+import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
-	connection: any,
-	meta: any
+	connection: Misskey.IChannelConnection<Misskey.Channels['serverStats']>,
+	meta: Misskey.entities.ServerInfoResponse
 }>();
 
 const viewBoxX = ref<number>(50);
 const viewBoxY = ref<number>(30);
-const stats = ref<any[]>([]);
-const cpuGradientId = uuid();
-const cpuMaskId = uuid();
-const memGradientId = uuid();
-const memMaskId = uuid();
+const stats = ref<Misskey.entities.ServerStats[]>([]);
+const cpuGradientId = genId();
+const cpuMaskId = genId();
+const memGradientId = genId();
+const memMaskId = genId();
 const cpuPolylinePoints = ref<string>('');
 const memPolylinePoints = ref<string>('');
 const cpuPolygonPoints = ref<string>('');
 const memPolygonPoints = ref<string>('');
-const cpuHeadX = ref<any>(null);
-const cpuHeadY = ref<any>(null);
-const memHeadX = ref<any>(null);
-const memHeadY = ref<any>(null);
+const cpuHeadX = ref<number>();
+const cpuHeadY = ref<number>();
+const memHeadX = ref<number>();
+const memHeadY = ref<number>();
 const cpuP = ref<string>('');
 const memP = ref<string>('');
 
@@ -105,7 +106,8 @@ onMounted(() => {
 	props.connection.on('stats', onStats);
 	props.connection.on('statsLog', onStatsLog);
 	props.connection.send('requestLog', {
-		id: Math.random().toString().substring(2, 10),
+		id: genId(),
+		length: 50,
 	});
 });
 
@@ -114,7 +116,7 @@ onBeforeUnmount(() => {
 	props.connection.off('statsLog', onStatsLog);
 });
 
-function onStats(connStats) {
+function onStats(connStats: Misskey.entities.ServerStats) {
 	stats.value.push(connStats);
 	if (stats.value.length > 50) stats.value.shift();
 
@@ -135,8 +137,8 @@ function onStats(connStats) {
 	memP.value = (connStats.mem.active / props.meta.mem.total * 100).toFixed(0);
 }
 
-function onStatsLog(statsLog) {
-	for (const revStats of [...statsLog].reverse()) {
+function onStatsLog(statsLog: Misskey.entities.ServerStatsLog) {
+	for (const revStats of statsLog.toReversed()) {
 		onStats(revStats);
 	}
 }

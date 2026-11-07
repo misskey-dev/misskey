@@ -1,0 +1,7 @@
+certificates
+volumes
+.env
+docker.env
+*.test.conf
+*.test.default.yml
+*.test.config.json

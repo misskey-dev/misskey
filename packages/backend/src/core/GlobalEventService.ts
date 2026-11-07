@@ -1,10 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
+import * as Reversi from 'misskey-reversi';
 import type { MiChannel } from '@/models/Channel.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
@@ -13,12 +14,14 @@ import type { MiAntenna } from '@/models/Antenna.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiDriveFolder } from '@/models/DriveFolder.js';
 import type { MiUserList } from '@/models/UserList.js';
+import type { MiClip } from '@/models/Clip.js';
 import type { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import type { MiSignin } from '@/models/Signin.js';
 import type { MiPage } from '@/models/Page.js';
 import type { MiWebhook } from '@/models/Webhook.js';
+import type { MiSystemWebhook } from '@/models/SystemWebhook.js';
 import type { MiMeta } from '@/models/Meta.js';
-import { MiAvatarDecoration, MiRole, MiRoleAssignment } from '@/models/_.js';
+import { MiAvatarDecoration, MiChatMessage, MiChatRoom, MiReversiGame, MiRole, MiRoleAssignment } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -36,11 +39,7 @@ export interface BroadcastTypes {
 		emojis: Packed<'EmojiDetailed'>[];
 	};
 	emojiDeleted: {
-		emojis: {
-			id?: string;
-			name: string;
-			[other: string]: any;
-		}[];
+		emojis: Packed<'EmojiDetailed'>[];
 	};
 	announcementCreated: {
 		announcement: Packed<'Announcement'>;
@@ -53,28 +52,25 @@ export interface MainEventTypes {
 	reply: Packed<'Note'>;
 	renote: Packed<'Note'>;
 	follow: Packed<'UserDetailedNotMe'>;
-	followed: Packed<'User'>;
-	unfollow: Packed<'User'>;
-	meUpdated: Packed<'User'>;
+	followed: Packed<'UserLite'>;
+	unfollow: Packed<'UserDetailedNotMe'>;
+	meUpdated: Packed<'MeDetailed'>;
 	pageEvent: {
 		pageId: MiPage['id'];
 		event: string;
 		var: any;
 		userId: MiUser['id'];
-		user: Packed<'User'>;
+		user: Packed<'UserDetailed'>;
 	};
 	urlUploadFinished: {
 		marker?: string | null;
 		file: Packed<'DriveFile'>;
 	};
 	readAllNotifications: undefined;
+	notificationFlushed: undefined;
 	unreadNotification: Packed<'Notification'>;
-	unreadMention: MiNote['id'];
-	readAllUnreadMentions: undefined;
-	unreadSpecifiedNote: MiNote['id'];
-	readAllUnreadSpecifiedNotes: undefined;
-	readAllAntennas: undefined;
 	unreadAntenna: MiAntenna;
+	newChatMessage: Packed<'ChatMessage'>;
 	readAllAnnouncements: undefined;
 	myTokenRegenerated: undefined;
 	signin: {
@@ -91,7 +87,7 @@ export interface MainEventTypes {
 	};
 	driveFileCreated: Packed<'DriveFile'>;
 	readAntenna: MiAntenna;
-	receiveFollowRequest: Packed<'User'>;
+	receiveFollowRequest: Packed<'UserLite'>;
 	announcementCreated: {
 		announcement: Packed<'Announcement'>;
 	};
@@ -134,17 +130,25 @@ export interface NoteEventTypes {
 type NoteStreamEventTypes = {
 	[key in keyof NoteEventTypes]: {
 		id: MiNote['id'];
+		userId: MiNote['userId'];
+		visibility: MiNote['visibility'];
+		visibleUserIds: MiNote['visibleUserIds'];
 		body: NoteEventTypes[key];
 	};
 };
 
 export interface UserListEventTypes {
-	userAdded: Packed<'User'>;
-	userRemoved: Packed<'User'>;
+	userAdded: Packed<'UserLite'>;
+	userRemoved: Packed<'UserLite'>;
+}
+
+export interface ClipEventTypes {
+	updated: undefined;
+	deleted: undefined;
 }
 
 export interface AntennaEventTypes {
-	note: MiNote;
+	note: Packed<'Note'>;
 }
 
 export interface RoleTimelineEventTypes {
@@ -159,6 +163,53 @@ export interface AdminEventTypes {
 		comment: string;
 	};
 }
+
+export interface ChatEventTypes {
+	message: Packed<'ChatMessageLite'>;
+	deleted: Packed<'ChatMessageLite'>['id'];
+	react: {
+		reaction: string;
+		user?: Packed<'UserLite'>;
+		messageId: MiChatMessage['id'];
+	};
+	unreact: {
+		reaction: string;
+		user?: Packed<'UserLite'>;
+		messageId: MiChatMessage['id'];
+	};
+}
+
+export interface ReversiEventTypes {
+	matched: {
+		game: Packed<'ReversiGameDetailed'>;
+	};
+	invited: {
+		user: Packed<'User'>;
+	};
+}
+
+export interface ReversiGameEventTypes {
+	changeReadyStates: {
+		user1: boolean;
+		user2: boolean;
+	};
+	updateSettings: {
+		userId: MiUser['id'];
+		key: string;
+		value: any;
+	};
+	log: Reversi.Serializer.Log & { id: string | null };
+	started: {
+		game: Packed<'ReversiGameDetailed'>;
+	};
+	ended: {
+		winnerId: MiUser['id'] | null;
+		game: Packed<'ReversiGameDetailed'>;
+	};
+	canceled: {
+		userId: MiUser['id'];
+	};
+}
 //#endregion
 
 // 辞書(interface or type)から{ type, body }ユニオンを定義
@@ -167,17 +218,23 @@ export interface AdminEventTypes {
 type Events<T extends object> = { [K in keyof T]: { type: K; body: T[K]; } };
 type EventUnionFromDictionary<
 	T extends object,
-	U = Events<T>
+	U = Events<T>,
 > = U[keyof U];
 
 type SerializedAll<T> = {
 	[K in keyof T]: Serialized<T[K]>;
 };
 
+type UndefinedAsNullAll<T> = {
+	[K in keyof T]: T[K] extends undefined ? null : T[K];
+};
+
 export interface InternalEventTypes {
 	userChangeSuspendedState: { id: MiUser['id']; isSuspended: MiUser['isSuspended']; };
+	userChangeDeletedState: { id: MiUser['id']; isDeleted: MiUser['isDeleted']; };
 	userTokenRegenerated: { id: MiUser['id']; oldToken: string; newToken: string; };
 	remoteUserUpdated: { id: MiUser['id']; };
+	localUserUpdated: { id: MiUser['id']; };
 	follow: { followerId: MiUser['id']; followeeId: MiUser['id']; };
 	unfollow: { followerId: MiUser['id']; followeeId: MiUser['id']; };
 	blockingCreated: { blockerId: MiUser['id']; blockeeId: MiUser['id']; };
@@ -191,15 +248,20 @@ export interface InternalEventTypes {
 	webhookCreated: MiWebhook;
 	webhookDeleted: MiWebhook;
 	webhookUpdated: MiWebhook;
+	systemWebhookCreated: MiSystemWebhook;
+	systemWebhookDeleted: MiSystemWebhook;
+	systemWebhookUpdated: MiSystemWebhook;
 	antennaCreated: MiAntenna;
 	antennaDeleted: MiAntenna;
 	antennaUpdated: MiAntenna;
 	avatarDecorationCreated: MiAvatarDecoration;
 	avatarDecorationDeleted: MiAvatarDecoration;
 	avatarDecorationUpdated: MiAvatarDecoration;
-	metaUpdated: MiMeta;
+	metaUpdated: { before?: MiMeta; after: MiMeta; };
 	followChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };
 	unfollowChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };
+	muteChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };
+	unmuteChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };
 	updateUserProfile: MiUserProfile;
 	mute: { muterId: MiUser['id']; muteeId: MiUser['id']; };
 	unmute: { muterId: MiUser['id']; muteeId: MiUser['id']; };
@@ -207,47 +269,69 @@ export interface InternalEventTypes {
 	userListMemberRemoved: { userListId: MiUserList['id']; memberId: MiUser['id']; };
 }
 
+export type EventTypesToEventPayload<T> = EventUnionFromDictionary<UndefinedAsNullAll<SerializedAll<T>>>;
+
 // name/messages(spec) pairs dictionary
 export type GlobalEvents = {
 	internal: {
 		name: 'internal';
-		payload: EventUnionFromDictionary<SerializedAll<InternalEventTypes>>;
+		payload: EventTypesToEventPayload<InternalEventTypes>;
 	};
 	broadcast: {
 		name: 'broadcast';
-		payload: EventUnionFromDictionary<SerializedAll<BroadcastTypes>>;
+		payload: EventTypesToEventPayload<BroadcastTypes>;
 	};
 	main: {
 		name: `mainStream:${MiUser['id']}`;
-		payload: EventUnionFromDictionary<SerializedAll<MainEventTypes>>;
+		payload: EventTypesToEventPayload<MainEventTypes>;
 	};
 	drive: {
 		name: `driveStream:${MiUser['id']}`;
-		payload: EventUnionFromDictionary<SerializedAll<DriveEventTypes>>;
+		payload: EventTypesToEventPayload<DriveEventTypes>;
 	};
 	note: {
 		name: `noteStream:${MiNote['id']}`;
-		payload: EventUnionFromDictionary<SerializedAll<NoteStreamEventTypes>>;
+		payload: EventTypesToEventPayload<NoteStreamEventTypes>;
 	};
 	userList: {
 		name: `userListStream:${MiUserList['id']}`;
-		payload: EventUnionFromDictionary<SerializedAll<UserListEventTypes>>;
+		payload: EventTypesToEventPayload<UserListEventTypes>;
+	};
+	clip: {
+		name: `clipStream:${MiClip['id']}`;
+		payload: EventTypesToEventPayload<ClipEventTypes>;
 	};
 	roleTimeline: {
 		name: `roleTimelineStream:${MiRole['id']}`;
-		payload: EventUnionFromDictionary<SerializedAll<RoleTimelineEventTypes>>;
+		payload: EventTypesToEventPayload<RoleTimelineEventTypes>;
 	};
 	antenna: {
 		name: `antennaStream:${MiAntenna['id']}`;
-		payload: EventUnionFromDictionary<SerializedAll<AntennaEventTypes>>;
+		payload: EventTypesToEventPayload<AntennaEventTypes>;
 	};
 	admin: {
 		name: `adminStream:${MiUser['id']}`;
-		payload: EventUnionFromDictionary<SerializedAll<AdminEventTypes>>;
+		payload: EventTypesToEventPayload<AdminEventTypes>;
 	};
 	notes: {
 		name: 'notesStream';
 		payload: Serialized<Packed<'Note'>>;
+	};
+	chatUser: {
+		name: `chatUserStream:${MiUser['id']}-${MiUser['id']}`;
+		payload: EventTypesToEventPayload<ChatEventTypes>;
+	};
+	chatRoom: {
+		name: `chatRoomStream:${MiChatRoom['id']}`;
+		payload: EventTypesToEventPayload<ChatEventTypes>;
+	};
+	reversi: {
+		name: `reversiStream:${MiUser['id']}`;
+		payload: EventTypesToEventPayload<ReversiEventTypes>;
+	};
+	reversiGame: {
+		name: `reversiGameStream:${MiReversiGame['id']}`;
+		payload: EventTypesToEventPayload<ReversiGameEventTypes>;
 	};
 };
 
@@ -307,9 +391,12 @@ export class GlobalEventService {
 	}
 
 	@bindThis
-	public publishNoteStream<K extends keyof NoteEventTypes>(noteId: MiNote['id'], type: K, value?: NoteEventTypes[K]): void {
-		this.publish(`noteStream:${noteId}`, type, {
-			id: noteId,
+	public publishNoteStream<K extends keyof NoteEventTypes>(note: MiNote, type: K, value?: NoteEventTypes[K]): void {
+		this.publish(`noteStream:${note.id}`, type, {
+			id: note.id,
+			userId: note.userId,
+			visibility: note.visibility,
+			visibleUserIds: note.visibleUserIds,
 			body: value,
 		});
 	}
@@ -317,6 +404,11 @@ export class GlobalEventService {
 	@bindThis
 	public publishUserListStream<K extends keyof UserListEventTypes>(listId: MiUserList['id'], type: K, value?: UserListEventTypes[K]): void {
 		this.publish(`userListStream:${listId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishClipStream<K extends keyof ClipEventTypes>(clipId: MiClip['id'], type: K, value?: ClipEventTypes[K]): void {
+		this.publish(`clipStream:${clipId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
 	@bindThis
@@ -337,5 +429,25 @@ export class GlobalEventService {
 	@bindThis
 	public publishAdminStream<K extends keyof AdminEventTypes>(userId: MiUser['id'], type: K, value?: AdminEventTypes[K]): void {
 		this.publish(`adminStream:${userId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishChatUserStream<K extends keyof ChatEventTypes>(fromUserId: MiUser['id'], toUserId: MiUser['id'], type: K, value?: ChatEventTypes[K]): void {
+		this.publish(`chatUserStream:${fromUserId}-${toUserId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishChatRoomStream<K extends keyof ChatEventTypes>(toRoomId: MiChatRoom['id'], type: K, value?: ChatEventTypes[K]): void {
+		this.publish(`chatRoomStream:${toRoomId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishReversiStream<K extends keyof ReversiEventTypes>(userId: MiUser['id'], type: K, value?: ReversiEventTypes[K]): void {
+		this.publish(`reversiStream:${userId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishReversiGameStream<K extends keyof ReversiGameEventTypes>(gameId: MiReversiGame['id'], type: K, value?: ReversiGameEventTypes[K]): void {
+		this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value);
 	}
 }

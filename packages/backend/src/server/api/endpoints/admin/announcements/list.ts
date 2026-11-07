@@ -1,9 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { Brackets } from 'typeorm';
 import type { AnnouncementsRepository, AnnouncementReadsRepository } from '@/models/_.js';
 import type { MiAnnouncement } from '@/models/Announcement.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -16,6 +17,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:announcements',
 
 	res: {
 		type: 'array',
@@ -48,6 +50,41 @@ export const meta = {
 					type: 'string',
 					optional: false, nullable: false,
 				},
+				icon: {
+					type: 'string',
+					optional: false, nullable: false,
+					enum: ['info', 'warning', 'error', 'success'],
+				},
+				display: {
+					type: 'string',
+					optional: false, nullable: false,
+					enum: ['normal', 'banner', 'dialog'],
+				},
+				isActive: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				autoArchiveAt: {
+					type: 'string',
+					optional: false, nullable: true,
+					format: 'date-time',
+				},
+				forExistingUsers: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				silence: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				needConfirmationToRead: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				userId: {
+					type: 'string',
+					optional: false, nullable: true,
+				},
 				imageUrl: {
 					type: 'string',
 					optional: false, nullable: true,
@@ -67,7 +104,10 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
 		userId: { type: 'string', format: 'misskey:id', nullable: true },
+		status: { type: 'string', enum: ['all', 'active', 'archived'], default: 'active' },
 	},
 	required: [],
 } as const;
@@ -85,8 +125,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
-			query.andWhere('announcement.isActive = true');
+			const now = new Date();
+			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate);
+
+			if (ps.status === 'archived') {
+				query.andWhere(new Brackets(qb => {
+					qb.where('announcement.isActive = false');
+					qb.orWhere('announcement.autoArchiveAt <= :now', { now });
+				}));
+			} else if (ps.status === 'active') {
+				query.andWhere('announcement.isActive = true');
+				query.andWhere(new Brackets(qb => {
+					qb.where('announcement.autoArchiveAt IS NULL');
+					qb.orWhere('announcement.autoArchiveAt > :now', { now });
+				}));
+			}
+
 			if (ps.userId) {
 				query.andWhere('announcement.userId = :userId', { userId: ps.userId });
 			} else {
@@ -112,7 +166,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				imageUrl: announcement.imageUrl,
 				icon: announcement.icon,
 				display: announcement.display,
-				isActive: announcement.isActive,
+				isActive: announcement.isActive && (announcement.autoArchiveAt == null || announcement.autoArchiveAt > now),
+				autoArchiveAt: announcement.autoArchiveAt?.toISOString() ?? null,
 				forExistingUsers: announcement.forExistingUsers,
 				silence: announcement.silence,
 				needConfirmationToRead: announcement.needConfirmationToRead,

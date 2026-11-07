@@ -1,17 +1,18 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 // https://github.com/typeorm/typeorm/issues/2400
 import pg from 'pg';
-pg.types.setTypeParser(20, Number);
-
-import { DataSource, Logger } from 'typeorm';
-import * as highlight from 'cli-highlight';
+import { DataSource, Logger, type QueryRunner } from 'typeorm';
 import { entities as charts } from '@/core/chart/entities.js';
+import { Config } from '@/config.js';
+import MisskeyLogger from '@/logger.js';
+import { bindThis } from '@/decorators.js';
 
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
+import { MiAbuseReportNotificationRecipient } from '@/models/AbuseReportNotificationRecipient.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
 import { MiAd } from '@/models/Ad.js';
 import { MiAnnouncement } from '@/models/Announcement.js';
@@ -23,6 +24,7 @@ import { MiAuthSession } from '@/models/AuthSession.js';
 import { MiBlocking } from '@/models/Blocking.js';
 import { MiChannelFollowing } from '@/models/ChannelFollowing.js';
 import { MiChannelFavorite } from '@/models/ChannelFavorite.js';
+import { MiChannelMuting } from '@/models/ChannelMuting.js';
 import { MiClip } from '@/models/Clip.js';
 import { MiClipNote } from '@/models/ClipNote.js';
 import { MiClipFavorite } from '@/models/ClipFavorite.js';
@@ -43,7 +45,7 @@ import { MiNote } from '@/models/Note.js';
 import { MiNoteFavorite } from '@/models/NoteFavorite.js';
 import { MiNoteReaction } from '@/models/NoteReaction.js';
 import { MiNoteThreadMuting } from '@/models/NoteThreadMuting.js';
-import { MiNoteUnread } from '@/models/NoteUnread.js';
+import { MiNoteDraft } from '@/models/NoteDraft.js';
 import { MiPage } from '@/models/Page.js';
 import { MiPageLike } from '@/models/PageLike.js';
 import { MiPasswordResetRequest } from '@/models/PasswordResetRequest.js';
@@ -69,6 +71,7 @@ import { MiUserProfile } from '@/models/UserProfile.js';
 import { MiUserPublickey } from '@/models/UserPublickey.js';
 import { MiUserSecurityKey } from '@/models/UserSecurityKey.js';
 import { MiWebhook } from '@/models/Webhook.js';
+import { MiSystemWebhook } from '@/models/SystemWebhook.js';
 import { MiChannel } from '@/models/Channel.js';
 import { MiRetentionAggregation } from '@/models/RetentionAggregation.js';
 import { MiRole } from '@/models/Role.js';
@@ -76,36 +79,86 @@ import { MiRoleAssignment } from '@/models/RoleAssignment.js';
 import { MiFlash } from '@/models/Flash.js';
 import { MiFlashLike } from '@/models/FlashLike.js';
 import { MiUserMemo } from '@/models/UserMemo.js';
+import { MiChatMessage } from '@/models/ChatMessage.js';
+import { MiChatRoom } from '@/models/ChatRoom.js';
+import { MiChatRoomMembership } from '@/models/ChatRoomMembership.js';
+import { MiChatRoomInvitation } from '@/models/ChatRoomInvitation.js';
+import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
+import { MiReversiGame } from '@/models/ReversiGame.js';
+import { MiChatApproval } from '@/models/ChatApproval.js';
+import { MiSystemAccount } from '@/models/SystemAccount.js';
 
-import { Config } from '@/config.js';
-import MisskeyLogger from '@/logger.js';
-import { bindThis } from '@/decorators.js';
+pg.types.setTypeParser(20, Number);
 
 export const dbLogger = new MisskeyLogger('db');
 
-const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
+const sqlLogger = dbLogger.createSubLogger('sql', 'gray');
+
+export type LoggerProps = {
+	disableQueryTruncation?: boolean;
+	enableQueryParamLogging?: boolean;
+	printReplicationMode?: boolean,
+};
+
+function truncateSql(sql: string) {
+	return sql.length > 100 ? `${sql.substring(0, 100)}...` : sql;
+}
+
+function stringifyParameter(param: any) {
+	if (param instanceof Date) {
+		return param.toISOString();
+	} else {
+		return param;
+	}
+}
 
 class MyCustomLogger implements Logger {
-	@bindThis
-	private highlight(sql: string) {
-		return highlight.highlight(sql, {
-			language: 'sql', ignoreIllegals: true,
-		});
+	constructor(private props: LoggerProps = {}) {
 	}
 
 	@bindThis
-	public logQuery(query: string, parameters?: any[]) {
-		sqlLogger.info(this.highlight(query).substring(0, 100));
+	private transformQueryLog(sql: string, opts?: {
+		prefix?: string;
+	}) {
+		let modded = opts?.prefix ? opts.prefix + sql : sql;
+		if (!this.props.disableQueryTruncation) {
+			modded = truncateSql(modded);
+		}
+
+		return modded;
 	}
 
 	@bindThis
-	public logQueryError(error: string, query: string, parameters?: any[]) {
-		sqlLogger.error(this.highlight(query));
+	private transformParameters(parameters?: any[]) {
+		if (this.props.enableQueryParamLogging && parameters && parameters.length > 0) {
+			return parameters.map(stringifyParameter);
+		}
+
+		return undefined;
 	}
 
 	@bindThis
-	public logQuerySlow(time: number, query: string, parameters?: any[]) {
-		sqlLogger.warn(this.highlight(query));
+	public logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		const prefix = (this.props.printReplicationMode && queryRunner)
+			? `[${queryRunner.getReplicationMode()}] `
+			: undefined;
+		sqlLogger.info(this.transformQueryLog(query, { prefix }), this.transformParameters(parameters));
+	}
+
+	@bindThis
+	public logQueryError(error: string, query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		const prefix = (this.props.printReplicationMode && queryRunner)
+			? `[${queryRunner.getReplicationMode()}] `
+			: undefined;
+		sqlLogger.error(this.transformQueryLog(query, { prefix }), this.transformParameters(parameters));
+	}
+
+	@bindThis
+	public logQuerySlow(time: number, query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		const prefix = (this.props.printReplicationMode && queryRunner)
+			? `[${queryRunner.getReplicationMode()}] `
+			: undefined;
+		sqlLogger.warn(this.transformQueryLog(query, { prefix }), this.transformParameters(parameters));
 	}
 
 	@bindThis
@@ -152,7 +205,7 @@ export const entities = [
 	MiNoteFavorite,
 	MiNoteReaction,
 	MiNoteThreadMuting,
-	MiNoteUnread,
+	MiNoteDraft,
 	MiPage,
 	MiPageLike,
 	MiGalleryPost,
@@ -164,7 +217,9 @@ export const entities = [
 	MiEmoji,
 	MiHashtag,
 	MiSwSubscription,
+	MiSystemAccount,
 	MiAbuseUserReport,
+	MiAbuseReportNotificationRecipient,
 	MiRegistrationTicket,
 	MiSignin,
 	MiModerationLog,
@@ -178,11 +233,13 @@ export const entities = [
 	MiChannel,
 	MiChannelFollowing,
 	MiChannelFavorite,
+	MiChannelMuting,
 	MiRegistryItem,
 	MiAd,
 	MiPasswordResetRequest,
 	MiUserPending,
 	MiWebhook,
+	MiSystemWebhook,
 	MiUserIp,
 	MiRetentionAggregation,
 	MiRole,
@@ -190,6 +247,13 @@ export const entities = [
 	MiFlash,
 	MiFlashLike,
 	MiUserMemo,
+	MiChatMessage,
+	MiChatRoom,
+	MiChatRoomMembership,
+	MiChatRoomInvitation,
+	MiChatApproval,
+	MiBubbleGameRecord,
+	MiReversiGame,
 	...charts,
 ];
 
@@ -207,37 +271,45 @@ export function createPostgresDataSource(config: Config) {
 			statement_timeout: 1000 * 10,
 			...config.db.extra,
 		},
-		replication: config.dbReplications ? {
-			master: {
-				host: config.db.host,
-				port: config.db.port,
-				username: config.db.user,
-				password: config.db.pass,
-				database: config.db.db,
+		invalidWhereValuesBehavior: {
+			null: 'ignore',
+			undefined: 'ignore',
+		},
+		...(config.dbReplications ? {
+			replication: {
+				master: {
+					host: config.db.host,
+					port: config.db.port,
+					username: config.db.user,
+					password: config.db.pass,
+					database: config.db.db,
+				},
+				slaves: config.dbSlaves!.map(rep => ({
+					host: rep.host,
+					port: rep.port,
+					username: rep.user,
+					password: rep.pass,
+					database: rep.db,
+				})),
 			},
-			slaves: config.dbSlaves!.map(rep => ({
-				host: rep.host,
-				port: rep.port,
-				username: rep.user,
-				password: rep.pass,
-				database: rep.db,
-			})),
-		} : undefined,
+		} : {}),
 		synchronize: process.env.NODE_ENV === 'test',
 		dropSchema: process.env.NODE_ENV === 'test',
 		cache: !config.db.disableCache && process.env.NODE_ENV !== 'test' ? { // dbをcloseしても何故かredisのコネクションが内部的に残り続けるようで、テストの際に支障が出るため無効にする(キャッシュも含めてテストしたいため本当は有効にしたいが...)
 			type: 'ioredis',
 			options: {
-				host: config.redis.host,
-				port: config.redis.port,
-				family: config.redis.family ?? 0,
-				password: config.redis.pass,
+				...config.redis,
 				keyPrefix: `${config.redis.prefix}:query:`,
-				db: config.redis.db ?? 0,
 			},
 		} : false,
 		logging: log,
-		logger: log ? new MyCustomLogger() : undefined,
+		logger: log
+			? new MyCustomLogger({
+				disableQueryTruncation: config.logging?.sql?.disableQueryTruncation,
+				enableQueryParamLogging: config.logging?.sql?.enableQueryParamLogging,
+				printReplicationMode: !!config.dbReplications,
+			})
+			: undefined,
 		maxQueryExecutionTime: 300,
 		entities: entities,
 		migrations: ['../../migration/*.js'],

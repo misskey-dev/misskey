@@ -1,0 +1,23 @@
+{
+	id: '02816013-8107-440f-877e-865083ffe194',
+
+	name: 'Mi Green+Lime Dark',
+	author: 'syuilo',
+
+	base: 'dark',
+
+	props: {
+		accent: '#b4e900',
+		bg: '#0C1210',
+		fg: '#dee7e4',
+		fgHighlighted: '#fff',
+		fgOnAccent: '#192320',
+		fgOnWhite: '@accent',
+		divider: '#e7fffb24',
+		panel: '#192320',
+		popup: '#293330',
+		renote: '@accent',
+		mentionMe: '#ffaa00',
+		link: '#24d7ce',
+	},
+}

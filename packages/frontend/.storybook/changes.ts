@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -47,17 +47,14 @@ await fs.readFile(
 				)
 			)
 			.map((path) => path.replace(/(?:(?<=\.stories)\.(?:impl|meta)|\.msw)(?=\.ts$)/g, ''))
-			.map((path) => (path.startsWith('.') ? path : `./${path}`))
 	);
 	if (
 		micromatch(Array.from(modules), [
 			'../../assets/**',
-			'../../fluent-emojis/**',
 			'../../locales/ja-JP.yml',
-			'../../misskey-assets/**',
 			'assets/**',
 			'public/**',
-			'../../pnpm-lock.yaml',
+			'package.json',
 		]).length
 	) {
 		return;

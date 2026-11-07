@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -24,8 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
-import { i18n } from '@/i18n.js';
+import { ref, useTemplateRef, toRefs } from 'vue';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -40,10 +39,10 @@ const emit = defineEmits<{
 
 const { modelValue } = toRefs(props);
 const v = ref(modelValue.value);
-const inputEl = shallowRef<HTMLElement>();
+const inputEl = useTemplateRef('inputEl');
 
-const onInput = (ev: KeyboardEvent) => {
-	emit('update:modelValue', v.value);
+const onInput = () => {
+	emit('update:modelValue', v.value ?? '');
 };
 </script>
 
@@ -61,7 +60,7 @@ const onInput = (ev: KeyboardEvent) => {
 .caption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 
 	&:empty {
 		display: none;
@@ -73,8 +72,8 @@ const onInput = (ev: KeyboardEvent) => {
 
 	&.focused {
 		> .inputCore {
-			border-color: var(--accent) !important;
-			//box-shadow: 0 0 0 4px var(--focus);
+			border-color: var(--MI_THEME-accent) !important;
+			//box-shadow: 0 0 0 4px var(--MI_THEME-focus);
 		}
 	}
 
@@ -99,9 +98,9 @@ const onInput = (ev: KeyboardEvent) => {
 	font: inherit;
 	font-weight: normal;
 	font-size: 1em;
-	color: var(--fg);
-	background: var(--panel);
-	border: solid 1px var(--panel);
+	color: var(--MI_THEME-fg);
+	background: var(--MI_THEME-panel);
+	border: solid 1px var(--MI_THEME-panel);
 	border-radius: 6px;
 	outline: none;
 	box-shadow: none;
@@ -109,7 +108,7 @@ const onInput = (ev: KeyboardEvent) => {
 	transition: border-color 0.1s ease-out;
 
 	&:hover {
-		border-color: var(--inputBorderHover) !important;
+		border-color: var(--MI_THEME-inputBorderHover) !important;
 	}
 }
 </style>

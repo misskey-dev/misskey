@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,6 +7,7 @@ import { setTimeout } from 'node:timers/promises';
 import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In } from 'typeorm';
+import { ReplyError } from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
@@ -19,7 +20,9 @@ import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import { UserListService } from '@/core/UserListService.js';
-import type { FilterUnionByProperty } from '@/types.js';
+import { FilterUnionByProperty, groupedNotificationTypes, obsoleteNotificationTypes } from '@/types.js';
+import { trackPromise } from '@/misc/promise-tracker.js';
+// import { escapeHtml } from '@/misc/escape-html.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {
@@ -74,7 +77,18 @@ export class NotificationService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async createNotification<T extends MiNotification['type']>(
+	public createNotification<T extends MiNotification['type']>(
+		notifieeId: MiUser['id'],
+		type: T,
+		data: Omit<FilterUnionByProperty<MiNotification, 'type', T>, 'type' | 'id' | 'createdAt' | 'notifierId'>,
+		notifierId?: MiUser['id'] | null,
+	) {
+		trackPromise(
+			this.#createNotificationInternal(notifieeId, type, data, notifierId),
+		);
+	}
+
+	async #createNotificationInternal<T extends MiNotification['type']>(
 		notifieeId: MiUser['id'],
 		type: T,
 		data: Omit<FilterUnionByProperty<MiNotification, 'type', T>, 'type' | 'id' | 'createdAt' | 'notifierId'>,
@@ -114,6 +128,14 @@ export class NotificationService implements OnApplicationShutdown {
 					this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => Object.hasOwn(followings, notifierId)),
 					this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => Object.hasOwn(followings, notifieeId)),
 				]);
+				if (!(isFollowing && isFollower)) {
+					return null;
+				}
+			} else if (recieveConfig?.type === 'followingOrFollower') {
+				const [isFollowing, isFollower] = await Promise.all([
+					this.cacheService.userFollowingsCache.fetch(notifieeId).then(followings => Object.hasOwn(followings, notifierId)),
+					this.cacheService.userFollowingsCache.fetch(notifierId).then(followings => Object.hasOwn(followings, notifieeId)),
+				]);
 				if (!isFollowing && !isFollower) {
 					return null;
 				}
@@ -125,23 +147,40 @@ export class NotificationService implements OnApplicationShutdown {
 			}
 		}
 
-		const notification = {
-			id: this.idService.gen(),
-			createdAt: new Date(),
-			type: type,
-			...(notifierId ? {
-				notifierId,
-			} : {}),
-			...data,
-		} as any as FilterUnionByProperty<MiNotification, 'type', T>;
+		const createdAt = new Date();
+		let notification: FilterUnionByProperty<MiNotification, 'type', T>;
+		let redisId: string;
 
-		const redisIdPromise = this.redisClient.xadd(
-			`notificationTimeline:${notifieeId}`,
-			'MAXLEN', '~', this.config.perUserNotificationsMaxCount.toString(),
-			'*',
-			'data', JSON.stringify(notification));
+		do {
+			notification = {
+				id: this.idService.gen(),
+				createdAt,
+				type: type,
+				...(notifierId ? {
+					notifierId,
+				} : {}),
+				...data,
+			} as unknown as FilterUnionByProperty<MiNotification, 'type', T>;
+
+			try {
+				redisId = (await this.redisClient.xadd(
+					`notificationTimeline:${notifieeId}`,
+					'MAXLEN', '~', this.config.perUserNotificationsMaxCount.toString(),
+					this.toXListId(notification.id),
+					'data', JSON.stringify(notification)))!;
+			} catch (e) {
+				// The ID specified in XADD is equal or smaller than the target stream top item で失敗することがあるのでリトライ
+				if (e instanceof ReplyError) continue;
+				throw e;
+			}
+
+			break;
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		} while (true);
 
 		const packed = await this.notificationEntityService.pack(notification, notifieeId, {});
+
+		if (packed == null) return null;
 
 		// Publish notification event
 		this.globalEventService.publishMainStream(notifieeId, 'notification', packed);
@@ -151,7 +190,7 @@ export class NotificationService implements OnApplicationShutdown {
 		const interval = notification.type === 'test' ? 0 : 2000;
 		setTimeout(interval, 'unread notification', { signal: this.#shutdownController.signal }).then(async () => {
 			const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${notifieeId}`);
-			if (latestReadNotificationId && (latestReadNotificationId >= (await redisIdPromise)!)) return;
+			if (latestReadNotificationId && (latestReadNotificationId >= redisId)) return;
 
 			this.globalEventService.publishMainStream(notifieeId, 'unreadNotification', packed);
 			this.pushNotificationService.pushNotification(notifieeId, 'notification', packed);
@@ -164,7 +203,7 @@ export class NotificationService implements OnApplicationShutdown {
 	}
 
 	// TODO
-	//const locales = await import('../../../../locales/index.js');
+	//const locales = await import('i18n');
 
 	// TODO: locale ファイルをクライアント用とサーバー用で分けたい
 
@@ -176,7 +215,8 @@ export class NotificationService implements OnApplicationShutdown {
 		const locale = locales[userProfile.lang ?? 'ja-JP'];
 		const i18n = new I18n(locale);
 		// TODO: render user information html
-		sendEmail(userProfile.email, i18n.t('_email._follow.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
+		const body = `${follower.name} (@${Acct.toString(follower)})`;
+		sendEmail(userProfile.email, i18n.t('_email._follow.title'), escapeHtml(body), body);
 		*/
 	}
 
@@ -188,13 +228,97 @@ export class NotificationService implements OnApplicationShutdown {
 		const locale = locales[userProfile.lang ?? 'ja-JP'];
 		const i18n = new I18n(locale);
 		// TODO: render user information html
-		sendEmail(userProfile.email, i18n.t('_email._receiveFollowRequest.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
+		const body = `${follower.name} (@${Acct.toString(follower)})`;
+		sendEmail(userProfile.email, i18n.t('_email._receiveFollowRequest.title'), escapeHtml(body), body);
 		*/
+	}
+
+	@bindThis
+	public async flushAllNotifications(userId: MiUser['id']) {
+		await Promise.all([
+			this.redisClient.del(`notificationTimeline:${userId}`),
+			this.redisClient.del(`latestReadNotification:${userId}`),
+		]);
+		this.globalEventService.publishMainStream(userId, 'notificationFlushed');
 	}
 
 	@bindThis
 	public dispose(): void {
 		this.#shutdownController.abort();
+	}
+
+	private toXListId(id: string): string {
+		const { date, additional } = this.idService.parseFull(id);
+		// Redis Stream sequenceはunit64制約があるため、収まらない場合は下位64bitを取る
+		return date.toString() + '-' + BigInt.asUintN(64, additional).toString();
+	}
+
+	@bindThis
+	public async getNotifications(
+		userId: MiUser['id'],
+		{
+			sinceId,
+			untilId,
+			limit = 20,
+			includeTypes,
+			excludeTypes,
+		}: {
+			sinceId?: string,
+			untilId?: string,
+			limit?: number,
+			// any extra types are allowed, those are no-op
+			includeTypes?: (MiNotification['type'] | string)[],
+			excludeTypes?: (MiNotification['type'] | string)[],
+		},
+	): Promise<MiNotification[]> {
+		let sinceTime = sinceId ? this.toXListId(sinceId) : null;
+		let untilTime = untilId ? this.toXListId(untilId) : null;
+
+		let notifications: MiNotification[];
+		for (; ;) {
+			let notificationsRes: [id: string, fields: string[]][];
+
+			// sinceidのみの場合は古い順、そうでない場合は新しい順。 QueryService.makePaginationQueryも参照
+			if (sinceTime && !untilTime) {
+				notificationsRes = await this.redisClient.xrange(
+					`notificationTimeline:${userId}`,
+					'(' + sinceTime,
+					'+',
+					'COUNT', limit);
+			} else {
+				notificationsRes = await this.redisClient.xrevrange(
+					`notificationTimeline:${userId}`,
+					untilTime ? '(' + untilTime : '+',
+					sinceTime ? '(' + sinceTime : '-',
+					'COUNT', limit);
+			}
+
+			if (notificationsRes.length === 0) {
+				return [];
+			}
+
+			notifications = notificationsRes.map(x => JSON.parse(x[1][1])) as MiNotification[];
+
+			if (includeTypes && includeTypes.length > 0) {
+				notifications = notifications.filter(notification => includeTypes.includes(notification.type));
+			} else if (excludeTypes && excludeTypes.length > 0) {
+				notifications = notifications.filter(notification => !excludeTypes.includes(notification.type));
+			}
+
+			if (notifications.length !== 0) {
+				// 通知が１件以上ある場合は返す
+				break;
+			}
+
+			// フィルタしたことで通知が0件になった場合、次のページを取得する
+			if (sinceId && !untilId) {
+				sinceTime = notificationsRes[notificationsRes.length - 1][0];
+			} else {
+				untilTime = notificationsRes[notificationsRes.length - 1][0];
+			}
+		}
+
+		return notifications;
 	}
 
 	@bindThis

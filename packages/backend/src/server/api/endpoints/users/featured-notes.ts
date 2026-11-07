@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,6 +11,7 @@ import { DI } from '@/di-symbols.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
+import { QueryService } from '@/core/QueryService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -49,8 +50,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private noteEntityService: NoteEntityService,
 		private featuredService: FeaturedService,
 		private cacheService: CacheService,
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const userIdsWhoBlockingMe = me ? await this.cacheService.userBlockedCache.fetch(me.id) : new Set<string>();
+
+			// early return if me is blocked by requesting user
+			if (userIdsWhoBlockingMe.has(ps.userId)) {
+				return [];
+			}
+
 			let noteIds = await this.featuredService.getPerUserNotesRanking(ps.userId, 50);
 
 			noteIds.sort((a, b) => a > b ? -1 : 1);
@@ -65,11 +74,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const [
 				userIdsWhoMeMuting,
-				userIdsWhoBlockingMe,
 			] = me ? await Promise.all([
 				this.cacheService.userMutingsCache.fetch(me.id),
-				this.cacheService.userBlockedCache.fetch(me.id),
-			]) : [new Set<string>(), new Set<string>()];
+			]) : [new Set<string>()];
 
 			const query = this.notesRepository.createQueryBuilder('note')
 				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
@@ -79,6 +86,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser')
 				.leftJoinAndSelect('note.channel', 'channel');
+
+			this.queryService.generateBlockedHostQueryForNote(query);
+			this.queryService.generateSuspendedUserQueryForNote(query);
 
 			const notes = (await query.getMany()).filter(note => {
 				if (me && isUserRelated(note, userIdsWhoBlockingMe, false)) return false;

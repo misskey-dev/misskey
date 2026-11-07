@@ -1,22 +1,23 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
+import { In } from 'typeorm';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiBlocking } from '@/models/Blocking.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import type { FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListMembershipsRepository } from '@/models/_.js';
+import type { FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListMembershipsRepository, ChatRoomsRepository, ChatRoomInvitationsRepository } from '@/models/_.js';
 import Logger from '@/logger.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import { WebhookService } from '@/core/WebhookService.js';
+import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
@@ -41,12 +42,18 @@ export class UserBlockingService implements OnModuleInit {
 		@Inject(DI.userListMembershipsRepository)
 		private userListMembershipsRepository: UserListMembershipsRepository,
 
+		@Inject(DI.chatRoomsRepository)
+		private chatRoomsRepository: ChatRoomsRepository,
+
+		@Inject(DI.chatRoomInvitationsRepository)
+		private chatRoomInvitationsRepository: ChatRoomInvitationsRepository,
+
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
-		private webhookService: WebhookService,
+		private webhookService: UserWebhookService,
 		private apRendererService: ApRendererService,
 		private loggerService: LoggerService,
 	) {
@@ -65,6 +72,8 @@ export class UserBlockingService implements OnModuleInit {
 			this.userFollowingService.unfollow(blocker, blockee, silent),
 			this.userFollowingService.unfollow(blockee, blocker, silent),
 			this.removeFromList(blockee, blocker),
+			this.removeRoomInvitations(blocker, blockee),
+			this.removeRoomInvitations(blockee, blocker),
 		]);
 
 		const blocking = {
@@ -109,22 +118,16 @@ export class UserBlockingService implements OnModuleInit {
 
 		if (this.userEntityService.isLocalUser(followee)) {
 			this.userEntityService.pack(followee, followee, {
-				detail: true,
+				schema: 'MeDetailed',
 			}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 		}
 
 		if (this.userEntityService.isLocalUser(follower) && !silent) {
 			this.userEntityService.pack(followee, follower, {
-				detail: true,
+				schema: 'UserDetailedNotMe',
 			}).then(async packed => {
 				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
-
-				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
-				for (const webhook of webhooks) {
-					this.queueService.webhookDeliver(webhook, 'unfollow', {
-						user: packed,
-					});
-				}
+				this.webhookService.enqueueUserWebhook(follower.id, 'unfollow', { user: packed });
 			});
 		}
 
@@ -153,6 +156,23 @@ export class UserBlockingService implements OnModuleInit {
 				userId: user.id,
 			});
 		}
+	}
+
+	@bindThis
+	private async removeRoomInvitations(roomOwner: MiUser, user: MiUser) {
+		const rooms = await this.chatRoomsRepository.find({
+			select: { id: true },
+			where: { ownerId: roomOwner.id },
+		});
+
+		if (rooms.length === 0) {
+			return;
+		}
+
+		await this.chatRoomInvitationsRepository.delete({
+			roomId: In(rooms.map(room => room.id)),
+			userId: user.id,
+		});
 	}
 
 	@bindThis

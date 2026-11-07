@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,7 +11,9 @@ import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
 export const meta = {
 	tags: ['federation'],
 
+	requireAdmin: true,
 	requireCredential: true,
+	kind: 'read:federation',
 
 	limit: {
 		duration: ms('1hour'),
@@ -41,7 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private apResolverService: ApResolverService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const resolver = this.apResolverService.createResolver();
+			const resolver = await this.apResolverService.createResolver();
 			const object = await resolver.resolve(ps.uri);
 			return object;
 		});

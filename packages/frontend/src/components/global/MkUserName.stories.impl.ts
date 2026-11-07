@@ -1,13 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { expect } from '@storybook/jest';
-import { userEvent, within } from '@storybook/testing-library';
-import { StoryObj } from '@storybook/vue3';
-import { userDetailed } from '../../../.storybook/fakes';
+import { expect } from '@storybook/test';
+import type { StoryObj } from '@storybook/vue3';
+import { userDetailed } from '../../../.storybook/fakes.js';
 import MkUserName from './MkUserName.vue';
 export const Default = {
 	render(args) {
@@ -31,7 +30,7 @@ export const Default = {
 		};
 	},
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(userDetailed().name);
+		await expect(canvasElement).toHaveTextContent(userDetailed().name as string);
 	},
 	args: {
 		user: userDetailed(),

@@ -1,71 +1,113 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="hide" :class="[$style.hidden, (video.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitiveContainer]" @click="hide = false">
-	<!-- 【注意】dataSaverMode が有効になっている際には、hide が false になるまでサムネイルや動画を読み込まないようにすること -->
-	<div :class="$style.sensitive">
-		<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.dataSaver.media ? ` (${i18n.ts.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
-		<b v-else style="display: block;"><i class="ti ti-movie"></i> {{ defaultStore.state.dataSaver.media && video.size ? bytes(video.size) : i18n.ts.video }}</b>
-		<span>{{ i18n.ts.clickToShow }}</span>
-	</div>
-</div>
-<div v-else :class="[$style.visible, (video.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitiveContainer]">
-	<video
-		ref="videoEl"
-		:class="$style.video"
-		:poster="video.thumbnailUrl"
-		:title="video.comment"
-		:alt="video.comment"
-		preload="none"
-		controls
-		@contextmenu.stop
-	>
-		<source
-			:src="video.url"
+<div
+	ref="playerEl"
+	tabindex="0"
+	:class="[
+		$style.root,
+		(video.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive,
+	]"
+	@contextmenu.stop="onContextmenu"
+>
+	<button v-if="hide" :class="$style.hidden" @click="reveal">
+		<div :class="$style.hiddenTextWrapper">
+			<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ prefer.s.dataSaver.media ? ` (${i18n.ts.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
+			<b v-else style="display: block;"><i class="ti ti-movie"></i> {{ prefer.s.dataSaver.media && video.size ? bytes(video.size) : i18n.ts.video }}</b>
+			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+		</div>
+	</button>
+
+	<div v-else :class="$style.videoRoot" @click="emit('mediaClick', $event)">
+		<img
+			v-if="video.thumbnailUrl"
+			:class="$style.video"
+			:src="video.thumbnailUrl"
+			:alt="video.comment ?? undefined"
+		/>
+		<video
+			v-else
+			:class="$style.video"
+			:alt="video.comment"
+			preload="metadata"
 		>
-	</video>
-	<i class="ti ti-eye-off" :class="$style.hide" @click="hide = true"></i>
+			<source :src="video.url">
+		</video>
+		<div :class="$style.playIconWrapper">
+			<div :class="$style.playIcon">
+				<i class="ti ti-player-play"></i>
+			</div>
+		</div>
+		<button :class="[$style.menu, $style.menuBottom]" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;" aria-hidden="true"></i></button>
+		<button :class="[$style.menu, $style.menuTop]" class="_button" @click.stop="hide = true"><i class="ti ti-eye-off" style="vertical-align: middle;" aria-hidden="true"></i></button>
+	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, watch } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { MediaComponentExposes } from '@/types/media-component.js';
 import bytes from '@/filters/bytes.js';
-import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import hasAudio from '@/scripts/media-has-audio.js';
+import { prefer } from '@/preferences.js';
+import * as os from '@/os.js';
+import { getFileMenu } from '@/utility/get-file-menu.js';
+import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
 
 const props = defineProps<{
 	video: Misskey.entities.DriveFile;
 }>();
 
-const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore'));
+const emit = defineEmits<{
+	(event: 'mediaClick', ev: PointerEvent): void;
+}>();
 
-const videoEl = shallowRef<HTMLVideoElement>();
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
+const hide = ref(shouldHideFileByDefault(props.video));
 
-watch(videoEl, () => {
-	if (videoEl.value) {
-		videoEl.value.volume = 0.3;
-		hasAudio(videoEl.value).then(had => {
-			if (!had) {
-				videoEl.value.loop = videoEl.value.muted = true;
-				videoEl.value.play();
-			}
-		});
+async function reveal() {
+	if (!(await canRevealFile(props.video))) {
+		return;
 	}
+
+	hide.value = false;
+}
+
+function showMenu(ev: PointerEvent) {
+	os.popupMenu(getFileMenu(props.video, (newHide) => { hide.value = newHide; }), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+}
+
+function onContextmenu(ev: PointerEvent) {
+	os.contextMenu(getFileMenu(props.video, (newHide) => { hide.value = newHide; }), ev);
+}
+
+defineExpose<MediaComponentExposes>({
+	isRevealed: () => !hide.value,
 });
 </script>
 
 <style lang="scss" module>
-.visible {
+.root {
+	container-type: inline-size;
 	position: relative;
+	overflow: clip;
+
+	&:focus-visible {
+		outline: none;
+	}
+
+	&:hover {
+		.playIcon {
+			scale: 1.2;
+		}
+	}
 }
 
-.sensitiveContainer {
+.sensitive {
 	position: relative;
 
 	&::after {
@@ -77,48 +119,91 @@ watch(videoEl, () => {
 		height: 100%;
 		pointer-events: none;
 		border-radius: inherit;
-		box-shadow: inset 0 0 0 4px var(--warn);
+		box-shadow: inset 0 0 0 4px var(--MI_THEME-warn);
 	}
 }
 
-.hide {
-	display: block;
-	position: absolute;
-	border-radius: 6px;
-	background-color: var(--fg);
-	color: var(--accentLighten);
-	font-size: 14px;
-	opacity: .5;
-	padding: 3px 6px;
-	text-align: center;
-	cursor: pointer;
-	top: 12px;
-	right: 12px;
-}
-
-.video {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 3.5em;
-	overflow: hidden;
-	background-position: center;
-	background-size: cover;
+.hidden {
 	width: 100%;
 	height: 100%;
+	background: #000;
+	border: none;
+	outline: none;
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+	padding: 12px 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
-.hidden {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background: #111;
+.hiddenTextWrapper {
+	text-align: center;
+	font-size: 0.8em;
 	color: #fff;
 }
 
-.sensitive {
-	display: table-cell;
+.videoRoot {
+	background: #000;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.video {
+	display: block;
+	height: 100%;
+	width: 100%;
+	object-fit: contain;
+}
+
+.playIconWrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: grid;
+	place-items: center;
+}
+
+.playIcon {
+	display: grid;
+	place-items: center;
+	width: 50px;
+	height: 50px;
+	border-radius: 100%;
+	font-size: 120%;
+	background: var(--MI_THEME-accent);
+	color: var(--MI_THEME-fgOnAccent);
+	scale: 1;
+	transition: scale 100ms ease;
+}
+
+.menu {
+	display: block;
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.3);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	color: #fff;
+	font-size: 0.8em;
+	width: 28px;
+	height: 28px;
 	text-align: center;
-	font-size: 12px;
+}
+
+.menuBottom {
+	border-radius: 8px 0 8px 0;
+	bottom: 0;
+	right: 0;
+}
+
+.menuTop {
+	border-radius: 0 8px 0 8px;
+	top: 0;
+	right: 0;
 }
 </style>

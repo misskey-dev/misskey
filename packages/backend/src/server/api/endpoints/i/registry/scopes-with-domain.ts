@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,6 +10,28 @@ import { RegistryApiService } from '@/core/RegistryApiService.js';
 export const meta = {
 	requireCredential: true,
 	secure: true,
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+			properties: {
+				scopes: {
+					type: 'array',
+					items: {
+						type: 'array',
+						items: {
+							type: 'string',
+						}
+					}
+				},
+				domain: {
+					type: 'string',
+					nullable: true,
+				},
+			},
+		},
+	}
 } as const;
 
 export const paramDef = {

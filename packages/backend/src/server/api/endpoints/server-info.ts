@@ -1,13 +1,13 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import * as os from 'node:os';
-import si from 'systeminformation';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { MetaService } from '@/core/MetaService.js';
+import { MiMeta } from '@/models/_.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: false,
@@ -15,6 +15,53 @@ export const meta = {
 	cacheSec: 60 * 1,
 
 	tags: ['meta'],
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		properties: {
+			machine: {
+				type: 'string',
+				nullable: false,
+			},
+			cpu: {
+				type: 'object',
+				nullable: false,
+				properties: {
+					model: {
+						type: 'string',
+						nullable: false,
+					},
+					cores: {
+						type: 'number',
+						nullable: false,
+					},
+				},
+			},
+			mem: {
+				type: 'object',
+				properties: {
+					total: {
+						type: 'number',
+						nullable: false,
+					},
+				},
+			},
+			fs: {
+				type: 'object',
+				nullable: false,
+				properties: {
+					total: {
+						type: 'number',
+						nullable: false,
+					},
+					used: {
+						type: 'number',
+						nullable: false,
+					},
+				},
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -26,10 +73,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		private metaService: MetaService,
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
 	) {
 		super(meta, paramDef, async () => {
-			if (!(await this.metaService.fetch()).enableServerMachineStats) return {
+			if (!this.serverSettings.enableServerMachineStats) return {
 				machine: '?',
 				cpu: {
 					model: '?',
@@ -43,6 +91,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					used: 0,
 				},
 			};
+
+			const si = await import('systeminformation');
 
 			const memStats = await si.mem();
 			const fsStats = await si.fsSize();

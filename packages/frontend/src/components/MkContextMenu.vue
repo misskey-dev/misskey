@@ -1,40 +1,40 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <Transition
 	appear
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_fade_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
+	:enterActiveClass="prefer.s.animation ? $style.transition_fade_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_fade_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_fade_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_fade_leaveTo : ''"
 >
 	<div ref="rootEl" :class="$style.root" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
-		<MkMenu :items="items" :align="'left'" @close="$emit('closed')"/>
+		<MkMenu :items="items" :align="'left'" @close="emit('closed')"/>
 	</div>
 </Transition>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, shallowRef, ref } from 'vue';
+import { onMounted, onBeforeUnmount, useTemplateRef, ref } from 'vue';
 import MkMenu from './MkMenu.vue';
-import { MenuItem } from './types/menu.vue';
-import contains from '@/scripts/contains.js';
-import { defaultStore } from '@/store.js';
+import type { MenuItem } from '@/types/menu.js';
+import { elementContains } from '@/utility/element-contains.js';
+import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
 
 const props = defineProps<{
 	items: MenuItem[];
-	ev: MouseEvent;
+	ev: PointerEvent;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const rootEl = shallowRef<HTMLDivElement>();
+const rootEl = useTemplateRef('rootEl');
 
 const zIndex = ref<number>(os.claimZIndex('high'));
 
@@ -44,15 +44,15 @@ onMounted(() => {
 	let left = props.ev.pageX + 1; // 間違って右ダブルクリックした場合に意図せずアイテムがクリックされるのを防ぐため + 1
 	let top = props.ev.pageY + 1; // 間違って右ダブルクリックした場合に意図せずアイテムがクリックされるのを防ぐため + 1
 
-	const width = rootEl.value.offsetWidth;
-	const height = rootEl.value.offsetHeight;
+	const width = rootEl.value!.offsetWidth;
+	const height = rootEl.value!.offsetHeight;
 
-	if (left + width - window.pageXOffset >= (window.innerWidth - SCROLLBAR_THICKNESS)) {
-		left = (window.innerWidth - SCROLLBAR_THICKNESS) - width + window.pageXOffset;
+	if (left + width - window.scrollX >= (window.innerWidth - SCROLLBAR_THICKNESS)) {
+		left = (window.innerWidth - SCROLLBAR_THICKNESS) - width + window.scrollX;
 	}
 
-	if (top + height - window.pageYOffset >= (window.innerHeight - SCROLLBAR_THICKNESS)) {
-		top = (window.innerHeight - SCROLLBAR_THICKNESS) - height + window.pageYOffset;
+	if (top + height - window.scrollY >= (window.innerHeight - SCROLLBAR_THICKNESS)) {
+		top = (window.innerHeight - SCROLLBAR_THICKNESS) - height + window.scrollY;
 	}
 
 	if (top < 0) {
@@ -63,18 +63,20 @@ onMounted(() => {
 		left = 0;
 	}
 
-	rootEl.value.style.top = `${top}px`;
-	rootEl.value.style.left = `${left}px`;
+	if (rootEl.value) {
+		rootEl.value.style.top = `${top}px`;
+		rootEl.value.style.left = `${left}px`;
+	}
 
-	document.body.addEventListener('mousedown', onMousedown);
+	window.document.body.addEventListener('mousedown', onMousedown);
 });
 
 onBeforeUnmount(() => {
-	document.body.removeEventListener('mousedown', onMousedown);
+	window.document.body.removeEventListener('mousedown', onMousedown);
 });
 
-function onMousedown(evt: Event) {
-	if (!contains(rootEl.value, evt.target) && (rootEl.value !== evt.target)) emit('closed');
+function onMousedown(evt: MouseEvent) {
+	if (!elementContains(rootEl.value, evt.target as Element) && (rootEl.value !== evt.target)) emit('closed');
 }
 </script>
 

@@ -1,0 +1,44 @@
+{
+	"type": "module",
+	"name": "misskey-bubble-game",
+	"version": "0.0.1",
+	"main": "./built/index.js",
+	"types": "./built/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./built/index.js",
+			"types": "./built/index.d.ts",
+			"default": "./built/index.js"
+		},
+		"./*": {
+			"import": "./built/*",
+			"types": "./built/*",
+			"default": "./built/*"
+		}
+	},
+	"scripts": {
+		"build": "node ./build.js",
+		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
+		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"typecheck": "tsc --noEmit",
+		"lint": "pnpm typecheck && pnpm eslint"
+	},
+	"devDependencies": {
+		"@types/matter-js": "0.20.2",
+		"@types/node": "26.6.5",
+		"@types/seedrandom": "3.0.8",
+		"@typescript-eslint/eslint-plugin": "8.72.0",
+		"@typescript-eslint/parser": "8.72.0",
+		"esbuild": "0.28.2",
+		"execa": "10.2.1",
+		"nodemon": "3.1.14"
+	},
+	"files": [
+		"built"
+	],
+	"dependencies": {
+		"eventemitter3": "5.0.4",
+		"matter-js": "0.20.0",
+		"seedrandom": "3.0.5"
+	}
+}

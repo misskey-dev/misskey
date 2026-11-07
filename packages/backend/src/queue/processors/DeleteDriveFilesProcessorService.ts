@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -43,6 +43,10 @@ export class DeleteDriveFilesProcessorService {
 		let deletedCount = 0;
 		let cursor: MiDriveFile['id'] | null = null;
 
+		const total = await this.driveFilesRepository.countBy({
+			userId: user.id,
+		});
+
 		while (true) {
 			const files = await this.driveFilesRepository.find({
 				where: {
@@ -67,11 +71,7 @@ export class DeleteDriveFilesProcessorService {
 				deletedCount++;
 			}
 
-			const total = await this.driveFilesRepository.countBy({
-				userId: user.id,
-			});
-
-			job.updateProgress(deletedCount / total);
+			job.updateProgress(deletedCount / total * 100);
 		}
 
 		this.logger.succ(`All drive files (${deletedCount}) of ${user.id} has been deleted.`);

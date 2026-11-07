@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -44,9 +44,14 @@ export const packedFlashSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
+		visibility: {
+			type: 'string',
+			optional: false, nullable: false,
+			enum: ['private', 'public'],
+		},
 		likedCount: {
 			type: 'number',
-			optional: false, nullable: true,
+			optional: false, nullable: false,
 		},
 		isLiked: {
 			type: 'boolean',

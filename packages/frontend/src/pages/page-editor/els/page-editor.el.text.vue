@@ -1,40 +1,55 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" :dragStartCallback="dragStartCallback" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-align-left"></i> {{ i18n.ts._pages.blocks.text }}</template>
 
 	<section>
-		<textarea v-model="text" :class="$style.textarea"></textarea>
+		<textarea ref="inputEl" v-model="text" :class="$style.textarea"></textarea>
 	</section>
 </XContainer>
 </template>
 
 <script lang="ts" setup>
-/* eslint-disable vue/no-mutating-props */
-import { watch, ref } from 'vue';
+import { watch, ref, useTemplateRef, onMounted, onUnmounted } from 'vue';
+import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';
 import { i18n } from '@/i18n.js';
+import { Autocomplete } from '@/utility/autocomplete.js';
 
 const props = defineProps<{
-	modelValue: any
+	dragStartCallback?: (ev: DragEvent) => void;
+	modelValue: Misskey.entities.PageBlock & { type: 'text' }
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: any): void;
+	(ev: 'update:modelValue', value: Misskey.entities.PageBlock & { type: 'text' }): void;
+	(ev: 'remove'): void;
 }>();
 
+let autocomplete: Autocomplete;
+
 const text = ref(props.modelValue.text ?? '');
+const inputEl = useTemplateRef('inputEl');
 
 watch(text, () => {
 	emit('update:modelValue', {
 		...props.modelValue,
 		text: text.value,
 	});
+});
+
+onMounted(() => {
+	if (inputEl.value == null) return;
+	autocomplete = new Autocomplete(inputEl.value, text);
+});
+
+onUnmounted(() => {
+	autocomplete.detach();
 });
 </script>
 
@@ -51,7 +66,7 @@ watch(text, () => {
 	box-shadow: none;
 	padding: 16px;
 	background: transparent;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	font-size: 14px;
 	box-sizing: border-box;
 }

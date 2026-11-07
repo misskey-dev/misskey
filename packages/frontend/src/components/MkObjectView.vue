@@ -1,10 +1,10 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
+<div class="_selectable">
 	<XValue :value="value" :collapsed="false"/>
 </div>
 </template>

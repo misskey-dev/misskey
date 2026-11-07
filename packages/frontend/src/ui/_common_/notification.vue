@@ -1,11 +1,11 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div :class="$style.root">
-	<XNotification :notification="notification" class="notification _acrylic" :full="false"/>
+	<XNotification :notification="notification" class="notification _acrylic" :contentVisibilityAuto="false" :full="false"/>
 </div>
 </template>
 

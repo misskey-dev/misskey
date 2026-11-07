@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -8,12 +8,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="dialog"
 	:width="370"
 	:height="400"
-	@close="dialog.close()"
+	@close="dialog?.close()"
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.forgotPassword }}</template>
 
-	<MkSpacer :marginMin="20" :marginMax="28">
+	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 		<form v-if="instance.enableEmail" @submit.prevent="onSubmit">
 			<div class="_gaps_m">
 				<MkInput v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required>
@@ -34,12 +34,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else>
 			{{ i18n.ts._forgotPassword.contactAdmin }}
 		</div>
-	</MkSpacer>
+	</div>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -53,7 +53,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = ref<InstanceType<typeof MkModalWindow>>();
+const dialog = useTemplateRef('dialog');
 
 const username = ref('');
 const email = ref('');
@@ -66,6 +66,6 @@ async function onSubmit() {
 		email: email.value,
 	});
 	emit('done');
-	dialog.value.close();
+	dialog.value?.close();
 }
 </script>

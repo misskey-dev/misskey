@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -30,7 +30,7 @@ const emit = defineEmits<{
 	(ev: 'save', value: (string[] | string)[]): void;
 }>();
 
-const render = (mutedWords) => mutedWords.map(x => {
+const render = (mutedWords: (string | string[])[]) => mutedWords.map(x => {
 	if (Array.isArray(x)) {
 		return x.join(' ');
 	} else {
@@ -46,13 +46,13 @@ watch(mutedWords, () => {
 });
 
 async function save() {
-	const parseMutes = (mutes) => {
+	const parseMutes = (mutes: string) => {
 		// split into lines, remove empty lines and unnecessary whitespace
-		let lines = mutes.trim().split('\n').map(line => line.trim()).filter(line => line !== '');
+		let lines = mutes.trim().split('\n').map(line => line.trim()).filter(line => line !== '') as (string | string[])[];
 
 		// check each line if it is a RegExp or not
 		for (let i = 0; i < lines.length; i++) {
-			const line = lines[i];
+			const line = lines[i] as string;
 			const regexp = line.match(/^\/(.+)\/(.*)$/);
 			if (regexp) {
 				// check that the RegExp is valid
@@ -64,7 +64,7 @@ async function save() {
 					os.alert({
 						type: 'error',
 						title: i18n.ts.regexpError,
-						text: i18n.t('regexpErrorDescription', { tab: 'word mute', line: i + 1 }) + '\n' + err.toString(),
+						text: i18n.tsx.regexpErrorDescription({ tab: 'word mute', line: i + 1 }) + '\n' + err.toString(),
 					});
 					// re-throw error so these invalid settings are not saved
 					throw err;

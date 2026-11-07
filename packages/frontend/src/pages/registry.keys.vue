@@ -1,12 +1,11 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="600" :marginMin="16">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px;">
 		<div class="_gaps_m">
 			<FormSplit>
 				<MkKeyValue>
@@ -22,22 +21,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton primary @click="createKey">{{ i18n.ts._registry.createKey }}</MkButton>
 
 			<FormSection v-if="keys">
-				<template #label>{{ i18n.ts.keys }}</template>
+				<template #label>{{ i18n.ts._registry.keys }}</template>
 				<div class="_gaps_s">
 					<FormLink v-for="key in keys" :to="`/registry/value/${props.domain}/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
 				</div>
 			</FormSection>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { watch, computed, ref } from 'vue';
 import JSON5 from 'json5';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -51,10 +51,10 @@ const props = defineProps<{
 
 const scope = computed(() => props.path ? props.path.split('/') : []);
 
-const keys = ref(null);
+const keys = ref<[string, string][]>([]);
 
 function fetchKeys() {
-	os.api('i/registry/keys-with-type', {
+	misskeyApi('i/registry/keys-with-type', {
 		scope: scope.value,
 		domain: props.domain === '@' ? null : props.domain,
 	}).then(res => {
@@ -79,7 +79,9 @@ async function createKey() {
 			default: scope.value.join('/'),
 		},
 	});
+
 	if (canceled) return;
+
 	os.apiWithDialog('i/registry/set', {
 		scope: result.scope.split('/'),
 		key: result.key,
@@ -95,8 +97,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePage(() => ({
 	title: i18n.ts.registry,
 	icon: 'ti ti-adjustments',
-});
+}));
 </script>

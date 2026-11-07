@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -24,11 +24,11 @@ const isZero = computed(() => props.value === 0);
 
 <style lang="scss" module>
 .isPlus {
-	color: var(--success);
+	color: var(--MI_THEME-success);
 }
 
 .isMinus {
-	color: var(--error);
+	color: var(--MI_THEME-error);
 }
 
 .isZero {

@@ -34,5 +34,11 @@
 			"text": "text",
 			"url": "url"
 		}
-	}
+	},
+	"shortcuts": [
+		{
+			"name": "Safemode",
+			"url": "/?safemode=true"
+		}
+	]
 }

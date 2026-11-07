@@ -1,10 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { writeFile } from 'node:fs/promises';
-import locales from '../../../locales/index.js';
+import locales from 'i18n';
 
 await writeFile(
 	new URL('locale.ts', import.meta.url),

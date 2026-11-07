@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -29,7 +29,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
-		this.cache = new MemorySingleCache<MiAvatarDecoration[]>(1000 * 60 * 30);
+		this.cache = new MemorySingleCache<MiAvatarDecoration[]>(1000 * 60 * 30); // 30s
 
 		this.redisForSub.on('message', this.onMessage);
 	}
@@ -39,7 +39,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {
-			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
+			const { type, body: _ } = obj.message as GlobalEvents['internal']['payload'];
 			switch (type) {
 				case 'avatarDecorationCreated':
 				case 'avatarDecorationUpdated':
@@ -55,10 +55,10 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 
 	@bindThis
 	public async create(options: Partial<MiAvatarDecoration>, moderator?: MiUser): Promise<MiAvatarDecoration> {
-		const created = await this.avatarDecorationsRepository.insert({
+		const created = await this.avatarDecorationsRepository.insertOne({
 			id: this.idService.gen(),
 			...options,
-		}).then(x => this.avatarDecorationsRepository.findOneByOrFail(x.identifiers[0]));
+		});
 
 		this.globalEventService.publishInternalEvent('avatarDecorationCreated', created);
 

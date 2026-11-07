@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</p>
 	<ul>
 		<li v-for="(choice, i) in choices" :key="i">
-			<MkInput class="input" small :modelValue="choice" :placeholder="i18n.t('_poll.choiceN', { n: i + 1 })" @update:modelValue="onInput(i, $event)">
+			<MkInput class="input" small :modelValue="choice" :placeholder="i18n.tsx._poll.choiceN({ n: i + 1 })" @update:modelValue="onInput(i, $event)">
 			</MkInput>
 			<button class="_button" @click="remove(i)">
 				<i class="ti ti-x"></i>
@@ -22,11 +22,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSwitch v-model="multiple">{{ i18n.ts._poll.canMultipleVote }}</MkSwitch>
 	<section>
 		<div>
-			<MkSelect v-model="expiration" small>
+			<MkSelect v-model="expiration" :items="expirationDef" small>
 				<template #label>{{ i18n.ts._poll.expiration }}</template>
-				<option value="infinite">{{ i18n.ts._poll.infinite }}</option>
-				<option value="at">{{ i18n.ts._poll.at }}</option>
-				<option value="after">{{ i18n.ts._poll.after }}</option>
 			</MkSelect>
 			<section v-if="expiration === 'at'">
 				<MkInput v-model="atDate" small type="date" class="input">
@@ -37,15 +34,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkInput>
 			</section>
 			<section v-else-if="expiration === 'after'">
-				<MkInput v-model="after" small type="number" class="input">
+				<MkInput v-model="after" small type="number" :min="1" class="input">
 					<template #label>{{ i18n.ts._poll.duration }}</template>
 				</MkInput>
-				<MkSelect v-model="unit" small>
-					<option value="second">{{ i18n.ts._time.second }}</option>
-					<option value="minute">{{ i18n.ts._time.minute }}</option>
-					<option value="hour">{{ i18n.ts._time.hour }}</option>
-					<option value="day">{{ i18n.ts._time.day }}</option>
-				</MkSelect>
+				<MkSelect v-model="unit" :items="unitDef" small></MkSelect>
 			</section>
 		</div>
 	</section>
@@ -58,38 +50,59 @@ import MkInput from './MkInput.vue';
 import MkSelect from './MkSelect.vue';
 import MkSwitch from './MkSwitch.vue';
 import MkButton from './MkButton.vue';
-import { formatDateTimeString } from '@/scripts/format-time-string.js';
-import { addTime } from '@/scripts/time.js';
+import { formatDateTimeString } from '@/utility/format-time-string.js';
+import { addTime } from '@/utility/time.js';
 import { i18n } from '@/i18n.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+
+export type PollEditorModelValue = {
+	expiresAt: number | null;
+	expiredAfter: number | null;
+	choices: string[];
+	multiple: boolean;
+};
 
 const props = defineProps<{
-	modelValue: {
-		expiresAt: string;
-		expiredAfter: number;
-		choices: string[];
-		multiple: boolean;
-	};
+	modelValue: PollEditorModelValue;
 }>();
 const emit = defineEmits<{
-	(ev: 'update:modelValue', v: {
-		expiresAt: string;
-		expiredAfter: number;
-		choices: string[];
-		multiple: boolean;
-	}): void;
+	(ev: 'update:modelValue', v: PollEditorModelValue): void;
 }>();
 
 const choices = ref(props.modelValue.choices);
 const multiple = ref(props.modelValue.multiple);
-const expiration = ref('infinite');
+const {
+	model: expiration,
+	def: expirationDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._poll.infinite, value: 'infinite' },
+		{ label: i18n.ts._poll.at, value: 'at' },
+		{ label: i18n.ts._poll.after, value: 'after' },
+	],
+	initialValue: 'infinite',
+});
 const atDate = ref(formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-dd'));
 const atTime = ref('00:00');
 const after = ref(0);
-const unit = ref('second');
+const {
+	model: unit,
+	def: unitDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._time.second, value: 'second' },
+		{ label: i18n.ts._time.minute, value: 'minute' },
+		{ label: i18n.ts._time.hour, value: 'hour' },
+		{ label: i18n.ts._time.day, value: 'day' },
+	],
+	initialValue: 'second',
+});
 
 if (props.modelValue.expiresAt) {
 	expiration.value = 'at';
-	atDate.value = atTime.value = props.modelValue.expiresAt;
+	const expiresAt = new Date(props.modelValue.expiresAt);
+	atDate.value = formatDateTimeString(expiresAt, 'yyyy-MM-dd');
+	atTime.value = formatDateTimeString(expiresAt, 'HH:mm');
 } else if (typeof props.modelValue.expiredAfter === 'number') {
 	expiration.value = 'after';
 	after.value = props.modelValue.expiredAfter / 1000;
@@ -97,7 +110,7 @@ if (props.modelValue.expiresAt) {
 	expiration.value = 'infinite';
 }
 
-function onInput(i, value) {
+function onInput(i: number, value: string) {
 	choices.value[i] = value;
 }
 
@@ -109,24 +122,25 @@ function add() {
 	// });
 }
 
-function remove(i) {
+function remove(i: number) {
 	choices.value = choices.value.filter((_, _i) => _i !== i);
 }
 
-function get() {
+function get(): PollEditorModelValue {
 	const calcAt = () => {
 		return new Date(`${atDate.value} ${atTime.value}`).getTime();
 	};
 
 	const calcAfter = () => {
-		let base = parseInt(after.value);
+		let base = parseInt(after.value.toString());
 		switch (unit.value) {
+			// @ts-expect-error fallthrough
 			case 'day': base *= 24;
-				// fallthrough
+			// @ts-expect-error fallthrough
 			case 'hour': base *= 60;
-				// fallthrough
+			// @ts-expect-error fallthrough
 			case 'minute': base *= 60;
-				// fallthrough
+			// eslint-disable-next-line no-fallthrough
 			case 'second': return base *= 1000;
 			default: return null;
 		}
@@ -135,10 +149,8 @@ function get() {
 	return {
 		choices: choices.value,
 		multiple: multiple.value,
-		...(
-			expiration.value === 'at' ? { expiresAt: calcAt() } :
-			expiration.value === 'after' ? { expiredAfter: calcAfter() } : {}
-		),
+		expiresAt: expiration.value === 'at' ? calcAt() : null,
+		expiredAfter: expiration.value === 'after' ? calcAfter() : null,
 	};
 }
 

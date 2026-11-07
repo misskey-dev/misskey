@@ -1,24 +1,25 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
-	<MkSpacer :contentMax="1200">
+<PageWithHeader>
+	<div class="_spacer" style="--MI_SPACER-w: 1200px;">
 		<MkAchievements :user="$i"/>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { onActivated, onDeactivated, onMounted, onUnmounted } from 'vue';
 import MkAchievements from '@/components/MkAchievements.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { $i } from '@/account.js';
-import { claimAchievement } from '@/scripts/achievements.js';
+import { definePage } from '@/page.js';
+import { ensureSignin } from '@/i.js';
+import { claimAchievement } from '@/utility/achievements.js';
+
+const $i = ensureSignin();
 
 let timer: number | null;
 
@@ -48,10 +49,10 @@ onDeactivated(() => {
 	}
 });
 
-definePageMetadata({
+definePage(() => ({
 	title: i18n.ts.achievements,
 	icon: 'ti ti-medal',
-});
+}));
 </script>
 
 <style lang="scss" module>

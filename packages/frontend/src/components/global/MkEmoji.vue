@@ -1,47 +1,78 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<img v-if="!useOsNativeEmojis" :class="$style.root" :src="url" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
-<span v-else-if="useOsNativeEmojis" :alt="props.emoji" @pointerenter="computeTitle" @click="onClick">{{ props.emoji }}</span>
-<span v-else>{{ emoji }}</span>
+<img v-if="shouldMute" :class="$style.root" src="/client-assets/unknown.png" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
+<img v-else-if="!useOsNativeEmojis" :class="$style.root" :src="url" :alt="props.emoji" decoding="async" @pointerenter="computeTitle" @click="onClick"/>
+<span v-else :alt="props.emoji" @pointerenter="computeTitle" @click="onClick">{{ colorizedNativeEmoji }}</span>
 </template>
 
 <script lang="ts" setup>
 import { computed, inject } from 'vue';
-import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base.js';
-import { defaultStore } from '@/store.js';
-import { getEmojiName } from '@/scripts/emojilist.js';
+import { colorizeEmoji, getEmojiName } from '@@/js/emojilist.js';
+import { char2fluentEmojiFilePath, char2twemojiFilePath } from '@@/js/emoji-base.js';
+import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
+import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
+import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as checkMutedEmoji } from '@/utility/emoji-mute.js';
+import { addToEmojiPalette } from '@/utility/emoji-palette.js';
 
 const props = defineProps<{
 	emoji: string;
 	menu?: boolean;
 	menuReaction?: boolean;
+	ignoreMuted?: boolean;
 }>();
 
-const react = inject<((name: string) => void) | null>('react', null);
+const react = inject(DI.mfmEmojiReactCallback, null);
 
-const char2path = defaultStore.state.emojiStyle === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
+const char2path = prefer.s.emojiStyle === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 
-const useOsNativeEmojis = computed(() => defaultStore.state.emojiStyle === 'native');
-const url = computed(() => {
-	return char2path(props.emoji);
-});
+const useOsNativeEmojis = computed(() => prefer.s.emojiStyle === 'native');
+const url = computed(() => char2path(props.emoji));
+const colorizedNativeEmoji = computed(() => colorizeEmoji(props.emoji));
+const isMuted = checkMutedEmoji(() => props.emoji);
+const shouldMute = computed(() => isMuted.value && !props.ignoreMuted);
 
 // Searching from an array with 2000 items for every emoji felt like too energy-consuming, so I decided to do it lazily on pointerenter
 function computeTitle(event: PointerEvent): void {
-	const title = getEmojiName(props.emoji as string) ?? props.emoji as string;
-	(event.target as HTMLElement).title = title;
+	(event.target as HTMLElement).title = getEmojiName(props.emoji);
 }
 
-function onClick(ev: MouseEvent) {
+function mute() {
+	os.confirm({
+		type: 'question',
+		title: i18n.tsx.muteX({ x: props.emoji }),
+	}).then(({ canceled }) => {
+		if (canceled) {
+			return;
+		}
+		muteEmoji(props.emoji);
+	});
+}
+
+function unmute() {
+	os.confirm({
+		type: 'question',
+		title: i18n.tsx.unmuteX({ x: props.emoji }),
+	}).then(({ canceled }) => {
+		if (canceled) {
+			return;
+		}
+		unmuteEmoji(props.emoji);
+	});
+}
+
+function onClick(ev: PointerEvent) {
 	if (props.menu) {
-		os.popupMenu([{
+		const menuItems: MenuItem[] = [];
+
+		menuItems.push({
 			type: 'label',
 			text: props.emoji,
 		}, {
@@ -49,15 +80,50 @@ function onClick(ev: MouseEvent) {
 			icon: 'ti ti-copy',
 			action: () => {
 				copyToClipboard(props.emoji);
-				os.success();
 			},
-		}, ...(props.menuReaction && react ? [{
-			text: i18n.ts.doReaction,
-			icon: 'ti ti-plus',
+		});
+
+		if (props.menuReaction && react) {
+			menuItems.push({
+				text: i18n.ts.doReaction,
+				icon: 'ti ti-plus',
+				action: () => {
+					react(props.emoji);
+				},
+			});
+		}
+
+		menuItems.push({
+			type: 'divider',
+		});
+
+		if (isMuted.value) {
+			menuItems.push({
+				text: i18n.ts.emojiUnmute,
+				icon: 'ti ti-mood-smile',
+				action: () => {
+					unmute();
+				},
+			});
+		} else {
+			menuItems.push({
+				text: i18n.ts.emojiMute,
+				icon: 'ti ti-mood-off',
+				action: () => {
+					mute();
+				},
+			});
+		}
+
+		menuItems.push({
+			text: i18n.ts.addToEmojiPalette,
+			icon: 'ti ti-palette',
 			action: () => {
-				react(props.emoji);
+				addToEmojiPalette(props.emoji);
 			},
-		}] : [])], ev.currentTarget ?? ev.target);
+		});
+
+		os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 	}
 }
 </script>

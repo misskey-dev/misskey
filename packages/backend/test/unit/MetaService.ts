@@ -1,20 +1,18 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 process.env.NODE_ENV = 'test';
 
-import { jest } from '@jest/globals';
-import { ModuleMocker } from 'jest-mock';
+import { afterAll, beforeAll, describe, test, expect, vi } from 'vitest';
 import { Test } from '@nestjs/testing';
 import { GlobalModule } from '@/GlobalModule.js';
-import type { MetasRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 import { CoreModule } from '@/core/CoreModule.js';
-import type { DataSource } from 'typeorm';
 import type { TestingModule } from '@nestjs/testing';
+import type { DataSource } from 'typeorm';
 
 describe('MetaService', () => {
 	let app: TestingModule;
@@ -42,7 +40,7 @@ describe('MetaService', () => {
 
 	test('fetch (cache)', async () => {
 		const db = app.get<DataSource>(DI.db);
-		const spy = jest.spyOn(db, 'transaction');
+		const spy = vi.spyOn(db, 'transaction');
 
 		const result = await metaService.fetch();
 
@@ -52,7 +50,7 @@ describe('MetaService', () => {
 
 	test('fetch (force)', async () => {
 		const db = app.get<DataSource>(DI.db);
-		const spy = jest.spyOn(db, 'transaction');
+		const spy = vi.spyOn(db, 'transaction');
 
 		const result = await metaService.fetch(true);
 

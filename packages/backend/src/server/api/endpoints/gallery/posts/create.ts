@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -69,13 +69,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					id: fileId,
 					userId: me.id,
 				}),
-			))).filter((file): file is MiDriveFile => file != null);
+			))).filter(x => x != null);
 
 			if (files.length === 0) {
 				throw new Error();
 			}
 
-			const post = await this.galleryPostsRepository.insert(new MiGalleryPost({
+			const post = await this.galleryPostsRepository.insertOne(new MiGalleryPost({
 				id: this.idService.gen(),
 				updatedAt: new Date(),
 				title: ps.title,
@@ -83,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				userId: me.id,
 				isSensitive: ps.isSensitive,
 				fileIds: files.map(file => file.id),
-			})).then(x => this.galleryPostsRepository.findOneByOrFail(x.identifiers[0]));
+			}));
 
 			return await this.galleryPostEntityService.pack(post, me);
 		});

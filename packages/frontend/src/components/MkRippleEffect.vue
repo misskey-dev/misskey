@@ -1,12 +1,12 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div :class="$style.root" :style="{ zIndex, top: `${y - 64}px`, left: `${x - 64}px` }">
 	<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
-		<circle fill="none" cx="64" cy="64" style="stroke: var(--accent);">
+		<circle fill="none" cx="64" cy="64" style="stroke: var(--MI_THEME-accent);">
 			<animate
 				attributeName="r"
 				begin="0s" dur="0.5s"
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			/>
 		</circle>
 		<g fill="none" fill-rule="evenodd">
-			<circle v-for="(particle, i) in particles" :key="i" :fill="particle.color" style="stroke: var(--accent);">
+			<circle v-for="(particle, i) in particles" :key="i" :fill="particle.color" style="stroke: var(--MI_THEME-accent);">
 				<animate
 					attributeName="r"
 					begin="0s" dur="0.8s"
@@ -77,7 +77,14 @@ const emit = defineEmits<{
 	(ev: 'end'): void;
 }>();
 
-const particles = [];
+const particles: {
+	size: number;
+	xA: number;
+	yA: number;
+	xB: number;
+	yB: number;
+	color: string;
+}[] = [];
 const origin = 64;
 const colors = ['#FF1493', '#00FFFF', '#FFE202'];
 const zIndex = os.claimZIndex('high');

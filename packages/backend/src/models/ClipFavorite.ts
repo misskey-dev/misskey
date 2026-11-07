@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -18,7 +18,7 @@ export class MiClipFavorite {
 	@Column(id())
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -27,7 +27,7 @@ export class MiClipFavorite {
 	@Column(id())
 	public clipId: MiClip['id'];
 
-	@ManyToOne(type => MiClip, {
+	@ManyToOne(() => MiClip, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,6 +13,7 @@ import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '@/server/api/error.js';
 
+// TODO: UserWebhook schemaの適用
 export const meta = {
 	tags: ['webhooks'],
 
@@ -25,6 +26,33 @@ export const meta = {
 			message: 'You cannot create webhook any more.',
 			code: 'TOO_MANY_WEBHOOKS',
 			id: '87a9bb19-111e-4e37-81d3-a3e7426453b0',
+		},
+	},
+
+	res: {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string',
+				format: 'misskey:id',
+			},
+			userId: {
+				type: 'string',
+				format: 'misskey:id',
+			},
+			name: { type: 'string' },
+			on: {
+				type: 'array',
+				items: {
+					type: 'string',
+					enum: webhookEventTypes,
+				},
+			},
+			url: { type: 'string' },
+			secret: { type: 'string' },
+			active: { type: 'boolean' },
+			latestSentAt: { type: 'string', format: 'date-time', nullable: true },
+			latestStatus: { type: 'integer', nullable: true },
 		},
 	},
 } as const;
@@ -58,22 +86,32 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const currentWebhooksCount = await this.webhooksRepository.countBy({
 				userId: me.id,
 			});
-			if (currentWebhooksCount > (await this.roleService.getUserPolicies(me.id)).webhookLimit) {
+			if (currentWebhooksCount >= (await this.roleService.getUserPolicies(me.id)).webhookLimit) {
 				throw new ApiError(meta.errors.tooManyWebhooks);
 			}
 
-			const webhook = await this.webhooksRepository.insert({
+			const webhook = await this.webhooksRepository.insertOne({
 				id: this.idService.gen(),
 				userId: me.id,
 				name: ps.name,
 				url: ps.url,
 				secret: ps.secret,
 				on: ps.on,
-			}).then(x => this.webhooksRepository.findOneByOrFail(x.identifiers[0]));
+			});
 
 			this.globalEventService.publishInternalEvent('webhookCreated', webhook);
 
-			return webhook;
+			return {
+				id: webhook.id,
+				userId: webhook.userId,
+				name: webhook.name,
+				on: webhook.on,
+				url: webhook.url,
+				secret: webhook.secret,
+				active: webhook.active,
+				latestSentAt: webhook.latestSentAt ? webhook.latestSentAt.toISOString() : null,
+				latestStatus: webhook.latestStatus,
+			};
 		});
 	}
 }

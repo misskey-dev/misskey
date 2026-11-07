@@ -1,12 +1,11 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps_m">
 			<div class="_gaps_m">
 				<MkInput v-model="endpoint" :datalist="endpoints" @update:modelValue="onEndpointChange()">
@@ -29,36 +28,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkTextarea>
 			</div>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import JSON5 from 'json5';
-import { Endpoints } from 'misskey-js';
+import type { Endpoints } from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePage } from '@/page.js';
 
 const body = ref('{}');
 const endpoint = ref('');
-const endpoints = ref<any[]>([]);
+const endpoints = ref<string[]>([]);
 const sending = ref(false);
 const res = ref('');
 const withCredential = ref(true);
 
-os.api('endpoints').then(endpointResponse => {
+misskeyApi('endpoints').then(endpointResponse => {
 	endpoints.value = endpointResponse;
 });
 
 function send() {
 	sending.value = true;
 	const requestBody = JSON5.parse(body.value);
-	os.api(endpoint.value as keyof Endpoints, requestBody, requestBody.i || (withCredential.value ? undefined : null)).then(resp => {
+	misskeyApi(endpoint.value as keyof Endpoints, requestBody, requestBody.i || (withCredential.value ? undefined : null)).then(resp => {
 		sending.value = false;
 		res.value = JSON5.stringify(resp, null, 2);
 	}, err => {
@@ -68,8 +67,13 @@ function send() {
 }
 
 function onEndpointChange() {
-	os.api('endpoint', { endpoint: endpoint.value }, withCredential.value ? undefined : null).then(resp => {
-		const endpointBody = {};
+	misskeyApi('endpoint', { endpoint: endpoint.value }, withCredential.value ? undefined : null).then(resp => {
+		if (resp == null) {
+			body.value = '{}';
+			return;
+		}
+
+		const endpointBody = {} as Record<string, unknown>;
 		for (const p of resp.params) {
 			endpointBody[p.name] =
 				p.type === 'String' ? '' :
@@ -87,8 +91,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePage(() => ({
 	title: 'API console',
 	icon: 'ti ti-terminal-2',
-});
+}));
 </script>

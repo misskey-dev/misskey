@@ -1,17 +1,16 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { IdService } from '@/core/IdService.js';
-import type { RenoteMutingsRepository } from '@/models/_.js';
-import type { MiRenoteMuting } from '@/models/RenoteMuting.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
+import { UserRenoteMutingService } from "@/core/UserRenoteMutingService.js";
+import type { RenoteMutingsRepository } from '@/models/_.js';
 
 export const meta = {
 	tags: ['account'],
@@ -62,7 +61,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private renoteMutingsRepository: RenoteMutingsRepository,
 
 		private getterService: GetterService,
-		private idService: IdService,
+		private userRenoteMutingService: UserRenoteMutingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const muter = me;
@@ -73,27 +72,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// Get mutee
-			const mutee = await getterService.getUser(ps.userId).catch(err => {
+			const mutee = await this.getterService.getUser(ps.userId).catch(err => {
 				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 				throw err;
 			});
 
 			// Check if already muting
-			const exist = await this.renoteMutingsRepository.findOneBy({
-				muterId: muter.id,
-				muteeId: mutee.id,
+			const exist = await this.renoteMutingsRepository.exists({
+				where: {
+					muterId: muter.id,
+					muteeId: mutee.id,
+				},
 			});
 
-			if (exist != null) {
+			if (exist === true) {
 				throw new ApiError(meta.errors.alreadyMuting);
 			}
 
 			// Create mute
-			await this.renoteMutingsRepository.insert({
-				id: this.idService.gen(),
-				muterId: muter.id,
-				muteeId: mutee.id,
-			} as MiRenoteMuting);
+			await this.userRenoteMutingService.mute(muter, mutee);
 		});
 	}
 }

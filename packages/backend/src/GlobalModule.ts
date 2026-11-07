@@ -1,17 +1,19 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setTimeout } from 'node:timers/promises';
 import { Global, Inject, Module } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { DataSource } from 'typeorm';
-import { MeiliSearch } from 'meilisearch';
+import { Meilisearch } from 'meilisearch';
+import { MiMeta } from '@/models/Meta.js';
 import { DI } from './di-symbols.js';
 import { Config, loadConfig } from './config.js';
 import { createPostgresDataSource } from './postgres.js';
 import { RepositoryModule } from './models/RepositoryModule.js';
+import { allSettled } from './misc/promise-tracker.js';
+import { GlobalEvents } from './core/GlobalEventService.js';
 import type { Provider, OnApplicationShutdown } from '@nestjs/common';
 
 const $config: Provider = {
@@ -22,8 +24,13 @@ const $config: Provider = {
 const $db: Provider = {
 	provide: DI.db,
 	useFactory: async (config) => {
-		const db = createPostgresDataSource(config);
-		return await db.initialize();
+		try {
+			const db = createPostgresDataSource(config);
+			return await db.initialize();
+		} catch (e) {
+			console.log(e);
+			throw e;
+		}
 	},
 	inject: [DI.config],
 };
@@ -31,9 +38,13 @@ const $db: Provider = {
 const $meilisearch: Provider = {
 	provide: DI.meilisearch,
 	useFactory: (config: Config) => {
-		if (config.meilisearch) {
-			return new MeiliSearch({
-				host: `${config.meilisearch.ssl ? 'https' : 'http' }://${config.meilisearch.host}:${config.meilisearch.port}`,
+		if (config.fulltextSearch?.provider === 'meilisearch') {
+			if (!config.meilisearch) {
+				throw new Error('Meilisearch is enabled but no configuration is provided');
+			}
+
+			return new Meilisearch({
+				host: `${config.meilisearch.ssl ? 'https' : 'http'}://${config.meilisearch.host}:${config.meilisearch.port}`,
 				apiKey: config.meilisearch.apiKey,
 			});
 		} else {
@@ -78,11 +89,76 @@ const $redisForTimelines: Provider = {
 	inject: [DI.config],
 };
 
+const $redisForReactions: Provider = {
+	provide: DI.redisForReactions,
+	useFactory: (config: Config) => {
+		return new Redis.Redis(config.redisForReactions);
+	},
+	inject: [DI.config],
+};
+
+const $meta: Provider = {
+	provide: DI.meta,
+	useFactory: async (db: DataSource, redisForSub: Redis.Redis) => {
+		const meta = await db.transaction(async transactionalEntityManager => {
+			// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
+			const metas = await transactionalEntityManager.find(MiMeta, {
+				order: {
+					id: 'DESC',
+				},
+			});
+
+			const meta = metas[0];
+
+			if (meta) {
+				return meta;
+			} else {
+				// metaが空のときfetchMetaが同時に呼ばれるとここが同時に呼ばれてしまうことがあるのでフェイルセーフなupsertを使う
+				const saved = await transactionalEntityManager
+					.upsert(
+						MiMeta,
+						{
+							id: 'x',
+						},
+						['id'],
+					)
+					.then((x) => transactionalEntityManager.findOneByOrFail(MiMeta, x.identifiers[0]));
+
+				return saved;
+			}
+		});
+
+		async function onMessage(_: string, data: string): Promise<void> {
+			const obj = JSON.parse(data);
+
+			if (obj.channel === 'internal') {
+				const { type, body } = obj.message as GlobalEvents['internal']['payload'];
+				switch (type) {
+					case 'metaUpdated': {
+						for (const key in body.after) {
+							(meta as any)[key] = (body.after as any)[key];
+						}
+						meta.rootUser = null; // joinなカラムは通常取ってこないので
+						break;
+					}
+					default:
+						break;
+				}
+			}
+		}
+
+		redisForSub.on('message', onMessage);
+
+		return meta;
+	},
+	inject: [DI.db, DI.redisForSub],
+};
+
 @Global()
 @Module({
 	imports: [RepositoryModule],
-	providers: [$config, $db, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines],
-	exports: [$config, $db, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, RepositoryModule],
+	providers: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions],
+	exports: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, RepositoryModule],
 })
 export class GlobalModule implements OnApplicationShutdown {
 	constructor(
@@ -91,23 +167,20 @@ export class GlobalModule implements OnApplicationShutdown {
 		@Inject(DI.redisForPub) private redisForPub: Redis.Redis,
 		@Inject(DI.redisForSub) private redisForSub: Redis.Redis,
 		@Inject(DI.redisForTimelines) private redisForTimelines: Redis.Redis,
-	) {}
+		@Inject(DI.redisForReactions) private redisForReactions: Redis.Redis,
+	) { }
 
 	public async dispose(): Promise<void> {
-		if (process.env.NODE_ENV === 'test') {
-			// XXX:
-			// Shutting down the existing connections causes errors on Jest as
-			// Misskey has asynchronous postgres/redis connections that are not
-			// awaited.
-			// Let's wait for some random time for them to finish.
-			await setTimeout(5000);
-		}
+		// Wait for all potential DB queries
+		await allSettled();
+		// And then disconnect from DB
 		await Promise.all([
 			this.db.destroy(),
 			this.redisClient.disconnect(),
 			this.redisForPub.disconnect(),
 			this.redisForSub.disconnect(),
 			this.redisForTimelines.disconnect(),
+			this.redisForReactions.disconnect(),
 		]);
 	}
 

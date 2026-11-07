@@ -1,26 +1,26 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <Transition
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_window_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_window_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_window_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_window_leaveTo : ''"
+	:enterActiveClass="prefer.s.animation ? $style.transition_window_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_window_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_window_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_window_leaveTo : ''"
 	appear
-	@afterLeave="$emit('closed')"
+	@afterLeave="emit('closed')"
 >
 	<div v-if="showing" ref="rootEl" :class="[$style.root, { [$style.maximized]: maximized }]">
-		<div :class="$style.body" class="_shadow" @mousedown="onBodyMousedown" @keydown="onKeydown">
+		<div :class="$style.body" class="_shadow" @pointerdown="onBodyPointerDown" @keydown="onKeydown">
 			<div :class="[$style.header, { [$style.mini]: mini }]" @contextmenu.prevent.stop="onContextmenu">
 				<span :class="$style.headerLeft">
 					<template v-if="!minimized">
 						<button v-for="button in buttonsLeft" v-tooltip="button.title" class="_button" :class="[$style.headerButton, { [$style.highlighted]: button.highlighted }]" @click="button.onClick"><i :class="button.icon"></i></button>
 					</template>
 				</span>
-				<span :class="$style.headerTitle" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
+				<span :class="$style.headerTitle" @pointerdown.prevent="onHeaderPointerdown">
 					<slot name="header"></slot>
 				</span>
 				<span :class="$style.headerRight">
@@ -39,58 +39,84 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<template v-if="canResize && !minimized">
-			<div :class="$style.handleTop" @mousedown.prevent="onTopHandleMousedown"></div>
-			<div :class="$style.handleRight" @mousedown.prevent="onRightHandleMousedown"></div>
-			<div :class="$style.handleBottom" @mousedown.prevent="onBottomHandleMousedown"></div>
-			<div :class="$style.handleLeft" @mousedown.prevent="onLeftHandleMousedown"></div>
-			<div :class="$style.handleTopLeft" @mousedown.prevent="onTopLeftHandleMousedown"></div>
-			<div :class="$style.handleTopRight" @mousedown.prevent="onTopRightHandleMousedown"></div>
-			<div :class="$style.handleBottomRight" @mousedown.prevent="onBottomRightHandleMousedown"></div>
-			<div :class="$style.handleBottomLeft" @mousedown.prevent="onBottomLeftHandleMousedown"></div>
+			<div :class="$style.handleTop" @pointerdown.prevent="onTopHandlePointerdown"></div>
+			<div :class="$style.handleRight" @pointerdown.prevent="onRightHandlePointerdown"></div>
+			<div :class="$style.handleBottom" @pointerdown.prevent="onBottomHandlePointerdown"></div>
+			<div :class="$style.handleLeft" @pointerdown.prevent="onLeftHandlePointerdown"></div>
+			<div :class="$style.handleTopLeft" @pointerdown.prevent="onTopLeftHandlePointerdown"></div>
+			<div :class="$style.handleTopRight" @pointerdown.prevent="onTopRightHandlePointerdown"></div>
+			<div :class="$style.handleBottomRight" @pointerdown.prevent="onBottomRightHandlePointerdown"></div>
+			<div :class="$style.handleBottomLeft" @pointerdown.prevent="onBottomLeftHandlePointerdown"></div>
 		</template>
 	</div>
 </Transition>
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, shallowRef, ref } from 'vue';
-import contains from '@/scripts/contains.js';
+import { onBeforeUnmount, onMounted, provide, useTemplateRef, ref } from 'vue';
+import type { MenuItem } from '@/types/menu.js';
+import { elementContains } from '@/utility/element-contains.js';
 import * as os from '@/os.js';
-import { MenuItem } from '@/types/menu';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
+
+type WindowButton = {
+	title: string;
+	icon: string;
+	onClick: () => void;
+	highlighted?: boolean;
+};
 
 const minHeight = 50;
 const minWidth = 250;
 
-function dragListen(fn: (ev: MouseEvent) => void) {
-	window.addEventListener('mousemove', fn);
-	window.addEventListener('touchmove', fn);
-	window.addEventListener('mouseleave', dragClear.bind(null, fn));
-	window.addEventListener('mouseup', dragClear.bind(null, fn));
-	window.addEventListener('touchend', dragClear.bind(null, fn));
+function dragListen(fn: (ev: PointerEvent) => void) {
+	window.addEventListener('pointermove', fn);
+	const clear = () => {
+		dragClear(fn);
+	};
+	window.addEventListener('pointerup', clear, { once: true });
+	window.addEventListener('pointercancel', clear, { once: true });
+	window.addEventListener('blur', clear, { once: true });
 }
 
-function dragClear(fn) {
-	window.removeEventListener('mousemove', fn);
-	window.removeEventListener('touchmove', fn);
-	window.removeEventListener('mouseleave', dragClear);
-	window.removeEventListener('mouseup', dragClear);
-	window.removeEventListener('touchend', dragClear);
+function dragClear(fn: (ev: PointerEvent) => void) {
+	window.removeEventListener('pointermove', fn);
+}
+
+function capturePointer(evt: PointerEvent) {
+	const target = evt.currentTarget;
+	if (!(target instanceof HTMLElement)) return;
+	if (!target.setPointerCapture) return;
+
+	try {
+		target.setPointerCapture(evt.pointerId);
+	} catch {
+		return;
+	}
+
+	const release = () => {
+		if (target.hasPointerCapture(evt.pointerId)) {
+			target.releasePointerCapture(evt.pointerId);
+		}
+	};
+
+	window.addEventListener('pointerup', release, { once: true });
+	window.addEventListener('pointercancel', release, { once: true });
 }
 
 const props = withDefaults(defineProps<{
-	initialWidth: number;
-	initialHeight: number | null;
+	initialWidth?: number | null;
+	initialHeight?: number | null;
 	canResize?: boolean;
 	closeButton?: boolean;
 	mini?: boolean;
 	front?: boolean;
 	contextmenu?: MenuItem[] | null;
-	buttonsLeft?: any[];
-	buttonsRight?: any[];
+	buttonsLeft?: WindowButton[];
+	buttonsRight?: WindowButton[];
 }>(), {
-	initialWidth: 400,
+	initialWidth: null,
 	initialHeight: null,
 	canResize: false,
 	closeButton: true,
@@ -105,9 +131,15 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
+const INITIAL_WINDOW_WIDTH_RATIO = 0.5;
+const INITIAL_WINDOW_HEIGHT_RATIO = 0.75;
+const INITIAL_WINDOW_WIDTH_MIN = 400; // スクリーンの最小幅に合わせるのはapplyTransormWidthの担当
+const INITIAL_WINDOW_WIDTH_MAX = 1000; // 画面幅いっぱいに広がるのを防止するための最大幅
+const INITIAL_WINDOW_HEIGHT_MIN = 500; // スクリーンの最小幅に合わせるのはapplyTransormHeightの担当
+
 provide('inWindow', true);
 
-const rootEl = shallowRef<HTMLElement | null>();
+const rootEl = useTemplateRef('rootEl');
 const showing = ref(true);
 let beforeClickedAt = 0;
 const maximized = ref(false);
@@ -121,7 +153,7 @@ function close() {
 	showing.value = false;
 }
 
-function onKeydown(evt) {
+function onKeydown(evt: KeyboardEvent) {
 	if (evt.which === 27) { // Esc
 		evt.preventDefault();
 		evt.stopPropagation();
@@ -129,7 +161,7 @@ function onKeydown(evt) {
 	}
 }
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	if (props.contextmenu) {
 		os.contextMenu(props.contextmenu, ev);
 	}
@@ -138,11 +170,12 @@ function onContextmenu(ev: MouseEvent) {
 // 最前面へ移動
 function top() {
 	if (rootEl.value) {
-		rootEl.value.style.zIndex = os.claimZIndex(props.front ? 'middle' : 'low');
+		rootEl.value.style.zIndex = os.claimZIndex(props.front ? 'middle' : 'low').toString();
 	}
 }
 
 function maximize() {
+	if (rootEl.value == null) return;
 	maximized.value = true;
 	unResizedTop = rootEl.value.style.top;
 	unResizedLeft = rootEl.value.style.left;
@@ -155,6 +188,7 @@ function maximize() {
 }
 
 function unMaximize() {
+	if (rootEl.value == null) return;
 	maximized.value = false;
 	rootEl.value.style.top = unResizedTop;
 	rootEl.value.style.left = unResizedLeft;
@@ -163,6 +197,7 @@ function unMaximize() {
 }
 
 function minimize() {
+	if (rootEl.value == null) return;
 	minimized.value = true;
 	unResizedWidth = rootEl.value.style.width;
 	unResizedHeight = rootEl.value.style.height;
@@ -171,8 +206,8 @@ function minimize() {
 }
 
 function unMinimize() {
+	if (rootEl.value == null) return;
 	const main = rootEl.value;
-	if (main == null) return;
 
 	minimized.value = false;
 	rootEl.value.style.width = unResizedWidth;
@@ -187,7 +222,7 @@ function unMinimize() {
 	if (position.left + windowWidth > browserWidth) main.style.left = browserWidth - windowWidth + 'px';
 }
 
-function onBodyMousedown() {
+function onBodyPointerDown() {
 	top();
 }
 
@@ -199,9 +234,19 @@ function onDblClick() {
 	}
 }
 
-function onHeaderMousedown(evt: MouseEvent) {
+function getPositionX(event: PointerEvent) {
+	return event.clientX;
+}
+
+function getPositionY(event: PointerEvent) {
+	return event.clientY;
+}
+
+function onHeaderPointerdown(evt: PointerEvent) {
+	capturePointer(evt);
+
 	// 右クリックはコンテキストメニューを開こうとした可能性が高いため無視
-	if (evt.button === 2) return;
+	if ('button' in evt && evt.button === 2) return;
 
 	let beforeMaximized = false;
 
@@ -222,12 +267,12 @@ function onHeaderMousedown(evt: MouseEvent) {
 	const main = rootEl.value;
 	if (main == null) return;
 
-	if (!contains(main, document.activeElement)) main.focus();
+	if (!elementContains(main, window.document.activeElement)) main.focus();
 
 	const position = main.getBoundingClientRect();
 
-	const clickX = evt.touches && evt.touches.length > 0 ? evt.touches[0].clientX : evt.clientX;
-	const clickY = evt.touches && evt.touches.length > 0 ? evt.touches[0].clientY : evt.clientY;
+	const clickX = getPositionX(evt);
+	const clickY = getPositionY(evt);
 	const moveBaseX = beforeMaximized ? parseInt(unResizedWidth, 10) / 2 : clickX - position.left; // TODO: parseIntやめる
 	const moveBaseY = beforeMaximized ? 20 : clickY - position.top;
 	const browserWidth = window.innerWidth;
@@ -251,8 +296,10 @@ function onHeaderMousedown(evt: MouseEvent) {
 		// 右はみ出し
 		if (moveLeft + windowWidth > browserWidth) moveLeft = browserWidth - windowWidth;
 
-		rootEl.value.style.left = moveLeft + 'px';
-		rootEl.value.style.top = moveTop + 'px';
+		if (rootEl.value) {
+			rootEl.value.style.left = moveLeft + 'px';
+			rootEl.value.style.top = moveTop + 'px';
+		}
 	}
 
 	if (beforeMaximized) {
@@ -261,26 +308,29 @@ function onHeaderMousedown(evt: MouseEvent) {
 
 	// 動かした時
 	dragListen(me => {
-		const x = me.touches && me.touches.length > 0 ? me.touches[0].clientX : me.clientX;
-		const y = me.touches && me.touches.length > 0 ? me.touches[0].clientY : me.clientY;
+		const x = getPositionX(me);
+		const y = getPositionY(me);
 
 		move(x, y);
 	});
 }
 
 // 上ハンドル掴み時
-function onTopHandleMousedown(evt) {
+function onTopHandlePointerdown(evt: PointerEvent) {
+	capturePointer(evt);
+
 	const main = rootEl.value;
 	// どういうわけかnullになることがある
 	if (main == null) return;
 
-	const base = evt.clientY;
-	const height = parseInt(getComputedStyle(main, '').height, 10);
-	const top = parseInt(getComputedStyle(main, '').top, 10);
+	const base = getPositionY(evt);
+	const computedStyle = getComputedStyle(main, '');
+	const height = parseInt(computedStyle.height, 10);
+	const top = parseInt(computedStyle.top, 10);
 
 	// 動かした時
 	dragListen(me => {
-		const move = me.clientY - base;
+		const move = getPositionY(me) - base;
 		if (top + move > 0) {
 			if (height + -move > minHeight) {
 				applyTransformHeight(height + -move);
@@ -297,18 +347,21 @@ function onTopHandleMousedown(evt) {
 }
 
 // 右ハンドル掴み時
-function onRightHandleMousedown(evt) {
+function onRightHandlePointerdown(evt: PointerEvent) {
+	capturePointer(evt);
+
 	const main = rootEl.value;
 	if (main == null) return;
 
-	const base = evt.clientX;
-	const width = parseInt(getComputedStyle(main, '').width, 10);
-	const left = parseInt(getComputedStyle(main, '').left, 10);
+	const base = getPositionX(evt);
+	const computedStyle = getComputedStyle(main, '');
+	const width = parseInt(computedStyle.width, 10);
+	const left = parseInt(computedStyle.left, 10);
 	const browserWidth = window.innerWidth;
 
 	// 動かした時
 	dragListen(me => {
-		const move = me.clientX - base;
+		const move = getPositionX(me) - base;
 		if (left + width + move < browserWidth) {
 			if (width + move > minWidth) {
 				applyTransformWidth(width + move);
@@ -322,18 +375,21 @@ function onRightHandleMousedown(evt) {
 }
 
 // 下ハンドル掴み時
-function onBottomHandleMousedown(evt) {
+function onBottomHandlePointerdown(evt: PointerEvent) {
+	capturePointer(evt);
+
 	const main = rootEl.value;
 	if (main == null) return;
 
-	const base = evt.clientY;
-	const height = parseInt(getComputedStyle(main, '').height, 10);
-	const top = parseInt(getComputedStyle(main, '').top, 10);
+	const base = getPositionY(evt);
+	const computedStyle = getComputedStyle(main, '');
+	const height = parseInt(computedStyle.height, 10);
+	const top = parseInt(computedStyle.top, 10);
 	const browserHeight = window.innerHeight;
 
 	// 動かした時
 	dragListen(me => {
-		const move = me.clientY - base;
+		const move = getPositionY(me) - base;
 		if (top + height + move < browserHeight) {
 			if (height + move > minHeight) {
 				applyTransformHeight(height + move);
@@ -347,17 +403,20 @@ function onBottomHandleMousedown(evt) {
 }
 
 // 左ハンドル掴み時
-function onLeftHandleMousedown(evt) {
+function onLeftHandlePointerdown(evt: PointerEvent) {
+	capturePointer(evt);
+
 	const main = rootEl.value;
 	if (main == null) return;
 
-	const base = evt.clientX;
-	const width = parseInt(getComputedStyle(main, '').width, 10);
-	const left = parseInt(getComputedStyle(main, '').left, 10);
+	const base = getPositionX(evt);
+	const computedStyle = getComputedStyle(main, '');
+	const width = parseInt(computedStyle.width, 10);
+	const left = parseInt(computedStyle.left, 10);
 
 	// 動かした時
 	dragListen(me => {
-		const move = me.clientX - base;
+		const move = getPositionX(me) - base;
 		if (left + move > 0) {
 			if (width + -move > minWidth) {
 				applyTransformWidth(width + -move);
@@ -374,49 +433,49 @@ function onLeftHandleMousedown(evt) {
 }
 
 // 左上ハンドル掴み時
-function onTopLeftHandleMousedown(evt) {
-	onTopHandleMousedown(evt);
-	onLeftHandleMousedown(evt);
+function onTopLeftHandlePointerdown(evt: PointerEvent) {
+	onTopHandlePointerdown(evt);
+	onLeftHandlePointerdown(evt);
 }
 
 // 右上ハンドル掴み時
-function onTopRightHandleMousedown(evt) {
-	onTopHandleMousedown(evt);
-	onRightHandleMousedown(evt);
+function onTopRightHandlePointerdown(evt: PointerEvent) {
+	onTopHandlePointerdown(evt);
+	onRightHandlePointerdown(evt);
 }
 
 // 右下ハンドル掴み時
-function onBottomRightHandleMousedown(evt) {
-	onBottomHandleMousedown(evt);
-	onRightHandleMousedown(evt);
+function onBottomRightHandlePointerdown(evt: PointerEvent) {
+	onBottomHandlePointerdown(evt);
+	onRightHandlePointerdown(evt);
 }
 
 // 左下ハンドル掴み時
-function onBottomLeftHandleMousedown(evt) {
-	onBottomHandleMousedown(evt);
-	onLeftHandleMousedown(evt);
+function onBottomLeftHandlePointerdown(evt: PointerEvent) {
+	onBottomHandlePointerdown(evt);
+	onLeftHandlePointerdown(evt);
 }
 
 // 高さを適用
-function applyTransformHeight(height) {
+function applyTransformHeight(height: number) {
 	if (height > window.innerHeight) height = window.innerHeight;
-	rootEl.value.style.height = height + 'px';
+	if (rootEl.value) rootEl.value.style.height = height + 'px';
 }
 
 // 幅を適用
-function applyTransformWidth(width) {
+function applyTransformWidth(width: number) {
 	if (width > window.innerWidth) width = window.innerWidth;
-	rootEl.value.style.width = width + 'px';
+	if (rootEl.value) rootEl.value.style.width = width + 'px';
 }
 
 // Y座標を適用
-function applyTransformTop(top) {
-	rootEl.value.style.top = top + 'px';
+function applyTransformTop(top: number) {
+	if (rootEl.value) rootEl.value.style.top = top + 'px';
 }
 
 // X座標を適用
-function applyTransformLeft(left) {
-	rootEl.value.style.left = left + 'px';
+function applyTransformLeft(left: number) {
+	if (rootEl.value) rootEl.value.style.left = left + 'px';
 }
 
 function onBrowserResize() {
@@ -435,11 +494,19 @@ function onBrowserResize() {
 }
 
 onMounted(() => {
-	applyTransformWidth(props.initialWidth);
-	if (props.initialHeight) applyTransformHeight(props.initialHeight);
+	let initialWidth = props.initialWidth;
+	let initialHeight = props.initialHeight;
 
-	applyTransformTop((window.innerHeight / 2) - (rootEl.value.offsetHeight / 2));
-	applyTransformLeft((window.innerWidth / 2) - (rootEl.value.offsetWidth / 2));
+	if (initialWidth == null) initialWidth = Math.min(Math.max(Math.round(window.innerWidth * INITIAL_WINDOW_WIDTH_RATIO), INITIAL_WINDOW_WIDTH_MIN), INITIAL_WINDOW_WIDTH_MAX);
+	if (initialHeight == null) initialHeight = Math.max(Math.round(window.innerHeight * INITIAL_WINDOW_HEIGHT_RATIO), INITIAL_WINDOW_HEIGHT_MIN);
+
+	applyTransformWidth(initialWidth);
+	applyTransformHeight(initialHeight);
+
+	if (rootEl.value) {
+		applyTransformTop((window.innerHeight / 2) - (rootEl.value.offsetHeight / 2));
+		applyTransformLeft((window.innerWidth / 2) - (rootEl.value.offsetWidth / 2));
+	}
 
 	// 他のウィンドウ内のボタンなどを押してこのウィンドウが開かれた場合、親が最前面になろうとするのでそれに隠されないようにする
 	top();
@@ -469,6 +536,10 @@ defineExpose({
 }
 
 .root {
+	// universal.vueとかで直接--MI-stickyBottomが定義されていたりするのでリセット
+	--MI-stickyTop: 0;
+	--MI-stickyBottom: 0;
+
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -487,15 +558,11 @@ defineExpose({
 	contain: content;
 	width: 100%;
 	height: 100%;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 }
 
 .header {
 	--height: 39px;
-
-	&.mini {
-		--height: 32px;
-	}
 
 	display: flex;
 	position: relative;
@@ -503,12 +570,16 @@ defineExpose({
 	flex-shrink: 0;
 	user-select: none;
 	height: var(--height);
-	background: var(--windowHeader);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-	//border-bottom: solid 1px var(--divider);
+	background: var(--MI_THEME-windowHeader);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	//border-bottom: solid 1px var(--MI_THEME-divider);
 	font-size: 90%;
 	font-weight: bold;
+
+	&.mini {
+		--height: 32px;
+	}
 }
 
 .headerButton {
@@ -516,11 +587,11 @@ defineExpose({
 	width: var(--height);
 
 	&:hover {
-		color: var(--fgHighlighted);
+		color: var(--MI_THEME-fgHighlighted);
 	}
 
 	&.highlighted {
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 	}
 }
 
@@ -540,12 +611,13 @@ defineExpose({
 	overflow: hidden;
 	text-overflow: ellipsis;
 	cursor: move;
+	touch-action: none;
 }
 
 .content {
 	flex: 1;
 	overflow: auto;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	container-type: size;
 }
 
@@ -553,6 +625,7 @@ $handleSize: 8px;
 
 .handle {
 	position: absolute;
+	touch-action: none;
 }
 
 .handleTop {

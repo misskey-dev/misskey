@@ -1,26 +1,32 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { URLSearchParams } from 'node:url';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { MiMeta } from '@/models/_.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
 
 	requireCredential: true,
+	kind: 'read:account',
 
 	res: {
 		type: 'object',
-		optional: false, nullable: false,
+		optional: true, nullable: false,
+		properties: {
+			sourceLang: { type: 'string' },
+			text: { type: 'string' },
+		},
 	},
 
 	errors: {
@@ -33,6 +39,11 @@ export const meta = {
 			message: 'No such note.',
 			code: 'NO_SUCH_NOTE',
 			id: 'bea9b03f-36e0-49c5-a4db-627a029f8971',
+		},
+		cannotTranslateInvisibleNote: {
+			message: 'Cannot translate invisible note.',
+			code: 'CANNOT_TRANSLATE_INVISIBLE_NOTE',
+			id: 'ea29f2ca-c368-43b3-aaf1-5ac3e74bbe5d',
 		},
 	},
 } as const;
@@ -49,9 +60,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
+
 		private noteEntityService: NoteEntityService,
 		private getterService: GetterService,
-		private metaService: MetaService,
 		private httpRequestService: HttpRequestService,
 		private roleService: RoleService,
 	) {
@@ -67,32 +80,41 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			if (!(await this.noteEntityService.isVisibleForMe(note, me.id))) {
-				return 204; // TODO: 良い感じのエラー返す
+				throw new ApiError(meta.errors.cannotTranslateInvisibleNote);
 			}
 
-			if (note.text == null) {
-				return 204;
+			// makeNotesHiddenBefore などで中身が隠されるノート
+			const packedNote = await this.noteEntityService.pack(note, me);
+			if (packedNote.isHidden) {
+				throw new ApiError(meta.errors.cannotTranslateInvisibleNote);
 			}
 
-			const instance = await this.metaService.fetch();
+			let text = note.text ?? '';
+			if (note.cw != null) {
+				text = `${note.cw}\n-----\n${text}`;
+			}
 
-			if (instance.deeplAuthKey == null) {
-				return 204; // TODO: 良い感じのエラー返す
+			if (text.trim() === '') {
+				return;
+			}
+
+			if (this.serverSettings.deeplAuthKey == null) {
+				throw new ApiError(meta.errors.unavailable);
 			}
 
 			let targetLang = ps.targetLang;
 			if (targetLang.includes('-')) targetLang = targetLang.split('-')[0];
 
 			const params = new URLSearchParams();
-			params.append('auth_key', instance.deeplAuthKey);
-			params.append('text', note.text);
+			params.append('text', text);
 			params.append('target_lang', targetLang);
 
-			const endpoint = instance.deeplIsPro ? 'https://api.deepl.com/v2/translate' : 'https://api-free.deepl.com/v2/translate';
+			const endpoint = this.serverSettings.deeplIsPro ? 'https://api.deepl.com/v2/translate' : 'https://api-free.deepl.com/v2/translate';
 
 			const res = await this.httpRequestService.send(endpoint, {
 				method: 'POST',
 				headers: {
+					'Authorization': `DeepL-Auth-Key ${this.serverSettings.deeplAuthKey}`,
 					'Content-Type': 'application/x-www-form-urlencoded',
 					Accept: 'application/json, */*',
 				},

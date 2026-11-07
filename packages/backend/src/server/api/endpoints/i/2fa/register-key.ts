@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -36,6 +36,10 @@ export const meta = {
 			id: 'bf32b864-449b-47b8-974e-f9a5468546f1',
 		},
 	},
+
+	res: {
+		type: 'object',
+	},
 } as const;
 
 export const paramDef = {
@@ -63,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				where: {
 					userId: me.id,
 				},
-				relations: ['user'],
+				relations: { user: true },
 			});
 
 			if (profile == null) {
@@ -77,7 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				try {
 					await this.userAuthService.twoFactorAuthenticate(profile, token);
-				} catch (e) {
+				} catch (_) {
 					throw new Error('authentication failed');
 				}
 			}

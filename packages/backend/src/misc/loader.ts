@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export type FetchFunction<K, V> = (key: K) => Promise<V>;
 
 type ResolveReject<V> = Parameters<ConstructorParameters<typeof Promise<V>>[0]>;

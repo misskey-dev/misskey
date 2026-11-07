@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -54,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				folderId: ps.folderId ?? IsNull(),
 			});
 
-			return await Promise.all(files.map(file => this.driveFileEntityService.pack(file, { self: true })));
+			return await this.driveFileEntityService.packMany(files, { self: true });
 		});
 	}
 }

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -16,8 +16,8 @@ import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkMention from './MkMention.vue';
 import { i18n } from '@/i18n.js';
-import { host as localHost } from '@/config.js';
-import { api } from '@/os.js';
+import { host as localHost } from '@@/js/config.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const user = ref<Misskey.entities.UserLite>();
 
@@ -25,16 +25,16 @@ const props = defineProps<{
 	movedTo: string; // user id
 }>();
 
-api('users/show', { userId: props.movedTo }).then(u => user.value = u);
+misskeyApi('users/show', { userId: props.movedTo }).then(u => user.value = u);
 </script>
 
 <style lang="scss" module>
 .root {
 	padding: 16px;
 	font-size: 90%;
-	background: var(--infoWarnBg);
-	color: var(--error);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-infoWarnBg);
+	color: var(--MI_THEME-error);
+	border-radius: var(--MI-radius);
 }
 
 .link {

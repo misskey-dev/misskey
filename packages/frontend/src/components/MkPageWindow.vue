@@ -1,77 +1,70 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <MkWindow
 	ref="windowEl"
-	:initialWidth="500"
-	:initialHeight="500"
 	:canResize="true"
 	:closeButton="true"
 	:buttonsLeft="buttonsLeft"
 	:buttonsRight="buttonsRight"
 	:contextmenu="contextmenu"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template #header>
-		<template v-if="pageMetadata?.value">
-			<i v-if="pageMetadata.value.icon" :class="pageMetadata.value.icon" style="margin-right: 0.5em;"></i>
-			<span>{{ pageMetadata.value.title }}</span>
+		<template v-if="pageMetadata">
+			<i v-if="pageMetadata.icon" :class="pageMetadata.icon" style="margin-right: 0.5em;"></i>
+			<span>{{ pageMetadata.title }}</span>
 		</template>
 	</template>
 
-	<div ref="contents" :class="$style.root" style="container-type: inline-size;">
-		<RouterView :key="reloadCount" :router="router"/>
+	<div :class="$style.root" class="_forceShrinkSpacer">
+		<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']" :key="reloadCount.toString() + ':stacking'" :router="windowRouter"/>
+		<RouterView v-else :key="reloadCount.toString() + ':non-stacking'" :router="windowRouter"/>
 	</div>
 </MkWindow>
 </template>
 
 <script lang="ts" setup>
-import { ComputedRef, onMounted, onUnmounted, provide, shallowRef, ref, computed } from 'vue';
+import { computed, onMounted, onUnmounted, provide, ref, useTemplateRef, nextTick } from 'vue';
+import { url } from '@@/js/config.js';
+import type { PageMetadata } from '@/page.js';
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
-import { popout as _popout } from '@/scripts/popout.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
-import { url } from '@/config.js';
-import { mainRouter, routes, page } from '@/router.js';
-import { $i } from '@/account.js';
-import { Router, useScrollPositionManager } from '@/nirax';
+import { popout as _popout } from '@/utility/popout.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { openingWindowsCount } from '@/os.js';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { getScrollContainer } from '@/scripts/scroll.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { createRouter, mainRouter } from '@/router.js';
+import { analytics } from '@/analytics.js';
+import { DI } from '@/di.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	initialPath: string;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const router = new Router(routes, props.initialPath, !!$i, page(() => import('@/pages/not-found.vue')));
+const windowRouter = createRouter(props.initialPath);
 
-const contents = shallowRef<HTMLElement>();
-const pageMetadata = ref<null | ComputedRef<PageMetadata>>();
-const windowEl = shallowRef<InstanceType<typeof MkWindow>>();
-const history = ref<{ path: string; key: any; }[]>([{
-	path: router.getCurrentPath(),
-	key: router.getCurrentKey(),
+const pageMetadata = ref<null | PageMetadata>(null);
+const windowEl = useTemplateRef('windowEl');
+const _history_ = ref<{ path: string; }[]>([{
+	path: windowRouter.getCurrentFullPath(),
 }]);
 const buttonsLeft = computed(() => {
-	const buttons = [];
-
-	if (history.value.length > 1) {
-		buttons.push({
-			icon: 'ti ti-arrow-left',
-			onClick: back,
-		});
-	}
-
-	return buttons;
+	return _history_.value.length > 1 ? [{
+		icon: 'ti ti-arrow-left',
+		title: i18n.ts.goBack,
+		onClick: back,
+	}] : [];
 });
 const buttonsRight = computed(() => {
 	const buttons = [{
@@ -88,17 +81,61 @@ const buttonsRight = computed(() => {
 });
 const reloadCount = ref(0);
 
-router.addListener('push', ctx => {
-	history.value.push({ path: ctx.path, key: ctx.key });
+function getSearchMarker(path: string) {
+	const hash = path.split('#')[1];
+	if (hash == null) return null;
+	return hash;
+}
+
+const searchMarkerId = ref<string | null>(getSearchMarker(props.initialPath));
+
+windowRouter.addListener('push', ctx => {
+	_history_.value.push({ path: ctx.fullPath });
 });
 
-provide('router', router);
-provideMetadataReceiver((info) => {
+windowRouter.addListener('replace', ctx => {
+	_history_.value.pop();
+	_history_.value.push({ path: ctx.fullPath });
+});
+
+windowRouter.addListener('forcePush', ctx => {
+	window.open(url + ctx.fullPath, '_blank', 'noopener');
+	if (ctx.onInit) {
+		nextTick(() => {
+			windowEl.value?.close();
+		});
+	}
+});
+
+windowRouter.addListener('forceReplace', ctx => {
+	window.open(url + ctx.fullPath, '_blank', 'noopener');
+	if (ctx.onInit) {
+		nextTick(() => {
+			windowEl.value?.close();
+		});
+	}
+});
+
+windowRouter.addListener('change', ctx => {
+	if (_DEV_) console.log('windowRouter: change', ctx.fullPath);
+	searchMarkerId.value = getSearchMarker(ctx.fullPath);
+	analytics.page({
+		path: ctx.fullPath,
+		title: ctx.fullPath,
+	});
+});
+
+windowRouter.init(true);
+
+provide(DI.router, windowRouter);
+provide(DI.inAppSearchMarkerId, searchMarkerId);
+provideMetadataReceiver((metadataGetter) => {
+	const info = metadataGetter();
 	pageMetadata.value = info;
 });
+provideReactiveMetadata(pageMetadata);
 provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
-provide('forceSpacerMin', true);
 
 const contextmenu = computed(() => ([{
 	icon: 'ti ti-player-eject',
@@ -112,20 +149,20 @@ const contextmenu = computed(() => ([{
 	icon: 'ti ti-external-link',
 	text: i18n.ts.openInNewTab,
 	action: () => {
-		window.open(url + router.getCurrentPath(), '_blank', 'noopener');
-		windowEl.value.close();
+		window.open(url + windowRouter.getCurrentFullPath(), '_blank', 'noopener');
+		windowEl.value?.close();
 	},
 }, {
 	icon: 'ti ti-link',
 	text: i18n.ts.copyLink,
 	action: () => {
-		copyToClipboard(url + router.getCurrentPath());
+		copyToClipboard(url + windowRouter.getCurrentFullPath());
 	},
 }]));
 
 function back() {
-	history.value.pop();
-	router.replace(history.value.at(-1)!.path, history.value.at(-1)!.key);
+	_history_.value.pop();
+	windowRouter.replaceByPath(_history_.value.at(-1)!.path);
 }
 
 function reload() {
@@ -133,22 +170,25 @@ function reload() {
 }
 
 function close() {
-	windowEl.value.close();
+	windowEl.value?.close();
 }
 
 function expand() {
-	mainRouter.push(router.getCurrentPath(), 'forcePage');
-	windowEl.value.close();
+	mainRouter.pushByPath(windowRouter.getCurrentFullPath(), 'forcePage');
+	windowEl.value?.close();
 }
 
 function popout() {
-	_popout(router.getCurrentPath(), windowEl.value.$el);
-	windowEl.value.close();
+	_popout(windowRouter.getCurrentFullPath(), windowEl.value?.$el);
+	windowEl.value?.close();
 }
 
-useScrollPositionManager(() => getScrollContainer(contents.value), router);
-
 onMounted(() => {
+	analytics.page({
+		path: props.initialPath,
+		title: props.initialPath,
+	});
+
 	openingWindowsCount.value++;
 	if (openingWindowsCount.value >= 3) {
 		claimAchievement('open3windows');
@@ -166,11 +206,9 @@ defineExpose({
 
 <style lang="scss" module>
 .root {
-	overscroll-behavior: contain;
+	height: 100%;
+	background: var(--MI_THEME-bg);
 
-	min-height: 100%;
-	background: var(--bg);
-
-	--margin: var(--marginHalf);
+	--MI-margin: var(--MI-marginHalf);
 }
 </style>

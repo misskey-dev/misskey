@@ -1,32 +1,36 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable, OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 import * as Redis from 'ioredis';
+import { ModuleRef } from '@nestjs/core';
 import type { UserListMembershipsRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiUserList } from '@/models/UserList.js';
 import type { MiUserListMembership } from '@/models/UserListMembership.js';
 import { IdService } from '@/core/IdService.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ProxyAccountService } from '@/core/ProxyAccountService.js';
 import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { RedisKVCache } from '@/misc/cache.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 
 @Injectable()
-export class UserListService implements OnApplicationShutdown {
+export class UserListService implements OnApplicationShutdown, OnModuleInit {
 	public static TooManyUsersError = class extends Error {};
 
 	public membersCache: RedisKVCache<Set<string>>;
+	private roleService: RoleService;
 
 	constructor(
+		private moduleRef: ModuleRef,
+
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
@@ -38,20 +42,26 @@ export class UserListService implements OnApplicationShutdown {
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,
-		private roleService: RoleService,
 		private globalEventService: GlobalEventService,
-		private proxyAccountService: ProxyAccountService,
 		private queueService: QueueService,
+		private systemAccountService: SystemAccountService,
 	) {
 		this.membersCache = new RedisKVCache<Set<string>>(this.redisClient, 'userListMembers', {
 			lifetime: 1000 * 60 * 30, // 30m
 			memoryCacheLifetime: 1000 * 60, // 1m
-			fetcher: (key) => this.userListMembershipsRepository.find({ where: { userListId: key }, select: ['userId'] }).then(xs => new Set(xs.map(x => x.userId))),
+			fetcher: (key) => this.userListMembershipsRepository.find({
+				where: { userListId: key },
+				select: { userId: true },
+			}).then(xs => new Set(xs.map(x => x.userId))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
 
 		this.redisForSub.on('message', this.onMessage);
+	}
+
+	async onModuleInit() {
+		this.roleService = this.moduleRef.get(RoleService.name);
 	}
 
 	@bindThis
@@ -84,11 +94,11 @@ export class UserListService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async addMember(target: MiUser, list: MiUserList, me: MiUser) {
+	public async addMember(target: MiUser, list: MiUserList, me: MiUser, options: { withReplies?: boolean } = {}) {
 		const currentCount = await this.userListMembershipsRepository.countBy({
 			userListId: list.id,
 		});
-		if (currentCount > (await this.roleService.getUserPolicies(me.id)).userEachUserListsLimit) {
+		if (currentCount >= (await this.roleService.getUserPolicies(me.id)).userEachUserListsLimit) {
 			throw new UserListService.TooManyUsersError();
 		}
 
@@ -97,6 +107,7 @@ export class UserListService implements OnApplicationShutdown {
 			userId: target.id,
 			userListId: list.id,
 			userListUserId: list.userId,
+			withReplies: options.withReplies ?? false,
 		} as MiUserListMembership);
 
 		this.globalEventService.publishInternalEvent('userListMemberAdded', { userListId: list.id, memberId: target.id });
@@ -104,10 +115,8 @@ export class UserListService implements OnApplicationShutdown {
 
 		// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
 		if (this.userEntityService.isRemoteUser(target)) {
-			const proxy = await this.proxyAccountService.fetch();
-			if (proxy) {
-				this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: target.id } }]);
-			}
+			const proxy = await this.systemAccountService.fetch('proxy');
+			this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: target.id } }]);
 		}
 	}
 

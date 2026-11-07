@@ -1,90 +1,74 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
+import { Inject, Injectable, Scope } from '@nestjs/common';
+import { normalizeTag } from '@/misc/normalize-tag.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { NoteStreamingHidingService } from '../NoteStreamingHidingService.js';
 import { bindThis } from '@/decorators.js';
-import Channel from '../channel.js';
-
-class HashtagChannel extends Channel {
+import type { JsonObject } from '@/misc/json-value.js';
+import Channel, { type ChannelRequest } from '../channel.js';
+import { REQUEST } from '@nestjs/core';
+@Injectable({ scope: Scope.TRANSIENT })
+export class HashtagChannel extends Channel {
 	public readonly chName = 'hashtag';
 	public static shouldShare = false;
-	public static requireCredential = false;
+	public static requireCredential = false as const;
 	private q: string[][];
 
 	constructor(
-		private noteEntityService: NoteEntityService,
+		@Inject(REQUEST)
+		request: ChannelRequest,
 
-		id: string,
-		connection: Channel['connection'],
+		private noteEntityService: NoteEntityService,
+		private noteStreamingHidingService: NoteStreamingHidingService,
 	) {
-		super(id, connection);
+		super(request);
 		//this.onNote = this.onNote.bind(this);
 	}
 
 	@bindThis
-	public async init(params: any) {
-		this.q = params.q;
-
-		if (this.q == null) return;
+	public async init(params: JsonObject): Promise<boolean> {
+		if (!Array.isArray(params.q)) return false;
+		if (!params.q.every((x): x is string[] => (
+			Array.isArray(x) &&
+			x.length >= 1 &&
+			x.every(y => typeof y === 'string' && Array.from(y).length <= 128)
+		))) return false;
+		this.q = params.q.map(tags => tags.map(tag => normalizeTag(tag)));
 
 		// Subscribe stream
 		this.subscriber.on('notesStream', this.onNote);
+
+		return true;
 	}
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
 		const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
-		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(normalizeForSearch(tag))));
+		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(tag)));
 		if (!matched) return;
 
-		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
-		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
+		if (!this.isNoteVisibleForMe(note)) return;
+		if (note.user.requireSigninToViewContents && this.user == null) return;
+		if (note.renote && note.renote.user.requireSigninToViewContents && this.user == null) return;
+		if (note.reply && note.reply.user.requireSigninToViewContents && this.user == null) return;
+		if (this.isNoteMutedOrBlocked(note)) return;
 
-		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+		const filtered = await this.noteStreamingHidingService.filter(note, this.user?.id ?? null);
+		if (!filtered) return;
+		// eslint-disable-next-line no-param-reassign -- これ以降元の Note オブジェクトは見てはいけないので、いっそ再代入した方が安全
+		note = filtered;
 
-		if (this.user && note.renoteId && !note.text) {
-			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
-				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
-				note.renote.myReaction = myRenoteReaction;
-			}
-		}
-
-		this.connection.cacheNote(note);
-
-		this.send('note', note);
+		this.send('note', await this.noteEntityService.withMyRenoteReaction(note, this.user?.id ?? null));
 	}
 
 	@bindThis
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
-	}
-}
-
-@Injectable()
-export class HashtagChannelService {
-	public readonly shouldShare = HashtagChannel.shouldShare;
-	public readonly requireCredential = HashtagChannel.requireCredential;
-
-	constructor(
-		private noteEntityService: NoteEntityService,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): HashtagChannel {
-		return new HashtagChannel(
-			this.noteEntityService,
-			id,
-			connection,
-		);
 	}
 }

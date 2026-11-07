@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,7 +15,7 @@ export function extractApHashtags(tags: IObject | IObject[] | null | undefined):
 	return hashtags.map(tag => {
 		const m = tag.name.match(/^#(.+)/);
 		return m ? m[1] : null;
-	}).filter((x): x is string => x != null);
+	}).filter(x => x != null);
 }
 
 export function extractApHashtagObjects(tags: IObject | IObject[] | null | undefined): IApHashtag[] {

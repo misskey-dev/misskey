@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,6 +15,13 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:ad',
+	res: {
+		type: 'object',
+		optional: false,
+		nullable: false,
+		ref: 'Ad',
+	},
 } as const;
 
 export const paramDef = {
@@ -29,6 +36,7 @@ export const paramDef = {
 		startsAt: { type: 'integer' },
 		imageUrl: { type: 'string', minLength: 1 },
 		dayOfWeek: { type: 'integer' },
+		isSensitive: { type: 'boolean' },
 	},
 	required: ['url', 'memo', 'place', 'priority', 'ratio', 'expiresAt', 'startsAt', 'imageUrl', 'dayOfWeek'],
 } as const;
@@ -43,25 +51,38 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const ad = await this.adsRepository.insert({
+			const ad = await this.adsRepository.insertOne({
 				id: this.idService.gen(),
 				expiresAt: new Date(ps.expiresAt),
 				startsAt: new Date(ps.startsAt),
 				dayOfWeek: ps.dayOfWeek,
+				isSensitive: ps.isSensitive,
 				url: ps.url,
 				imageUrl: ps.imageUrl,
 				priority: ps.priority,
 				ratio: ps.ratio,
 				place: ps.place,
 				memo: ps.memo,
-			}).then(r => this.adsRepository.findOneByOrFail({ id: r.identifiers[0].id }));
+			});
 
 			this.moderationLogService.log(me, 'createAd', {
 				adId: ad.id,
 				ad: ad,
 			});
 
-			return ad;
+			return {
+				id: ad.id,
+				expiresAt: ad.expiresAt.toISOString(),
+				startsAt: ad.startsAt.toISOString(),
+				dayOfWeek: ad.dayOfWeek,
+				isSensitive: ad.isSensitive,
+				url: ad.url,
+				imageUrl: ad.imageUrl,
+				priority: ad.priority,
+				ratio: ad.ratio,
+				place: ad.place,
+				memo: ad.memo,
+			};
 		});
 	}
 }

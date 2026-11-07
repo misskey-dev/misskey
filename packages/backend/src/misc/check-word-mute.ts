@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -56,7 +56,7 @@ export async function checkWordMute(note: NoteLike, me: UserLike | null | undefi
 
 				try {
 					return new RE2(regexp[1], regexp[2]).test(text);
-				} catch (err) {
+				} catch (_) {
 					// This should never happen due to input sanitisation.
 					return false;
 				}

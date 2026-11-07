@@ -1,9 +1,10 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import * as assert from 'assert';
+import { describe, test } from 'vitest';
 import { query } from '../../src/misc/prelude/url.js';
 
 describe('url', () => {

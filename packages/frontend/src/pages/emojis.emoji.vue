@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -14,22 +14,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import * as Misskey from 'misskey-js';
+import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
+import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
+import { $i } from '@/i.js';
 
 const props = defineProps<{
-	emoji: {
-		name: string;
-		aliases: string[];
-		category: string;
-		url: string;
-	};
+	emoji: Misskey.entities.EmojiSimple;
 }>();
 
-function menu(ev) {
-	os.popupMenu([{
+function menu(ev: PointerEvent) {
+	const menuItems: MenuItem[] = [];
+	menuItems.push({
 		type: 'label',
 		text: ':' + props.emoji.name + ':',
 	}, {
@@ -37,20 +37,39 @@ function menu(ev) {
 		icon: 'ti ti-copy',
 		action: () => {
 			copyToClipboard(`:${props.emoji.name}:`);
-			os.success();
 		},
 	}, {
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',
-		action: () => {
-			os.apiGet('emoji', { name: props.emoji.name }).then(res => {
-				os.alert({
-					type: 'info',
-					text: `Name: ${res.name}\nAliases: ${res.aliases.join(' ')}\nCategory: ${res.category}\nisSensitive: ${res.isSensitive}\nlocalOnly: ${res.localOnly}\nLicense: ${res.license}\nURL: ${res.url}`,
-				});
+		action: async () => {
+			const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
+				emoji: await misskeyApiGet('emoji', {
+					name: props.emoji.name,
+				}),
+			}, {
+				closed: () => dispose(),
 			});
 		},
-	}], ev.currentTarget ?? ev.target);
+	});
+
+	if ($i?.isModerator ?? $i?.isAdmin) {
+		menuItems.push({
+			text: i18n.ts.edit,
+			icon: 'ti ti-pencil',
+			action: async () => {
+				const detailedEmoji = await misskeyApiGet('emoji', {
+					name: props.emoji.name,
+				});
+				const { dispose } = await os.popupAsyncWithDialog(import('@/pages/emoji-edit-dialog.vue').then(x => x.default), {
+					emoji: detailedEmoji,
+				}, {
+					closed: () => dispose(),
+				});
+			},
+		});
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 </script>
 
@@ -60,11 +79,13 @@ function menu(ev) {
 	align-items: center;
 	padding: 12px;
 	text-align: left;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: 8px;
+	content-visibility: auto;
+	contain-intrinsic-size: auto 66px;
 
 	&:hover {
-		border-color: var(--accent);
+		border-color: var(--MI_THEME-accent);
 	}
 }
 

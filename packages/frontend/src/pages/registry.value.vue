@@ -1,12 +1,11 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="600" :marginMin="16">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px;">
 		<div class="_gaps_m">
 			<FormInfo warn>{{ i18n.ts.editTheseSettingsMayBreakAccount }}</FormInfo>
 
@@ -26,9 +25,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkKeyValue>
 				</FormSplit>
 
-				<MkTextarea v-model="valueForEditor" tall class="_monospace">
+				<MkCodeEditor v-model="valueForEditor" lang="json5">
 					<template #label>{{ i18n.ts.value }} (JSON)</template>
-				</MkTextarea>
+				</MkCodeEditor>
 
 				<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 
@@ -40,19 +39,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</template>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { watch, computed, ref } from 'vue';
 import JSON5 from 'json5';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormInfo from '@/components/MkInfo.vue';
 
@@ -62,13 +62,13 @@ const props = defineProps<{
 }>();
 
 const scope = computed(() => props.path.split('/').slice(0, -1));
-const key = computed(() => props.path.split('/').at(-1));
+const key = computed(() => props.path.split('/').at(-1)!);
 
-const value = ref(null);
-const valueForEditor = ref(null);
+const value = ref<any>(null);
+const valueForEditor = ref<string>('');
 
 function fetchValue() {
-	os.api('i/registry/get-detail', {
+	misskeyApi('i/registry/get-detail', {
 		scope: scope.value,
 		key: key.value,
 		domain: props.domain === '@' ? null : props.domain,
@@ -122,8 +122,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePage(() => ({
 	title: i18n.ts.registry,
 	icon: 'ti ti-adjustments',
-});
+}));
 </script>

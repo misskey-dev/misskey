@@ -1,12 +1,19 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 process.env.NODE_ENV = 'test';
 
+import { afterAll, beforeAll, beforeEach, describe, test, expect } from 'vitest';
 import { Test } from '@nestjs/testing';
-import { UploadPartCommand, CompleteMultipartUploadCommand, CreateMultipartUploadCommand, S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import {
+	CompleteMultipartUploadCommand,
+	CreateMultipartUploadCommand,
+	PutObjectCommand,
+	S3Client,
+	UploadPartCommand,
+} from '@aws-sdk/client-s3';
 import { mockClient } from 'aws-sdk-client-mock';
 import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
@@ -66,7 +73,7 @@ describe('S3Service', () => {
 				Bucket: 'fake',
 				Key: 'fake',
 				Body: 'x',
-			})).rejects.toThrowError(Error);
+			})).rejects.toThrow(Error);
 		});
 
 		test('upload a large file error', async () => {
@@ -76,7 +83,7 @@ describe('S3Service', () => {
 				Bucket: 'fake',
 				Key: 'fake',
 				Body: 'x'.repeat(8 * 1024 * 1024 + 1), // デフォルトpartSizeにしている 8 * 1024 * 1024 を越えるサイズ
-			})).rejects.toThrowError(Error);
+			})).rejects.toThrow(Error);
 		});
 	});
 });

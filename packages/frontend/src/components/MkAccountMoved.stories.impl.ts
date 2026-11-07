@@ -1,11 +1,14 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { StoryObj } from '@storybook/vue3';
-import { userDetailed } from '../../.storybook/fakes';
+import { action } from 'storybook/actions';
+import type { StoryObj } from '@storybook/vue3';
+import { HttpResponse, http } from 'msw';
+import { commonHandlers } from '../../.storybook/mocks.js';
+import { userDetailed } from '../../.storybook/fakes.js';
 import MkAccountMoved from './MkAccountMoved.vue';
 export const Default = {
 	render(args) {
@@ -29,10 +32,18 @@ export const Default = {
 		};
 	},
 	args: {
-		username: userDetailed().username,
-		host: userDetailed().host,
+		movedTo: userDetailed().id,
 	},
 	parameters: {
 		layout: 'centered',
+		msw: {
+			handlers: [
+				...commonHandlers,
+				http.post('/api/users/show', async ({ request }) => {
+					action('POST /api/users/show')(await request.json());
+					return HttpResponse.json(userDetailed());
+				}),
+			],
+		},
 	},
 } satisfies StoryObj<typeof MkAccountMoved>;

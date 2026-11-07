@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -8,51 +8,76 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="buttonEl"
 	v-ripple="canToggle"
 	class="_button"
-	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
+	:class="[$style.root, { [$style.reacted]: myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: prefer.s.reactionsDisplaySize === 'small', [$style.large]: prefer.s.reactionsDisplaySize === 'large' }]"
 	@click="toggleReaction()"
+	@contextmenu.prevent.stop="menu"
 >
-	<MkReactionIcon :class="defaultStore.state.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
+	<MkReactionIcon style="pointer-events: none;" :class="prefer.s.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="reactionEmojis[emojiName]"/>
 	<span :class="$style.count">{{ count }}</span>
 </button>
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, shallowRef, watch } from 'vue';
+import { computed, inject, onMounted, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import { getUnicodeEmojiOrNull } from '@@/js/emojilist.js';
+import { getEmojiNameFromReaction, isLocalCustomEmojiReaction } from '@@/js/emoji-name.js';
+import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
+import type { MenuItem } from '@/types/menu';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import * as os from '@/os.js';
-import { useTooltip } from '@/scripts/use-tooltip.js';
-import { $i } from '@/account.js';
+import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
+import { useTooltip } from '@/composables/use-tooltip.js';
+import { $i } from '@/i.js';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import * as sound from '@/scripts/sound.js';
+import * as sound from '@/utility/sound.js';
+// import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
+import { customEmojisMap } from '@/custom-emojis.js';
+import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
+import { noteEvents } from '@/composables/use-note-capture.js';
+import { mute as muteEmoji, unmute as unmuteEmoji, checkMuted as isEmojiMuted } from '@/utility/emoji-mute.js';
+import { addToEmojiPalette } from '@/utility/emoji-palette.js';
+import { haptic } from '@/utility/haptic.js';
 
 const props = defineProps<{
+	noteId: Misskey.entities.Note['id'];
 	reaction: string;
+	reactionEmojis: Misskey.entities.Note['reactionEmojis'];
+	myReaction: Misskey.entities.Note['myReaction'];
 	count: number;
 	isInitial: boolean;
-	note: Misskey.entities.Note;
 }>();
 
-const mock = inject<boolean>('mock', false);
+const mock = inject(DI.mock, false);
 
 const emit = defineEmits<{
 	(ev: 'reactionToggled', emoji: string, newCount: number): void;
 }>();
 
-const buttonEl = shallowRef<HTMLElement>();
+const buttonEl = useTemplateRef('buttonEl');
 
-const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
+const emojiName = computed(() => getEmojiNameFromReaction(props.reaction));
+
+const isLocalCustomEmoji = computed(() => isLocalCustomEmojiReaction(props.reaction));
+
+const canToggle = computed(() => {
+	const emoji = isLocalCustomEmoji.value ? customEmojisMap.get(emojiName.value) : getUnicodeEmojiOrNull(props.reaction);
+
+	// TODO
+	//return $i != null && emoji != null && checkReactionPermissions($i, props.note, emoji);
+	return $i != null && emoji != null;
+});
 
 async function toggleReaction() {
 	if (!canToggle.value) return;
+	if ($i == null) return;
 
-	// TODO: その絵文字を使う権限があるかどうか確認
+	const me = $i;
 
-	const oldReaction = props.note.myReaction;
+	const oldReaction = props.myReaction;
 	if (oldReaction) {
 		const confirm = await os.confirm({
 			type: 'warning',
@@ -61,7 +86,8 @@ async function toggleReaction() {
 		if (confirm.canceled) return;
 
 		if (oldReaction !== props.reaction) {
-			sound.play('reaction');
+			sound.playMisskeySfx('reaction');
+			haptic();
 		}
 
 		if (mock) {
@@ -69,42 +95,141 @@ async function toggleReaction() {
 			return;
 		}
 
-		os.api('notes/reactions/delete', {
-			noteId: props.note.id,
+		misskeyApi('notes/reactions/delete', {
+			noteId: props.noteId,
 		}).then(() => {
+			noteEvents.emit(`unreacted:${props.noteId}`, {
+				userId: me.id,
+				reaction: oldReaction,
+			});
 			if (oldReaction !== props.reaction) {
-				os.api('notes/reactions/create', {
-					noteId: props.note.id,
+				misskeyApi('notes/reactions/create', {
+					noteId: props.noteId,
 					reaction: props.reaction,
+				}).then(() => {
+					const emoji = customEmojisMap.get(emojiName.value);
+					if (emoji == null && getUnicodeEmojiOrNull(props.reaction) == null) {
+						return;
+					}
+					noteEvents.emit(`reacted:${props.noteId}`, {
+						userId: me.id,
+						reaction: props.reaction,
+						emoji: emoji,
+					});
 				});
 			}
 		});
 	} else {
-		sound.play('reaction');
+		if (prefer.s.confirmOnReact) {
+			const confirm = await os.confirm({
+				type: 'question',
+				text: i18n.tsx.reactAreYouSure({ emoji: props.reaction.replace('@.', '') }),
+			});
+
+			if (confirm.canceled) return;
+		}
+
+		sound.playMisskeySfx('reaction');
+		haptic();
 
 		if (mock) {
 			emit('reactionToggled', props.reaction, (props.count + 1));
 			return;
 		}
 
-		os.api('notes/reactions/create', {
-			noteId: props.note.id,
+		misskeyApi('notes/reactions/create', {
+			noteId: props.noteId,
 			reaction: props.reaction,
+		}).then(() => {
+			const emoji = customEmojisMap.get(emojiName.value);
+			if (emoji == null && getUnicodeEmojiOrNull(props.reaction) == null) {
+				return;
+			}
+
+			noteEvents.emit(`reacted:${props.noteId}`, {
+				userId: me.id,
+				reaction: props.reaction,
+				emoji: emoji,
+			});
 		});
-		if (props.note.text && props.note.text.length > 100 && (Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3)) {
-			claimAchievement('reactWithoutRead');
-		}
+		// TODO: 上位コンポーネントでやる
+		//if (props.note.text && props.note.text.length > 100 && (Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3)) {
+		//	claimAchievement('reactWithoutRead');
+		//}
 	}
 }
 
+async function menu(ev: PointerEvent) {
+	let menuItems: MenuItem[] = [];
+
+	if (isLocalCustomEmoji.value) {
+		menuItems.push({
+			text: i18n.ts.info,
+			icon: 'ti ti-info-circle',
+			action: async () => {
+				const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
+					emoji: await misskeyApiGet('emoji', {
+						name: emojiName.value,
+					}),
+				}, {
+					closed: () => dispose(),
+				});
+			},
+		});
+	}
+
+	if (isEmojiMuted(props.reaction).value) {
+		menuItems.push({
+			text: i18n.ts.emojiUnmute,
+			icon: 'ti ti-mood-smile',
+			action: () => {
+				os.confirm({
+					type: 'question',
+					title: i18n.tsx.unmuteX({ x: isLocalCustomEmoji.value ? `:${emojiName.value}:` : props.reaction }),
+				}).then(({ canceled }) => {
+					if (canceled) return;
+					unmuteEmoji(props.reaction);
+				});
+			},
+		});
+	} else {
+		menuItems.push({
+			text: i18n.ts.emojiMute,
+			icon: 'ti ti-mood-off',
+			action: () => {
+				os.confirm({
+					type: 'question',
+					title: i18n.tsx.muteX({ x: isLocalCustomEmoji.value ? `:${emojiName.value}:` : props.reaction }),
+				}).then(({ canceled }) => {
+					if (canceled) return;
+					muteEmoji(props.reaction);
+				});
+			},
+		});
+	}
+
+	if (canToggle.value) {
+		menuItems.push({
+			text: i18n.ts.addToEmojiPalette,
+			icon: 'ti ti-palette',
+			action: () => {
+				addToEmojiPalette(isLocalCustomEmoji.value ? `:${emojiName.value}:` : props.reaction);
+			},
+		});
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
+}
+
 function anime() {
-	if (document.hidden) return;
-	if (!defaultStore.state.animation) return;
+	if (window.document.hidden || !prefer.s.animation || buttonEl.value == null) return;
 
 	const rect = buttonEl.value.getBoundingClientRect();
 	const x = rect.left + 16;
 	const y = rect.top + (buttonEl.value.offsetHeight / 2);
-	os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
+	const { dispose } = os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {
+		end: () => dispose(),
+	});
 }
 
 watch(() => props.count, (newCount, oldCount) => {
@@ -117,37 +242,41 @@ onMounted(() => {
 
 if (!mock) {
 	useTooltip(buttonEl, async (showing) => {
-		const reactions = await os.apiGet('notes/reactions', {
-			noteId: props.note.id,
+		if (buttonEl.value == null) return;
+
+		const reactions = await misskeyApi('notes/reactions', {
+			noteId: props.noteId,
 			type: props.reaction,
 			limit: 10,
-			_cacheKey_: props.count,
 		});
 
 		const users = reactions.map(x => x.user);
 
-		os.popup(XDetails, {
+		const { dispose } = os.popup(XDetails, {
 			showing,
 			reaction: props.reaction,
 			users,
 			count: props.count,
-			targetElement: buttonEl.value,
-		}, {}, 'closed');
+			anchorElement: buttonEl.value,
+		}, {
+			closed: () => dispose(),
+		});
 	}, 100);
 }
 </script>
 
 <style lang="scss" module>
 .root {
-	display: inline-block;
+	display: inline-flex;
 	height: 42px;
-	margin: 2px;
 	padding: 0 6px;
 	font-size: 1.5em;
 	border-radius: 6px;
+	align-items: center;
+	justify-content: center;
 
 	&.canToggle {
-		background: var(--buttonBg);
+		background: var(--MI_THEME-buttonBg);
 
 		&:hover {
 			background: rgba(0, 0, 0, 0.1);
@@ -181,12 +310,12 @@ if (!mock) {
 	}
 
 	&.reacted, &.reacted:hover {
-		background: var(--accentedBg);
-		color: var(--accent);
-		box-shadow: 0 0 0px 1px var(--accent) inset;
+		background: var(--MI_THEME-accentedBg);
+		color: var(--MI_THEME-accent);
+		box-shadow: 0 0 0 1px var(--MI_THEME-accent) inset;
 
 		> .count {
-			color: var(--accent);
+			color: var(--MI_THEME-accent);
 		}
 
 		> .icon {
@@ -196,7 +325,8 @@ if (!mock) {
 }
 
 .limitWidth {
-	max-width: 150px;
+	max-width: 70px;
+	object-fit: contain;
 }
 
 .count {

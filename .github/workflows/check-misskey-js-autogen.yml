@@ -1,0 +1,130 @@
+# this name is used in check-misskey-js-autogen.comment.yml so be careful when change name
+name: Check Misskey JS autogen
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+      - improve-misskey-js-autogen-check
+    paths:
+      - packages/backend/**
+
+jobs:
+  generate-misskey-js:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: ${{ github.event.pull_request.mergeable == null || github.event.pull_request.mergeable == true }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          submodules: true
+          persist-credentials: false
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+
+      - name: setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: setup node
+        id: setup-node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: '.node-version'
+          cache: pnpm
+
+      - name: install dependencies
+        run: pnpm i --frozen-lockfile
+
+      # generate api.json
+      - name: Copy Config
+        run: cp .config/example.yml .config/default.yml
+      - name: Build
+        run: pnpm build
+      - name: Generate API JSON
+        run: pnpm --filter backend generate-api-json
+
+      # build misskey js
+      - name: Build misskey-js
+        run: |-
+          cp packages/backend/built/api.json packages/misskey-js/generator/api.json
+          pnpm run --filter misskey-js-type-generator generate
+
+      # packages/misskey-js/generator/built/autogen
+      - name: Upload Generated
+        uses: actions/upload-artifact@v7
+        with:
+          name: generated-misskey-js
+          path: packages/misskey-js/generator/built/autogen
+
+  get-actual-misskey-js:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: ${{ github.event.pull_request.mergeable == null || github.event.pull_request.mergeable == true }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          submodules: true
+          persist-credentials: false
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+
+      - name: Upload From Merged
+        uses: actions/upload-artifact@v7
+        with:
+          name: actual-misskey-js
+          path: packages/misskey-js/src/autogen
+
+  check-misskey-js-autogen:
+    runs-on: ubuntu-latest
+    needs: [generate-misskey-js, get-actual-misskey-js]
+    permissions:
+      contents: read
+    steps:
+      - name: download generated-misskey-js
+        uses: actions/download-artifact@v8
+        with:
+          name: generated-misskey-js
+          path: misskey-js-generated
+
+      - name: download actual-misskey-js
+        uses: actions/download-artifact@v8
+        with:
+          name: actual-misskey-js
+          path: misskey-js-actual
+
+      - name: check misskey-js changes
+        id: check-changes
+        run: |
+          diff -r -u --label=generated --label=on-tree ./misskey-js-generated ./misskey-js-actual > misskey-js.diff || true
+
+          if [ -s misskey-js.diff ]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Print full diff
+        run: cat ./misskey-js.diff
+
+      # A fork's pull_request token cannot comment, so hand the result to check-misskey-js-autogen.comment.yml
+      - name: Save result
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          CHANGES: ${{ steps.check-changes.outputs.changes }}
+        run: |
+          mkdir -p result
+          echo "$PR_NUMBER" > result/pr-number
+          echo "$CHANGES" > result/changes
+
+      - name: Upload result
+        uses: actions/upload-artifact@v7
+        with:
+          name: misskey-js-autogen-result
+          path: result
+
+      - name: Make failure if changes are detected
+        if: steps.check-changes.outputs.changes == 'true'
+        run: exit 1

@@ -1,17 +1,17 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { _panel: !widgetProps.transparent }]" data-cy-mkw-calendar>
+<div :class="[$style.root, { _panel: !widgetProps.transparent }]" data-testid="mkw-calendar">
 	<div :class="[$style.calendar, { [$style.isHoliday]: isHoliday }]">
 		<p :class="$style.monthAndYear">
-			<span :class="$style.year">{{ i18n.t('yearX', { year }) }}</span>
-			<span :class="$style.month">{{ i18n.t('monthX', { month }) }}</span>
+			<span :class="$style.year">{{ i18n.tsx.yearX({ year }) }}</span>
+			<span :class="$style.month">{{ i18n.tsx.monthX({ month }) }}</span>
 		</p>
-		<p v-if="month === 1 && day === 1" class="day">🎉{{ i18n.t('dayX', { day }) }}<span style="display: inline-block; transform: scaleX(-1);">🎉</span></p>
-		<p v-else :class="$style.day">{{ i18n.t('dayX', { day }) }}</p>
+		<p v-if="month === 1 && day === 1" class="day">🎉{{ i18n.tsx.dayX({ day }) }}<span style="display: inline-block; transform: scaleX(-1);">🎉</span></p>
+		<p v-else :class="$style.day">{{ i18n.tsx.dayX({ day }) }}</p>
 		<p :class="$style.weekDay">{{ weekDay }}</p>
 	</div>
 	<div :class="$style.info">
@@ -38,20 +38,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
+import { ref, watch } from 'vue';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useLowresTime, TIME_UPDATE_INTERVAL } from '@@/js/use-lowres-time.js';
 
 const name = 'calendar';
 
 const widgetPropsDef = {
 	transparent: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -64,6 +66,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
+const fNow = useLowresTime();
 const year = ref(0);
 const month = ref(0);
 const day = ref(0);
@@ -72,8 +75,14 @@ const yearP = ref(0);
 const monthP = ref(0);
 const dayP = ref(0);
 const isHoliday = ref(false);
-const tick = () => {
-	const now = new Date();
+
+const nextDay = new Date();
+nextDay.setHours(24, 0, 0, 0);
+let nextDayMidnightTime = nextDay.getTime();
+let nextDayTimer: number | null = null;
+
+function update(time: number) {
+	const now = new Date(time);
 	const nd = now.getDate();
 	const nm = now.getMonth();
 	const ny = now.getFullYear();
@@ -103,11 +112,28 @@ const tick = () => {
 	yearP.value = yearNumer / yearDenom * 100;
 
 	isHoliday.value = now.getDay() === 0 || now.getDay() === 6;
-};
+}
 
-useInterval(tick, 1000, {
-	immediate: true,
-	afterMounted: false,
+watch(fNow, (to) => {
+	update(to);
+
+	// 次回更新までに日付が変わる場合、日付が変わった直後に強制的に更新するタイマーをセットする
+	if (nextDayMidnightTime - to <= TIME_UPDATE_INTERVAL) {
+		if (nextDayTimer != null) {
+			window.clearTimeout(nextDayTimer);
+			nextDayTimer = null;
+		}
+
+		nextDayTimer = window.setTimeout(() => {
+			update(nextDayMidnightTime);
+			nextDayTimer = null;
+		}, nextDayMidnightTime - to);
+	}
+}, { immediate: true });
+
+watch(day, () => {
+	nextDay.setHours(24, 0, 0, 0);
+	nextDayMidnightTime = nextDay.getTime();
 });
 
 defineExpose<WidgetComponentExpose>({
@@ -121,7 +147,7 @@ defineExpose<WidgetComponentExpose>({
 .root {
 	padding: 16px 0;
 
-	&:after {
+	&::after {
 		content: "";
 		display: block;
 		clear: both;
@@ -207,7 +233,7 @@ defineExpose<WidgetComponentExpose>({
 .meter {
 	width: 100%;
 	overflow: hidden;
-	background: var(--X11);
+	background: light-dark(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3));
 	border-radius: 8px;
 }
 

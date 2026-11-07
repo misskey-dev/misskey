@@ -1,8 +1,9 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { describe, expect, it, test } from 'vitest';
 import { correctFilename } from '@/misc/correct-filename.js';
 
 describe(correctFilename, () => {

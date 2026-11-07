@@ -83,8 +83,8 @@ const mainChannel = stream.useChannel('main');
 ``` ts
 const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
 
-const messagingChannel = stream.useChannel('messaging', {
-	otherparty: 'xxxxxxxxxx',
+const chatChannel = stream.useChannel('chat', {
+	other: 'xxxxxxxxxx',
 });
 ```
 
@@ -115,11 +115,11 @@ mainChannel.on('notification', notification => {
 
 ``` ts
 const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
-const messagingChannel = stream.useChannel('messaging', {
-	otherparty: 'xxxxxxxxxx',
+const chatChannel = stream.useChannel('chat', {
+	other: 'xxxxxxxxxx',
 });
 
-messagingChannel.send('read', {
+chatChannel.send('read', {
 	id: 'xxxxxxxxxx'
 });
 ```
@@ -154,5 +154,5 @@ stream.on('_disconnected_', () => {
 ---
 
 <div align="center">
-	<a href="https://github.com/misskey-dev/misskey/blob/develop/CONTRIBUTING.md"><img src="https://raw.githubusercontent.com/misskey-dev/assets/main/i-want-you.png" width="300"></a>
+	<a href="https://github.com/misskey-dev/misskey/blob/develop/CONTRIBUTING.md"><img src="https://assets.misskey-hub.net/public/i-want-you.png" width="300"></a>
 </div>

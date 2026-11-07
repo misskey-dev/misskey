@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -31,6 +31,28 @@ export class GetterService {
 	@bindThis
 	public async getNote(noteId: MiNote['id']) {
 		const note = await this.notesRepository.findOneBy({ id: noteId });
+
+		if (note == null) {
+			throw new IdentifiableError('9725d0ce-ba28-4dde-95a7-2cbb2c15de24', 'No such note.');
+		}
+
+		return note;
+	}
+
+	@bindThis
+	public async getNoteWithRelations(noteId: MiNote['id']) {
+		const note = await this.notesRepository.findOne({
+			where: { id: noteId },
+			relations: {
+				user: true,
+				reply: {
+					user: true,
+				},
+				renote: {
+					user: true,
+				},
+			},
+		});
 
 		if (note == null) {
 			throw new IdentifiableError('9725d0ce-ba28-4dde-95a7-2cbb2c15de24', 'No such note.');

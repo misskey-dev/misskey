@@ -1,12 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RolesRepository } from '@/models/_.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -16,6 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'write:admin:roles',
 
 	errors: {
 		noSuchRole: {
@@ -41,6 +41,7 @@ export const paramDef = {
 		isAdministrator: { type: 'boolean' },
 		isExplorable: { type: 'boolean' },
 		asBadge: { type: 'boolean' },
+		preserveAssignmentOnMoveAccount: { type: 'boolean' },
 		canEditMembersByModerator: { type: 'boolean' },
 		displayOrder: { type: 'number' },
 		policies: {
@@ -49,19 +50,6 @@ export const paramDef = {
 	},
 	required: [
 		'roleId',
-		'name',
-		'description',
-		'color',
-		'iconUrl',
-		'target',
-		'condFormula',
-		'isPublic',
-		'isModerator',
-		'isAdministrator',
-		'asBadge',
-		'canEditMembersByModerator',
-		'displayOrder',
-		'policies',
 	],
 } as const;
 
@@ -91,6 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isAdministrator: ps.isAdministrator,
 				isExplorable: ps.isExplorable,
 				asBadge: ps.asBadge,
+				preserveAssignmentOnMoveAccount: ps.preserveAssignmentOnMoveAccount,
 				canEditMembersByModerator: ps.canEditMembersByModerator,
 				displayOrder: ps.displayOrder,
 				policies: ps.policies,

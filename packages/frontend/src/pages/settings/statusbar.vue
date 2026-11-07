@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -16,41 +16,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref, computed } from 'vue';
-import { v4 as uuid } from 'uuid';
+import * as Misskey from 'misskey-js';
 import XStatusbar from './statusbar.statusbar.vue';
+import { genId } from '@/utility/id.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
+import { prefer } from '@/preferences.js';
 
-const statusbars = defaultStore.reactiveState.statusbars;
+const statusbars = prefer.r.statusbars;
 
-const userLists = ref();
+const userLists = ref<Misskey.entities.UserList[] | null>(null);
 
 onMounted(() => {
-	os.api('users/lists/list').then(res => {
+	misskeyApi('users/lists/list').then(res => {
 		userLists.value = res;
 	});
 });
 
 async function add() {
-	defaultStore.push('statusbars', {
-		id: uuid(),
+	prefer.commit('statusbars', [...statusbars.value, {
+		id: genId(),
+		name: null,
 		type: null,
 		black: false,
 		size: 'medium',
 		props: {},
-	});
+	}]);
 }
 
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePage(() => ({
 	title: i18n.ts.statusbar,
 	icon: 'ti ti-list',
-});
+}));
 </script>

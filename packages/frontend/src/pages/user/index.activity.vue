@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -34,9 +34,9 @@ const props = withDefaults(defineProps<{
 	limit: 50,
 });
 
-const chartSrc = ref('per-user-notes');
+const chartSrc = ref<'per-user-notes' | 'per-user-pv'>('per-user-notes');
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.notes,
 		active: chartSrc.value === 'per-user-notes',

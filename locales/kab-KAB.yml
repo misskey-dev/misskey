@@ -57,6 +57,10 @@ searchByGoogle: "Nadi"
 file: "Ifuyla"
 account: "Imiḍan"
 replies: "Err"
+_imageFrameEditor:
+  font: "Tasefsit"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
 _email:
   _follow:
     title: "Yeṭṭafaṛ-ik·em-id"
@@ -104,3 +108,7 @@ _deck:
   _columns:
     notifications: "Ilɣuyen"
     list: "Tibdarin"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Imayl"

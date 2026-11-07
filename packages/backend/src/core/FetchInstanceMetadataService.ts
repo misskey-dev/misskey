@@ -1,13 +1,13 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import { JSDOM } from 'jsdom';
 import tinycolor from 'tinycolor2';
 import * as Redis from 'ioredis';
+import * as htmlParser from 'node-html-parser';
 import type { MiInstance } from '@/models/Instance.js';
 import type Logger from '@/logger.js';
 import { DI } from '@/di-symbols.js';
@@ -15,7 +15,6 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import type { DOMWindow } from 'jsdom';
 
 type NodeInfo = {
 	openRegistrations?: unknown;
@@ -51,24 +50,38 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	public async tryLock(host: string): Promise<boolean> {
-		const mutex = await this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '1', 'GET');
-		return mutex !== '1';
+	// public for test
+	public async tryLock(host: string): Promise<string | null> {
+		// TODO: マイグレーションなのであとで消す (2024.3.1)
+		this.redisClient.del(`fetchInstanceMetadata:mutex:${host}`);
+
+		return await this.redisClient.set(
+			`fetchInstanceMetadata:mutex:v2:${host}`, '1',
+			'EX', 30, // 30秒したら自動でロック解除 https://github.com/misskey-dev/misskey/issues/13506#issuecomment-1975375395
+			'GET', // 古い値を返す（なかったらnull）
+		);
 	}
 
 	@bindThis
-	public unlock(host: string): Promise<'OK'> {
-		return this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '0');
+	// public for test
+	public unlock(host: string): Promise<number> {
+		return this.redisClient.del(`fetchInstanceMetadata:mutex:v2:${host}`);
 	}
 
 	@bindThis
 	public async fetchInstanceMetadata(instance: MiInstance, force = false): Promise<void> {
 		const host = instance.host;
-		// Acquire mutex to ensure no parallel runs
-		if (!await this.tryLock(host)) return;
+
+		// finallyでunlockされてしまうのでtry内でロックチェックをしない
+		// （returnであってもfinallyは実行される）
+		if (!force && await this.tryLock(host) === '1') {
+			// 1が返ってきていたらロックされているという意味なので、何もしない
+			return;
+		}
+
 		try {
 			if (!force) {
-				const _instance = await this.federatedInstanceService.fetch(host);
+				const _instance = await this.federatedInstanceService.fetchOrRegister(host);
 				const now = Date.now();
 				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
 					// unlock at the finally caluse
@@ -140,7 +153,7 @@ export class FetchInstanceMetadataService {
 				throw new Error('No wellknown links');
 			}
 
-			const links = wellknown.links as any[];
+			const links = wellknown.links as ({ rel: string, href: string; })[];
 
 			const link1_0 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/1.0');
 			const link2_0 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/2.0');
@@ -167,15 +180,14 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async fetchDom(instance: MiInstance): Promise<DOMWindow['document']> {
+	private async fetchDom(instance: MiInstance): Promise<htmlParser.HTMLElement> {
 		this.logger.info(`Fetching HTML of ${instance.host} ...`);
 
 		const url = 'https://' + instance.host;
 
 		const html = await this.httpRequestService.getHtml(url);
 
-		const { window } = new JSDOM(html);
-		const doc = window.document;
+		const doc = htmlParser.parse(html);
 
 		return doc;
 	}
@@ -192,12 +204,12 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async fetchFaviconUrl(instance: MiInstance, doc: DOMWindow['document'] | null): Promise<string | null> {
+	private async fetchFaviconUrl(instance: MiInstance, doc: htmlParser.HTMLElement | null): Promise<string | null> {
 		const url = 'https://' + instance.host;
 
 		if (doc) {
 			// https://github.com/misskey-dev/misskey/pull/8220#issuecomment-1025104043
-			const href = Array.from(doc.getElementsByTagName('link')).reverse().find(link => link.relList.contains('icon'))?.href;
+			const href = Array.from(doc.getElementsByTagName('link')).reverse().find(link => link.attributes.rel === 'icon')?.attributes.href;
 
 			if (href) {
 				return (new URL(href, url)).href;
@@ -218,7 +230,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async fetchIconUrl(instance: MiInstance, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
+	private async fetchIconUrl(instance: MiInstance, doc: htmlParser.HTMLElement | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (manifest && manifest.icons && manifest.icons.length > 0 && manifest.icons[0].src) {
 			const url = 'https://' + instance.host;
 			return (new URL(manifest.icons[0].src, url)).href;
@@ -232,9 +244,9 @@ export class FetchInstanceMetadataService {
 			// https://github.com/misskey-dev/misskey/pull/8220/files/0ec4eba22a914e31b86874f12448f88b3e58dd5a#r796487559
 			const href =
 				[
-					links.find(link => link.relList.contains('apple-touch-icon-precomposed'))?.href,
-					links.find(link => link.relList.contains('apple-touch-icon'))?.href,
-					links.find(link => link.relList.contains('icon'))?.href,
+					links.find(link => link.attributes.rel?.split(/\s+/).includes('apple-touch-icon-precomposed'))?.attributes.href,
+					links.find(link => link.attributes.rel?.split(/\s+/).includes('apple-touch-icon'))?.attributes.href,
+					links.find(link => link.attributes.rel?.split(/\s+/).includes('icon'))?.attributes.href,
 				]
 					.find(href => href);
 
@@ -247,7 +259,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async getThemeColor(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
+	private async getThemeColor(info: NodeInfo | null, doc: htmlParser.HTMLElement | null, manifest: Record<string, any> | null): Promise<string | null> {
 		const themeColor = info?.metadata?.themeColor ?? doc?.querySelector('meta[name="theme-color"]')?.getAttribute('content') ?? manifest?.theme_color;
 
 		if (themeColor) {
@@ -259,7 +271,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async getSiteName(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
+	private async getSiteName(info: NodeInfo | null, doc: htmlParser.HTMLElement | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (info && info.metadata) {
 			if (typeof info.metadata.nodeName === 'string') {
 				return info.metadata.nodeName;
@@ -284,7 +296,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async getDescription(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
+	private async getDescription(info: NodeInfo | null, doc: htmlParser.HTMLElement | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (info && info.metadata) {
 			if (typeof info.metadata.nodeDescription === 'string') {
 				return info.metadata.nodeDescription;

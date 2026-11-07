@@ -1,12 +1,12 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div :class="$style.root">
 	<button v-for="item in items" class="_button item" :class="{ disabled: item.hidden }" @click="onClick(item)">
-		<span class="box" :style="{ background: chart.config.type === 'line' ? item.strokeStyle?.toString() : item.fillStyle?.toString() }"></span>
+		<span class="box" :style="{ background: type === 'line' ? item.strokeStyle?.toString() : item.fillStyle?.toString() }"></span>
 		{{ item.text }}
 	</button>
 </div>
@@ -14,27 +14,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { shallowRef } from 'vue';
-import { Chart, LegendItem } from 'chart.js';
-
-const props = defineProps({
-});
+import { Chart } from 'chart.js';
+import type { LegendItem } from 'chart.js';
 
 const chart = shallowRef<Chart>();
+const type = shallowRef<string>();
 const items = shallowRef<LegendItem[]>([]);
 
 function update(_chart: Chart, _items: LegendItem[]) {
 	chart.value = _chart,
 	items.value = _items;
+	if ('type' in _chart.config) type.value = _chart.config.type;
 }
 
 function onClick(item: LegendItem) {
 	if (chart.value == null) return;
-	const { type } = chart.value.config;
-	if (type === 'pie' || type === 'doughnut') {
+	if (type.value === 'pie' || type.value === 'doughnut') {
 		// Pie and doughnut charts only have a single dataset and visibility is per item
-		chart.value.toggleDataVisibility(item.index);
+		if (item.index != null) chart.value.toggleDataVisibility(item.index);
 	} else {
-		chart.value.setDatasetVisibility(item.datasetIndex, !chart.value.isDatasetVisible(item.datasetIndex));
+		if (item.datasetIndex != null) chart.value.setDatasetVisibility(item.datasetIndex, !chart.value.isDatasetVisible(item.datasetIndex));
 	}
 	chart.value.update();
 }
@@ -55,11 +54,11 @@ defineExpose({
 		> .item {
 			font-size: 85%;
 			padding: 4px 12px 4px 8px;
-			border: solid 1px var(--divider);
+			border: solid 1px var(--MI_THEME-divider);
 			border-radius: 999px;
 
 			&:hover {
-				border-color: var(--inputBorderHover);
+				border-color: var(--MI_THEME-inputBorderHover);
 			}
 
 			&.disabled {

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -18,6 +18,38 @@ export const meta = {
 
 	allowGet: true,
 	cacheSec: 60 * 60,
+
+	res: {
+		type: 'object',
+		optional: false,
+		nullable: false,
+		properties: {
+			topSubInstances: {
+				type: 'array',
+				optional: false,
+				nullable: false,
+				items: {
+					type: 'object',
+					optional: false,
+					nullable: false,
+					ref: 'FederationInstance',
+				},
+			},
+			otherFollowersCount: { type: 'number' },
+			topPubInstances: {
+				type: 'array',
+				optional: false,
+				nullable: false,
+				items: {
+					type: 'object',
+					optional: false,
+					nullable: false,
+					ref: 'FederationInstance',
+				},
+			},
+			otherFollowingCount: { type: 'number' },
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -75,9 +107,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const gotPubCount = topPubInstances.map(x => x.followingCount).reduce((a, b) => a + b, 0);
 
 			return await awaitAll({
-				topSubInstances: this.instanceEntityService.packMany(topSubInstances),
+				topSubInstances: this.instanceEntityService.packMany(topSubInstances, me),
 				otherFollowersCount: Math.max(0, allSubCount - gotSubCount),
-				topPubInstances: this.instanceEntityService.packMany(topPubInstances),
+				topPubInstances: this.instanceEntityService.packMany(topPubInstances, me),
 				otherFollowingCount: Math.max(0, allPubCount - gotPubCount),
 			});
 		});

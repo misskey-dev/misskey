@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -37,10 +37,12 @@ export const packedAnnouncementSchema = {
 		icon: {
 			type: 'string',
 			optional: false, nullable: false,
+			enum: ['info', 'warning', 'error', 'success'],
 		},
 		display: {
 			type: 'string',
 			optional: false, nullable: false,
+			enum: ['dialog', 'normal', 'banner'],
 		},
 		needConfirmationToRead: {
 			type: 'boolean',

@@ -1,10 +1,10 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
+<div class="_selectable">
 	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
 	<div :class="{ [$style.disabled]: disabled, [$style.focused]: focused, [$style.tall]: tall, [$style.pre]: pre }" style="position: relative;">
 		<textarea
@@ -26,16 +26,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 		></textarea>
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
+	<button v-if="mfmPreview" style="font-size: 0.85em;" class="_textButton" type="button" @click="preview = !preview">{{ i18n.ts.preview }}</button>
+	<div v-if="mfmPreview" v-show="preview" v-panel :class="$style.mfmPreview">
+		<Mfm :text="v"/>
+	</div>
 
 	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, ref, watch, computed, toRefs, shallowRef } from 'vue';
+import { onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs, useTemplateRef } from 'vue';
 import { debounce } from 'throttle-debounce';
+import type { SuggestionType } from '@/utility/autocomplete.js';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
+import { Autocomplete } from '@/utility/autocomplete.js';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -46,6 +52,8 @@ const props = defineProps<{
 	placeholder?: string;
 	autofocus?: boolean;
 	autocomplete?: string;
+	mfmAutocomplete?: boolean | SuggestionType[],
+	mfmPreview?: boolean;
 	spellcheck?: boolean;
 	debounce?: boolean;
 	manualSave?: boolean;
@@ -55,10 +63,11 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'change', _ev: KeyboardEvent): void;
+	(ev: 'change', _ev: InputEvent): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
 	(ev: 'enter'): void;
 	(ev: 'update:modelValue', value: string): void;
+	(ev: 'savingStateChange', saved: boolean, invalid: boolean): void;
 }>();
 
 const { modelValue, autofocus } = toRefs(props);
@@ -67,14 +76,20 @@ const focused = ref(false);
 const changed = ref(false);
 const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
-const inputEl = shallowRef<HTMLTextAreaElement>();
+const inputEl = useTemplateRef('inputEl');
+const preview = ref(false);
+let autocompleteWorker: Autocomplete | null = null;
 
-const focus = () => inputEl.value.focus();
-const onInput = (ev) => {
+function focus() {
+	inputEl.value?.focus();
+}
+
+function onInput(ev: InputEvent) {
 	changed.value = true;
 	emit('change', ev);
-};
-const onKeydown = (ev: KeyboardEvent) => {
+}
+
+function onKeydown(ev: KeyboardEvent) {
 	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
 
 	emit('keydown', ev);
@@ -82,20 +97,30 @@ const onKeydown = (ev: KeyboardEvent) => {
 	if (ev.code === 'Enter') {
 		emit('enter');
 	}
-};
 
-const updated = () => {
+	if (props.code && ev.key === 'Tab') {
+		const pos = inputEl.value?.selectionStart ?? 0;
+		const posEnd = inputEl.value?.selectionEnd ?? v.value.length;
+		v.value = v.value.slice(0, pos) + '\t' + v.value.slice(posEnd);
+		nextTick(() => {
+			inputEl.value?.setSelectionRange(pos + 1, pos + 1);
+		});
+		ev.preventDefault();
+	}
+}
+
+function updated() {
 	changed.value = false;
 	emit('update:modelValue', v.value ?? '');
-};
+}
 
 const debouncedUpdated = debounce(1000, updated);
 
 watch(modelValue, newValue => {
-	v.value = newValue;
+	v.value = newValue ?? '';
 });
 
-watch(v, newValue => {
+watch(v, () => {
 	if (!props.manualSave) {
 		if (props.debounce) {
 			debouncedUpdated();
@@ -104,8 +129,12 @@ watch(v, newValue => {
 		}
 	}
 
-	invalid.value = inputEl.value.validity.badInput;
+	invalid.value = inputEl.value?.validity.badInput ?? true;
 });
+
+watch([changed, invalid], ([newChanged, newInvalid]) => {
+	emit('savingStateChange', newChanged, newInvalid);
+}, { immediate: true });
 
 onMounted(() => {
 	nextTick(() => {
@@ -113,6 +142,16 @@ onMounted(() => {
 			focus();
 		}
 	});
+
+	if (props.mfmAutocomplete && inputEl.value) {
+		autocompleteWorker = new Autocomplete(inputEl.value, v, props.mfmAutocomplete === true ? undefined : props.mfmAutocomplete);
+	}
+});
+
+onUnmounted(() => {
+	if (autocompleteWorker) {
+		autocompleteWorker.detach();
+	}
 });
 </script>
 
@@ -130,7 +169,7 @@ onMounted(() => {
 .caption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 
 	&:empty {
 		display: none;
@@ -150,9 +189,9 @@ onMounted(() => {
 	font: inherit;
 	font-weight: normal;
 	font-size: 1em;
-	color: var(--fg);
-	background: var(--panel);
-	border: solid 1px var(--panel);
+	color: var(--MI_THEME-fg);
+	background: var(--MI_THEME-panel);
+	border: solid 1px var(--MI_THEME-panel);
 	border-radius: 6px;
 	outline: none;
 	box-shadow: none;
@@ -160,13 +199,13 @@ onMounted(() => {
 	transition: border-color 0.1s ease-out;
 
 	&:hover {
-		border-color: var(--inputBorderHover) !important;
+		border-color: var(--MI_THEME-inputBorderHover) !important;
 	}
 }
 
 .focused {
 	> .textarea {
-		border-color: var(--accent) !important;
+		border-color: var(--MI_THEME-accent) !important;
 	}
 }
 
@@ -193,5 +232,13 @@ onMounted(() => {
 
 .save {
 	margin: 8px 0 0 0;
+}
+
+.mfmPreview {
+  padding: 12px;
+  border-radius: var(--MI-radius);
+  box-sizing: border-box;
+  min-height: 130px;
+	pointer-events: none;
 }
 </style>

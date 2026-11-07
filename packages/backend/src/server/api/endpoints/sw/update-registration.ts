@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,12 +7,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { SwSubscriptionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
+	secure: true,
 
 	description: 'Update push notification registration.',
 
@@ -57,6 +59,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.swSubscriptionsRepository)
 		private swSubscriptionsRepository: SwSubscriptionsRepository,
+
+		private pushNotificationService: PushNotificationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const swSubscription = await this.swSubscriptionsRepository.findOneBy({
@@ -75,6 +79,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.swSubscriptionsRepository.update(swSubscription.id, {
 				sendReadMessage: swSubscription.sendReadMessage,
 			});
+
+			this.pushNotificationService.refreshCache(me.id);
 
 			return {
 				userId: swSubscription.userId,

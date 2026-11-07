@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,7 +13,8 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireRolePolicy: 'canManageAvatarDecorations',
+	requiredRolePolicy: 'canManageAvatarDecorations',
+	kind: 'write:admin:avatar-decorations',
 
 	errors: {
 	},
@@ -29,6 +30,7 @@ export const paramDef = {
 		roleIdsThatCanBeUsedThisDecoration: { type: 'array', items: {
 			type: 'string',
 		} },
+		category: { type: 'string', nullable: true },
 	},
 	required: ['id'],
 } as const;
@@ -44,6 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				description: ps.description,
 				url: ps.url,
 				roleIdsThatCanBeUsedThisDecoration: ps.roleIdsThatCanBeUsedThisDecoration,
+				category: ps.category,
 			}, me);
 		});
 	}

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
 	<div :class="$style.username"><MkAcct :user="note.user"/></div>
 	<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
-		<img v-for="role in note.user.badgeRoles" :key="role.id" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl"/>
+		<img v-for="(role, i) in note.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
 	</div>
 	<div :class="$style.info">
 		<div v-if="mock">
@@ -38,14 +38,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import { notePage } from '@/filters/note.js';
-import { userPage } from '@/filters/user.js';
+import { notePage } from '@@/js/note.js';
+import { userPage } from '@@/js/user.js';
+import { DI } from '@/di.js';
 
 defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
-const mock = inject<boolean>('mock', false);
+const mock = inject(DI.mock, false);
 </script>
 
 <style lang="scss" module>
@@ -77,7 +78,7 @@ const mock = inject<boolean>('mock', false);
 	margin: 0 .5em 0 0;
 	padding: 1px 6px;
 	font-size: 80%;
-	border: solid 0.5px var(--divider);
+	border: solid 0.5px var(--MI_THEME-divider);
 	border-radius: 3px;
 }
 

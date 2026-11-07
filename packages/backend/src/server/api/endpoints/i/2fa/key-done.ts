@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -30,6 +30,16 @@ export const meta = {
 			message: '2fa not enabled.',
 			code: 'TWO_FACTOR_NOT_ENABLED',
 			id: '798d6847-b1ed-4f9c-b1f9-163c42655995',
+		},
+	},
+
+	res: {
+		type: 'object',
+		nullable: false,
+		optional: false,
+		properties: {
+			id: { type: 'string' },
+			name: { type: 'string' },
 		},
 	},
 } as const;
@@ -71,7 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				try {
 					await this.userAuthService.twoFactorAuthenticate(profile, token);
-				} catch (e) {
+				} catch (_) {
 					throw new Error('authentication failed');
 				}
 			}
@@ -86,10 +96,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const keyInfo = await this.webAuthnService.verifyRegistration(me.id, ps.credential);
+			const keyId = keyInfo.credentialID;
 
-			const credentialId = Buffer.from(keyInfo.credentialID).toString('base64url');
 			await this.userSecurityKeysRepository.insert({
-				id: credentialId,
+				id: keyId,
 				userId: me.id,
 				name: ps.name,
 				publicKey: Buffer.from(keyInfo.credentialPublicKey).toString('base64url'),
@@ -101,12 +111,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Publish meUpdated event
 			this.globalEventService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
-				detail: true,
+				schema: 'MeDetailed',
 				includeSecrets: true,
 			}));
 
 			return {
-				id: credentialId,
+				id: keyId,
 				name: ps.name,
 			};
 		});

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -50,24 +50,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import bytes from '@/filters/bytes.js';
+import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
-	connection: any,
-	meta: any
+	connection: Misskey.IChannelConnection<Misskey.Channels['serverStats']>,
+	meta: Misskey.entities.ServerInfoResponse
 }>();
 
 const viewBoxX = ref<number>(50);
 const viewBoxY = ref<number>(30);
-const stats = ref<any[]>([]);
+const stats = ref<Misskey.entities.ServerStats[]>([]);
 const inPolylinePoints = ref<string>('');
 const outPolylinePoints = ref<string>('');
 const inPolygonPoints = ref<string>('');
 const outPolygonPoints = ref<string>('');
-const inHeadX = ref<any>(null);
-const inHeadY = ref<any>(null);
-const outHeadX = ref<any>(null);
-const outHeadY = ref<any>(null);
+const inHeadX = ref<number>();
+const inHeadY = ref<number>();
+const outHeadX = ref<number>();
+const outHeadY = ref<number>();
 const inRecent = ref<number>(0);
 const outRecent = ref<number>(0);
 
@@ -75,7 +77,8 @@ onMounted(() => {
 	props.connection.on('stats', onStats);
 	props.connection.on('statsLog', onStatsLog);
 	props.connection.send('requestLog', {
-		id: Math.random().toString().substring(2, 10),
+		id: genId(),
+		length: 50,
 	});
 });
 
@@ -84,7 +87,7 @@ onBeforeUnmount(() => {
 	props.connection.off('statsLog', onStatsLog);
 });
 
-function onStats(connStats) {
+function onStats(connStats: Misskey.entities.ServerStats) {
 	stats.value.push(connStats);
 	if (stats.value.length > 50) stats.value.shift();
 
@@ -108,8 +111,8 @@ function onStats(connStats) {
 	outRecent.value = connStats.net.tx;
 }
 
-function onStatsLog(statsLog) {
-	for (const revStats of [...statsLog].reverse()) {
+function onStatsLog(statsLog: Misskey.entities.ServerStatsLog) {
+	for (const revStats of statsLog.toReversed()) {
 		onStats(revStats);
 	}
 }

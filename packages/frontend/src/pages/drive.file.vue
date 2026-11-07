@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -9,20 +9,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/>
 	</template>
 
-	<MkSpacer v-if="tab === 'info'" :contentMax="800">
-		<XFileInfo :fileId="fileId"/>
-	</MkSpacer>
+	<MkSwiper v-model:tab="tab" :tabs="headerTabs">
+		<div v-if="tab === 'info'" class="_spacer" style="--MI_SPACER-w: 800px;">
+			<XFileInfo :fileId="fileId"/>
+		</div>
 
-	<MkSpacer v-else-if="tab === 'notes'" :contentMax="800">
-		<XNotes :fileId="fileId"/>
-	</MkSpacer>
+		<div v-else-if="tab === 'notes'" class="_spacer" style="--MI_SPACER-w: 800px;">
+			<XNotes :fileId="fileId"/>
+		</div>
+	</MkSwiper>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref, defineAsyncComponent } from 'vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
+import MkSwiper from '@/components/MkSwiper.vue';
 
 const props = defineProps<{
 	fileId: string;
@@ -45,8 +48,8 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-pencil',
 }]);
 
-definePageMetadata(computed(() => ({
+definePage(() => ({
 	title: i18n.ts._fileViewer.title,
 	icon: 'ti ti-file',
-})));
+}));
 </script>

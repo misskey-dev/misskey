@@ -3,9 +3,9 @@
 		"allowJs": true,
 		"noEmitOnError": false,
 		"noImplicitAny": true,
-		"noImplicitReturns": true,
+		"noImplicitReturns": false,
 		"noUnusedParameters": false,
-		"noUnusedLocals": true,
+		"noUnusedLocals": false,
 		"noFallthroughCasesInSwitch": true,
 		"declaration": false,
 		"sourceMap": true,
@@ -18,11 +18,13 @@
 		"strict": true,
 		"strictNullChecks": true,
 		"strictPropertyInitialization": false,
+		"skipLibCheck": true,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,
-		"baseUrl": "./",
+		"jsx": "react-jsx",
+		"jsxImportSource": "@kitajs/html",
 		"paths": {
 			"@/*": ["../src/*"]
 		},
@@ -33,7 +35,7 @@
 		"lib": [
 			"esnext"
 		],
-		"types": ["jest", "node"]
+		"types": ["node"]
 	},
 	"compileOnSave": false,
 	"include": [

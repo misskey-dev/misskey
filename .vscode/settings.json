@@ -1,11 +1,20 @@
 {
-    "search.exclude": {
-        "**/node_modules": true
-    },
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "files.associations": {
-        "*.test.ts": "typescript"
-    },
-    "jest.jestCommandLine": "pnpm run jest",
-    "jest.autoRun": "off"
+	"search.exclude": {
+		"**/node_modules": true
+	},
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"files.associations": {
+		"*.test.ts": "typescript"
+	},
+	"jest.runMode": "on-demand",
+	"jest.virtualFolders": [
+		{ "name": "backend unit", "jestCommandLine": "pnpm -F backend run test" },
+		{ "name": "backend e2e", "jestCommandLine": "pnpm -F backend run test:e2e"},
+		{ "name": "misskey-js", "jestCommandLine": "pnpm -F misskey-js run jest" }
+	],
+	"editor.codeActionsOnSave": {
+		"source.fixAll": "explicit"
+	},
+	"editor.formatOnSave": false
 }

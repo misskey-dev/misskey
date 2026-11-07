@@ -1,12 +1,12 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { HashtagsRepository } from '@/models/_.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { normalizeTag } from '@/misc/normalize-tag.js';
 import { HashtagEntityService } from '@/core/entities/HashtagEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
@@ -34,7 +34,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		tag: { type: 'string' },
+		tag: { type: 'string', maxLength: 128 },
 	},
 	required: ['tag'],
 } as const;
@@ -48,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private hashtagEntityService: HashtagEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const hashtag = await this.hashtagsRepository.findOneBy({ name: normalizeForSearch(ps.tag) });
+			const hashtag = await this.hashtagsRepository.findOneBy({ name: normalizeTag(ps.tag) });
 			if (hashtag == null) {
 				throw new ApiError(meta.errors.noSuchHashtag);
 			}

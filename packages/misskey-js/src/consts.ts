@@ -1,10 +1,51 @@
-export const notificationTypes = ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'groupInvited', 'app', 'achievementEarned'] as const;
+import type { operations } from './autogen/types.js';
+import type {
+	AbuseReportNotificationRecipient,
+	Ad,
+	Announcement,
+	EmojiDetailed,
+	Flash,
+	GalleryPost,
+	InviteCode,
+	MetaDetailed,
+	Note,
+	Page,
+	Role,
+	ReversiGameDetailed,
+	SystemWebhook,
+	ChatRoom,
+} from './autogen/models.js';
+
+export const notificationTypes = [
+	'note',
+	'follow',
+	'mention',
+	'reply',
+	'renote',
+	'quote',
+	'reaction',
+	'pollEnded',
+	'scheduledNotePosted',
+	'scheduledNotePostFailed',
+	'receiveFollowRequest',
+	'followRequestAccepted',
+	'app',
+	'roleAssigned',
+	'chatRoomInvitationReceived',
+	'achievementEarned',
+	'exportCompleted',
+	'test',
+	'login',
+	'createToken',
+] as const;
 
 export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as const;
 
 export const mutedNoteReasons = ['word', 'manual', 'spam', 'other'] as const;
 
-export const ffVisibility = ['public', 'followers', 'private'] as const;
+export const followingVisibilities = ['public', 'followers', 'private'] as const;
+
+export const followersVisibilities = ['public', 'followers', 'private'] as const;
 
 export const permissions = [
 	'read:account',
@@ -17,8 +58,8 @@ export const permissions = [
 	'write:favorites',
 	'read:following',
 	'write:following',
-	'read:messaging',
-	'write:messaging',
+	'read:messaging', // deprecated
+	'write:messaging', // deprecated
 	'read:mutes',
 	'write:mutes',
 	'write:notes',
@@ -43,7 +84,57 @@ export const permissions = [
 	'write:flash',
 	'read:flash-likes',
 	'write:flash-likes',
-];
+	'read:admin:abuse-user-reports',
+	'write:admin:delete-account',
+	'write:admin:delete-all-files-of-a-user',
+	'read:admin:index-stats',
+	'read:admin:table-stats',
+	'read:admin:user-ips',
+	'read:admin:meta',
+	'write:admin:reset-password',
+	'write:admin:resolve-abuse-user-report',
+	'write:admin:send-email',
+	'read:admin:server-info',
+	'read:admin:show-moderation-log',
+	'read:admin:show-user',
+	'write:admin:suspend-user',
+	'write:admin:unset-mfa',
+	'write:admin:unset-user-avatar',
+	'write:admin:unset-user-banner',
+	'write:admin:unsuspend-user',
+	'write:admin:meta',
+	'write:admin:user-note',
+	'write:admin:roles',
+	'read:admin:roles',
+	'write:admin:relays',
+	'read:admin:relays',
+	'write:admin:invite-codes',
+	'read:admin:invite-codes',
+	'write:admin:announcements',
+	'read:admin:announcements',
+	'write:admin:avatar-decorations',
+	'read:admin:avatar-decorations',
+	'write:admin:federation',
+	'write:admin:account',
+	'read:admin:account',
+	'write:admin:emoji',
+	'read:admin:emoji',
+	'write:admin:queue',
+	'read:admin:queue',
+	'write:admin:promo',
+	'write:admin:drive',
+	'read:admin:drive',
+	'write:admin:ad',
+	'read:admin:ad',
+	'write:invite-codes',
+	'read:invite-codes',
+	'write:clip-favorite',
+	'read:clip-favorite',
+	'read:federation',
+	'write:report-abuse',
+	'write:chat',
+	'read:chat',
+] as const;
 
 export const moderationLogTypes = [
 	'updateServerSettings',
@@ -71,9 +162,12 @@ export const moderationLogTypes = [
 	'resetPassword',
 	'suspendRemoteInstance',
 	'unsuspendRemoteInstance',
+	'updateRemoteInstanceNote',
 	'markSensitiveDriveFile',
 	'unmarkSensitiveDriveFile',
 	'resolveAbuseReport',
+	'forwardAbuseReport',
+	'updateAbuseReportNote',
 	'createInvitation',
 	'createAd',
 	'updateAd',
@@ -81,14 +175,110 @@ export const moderationLogTypes = [
 	'createAvatarDecoration',
 	'updateAvatarDecoration',
 	'deleteAvatarDecoration',
+	'unsetMfa',
 	'unsetUserAvatar',
 	'unsetUserBanner',
+	'createSystemWebhook',
+	'updateSystemWebhook',
+	'deleteSystemWebhook',
+	'createAbuseReportNotificationRecipient',
+	'updateAbuseReportNotificationRecipient',
+	'deleteAbuseReportNotificationRecipient',
+	'deleteAccount',
+	'deletePage',
+	'deleteFlash',
+	'deleteGalleryPost',
+	'deleteChatRoom',
+	'updateProxyAccountDescription',
 ] as const;
+
+export const rolePolicies = [
+	'gtlAvailable',
+	'ltlAvailable',
+	'canPublicNote',
+	'mentionLimit',
+	'canInvite',
+	'inviteLimit',
+	'inviteLimitCycle',
+	'inviteExpirationTime',
+	'canManageCustomEmojis',
+	'canManageAvatarDecorations',
+	'canSearchNotes',
+	'canSearchUsers',
+	'canUseTranslator',
+	'canHideAds',
+	'canCreateChannel',
+	'driveCapacityMb',
+	'maxFileSizeMb',
+	'alwaysMarkNsfw',
+	'canUpdateBioMedia',
+	'pinLimit',
+	'antennaLimit',
+	'wordMuteLimit',
+	'webhookLimit',
+	'clipLimit',
+	'noteEachClipsLimit',
+	'userListLimit',
+	'userEachUserListsLimit',
+	'rateLimitFactor',
+	'avatarDecorationLimit',
+	'canImportAntennas',
+	'canImportBlocking',
+	'canImportFollowing',
+	'canImportMuting',
+	'canImportUserLists',
+	'chatAvailability',
+	'uploadableFileTypes',
+	'noteDraftLimit',
+	'scheduledNoteLimit',
+	'watermarkAvailable',
+] as const;
+
+export const queueTypes = [
+	'system',
+	'endedPollNotification',
+	'postScheduledNote',
+	'deliver',
+	'inbox',
+	'db',
+	'relationship',
+	'objectStorage',
+	'userWebhookDeliver',
+	'systemWebhookDeliver',
+] as const;
+
+// See: packages/backend/src/core/ReversiService.ts@L410
+export const reversiUpdateKeys = [
+	'map',
+	'bw',
+	'isLlotheo',
+	'canPutEverywhere',
+	'loopedBoard',
+	'timeLimitForEachTurn',
+] as const satisfies (keyof ReversiGameDetailed)[];
+
+export type ReversiUpdateKey = typeof reversiUpdateKeys[number];
+
+type AvatarDecoration = {
+	id: string;
+	name: string;
+	url: string;
+	angle?: number;
+	flipH?: boolean;
+	offsetX?: number;
+	offsetY?: number;
+};
+
+type ReceivedAbuseReport = {
+	reportId: AbuseReportNotificationRecipient['id'];
+	report: operations['admin___abuse-user-reports']['responses'][200]['content']['application/json'];
+	forwarded: boolean;
+};
 
 export type ModerationLogPayloads = {
 	updateServerSettings: {
-		before: any | null;
-		after: any | null;
+		before: MetaDetailed | null;
+		after: MetaDetailed | null;
 	};
 	suspend: {
 		userId: string;
@@ -109,16 +299,16 @@ export type ModerationLogPayloads = {
 	};
 	addCustomEmoji: {
 		emojiId: string;
-		emoji: any;
+		emoji: EmojiDetailed;
 	};
 	updateCustomEmoji: {
 		emojiId: string;
-		before: any;
-		after: any;
+		before: EmojiDetailed;
+		after: EmojiDetailed;
 	};
 	deleteCustomEmoji: {
 		emojiId: string;
-		emoji: any;
+		emoji: EmojiDetailed;
 	};
 	assignRole: {
 		userId: string;
@@ -137,16 +327,16 @@ export type ModerationLogPayloads = {
 	};
 	createRole: {
 		roleId: string;
-		role: any;
+		role: Role;
 	};
 	updateRole: {
 		roleId: string;
-		before: any;
-		after: any;
+		before: Role;
+		after: Role;
 	};
 	deleteRole: {
 		roleId: string;
-		role: any;
+		role: Role;
 	};
 	clearQueue: Record<string, never>;
 	promoteQueue: Record<string, never>;
@@ -161,39 +351,39 @@ export type ModerationLogPayloads = {
 		noteUserId: string;
 		noteUserUsername: string;
 		noteUserHost: string | null;
-		note: any;
+		note: Note;
 	};
 	createGlobalAnnouncement: {
 		announcementId: string;
-		announcement: any;
+		announcement: Announcement;
 	};
 	createUserAnnouncement: {
 		announcementId: string;
-		announcement: any;
+		announcement: Announcement;
 		userId: string;
 		userUsername: string;
 		userHost: string | null;
 	};
 	updateGlobalAnnouncement: {
 		announcementId: string;
-		before: any;
-		after: any;
+		before: Announcement;
+		after: Announcement;
 	};
 	updateUserAnnouncement: {
 		announcementId: string;
-		before: any;
-		after: any;
+		before: Announcement;
+		after: Announcement;
 		userId: string;
 		userUsername: string;
 		userHost: string | null;
 	};
 	deleteGlobalAnnouncement: {
 		announcementId: string;
-		announcement: any;
+		announcement: Announcement;
 	};
 	deleteUserAnnouncement: {
 		announcementId: string;
-		announcement: any;
+		announcement: Announcement;
 		userId: string;
 		userUsername: string;
 		userHost: string | null;
@@ -211,6 +401,12 @@ export type ModerationLogPayloads = {
 		id: string;
 		host: string;
 	};
+	updateRemoteInstanceNote: {
+		id: string;
+		host: string;
+		before: string | null;
+		after: string | null;
+	};
 	markSensitiveDriveFile: {
 		fileId: string;
 		fileUserId: string | null;
@@ -225,37 +421,53 @@ export type ModerationLogPayloads = {
 	};
 	resolveAbuseReport: {
 		reportId: string;
-		report: any;
-		forwarded: boolean;
+		report: ReceivedAbuseReport;
+		forwarded?: boolean;
+		resolvedAs?: string | null;
+	};
+	forwardAbuseReport: {
+		reportId: string;
+		report: ReceivedAbuseReport;
+	};
+	updateAbuseReportNote: {
+		reportId: string;
+		report: ReceivedAbuseReport;
+		before: string;
+		after: string;
 	};
 	createInvitation: {
-		invitations: any[];
+		invitations: InviteCode[];
 	};
 	createAd: {
 		adId: string;
-		ad: any;
+		ad: Ad;
 	};
 	updateAd: {
 		adId: string;
-		before: any;
-		after: any;
+		before: Ad;
+		after: Ad;
 	};
 	deleteAd: {
 		adId: string;
-		ad: any;
+		ad: Ad;
 	};
 	createAvatarDecoration: {
 		avatarDecorationId: string;
-		avatarDecoration: any;
+		avatarDecoration: AvatarDecoration;
 	};
 	updateAvatarDecoration: {
 		avatarDecorationId: string;
-		before: any;
-		after: any;
+		before: AvatarDecoration;
+		after: AvatarDecoration;
 	};
 	deleteAvatarDecoration: {
 		avatarDecorationId: string;
-		avatarDecoration: any;
+		avatarDecoration: AvatarDecoration;
+	};
+	unsetMfa: {
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
 	};
 	unsetUserAvatar: {
 		userId: string;
@@ -269,4 +481,61 @@ export type ModerationLogPayloads = {
 		userHost: string | null;
 		fileId: string;
 	};
+	createSystemWebhook: {
+		systemWebhookId: string;
+		webhook: SystemWebhook;
+	};
+	updateSystemWebhook: {
+		systemWebhookId: string;
+		before: SystemWebhook;
+		after: SystemWebhook;
+	};
+	deleteSystemWebhook: {
+		systemWebhookId: string;
+		webhook: SystemWebhook;
+	};
+	createAbuseReportNotificationRecipient: {
+		recipientId: string;
+		recipient: AbuseReportNotificationRecipient;
+	};
+	updateAbuseReportNotificationRecipient: {
+		recipientId: string;
+		before: AbuseReportNotificationRecipient;
+		after: AbuseReportNotificationRecipient;
+	};
+	deleteAbuseReportNotificationRecipient: {
+		recipientId: string;
+		recipient: AbuseReportNotificationRecipient;
+	};
+	deleteAccount: {
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
+	};
+	deletePage: {
+		pageId: string;
+		pageUserId: string;
+		pageUserUsername: string;
+		page: Page;
+	};
+	deleteFlash: {
+		flashId: string;
+		flashUserId: string;
+		flashUserUsername: string;
+		flash: Flash;
+	};
+	deleteGalleryPost: {
+		postId: string;
+		postUserId: string;
+		postUserUsername: string;
+		post: GalleryPost;
+	};
+	deleteChatRoom: {
+		roomId: string;
+		room: ChatRoom;
+	};
+	updateProxyAccountDescription: {
+		before: string | null;
+		after: string | null;
+	}
 };

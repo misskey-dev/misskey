@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -17,8 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-else-if="phase === 'howToReact'" class="_gaps">
 	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._reaction.description }}</div>
 	<div>{{ i18n.ts._initialTutorial._reaction.letsTryReacting }}</div>
-	<MkNote :class="$style.exampleNoteRoot" :note="exampleNote" :mock="true" @reaction="addReaction" @removeReaction="removeReaction" @updateReaction="updateReaction"/>
-	<div v-if="onceReacted"><b style="color: var(--accent);"><i class="ti ti-check"></i> {{ i18n.ts._initialTutorial.wellDone }}</b> {{ i18n.ts._initialTutorial._reaction.reactNotification }}<br>{{ i18n.ts._initialTutorial._reaction.reactDone }}</div>
+	<MkNote :class="$style.exampleNoteRoot" :note="exampleNote" :mock="true" @reaction="addReaction" @removeReaction="removeReaction"/>
+	<div v-if="onceReacted"><b style="color: var(--MI_THEME-accent);"><i class="ti ti-check"></i> {{ i18n.ts._initialTutorial.wellDone }}</b> {{ i18n.ts._initialTutorial._reaction.reactNotification }}<br>{{ i18n.ts._initialTutorial._reaction.reactDone }}</div>
 </div>
 </template>
 
@@ -27,8 +27,9 @@ import * as Misskey from 'misskey-js';
 import { ref, reactive } from 'vue';
 import { i18n } from '@/i18n.js';
 import { globalEvents } from '@/events.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import MkNote from '@/components/MkNote.vue';
+import { genId } from '@/utility/id.js';
 
 const props = defineProps<{
 	phase: 'aboutNote' | 'howToReact';
@@ -53,7 +54,7 @@ const exampleNote = reactive<Misskey.entities.Note>({
 		isBot: false,
 		isCat: true,
 		emojis: {},
-		onlineStatus: null,
+		onlineStatus: 'unknown',
 		badgeRoles: [],
 	},
 	text: 'just setting up my msky',
@@ -63,6 +64,7 @@ const exampleNote = reactive<Misskey.entities.Note>({
 	reactionAcceptance: null,
 	renoteCount: 0,
 	repliesCount: 1,
+	reactionCount: 0,
 	reactions: {},
 	reactionEmojis: {},
 	fileIds: [],
@@ -72,11 +74,9 @@ const exampleNote = reactive<Misskey.entities.Note>({
 });
 const onceReacted = ref<boolean>(false);
 
-function addReaction(emoji) {
+function addReaction(emoji: string) {
 	onceReacted.value = true;
 	emit('reacted');
-	exampleNote.reactions[emoji] = 1;
-	exampleNote.myReaction = emoji;
 	doNotification(emoji);
 }
 
@@ -84,9 +84,8 @@ function doNotification(emoji: string): void {
 	if (!$i || !emoji) return;
 
 	const notification: Misskey.entities.Notification = {
-		id: Math.random().toString(),
+		id: genId(),
 		createdAt: new Date().toUTCString(),
-		isRead: false,
 		type: 'reaction',
 		reaction: emoji,
 		user: $i,
@@ -97,7 +96,7 @@ function doNotification(emoji: string): void {
 	globalEvents.emit('clientNotification', notification);
 }
 
-function removeReaction(emoji) {
+function removeReaction(emoji: string) {
 	delete exampleNote.reactions[emoji];
 	exampleNote.myReaction = undefined;
 }
@@ -105,13 +104,13 @@ function removeReaction(emoji) {
 
 <style lang="scss" module>
 .exampleNoteRoot {
-	border-radius: var(--radius);
-	border: var(--panelBorder);
-	background: var(--panel);
+	border-radius: var(--MI-radius);
+	border: var(--MI_THEME-panelBorder);
+	background: var(--MI_THEME-panel);
 }
 
 .divider {
 	height: 1px;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 </style>

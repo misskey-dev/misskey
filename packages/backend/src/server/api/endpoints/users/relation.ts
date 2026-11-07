@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,6 +11,7 @@ export const meta = {
 	tags: ['users'],
 
 	requireCredential: true,
+	kind: 'read:account',
 
 	description: 'Show the different kinds of relations between the authenticated user and the specified user(s).',
 
@@ -113,7 +114,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: {
-			anyOf: [
+			oneOf: [
 				{ type: 'string', format: 'misskey:id' },
 				{
 					type: 'array',
@@ -131,11 +132,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const ids = Array.isArray(ps.userId) ? ps.userId : [ps.userId];
-
-			const relations = await Promise.all(ids.map(id => this.userEntityService.getRelation(me.id, id)));
-
-			return Array.isArray(ps.userId) ? relations : relations[0];
+			return Array.isArray(ps.userId)
+				? await this.userEntityService.getRelations(me.id, ps.userId).then(it => [...it.values()])
+				: await this.userEntityService.getRelation(me.id, ps.userId).then(it => [it]);
 		});
 	}
 }

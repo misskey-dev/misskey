@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -54,10 +54,17 @@ export class MiAd {
 		length: 8192, nullable: false,
 	})
 	public memo: string;
+
 	@Column('integer', {
 		default: 0, nullable: false,
 	})
 	public dayOfWeek: number;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isSensitive: boolean;
+
 	constructor(data: Partial<MiAd>) {
 		if (data == null) return;
 

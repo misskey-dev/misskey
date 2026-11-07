@@ -1,10 +1,10 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer :showHeader="widgetProps.showHeader" :naked="widgetProps.transparent" data-cy-mkw-activity class="mkw-activity">
+<MkContainer :showHeader="widgetProps.showHeader" :naked="widgetProps.transparent" data-testid="mkw-activity" class="mkw-activity">
 	<template #icon><i class="ti ti-chart-line"></i></template>
 	<template #header>{{ i18n.ts._widgets.activity }}</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="toggleView()"><i class="ti ti-selector"></i></button></template>
@@ -12,8 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>
 		<MkLoading v-if="fetching"/>
 		<template v-else>
-			<XCalendar v-show="widgetProps.view === 0" :activity="[].concat(activity)"/>
-			<XChart v-show="widgetProps.view === 1" :activity="[].concat(activity)"/>
+			<XCalendar v-show="widgetProps.view === 0" :activity="activity ?? []"/>
+			<XChart v-show="widgetProps.view === 1" :activity="activity ?? []"/>
 		</template>
 	</div>
 </MkContainer>
@@ -21,32 +21,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentProps, WidgetComponentEmits, WidgetComponentExpose } from './widget.js';
 import XCalendar from './WidgetActivity.calendar.vue';
 import XChart from './WidgetActivity.chart.vue';
-import { GetFormResultType } from '@/scripts/form.js';
-import * as os from '@/os.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { $i } from '@/account.js';
+import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
+
+const $i = ensureSignin();
 
 const name = 'activity';
 
 const widgetPropsDef = {
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 	transparent: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 	view: {
-		type: 'number' as const,
+		type: 'number',
 		default: 0,
 		hidden: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -59,7 +64,12 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	emit,
 );
 
-const activity = ref(null);
+const activity = ref<{
+	total: number;
+	notes: number;
+	replies: number;
+	renotes: number;
+}[] | null>(null);
 const fetching = ref(true);
 
 const toggleView = () => {
@@ -71,7 +81,7 @@ const toggleView = () => {
 	save();
 };
 
-os.apiGet('charts/user/notes', {
+misskeyApiGet('charts/user/notes', {
 	userId: $i.id,
 	span: 'day',
 	limit: 7 * 21,

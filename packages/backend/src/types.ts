@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,20 +12,72 @@
  * quote - 投稿が引用Renoteされた
  * reaction - 投稿にリアクションされた
  * pollEnded - 自分のアンケートもしくは自分が投票したアンケートが終了した
+ * scheduledNotePosted - 予約したノートが投稿された
+ * scheduledNotePostFailed - 予約したノートの投稿に失敗した
  * receiveFollowRequest - フォローリクエストされた
  * followRequestAccepted - 自分の送ったフォローリクエストが承認された
+ * roleAssigned - ロールが付与された
+ * chatRoomInvitationReceived - チャットルームに招待された
  * achievementEarned - 実績を獲得
+ * exportCompleted - エクスポートが完了
+ * login - ログイン
+ * createToken - トークン作成
  * app - アプリ通知
  * test - テスト通知（サーバー側）
  */
-export const notificationTypes = ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'achievementEarned', 'app', 'test'] as const;
+export const notificationTypes = [
+	'note',
+	'follow',
+	'mention',
+	'reply',
+	'renote',
+	'quote',
+	'reaction',
+	'pollEnded',
+	'scheduledNotePosted',
+	'scheduledNotePostFailed',
+	'receiveFollowRequest',
+	'followRequestAccepted',
+	'roleAssigned',
+	'chatRoomInvitationReceived',
+	'achievementEarned',
+	'exportCompleted',
+	'login',
+	'createToken',
+	'app',
+	'test',
+] as const;
+
+export const groupedNotificationTypes = [
+	...notificationTypes,
+	'reaction:grouped',
+	'renote:grouped',
+] as const;
+
 export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;
 
 export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as const;
 
+export const noteReactionAcceptances = ['likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote', null] as const;
+
 export const mutedNoteReasons = ['word', 'manual', 'spam', 'other'] as const;
 
-export const ffVisibility = ['public', 'followers', 'private'] as const;
+export const followingVisibilities = ['public', 'followers', 'private'] as const;
+export const followersVisibilities = ['public', 'followers', 'private'] as const;
+
+/**
+ * ユーザーがエクスポートできるものの種類
+ *
+ * （主にエクスポート完了通知で使用するものであり、既存のDBの名称等と必ずしも一致しない）
+ */
+export const userExportableEntities = ['antenna', 'blocking', 'clip', 'customEmoji', 'favorite', 'following', 'muting', 'note', 'userList'] as const;
+
+/**
+ * ユーザーがインポートできるものの種類
+ *
+ * （主にインポート完了通知で使用するものであり、既存のDBの名称等と必ずしも一致しない）
+ */
+export const userImportableEntities = ['antenna', 'blocking', 'customEmoji', 'following', 'muting', 'userList'] as const;
 
 export const moderationLogTypes = [
 	'updateServerSettings',
@@ -42,6 +94,8 @@ export const moderationLogTypes = [
 	'deleteRole',
 	'clearQueue',
 	'promoteQueue',
+	'pauseQueue',
+	'resumeQueue',
 	'deleteDriveFile',
 	'deleteNote',
 	'createGlobalAnnouncement',
@@ -53,9 +107,12 @@ export const moderationLogTypes = [
 	'resetPassword',
 	'suspendRemoteInstance',
 	'unsuspendRemoteInstance',
+	'updateRemoteInstanceNote',
 	'markSensitiveDriveFile',
 	'unmarkSensitiveDriveFile',
 	'resolveAbuseReport',
+	'forwardAbuseReport',
+	'updateAbuseReportNote',
 	'createInvitation',
 	'createAd',
 	'updateAd',
@@ -63,8 +120,21 @@ export const moderationLogTypes = [
 	'createAvatarDecoration',
 	'updateAvatarDecoration',
 	'deleteAvatarDecoration',
+	'unsetMfa',
 	'unsetUserAvatar',
 	'unsetUserBanner',
+	'createSystemWebhook',
+	'updateSystemWebhook',
+	'deleteSystemWebhook',
+	'createAbuseReportNotificationRecipient',
+	'updateAbuseReportNotificationRecipient',
+	'deleteAbuseReportNotificationRecipient',
+	'deleteAccount',
+	'deletePage',
+	'deleteFlash',
+	'deleteGalleryPost',
+	'deleteChatRoom',
+	'updateProxyAccountDescription',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -132,6 +202,8 @@ export type ModerationLogPayloads = {
 	};
 	clearQueue: Record<string, never>;
 	promoteQueue: Record<string, never>;
+	pauseQueue: Record<string, never>;
+	resumeQueue: Record<string, never>;
 	deleteDriveFile: {
 		fileId: string;
 		fileUserId: string | null;
@@ -193,6 +265,12 @@ export type ModerationLogPayloads = {
 		id: string;
 		host: string;
 	};
+	updateRemoteInstanceNote: {
+		id: string;
+		host: string;
+		before: string | null;
+		after: string | null;
+	};
 	markSensitiveDriveFile: {
 		fileId: string;
 		fileUserId: string | null;
@@ -208,7 +286,18 @@ export type ModerationLogPayloads = {
 	resolveAbuseReport: {
 		reportId: string;
 		report: any;
-		forwarded: boolean;
+		forwarded?: boolean;
+		resolvedAs?: string | null;
+	};
+	forwardAbuseReport: {
+		reportId: string;
+		report: any;
+	};
+	updateAbuseReportNote: {
+		reportId: string;
+		report: any;
+		before: string;
+		after: string;
 	};
 	createInvitation: {
 		invitations: any[];
@@ -239,6 +328,11 @@ export type ModerationLogPayloads = {
 		avatarDecorationId: string;
 		avatarDecoration: any;
 	};
+	unsetMfa: {
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
+	};
 	unsetUserAvatar: {
 		userId: string;
 		userUsername: string;
@@ -251,21 +345,84 @@ export type ModerationLogPayloads = {
 		userHost: string | null;
 		fileId: string;
 	};
+	createSystemWebhook: {
+		systemWebhookId: string;
+		webhook: any;
+	};
+	updateSystemWebhook: {
+		systemWebhookId: string;
+		before: any;
+		after: any;
+	};
+	deleteSystemWebhook: {
+		systemWebhookId: string;
+		webhook: any;
+	};
+	createAbuseReportNotificationRecipient: {
+		recipientId: string;
+		recipient: any;
+	};
+	updateAbuseReportNotificationRecipient: {
+		recipientId: string;
+		before: any;
+		after: any;
+	};
+	deleteAbuseReportNotificationRecipient: {
+		recipientId: string;
+		recipient: any;
+	};
+	deleteAccount: {
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
+	};
+	deletePage: {
+		pageId: string;
+		pageUserId: string;
+		pageUserUsername: string;
+		page: any;
+	};
+	deleteFlash: {
+		flashId: string;
+		flashUserId: string;
+		flashUserUsername: string;
+		flash: any;
+	};
+	deleteGalleryPost: {
+		postId: string;
+		postUserId: string;
+		postUserUsername: string;
+		post: any;
+	};
+	deleteChatRoom: {
+		roomId: string;
+		room: any;
+	};
+	updateProxyAccountDescription: {
+		before: string | null;
+		after: string | null;
+	};
 };
 
 export type Serialized<T> = {
 	[K in keyof T]:
-		T[K] extends Date
-			? string
-			: T[K] extends (Date | null)
-				? (string | null)
-				: T[K] extends Record<string, any>
-					? Serialized<T[K]>
-					: T[K];
+	T[K] extends Date
+		? string
+		: T[K] extends (Date | null)
+			? (string | null)
+			: T[K] extends Record<string, any>
+				? Serialized<T[K]>
+				: T[K] extends (Record<string, any> | null)
+					? (Serialized<T[K]> | null)
+					: T[K] extends (Record<string, any> | undefined)
+						? (Serialized<T[K]> | undefined)
+						: T[K];
 };
 
 export type FilterUnionByProperty<
-  Union,
-  Property extends string | number | symbol,
-  Condition
+	Union,
+	Property extends string | number | symbol,
+	Condition,
 > = Union extends Record<Property, Condition> ? Union : never;
+
+export type Awaitable<T> = T | Promise<T>;

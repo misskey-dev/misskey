@@ -1,11 +1,11 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div>
-	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" mode="out-in">
+	<Transition :name="prefer.s.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
 		<div v-else :class="$style.root" class="_panel">
 			<MkA v-for="user in moderators" :key="user.id" class="user" :to="`/admin/user/${user.id}`">
@@ -18,14 +18,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
+import * as Misskey from 'misskey-js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { prefer } from '@/preferences.js';
 
-const moderators = ref<any>(null);
+const moderators = ref<Misskey.entities.UserDetailed[] | null>(null);
 const fetching = ref(true);
 
 onMounted(async () => {
-	moderators.value = await os.api('admin/show-users', {
+	moderators.value = await misskeyApi('admin/show-users', {
 		sort: '+lastActiveDate',
 		state: 'adminOrModerator',
 		limit: 30,

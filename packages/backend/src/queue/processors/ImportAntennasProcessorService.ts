@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,17 +11,18 @@ import Logger from '@/logger.js';
 import type { AntennasRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import { Schema, SchemaType } from '@/misc/json-schema.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import { DBAntennaImportJobData } from '../types.js';
 import type * as Bull from 'bullmq';
 
 const Ajv = _Ajv.default;
 
-const validate = new Ajv().compile({
+const exportedAntennaSchema = {
 	type: 'object',
 	properties: {
 		name: { type: 'string', minLength: 1, maxLength: 100 },
-		src: { type: 'string', enum: ['home', 'all', 'users', 'list'] },
+		src: { type: 'string', enum: ['home', 'all', 'users', 'list', 'users_blacklist'] },
 		userListAccts: {
 			type: 'array',
 			items: {
@@ -44,12 +45,17 @@ const validate = new Ajv().compile({
 		} },
 		caseSensitive: { type: 'boolean' },
 		localOnly: { type: 'boolean' },
+		excludeBots: { type: 'boolean' },
 		withReplies: { type: 'boolean' },
 		withFile: { type: 'boolean' },
-		notify: { type: 'boolean' },
+		excludeNotesInSensitiveChannel: { type: 'boolean' },
 	},
-	required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile', 'notify'],
-});
+	required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile'],
+} as const satisfies Schema;
+
+export type ExportedAntenna = SchemaType<typeof exportedAntennaSchema>;
+
+const validate = new Ajv().compile<ExportedAntenna>(exportedAntennaSchema);
 
 @Injectable()
 export class ImportAntennasProcessorService {
@@ -76,7 +82,7 @@ export class ImportAntennasProcessorService {
 					this.logger.warn('Validation Failed');
 					continue;
 				}
-				const result = await this.antennasRepository.insert({
+				const result = await this.antennasRepository.insertOne({
 					id: this.idService.gen(now.getTime()),
 					lastUsedAt: now,
 					userId: job.data.user.id,
@@ -88,10 +94,11 @@ export class ImportAntennasProcessorService {
 					users: (antenna.src === 'list' && antenna.userListAccts !== null ? antenna.userListAccts : antenna.users).filter(Boolean),
 					caseSensitive: antenna.caseSensitive,
 					localOnly: antenna.localOnly,
+					excludeBots: antenna.excludeBots,
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,
-					notify: antenna.notify,
-				}).then(x => this.antennasRepository.findOneByOrFail(x.identifiers[0]));
+					excludeNotesInSensitiveChannel: antenna.excludeNotesInSensitiveChannel,
+				});
 				this.logger.succ('Antenna created: ' + result.id);
 				this.globalEventService.publishInternalEvent('antennaCreated', result);
 			}

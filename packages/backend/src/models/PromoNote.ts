@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,7 +13,7 @@ export class MiPromoNote {
 	@PrimaryColumn(id())
 	public noteId: MiNote['id'];
 
-	@OneToOne(type => MiNote, {
+	@OneToOne(() => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

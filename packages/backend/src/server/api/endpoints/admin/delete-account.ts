@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,9 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireAdmin: true,
-
-	res: {
-	},
+	kind: 'write:admin:delete-account',
 } as const;
 
 export const paramDef = {
@@ -35,13 +33,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private deleteAccountService: DeleteAccountService,
 	) {
-		super(meta, paramDef, async (ps) => {
+		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneByOrFail({ id: ps.userId });
 			if (user.isDeleted) {
 				return;
 			}
 
-			await this.deleteAccountService.deleteAccount(user);
+			await this.deleteAccountService.deleteAccount(user, me);
 		});
 	}
 }

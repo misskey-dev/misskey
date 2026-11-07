@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,7 +15,8 @@ export const meta = {
 	tags: ['meta'],
 
 	requireCredential: true,
-	requireRolePolicy: 'canInvite',
+	requiredRolePolicy: 'canInvite',
+	kind: 'read:invite-codes',
 
 	res: {
 		type: 'object',
@@ -48,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const policies = await this.roleService.getUserPolicies(me.id);
 
 			const count = policies.inviteLimit ? await this.registrationTicketsRepository.countBy({
-				id: MoreThan(this.idService.gen(Date.now() - (policies.inviteExpirationTime * 60 * 1000))),
+				id: MoreThan(this.idService.gen(Date.now() - (policies.inviteLimitCycle * 60 * 1000))),
 				createdById: me.id,
 			}) : null;
 

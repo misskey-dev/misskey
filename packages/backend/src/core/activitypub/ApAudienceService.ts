@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -40,7 +40,7 @@ export class ApAudienceService {
 		const limit = promiseLimit<MiUser | null>(2);
 		const mentionedUsers = (await Promise.all(
 			others.map(id => limit(() => this.apPersonService.resolvePerson(id, resolver).catch(() => null))),
-		)).filter((x): x is MiUser => x != null);
+		)).filter(x => x != null);
 
 		if (toGroups.public.length > 0) {
 			return {
@@ -58,7 +58,7 @@ export class ApAudienceService {
 			};
 		}
 
-		if (toGroups.followers.length > 0) {
+		if (toGroups.followers.length > 0 || ccGroups.followers.length > 0) {
 			return {
 				visibility: 'followers',
 				mentionedUsers,

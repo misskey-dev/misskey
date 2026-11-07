@@ -1,15 +1,20 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import * as yaml from 'js-yaml';
-import type { RedisOptions } from 'ioredis';
+import { load as loadYaml } from 'js-yaml';
+import { type FastifyServerOptions } from 'fastify';
+import type * as Sentry from '@sentry/node';
+import type * as SentryVue from '@sentry/vue';
+import type { RedisOptions as IoRedisRedisOptions } from 'ioredis';
+import type { RedisOptions as BullMqRedisOptions } from 'bullmq';
+import type { AccessLogConfiguration, LogFormat, LogLevelSetting } from './logging/types.js';
 
-type RedisOptionsSource = Partial<RedisOptions> & {
+type RedisOptionsRequiredFields = {
 	host: string;
 	port: number;
 	family?: number;
@@ -17,22 +22,32 @@ type RedisOptionsSource = Partial<RedisOptions> & {
 	db?: number;
 	prefix?: string;
 };
+type RedisOptionsSource = Partial<IoRedisRedisOptions & BullMqRedisOptions> & RedisOptionsRequiredFields;
+type RedisOptionsResolved = IoRedisRedisOptions & BullMqRedisOptions & RedisOptionsRequiredFields;
+
+type SentryBackendConfig = {
+	options: Partial<Sentry.NodeOptions>;
+	enableNodeProfiling: boolean;
+	disabledIntegrations?: string[];
+};
 
 /**
  * 設定ファイルの型
  */
 type Source = {
-	url: string;
+	url?: string;
 	port?: number;
 	socket?: string;
+	trustProxy?: FastifyServerOptions['trustProxy'];
 	chmodSocket?: string;
+	enableIpRateLimit?: boolean;
 	disableHsts?: boolean;
 	db: {
 		host: string;
 		port: number;
-		db: string;
-		user: string;
-		pass: string;
+		db?: string;
+		user?: string;
+		pass?: string;
 		disableCache?: boolean;
 		extra?: { [x: string]: string };
 	};
@@ -48,6 +63,10 @@ type Source = {
 	redisForPubsub?: RedisOptionsSource;
 	redisForJobQueue?: RedisOptionsSource;
 	redisForTimelines?: RedisOptionsSource;
+	redisForReactions?: RedisOptionsSource;
+	fulltextSearch?: {
+		provider?: FulltextSearchProvider;
+	};
 	meilisearch?: {
 		host: string;
 		port: string;
@@ -56,6 +75,17 @@ type Source = {
 		index: string;
 		scope?: 'local' | 'global' | string[];
 	};
+	sentryForBackend?: SentryBackendConfig;
+	sentryForFrontend?: {
+		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
+		vueIntegration?: SentryVue.VueIntegrationOptions | null;
+		browserTracingIntegration?: Parameters<typeof SentryVue.browserTracingIntegration>[0] | null;
+		replayIntegration?: Parameters<typeof SentryVue.replayIntegration>[0] | null;
+	};
+
+	publishTarballInsteadOfProvideRepositoryUrl?: boolean;
+
+	setupPassword?: string;
 
 	proxy?: string;
 	proxySmtp?: string;
@@ -66,6 +96,7 @@ type Source = {
 	maxFileSize?: number;
 
 	clusterLimit?: number;
+	threadPoolSize?: number;
 
 	id: string;
 
@@ -74,30 +105,40 @@ type Source = {
 
 	deliverJobConcurrency?: number;
 	inboxJobConcurrency?: number;
-	relashionshipJobConcurrency?: number;
+	relationshipJobConcurrency?: number;
 	deliverJobPerSec?: number;
 	inboxJobPerSec?: number;
-	relashionshipJobPerSec?: number;
+	relationshipJobPerSec?: number;
 	deliverJobMaxAttempts?: number;
 	inboxJobMaxAttempts?: number;
 
 	mediaProxy?: string;
-	proxyRemoteFiles?: boolean;
 	videoThumbnailGenerator?: string;
-
-	signToActivityPubGet?: boolean;
 
 	perChannelMaxNoteCacheCount?: number;
 	perUserNotificationsMaxCount?: number;
 	deactivateAntennaThreshold?: number;
 	pidFile: string;
+
+	logging?: {
+		format?: LogFormat;
+		level?: LogLevelSetting;
+		domains?: Record<string, LogLevelSetting> | null;
+		access?: AccessLogConfiguration;
+		sql?: {
+			disableQueryTruncation?: boolean,
+			enableQueryParamLogging?: boolean,
+		}
+	}
 };
 
 export type Config = {
 	url: string;
 	port: number;
 	socket: string | undefined;
+	trustProxy: NonNullable<FastifyServerOptions['trustProxy']>;
 	chmodSocket: string | undefined;
+	enableIpRateLimit: boolean;
 	disableHsts: boolean | undefined;
 	db: {
 		host: string;
@@ -116,6 +157,9 @@ export type Config = {
 		user: string;
 		pass: string;
 	}[] | undefined;
+	fulltextSearch?: {
+		provider?: FulltextSearchProvider;
+	};
 	meilisearch: {
 		host: string;
 		port: string;
@@ -128,23 +172,34 @@ export type Config = {
 	proxySmtp: string | undefined;
 	proxyBypassHosts: string[] | undefined;
 	allowedPrivateNetworks: string[] | undefined;
-	maxFileSize: number | undefined;
+	maxFileSize: number;
 	clusterLimit: number | undefined;
+	threadPoolSize: number;
 	id: string;
 	outgoingAddress: string | undefined;
 	outgoingAddressFamily: 'ipv4' | 'ipv6' | 'dual' | undefined;
 	deliverJobConcurrency: number | undefined;
 	inboxJobConcurrency: number | undefined;
-	relashionshipJobConcurrency: number | undefined;
+	relationshipJobConcurrency: number | undefined;
 	deliverJobPerSec: number | undefined;
 	inboxJobPerSec: number | undefined;
-	relashionshipJobPerSec: number | undefined;
+	relationshipJobPerSec: number | undefined;
 	deliverJobMaxAttempts: number | undefined;
 	inboxJobMaxAttempts: number | undefined;
-	proxyRemoteFiles: boolean | undefined;
-	signToActivityPubGet: boolean | undefined;
+	logging?: {
+		format?: LogFormat;
+		level?: LogLevelSetting;
+		domains?: Record<string, LogLevelSetting> | null;
+		access?: AccessLogConfiguration;
+		sql?: {
+			disableQueryTruncation?: boolean,
+			enableQueryParamLogging?: boolean,
+		}
+	}
 
 	version: string;
+	publishTarballInsteadOfProvideRepositoryUrl: boolean;
+	setupPassword: string | undefined;
 	host: string;
 	hostname: string;
 	scheme: string;
@@ -154,52 +209,78 @@ export type Config = {
 	authUrl: string;
 	driveUrl: string;
 	userAgent: string;
-	clientEntry: string;
-	clientManifestExists: boolean;
+	frontendManifestExists: boolean;
+	frontendEmbedManifestExists: boolean;
+	rootDir: string;
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
 	videoThumbnailGenerator: string | null;
-	redis: RedisOptions & RedisOptionsSource;
-	redisForPubsub: RedisOptions & RedisOptionsSource;
-	redisForJobQueue: RedisOptions & RedisOptionsSource;
-	redisForTimelines: RedisOptions & RedisOptionsSource;
+	redis: RedisOptionsResolved;
+	redisForPubsub: RedisOptionsResolved;
+	redisForJobQueue: RedisOptionsResolved;
+	redisForTimelines: RedisOptionsResolved;
+	redisForReactions: RedisOptionsResolved;
+	sentryForBackend: SentryBackendConfig | undefined;
+	sentryForFrontend: {
+		options: Partial<SentryVue.BrowserOptions> & { dsn: string };
+		vueIntegration?: SentryVue.VueIntegrationOptions | null;
+		browserTracingIntegration?: Parameters<typeof SentryVue.browserTracingIntegration>[0] | null;
+		replayIntegration?: Parameters<typeof SentryVue.replayIntegration>[0] | null;
+	} | undefined;
 	perChannelMaxNoteCacheCount: number;
 	perUserNotificationsMaxCount: number;
 	deactivateAntennaThreshold: number;
 	pidFile: string;
 };
 
+export type FulltextSearchProvider = 'sqlLike' | 'sqlPgroonga' | 'meilisearch';
+
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
-/**
- * Path of configuration directory
- */
-const dir = `${_dirname}/../../../.config`;
+/** Path of repository root directory */
+let rootDir = _dirname;
+// 見つかるまで上に遡る
+while (!fs.existsSync(resolve(rootDir, 'packages'))) {
+	const parentDir = dirname(rootDir);
+	if (parentDir === rootDir) {
+		throw new Error('Cannot find root directory');
+	}
+	rootDir = parentDir;
+}
+
+/** Path of configuration directory */
+const configDir = resolve(rootDir, '.config');
+/** Path of built directory */
+const projectBuiltDir = resolve(rootDir, 'built');
 
 /**
  * Path of configuration file
  */
-const path = process.env.MISSKEY_CONFIG_YML
-	? resolve(dir, process.env.MISSKEY_CONFIG_YML)
+export const path = process.env.MISSKEY_CONFIG_YML
+	? resolve(configDir, process.env.MISSKEY_CONFIG_YML)
 	: process.env.NODE_ENV === 'test'
-		? resolve(dir, 'test.yml')
-		: resolve(dir, 'default.yml');
+		? resolve(configDir, 'test.yml')
+		: resolve(configDir, 'default.yml');
 
 export function loadConfig(): Config {
-	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
-	const clientManifestExists = fs.existsSync(_dirname + '/../../../built/_vite_/manifest.json');
-	const clientManifest = clientManifestExists ?
-		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_vite_/manifest.json`, 'utf-8'))
-		: { 'src/_boot_.ts': { file: 'src/_boot_.ts' } };
-	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
+	const meta = JSON.parse(fs.readFileSync(resolve(projectBuiltDir, 'meta.json'), 'utf-8'));
 
-	const url = tryCreateUrl(config.url);
+	const frontendManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_vite_/manifest.json'));
+	const frontendEmbedManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_embed_vite_/manifest.json'));
+
+	const config = loadYaml(fs.readFileSync(path, 'utf-8')) as Source;
+
+	const url = tryCreateUrl(config.url ?? process.env.MISSKEY_URL ?? '');
 	const version = meta.version;
 	const host = url.host;
 	const hostname = url.hostname;
 	const scheme = url.protocol.replace(/:$/, '');
 	const wsScheme = scheme.replace('http', 'ws');
+
+	const dbDb = config.db.db ?? process.env.DATABASE_DB ?? '';
+	const dbUser = config.db.user ?? process.env.DATABASE_USER ?? '';
+	const dbPass = config.db.pass ?? process.env.DATABASE_PASSWORD ?? '';
 
 	const externalMediaProxy = config.mediaProxy ?
 		config.mediaProxy.endsWith('/') ? config.mediaProxy.substring(0, config.mediaProxy.length - 1) : config.mediaProxy
@@ -209,11 +290,22 @@ export function loadConfig(): Config {
 
 	return {
 		version,
+		publishTarballInsteadOfProvideRepositoryUrl: !!config.publishTarballInsteadOfProvideRepositoryUrl,
+		setupPassword: config.setupPassword,
 		url: url.origin,
 		port: config.port ?? parseInt(process.env.PORT ?? '', 10),
 		socket: config.socket,
+		trustProxy: config.trustProxy ?? [
+			'10.0.0.0/8',
+			'172.16.0.0/12',
+			'192.168.0.0/16',
+			'127.0.0.1/32',
+			'::1/128',
+			'fc00::/7',
+		],
 		chmodSocket: config.chmodSocket,
 		disableHsts: config.disableHsts,
+		enableIpRateLimit: config.enableIpRateLimit ?? true,
 		host,
 		hostname,
 		scheme,
@@ -222,57 +314,71 @@ export function loadConfig(): Config {
 		apiUrl: `${scheme}://${host}/api`,
 		authUrl: `${scheme}://${host}/auth`,
 		driveUrl: `${scheme}://${host}/files`,
-		db: config.db,
+		db: { ...config.db, db: dbDb, user: dbUser, pass: dbPass },
 		dbReplications: config.dbReplications,
 		dbSlaves: config.dbSlaves,
+		fulltextSearch: config.fulltextSearch,
 		meilisearch: config.meilisearch,
 		redis,
 		redisForPubsub: config.redisForPubsub ? convertRedisOptions(config.redisForPubsub, host) : redis,
 		redisForJobQueue: config.redisForJobQueue ? convertRedisOptions(config.redisForJobQueue, host) : redis,
 		redisForTimelines: config.redisForTimelines ? convertRedisOptions(config.redisForTimelines, host) : redis,
+		redisForReactions: config.redisForReactions ? convertRedisOptions(config.redisForReactions, host) : redis,
+		sentryForBackend: config.sentryForBackend,
+		sentryForFrontend: config.sentryForFrontend,
 		id: config.id,
 		proxy: config.proxy,
 		proxySmtp: config.proxySmtp,
 		proxyBypassHosts: config.proxyBypassHosts,
 		allowedPrivateNetworks: config.allowedPrivateNetworks,
-		maxFileSize: config.maxFileSize,
+		maxFileSize: config.maxFileSize ?? 262144000,
 		clusterLimit: config.clusterLimit,
+		threadPoolSize: config.threadPoolSize ?? 1,
 		outgoingAddress: config.outgoingAddress,
 		outgoingAddressFamily: config.outgoingAddressFamily,
-		deliverJobConcurrency: config.deliverJobConcurrency,
-		inboxJobConcurrency: config.inboxJobConcurrency,
-		relashionshipJobConcurrency: config.relashionshipJobConcurrency,
+		deliverJobConcurrency: validateJobConcurrency('deliverJobConcurrency', config.deliverJobConcurrency),
+		inboxJobConcurrency: validateJobConcurrency('inboxJobConcurrency', config.inboxJobConcurrency),
+		relationshipJobConcurrency: validateJobConcurrency('relationshipJobConcurrency', config.relationshipJobConcurrency),
 		deliverJobPerSec: config.deliverJobPerSec,
 		inboxJobPerSec: config.inboxJobPerSec,
-		relashionshipJobPerSec: config.relashionshipJobPerSec,
+		relationshipJobPerSec: config.relationshipJobPerSec,
 		deliverJobMaxAttempts: config.deliverJobMaxAttempts,
 		inboxJobMaxAttempts: config.inboxJobMaxAttempts,
-		proxyRemoteFiles: config.proxyRemoteFiles,
-		signToActivityPubGet: config.signToActivityPubGet,
 		mediaProxy: externalMediaProxy ?? internalMediaProxy,
 		externalMediaProxyEnabled: externalMediaProxy !== null && externalMediaProxy !== internalMediaProxy,
 		videoThumbnailGenerator: config.videoThumbnailGenerator ?
 			config.videoThumbnailGenerator.endsWith('/') ? config.videoThumbnailGenerator.substring(0, config.videoThumbnailGenerator.length - 1) : config.videoThumbnailGenerator
 			: null,
 		userAgent: `Misskey/${version} (${config.url})`,
-		clientEntry: clientManifest['src/_boot_.ts'],
-		clientManifestExists: clientManifestExists,
+		frontendManifestExists: frontendManifestExists,
+		frontendEmbedManifestExists: frontendEmbedManifestExists,
+		rootDir,
 		perChannelMaxNoteCacheCount: config.perChannelMaxNoteCacheCount ?? 1000,
 		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 500,
 		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
 		pidFile: config.pidFile,
+		logging: config.logging,
 	};
 }
 
 function tryCreateUrl(url: string) {
 	try {
 		return new URL(url);
-	} catch (e) {
+	} catch (_) {
 		throw new Error(`url="${url}" is not a valid URL.`);
 	}
 }
 
-function convertRedisOptions(options: RedisOptionsSource, host: string): RedisOptions & RedisOptionsSource {
+function validateJobConcurrency(key: string, value: number | undefined) {
+	if (value == null) return undefined;
+	// BullMQ の Worker は 1 未満の concurrency を受け付けないため、起動時に設定キーを明示して落とす
+	if (typeof value !== 'number' || !Number.isFinite(value) || value < 1) {
+		throw new Error(`${key}=${JSON.stringify(value)} is invalid. It must be a finite number greater than or equal to 1.`);
+	}
+	return value;
+}
+
+function convertRedisOptions(options: RedisOptionsSource, host: string): RedisOptionsResolved {
 	return {
 		...options,
 		password: options.pass,

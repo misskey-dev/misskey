@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -144,7 +144,7 @@ class DeliverManager {
 		}
 
 		// deliver
-		this.queueService.deliverMany(this.actor, this.activity, inboxes);
+		await this.queueService.deliverMany(this.actor, this.activity, inboxes);
 	}
 }
 
@@ -193,6 +193,25 @@ export class ApDeliverManagerService {
 			activity,
 		);
 		manager.addDirectRecipe(to);
+		await manager.execute();
+	}
+
+	/**
+	 * Deliver activity to users
+	 * @param actor
+	 * @param activity Activity
+	 * @param targets Target users
+	 */
+	@bindThis
+	public async deliverToUsers(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity, targets: MiRemoteUser[]): Promise<void> {
+		const manager = new DeliverManager(
+			this.userEntityService,
+			this.followingsRepository,
+			this.queueService,
+			actor,
+			activity,
+		);
+		for (const to of targets) manager.addDirectRecipe(to);
 		await manager.execute();
 	}
 

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,20 +12,24 @@
 import * as nestedProperty from 'nested-property';
 import { EntitySchema, LessThan, Between } from 'typeorm';
 import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/misc/prelude/time.js';
+import { sqlStringEscape } from '@/misc/sql-string-escape.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import type { Repository, DataSource } from 'typeorm';
+import { MiRepository, miRepository } from '@/models/_.js';
+import type { DataSource, Repository } from 'typeorm';
 
 const COLUMN_PREFIX = '___' as const;
 const UNIQUE_TEMP_COLUMN_PREFIX = 'unique_temp___' as const;
 const COLUMN_DELIMITER = '_' as const;
+
+type ValueRange = 'big' | 'medium' | 'small';
 
 type Schema = Record<string, {
 	uniqueIncrement?: boolean;
 
 	intersection?: string[] | ReadonlyArray<string>;
 
-	range?: 'big' | 'small' | 'medium';
+	range?: ValueRange;
 
 	// previousな値を引き継ぐかどうか
 	accumulate?: boolean;
@@ -61,6 +65,42 @@ const camelToSnake = (str: string): string => {
 
 const removeDuplicates = (array: any[]) => Array.from(new Set(array));
 
+const COLUMN_RANGE_LIMITS = {
+	small: { min: -32768, max: 32767 }, // smallint
+	medium: { min: -2147483648, max: 2147483647 }, // integer
+} as const satisfies Partial<Record<ValueRange, { min: number; max: number; }>>;
+
+const getColumnRangeLimit = (range?: ValueRange): { min: number; max: number; } | null => {
+	return range === 'big' ? null : COLUMN_RANGE_LIMITS[range ?? 'medium'];
+};
+
+/**
+ * カラムの型が表現できる範囲に値を丸める。
+ * 範囲を超えた値を書き込もうとするとDBがエラーを返し、
+ * そのチャートの更新が以降ずっと失敗し続ける(=バッファが解放されない)ため、
+ * 精度を犠牲にしてでも更新自体は成功させる。
+ */
+const clampToColumnRange = (value: number, range?: ValueRange): number => {
+	const limit = getColumnRangeLimit(range);
+	if (limit == null) return value;
+	return Math.min(Math.max(value, limit.min), limit.max);
+};
+
+/**
+ * カラムを加減算するSQL式を作る。
+ * 結果がカラムの型の範囲を超える場合は上限/下限で頭打ちにする。
+ */
+const buildIncrementExpression = (columnName: string, value: number, range?: ValueRange): string => {
+	const limit = getColumnRangeLimit(range);
+	if (limit == null) {
+		return value > 0 ? `"${columnName}" + ${value}` : `"${columnName}" - ${Math.abs(value)}`;
+	}
+	// 加減算の途中でオーバーフローしないよう、bigintに広げてから丸める
+	return value > 0
+		? `LEAST("${columnName}"::bigint + ${value}, ${limit.max})`
+		: `GREATEST("${columnName}"::bigint - ${Math.abs(value)}, ${limit.min})`;
+};
+
 type Commit<S extends Schema> = {
 	[K in keyof S]?: S[K]['uniqueIncrement'] extends true ? string[] : number;
 };
@@ -94,6 +134,29 @@ type ToJsonSchema<S> = {
 };
 
 export function getJsonSchema<S extends Schema>(schema: S): ToJsonSchema<Unflatten<ChartResult<S>>> {
+	const unflatten = (str: string, parent: Record<string, any>) => {
+		const keys = str.split('.');
+		const key = keys.shift();
+		const nextKey = keys[0];
+
+		if (key == null) return;
+
+		if (parent.properties[key] == null) {
+			parent.properties[key] = nextKey ? {
+				type: 'object',
+				properties: {},
+				required: [],
+			} : {
+				type: 'array',
+				items: {
+					type: 'number',
+				},
+			};
+		}
+
+		if (nextKey) unflatten(keys.join('.'), parent.properties[key] as Record<string, any>);
+	};
+
 	const jsonSchema = {
 		type: 'object',
 		properties: {} as Record<string, unknown>,
@@ -101,10 +164,7 @@ export function getJsonSchema<S extends Schema>(schema: S): ToJsonSchema<Unflatt
 	};
 
 	for (const k in schema) {
-		jsonSchema.properties[k] = {
-			type: 'array',
-			items: { type: 'number' },
-		};
+		unflatten(k, jsonSchema);
 	}
 
 	return jsonSchema as ToJsonSchema<Unflatten<ChartResult<S>>>;
@@ -125,10 +185,10 @@ export default abstract class Chart<T extends Schema> {
 		group: string | null;
 	}[] = [];
 	// ↓にしたいけどfindOneとかで型エラーになる
-	//private repositoryForHour: Repository<RawRecord<T>>;
-	//private repositoryForDay: Repository<RawRecord<T>>;
-	private repositoryForHour: Repository<{ id: number; group?: string | null; date: number; }>;
-	private repositoryForDay: Repository<{ id: number; group?: string | null; date: number; }>;
+	//private repositoryForHour: Repository<RawRecord<T>> & MiRepository<RawRecord<T>>;
+	//private repositoryForDay: Repository<RawRecord<T>> & MiRepository<RawRecord<T>>;
+	private repositoryForHour: Repository<{ id: number; group?: string | null; date: number; }> & MiRepository<{ id: number; group?: string | null; date: number; }>;
+	private repositoryForDay: Repository<{ id: number; group?: string | null; date: number; }> & MiRepository<{ id: number; group?: string | null; date: number; }>;
 
 	/**
 	 * 1日に一回程度実行されれば良いような計算処理を入れる(主にCASCADE削除などアプリケーション側で感知できない変動によるズレの修正用)
@@ -191,6 +251,10 @@ export default abstract class Chart<T extends Schema> {
 	} {
 		const createEntity = (span: 'hour' | 'day'): EntitySchema => new EntitySchema({
 			name:
+				span === 'hour' ? `ChartX${name}` :
+				span === 'day' ? `ChartDayX${name}` :
+				new Error('not happen') as never,
+			tableName:
 				span === 'hour' ? `__chart__${camelToSnake(name)}` :
 				span === 'day' ? `__chart_day__${camelToSnake(name)}` :
 				new Error('not happen') as never,
@@ -251,8 +315,8 @@ export default abstract class Chart<T extends Schema> {
 		this.logger = logger;
 
 		const { hour, day } = Chart.schemaToEntity(name, schema, grouped);
-		this.repositoryForHour = db.getRepository<{ id: number; group?: string | null; date: number; }>(hour);
-		this.repositoryForDay = db.getRepository<{ id: number; group?: string | null; date: number; }>(day);
+		this.repositoryForHour = db.getRepository<{ id: number; group?: string | null; date: number; }>(hour).extend(miRepository as MiRepository<{ id: number; group?: string | null; date: number; }>);
+		this.repositoryForDay = db.getRepository<{ id: number; group?: string | null; date: number; }>(day).extend(miRepository as MiRepository<{ id: number; group?: string | null; date: number; }>);
 	}
 
 	@bindThis
@@ -367,11 +431,11 @@ export default abstract class Chart<T extends Schema> {
 			}
 
 			// 新規ログ挿入
-			log = await repository.insert({
+			log = await repository.insertOne({
 				date: date,
 				...(group ? { group: group } : {}),
 				...columns,
-			}).then(x => repository.findOneByOrFail(x.identifiers[0])) as RawRecord<T>;
+			}) as RawRecord<T>;
 
 			this.logger.info(`${this.name + (group ? `:${group}` : '')}(${span}): New commit created`);
 
@@ -397,6 +461,13 @@ export default abstract class Chart<T extends Schema> {
 			return;
 		}
 
+		// バッファは書き込みを試みる前に切り離す。
+		// DBへの書き込みが失敗した場合、その分の集計は失われるが、
+		// バッファに残し続けると失敗し続けた場合に際限なく積み上がり、メモリリークになるため。
+		// (この処理が始まった後に追加された分は次回の書き込み対象になる)
+		const buffer = this.buffer;
+		this.buffer = [];
+
 		// TODO: 前の時間のログがbufferにあった場合のハンドリング
 		// 例えば、save が20分ごとに行われるとして、前回行われたのは 01:50 だったとする。
 		// 次に save が行われるのは 02:10 ということになるが、もし 01:55 に新規ログが buffer に追加されたとすると、
@@ -406,7 +477,7 @@ export default abstract class Chart<T extends Schema> {
 		const update = async (logHour: RawRecord<T>, logDay: RawRecord<T>): Promise<void> => {
 			const finalDiffs = {} as Record<string, number | string[]>;
 
-			for (const diff of this.buffer.filter(q => q.group == null || (q.group === logHour.group)).map(q => q.diff)) {
+			for (const diff of buffer.filter(q => q.group == null || (q.group === logHour.group)).map(q => q.diff)) {
 				for (const [k, v] of Object.entries(diff)) {
 					if (finalDiffs[k] == null) {
 						finalDiffs[k] = v;
@@ -425,27 +496,29 @@ export default abstract class Chart<T extends Schema> {
 			for (const [k, v] of Object.entries(finalDiffs)) {
 				if (typeof v === 'number') {
 					const name = COLUMN_PREFIX + k.replaceAll('.', COLUMN_DELIMITER) as string & keyof Columns<T>;
-					if (v > 0) queryForHour[name] = () => `"${name}" + ${v}`;
-					if (v < 0) queryForHour[name] = () => `"${name}" - ${Math.abs(v)}`;
-					if (v > 0) queryForDay[name] = () => `"${name}" + ${v}`;
-					if (v < 0) queryForDay[name] = () => `"${name}" - ${Math.abs(v)}`;
+					if (v !== 0) {
+						const exp = buildIncrementExpression(name, v, this.schema[k].range);
+						queryForHour[name] = () => exp;
+						queryForDay[name] = () => exp;
+					}
 				} else if (Array.isArray(v) && v.length > 0) { // ユニークインクリメント
 					const tempColumnName = UNIQUE_TEMP_COLUMN_PREFIX + k.replaceAll('.', COLUMN_DELIMITER) as string & keyof TempColumnsForUnique<T>;
-					// TODO: item をSQLエスケープ
-					const itemsForHour = v.filter(item => !(logHour[tempColumnName] as unknown as string[]).includes(item)).map(item => `"${item}"`);
-					const itemsForDay = v.filter(item => !(logDay[tempColumnName] as unknown as string[]).includes(item)).map(item => `"${item}"`);
-					if (itemsForHour.length > 0) queryForHour[tempColumnName] = () => `array_cat("${tempColumnName}", '{${itemsForHour.join(',')}}'::varchar[])`;
-					if (itemsForDay.length > 0) queryForDay[tempColumnName] = () => `array_cat("${tempColumnName}", '{${itemsForDay.join(',')}}'::varchar[])`;
+					const itemsForHour = v.filter(item => !(logHour[tempColumnName] as unknown as string[]).includes(item)).map(item => sqlStringEscape(item));
+					const itemsForDay = v.filter(item => !(logDay[tempColumnName] as unknown as string[]).includes(item)).map(item => sqlStringEscape(item));
+					if (itemsForHour.length > 0) queryForHour[tempColumnName] = () => `array_cat("${tempColumnName}", ARRAY[${itemsForHour.join(',')}]::varchar[])`;
+					if (itemsForDay.length > 0) queryForDay[tempColumnName] = () => `array_cat("${tempColumnName}", ARRAY[${itemsForDay.join(',')}]::varchar[])`;
 				}
 			}
 
-			// bake unique count
+			// bake cardinality
 			for (const [k, v] of Object.entries(finalDiffs)) {
 				if (this.schema[k].uniqueIncrement) {
 					const name = COLUMN_PREFIX + k.replaceAll('.', COLUMN_DELIMITER) as keyof Columns<T>;
 					const tempColumnName = UNIQUE_TEMP_COLUMN_PREFIX + k.replaceAll('.', COLUMN_DELIMITER) as keyof TempColumnsForUnique<T>;
-					queryForHour[name] = new Set([...(v as string[]), ...(logHour[tempColumnName] as unknown as string[])]).size;
-					queryForDay[name] = new Set([...(v as string[]), ...(logDay[tempColumnName] as unknown as string[])]).size;
+					const cardinalityOfHour = new Set([...(v as string[]), ...(logHour[tempColumnName] as unknown as string[])]).size;
+					const cardinalityOfDay = new Set([...(v as string[]), ...(logDay[tempColumnName] as unknown as string[])]).size;
+					queryForHour[name] = clampToColumnRange(cardinalityOfHour, this.schema[k].range);
+					queryForDay[name] = clampToColumnRange(cardinalityOfDay, this.schema[k].range);
 				}
 			}
 
@@ -473,8 +546,8 @@ export default abstract class Chart<T extends Schema> {
 							if (!targetValuesForDay.has(v)) currentValuesForDay.delete(v);
 						});
 					}
-					queryForHour[name] = currentValuesForHour.size;
-					queryForDay[name] = currentValuesForDay.size;
+					queryForHour[name] = clampToColumnRange(currentValuesForHour.size, v.range);
+					queryForDay[name] = clampToColumnRange(currentValuesForDay.size, v.range);
 				}
 			}
 
@@ -493,12 +566,9 @@ export default abstract class Chart<T extends Schema> {
 			]);
 
 			this.logger.info(`${this.name + (logHour.group ? `:${logHour.group}` : '')}: Updated`);
-
-			// TODO: この一連の処理が始まった後に新たにbufferに入ったものは消さないようにする
-			this.buffer = this.buffer.filter(q => q.group != null && (q.group !== logHour.group));
 		};
 
-		const groups = removeDuplicates(this.buffer.map(log => log.group));
+		const groups = removeDuplicates(buffer.map(log => log.group));
 
 		await Promise.all(
 			groups.map(group =>
@@ -516,7 +586,7 @@ export default abstract class Chart<T extends Schema> {
 		const columns = {} as Record<keyof Columns<T>, number>;
 		for (const [k, v] of Object.entries(data) as ([keyof typeof data, number])[]) {
 			const name = COLUMN_PREFIX + (k as string).replaceAll('.', COLUMN_DELIMITER) as keyof Columns<T>;
-			columns[name] = v;
+			columns[name] = clampToColumnRange(v, this.schema[k as string].range);
 		}
 
 		if (Object.keys(columns).length === 0) {
@@ -617,7 +687,7 @@ export default abstract class Chart<T extends Schema> {
 		// 要求された範囲にログがひとつもなかったら
 		if (logs.length === 0) {
 			// もっとも新しいログを持ってくる
-			// (すくなくともひとつログが無いと隙間埋めできないため)
+			// (すくなくともひとつログが無いと補間できないため)
 			const recentLog = await repository.findOne({
 				where: group ? {
 					group: group,
@@ -634,7 +704,7 @@ export default abstract class Chart<T extends Schema> {
 		// 要求された範囲の最も古い箇所に位置するログが存在しなかったら
 		} else if (!isTimeSame(new Date(logs.at(-1)!.date * 1000), gt)) {
 			// 要求された範囲の最も古い箇所時点での最も新しいログを持ってきて末尾に追加する
-			// (隙間埋めできないため)
+			// (補間できないため)
 			const outdatedLog = await repository.findOne({
 				where: {
 					date: LessThan(Chart.dateToTimestamp(gt)),
@@ -663,7 +733,7 @@ export default abstract class Chart<T extends Schema> {
 			if (log) {
 				chart.unshift(this.convertRawRecord(log));
 			} else {
-				// 隙間埋め
+				// 補間
 				const latest = logs.find(l => isTimeBefore(new Date(l.date * 1000), current));
 				const data = latest ? this.convertRawRecord(latest) : null;
 				chart.unshift(this.getNewLog(data));

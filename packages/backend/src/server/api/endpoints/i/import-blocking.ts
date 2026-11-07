@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,6 +15,7 @@ import { ApiError } from '../../error.js';
 export const meta = {
 	secure: true,
 	requireCredential: true,
+	requiredRolePolicy: 'canImportBlocking',
 	prohibitMoved: true,
 
 	limit: {
@@ -67,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private accountMoveService: AccountMoveService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
+			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId, userId: me.id });
 
 			if (file == null) throw new ApiError(meta.errors.noSuchFile);
 			//if (!file.type.endsWith('/csv')) throw new ApiError(meta.errors.unexpectedFileType);
@@ -75,7 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const checkMoving = await this.accountMoveService.validateAlsoKnownAs(
 				me,
-				(old, src) => !!src.movedAt && src.movedAt.getTime() + 1000 * 60 * 60 * 2 > (new Date()).getTime(),
+				(old, src) => !!src.movedAt && src.movedAt.getTime() + 1000 * 60 * 60 * 2 > Date.now(),
 				true,
 			);
 			if (checkMoving ? file.size > 32 * 1024 * 1024 : file.size > 64 * 1024) throw new ApiError(meta.errors.tooBigFile);

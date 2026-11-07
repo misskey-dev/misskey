@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,6 +13,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:queue',
 
 	res: {
 		type: 'array',
@@ -20,16 +21,15 @@ export const meta = {
 		items: {
 			type: 'array',
 			optional: false, nullable: false,
-			items: {
-				anyOf: [
-					{
-						type: 'string',
-					},
-					{
-						type: 'number',
-					},
-				],
-			},
+			prefixItems: [
+				{
+					type: 'string',
+				},
+				{
+					type: 'number',
+				},
+			],
+			unevaluatedItems: false,
 		},
 		example: [[
 			'example.com',
@@ -52,18 +52,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const jobs = await this.deliverQueue.getJobs(['delayed']);
 
-			const res = [] as [string, number][];
+			const counts = new Map<string, number>();
 
 			for (const job of jobs) {
 				const host = new URL(job.data.to).host;
-				if (res.find(x => x[0] === host)) {
-					res.find(x => x[0] === host)![1]++;
-				} else {
-					res.push([host, 1]);
-				}
+				counts.set(host, (counts.get(host) ?? 0) + 1);
 			}
 
-			res.sort((a, b) => b[1] - a[1]);
+			const res = [...counts.entries()].sort((a, b) => b[1] - a[1]);
 
 			return res;
 		});

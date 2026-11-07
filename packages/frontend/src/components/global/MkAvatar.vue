@@ -1,55 +1,63 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.animation]: animation, [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
-	<MkImgWithBlurhash :class="$style.inner" :src="url" :hash="user.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
+	<MkImgWithBlurhash v-if="prefer.s.enableHighQualityImagePlaceholders" :class="$style.inner" :src="url" :hash="user.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
+	<img v-else :class="$style.inner" :src="url" alt="" decoding="async" style="pointer-events: none;"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<div v-if="user.isCat" :class="[$style.ears]">
 		<div :class="$style.earLeft">
 			<div v-if="false" :class="$style.layer">
-				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
-				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
-				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
+				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"></div>
+				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"></div>
+				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"></div>
 			</div>
 		</div>
 		<div :class="$style.earRight">
 			<div v-if="false" :class="$style.layer">
-				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
-				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
-				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
+				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"></div>
+				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"></div>
+				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"></div>
 			</div>
 		</div>
 	</div>
-	<img
-		v-if="showDecoration && (decoration || user.avatarDecorations.length > 0)"
-		:class="[$style.decoration]"
-		:src="decoration?.url ?? user.avatarDecorations[0].url"
-		:style="{
-			rotate: getDecorationAngle(),
-			scale: getDecorationScale(),
-		}"
-		alt=""
-	>
+	<template v-if="showDecoration">
+		<img
+			v-for="decoration in decorations ?? user.avatarDecorations"
+			:class="[$style.decoration, { [$style.decorationBlink]: getDecorationIsBrink(decoration) }]"
+			:src="getDecorationUrl(decoration)"
+			:style="{
+				rotate: getDecorationAngle(decoration),
+				scale: getDecorationScale(decoration),
+				translate: getDecorationOffset(decoration),
+			}"
+			alt=""
+			draggable="false"
+			style="-webkit-user-drag: none;"
+		>
+	</template>
 </component>
 </template>
 
 <script lang="ts" setup>
 import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
+import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
 import MkImgWithBlurhash from '../MkImgWithBlurhash.vue';
 import MkA from './MkA.vue';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash.js';
-import { acct, userPage } from '@/filters/user.js';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import { acct, userPage } from '@@/js/user.js';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
-const animation = ref(defaultStore.state.animation);
-const squareAvatars = ref(defaultStore.state.squareAvatars);
-const useBlurEffect = ref(defaultStore.state.useBlurEffect);
+const animation = ref(prefer.s.animation);
+const squareAvatars = ref(prefer.s.squareAvatars);
+
+type Decoration = Misskey.entities.UserDetailed['avatarDecorations'][number];
+type DecorationEditorDecoration = Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'> & { blink?: boolean; };
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
@@ -57,68 +65,66 @@ const props = withDefaults(defineProps<{
 	link?: boolean;
 	preview?: boolean;
 	indicator?: boolean;
-	decoration?: {
-		url: string;
-		angle?: number;
-		flipH?: boolean;
-		flipV?: boolean;
-	};
+	decorations?: DecorationEditorDecoration[];
 	forceShowDecoration?: boolean;
 }>(), {
 	target: null,
 	link: false,
 	preview: false,
 	indicator: false,
-	decoration: undefined,
+	decorations: undefined,
 	forceShowDecoration: false,
 });
 
 const emit = defineEmits<{
-	(ev: 'click', v: MouseEvent): void;
+	(ev: 'click', v: PointerEvent): void;
 }>();
 
-const showDecoration = props.forceShowDecoration || defaultStore.state.showAvatarDecorations;
+const showDecoration = props.forceShowDecoration || prefer.s.showAvatarDecorations;
 
 const bound = computed(() => props.link
 	? { to: userPage(props.user), target: props.target }
 	: {});
 
-const url = computed(() => (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar)
-	? getStaticImageUrl(props.user.avatarUrl)
-	: props.user.avatarUrl);
+const url = computed(() => {
+	if (prefer.s.disableShowingAnimatedImages || prefer.s.dataSaver.avatar) return getStaticImageUrl(props.user.avatarUrl);
+	return props.user.avatarUrl;
+});
 
-function onClick(ev: MouseEvent): void {
+function onClick(ev: PointerEvent): void {
 	if (props.link) return;
 	emit('click', ev);
 }
 
-function getDecorationAngle() {
-	let angle;
-	if (props.decoration) {
-		angle = props.decoration.angle ?? 0;
-	} else if (props.user.avatarDecorations.length > 0) {
-		angle = props.user.avatarDecorations[0].angle ?? 0;
-	} else {
-		angle = 0;
-	}
+function getDecorationUrl(decoration: Decoration | DecorationEditorDecoration) {
+	if (prefer.s.disableShowingAnimatedImages || prefer.s.dataSaver.avatar) return getStaticImageUrl(decoration.url);
+	return decoration.url;
+}
+
+function getDecorationAngle(decoration: Decoration | DecorationEditorDecoration) {
+	const angle = decoration.angle ?? 0;
 	return angle === 0 ? undefined : `${angle * 360}deg`;
 }
 
-function getDecorationScale() {
-	let scaleX;
-	if (props.decoration) {
-		scaleX = props.decoration.flipH ? -1 : 1;
-	} else if (props.user.avatarDecorations.length > 0) {
-		scaleX = props.user.avatarDecorations[0].flipH ? -1 : 1;
-	} else {
-		scaleX = 1;
-	}
+function getDecorationScale(decoration: Decoration | DecorationEditorDecoration) {
+	const scaleX = decoration.flipH ? -1 : 1;
 	return scaleX === 1 ? undefined : `${scaleX} 1`;
+}
+
+function getDecorationOffset(decoration: Decoration | DecorationEditorDecoration) {
+	const offsetX = decoration.offsetX ?? 0;
+	const offsetY = decoration.offsetY ?? 0;
+	return offsetX === 0 && offsetY === 0 ? undefined : `${offsetX * 100}% ${offsetY * 100}%`;
+}
+
+function getDecorationIsBrink(decoration: Decoration | DecorationEditorDecoration) {
+	return 'blink' in decoration && decoration.blink === true;
 }
 
 const color = ref<string | undefined>();
 
 watch(() => props.user.avatarBlurhash, () => {
+	if (props.user.avatarBlurhash == null) return;
 	color.value = extractAvgColorFromBlurhash(props.user.avatarBlurhash);
 }, {
 	immediate: true,
@@ -331,5 +337,18 @@ watch(() => props.user.avatarBlurhash, () => {
 	left: -50%;
 	width: 200%;
 	pointer-events: none;
+}
+
+.decorationBlink {
+	animation: blink 1s infinite;
+}
+
+@keyframes blink {
+	0%, 100% {
+		filter: brightness(2);
+	}
+	50% {
+		filter: brightness(1);
+	}
 }
 </style>

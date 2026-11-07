@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -19,14 +19,33 @@ export class ApMfmService {
 	}
 
 	@bindThis
-	public htmlToMfm(html: string, tag?: IObject | IObject[]): string {
-		const hashtagNames = extractApHashtagObjects(tag).map(x => x.name);
-		return this.mfmService.fromHtml(html, hashtagNames);
+	public htmlToMfm(
+		html: string,
+		options: {
+			tag?: IObject | IObject[],
+			hasQuote?: boolean,
+		} = {},
+	): string {
+		const hashtagNames = extractApHashtagObjects(options.tag).map(x => x.name);
+		return this.mfmService.fromHtml(html, { hashtagNames, hasQuote: options.hasQuote });
 	}
 
 	@bindThis
-	public getNoteHtml(note: MiNote): string | null {
-		if (!note.text) return '';
-		return this.mfmService.toHtml(mfm.parse(note.text), JSON.parse(note.mentionedRemoteUsers));
+	public getNoteHtml(note: Pick<MiNote, 'text' | 'mentionedRemoteUsers'>, extraHtml: string | null = null) {
+		let noMisskeyContent = false;
+		const srcMfm = (note.text ?? '');
+
+		const parsed = mfm.parse(srcMfm);
+
+		if (extraHtml == null && parsed.every(n => ['text', 'unicodeEmoji', 'emojiCode', 'mention', 'hashtag', 'url'].includes(n.type))) {
+			noMisskeyContent = true;
+		}
+
+		const content = this.mfmService.toHtml(parsed, JSON.parse(note.mentionedRemoteUsers), extraHtml);
+
+		return {
+			content,
+			noMisskeyContent,
+		};
 	}
 }

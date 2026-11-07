@@ -1,29 +1,34 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<XDrive ref="drive" @cd="x => folder = x"/>
+<div ref="scrollContainer" class="_pageScrollable">
+	<MkDrive @cd="x => folder = x"/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import XDrive from '@/components/MkDrive.vue';
+import { computed, ref, useTemplateRef } from 'vue';
+import * as Misskey from 'misskey-js';
+import MkDrive from '@/components/MkDrive.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
+import { useScrollPositionKeeper } from '@/composables/use-scroll-position-keeper.js';
 
-const folder = ref(null);
+const scrollContainer = useTemplateRef('scrollContainer');
+useScrollPositionKeeper(scrollContainer);
+
+const folder = ref<Misskey.entities.DriveFolder | null>(null);
 
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePage(() => ({
 	title: folder.value ? folder.value.name : i18n.ts.drive,
 	icon: 'ti ti-cloud',
 	hideHeader: true,
-})));
+}));
 </script>

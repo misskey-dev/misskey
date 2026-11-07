@@ -1,19 +1,17 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { action } from '@storybook/addon-actions';
-import { expect } from '@storybook/jest';
-import { userEvent, waitFor, within } from '@storybook/testing-library';
-import { StoryObj } from '@storybook/vue3';
-import { rest } from 'msw';
-import { userDetailed } from '../../.storybook/fakes';
-import { commonHandlers } from '../../.storybook/mocks';
+import { action } from 'storybook/actions';
+import { expect, userEvent, waitFor, within } from '@storybook/test';
+import { HttpResponse, http } from 'msw';
+import { userDetailed } from '../../.storybook/fakes.js';
+import { commonHandlers } from '../../.storybook/mocks.js';
 import MkAutocomplete from './MkAutocomplete.vue';
 import MkInput from './MkInput.vue';
-import { tick } from '@/scripts/test-utils.js';
+import type { StoryObj } from '@storybook/vue3';
+import { tick } from '@/utility/test-utils.js';
 const common = {
 	render(args) {
 		return {
@@ -82,7 +80,7 @@ export const User = {
 		...common.args,
 		type: 'user',
 	},
-	async play({ canvasElement }) {
+	async play({ canvasElement }: { canvasElement: HTMLElement }) {
 		const canvas = within(canvasElement);
 		const input = canvas.getByRole('combobox');
 		await waitFor(() => userEvent.hover(input));
@@ -99,11 +97,11 @@ export const User = {
 		msw: {
 			handlers: [
 				...commonHandlers,
-				rest.post('/api/users/search-by-username-and-host', (req, res, ctx) => {
-					return res(ctx.json([
+				http.post('/api/users/search-by-username-and-host', () => {
+					return HttpResponse.json([
 						userDetailed('44', 'mizuki', 'misskey-hub.net', 'Mizuki'),
 						userDetailed('49', 'momoko', 'misskey-hub.net', 'Momoko'),
-					]));
+					]);
 				}),
 			],
 		},
@@ -115,7 +113,7 @@ export const Hashtag = {
 		...common.args,
 		type: 'hashtag',
 	},
-	async play({ canvasElement }) {
+	async play({ canvasElement }: { canvasElement: HTMLElement }) {
 		const canvas = within(canvasElement);
 		const input = canvas.getByRole('combobox');
 		await waitFor(() => userEvent.hover(input));
@@ -132,12 +130,12 @@ export const Hashtag = {
 		msw: {
 			handlers: [
 				...commonHandlers,
-				rest.post('/api/hashtags/search', (req, res, ctx) => {
-					return res(ctx.json([
+				http.post('/api/hashtags/search', () => {
+					return HttpResponse.json([
 						'気象警報注意報',
 						'気象警報',
 						'気象情報',
-					]));
+					]);
 				}),
 			],
 		},

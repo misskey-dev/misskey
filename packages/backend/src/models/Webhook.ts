@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,6 +8,7 @@ import { id } from './util/id.js';
 import { MiUser } from './User.js';
 
 export const webhookEventTypes = ['mention', 'unfollow', 'follow', 'followed', 'note', 'reply', 'renote', 'reaction'] as const;
+export type WebhookEventTypes = typeof webhookEventTypes[number];
 
 @Entity('webhook')
 export class MiWebhook {
@@ -21,7 +22,7 @@ export class MiWebhook {
 	})
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
