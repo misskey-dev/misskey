@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div v-if="column.channelId" class="_gaps_s">
-		<MkPostForm v-if="$i && channel != null && prefer.r.showFixedPostFormInChannel.value" :channel="channel" :class="$style.postForm" fixed :autofocus="deviceKind === 'desktop'"/>
+		<MkPostForm v-if="$i && channel != null && channel.id === column.channelId && prefer.r.showFixedPostFormInChannel.value" :key="channel.id" :channel="channel" :class="$style.postForm" fixed :autofocus="deviceKind === 'desktop'"/>
 		<div v-else style="padding: 10px 8px 0; text-align: center;">
 			<MkButton primary gradate rounded inline small @click="post"><i class="ti ti-pencil"></i></MkButton>
 		</div>
@@ -48,12 +48,17 @@ const timeline = useTemplateRef('timeline');
 const channel = shallowRef<Misskey.entities.Channel>();
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 
-watch(() => props.column.channelId, (newChannelId) => {
+watch(() => props.column.channelId, (newChannelId, _oldChannelId, onCleanup) => {
 	if (newChannelId == null) {
 		setChannel();
 	} else if (channel.value == null || channel.value.id !== newChannelId) {
+		let invalidated = false;
+		onCleanup(() => {
+			invalidated = true;
+		});
 		misskeyApi('channels/show', { channelId: newChannelId })
 			.then(value => {
+				if (invalidated || props.column.channelId !== newChannelId) return;
 				updateColumn(props.column.id, { timelineNameCache: value.name });
 				channel.value = value;
 			});
