@@ -64,7 +64,7 @@ export function openChat(body: any, loginId: string): ReturnType<typeof openClie
 	if (body.toRoomId != null) {
 		return openClient('push', `/chat/room/${body.toRoomId}`, loginId, { body });
 	} else {
-		return openClient('push', `/chat/user/${body.toUserId}`, loginId, { body });
+		return openClient('push', `/chat/user/${body.fromUserId}`, loginId, { body });
 	}
 }
 
