@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-else-if="usernameState === 'max-range'" style="color: var(--MI_THEME-error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.tooLong }}</span>
 				</template>
 			</MkInput>
-			<MkInput v-if="instance.emailRequiredForSignup" v-model="email" :debounce="true" type="email" :spellcheck="false" required data-testid="signup-email" @update:modelValue="onChangeEmail">
+			<MkInput v-if="instance.emailRequiredForSignup" v-model="email" :debounce="true" type="email" :spellcheck="false" required data-testid="signup-email" @change="onInputEmail" @update:modelValue="onChangeEmail">
 				<template #label>{{ i18n.ts.emailAddress }} <div v-tooltip:dialog="i18n.ts._signup.emailAddressInfo" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
 				<template #prefix><i class="ti ti-mail"></i></template>
 				<template #caption>
@@ -127,8 +127,8 @@ const mCaptchaResponse = ref<string | null>(null);
 const reCaptchaResponse = ref<string | null>(null);
 const turnstileResponse = ref<string | null>(null);
 const testcaptchaResponse = ref<string | null>(null);
-const usernameAbortController = ref<null | AbortController>(null);
-const emailAbortController = ref<null | AbortController>(null);
+let usernameAbortController: AbortController | null = null;
+let emailAbortController: AbortController | null = null;
 
 const shouldDisableSubmitting = computed((): boolean => {
 	return submitting.value ||
@@ -168,6 +168,10 @@ function getPasswordStrength(source: string): number {
 }
 
 function onChangeUsername(): void {
+	// 前の値の問い合わせの結果で状態を上書きしないよう中断する
+	usernameAbortController?.abort();
+	usernameAbortController = null;
+
 	if (username.value === '') {
 		usernameState.value = null;
 		return;
@@ -186,38 +190,49 @@ function onChangeUsername(): void {
 		}
 	}
 
-	if (usernameAbortController.value != null) {
-		usernameAbortController.value.abort();
-	}
 	usernameState.value = 'wait';
-	usernameAbortController.value = new AbortController();
+	const abortController = new AbortController();
+	usernameAbortController = abortController;
 
 	misskeyApi('username/available', {
 		username: username.value,
-	}, undefined, usernameAbortController.value.signal).then(result => {
+	}, undefined, abortController.signal).then(result => {
+		if (abortController.signal.aborted) return;
 		usernameState.value = result.available ? 'ok' : 'unavailable';
 	}).catch((err) => {
+		if (abortController.signal.aborted) return;
 		if (err.name !== 'AbortError') {
 			usernameState.value = 'error';
 		}
 	});
 }
 
+// 入力欄は debounce されていて email が更新されるのは遅延後なので、
+// それまでの間に前のアドレスの確認結果で送信できてしまわないよう、打鍵の時点で状態をクリアする
+function onInputEmail(): void {
+	emailAbortController?.abort();
+	emailAbortController = null;
+	emailState.value = null;
+}
+
 function onChangeEmail(): void {
+	// 前の値の問い合わせの結果で状態を上書きしないよう中断する
+	emailAbortController?.abort();
+	emailAbortController = null;
+
 	if (email.value === '') {
 		emailState.value = null;
 		return;
 	}
 
-	if (emailAbortController.value != null) {
-		emailAbortController.value.abort();
-	}
 	emailState.value = 'wait';
-	emailAbortController.value = new AbortController();
+	const abortController = new AbortController();
+	emailAbortController = abortController;
 
 	misskeyApi('email-address/available', {
 		emailAddress: email.value,
-	}, undefined, emailAbortController.value.signal).then(result => {
+	}, undefined, abortController.signal).then(result => {
+		if (abortController.signal.aborted) return;
 		emailState.value = result.available ? 'ok' :
 			result.reason === 'used' ? 'unavailable:used' :
 			result.reason === 'format' ? 'unavailable:format' :
@@ -227,6 +242,7 @@ function onChangeEmail(): void {
 			result.reason === 'smtp' ? 'unavailable:smtp' :
 			'unavailable';
 	}).catch((err) => {
+		if (abortController.signal.aborted) return;
 		if (err.name !== 'AbortError') {
 			emailState.value = 'error';
 		}
@@ -254,6 +270,7 @@ function onChangePasswordRetype(): void {
 
 async function onSubmit(): Promise<void> {
 	if (submitting.value) return;
+	if (instance.emailRequiredForSignup && emailState.value !== 'ok') return;
 	submitting.value = true;
 
 	const signupPayload: Misskey.entities.SignupRequest = {
