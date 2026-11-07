@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
@@ -52,7 +52,7 @@ import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import { $i } from '@/i.js';
 import { userPage } from '@@/js/user.js';
-import { deepClone } from '@/utility/clone.js';
+import type { WordMuteResult } from '@/utility/check-word-mute.js';
 import { checkNoteWordMute } from '@/composables/use-note.js';
 import { prefer } from '@/preferences.js';
 
@@ -60,10 +60,11 @@ const props = defineProps<{
 	note: Misskey.entities.Note | null;
 }>();
 
-const note = ref(deepClone(props.note));
-
 const showContent = ref(false);
-const muted = ref(note.value != null && ($i ? checkNoteWordMute(note.value, $i, $i?.mutedWords) : false));
+const muted = ref<WordMuteResult>(false);
+watch(() => props.note, (newNote) => {
+	muted.value = newNote != null && ($i ? checkNoteWordMute(newNote, $i, $i?.mutedWords) : false);
+}, { immediate: true });
 </script>
 
 <style lang="scss" module>
