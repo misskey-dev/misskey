@@ -49,8 +49,9 @@ const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, 
 
 watch([() => props.column.channelId, () => prefer.r.showFixedPostFormInChannel.value], ([newChannelId, showFixedPostForm], oldValue, onCleanup) => {
 	if (newChannelId == null) {
-		// 設定値の変更だけで選択ダイアログを開かないよう、channelId が変わったときのみ
-		if (oldValue == null || oldValue[0] !== newChannelId) setChannel();
+		// 設定値の変更だけで選択ダイアログを開かないよう、初回実行時か channelId が変わったときのみ
+		// (複数ソースの immediate watcher では初回の oldValue が空配列になる)
+		if (oldValue == null || !(0 in oldValue) || oldValue[0] !== newChannelId) setChannel();
 		return;
 	}
 	if (!showFixedPostForm && props.column.name) return;
