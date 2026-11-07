@@ -13,7 +13,7 @@
 	},
 	"dependencies": {
 		"diagnostics-shared": "workspace:*",
-		"execa": "10.1.1"
+		"execa": "10.2.1"
 	},
 	"devDependencies": {
 		"@types/node": "26.6.5",
