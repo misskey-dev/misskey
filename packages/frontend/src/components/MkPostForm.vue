@@ -1354,9 +1354,17 @@ function showPerUploadItemMenuViaContextmenu(item: UploaderItem, ev: PointerEven
 async function schedule() {
 	const { canceled, result } = await os.inputDatetime({
 		title: i18n.ts.schedulePost,
+		min: new Date(),
 	});
 	if (canceled) return;
-	if (result.getTime() <= Date.now()) return;
+	// ダイアログを開いたままにして時刻が過ぎた場合など、ダイアログ側の検証をすり抜けた過去日時
+	if (!(result.getTime() > Date.now())) {
+		os.alert({
+			type: 'error',
+			text: i18n.tsx._dialog.datetimeBelowMin({ min: new Date().toLocaleString() }),
+		});
+		return;
+	}
 
 	scheduledAt.value = result.getTime();
 }

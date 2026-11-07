@@ -436,6 +436,7 @@ export function inputDatetime(props: {
 	text?: string;
 	placeholder?: string | null;
 	default?: string | null;
+	min?: Date;
 }): Promise<MkDialogReturnType<Date>> {
 	return new Promise(resolve => {
 		const { dispose } = popup(MkDialog, {
@@ -445,6 +446,7 @@ export function inputDatetime(props: {
 				type: 'datetime-local',
 				placeholder: props.placeholder,
 				default: props.default ?? null,
+				min: props.min,
 			},
 		}, {
 			done: result => {
