@@ -78,6 +78,8 @@ const canvasWidth = ref(64);
 const canvasHeight = ref(64);
 const viewId = genId();
 const bitmapTmp = shallowRef<CanvasImageSource | undefined>();
+let isWorkerListenerRegistered = false;
+let isUnmounted = false;
 
 watch([() => props.width, () => props.height, canvas], () => {
 	const ratio = props.width / props.height;
@@ -137,7 +139,15 @@ async function draw() {
 	if (props.onlyAvgColor) return;
 
 	const work = await canvasPromise;
+	if (isUnmounted) return;
+
 	if (work instanceof WorkerMultiDispatch) {
+		// 実際にworkerへ描画を依頼するときまでリスナー登録しない
+		if (!isWorkerListenerRegistered) {
+			isWorkerListenerRegistered = true;
+			work.addListener(workerOnMessage);
+		}
+
 		work.postMessage(
 			{
 				id: viewId,
@@ -161,11 +171,7 @@ function workerOnMessage(event: MessageEvent) {
 	drawImage(event.data.bitmap as ImageBitmap);
 }
 
-canvasPromise.then(work => {
-	if (work instanceof WorkerMultiDispatch) {
-		work.addListener(workerOnMessage);
-	}
-
+canvasPromise.then(() => {
 	draw();
 });
 
@@ -177,10 +183,14 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	canvasPromise.then(work => {
-		if (work instanceof WorkerMultiDispatch) {
-			work.removeListener(workerOnMessage);
-		}
-	});
+	isUnmounted = true;
+
+	if (isWorkerListenerRegistered) {
+		canvasPromise.then(work => {
+			if (work instanceof WorkerMultiDispatch) {
+				work.removeListener(workerOnMessage);
+			}
+		});
+	}
 });
 </script>
