@@ -19,13 +19,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #header>{{ i18n.ts.options }}</template>
 
 			<div class="_gaps_m">
-				<div style="display: flex; gap: 8px;">
-					<MkInput v-model="rangeStartAt" type="datetime-local">
-						<template #label>{{ i18n.ts._search.postFrom }}</template>
-					</MkInput>
-					<MkInput v-model="rangeEndAt" type="datetime-local">
-						<template #label>{{ i18n.ts._search.postTo }}</template>
-					</MkInput>
+				<div :class="$style.searchRange">
+					<fieldset :class="$style.searchRangeField">
+						<legend :class="$style.searchRangeLegend">{{ i18n.ts._search.postFrom }}</legend>
+						<div :class="$style.searchRangeInputs">
+							<MkInput v-model="rangeStartDate" type="date">
+								<template #label>{{ i18n.ts._search.date }}</template>
+							</MkInput>
+							<MkInput v-model="rangeStartTime" type="time">
+								<template #label>{{ i18n.ts._search.time }} ({{ i18n.ts.optional }})</template>
+							</MkInput>
+						</div>
+					</fieldset>
+					<fieldset :class="$style.searchRangeField">
+						<legend :class="$style.searchRangeLegend">{{ i18n.ts._search.postTo }}</legend>
+						<div :class="$style.searchRangeInputs">
+							<MkInput v-model="rangeEndDate" type="date">
+								<template #label>{{ i18n.ts._search.date }}</template>
+							</MkInput>
+							<MkInput v-model="rangeEndTime" type="time">
+								<template #label>{{ i18n.ts._search.time }} ({{ i18n.ts.optional }})</template>
+							</MkInput>
+						</div>
+					</fieldset>
 				</div>
 
 				<MkRadios
@@ -127,6 +143,7 @@ import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { apLookup } from '@/utility/lookup.js';
+import { parseSearchRangeDate } from '@/utility/parse-search-range-date.js';
 import { useRouter } from '@/router.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
@@ -156,8 +173,10 @@ const paginator = shallowRef<Paginator<'notes/search'> | null>(null);
 
 const searchQuery = ref(toRef(props, 'query').value);
 const hostInput = ref(toRef(props, 'host').value);
-const rangeStartAt = ref<string | null>(null);
-const rangeEndAt = ref<string | null>(null);
+const rangeStartDate = ref<string | null>(null);
+const rangeStartTime = ref<string | null>(null);
+const rangeEndDate = ref<string | null>(null);
+const rangeEndTime = ref<string | null>(null);
 
 const user = shallowRef<Misskey.entities.UserDetailed | null>(null);
 
@@ -227,8 +246,8 @@ const fixHostIfLocal = (target: string | null | undefined) => {
 
 const searchRange = () => {
 	return {
-		rangeStartAt: rangeStartAt.value ? new Date(rangeStartAt.value).getTime() : null,
-		rangeEndAt: rangeEndAt.value ? new Date(rangeEndAt.value).getTime() : null,
+		rangeStartAt: parseSearchRangeDate(rangeStartDate.value, rangeStartTime.value, 'start'),
+		rangeEndAt: parseSearchRangeDate(rangeEndDate.value, rangeEndTime.value, 'end'),
 	};
 };
 
@@ -363,6 +382,36 @@ async function search() {
 }
 </script>
 <style lang="scss" module>
+.searchRange {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 8px;
+}
+
+.searchRangeField {
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.searchRangeLegend {
+	padding: 0 0 8px;
+	font-size: 0.85em;
+}
+
+.searchRangeInputs {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 8px;
+}
+
+@media (max-width: 500px) {
+	.searchRange {
+		grid-template-columns: 1fr;
+	}
+}
+
 .subOptionRoot {
 	background: var(--MI_THEME-panel);
 	border-radius: var(--MI-radius);
