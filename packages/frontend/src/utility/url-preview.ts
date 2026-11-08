@@ -21,14 +21,10 @@ export function transformPlayerUrl(url: string): string {
 		urlParams.set('parent', hostname);
 		urlParams.set('allowfullscreen', '');
 
-		if (prefer.s.autoplayEmbededPlayerOfUrlPreview) {
-			urlParams.set('autoplay', 'true');
-		}
+		urlParams.set('autoplay', prefer.s.autoplayEmbededPlayerOfUrlPreview ? 'true' : 'false');
 	} else {
-		if (prefer.s.autoplayEmbededPlayerOfUrlPreview) {
-			urlParams.set('autoplay', '1');
-			urlParams.set('auto_play', '1');
-		}
+		urlParams.set('autoplay', prefer.s.autoplayEmbededPlayerOfUrlPreview ? '1' : '0');
+		urlParams.set('auto_play', prefer.s.autoplayEmbededPlayerOfUrlPreview ? '1' : 'false');
 	}
 	urlObj.search = urlParams.toString();
 
