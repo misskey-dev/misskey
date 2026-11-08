@@ -6,8 +6,6 @@
   - `node ./scripts/start.mjs --migrate` でマイグレーションを実行してからMisskeyを起動できます。 `pnpm migrateandstart` と同等の動作をします。
 	- 今までの起動方法（ `pnpm start` や `pnpm migrateandstart` ）も引き続き利用可能ですが、メモリ使用量の削減効果は得られません。
 	- 公式Docker Imageや同梱のDockerfileをご利用の場合は、何もしなくても新しい起動スクリプトが使用されます（起動時のメモリ消費量が削減されます）。
-
-### Note
 - Node.js v22のサポートを終了しました。Node.js v22では動作しません。Node.js v24, v26をご利用ください。
 
 ### General
