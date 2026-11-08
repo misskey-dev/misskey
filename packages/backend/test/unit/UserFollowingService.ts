@@ -8,10 +8,12 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import type { FollowingsRepository, FollowRequestsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
+import type { MiMeta } from '@/models/Meta.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { IdService } from '@/core/IdService.js';
+import { RoleService } from '@/core/RoleService.js';
 
 describe('鍵解除時のフォローリクエスト承認', () => {
 	let service: UserFollowingService;
@@ -89,5 +91,44 @@ describe('鍵解除時のフォローリクエスト承認', () => {
 		expect(followings.find).toHaveBeenCalledTimes(1);
 		expect(followings.exists).not.toHaveBeenCalled();
 		expect(users.findOneBy).not.toHaveBeenCalled();
+	});
+});
+
+describe('交流を断てないユーザーのフォロー解除制限', () => {
+	let service: UserFollowingService;
+	const followings = mockDeep<FollowingsRepository>();
+	const roleService = mockDeep<RoleService>();
+	const followee = { id: 'forcibly', host: null, uri: null, inbox: null, sharedInbox: null };
+
+	beforeEach(async () => {
+		mockReset(followings);
+		mockReset(roleService);
+		const module = await Test.createTestingModule({
+			providers: [
+				UserFollowingService,
+				{ provide: DI.meta, useValue: { forciblyFollowedUsers: [followee.id] } as MiMeta },
+				{ provide: DI.followingsRepository, useValue: followings },
+				{ provide: RoleService, useValue: roleService },
+			],
+		}).useMocker(() => mockDeep()).compile();
+		service = module.get(UserFollowingService);
+		roleService.isModerator.mockResolvedValue(false);
+		followings.findOne.mockResolvedValue(null);
+	});
+
+	test('ローカルユーザーはフォロー解除できない', async () => {
+		const follower = { id: 'follower', host: null, uri: null, inbox: null, sharedInbox: null };
+
+		await expect(service.unfollow(follower, followee)).rejects.toMatchObject({ id: '19f25f61-0141-4683-99dc-217a88d633cb' });
+		expect(followings.findOne).not.toHaveBeenCalled();
+	});
+
+	// リモートからの Undo Follow を処理できるよう、リモートユーザーには制限をかけない
+	test('リモートユーザーのフォロー解除は制限しない', async () => {
+		const follower = { id: 'follower', host: 'remote.example.com', uri: null, inbox: null, sharedInbox: null };
+
+		await expect(service.unfollow(follower, followee)).resolves.toBeUndefined();
+		expect(followings.findOne).toHaveBeenCalledOnce();
+		expect(roleService.isModerator).not.toHaveBeenCalled();
 	});
 });

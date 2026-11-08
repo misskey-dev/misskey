@@ -685,7 +685,8 @@ export class ApInboxService {
 		});
 
 		if (isFollowing) {
-			await this.userFollowingService.unfollow(follower, actor);
+			// リモートで既に承認が取り消されているため、フォロー解除できないユーザーの制限は適用しない
+			await this.userFollowingService.unfollow(follower, actor, false, { ignoreServerPolicy: true });
 			return 'ok: unfollowed';
 		}
 
