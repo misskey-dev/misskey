@@ -12,7 +12,7 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/_.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { ApiError } from '@/server/api/error.js';
-import { UserAuthService } from '@/core/UserAuthService.js';
+import { TotpService } from '@/core/TotpService.js';
 
 export const meta = {
 	requireCredential: true,
@@ -66,7 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userSecurityKeysRepository: UserSecurityKeysRepository,
 
 		private webAuthnService: WebAuthnService,
-		private userAuthService: UserAuthService,
+		private totpService: TotpService,
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
 	) {
@@ -80,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 
 				try {
-					await this.userAuthService.twoFactorAuthenticate(profile, token);
+					await this.totpService.twoFactorAuthenticate(profile, token);
 				} catch (_) {
 					throw new Error('authentication failed');
 				}
