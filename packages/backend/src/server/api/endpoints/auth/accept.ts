@@ -7,7 +7,7 @@ import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AuthSessionsRepository, AppsRepository, AccessTokensRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
+import { AccessTokenService } from '@/core/AccessTokenService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
@@ -48,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.accessTokensRepository)
 		private accessTokensRepository: AccessTokensRepository,
 
-		private idService: IdService,
+		private accessTokenService: AccessTokenService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch token
@@ -77,11 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				sha256.update(accessToken + app.secret);
 				const hash = sha256.digest('hex');
 
-				const now = new Date();
-
-				await this.accessTokensRepository.insert({
-					id: this.idService.gen(now.getTime()),
-					lastUsedAt: now,
+				await this.accessTokenService.create({
 					appId: session.appId,
 					userId: me.id,
 					token: accessToken,

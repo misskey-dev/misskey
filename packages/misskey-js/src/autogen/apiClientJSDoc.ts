@@ -4430,10 +4430,9 @@ declare module '../api.js' {
     ): Promise<SwitchCaseResponseType<E, P>>;
 
     /**
-     * Register to receive push notifications.
+     * Register to receive push notifications. When called with an access token, the token must also have the `read:notifications` permission. Only the push messages that the token is permitted to read are delivered (e.g. chat messages require `read:chat`), and the registration is removed when the token is revoked.
      * 
-     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:push-subscriptions*
      */
     request<E extends 'sw/register', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -4444,8 +4443,7 @@ declare module '../api.js' {
     /**
      * Check push notification registration exists.
      * 
-     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:push-subscriptions*
      */
     request<E extends 'sw/show-registration', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -4467,8 +4465,7 @@ declare module '../api.js' {
     /**
      * Update push notification registration.
      * 
-     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
-     * **Credential required**: *Yes*
+     * **Credential required**: *Yes* / **Permission**: *write:push-subscriptions*
      */
     request<E extends 'sw/update-registration', P extends Endpoints[E]['req']>(
       endpoint: E,
