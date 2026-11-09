@@ -53,6 +53,9 @@ export default defineConfig((args) => {
 			output: {
 				keepNames: true,
 				sourcemap: true,
+				// メモリ使用量削減に貢献するが、関数や正規表現のソース文字列がエスケープ表記になる
+				// それらに依存する処理が入った場合はここを疑うと良い
+				// https://rolldown.rs/reference/Interface.OutputOptions#charset
 				charset: 'ascii',
 				dir: './built-test',
 				cleanDir: true,
@@ -87,6 +90,9 @@ export default defineConfig((args) => {
 				keepNames: true,
 				minify: !isWatchMode,
 				sourcemap: isWatchMode,
+				// メモリ使用量削減に貢献するが、関数や正規表現のソース文字列がエスケープ表記になる
+				// それらに依存する処理が入った場合はここを疑うと良い
+				// https://rolldown.rs/reference/Interface.OutputOptions#charset
 				charset: isWatchMode ? 'utf8' : 'ascii',
 				dir: './built',
 				cleanDir: !isWatchMode,
