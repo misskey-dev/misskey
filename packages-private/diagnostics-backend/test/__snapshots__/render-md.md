@@ -7,7 +7,7 @@
 | **Process memory (USS)** | 184 MB <br> ± 1 MB | 200 MB <br> ± 1 MB | $\color{orange}{\text{+16~MB}}$<br>$\color{orange}{\text{+8.7\\%}}$ | 1.4 MB |
 | **JS heap (snapshot total)** | 40 MB <br> ± 200 KB | 44 MB <br> ± 200 KB | $\color{orange}{\text{+3.2 MB}}$<br>$\color{orange}{\text{+7.9\\%}}$ | 283 KB |
 
-Use these rows to judge whether memory usage actually changed. Uncolored deltas are within the measurement noise.
+Use these rows to judge whether memory usage actually changed. A delta is colored only when it is both outside the measurement noise and at least about 0.1 MB; an uncolored delta is within the noise, smaller than that, or both.
 
 <details>
 <summary>How to read this report</summary>

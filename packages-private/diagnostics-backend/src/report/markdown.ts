@@ -135,7 +135,7 @@ function renderSummarySection(base: MemoryReport, head: MemoryReport) {
 		...metricComparisonTableHeader,
 		...rows,
 		'',
-		'Use these rows to judge whether memory usage actually changed. Uncolored deltas are within the measurement noise.',
+		'Use these rows to judge whether memory usage actually changed. A delta is colored only when it is both outside the measurement noise and at least about 0.1 MB; an uncolored delta is within the noise, smaller than that, or both.',
 		'',
 		howToReadDetails,
 	].join('\n');
