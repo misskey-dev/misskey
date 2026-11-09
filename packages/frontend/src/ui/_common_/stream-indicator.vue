@@ -14,7 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, ref } from 'vue';
+import { onUnmounted, ref, watch } from 'vue';
+import type * as Misskey from 'misskey-js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -24,7 +25,7 @@ import { store } from '@/store.js';
 
 const zIndex = os.claimZIndex('high');
 
-const stream = useStream();
+let stream: Misskey.IStream | null = null;
 const hasDisconnected = ref(false);
 let timeoutId: number | null = null;
 
@@ -37,6 +38,7 @@ function onDisconnected() {
 
 function resetDisconnected() {
 	if (timeoutId != null) window.clearTimeout(timeoutId);
+	timeoutId = null;
 	hasDisconnected.value = false;
 }
 
@@ -44,16 +46,30 @@ function reload() {
 	window.location.reload();
 }
 
-if (store.s.realtimeMode) {
+function setStreamListener() {
+	if (stream != null) return;
+	stream = useStream();
 	stream.on('_connected_', resetDisconnected);
 	stream.on('_disconnected_', onDisconnected);
-
-	onUnmounted(() => {
-		if (timeoutId != null) window.clearTimeout(timeoutId);
-		stream.off('_connected_', resetDisconnected);
-		stream.off('_disconnected_', onDisconnected);
-	});
 }
+
+function removeStreamListener() {
+	resetDisconnected();
+	if (stream == null) return;
+	stream.off('_connected_', resetDisconnected);
+	stream.off('_disconnected_', onDisconnected);
+	stream = null;
+}
+
+watch(store.r.realtimeMode, (enabled) => {
+	if (enabled) {
+		setStreamListener();
+	} else {
+		removeStreamListener();
+	}
+}, { immediate: true });
+
+onUnmounted(removeStreamListener);
 </script>
 
 <style lang="scss" module>
