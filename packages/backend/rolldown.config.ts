@@ -53,6 +53,7 @@ export default defineConfig((args) => {
 			output: {
 				keepNames: true,
 				sourcemap: true,
+				charset: 'ascii',
 				dir: './built-test',
 				cleanDir: true,
 				format: 'esm',
@@ -86,6 +87,7 @@ export default defineConfig((args) => {
 				keepNames: true,
 				minify: !isWatchMode,
 				sourcemap: isWatchMode,
+				charset: isWatchMode ? 'utf8' : 'ascii',
 				dir: './built',
 				cleanDir: !isWatchMode,
 				format: 'esm',
