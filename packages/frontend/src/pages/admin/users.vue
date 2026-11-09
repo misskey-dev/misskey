@@ -147,7 +147,7 @@ async function addUser() {
 	});
 }
 
-function show(user: Misskey.entities.UserDetailed) {
+function show(user: Misskey.entities.UserLite) {
 	os.pageWindow(`/admin/user/${user.id}`);
 }
 
