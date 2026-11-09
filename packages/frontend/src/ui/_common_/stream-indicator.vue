@@ -51,6 +51,7 @@ function setStreamListener() {
 	stream = useStream();
 	stream.on('_connected_', resetDisconnected);
 	stream.on('_disconnected_', onDisconnected);
+	if (stream.state === 'reconnecting') onDisconnected();
 }
 
 function removeStreamListener() {
