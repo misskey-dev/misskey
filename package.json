@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2026.11.0-alpha.0",
+	"version": "2026.11.0-beta.1",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -68,7 +68,7 @@
 		"@typescript/native": "npm:typescript@7.0.2",
 		"cross-env": "10.1.0",
 		"eslint": "9.39.5",
-		"globals": "17.13.0",
+		"globals": "17.14.0",
 		"ncp": "2.0.0",
 		"start-server-and-test": "3.0.13",
 		"typescript": "npm:@typescript/typescript6@6.0.2"

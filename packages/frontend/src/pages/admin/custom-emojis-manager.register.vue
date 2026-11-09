@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="gridItems.length > 0" :class="$style.gridArea">
 			<MkGrid
 				:data="gridItems"
-				:settings="setupGrid()"
+				:settings="setupGrid({ violationRow: $style.violationRow })"
 				@event="onGridEvent"
 			/>
 		</div>
@@ -59,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import * as Misskey from 'misskey-js';
-import { computed, onMounted, ref, useCssModule } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
 import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import type { DroppedFile } from '@/utility/file-drop.js';
@@ -108,9 +108,7 @@ type GridItem = {
 	type: string | null;
 };
 
-function setupGrid(): GridSetting {
-	const $style = useCssModule();
-
+function setupGrid(rowClass: { violationRow: string }): GridSetting {
 	const required = validators.required();
 	const regex = validators.regex(/^[a-zA-Z0-9_]+$/);
 	const unique = validators.unique();
@@ -129,7 +127,7 @@ function setupGrid(): GridSetting {
 				{
 					// 1つでもバリデーションエラーがあれば行全体をエラー表示する
 					condition: ({ cells }) => cells.some(it => !it.violation.valid),
-					applyStyle: { className: $style.violationRow },
+					applyStyle: { className: rowClass.violationRow },
 				},
 			],
 			// 行のコンテキストメニュー設定
@@ -370,7 +368,7 @@ onMounted(async () => {
 
 <style module lang="scss">
 .violationRow {
-	background-color: var(--MI_THEME-infoWarnBg);
+	background-color: var(--MI_THEME-infoWarnBg) !important;
 }
 
 .gridArea {
