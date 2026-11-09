@@ -56,6 +56,9 @@ const TARGET_DIRECTORIES = [
 
 const TARGET_EXTENSIONS = new Set(['.cjs', '.html', '.js', '.mjs', '.scss', '.ts', '.vue']);
 const EXCLUDED_CONFIG_EXTENSIONS = new Set(['.cjs', '.js', '.mjs', '.ts']);
+const EXCLUDED_FILES = new Set([
+	'packages/frontend/public/mockServiceWorker.js', // `msw init` が生成する
+]);
 const HTML_COMMENT_EXTENSIONS = new Set(['.vue', '.html']);
 
 const COPYRIGHT_LINE = 'SPDX-FileCopyrightText: syuilo and misskey-project';
@@ -93,6 +96,8 @@ function isRegularFile(file) {
 function isTargetPath(file) {
 	const ext = extname(file);
 	if (!TARGET_EXTENSIONS.has(ext)) return false;
+
+	if (EXCLUDED_FILES.has(file)) return false;
 
 	const name = basename(file);
 	if (name.includes('eslint')) return false;

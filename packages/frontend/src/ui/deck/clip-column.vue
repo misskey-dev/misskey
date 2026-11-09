@@ -98,23 +98,25 @@ function connectChannel() {
 	});
 }
 
-watch(() => props.column.clipId, async (clipId) => {
+watch(() => props.column.clipId, async (clipId, _previousClipId, onCleanup) => {
+	let active = true;
+	onCleanup(() => { active = false; });
 	connectChannel();
+	clip.value = null;
+	notFound.value = false;
 
-	if (clipId == null) {
-		clip.value = null;
-		notFound.value = false;
-		return;
-	}
+	if (clipId == null) return;
 
 	try {
 		const fetchedClip = await misskeyApi('clips/show', { clipId });
+		if (!active || props.column.clipId !== clipId) return;
 		clip.value = fetchedClip;
 		notFound.value = false;
 		if (props.column.timelineNameCache == null) {
 			updateColumn(props.column.id, { timelineNameCache: fetchedClip.name });
 		}
 	} catch {
+		if (!active || props.column.clipId !== clipId) return;
 		clip.value = null;
 		notFound.value = true;
 	}

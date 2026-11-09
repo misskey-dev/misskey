@@ -4,7 +4,6 @@
  */
 
 import tinycolor from 'tinycolor2';
-import JSON5 from 'json5';
 import lightTheme from '@@/themes/_light.json5';
 import type { BundledTheme } from 'shiki/themes';
 
@@ -133,19 +132,4 @@ export function validateTheme(theme: Record<string, any>): boolean {
 	if (theme.base == null || !['light', 'dark'].includes(theme.base)) return false;
 	if (theme.props == null || typeof theme.props !== 'object') return false;
 	return true;
-}
-
-export function parseThemeCode(code: string): Theme {
-	let theme;
-
-	try {
-		theme = JSON5.parse(code);
-	} catch (_) {
-		throw new Error('Failed to parse theme json');
-	}
-	if (!validateTheme(theme)) {
-		throw new Error('This theme is invaild');
-	}
-
-	return theme;
 }

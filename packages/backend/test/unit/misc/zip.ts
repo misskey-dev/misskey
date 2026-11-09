@@ -8,7 +8,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { BlobWriter, TextReader, Uint8ArrayReader, ZipWriter } from '@zip.js/zip.js';
-import { ZipExtractError, ZipFile } from '@/misc/zip.js';
+import { ZipArchive, ZipArchiveError, ZipExtractError, ZipFile } from '@/misc/zip.js';
 
 type TestEntry = {
 	name: string;
@@ -254,6 +254,130 @@ describe('misc:zip', () => {
 		} finally {
 			await zip.close();
 		}
+	});
+
+	describe('ZipArchive', () => {
+		test('writes entries that round-trip through ZipFile', async () => {
+			// 512KB (zip.js の既定チャンクサイズ) をまたぐデータも壊れずに書き出せること
+			const image = new Uint8Array(1024 * 1024 + 12345);
+			for (let i = 0; i < image.length; i++) image[i] = (i * 31) & 0xff;
+			const srcDir = path.join(dir, 'src');
+			await fs.promises.mkdir(srcDir);
+			await fs.promises.writeFile(path.join(srcDir, 'meta.json'), '{"metaVersion":2,"emojis":[]}');
+			await fs.promises.writeFile(path.join(srcDir, 'empty.png'), '');
+			await fs.promises.writeFile(path.join(srcDir, 'ok.png'), image);
+
+			const zipPath = path.join(dir, 'out.zip');
+			const archive = await ZipArchive.create(zipPath);
+			for (const name of ['meta.json', 'empty.png', 'ok.png']) {
+				await archive.addFile(name, path.join(srcDir, name));
+			}
+			await archive.close();
+
+			const outDir = path.join(dir, 'out');
+			await fs.promises.mkdir(outDir);
+			const zip = await ZipFile.open(zipPath);
+			try {
+				expect(await listNames(zip)).toEqual(['empty.png', 'meta.json', 'ok.png']);
+				for await (const entry of zip.entries()) {
+					// サイズが既知なので zip64 拡張は使われない
+					expect(entry.zip64).toBe(false);
+					await zip.extractToFile(entry, path.join(outDir, entry.filename), { maxBytes: 8 * 1024 * 1024 });
+				}
+			} finally {
+				await zip.close();
+			}
+
+			expect(await fs.promises.readFile(path.join(outDir, 'meta.json'), 'utf-8')).toBe('{"metaVersion":2,"emojis":[]}');
+			expect((await fs.promises.stat(path.join(outDir, 'empty.png'))).size).toBe(0);
+			expect(new Uint8Array(await fs.promises.readFile(path.join(outDir, 'ok.png')))).toEqual(image);
+		});
+
+		test('truncates an existing file at the destination', async () => {
+			const zipPath = path.join(dir, 'out.zip');
+			await fs.promises.writeFile(zipPath, 'x'.repeat(1024 * 1024));
+			const srcPath = path.join(dir, 'ok.txt');
+			await fs.promises.writeFile(srcPath, 'ok');
+
+			const archive = await ZipArchive.create(zipPath);
+			await archive.addFile('ok.txt', srcPath);
+			await archive.close();
+
+			const zip = await ZipFile.open(zipPath);
+			try {
+				expect(await listNames(zip)).toEqual(['ok.txt']);
+			} finally {
+				await zip.close();
+			}
+		});
+
+		test('rejects entry names that could escape the extraction directory', async () => {
+			const srcPath = path.join(dir, 'ok.txt');
+			await fs.promises.writeFile(srcPath, 'ok');
+
+			// zip.js の ZipWriter は名前を検証しないので、ZipArchive 側で弾けていることを確かめる
+			const unsafeNames = [
+				'../../../etc/cron.d/pwn',
+				'sub/../../pwn',
+				'/etc/passwd',
+				'C:\\pwn',
+				'a\\..\\..\\pwn.exe',
+				'x\u0000.png',
+				'./x',
+				'sub//x',
+				'',
+			];
+			const archive = await ZipArchive.create(path.join(dir, 'out.zip'));
+			try {
+				for (const name of unsafeNames) {
+					await expect(archive.addFile(name, srcPath), name).rejects.toThrow(ZipArchiveError);
+				}
+				// traversal にならない '..' を含む名前は通す
+				for (const name of ['a..b.png', '..hidden.png', 'sub/dir/ok.png']) {
+					await expect(archive.addFile(name, srcPath), name).resolves.toBeUndefined();
+				}
+			} finally {
+				await archive.abort();
+			}
+		});
+
+		test('never reads through a symbolic link or a non-regular file', async () => {
+			const secret = path.join(dir, 'secret.txt');
+			await fs.promises.writeFile(secret, 'TOP SECRET');
+			const link = path.join(dir, 'link.png');
+			await fs.promises.symlink(secret, link);
+
+			const archive = await ZipArchive.create(path.join(dir, 'out.zip'));
+			try {
+				await expect(archive.addFile('link.png', link)).rejects.toThrow(/ELOOP/);
+				await expect(archive.addFile('dir', dir)).rejects.toThrow(ZipArchiveError);
+			} finally {
+				await archive.abort();
+			}
+		});
+
+		test('never writes through an existing symbolic link at the destination', async () => {
+			const target = path.join(dir, 'target.txt');
+			await fs.promises.writeFile(target, 'original');
+			const zipPath = path.join(dir, 'out.zip');
+			await fs.promises.symlink(target, zipPath);
+
+			await expect(ZipArchive.create(zipPath)).rejects.toThrow(/ELOOP/);
+			expect(await fs.promises.readFile(target, 'utf-8')).toBe('original');
+		});
+
+		test('rejects an entry whose name is already used', async () => {
+			const srcPath = path.join(dir, 'ok.txt');
+			await fs.promises.writeFile(srcPath, 'ok');
+
+			const archive = await ZipArchive.create(path.join(dir, 'out.zip'));
+			try {
+				await archive.addFile('ok.txt', srcPath);
+				await expect(archive.addFile('ok.txt', srcPath)).rejects.toThrow();
+			} finally {
+				await archive.abort();
+			}
+		});
 	});
 
 	test('never writes through an existing symbolic link at the destination', async () => {

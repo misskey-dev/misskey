@@ -93,7 +93,6 @@ export default defineConfig((args) => {
 		// @nestjs/coreはmicroservices / websocketsをoptional peerとして動的importするが、
 		// Misskeyはどちらも使わないためインストールしていない
 		/^@nestjs\/(?:microservices|websockets)(?:\/.*)?$/,
-		/^@napi-rs\/.*/,
 		'mock-aws-s3',
 		'aws-sdk',
 		'nock',

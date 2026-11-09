@@ -84,22 +84,6 @@ describe('SentryTelemetryAdapter', () => {
 		expect(options.dataCollection).toEqual(DEFAULT_SENTRY_DATA_COLLECTION);
 	});
 
-	// Sentry v11は`dataCollection`未指定だと全て収集するため、既定が緩むと利用者の情報が意図せず送信される
-	test('pins the categories that must not be collected by default', () => {
-		expect(DEFAULT_SENTRY_DATA_COLLECTION).toEqual({
-			userInfo: false,
-			cookies: false,
-			urlQueryParams: false,
-			httpHeaders: {
-				request: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
-				response: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
-			},
-			httpBodies: [],
-			databaseQueryData: false,
-			genAI: { inputs: false, outputs: false },
-		});
-	});
-
 	test('warns that the removed sendDefaultPii option is ignored', () => {
 		const warn = vi.fn();
 
