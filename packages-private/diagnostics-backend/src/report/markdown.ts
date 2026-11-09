@@ -3,9 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { formatKiBAsMb } from 'diagnostics-shared/format';
+import { formatBytes, formatKiBAsMb } from 'diagnostics-shared/format';
 import { renderHeapSnapshotTable, type HeapSnapshotReport } from 'diagnostics-shared/heap-snapshot';
-import { renderMetricComparisonTable } from 'diagnostics-shared/metric-table';
+import {
+	metricComparisonTableHeader,
+	renderMetricComparisonRow,
+	renderMetricComparisonTable,
+} from 'diagnostics-shared/metric-table';
 import {
 	independentDeltaSummary,
 	isOutsideObservedNoise,
@@ -25,16 +29,30 @@ const memoryReportPhases = [
 	},
 ] as const satisfies readonly { key: MemoryPhase; title: string }[];
 
-const memoryMetrics = [
+/** 内訳として、有意な変化があったときだけ表示する指標 (USSはサマリーに常に表示する) */
+const memoryBreakdownMetrics = [
 	'HeapUsed',
 	'Pss',
-	'USS',
 	'External',
 ] as const;
 
-type MemoryMetric = typeof memoryMetrics[number];
+type MemoryMetric = typeof memoryBreakdownMetrics[number] | 'USS';
 
 const memoryColorThresholdKiB = 100;
+
+/** これ未満のバイト差分には色を付けない (0.1 MB)。V8 Heap Snapshot Statisticsの表と揃える */
+const heapSnapshotColorThresholdBytes = 100_000;
+
+const howToReadDetails = [
+	'<details>',
+	'<summary>How to read this report</summary>',
+	'',
+	'- **Process memory (USS)**: Memory that belongs only to this process (its private pages), as seen by the OS. This is what would be freed if the process exited, and it includes everything (JS heap, native allocations, code). It is noisy, so small changes often stay within the noise.',
+	'- **JS heap (snapshot total)**: Total size of the objects reachable from JavaScript, taken from a V8 heap snapshot after GC. Strings stored outside the V8 heap are counted at their real size. It has little noise, so it is the best signal for small changes. It does not include native memory that is not held by JS objects.',
+	'- **HeapUsed / External** (`process.memoryUsage()`): Breakdown only; do not judge a change by them alone. The same data can move between the two. For example, Node.js keeps a module source longer than about 1 M characters outside the V8 heap, and `External` can report only about half of its real size. A change that makes a bundle chunk cross that size can raise HeapUsed and lower External even when total memory went down.',
+	'- **PSS**: Like USS, plus a proportional share of the memory shared with other processes (e.g. shared libraries).',
+	'</details>',
+].join('\n');
 
 function formatMemoryMetricName(metric: MemoryMetric) {
 	return metric === 'Pss' ? 'PSS' : metric;
@@ -64,7 +82,7 @@ function renderMainTableForPhase(base: MemoryReport, head: MemoryReport, phase: 
 	return renderMetricComparisonTable(
 		base.samples,
 		head.samples,
-		memoryMetrics.map(metric => ({
+		memoryBreakdownMetrics.map(metric => ({
 			label: `**${formatMemoryMetricName(metric)}**`,
 			getValue: sample => getMemoryValueFromSample(sample, phase, metric),
 			formatValue: formatKiBAsMb,
@@ -85,6 +103,42 @@ function toHeapSnapshotReport(report: MemoryReport): HeapSnapshotReport | null {
 			return data == null ? [] : [{ round: sample.round, data }];
 		}),
 	};
+}
+
+/**
+ * 実際のメモリ使用量が増えたか減ったかを判断するための指標を、有意かどうかにかかわらず常に表示する。
+ */
+function renderSummarySection(base: MemoryReport, head: MemoryReport) {
+	const rows = [
+		renderMetricComparisonRow(base.samples, head.samples, {
+			label: '**Process memory (USS)**',
+			getValue: sample => getMemoryValueFromSample(sample, 'afterGc', 'USS'),
+			formatValue: formatKiBAsMb,
+			absoluteThreshold: memoryColorThresholdKiB,
+		}).line,
+	];
+
+	const baseHeapSnapshotReport = toHeapSnapshotReport(base);
+	const headHeapSnapshotReport = toHeapSnapshotReport(head);
+	if (baseHeapSnapshotReport != null && headHeapSnapshotReport != null) {
+		rows.push(renderMetricComparisonRow(baseHeapSnapshotReport.samples, headHeapSnapshotReport.samples, {
+			label: '**JS heap (snapshot total)**',
+			getValue: sample => sample.data.categories.total,
+			formatValue: formatBytes,
+			absoluteThreshold: heapSnapshotColorThresholdBytes,
+		}).line);
+	}
+
+	return [
+		'### Summary',
+		'',
+		...metricComparisonTableHeader,
+		...rows,
+		'',
+		'Use these rows to judge whether memory usage actually changed. Uncolored deltas are within the measurement noise.',
+		'',
+		howToReadDetails,
+	].join('\n');
 }
 
 function renderHeapSnapshotSection(base: MemoryReport, head: MemoryReport) {
@@ -133,8 +187,11 @@ export function renderMemoryReportMarkdown(base: MemoryReport, head: MemoryRepor
 	//	lines.push('');
 	//}
 
+	lines.push(renderSummarySection(base, head));
+	lines.push('');
+
 	for (const phase of memoryReportPhases) {
-		lines.push(`### Memory: ${phase.title}`);
+		lines.push(`### Memory breakdown: ${phase.title}`);
 		lines.push(renderMainTableForPhase(base, head, phase.key));
 		lines.push('');
 	}

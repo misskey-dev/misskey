@@ -54,6 +54,28 @@ function formatDelta<T>(
 	return `${absolute}<br>${percentage}`;
 }
 
+export const metricComparisonTableHeader = [
+	'| Metric | @&nbsp;Base | @&nbsp;Head | Δ | MAD |',
+	'| --- | ---: | ---: | ---: | ---: |',
+] as const;
+
+/**
+ * 比較テーブルの1行を描画する。
+ * 行ごとに異なるサンプル列を使いたい場合は、`metricComparisonTableHeader` と組み合わせて自前でテーブルを組み立てる。
+ */
+export function renderMetricComparisonRow<T>(
+	baseSamples: T[],
+	headSamples: T[],
+	row: MetricComparisonRow<T>,
+): { line: string; significant: boolean } {
+	const summary = independentDeltaSummary(baseSamples, headSamples, row.getValue);
+	const significant = isSignificant(summary, row.absoluteThreshold);
+	return {
+		line: `| ${row.label} | ${formatMedian(summary.baseMedian, summary.baseMad, row)} | ${formatMedian(summary.headMedian, summary.headMad, row)} | ${formatDelta(summary, row, significant)} | ${row.formatValue(summary.combinedMad)} |`,
+		significant,
+	};
+}
+
 export function renderMetricComparisonTable<T>(
 	baseSamples: T[],
 	headSamples: T[],
@@ -64,22 +86,20 @@ export function renderMetricComparisonTable<T>(
 	let omitted = false;
 
 	for (const row of rows) {
-		const summary = independentDeltaSummary(baseSamples, headSamples, row.getValue);
-		const significant = isSignificant(summary, row.absoluteThreshold);
+		const { line, significant } = renderMetricComparisonRow(baseSamples, headSamples, row);
 		if (options.onlySignificantChanges === true && !significant) {
 			omitted = true;
 			continue;
 		}
 
-		lines.push(`| ${row.label} | ${formatMedian(summary.baseMedian, summary.baseMad, row)} | ${formatMedian(summary.headMedian, summary.headMad, row)} | ${formatDelta(summary, row, significant)} | ${row.formatValue(summary.combinedMad)} |`);
+		lines.push(line);
 		if (row.separatorAfter === true) lines.push('| | | | | |');
 	}
 
 	if (lines.length === 0) return '**(No significant changes)**';
 
 	return [
-		'| Metric | @&nbsp;Base | @&nbsp;Head | Δ | MAD |',
-		'| --- | ---: | ---: | ---: | ---: |',
+		...metricComparisonTableHeader,
 		...lines,
 		...(omitted ? ['', '<small><i>Only metrics showing significant changes are displayed.</i></small>'] : []),
 	].join('\n');
