@@ -1,12 +1,15 @@
 ## 2026.11.0
 
 ### Note
+
+**今回のリリースではMisskeyの動作要件が変更されます。必ずアップグレード前にお使いの環境をご確認ください。**
+
 - 本番環境においてMisskeyを正しく起動するためのスクリプトを新設しました。こちらを利用して起動することで、余計なプロセスが常駐することを防ぎ、メモリ使用量を70MB～140MB削減することが可能です。
   - `node ./scripts/start.mjs` でMisskeyを起動できます。 `pnpm start` と同等の動作をします。
   - `node ./scripts/start.mjs --migrate` でマイグレーションを実行してからMisskeyを起動できます。 `pnpm migrateandstart` と同等の動作をします。
 	- 今までの起動方法（ `pnpm start` や `pnpm migrateandstart` ）も引き続き利用可能ですが、メモリ使用量の削減効果は得られません。
 	- 公式Docker Imageや同梱のDockerfileをご利用の場合は、何もしなくても新しい起動スクリプトが使用されます（起動時のメモリ消費量が削減されます）。
-- Node.js v22のサポートを終了しました。Node.js v22では動作しません。Node.js v24, v26をご利用ください。
+- 以前のリリースで予告した通り、Node.js v22のサポートを終了しました。 **本バージョン以降、Node.js v22では起動しません。** Node.js v24, v26をご利用ください。
 
 ### General
 - Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
