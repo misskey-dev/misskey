@@ -64,7 +64,6 @@
 		"@misskey-dev/summaly": "5.5.2",
 		"@nestjs/common": "12.3.2",
 		"@nestjs/core": "12.3.2",
-		"@oxc-project/runtime": "0.156.0",
 		"@peertube/http-signature": "1.7.0",
 		"@sentry/node": "11.10.0",
 		"@sentry/profiling-node": "11.10.0",
@@ -134,7 +133,6 @@
 		"systeminformation": "5.33.19",
 		"tinycolor2": "1.6.0",
 		"tmp": "0.2.7",
-		"tsc-alias": "1.9.10",
 		"typeorm": "1.1.2",
 		"ulid": "3.0.2",
 		"vary": "1.1.2",
@@ -180,6 +178,7 @@
 		"pid-port": "2.2.0",
 		"rolldown": "1.2.16",
 		"simple-oauth2": "5.1.0",
+		"tsc-alias": "1.9.10",
 		"vite": "8.3.5",
 		"vitest": "5.0.5",
 		"vitest-mock-extended": "5.1.1"

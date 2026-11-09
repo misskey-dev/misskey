@@ -385,9 +385,6 @@ importers:
       '@nestjs/core':
         specifier: 12.3.2
         version: 12.3.2(@nestjs/common@12.3.2(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@oxc-project/runtime':
-        specifier: 0.156.0
-        version: 0.156.0
       '@peertube/http-signature':
         specifier: 1.7.0
         version: 1.7.0
@@ -595,9 +592,6 @@ importers:
       tmp:
         specifier: 0.2.7
         version: 0.2.7
-      tsc-alias:
-        specifier: 1.9.10
-        version: 1.9.10
       typeorm:
         specifier: 1.1.2
         version: 1.1.2(ioredis@5.11.1(supports-color@10.2.2))(pg@8.23.1)(supports-color@10.2.2)
@@ -728,6 +722,9 @@ importers:
       simple-oauth2:
         specifier: 5.1.0
         version: 5.1.0(supports-color@10.2.2)
+      tsc-alias:
+        specifier: 1.9.10
+        version: 1.9.10
       vite:
         specifier: 8.3.5
         version: 8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(sass-embedded@1.107.1)(sass@1.107.1)(tsx@4.23.15)
@@ -2813,10 +2810,6 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [win32]
-
-  '@oxc-project/runtime@0.156.0':
-    resolution: {integrity: sha512-6C8Bl8OZJJKYJFbo2l9Qjn8WGi0OW1mmiErR0b+n8684ZLXegZZ2Ul4LW5aoapIX0a2ri2nIDz4RpCgRleb04w==}
-    engines: {node: ^20.19.0 || >=22.12.0}
 
   '@oxc-project/types@0.127.0':
     resolution: {integrity: sha512-aIYXQBo4lCbO4z0R3FHeucQHpF46l2LbMdxRvqvuRuW2OxdnSkcng5B8+K12spgLDj93rtN3+J2Vac/TIO+ciQ==}
@@ -10079,8 +10072,6 @@ snapshots:
 
   '@oxc-parser/binding-win32-x64-msvc@0.152.0':
     optional: true
-
-  '@oxc-project/runtime@0.156.0': {}
 
   '@oxc-project/types@0.127.0': {}
 
