@@ -85,13 +85,6 @@
 			matchPackageNames: ['node'],
 		},
 		{
-			groupName: '[Node.js] Update dependencies',
-			matchDepNames: ['ghcr.io/devcontainers/features/node:1'],
-			matchFileNames: [
-				'.devcontainer/**',
-			],
-		},
-		{
 			groupName: '[Docker] Update dependencies',
 			matchFileNames: [
 				'compose.local-db.yml',
@@ -102,7 +95,6 @@
 		},
 		{
 			groupName: '[devcontainer] Update dependencies',
-			matchDepNames: ['!ghcr.io/devcontainers/features/node:1'],
 			matchFileNames: [
 				'.devcontainer/**',
 			],

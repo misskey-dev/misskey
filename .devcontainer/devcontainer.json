@@ -3,15 +3,8 @@
 	"dockerComposeFile": "compose.yml",
 	"service": "app",
 	"workspaceFolder": "/workspace",
-	"features": {
-		"ghcr.io/devcontainers/features/node:1": {
-			"version": "26.12.1"
-		},
-		"ghcr.io/devcontainers-extra/features/pnpm:2": {
-			"version": "10.10.0"
-		}
-	},
 	"forwardPorts": [3000],
+	"onCreateCommand": "/bin/bash .devcontainer/install-toolchain.sh",
 	"postCreateCommand": "/bin/bash .devcontainer/init.sh",
 	"customizations": {
 		"vscode": {
