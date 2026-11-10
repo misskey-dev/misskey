@@ -4,7 +4,7 @@
 	"service": "app",
 	"workspaceFolder": "/workspace",
 	"forwardPorts": [3000],
-	"updateContentCommand": "/bin/bash .devcontainer/install-toolchain.sh",
+	"onCreateCommand": "/bin/bash .devcontainer/install-toolchain.sh",
 	"postCreateCommand": "/bin/bash .devcontainer/init.sh",
 	"customizations": {
 		"vscode": {

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Node.js は .node-version、pnpm はルートの package.json の packageManager に記載されたバージョンを導入する
-# VS Code が接続前に完了を待ち、Codespaces の prebuild 更新時にも再実行されるよう updateContentCommand から実行する
+# VS Code が接続前に完了を待つよう onCreateCommand から実行する
 
 set -e
 
