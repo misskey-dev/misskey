@@ -2,9 +2,6 @@ name: API report (misskey.js)
 
 on:
   push:
-    branches:
-      - master
-      - develop
     paths:
       - packages/misskey-js/**
       - .github/workflows/api-misskey-js.yml
