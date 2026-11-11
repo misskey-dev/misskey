@@ -165,9 +165,6 @@ jobs:
           submodules: true
       - name: Setup pnpm
         uses: pnpm/action-setup@v6.0.10
-      - name: Get current date
-        id: current-date
-        run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
       - name: Use Node.js
         uses: actions/setup-node@v7.0.0
         with:
@@ -179,7 +176,7 @@ jobs:
       - name: Copy Configure
         run: cp .github/misskey/test.yml .config
       - name: Build
-        run: pnpm build
+        run: pnpm build-pre && pnpm --filter backend... build
       - name: Run migrations
         run: MISSKEY_CONFIG_YML=test.yml pnpm --filter backend migrate
       - name: Check no migrations are remaining
