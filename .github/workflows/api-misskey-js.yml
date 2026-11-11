@@ -14,8 +14,6 @@ on:
       - .github/workflows/api-misskey-js.yml
 jobs:
   report:
-    # develop -> master の PR は develop への push で検証済みなので重複実行しない
-    if: github.event_name != 'pull_request' || github.event.pull_request.base.ref != 'master' || github.head_ref != 'develop' || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
 
     steps:
