@@ -159,7 +159,7 @@ const hostInput = ref(toRef(props, 'host').value);
 const rangeStartAt = ref<string | null>(null);
 const rangeEndAt = ref<string | null>(null);
 
-const user = shallowRef<Misskey.entities.UserDetailed | null>(null);
+const user = shallowRef<Misskey.entities.UserLite | null>(null);
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const noteSearchableScope = instance.noteSearchableScope ?? 'local';
