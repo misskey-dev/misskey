@@ -22,6 +22,10 @@ jobs:
         with:
           node-version-file: '.node-version'
           cache: pnpm
+          # 部分インストールのストアで full install 用のキャッシュ (pnpm-lock.yaml のみのキー) を汚さないよう、キーを分ける
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            packages-private/changelog-checker/package.json
 
       - name: Checkout base
         run: |
