@@ -36,9 +36,9 @@ jobs:
       if: matrix.use-merge-parent
       run: git checkout --detach HEAD^1
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.10
+      uses: pnpm/action-setup@v6.1.1
     - name: Use Node.js
-      uses: actions/setup-node@v7.0.0
+      uses: actions/setup-node@v7.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'

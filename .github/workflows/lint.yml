@@ -46,8 +46,8 @@ jobs:
       with:
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.10
-    - uses: actions/setup-node@v7.0.0
+      uses: pnpm/action-setup@v6.1.1
+    - uses: actions/setup-node@v7.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -78,8 +78,8 @@ jobs:
       with:
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.10
-    - uses: actions/setup-node@v7.0.0
+      uses: pnpm/action-setup@v6.1.1
+    - uses: actions/setup-node@v7.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -108,8 +108,8 @@ jobs:
       with:
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.10
-    - uses: actions/setup-node@v7.0.0
+      uses: pnpm/action-setup@v6.1.1
+    - uses: actions/setup-node@v7.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -126,8 +126,8 @@ jobs:
       with:
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.10
-    - uses: actions/setup-node@v7.0.0
+      uses: pnpm/action-setup@v6.1.1
+    - uses: actions/setup-node@v7.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
