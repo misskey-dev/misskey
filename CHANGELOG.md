@@ -11,6 +11,8 @@
   - 公式Docker Imageや同梱のDockerfileをご利用の場合は、何もしなくても新しい起動スクリプトが使用されます（常駐時のメモリ消費量が削減されます）。
   - `pnpm start` や `pnpm migrateandstart` 、公式Docker Imageなども内部で新しい起動スクリプトを使用するため、 `NODE_OPTIONS` で `--require` や `--import` などを指定している場合は、相対パスやパッケージ名が今までの `packages/backend` ではなく、起動したディレクトリ（通常はリポジトリのルート）を基準に解決されるようになります。独自の起動スクリプトやsystemdのユニットファイルなどで `NODE_OPTIONS` を設定している場合は、アップグレード前に設定をご確認ください。
 - 以前のリリースで予告した通り、Node.js v22のサポートを終了しました。 **本バージョン以降、Node.js v22では起動しません。** Node.js v24, v26をご利用ください。
+- Node.jsのセキュリティアップデートに伴い、最低動作バージョンを 24.22.3 / 26.13.1 に引き上げました。
+  - Docker Image は Node.js 26.13.1-trixie に更新されています。
 
 ### General
 - Enhance: Mastodon など、Misskey以外のソフトウェアによる引用ノートの表示改善
