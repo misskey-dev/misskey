@@ -47,12 +47,23 @@ export function createHttpClientInstrumentation(deps: HttpClientInstrumentationD
 			},
 		});
 		spans.set(request, span);
+
+		// CONNECT や 101 Upgrade では response finish が発行されず、成功時は request error も起きない。
+		// response/error のどちらでも閉じられなかった span を request の close で終了させる。
+		request.once('close', guardDiagnosticsListener(deps, () => {
+			const pendingSpan = spans.get(request);
+			if (pendingSpan == null) return;
+			pendingSpan.end();
+			spans.delete(request);
+		}));
 	}));
 
 	const unsubscribeResponseFinish = deps.subscribe(HTTP_CLIENT_RESPONSE_FINISH, guardDiagnosticsListener(deps, (message: unknown) => {
 		const { request, response } = message as ResponseFinishMessage;
 		const span = spans.get(request);
 		if (span == null) return;
+		// 以降は response 側で終了を追跡するため、request の close では終了させない。
+		spans.delete(request);
 
 		const statusCode = response.statusCode;
 		if (statusCode != null) {
@@ -63,8 +74,16 @@ export function createHttpClientInstrumentation(deps: HttpClientInstrumentationD
 			span.setAttribute('error.type', String(statusCode));
 			span.setStatus({ code: deps.spanStatusCodeError });
 		}
-		span.end();
-		spans.delete(request);
+
+		// response finish はヘッダー受信時に発行されるため、本文の受信が終わる close まで span を開いておく。
+		// 'error' リスナーを足すと IncomingMessage が error を emit するようになり挙動が変わるので、complete で判定する。
+		response.once('close', guardDiagnosticsListener(deps, () => {
+			if (!response.complete) {
+				span.setAttribute('error.type', 'aborted');
+				span.setStatus({ code: deps.spanStatusCodeError });
+			}
+			span.end();
+		}));
 	}));
 
 	const unsubscribeRequestError = deps.subscribe(HTTP_CLIENT_REQUEST_ERROR, guardDiagnosticsListener(deps, (message: unknown) => {
@@ -104,7 +123,8 @@ function getRequestDetails(request: ClientRequest): { url: string; host: string;
 	try {
 		protocol = request.protocol === 'https:' ? 'https:' : 'http:';
 		const host = request.getHeader('host')?.toString() ?? request.host;
-		const url = new URL(request.path || '/', `${protocol}//${host}`);
+		// request.path が '//' で始まるとホストとして解釈されうるため、URL の組み立てには使わない。
+		const url = new URL(`${protocol}//${host}`);
 		// URL 属性には認証情報やクエリ文字列、Push endpoint の capability URL を含みうるパスを含めない。
 		url.username = '';
 		url.password = '';

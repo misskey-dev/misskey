@@ -16,17 +16,14 @@ export function instrumentQueue<T extends object>(queue: Bull.Queue<T>): Bull.Qu
 	const add = queue.add.bind(queue);
 	queue.add = ((name, data, opts) => {
 		// BullMQ が data を Redis 用にシリアライズする前に、enqueue 元の context を内部フィールドへ追加する。
-		injectQueueTraceContext(data, injectTraceContext);
-		return add(name, data, opts);
+		// 呼び出し元の data は変更せず、context を付与したコピーを渡す。
+		return add(name, injectQueueTraceContext(data, injectTraceContext), opts);
 	}) as typeof queue.add;
 
 	// addBulk は複数ジョブを一度にシリアライズするので、各 data へ同じ context を注入する。
 	const addBulk = queue.addBulk.bind(queue);
 	queue.addBulk = ((jobs) => {
-		for (const job of jobs) {
-			injectQueueTraceContext(job.data, injectTraceContext);
-		}
-		return addBulk(jobs);
+		return addBulk(jobs.map(job => ({ ...job, data: injectQueueTraceContext(job.data, injectTraceContext) })));
 	}) as typeof queue.addBulk;
 
 	return queue;

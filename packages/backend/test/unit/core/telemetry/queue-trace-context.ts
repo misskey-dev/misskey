@@ -30,30 +30,42 @@ describe('queue-trace-context', () => {
 	test('stores only a non-empty carrier in the job data', () => {
 		const data = { noteId: '9d6b9a65-46c9-4e1b-a640-9589693893c9' };
 
-		injectQueueTraceContext(data, carrier => {
+		const result = injectQueueTraceContext(data, carrier => {
 			carrier['traceparent'] = '00-0123456789abcdef0123456789abcdef-0123456789abcdef-01';
 		});
 
-		expect(data).toMatchObject({
+		expect(result).toEqual({
+			noteId: '9d6b9a65-46c9-4e1b-a640-9589693893c9',
 			__misskeyTraceContext: {
 				traceparent: '00-0123456789abcdef0123456789abcdef-0123456789abcdef-01',
 			},
 		});
+		expect(data).not.toHaveProperty('__misskeyTraceContext');
 	});
 
 	test('does not store an empty carrier when no active trace exists', () => {
 		const data = { noteId: '9d6b9a65-46c9-4e1b-a640-9589693893c9' };
 
-		injectQueueTraceContext(data, () => {});
+		const result = injectQueueTraceContext(data, () => {});
 
-		expect(data).not.toHaveProperty('__misskeyTraceContext');
+		expect(result).toBe(data);
+		expect(result).not.toHaveProperty('__misskeyTraceContext');
+	});
+
+	test('does not reuse a stale carrier when no active trace exists', () => {
+		const data = jobData();
+
+		const result = injectQueueTraceContext(data, () => {});
+
+		expect(result).toEqual({ name: 'deliver' });
+		expect(data).toHaveProperty('__misskeyTraceContext');
 	});
 
 	test('ignores non-object job data', () => {
 		const inject = vi.fn();
 
-		injectQueueTraceContext(null, inject);
-		injectQueueTraceContext('not a job object', inject);
+		expect(injectQueueTraceContext(null, inject)).toBeNull();
+		expect(injectQueueTraceContext('not a job object', inject)).toBe('not a job object');
 
 		expect(inject).not.toHaveBeenCalled();
 	});

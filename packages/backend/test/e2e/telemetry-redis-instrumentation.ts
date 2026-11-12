@@ -29,10 +29,10 @@ describe('Redis telemetry instrumentation', () => {
 		});
 		const queueName = `telemetry-${randomUUID()}`;
 		const prefix = `telemetry-${randomUUID()}`;
+		// TLS や ACL を含む実際のジョブキュー用設定を使い、BullMQ と互換性のない keyPrefix だけ外す。
 		const connection = {
-			host: config.redis.host,
-			port: config.redis.port,
-			...(config.redis.password != null ? { password: config.redis.password } : {}),
+			...config.redisForJobQueue,
+			keyPrefix: undefined,
 		};
 		const queue = new Queue(queueName, { connection, prefix });
 		let worker: Worker | undefined;

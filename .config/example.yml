@@ -365,6 +365,9 @@ id: 'aidx'
 #  endpoint: 'http://localhost:4318/v1/traces'
 #  #headers:
 #  #  authorization: 'Bearer xxxxx'
+#  # Ratio (0.0-1.0) of new root traces to record. It applies only to root
+#  # spans: spans that continue an existing trace (e.g. queue jobs with
+#  # jobTraceContextMode: 'parent') follow their parent's sampling decision.
 #  #sampleRate: 1.0
 #  # Record PostgreSQL query spans. Disabled by default to avoid instrumentation
 #  # overhead when database-level diagnostics are not needed.

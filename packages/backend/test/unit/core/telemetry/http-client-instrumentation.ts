@@ -3,18 +3,38 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EventEmitter } from 'node:events';
 import { describe, expect, test, vi } from 'vitest';
 import { SpanKind, SpanStatusCode } from '@opentelemetry/api';
 import { createHttpClientInstrumentation } from '@/core/telemetry/http-client-instrumentation.js';
 
 function request() {
-	return {
+	return Object.assign(new EventEmitter(), {
 		method: 'POST',
 		protocol: 'https:',
 		path: '/inbox?token=secret',
 		host: 'remote.example',
 		getHeader: vi.fn((name: string) => name === 'host' ? 'user:password@remote.example:8443' : undefined),
-	};
+	});
+}
+
+function response(fields: { statusCode?: number; httpVersion?: string; complete?: boolean }) {
+	return Object.assign(new EventEmitter(), { complete: true, ...fields });
+}
+
+function setup(span: unknown) {
+	const listeners = new Map<string, (message: unknown) => void>();
+	const tracer = { startSpan: vi.fn(() => span) };
+	createHttpClientInstrumentation({
+		tracer: tracer as any,
+		spanKindClient: SpanKind.CLIENT,
+		spanStatusCodeError: SpanStatusCode.ERROR,
+		subscribe: (name, listener) => {
+			listeners.set(name, listener);
+			return () => listeners.delete(name);
+		},
+	});
+	return { listeners, tracer };
 }
 
 describe('http-client-instrumentation', () => {
@@ -37,12 +57,17 @@ describe('http-client-instrumentation', () => {
 			},
 		});
 		const clientRequest = request();
+		const clientResponse = response({ statusCode: 201, httpVersion: '1.1' });
 
 		listeners.get('http.client.request.created')!({ request: clientRequest });
 		listeners.get('http.client.response.finish')!({
 			request: clientRequest,
-			response: { statusCode: 201, httpVersion: '1.1' },
+			response: clientResponse,
 		});
+		// response finish はヘッダー受信時点なので、本文が終わるまで span は閉じない。
+		expect(span.end).not.toHaveBeenCalled();
+		clientResponse.emit('close');
+		clientRequest.emit('close');
 
 		expect(tracer.startSpan).toHaveBeenCalledWith('POST', {
 			kind: SpanKind.CLIENT,
@@ -77,7 +102,8 @@ describe('http-client-instrumentation', () => {
 
 		listeners.get('http.client.request.created')!({ request: clientRequest });
 		listeners.get('http.client.request.error')!({ request: clientRequest, error });
-		listeners.get('http.client.response.finish')!({ request: clientRequest, response: { statusCode: 200 } });
+		listeners.get('http.client.response.finish')!({ request: clientRequest, response: response({ statusCode: 200 }) });
+		clientRequest.emit('close');
 
 		expect(span.recordException).toHaveBeenCalledWith(error);
 		expect(span.setAttribute).toHaveBeenCalledWith('error.type', 'ECONNREFUSED');
@@ -100,10 +126,52 @@ describe('http-client-instrumentation', () => {
 		});
 
 		listeners.get('http.client.request.created')!({ request: clientRequest });
-		listeners.get('http.client.response.finish')!({ request: clientRequest, response: { statusCode: 502 } });
+		listeners.get('http.client.response.finish')!({ request: clientRequest, response: response({ statusCode: 502 }) });
 
 		expect(span.setAttribute).toHaveBeenCalledWith('error.type', '502');
 		expect(span.setStatus).toHaveBeenCalledWith({ code: SpanStatusCode.ERROR });
+	});
+
+	test('marks the span as an error when the response body is aborted', () => {
+		const span = { end: vi.fn(), recordException: vi.fn(), setAttribute: vi.fn(), setStatus: vi.fn() };
+		const { listeners } = setup(span);
+		const clientRequest = request();
+		const clientResponse = response({ statusCode: 200, complete: false });
+
+		listeners.get('http.client.request.created')!({ request: clientRequest });
+		listeners.get('http.client.response.finish')!({ request: clientRequest, response: clientResponse });
+		clientResponse.emit('close');
+
+		expect(span.setAttribute).toHaveBeenCalledWith('error.type', 'aborted');
+		expect(span.setStatus).toHaveBeenCalledWith({ code: SpanStatusCode.ERROR });
+		expect(span.end).toHaveBeenCalledTimes(1);
+	});
+
+	test('ends the span on request close when no response finish is published (CONNECT / Upgrade)', () => {
+		const span = { end: vi.fn(), recordException: vi.fn(), setAttribute: vi.fn(), setStatus: vi.fn() };
+		const { listeners } = setup(span);
+		const clientRequest = request();
+
+		listeners.get('http.client.request.created')!({ request: clientRequest });
+		clientRequest.emit('close');
+
+		expect(span.setStatus).not.toHaveBeenCalled();
+		expect(span.end).toHaveBeenCalledTimes(1);
+	});
+
+	test('does not derive the host from a request path starting with //', () => {
+		const span = { end: vi.fn(), recordException: vi.fn(), setAttribute: vi.fn(), setStatus: vi.fn() };
+		const { listeners, tracer } = setup(span);
+		const clientRequest = Object.assign(request(), { path: '//attacker.example/secret' });
+
+		listeners.get('http.client.request.created')!({ request: clientRequest });
+
+		expect(tracer.startSpan).toHaveBeenCalledWith('POST', expect.objectContaining({
+			attributes: expect.objectContaining({
+				'url.full': 'https://remote.example:8443/',
+				'server.address': 'remote.example',
+			}),
+		}));
 	});
 
 	test('uses safe request details when the request URL cannot be constructed', () => {
@@ -172,7 +240,7 @@ describe('http-client-instrumentation', () => {
 		listeners.get('http.client.request.created')!({ request: responseRequest });
 		expect(() => listeners.get('http.client.response.finish')!({
 			request: responseRequest,
-			response: { statusCode: 200 },
+			response: response({ statusCode: 200 }),
 		})).not.toThrow();
 		listeners.get('http.client.request.created')!({ request: errorRequest });
 		expect(() => listeners.get('http.client.request.error')!({

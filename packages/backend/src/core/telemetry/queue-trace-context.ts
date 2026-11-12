@@ -44,19 +44,25 @@ export type QueueSpanContext = {
 type QueueSpanContextDeps = Pick<QueueTraceContextDeps, 'propagation' | 'trace' | 'rootContext' | 'mode'>;
 
 /**
- * enqueue 元の active context を、ジョブ本来のデータを壊さない内部フィールドとして保持する。
- * propagator が何も注入しなかった場合は、Redis に不要な空オブジェクトを残さない。
+ * enqueue 元の active context を内部フィールドに持つ、新しいジョブデータを返す。
+ * 呼び出し元のオブジェクトは変更しない。propagator が何も注入しなかった場合は、
+ * Redis に不要な空オブジェクトを残さず、既存の (古い) carrier も引き継がない。
  */
-export function injectQueueTraceContext(data: unknown, inject: (carrier: QueueTraceContextCarrier) => void): void {
-	// BullMQ の型定義外から渡される値も考慮し、書き込めない値は無視する。
-	if (data == null || typeof data !== 'object') return;
+export function injectQueueTraceContext<T>(data: T, inject: (carrier: QueueTraceContextCarrier) => void): T {
+	// BullMQ の型定義外から渡される値も考慮し、プレーンなオブジェクトとして扱えない値はそのまま返す。
+	if (data == null || typeof data !== 'object' || Array.isArray(data)) return data;
 
 	const carrier: QueueTraceContextCarrier = {};
 	inject(carrier);
 
+	// 処理済みジョブの data を再 enqueue した場合などに、以前の trace context を再利用しない。
+	const { [QUEUE_TRACE_CONTEXT_KEY]: _staleCarrier, ...rest } = data as Record<string, unknown>;
+
 	// active span が無い場合、propagator は何も注入しない。空の内部フィールドは Redis に保存しない。
-	if (Object.keys(carrier).length === 0) return;
-	Object.assign(data, { [QUEUE_TRACE_CONTEXT_KEY]: carrier });
+	if (Object.keys(carrier).length === 0) {
+		return (Object.hasOwn(data, QUEUE_TRACE_CONTEXT_KEY) ? rest : data) as T;
+	}
+	return { ...rest, [QUEUE_TRACE_CONTEXT_KEY]: carrier } as T;
 }
 
 /** 現在実行中の span を propagator の標準形式で carrier へ書き出す。 */

@@ -30,12 +30,14 @@ describe('queue-instrumentation', () => {
 		queue.add('endedPollNotification', data);
 
 		expect(mocks.injectTraceContext).toHaveBeenCalledTimes(1);
-		expect(data).toMatchObject({
+		expect(add).toHaveBeenCalledWith('endedPollNotification', {
+			...data,
 			__misskeyTraceContext: {
 				traceparent: '00-0123456789abcdef0123456789abcdef-0123456789abcdef-01',
 			},
-		});
-		expect(add).toHaveBeenCalledWith('endedPollNotification', data, undefined);
+		}, undefined);
+		// 呼び出し元の data は変更しない。
+		expect(data).not.toHaveProperty('__misskeyTraceContext');
 	});
 
 	test('injects every job passed to addBulk()', () => {
@@ -49,9 +51,13 @@ describe('queue-instrumentation', () => {
 		queue.addBulk(jobs);
 
 		expect(mocks.injectTraceContext).toHaveBeenCalledTimes(2);
-		expect(jobs).toEqual(expect.arrayContaining([
-			expect.objectContaining({ data: expect.objectContaining({ __misskeyTraceContext: expect.any(Object) }) }),
-		]));
-		expect(addBulk).toHaveBeenCalledWith(jobs);
+		expect(addBulk).toHaveBeenCalledWith(jobs.map(job => ({
+			...job,
+			data: { ...job.data, __misskeyTraceContext: expect.any(Object) },
+		})));
+		// 呼び出し元のジョブと data は変更しない。
+		for (const job of jobs) {
+			expect(job.data).not.toHaveProperty('__misskeyTraceContext');
+		}
 	});
 });
