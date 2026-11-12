@@ -15,6 +15,17 @@ const maxLinks = 8;
 const maxEvents = 4;
 const spanNameMaxBytes = 256;
 
+const pgQuerySpanName = 'pg.query';
+// instrumentation-pg が SQL 本文の先頭語を大文字化して span 名に入れる操作種別のうち、公開してよいもの。
+const pgOperationNames: ReadonlySet<string> = new Set([
+	'SELECT', 'INSERT', 'UPDATE', 'DELETE', 'WITH',
+	'BEGIN', 'START', 'COMMIT', 'ROLLBACK', 'SAVEPOINT', 'RELEASE',
+	'SET', 'SHOW', 'RESET', 'LOCK',
+	'CREATE', 'ALTER', 'DROP', 'TRUNCATE',
+	'EXPLAIN', 'ANALYZE', 'VACUUM', 'REFRESH', 'COPY',
+	'LISTEN', 'UNLISTEN', 'NOTIFY',
+]);
+
 /**
  * 計測情報を送信先へ渡す直前に、公開してよい値だけを持つ複製へ置き換える。
  * 元の計測情報には後から属性が追加されうるため、下流へそのまま渡さない。
@@ -142,7 +153,8 @@ export function createSanitizedReadableSpan(span: ReadableSpan, policy: Sanitize
  *
  * HTTP の span は、計装が付けた名前に生の path が含まれうるため使わず、許可済みの属性から作り直す。
  * 受信 span は method と route、送信 span は method と `url.full` の host を使う。
- * それ以外の span 名は Misskey 自身と計装ライブラリがコード上で決める (`API: notes/create`、`pg.query:SELECT` など) ため、
+ * PostgreSQL の span は名前付きクエリだとクエリ名がそのまま入るため、許可した操作種別だけから作り直す。
+ * それ以外の span 名は Misskey 自身と計装ライブラリがコード上で決める (`API: notes/create` など) ため、
  * 表示を操作する制御文字を除き、長さを制限するだけにする。
  */
 function sanitizeSpanName(value: unknown, attributes: Record<string, string | number | boolean>): string {
@@ -162,8 +174,20 @@ function sanitizeSpanName(value: unknown, attributes: Record<string, string | nu
 	if (typeof value !== 'string') {
 		return marker;
 	}
-	const name = truncateUtf8Bytes(stripLogInjectionControlChars(value), spanNameMaxBytes);
+	const name = truncateUtf8Bytes(stripLogInjectionControlChars(sanitizePgQuerySpanName(value)), spanNameMaxBytes);
 	return name === '' ? marker : name;
+}
+
+/**
+ * instrumentation-pg の span 名 (`pg.query:<名前付きクエリ名 または 操作種別> <DB名>`) を、許可した操作種別だけで作り直す。
+ * 種別を判定できない場合は固定名にする。pg の span でなければそのまま返す。
+ */
+function sanitizePgQuerySpanName(value: string): string {
+	if (value !== pgQuerySpanName && !value.startsWith(`${pgQuerySpanName}:`)) {
+		return value;
+	}
+	const operation = value.slice(pgQuerySpanName.length + 1).split(' ', 1)[0];
+	return pgOperationNames.has(operation) ? `${pgQuerySpanName}:${operation}` : pgQuerySpanName;
 }
 
 /**

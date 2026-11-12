@@ -97,6 +97,17 @@ describe('SanitizingSpanProcessor', () => {
 		expect(createSanitizedReadableSpan(span, { allowDbStatement: true })?.attributes).toEqual({ 'db.system.name': 'postgresql', 'db.query.text': 'SELECT 1' });
 	});
 
+	test('rebuilds PostgreSQL span names from an allowed operation and never exports named query names', () => {
+		const nameOf = (name: string) => createSanitizedReadableSpan(createSpan({ name }))?.name;
+		expect(nameOf('pg.query:SELECT misskey')).toBe('pg.query:SELECT');
+		expect(nameOf('pg.query:COMMIT')).toBe('pg.query:COMMIT');
+		expect(nameOf('pg.query:DO_NOT_EXPORT misskey')).toBe('pg.query');
+		expect(nameOf('pg.query:select-user-DO_NOT_EXPORT misskey')).toBe('pg.query');
+		expect(nameOf('pg.query:\x1b[31mSELECT misskey')).toBe('pg.query');
+		expect(nameOf('pg.query')).toBe('pg.query');
+		expect(nameOf('pg.connect')).toBe('pg.connect');
+	});
+
 	test('rebuilds HTTP span names from the sanitized method and route or host', () => {
 		// 受信 span は計装が付けた名前を使わず、method と route から作り直す。
 		expect(createSanitizedReadableSpan(createSpan({
