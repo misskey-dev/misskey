@@ -50,6 +50,7 @@ updateI18n(locales['en-US']);
 export const preferState: Record<string, unknown> = {
 
 	// なんかtestがうまいこと動かないのでここに書く
+	autoplayEmbededPlayerOfUrlPreview: true,
 	dataSaver: {
 		media: false,
 		avatar: false,
