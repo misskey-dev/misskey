@@ -24,8 +24,6 @@ export async function registerHttpServerInstrumentation(fastify: FastifyInstance
 	const instrumentation = new FastifyOtelInstrumentation({
 		requestHook: (span, request) => {
 			const route = request.routeOptions.url;
-			// @fastify/otel は url.path にクエリ付きの生URLを入れるため、アクセストークン等を含まないルートテンプレートで上書きする。
-			span.setAttribute('url.path', route ?? '/');
 			if (route != null) {
 				// デフォルトだとトレース名が「request」で固定されてしまうため、判別がつかなくなる。
 				// ルート名をspan名に設定することで、トレースビューでルートごとの処理時間を確認できるようになる。
