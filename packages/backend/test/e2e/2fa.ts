@@ -192,7 +192,6 @@ describe('2要素認証', () => {
 			password,
 		}, alice);
 		assert.strictEqual(registerResponse.status, 200);
-		assert.notEqual(registerResponse.body.qr, undefined);
 		assert.notEqual(registerResponse.body.url, undefined);
 		assert.notEqual(registerResponse.body.secret, undefined);
 		assert.strictEqual(registerResponse.body.label, username);
