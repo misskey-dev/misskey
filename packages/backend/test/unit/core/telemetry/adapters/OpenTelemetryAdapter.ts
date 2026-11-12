@@ -5,8 +5,8 @@
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { SpanStatusCode } from '@opentelemetry/api';
-import { defaultResource, detectResources, envDetector, resourceFromAttributes } from '@opentelemetry/resources';
-import { ParentBasedSampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-base';
+import { defaultResource, detectResources, resourceAttributesEnvDetector, resourceFromAttributes, serviceNameEnvDetector } from '@opentelemetry/resources';
+import { ParentBasedSampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace';
 import { ATTR_SERVICE_INSTANCE_ID, ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import type { Context, SpanContext } from '@opentelemetry/api';
 import { OpenTelemetryAdapter, createResource, createSampler, getMisskeyProcessRole, installInstrumentationsWithCleanup } from '@/core/telemetry/adapters/OpenTelemetryAdapter.js';
@@ -374,7 +374,8 @@ describe('createResource', () => {
 				defaultResource,
 				resourceFromAttributes,
 				detectResources,
-					envDetector,
+					resourceAttributesEnvDetector,
+					serviceNameEnvDetector,
 					serviceNameAttribute: ATTR_SERVICE_NAME,
 					serviceInstanceIdAttribute: ATTR_SERVICE_INSTANCE_ID,
 					serviceVersionAttribute: ATTR_SERVICE_VERSION,

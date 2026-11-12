@@ -45,7 +45,6 @@ async function run(scenario: RuntimeScenario): Promise<TelemetryRuntimeResult> {
 			...process.env,
 			SENTRY_DSN: '',
 			SENTRY_TRACES_SAMPLE_RATE: scenario === 'environment' ? '1' : '',
-			OTEL_BSP_SCHEDULE_DELAY: '60000',
 			OTEL_EXPORTER_OTLP_TIMEOUT: '60000',
 		},
 	});

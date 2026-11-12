@@ -5,9 +5,10 @@
 
 import { createRequire } from 'node:module';
 import { context, propagation, trace } from '@opentelemetry/api';
-import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
+import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
+import { TracerProvider } from '@opentelemetry/sdk-trace';
 import { describe, expect, test, vi } from 'vitest';
-import type { Span as SdkSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
+import type { Span as SdkSpan, SpanProcessor } from '@opentelemetry/sdk-trace';
 import { installDatabaseInstrumentation, installInstrumentation } from '@/core/telemetry/database-instrumentation.js';
 
 const backendRequire = createRequire(import.meta.url);
@@ -82,8 +83,9 @@ describe('database-instrumentation', () => {
 			onEnd: () => {},
 			shutdown: async () => {},
 		};
-		const provider = new NodeTracerProvider({ spanProcessors: [spanProcessor] });
-		provider.register();
+		const provider = new TracerProvider({ spanProcessors: [spanProcessor] });
+		trace.setGlobalTracerProvider(provider);
+		context.setGlobalContextManager(new AsyncLocalStorageContextManager().enable());
 		let uninstall: (() => void) | undefined;
 
 		try {

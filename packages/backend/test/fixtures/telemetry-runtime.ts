@@ -14,7 +14,7 @@ import { registerHttpServerInstrumentation } from '@/server/http-server-instrume
 import { logManager } from '@/logging/logging-runtime.js';
 import type { Config } from '@/config.js';
 import type { SpanContext } from '@opentelemetry/api';
-import type { ReadableSpan } from '@opentelemetry/sdk-trace-base';
+import type { ReadableSpan } from '@opentelemetry/sdk-trace';
 
 export type RuntimeScenario = 'none' | 'sentry' | 'otel' | 'linked' | 'environment' | 'unsampled' | 'disabled' | 'fastify-disabled' | 'http-disabled' | 'profile' | 'queue-parent' | 'queue-link' | 'stalled'
 	| 'sentry-defaults-false' | 'sentry-defaults-empty' | 'linked-defaults-false' | 'linked-defaults-empty' | 'linked-defaults-selected';

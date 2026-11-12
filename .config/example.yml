@@ -345,7 +345,8 @@ id: 'aidx'
 #
 # Standard OTEL_* environment variables are honored for values omitted below:
 # OTEL_EXPORTER_OTLP_TRACES_ENDPOINT, OTEL_EXPORTER_OTLP_ENDPOINT,
-# OTEL_EXPORTER_OTLP_HEADERS, OTEL_TRACES_SAMPLER, OTEL_TRACES_SAMPLER_ARG, etc.
+# OTEL_EXPORTER_OTLP_HEADERS, OTEL_SERVICE_NAME, OTEL_RESOURCE_ATTRIBUTES, etc.
+# Sampling is controlled only by sampleRate below (OTEL_TRACES_SAMPLER is not read).
 #
 # When this is enabled together with sentryForBackend, OpenTelemetry owns
 # tracing and Sentry only links its errors to the active OpenTelemetry span

@@ -6,9 +6,9 @@
 import { randomUUID } from 'node:crypto';
 import { describe, expect, test } from 'vitest';
 import { Queue, Worker } from 'bullmq';
-import { SpanKind, SpanStatusCode } from '@opentelemetry/api';
-import { InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
+import { context, SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
+import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
+import { InMemorySpanExporter, SimpleSpanProcessor, TracerProvider } from '@opentelemetry/sdk-trace';
 import { loadConfig } from '@/config.js';
 import { installRedisInstrumentation } from '@/core/telemetry/redis-instrumentation.js';
 
@@ -17,10 +17,11 @@ const config = loadConfig();
 describe('Redis telemetry instrumentation', () => {
 	test('records Redis spans below HTTP and BullMQ worker spans without Redis arguments', async () => {
 		const exporter = new InMemorySpanExporter();
-		const provider = new NodeTracerProvider({
-			spanProcessors: [new SimpleSpanProcessor(exporter)],
+		const provider = new TracerProvider({
+			spanProcessors: [new SimpleSpanProcessor({ exporter })],
 		});
-		provider.register();
+		trace.setGlobalTracerProvider(provider);
+		context.setGlobalContextManager(new AsyncLocalStorageContextManager().enable());
 
 		const tracer = provider.getTracer('telemetry-redis-instrumentation-test');
 		const uninstall = installRedisInstrumentation(tracer, SpanKind.CLIENT, SpanStatusCode.ERROR, {

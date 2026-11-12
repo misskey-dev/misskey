@@ -38,7 +38,7 @@ export async function initTelemetry(config: Config): Promise<void> {
 		// Sentry単体時は既存のSentry adapterだけを登録する。
 		adapters.push(await SentryTelemetryAdapter.create(config.sentryForBackend, warn));
 	} else if (otelForBackend) {
-		// OTel単体時だけMisskey自身でNodeTracerProviderを立てる。
+		// OTel単体時だけMisskey自身でTracerProviderを立てる。
 		adapters.push(await OpenTelemetryAdapter.create(otelForBackend));
 	}
 

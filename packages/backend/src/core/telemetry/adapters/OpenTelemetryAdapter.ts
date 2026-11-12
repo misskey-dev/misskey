@@ -14,7 +14,7 @@ import { executeSpan, getQueueTraceContextMode, injectActiveTraceContext, record
 import type { LogTraceContext } from '@/logging/types.js';
 import type { Span, SpanStatusCode, Tracer } from '@opentelemetry/api';
 import type { Resource, ResourceDetector } from '@opentelemetry/resources';
-import type { ParentBasedSampler, Sampler } from '@opentelemetry/sdk-trace-base';
+import type { ParentBasedSampler, Sampler } from '@opentelemetry/sdk-trace';
 import type { OtelBackendRuntimeConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
 import type { QueueTraceContextCarrier, QueueTraceContextDeps } from '../queue-trace-context.js';
 
@@ -43,7 +43,8 @@ type CreateResourceDeps = {
 	defaultResource: () => Resource;
 	resourceFromAttributes: (attributes: Record<string, string>) => Resource;
 	detectResources: (config: { detectors: ResourceDetector[] }) => Resource;
-	envDetector: ResourceDetector;
+	resourceAttributesEnvDetector: ResourceDetector;
+	serviceNameEnvDetector: ResourceDetector;
 	serviceNameAttribute: string;
 	serviceInstanceIdAttribute: string;
 	serviceVersionAttribute: string;
@@ -61,19 +62,19 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 	public static async create(config: OtelBackendRuntimeConfig): Promise<OpenTelemetryAdapter> {
 		const [
 			{ context, diag, DiagLogLevel, propagation, ROOT_CONTEXT, SpanKind, SpanStatusCode, trace },
+			{ AsyncLocalStorageContextManager },
 			{ W3CTraceContextPropagator },
 			{ OTLPTraceExporter },
-			{ defaultResource, detectResources, envDetector, resourceFromAttributes },
-			{ BatchSpanProcessor, ParentBasedSampler, TraceIdRatioBasedSampler },
-			{ NodeTracerProvider },
+			{ defaultResource, detectResources, resourceAttributesEnvDetector, resourceFromAttributes, serviceNameEnvDetector },
+			{ BatchSpanProcessor, ParentBasedSampler, TraceIdRatioBasedSampler, TracerProvider },
 			{ ATTR_SERVICE_INSTANCE_ID, ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION },
 		] = await Promise.all([
 			import('@opentelemetry/api'),
+			import('@opentelemetry/context-async-hooks'),
 			import('@opentelemetry/core'),
 			import('@opentelemetry/exporter-trace-otlp-proto'),
 			import('@opentelemetry/resources'),
-			import('@opentelemetry/sdk-trace-base'),
-			import('@opentelemetry/sdk-trace-node'),
+			import('@opentelemetry/sdk-trace'),
 			import('@opentelemetry/semantic-conventions'),
 		]);
 
@@ -85,15 +86,16 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 			...(config.endpoint != null ? { url: config.endpoint } : {}),
 			...(config.headers != null ? { headers: config.headers } : {}),
 		});
-		const spanProcessor = new BatchSpanProcessor(exporter);
+		const spanProcessor = new BatchSpanProcessor({ exporter });
 
-		// SDK 2.xではSpanProcessorをprovider生成時に渡す。tracingを所有するproviderはMisskey側の1つだけにする。
-		const provider = new NodeTracerProvider({
+		// SpanProcessorはprovider生成時に渡す。tracingを所有するproviderはMisskey側の1つだけにする。
+		const provider = new TracerProvider({
 			resource: createResource(config, {
 				defaultResource,
 				resourceFromAttributes,
 				detectResources,
-				envDetector,
+				resourceAttributesEnvDetector,
+				serviceNameEnvDetector,
 				serviceNameAttribute: ATTR_SERVICE_NAME,
 				serviceInstanceIdAttribute: ATTR_SERVICE_INSTANCE_ID,
 				serviceVersionAttribute: ATTR_SERVICE_VERSION,
@@ -106,10 +108,12 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 			spanProcessors: [spanProcessor],
 		});
 
-		// HTTP送信には注入しないが、将来のQueue連結でpropagation APIを使える状態にする。
-		provider.register({
-			propagator: new W3CTraceContextPropagator(),
-		});
+		// TracerProvider自体はグローバル登録を行わないため、trace/context/propagationを個別に登録する。
+		trace.setGlobalTracerProvider(provider);
+		// startActiveSpanの親子関係を非同期処理越しに引き継ぐため、AsyncLocalStorageでcontextを伝播する。
+		context.setGlobalContextManager(new AsyncLocalStorageContextManager().enable());
+		// HTTP送信には注入しないが、Queue連結でpropagation APIを使える状態にする。
+		propagation.setGlobalPropagator(new W3CTraceContextPropagator());
 
 		// provider操作をdepsに閉じ込め、span wrapper本体をユニットテストしやすくする。
 		const tracer = provider.getTracer('misskey-backend');
@@ -258,9 +262,10 @@ export function createResource(config: OtelBackendRuntimeConfig, deps: CreateRes
 
 	// OTel標準の OTEL_SERVICE_NAME / OTEL_RESOURCE_ATTRIBUTES を尊重する。
 	// mergeは右辺が優先されるため、config.resourceAttributesを最優先にする。
+	// detectorsも後ろが優先されるため、仕様どおりOTEL_SERVICE_NAMEをOTEL_RESOURCE_ATTRIBUTESのservice.nameより優先する。
 	return deps.defaultResource()
 		.merge(misskeyDefaultResource)
-		.merge(deps.detectResources({ detectors: [deps.envDetector] }))
+		.merge(deps.detectResources({ detectors: [deps.resourceAttributesEnvDetector, deps.serviceNameEnvDetector] }))
 		.merge(deps.resourceFromAttributes(config.resourceAttributes ?? {}));
 }
 
