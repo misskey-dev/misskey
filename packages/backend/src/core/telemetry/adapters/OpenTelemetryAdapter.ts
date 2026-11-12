@@ -12,7 +12,7 @@ import { installDatabaseInstrumentation } from '@/core/telemetry/database-instru
 import { installRedisInstrumentation } from '@/core/telemetry/redis-instrumentation.js';
 import { executeSpan, getQueueTraceContextMode, injectActiveTraceContext, recordSpanError, startSpanWithQueueTraceContext } from '@/core/telemetry/queue-trace-context.js';
 import type { LogTraceContext } from '@/logging/types.js';
-import type { Span, SpanStatusCode, Tracer } from '@opentelemetry/api';
+import type { Context, PropagationAPI, Span, SpanStatusCode, TextMapGetter, TextMapPropagator, TextMapSetter, Tracer } from '@opentelemetry/api';
 import type { Resource, ResourceDetector } from '@opentelemetry/resources';
 import type { ParentBasedSampler, Sampler } from '@opentelemetry/sdk-trace';
 import type { OtelBackendRuntimeConfig, TelemetryAdapter, TelemetryCaptureMessageOptions } from './TelemetryAdapter.js';
@@ -61,7 +61,7 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 
 	public static async create(config: OtelBackendRuntimeConfig): Promise<OpenTelemetryAdapter> {
 		const [
-			{ context, diag, DiagLogLevel, propagation, ROOT_CONTEXT, SpanKind, SpanStatusCode, trace },
+			{ context, defaultTextMapGetter, defaultTextMapSetter, diag, DiagLogLevel, ROOT_CONTEXT, SpanKind, SpanStatusCode, trace },
 			{ AsyncLocalStorageContextManager },
 			{ W3CTraceContextPropagator },
 			{ OTLPTraceExporter },
@@ -108,12 +108,14 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 			spanProcessors: [spanProcessor],
 		});
 
-		// TracerProvider自体はグローバル登録を行わないため、trace/context/propagationを個別に登録する。
+		// TracerProvider自体はグローバル登録を行わないため、trace/contextを個別に登録する。
 		trace.setGlobalTracerProvider(provider);
 		// startActiveSpanの親子関係を非同期処理越しに引き継ぐため、AsyncLocalStorageでcontextを伝播する。
 		context.setGlobalContextManager(new AsyncLocalStorageContextManager().enable());
-		// HTTP送信には注入しないが、Queue連結でpropagation APIを使える状態にする。
-		propagation.setGlobalPropagator(new W3CTraceContextPropagator());
+		// propagatorはグローバル登録せず、Queue連結専用にする。
+		// グローバル登録すると@fastify/otelが受信ヘッダーのtraceparentを親にするため、外部クライアントが
+		// sampleRateを無視してspanを出力させたり、任意のtrace IDを混入させたりできてしまう。
+		const queuePropagation = createQueuePropagation(new W3CTraceContextPropagator(), defaultTextMapGetter, defaultTextMapSetter);
 
 		// provider操作をdepsに閉じ込め、span wrapper本体をユニットテストしやすくする。
 		const tracer = provider.getTracer('misskey-backend');
@@ -149,7 +151,7 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 				shutdownRedisInstrumentation,
 				queueTraceContext: {
 					tracer,
-					propagation,
+					propagation: queuePropagation,
 					trace,
 					getActiveContext: () => context.active(),
 					rootContext: ROOT_CONTEXT,
@@ -269,6 +271,24 @@ export function createResource(config: OtelBackendRuntimeConfig, deps: CreateRes
 		.merge(deps.resourceFromAttributes(config.resourceAttributes ?? {}));
 }
 
+/**
+ * propagatorをグローバル登録せずにQueue連結で使えるよう、PropagationAPIと同じ呼び出し形へ合わせる。
+ */
+export function createQueuePropagation(
+	propagator: TextMapPropagator,
+	getter: TextMapGetter,
+	setter: TextMapSetter,
+): Pick<PropagationAPI, 'extract' | 'inject'> {
+	return {
+		inject<Carrier>(ctx: Context, carrier: Carrier, carrierSetter: TextMapSetter<Carrier> = setter): void {
+			propagator.inject(ctx, carrier, carrierSetter);
+		},
+		extract<Carrier>(ctx: Context, carrier: Carrier, carrierGetter: TextMapGetter<Carrier> = getter): Context {
+			return propagator.extract(ctx, carrier, carrierGetter);
+		},
+	};
+}
+
 export function createSampler(sampleRate: number, deps: CreateSamplerDeps): ParentBasedSampler {
 	// 設定ミスを無言でAlwaysOn/AlwaysOffに倒さず、起動時に明確に失敗させる。
 	// (YAMLでクォートされた数値文字列などnumber型の保証が無い値が来てもここで弾く)
@@ -276,6 +296,9 @@ export function createSampler(sampleRate: number, deps: CreateSamplerDeps): Pare
 		throw new Error('otelForBackend.sampleRate must be a number between 0.0 and 1.0.');
 	}
 
+	// sampleRateはroot spanにのみ適用し、親を持つspanは親のsampling判断を引き継ぐ。
+	// propagatorをグローバル登録しないためHTTP受信のtraceparentは親にならず、親を持つのはMisskey内部で伝播したspan
+	// (jobTraceContextMode: 'parent' のQueue job等)に限られる。'link'(既定)ではjob spanもrootとして判定される。
 	return new deps.ParentBasedSampler({
 		root: new deps.TraceIdRatioBasedSampler(sampleRate),
 	});

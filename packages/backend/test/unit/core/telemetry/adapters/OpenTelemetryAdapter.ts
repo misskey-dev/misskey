@@ -4,12 +4,13 @@
  */
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { SpanStatusCode } from '@opentelemetry/api';
+import { context, defaultTextMapGetter, defaultTextMapSetter, propagation, ROOT_CONTEXT, SpanStatusCode, trace } from '@opentelemetry/api';
+import { W3CTraceContextPropagator } from '@opentelemetry/core';
 import { defaultResource, detectResources, resourceAttributesEnvDetector, resourceFromAttributes, serviceNameEnvDetector } from '@opentelemetry/resources';
 import { ParentBasedSampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace';
 import { ATTR_SERVICE_INSTANCE_ID, ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import type { Context, SpanContext } from '@opentelemetry/api';
-import { OpenTelemetryAdapter, createResource, createSampler, getMisskeyProcessRole, installInstrumentationsWithCleanup } from '@/core/telemetry/adapters/OpenTelemetryAdapter.js';
+import { OpenTelemetryAdapter, createQueuePropagation, createResource, createSampler, getMisskeyProcessRole, installInstrumentationsWithCleanup } from '@/core/telemetry/adapters/OpenTelemetryAdapter.js';
 
 const mocks = vi.hoisted(() => {
 	return {
@@ -326,6 +327,29 @@ describe('installInstrumentationsWithCleanup', () => {
 
 		expect(shutdownDatabaseInstrumentation).toHaveBeenCalledOnce();
 		expect(shutdownHttpClientInstrumentation).toHaveBeenCalledOnce();
+	});
+});
+
+describe('createQueuePropagation', () => {
+	const traceparent = '00-0123456789abcdef0123456789abcdef-0123456789abcdef-01';
+
+	test('round-trips W3C trace context for queue jobs without registering a global propagator', () => {
+		const queuePropagation = createQueuePropagation(new W3CTraceContextPropagator(), defaultTextMapGetter, defaultTextMapSetter);
+
+		const extracted = queuePropagation.extract(ROOT_CONTEXT, { traceparent });
+		expect(trace.getSpanContext(extracted)?.traceId).toBe('0123456789abcdef0123456789abcdef');
+
+		const carrier: Record<string, string> = {};
+		queuePropagation.inject(extracted, carrier);
+		expect(carrier.traceparent).toBe(traceparent);
+	});
+
+	test('leaves the global propagator as no-op so incoming HTTP headers are not used as parents', () => {
+		createQueuePropagation(new W3CTraceContextPropagator(), defaultTextMapGetter, defaultTextMapSetter);
+
+		// @fastify/otel は global propagation で受信ヘッダーを extract する。
+		const extracted = propagation.extract(context.active(), { traceparent });
+		expect(trace.getSpanContext(extracted)).toBeUndefined();
 	});
 });
 

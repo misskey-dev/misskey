@@ -347,6 +347,7 @@ id: 'aidx'
 # OTEL_EXPORTER_OTLP_TRACES_ENDPOINT, OTEL_EXPORTER_OTLP_ENDPOINT,
 # OTEL_EXPORTER_OTLP_HEADERS, OTEL_SERVICE_NAME, OTEL_RESOURCE_ATTRIBUTES, etc.
 # Sampling is controlled only by sampleRate below (OTEL_TRACES_SAMPLER is not read).
+# Incoming trace context headers (traceparent / tracestate) are ignored.
 #
 # When this is enabled together with sentryForBackend, OpenTelemetry owns
 # tracing and Sentry only links its errors to the active OpenTelemetry span
