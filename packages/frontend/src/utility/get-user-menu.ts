@@ -239,7 +239,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 				}
 
 				router.push('/search', {
-					query
+					query,
 				});
 			},
 		});

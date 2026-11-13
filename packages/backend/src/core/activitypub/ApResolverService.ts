@@ -12,7 +12,7 @@ import type {
 	NoteReactionsRepository,
 	NotesRepository,
 	PollsRepository,
-	UsersRepository
+	UsersRepository,
 } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';

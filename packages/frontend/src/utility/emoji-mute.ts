@@ -13,11 +13,11 @@ export function makeEmojiMuteKey(props: { name: string; host?: string | null }) 
 	return props.name.startsWith(':') ? props.name : `:${props.name}${props.host ? `@${props.host}` : ''}:`;
 }
 
-export function extractCustomEmojiName (name:string) {
+export function extractCustomEmojiName(name:string) {
 	return normalizeCustomEmojiName(name).split('@')[0];
 }
 
-export function extractCustomEmojiHost (name:string) {
+export function extractCustomEmojiHost(name:string) {
 	// nameは:emojiName@host:の形式
 	// 取り出したい部分はhostなので、@以降を取り出す
 	const index = name.indexOf('@');
@@ -51,7 +51,7 @@ export function unmute(emoji:string) {
 	const mutedEmojis = prefer.r.mutingEmojis.value;
 	console.log('unmute', emoji, emojiMuteKey);
 	console.log('mutedEmojis', mutedEmojis);
-	prefer.commit('mutingEmojis', mutedEmojis.filter((e) => e !== emojiMuteKey));
+	prefer.commit('mutingEmojis', mutedEmojis.filter((mutedEmoji) => mutedEmoji !== emojiMuteKey));
 }
 
 // 絵文字が変化しうる呼び出し元 (MFM のプレビュー等) のために ref / getter も受け付ける

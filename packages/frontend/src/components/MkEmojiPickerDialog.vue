@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:asReactionPicker="asReactionPicker"
 		:targetNote="targetNote"
 		:asDrawer="type === 'drawer'"
-		:max-height="maxHeight"
+		:maxHeight="maxHeight"
 		@chosen="chosen"
 		@esc="modal?.close()"
 	/>

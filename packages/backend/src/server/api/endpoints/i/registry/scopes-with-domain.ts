@@ -22,8 +22,8 @@ export const meta = {
 						type: 'array',
 						items: {
 							type: 'string',
-						}
-					}
+						},
+					},
 				},
 				domain: {
 					type: 'string',
@@ -31,7 +31,7 @@ export const meta = {
 				},
 			},
 		},
-	}
+	},
 } as const;
 
 export const paramDef = {

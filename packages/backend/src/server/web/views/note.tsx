@@ -14,7 +14,7 @@ export function NotePage(props: CommonProps<{
 	note: Packed<'Note'>;
 	profile: MiUserProfile;
 }>) {
-	const title = props.note.user.name ? `${props.note.user.name} (@${props.note.user.username}${props.note.user.host ? `@${props.note.user.host}` : ''})` : `@${props.note.user.username}${props.note.user.host ? `@${props.note.user.host}` : ''}`
+	const title = props.note.user.name ? `${props.note.user.name} (@${props.note.user.username}${props.note.user.host ? `@${props.note.user.host}` : ''})` : `@${props.note.user.username}${props.note.user.host ? `@${props.note.user.host}` : ''}`;
 	const isRenote = isRenotePacked(props.note);
 	const images = (props.note.files ?? []).filter(f => f.type.startsWith('image/'));
 	const videos = (props.note.files ?? []).filter(f => f.type.startsWith('video/'));
@@ -90,5 +90,5 @@ export function NotePage(props: CommonProps<{
 			metaSlot={metaBlock()}
 			ogSlot={ogBlock()}
 		></Layout>
-	)
+	);
 }

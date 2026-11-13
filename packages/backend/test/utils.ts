@@ -444,12 +444,14 @@ export function makeStreamCatcher<T>(
 	extractor: (message: Record<string, any>) => T,
 	timeout = 60 * 1000): Promise<T> {
 	let ws: WebSocket;
-	const p = new Promise<T>(async (resolve) => {
-		ws = await connectStream(user, channel, (msg) => {
+	const p = new Promise<T>((resolve, reject) => {
+		connectStream(user, channel, (msg) => {
 			if (cond(msg)) {
 				resolve(extractor(msg));
 			}
-		});
+		}).then((connected) => {
+			ws = connected;
+		}, reject);
 	}).finally(() => {
 		ws.close();
 	});
@@ -654,7 +656,7 @@ export async function captureWebhook<T = SystemWebhookPayload>(postAction: () =>
 	const fastify = Fastify();
 
 	let timeoutHandle: NodeJS.Timeout | null = null;
-	const result = await new Promise<string>(async (resolve, reject) => {
+	const result = await new Promise<string>((resolve, reject) => {
 		fastify.all('/', async (req, res) => {
 			if (timeoutHandle) {
 				clearTimeout(timeoutHandle);
@@ -666,19 +668,21 @@ export async function captureWebhook<T = SystemWebhookPayload>(postAction: () =>
 			resolve(body);
 		});
 
-		await fastify.listen({ port });
+		(async () => {
+			await fastify.listen({ port });
 
-		timeoutHandle = setTimeout(async () => {
-			await fastify.close();
-			reject(new Error('timeout'));
-		}, 3000);
+			timeoutHandle = setTimeout(async () => {
+				await fastify.close();
+				reject(new Error('timeout'));
+			}, 3000);
 
-		try {
-			await postAction();
-		} catch (e) {
-			await fastify.close();
-			reject(e);
-		}
+			try {
+				await postAction();
+			} catch (e) {
+				await fastify.close();
+				reject(e);
+			}
+		})().catch(reject);
 	});
 
 	await fastify.close();

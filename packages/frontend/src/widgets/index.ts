@@ -6,7 +6,7 @@
 import { defineAsyncComponent } from 'vue';
 import type { App } from 'vue';
 
-export default function(app: App) {
+export default function (app: App) {
 	app.component('WidgetProfile', defineAsyncComponent(() => import('./WidgetProfile.vue')));
 	app.component('WidgetInstanceInfo', defineAsyncComponent(() => import('./WidgetInstanceInfo.vue')));
 	app.component('WidgetMemo', defineAsyncComponent(() => import('./WidgetMemo.vue')));
