@@ -396,6 +396,7 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 	line-clamp: 2;
+	height: 2lh;
 	overflow: hidden;
 }
 
