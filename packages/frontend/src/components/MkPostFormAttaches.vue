@@ -53,9 +53,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="item.type === 'uploaderItem'" :class="$style.fileDetails">
 						<span><i class="ti ti-upload"></i></span>
 						<span v-if="item.file.uploading">{{ i18n.ts.uploading }}</span>
+						<span v-else-if="item.file.preprocessing">{{ i18n.ts.preprocessing }}</span>
 						<span v-else-if="item.file.compressedSize">{{ i18n.tsx._uploader.compressedToX({ x: bytes(item.file.compressedSize) }) }}</span>
 						<span v-else>{{ bytes(item.file.file.size) }}</span>
-						<span v-if="item.file.preprocessing">{{ i18n.ts.preprocessing }}</span>
 					</div>
 					<div v-else :class="$style.fileDetails">
 						<span><i class="ti ti-cloud"></i></span>
