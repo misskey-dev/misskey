@@ -156,6 +156,7 @@ import { getPluginHandlers } from '@/plugin.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
 import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
+import { isPreviewable, getType } from '@/utility/lightbox.js';
 import { useUploader } from '@/composables/use-uploader.js';
 import { startTour } from '@/utility/tour.js';
 import { closeTip } from '@/tips.js';
@@ -617,22 +618,11 @@ const attaches = computed<Attach[]>({
 function handleShowUploaderMenu(item: UploaderItem, ev: MouseEvent | KeyboardEvent) {
 	if (props.mock) return;
 	os.popupMenu(uploader.getMenu(item, async () => {
-		function getFileType(attach: Attach): 'image' | 'video' | null {
-			if (attach.type === 'driveFile') {
-				if (attach.file.type.startsWith('image/')) return 'image';
-				if (attach.file.type.startsWith('video/')) return 'video';
-			} else if (attach.type === 'uploaderItem') {
-				if (attach.file.file.type.startsWith('image/')) return 'image';
-				if (attach.file.file.type.startsWith('video/')) return 'video';
-			}
-			return null;
-		}
-
 		const contents = attaches.value
-			.filter(item => getFileType(item) != null)
+			.filter(item => isPreviewable(item.type === 'driveFile' ? item.file.type : item.file.file.type))
 			.map<Content>(item => ({
 				id: item.file.id,
-				type: getFileType(item) ?? 'image',
+				type: getType(item.type === 'driveFile' ? item.file.type : item.file.file.type) ?? 'image',
 				url: item.type === 'driveFile' ? item.file.url : item.file.objectUrl,
 				thumbnailUrl: item.type === 'driveFile' ? item.file.thumbnailUrl : item.file.thumbnail,
 				width: item.type === 'driveFile' ? item.file.properties.width : null,
