@@ -5,6 +5,7 @@
 
 import { AV_PKT_DATA_DISPLAYMATRIX } from 'node-av/constants';
 import type { Stream } from 'node-av/lib';
+import { Semaphore } from '@/misc/semaphore.js';
 
 /**
  * ローカルの一時ファイルを開くときにデマルチプレクサへ渡すオプション。
@@ -13,6 +14,15 @@ import type { Stream } from 'node-av/lib';
 export const localInputOptions = {
 	protocol_whitelist: 'file',
 };
+
+/** 動画のデコードを伴う処理の、プロセスあたりの同時実行数 */
+const MAX_CONCURRENT_DECODES = 2;
+
+/**
+ * 動画のデコードを伴う処理 (サムネイル生成・センシティブ判定用のフレーム抽出) はこれを通して実行する。
+ * 待ち時間を各処理の制限時間に含めないよう、制限時間の計測は枠を得てから始める
+ */
+export const decodeSemaphore = new Semaphore(MAX_CONCURRENT_DECODES);
 
 /** display matrix の 16.16 固定小数点を実数に戻す */
 function fromFixed(value: number): number {

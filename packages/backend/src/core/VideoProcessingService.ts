@@ -14,7 +14,7 @@ import { ImageProcessingService } from '@/core/ImageProcessingService.js';
 import type { IImage } from '@/core/ImageProcessingService.js';
 import { bindThis } from '@/decorators.js';
 import { appendQuery, query } from '@/misc/prelude/url.js';
-import { getAutorotateFilter, localInputOptions } from '@/misc/node-av-input.js';
+import { decodeSemaphore, getAutorotateFilter, localInputOptions } from '@/misc/node-av-input.js';
 import '@/misc/node-av-log.js';
 
 /**
@@ -38,6 +38,11 @@ export class VideoProcessingService {
 
 	@bindThis
 	public async generateVideoThumbnail(source: string): Promise<IImage> {
+		return await decodeSemaphore.run(() => this.generateThumbnail(source));
+	}
+
+	@bindThis
+	private async generateThumbnail(source: string): Promise<IImage> {
 		const signal = AbortSignal.timeout(THUMBNAIL_TIMEOUT_MS);
 
 		await using demuxer = await Demuxer.open(source, { signal, options: localInputOptions });

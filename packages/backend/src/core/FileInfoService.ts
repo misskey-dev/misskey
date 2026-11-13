@@ -20,7 +20,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
-import { getAutorotateFilter, localInputOptions } from '@/misc/node-av-input.js';
+import { decodeSemaphore, getAutorotateFilter, localInputOptions } from '@/misc/node-av-input.js';
 import type { Prediction } from '@/core/SensitiveMediaDetectionService.js';
 import '@/misc/node-av-log.js';
 
@@ -245,7 +245,8 @@ export class FileInfoService {
 
 		if (analyzeVideo && (mime === 'image/apng' || mime.startsWith('video/'))) {
 			// 判定対象フレームを選定して正規化済みバッファとして集め、外部サービスへまとめて送る。
-			const frameBuffers = await this.extractFramesForDetection(source);
+			// 判定サービスへの送信はデコードを伴わないので、枠はフレーム抽出の間だけ確保する
+			const frameBuffers = await decodeSemaphore.run(() => this.extractFramesForDetection(source));
 			const predictions = await this.sensitiveMediaDetectionService.detectSensitiveMany(frameBuffers);
 			const results = predictions.filter((x): x is Prediction[] => x != null).map(x => judgePrediction(x));
 			// 判定に成功したフレームが 0 件のとき（接続先未設定・通信失敗等）は、
