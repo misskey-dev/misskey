@@ -31,7 +31,7 @@ allowBuilds:
   v-code-diff: true
   vue-demi: true
   exifreader: false
-  node-av: false # napiバイナリで足りるため不要
+  node-av: true
   protobufjs: false
   pnpm: true
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
