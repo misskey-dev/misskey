@@ -15,24 +15,30 @@ jobs:
     permissions:
       contents: read
 
+    # head は PR をマージした結果 (github.sha = refs/pull/<番号>/merge のコミット)、
+    # base はその第1親を使う。両 matrix job が同じ merge commit から比較対象を決めるので、
+    # job の開始時刻がずれても base と head が食い違わない
     strategy:
       matrix:
         api-json-name: [api-base.json, api-head.json]
         include:
           - api-json-name: api-base.json
-            ref: ${{ github.base_ref }}
+            use-merge-parent: true
           - api-json-name: api-head.json
-            ref: refs/pull/${{ github.event.number }}/merge
+            use-merge-parent: false
 
     steps:
     - uses: actions/checkout@v7.0.1
       with:
-        ref: ${{ matrix.ref }}
+        fetch-depth: 2
         submodules: true
+    - name: Switch to the merge commit's first parent
+      if: matrix.use-merge-parent
+      run: git checkout --detach HEAD^1
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.10
+      uses: pnpm/action-setup@v6.1.1
     - name: Use Node.js
-      uses: actions/setup-node@v7.0.0
+      uses: actions/setup-node@v7.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'

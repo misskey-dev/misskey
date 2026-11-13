@@ -57,7 +57,7 @@ export class PascalCaseName1234567890123 {
 pnpm --filter backend exec typeorm migration:generate -d ormconfig.js -o --esm migration/<PascalName>
 ```
 
-**CONTRIBUTING.md との違い**: CONTRIBUTING.md は `pnpm dlx typeorm ...` を案内しているが、`dlx` はパッケージを一時ダウンロードするため、バージョンが backend の依存関係と揃わない可能性がある。`pnpm --filter backend exec typeorm` はワークスペースにインストール済みの typeorm を使うため **こちらを推奨**。
+**[Backend ガイド](../../../../../docs/contributing/backend.md#migration作成方法)と同じ手順**: `pnpm dlx typeorm ...` は使わない。`dlx` はパッケージを一時ダウンロードするため、バージョンが backend の依存関係と揃わない可能性がある。`pnpm --filter backend exec typeorm` はワークスペースにインストール済みの typeorm を使う。
 
 **`-o --esm` について**: `-o` (`--outputJs`) は「TS ではなく JS を出力する」オプション、`--esm` は「ESM 形式 (`export class ...`) で出力する」オプション。Misskey の既存 migration はすべて ESM JS であるため **両方が必須**。`--esm` を省略すると CommonJS 形式の JS が生成されスタイルが揃わない。
 
@@ -72,7 +72,6 @@ node .claude/skills/working-on-backend/scripts/prepare-generate.mjs
 スクリプトがやること:
 
 - `pnpm build-pre` → `built/meta.json` を生成 (`loadConfig()` が要求)
-- `pnpm --filter backend compile-config` → `built/.config.json` を生成 (`ormconfig.js` の `loadConfig()` が要求するのはこれ。ソースの `.config/default.yml` はその入力なので、無ければ `.config/example.yml` から作っておく)
 - `pnpm --filter backend build` → エンティティを `built/` に反映 (CLI は `built/` を読む)
 - `docker compose -f compose.local-db.yml up -d --wait db` → ローカル DB (postgres) を起動。`--wait` は Docker Compose v2.1.1 (2021-11) 以降が必要 (v2 の `docker compose` 前提。EOL の `docker-compose` v1 は対象外)
 
