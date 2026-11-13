@@ -37,7 +37,7 @@ export class RegistryApiService {
 		query.andWhere('item.key = :key', { key: key });
 		query.andWhere('item.scope = :scope', { scope: scope });
 
-		const existingItem = await query.getOne();
+		const existingItem = await query.limit(1).getOne();
 
 		if (existingItem) {
 			await this.registryItemsRepository.update(existingItem.id, {
@@ -74,7 +74,7 @@ export class RegistryApiService {
 			.andWhere('item.key = :key', { key: key })
 			.andWhere('item.scope = :scope', { scope: scope });
 
-		const item = await query.getOne();
+		const item = await query.limit(1).getOne();
 
 		return item;
 	}
