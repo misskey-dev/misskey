@@ -6,9 +6,8 @@
 		"watch": "vite",
 		"build": "tsx build.ts",
 		"typecheck": "vue-tsc --noEmit",
-		"oxlint": "oxlint --quiet",
-		"vize-lint": "vize lint --quiet",
-		"lint": "pnpm oxlint ; pnpm vize-lint"
+		"oxlint": "oxlint --quiet ; vize lint --quiet",
+		"lint": "pnpm typecheck && pnpm oxlint"
 	},
 	"dependencies": {
 		"buraha": "0.0.1",

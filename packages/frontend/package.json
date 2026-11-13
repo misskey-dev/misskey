@@ -14,9 +14,8 @@
 		"test:e2e": "playwright test --config playwright.config.ts",
 		"test:browser": "vitest --run --globals --config vitest.config.browser.ts",
 		"typecheck": "vue-tsc --noEmit",
-		"oxlint": "oxlint --quiet",
-		"vize-lint": "vize lint --quiet",
-		"lint": "pnpm oxlint ; pnpm vize-lint"
+		"oxlint": "oxlint --quiet ; vize lint --quiet",
+		"lint": "pnpm typecheck && pnpm oxlint"
 	},
 	"dependencies": {
 		"@analytics/google-analytics": "1.1.0",
