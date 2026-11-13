@@ -59,8 +59,11 @@ export class VideoProcessingService {
 		for await (using frame of decoder.frames(demuxer.packets(videoStream.index))) {
 			if (frame == null) continue;
 
-			const png = await scaler.toPng(frame);
-			return await this.imageProcessingService.convertSharpToWebp(sharp(png), 498, 422);
+			// PNG を経由すると高解像度の動画ではエンコードとデコードの往復が重いため、生の RGB で sharp に渡す
+			const { width, height } = frame;
+			const pixels = await scaler.toBuffer(frame, { format: 'rgb' });
+			const image = sharp(pixels, { raw: { width, height, channels: 3 } });
+			return await this.imageProcessingService.convertSharpToWebp(image, 498, 422);
 		}
 
 		throw new Error(`Could not decode any frame: ${source}`);

@@ -13,7 +13,8 @@ import probeImageSize from 'probe-image-size';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import * as blurhash from 'blurhash';
 import { Decoder, Demuxer, FilterAPI, Scaler, probe } from 'node-av/api';
-import { AV_PICTURE_TYPE_I } from 'node-av/constants';
+import { AV_PICTURE_TYPE_I, AVDISCARD_ALL, AVDISCARD_NONKEY } from 'node-av/constants';
+import type { Packet } from 'node-av/lib';
 import { SensitiveMediaDetectionService } from '@/core/SensitiveMediaDetectionService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
@@ -66,6 +67,23 @@ const DETECTION_IMAGE_SIZE = 299;
 
 function isAbortError(err: unknown): boolean {
 	return err instanceof Error && (err.name === 'TimeoutError' || err.name === 'AbortError');
+}
+
+/**
+ * キーフレーム以外のパケットを、デコーダへ渡す前に捨てる。
+ *
+ * デコーダの skip_frame=nokey でも非キーフレームはデコードされないが、
+ * パケットごとに decode / receive のネイティブ呼び出しが往復するため、長尺の動画ほど無駄が大きい。
+ * 終端を示す null はフラッシュに必要なのでそのまま流す。
+ */
+async function* keyframePacketsOnly(packets: AsyncIterable<Packet | null>): AsyncGenerator<Packet | null> {
+	for await (const packet of packets) {
+		if (packet != null && !packet.isKeyframe) {
+			packet.free();
+			continue;
+		}
+		yield packet;
+	}
 }
 
 @Injectable()
@@ -278,6 +296,11 @@ export class FileInfoService {
 			const videoStream = demuxer.video();
 			if (videoStream == null) return frameBuffers;
 
+			// 対応しているコンテナでは、使わないパケットをデマルチプレクサの段階で読み飛ばさせる
+			for (const stream of demuxer.streams) {
+				stream.discard = stream.index === videoStream.index ? AVDISCARD_NONKEY : AVDISCARD_ALL;
+			}
+
 			using decoder = await Decoder.create(videoStream, {
 				signal,
 				options: {
@@ -293,7 +316,7 @@ export class FileInfoService {
 			let targetIndex = 0;
 			let nextIndex = 1;
 
-			for await (using frame of decoder.frames(demuxer.packets(videoStream.index))) {
+			for await (using frame of decoder.frames(keyframePacketsOnly(demuxer.packets(videoStream.index)))) {
 				// I-Frame のみを対象にする（VP9 とかはデコードしてみないとわからないっぽい）
 				if (frame == null || frame.pictType !== AV_PICTURE_TYPE_I) continue;
 
