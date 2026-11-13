@@ -67,8 +67,8 @@
 		"cross-env": "10.1.0",
 		"globals": "17.14.0",
 		"ncp": "2.0.0",
-		"oxlint": "1.81.0",
-		"oxlint-tsgolint": "7.0.2001",
+		"oxlint": "1.91.0",
+		"oxlint-tsgolint": "7.0.2006",
 		"start-server-and-test": "3.0.13",
 		"typescript": "npm:@typescript/typescript6@6.0.2"
 	}

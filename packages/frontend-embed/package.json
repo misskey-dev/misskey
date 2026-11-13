@@ -39,7 +39,7 @@
 		"@vue/runtime-core": "3.5.44",
 		"intersection-observer": "0.12.2",
 		"lightningcss": "1.33.0",
-		"oxlint-plugin-vize": "0.404.14",
+		"oxlint-plugin-vize": "0.751.0",
 		"sass-embedded": "1.107.1",
 		"tsx": "4.23.15",
 		"typescript": "6.0.3",
