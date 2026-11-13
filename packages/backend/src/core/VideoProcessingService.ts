@@ -5,14 +5,16 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import sharp from 'sharp';
-import { Decoder, Demuxer, Scaler } from 'node-av/api';
+import { Decoder, Demuxer, FilterAPI, Scaler } from 'node-av/api';
 import { AVSEEK_FLAG_BACKWARD } from 'node-av/constants';
+import type { Frame } from 'node-av/lib';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { ImageProcessingService } from '@/core/ImageProcessingService.js';
 import type { IImage } from '@/core/ImageProcessingService.js';
 import { bindThis } from '@/decorators.js';
 import { appendQuery, query } from '@/misc/prelude/url.js';
+import { getAutorotateFilter, localInputOptions } from '@/misc/node-av-input.js';
 import '@/misc/node-av-log.js';
 
 /**
@@ -38,7 +40,7 @@ export class VideoProcessingService {
 	public async generateVideoThumbnail(source: string): Promise<IImage> {
 		const signal = AbortSignal.timeout(THUMBNAIL_TIMEOUT_MS);
 
-		await using demuxer = await Demuxer.open(source, { signal });
+		await using demuxer = await Demuxer.open(source, { signal, options: localInputOptions });
 
 		const videoStream = demuxer.video();
 		if (videoStream == null) {
@@ -53,20 +55,41 @@ export class VideoProcessingService {
 			await demuxer.seek(demuxer.duration * THUMBNAIL_POSITION_RATIO, -1, AVSEEK_FLAG_BACKWARD);
 		}
 
-		using decoder = await Decoder.create(videoStream, { signal });
+		using decoder = await Decoder.create(videoStream, {
+			signal,
+			// 1 フレームしか取り出さないため、フレームスレッドは最初の出力までの遅延と
+			// スレッドごとのフレームバッファによるメモリ消費を増やすだけになる
+			threadCount: 1,
+		});
+		// 回転メタデータに従って向きを直す
+		const rotation = getAutorotateFilter(videoStream);
+		using rotator = rotation != null ? FilterAPI.create(rotation, { signal }) : null;
 		using scaler = new Scaler();
 
-		for await (using frame of decoder.frames(demuxer.packets(videoStream.index))) {
-			if (frame == null) continue;
+		for await (using decoded of decoder.frames(demuxer.packets(videoStream.index))) {
+			if (decoded == null) continue;
 
-			// PNG を経由すると高解像度の動画ではエンコードとデコードの往復が重いため、生の RGB で sharp に渡す
-			const { width, height } = frame;
-			const pixels = await scaler.toBuffer(frame, { format: 'rgb' });
-			const image = sharp(pixels, { raw: { width, height, channels: 3 } });
-			return await this.imageProcessingService.convertSharpToWebp(image, 498, 422);
+			if (rotator == null) {
+				return await this.frameToWebp(scaler, decoded);
+			}
+			for await (using rotated of rotator.frames(decoded)) {
+				if (rotated == null) continue;
+				return await this.frameToWebp(scaler, rotated);
+			}
 		}
 
 		throw new Error(`Could not decode any frame: ${source}`);
+	}
+
+	/**
+	 * デコード済みフレームをサムネイル用の WebP に変換する
+	 */
+	@bindThis
+	private async frameToWebp(scaler: Scaler, frame: Frame): Promise<IImage> {
+		const { width, height } = frame;
+		const pixels = await scaler.toBuffer(frame, { format: 'rgb' });
+		const image = sharp(pixels, { raw: { width, height, channels: 3 } });
+		return await this.imageProcessingService.convertSharpToWebp(image, 498, 422);
 	}
 
 	@bindThis

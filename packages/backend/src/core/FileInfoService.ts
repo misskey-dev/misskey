@@ -20,6 +20,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
+import { getAutorotateFilter, localInputOptions } from '@/misc/node-av-input.js';
 import type { Prediction } from '@/core/SensitiveMediaDetectionService.js';
 import '@/misc/node-av-log.js';
 
@@ -291,7 +292,7 @@ export class FileInfoService {
 		const frameBuffers: Buffer[] = [];
 
 		try {
-			await using demuxer = await Demuxer.open(source, { signal });
+			await using demuxer = await Demuxer.open(source, { signal, options: localInputOptions });
 
 			const videoStream = demuxer.video();
 			if (videoStream == null) return frameBuffers;
@@ -303,6 +304,9 @@ export class FileInfoService {
 
 			using decoder = await Decoder.create(videoStream, {
 				signal,
+				// キーフレームしか渡さないのでフレームスレッドの並列化はほぼ効かず、
+				// スレッドごとのフレームバッファでメモリだけが増える
+				threadCount: 1,
 				options: {
 					'skip_frame': 'nokey', // 可能ならキーフレームのみを取得してほしいとする（そうなるとは限らない）
 					'lowres': '3', // 元の画質でデコードする必要はないので 1/8 画質でデコードしてもよいとする（そうなるとは限らない）
@@ -310,7 +314,11 @@ export class FileInfoService {
 			});
 			// 暗さに関わらず全てのフレームで測定値を取り、lavfi.blackframe.pblack として受け取る
 			using filter = FilterAPI.create('blackframe=amount=0', { signal });
+			// 判定サービスには正しい向きの画像を渡す。回転は判定に使うフレームにだけ掛ける
+			const rotation = getAutorotateFilter(videoStream);
+			using rotator = rotation != null ? FilterAPI.create(rotation, { signal }) : null;
 			using scaler = new Scaler();
+			const resize = { width: DETECTION_IMAGE_SIZE, height: DETECTION_IMAGE_SIZE };
 
 			let frameIndex = 0;
 			let targetIndex = 0;
@@ -334,9 +342,14 @@ export class FileInfoService {
 					targetIndex = nextIndex;
 					nextIndex = Math.max(following, targetIndex + 1);
 
-					frameBuffers.push(await scaler.toPng(measured, {
-						resize: { width: DETECTION_IMAGE_SIZE, height: DETECTION_IMAGE_SIZE },
-					}));
+					if (rotator == null) {
+						frameBuffers.push(await scaler.toPng(measured, { resize }));
+						continue;
+					}
+					for await (using rotated of rotator.frames(measured)) {
+						if (rotated == null) continue;
+						frameBuffers.push(await scaler.toPng(rotated, { resize }));
+					}
 				}
 			}
 		} catch (err) {
@@ -373,7 +386,7 @@ export class FileInfoService {
 		const sublogger = this.logger.createSubLogger('probe');
 		sublogger.info(`Checking the video file. File path: ${path}`);
 		try {
-			const result = await probe(path, { signal: AbortSignal.timeout(PROBE_TIMEOUT_MS) });
+			const result = await probe(path, { signal: AbortSignal.timeout(PROBE_TIMEOUT_MS), options: localInputOptions });
 			return result.streams.some((stream) => stream.type === 'video');
 		} catch (err) {
 			const reason = isAbortError(err) ? `Timed out after ${PROBE_TIMEOUT_MS}ms` : 'Could not check the video file';
