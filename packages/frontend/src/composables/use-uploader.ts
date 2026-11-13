@@ -190,14 +190,16 @@ export function useUploader(options: {
 	}
 
 	function getMenu(item: UploaderItem, customPreviewHandler: (() => void) | null = null): MenuItem[] {
-		const menu: MenuItem[] = [];
+		const basicMenu: MenuItem[] = [];
+		const editMenu: MenuItem[] = [];
+		const actionMenu: MenuItem[] = [];
 
 		if (
 			!item.preprocessing &&
 			!item.uploading &&
 			!item.uploaded
 		) {
-			menu.push({
+			basicMenu.push({
 				icon: 'ti ti-forms',
 				text: i18n.ts.rename,
 				action: async () => {
@@ -238,7 +240,7 @@ export function useUploader(options: {
 			});
 
 			if (isPreviewable(item.file.type)) {
-				menu.push({
+				basicMenu.push({
 					text: i18n.ts.preview,
 					icon: 'ti ti-photo-search',
 					action: async () => {
@@ -267,10 +269,6 @@ export function useUploader(options: {
 					},
 				});
 			}
-
-			menu.push({
-				type: 'divider',
-			});
 		}
 
 		if (
@@ -280,7 +278,7 @@ export function useUploader(options: {
 			!item.uploading &&
 			!item.uploaded
 		) {
-			menu.push({
+			editMenu.push({
 				type: 'parent',
 				icon: 'ti ti-photo-edit',
 				text: i18n.ts._uploader.editImage,
@@ -350,7 +348,7 @@ export function useUploader(options: {
 				});
 			}
 
-			menu.push({
+			editMenu.push({
 				icon: 'ti ti-copyright',
 				text: i18n.ts.watermark,
 				caption: computed(() => item.watermarkPreset != null ? item.watermarkPreset.name : item.watermarkLayers != null ? i18n.ts.custom : null),
@@ -403,7 +401,7 @@ export function useUploader(options: {
 				});
 			}
 
-			menu.push({
+			editMenu.push({
 				icon: 'ti ti-device-ipad-horizontal',
 				text: i18n.ts.frame,
 				type: 'parent' as const,
@@ -467,7 +465,7 @@ export function useUploader(options: {
 				});
 			}
 
-			menu.push({
+			editMenu.push({
 				icon: 'ti ti-leaf',
 				text: computed(() => {
 					let text = i18n.ts.compress;
@@ -512,9 +510,7 @@ export function useUploader(options: {
 		}
 
 		if (!item.preprocessing && !item.uploading && !item.uploaded) {
-			menu.push({
-				type: 'divider',
-			}, {
+			actionMenu.push({
 				icon: 'ti ti-upload',
 				text: i18n.ts.upload,
 				action: () => {
@@ -529,9 +525,7 @@ export function useUploader(options: {
 				},
 			});
 		} else if (item.preprocessing && item.abortPreprocess != null) {
-			menu.push({
-				type: 'divider',
-			}, {
+			actionMenu.push({
 				icon: 'ti ti-player-stop',
 				text: i18n.ts.abort,
 				danger: true,
@@ -542,9 +536,7 @@ export function useUploader(options: {
 				},
 			});
 		} else if (item.uploading) {
-			menu.push({
-				type: 'divider',
-			}, {
+			actionMenu.push({
 				icon: 'ti ti-cloud-pause',
 				text: i18n.ts.abort,
 				danger: true,
@@ -556,7 +548,9 @@ export function useUploader(options: {
 			});
 		}
 
-		return menu;
+		return [basicMenu, editMenu, actionMenu]
+			.filter(group => group.length > 0)
+			.flatMap<MenuItem>((group, i) => i === 0 ? group : [{ type: 'divider' }, ...group]);
 	}
 
 	async function uploadOne(item: UploaderItem): Promise<void> {

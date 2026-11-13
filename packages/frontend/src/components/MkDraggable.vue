@@ -11,7 +11,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:enterFromClass="$style.transition_items_enterFrom"
 	:leaveToClass="$style.transition_items_leaveTo"
 	:moveClass="$style.transition_items_move"
-	:class="[$style.items, { [$style.dragging]: dragging, [$style.horizontal]: direction === 'horizontal', [$style.vertical]: direction === 'vertical', [$style.withGaps]: withGaps, [$style.canNest]: canNest }]"
+	:class="[$style.items, {
+		[$style.dragging]: dragging,
+		[$style.horizontal]: direction === 'horizontal',
+		[$style.vertical]: direction === 'vertical',
+		[$style.withGaps]: withGaps,
+		[$style.canNest]: canNest,
+		[$style.stretchItems]: stretchItems,
+	}]"
 >
 	<slot name="header"></slot>
 	<div
@@ -35,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@dragleave="onDragleave($event, item)"
 			@drop.prevent.stop="onDrop($event, item, false)"
 		></div>
-		<div :key="`MkDraggableItem:${item.id}`" style="position: relative; z-index: 0;">
+		<div :key="`MkDraggableItem:${item.id}`" :class="$style.itemContent">
 			<slot :item="item" :index="i" :dragStart="(ev) => onDragstart(ev, item)"></slot>
 		</div>
 		<div
@@ -75,11 +82,13 @@ const props = withDefaults(defineProps<{
 	manualDragStart?: boolean;
 	withGaps?: boolean;
 	canNest?: boolean;
+	stretchItems?: boolean;
 }>(), {
 	group: null,
 	manualDragStart: false,
 	withGaps: false,
 	canNest: false,
+	stretchItems: false,
 });
 
 const emit = defineEmits<{
@@ -182,6 +191,19 @@ function onEmptyDrop(ev: DragEvent) {
 
 .item {
 	position: relative;
+}
+
+.itemContent {
+	position: relative;
+	z-index: 0;
+}
+
+.items.stretchItems {
+	align-items: stretch;
+
+	.item, .itemContent {
+		display: grid;
+	}
 }
 
 .items.vertical .item {

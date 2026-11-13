@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:class="$style.files"
 		direction="horizontal"
 		withGaps
+		stretchItems
 		@update:modelValue="v => emit('update:modelValue', v)"
 	>
 		<template #default="{ item }">
@@ -21,28 +22,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@keydown.space.enter="handleClick(item, $event)"
 				@contextmenu.prevent.stop="showFileMenu(item, $event)"
 			>
-				<MkDriveFileThumbnail v-if="item.type === 'driveFile'" :data-id="item.id" :class="$style.thumbnail" :file="item.file" fit="cover"/>
-				<template v-else-if="item.type === 'uploaderItem'">
-					<img v-if="item.file.thumbnail" :src="item.file.thumbnail" :class="[$style.thumbnail, $style.uploaderThumbnail]" />
-					<div v-else v-panel :class="[$style.thumbnail, $style.uploaderThumbnailIcon]">
-						<i :class="[$style.icon, getFileTypeIcon(getFileType(item.file.file.type))]"></i>
-					</div>
-					<div :class="[$style.uploadProgressWrapper, { uploading: item.file.uploading }]">
-						<svg :class="$style.uploadProgressSvg" viewBox="0 0 64 64">
-							<circle
-								:class="$style.uploadProgressFg"
-								cx="32" cy="32" r="16"
-								:stroke-dasharray="progressDashArray(item.file)"
-							/>
-						</svg>
-						<div :class="$style.uploadAbortButton">
-							<!-- 実際のボタン機能はhandleClick -->
-							<i class="ti ti-x"></i>
+				<div :class="$style.thumbnailWrapper">
+					<MkDriveFileThumbnail v-if="item.type === 'driveFile'" :data-id="item.id" :class="$style.thumbnail" :file="item.file" fit="cover" :adaptiveBg="false"/>
+					<template v-else-if="item.type === 'uploaderItem'">
+						<img v-if="item.file.thumbnail" :src="item.file.thumbnail" :class="[$style.thumbnail, $style.uploaderThumbnail]" />
+						<div v-else :class="[$style.thumbnail, $style.uploaderThumbnailIcon]">
+							<i :class="[$style.icon, getFileTypeIcon(getFileType(item.file.file.type))]"></i>
 						</div>
+						<div :class="[$style.uploadProgressWrapper, { uploading: item.file.uploading }]">
+							<svg :class="$style.uploadProgressSvg" viewBox="0 0 64 64">
+								<circle
+									:class="$style.uploadProgressFg"
+									cx="32" cy="32" r="16"
+									:stroke-dasharray="progressDashArray(item.file)"
+								/>
+							</svg>
+							<div :class="$style.uploadAbortButton">
+								<!-- 実際のボタン機能はhandleClick -->
+								<i class="ti ti-x"></i>
+							</div>
+						</div>
+					</template>
+					<div v-if="(item.type === 'driveFile' && item.file.isSensitive) || (item.type === 'uploaderItem' && item.file.isSensitive)" :class="$style.sensitive">
+						<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
 					</div>
-				</template>
-				<div v-if="(item.type === 'driveFile' && item.file.isSensitive) || (item.type === 'uploaderItem' && item.file.isSensitive)" :class="$style.sensitive">
-					<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
+				</div>
+				<div :class="$style.fileInfo">
+					<div :class="$style.fileName">{{ item.type === 'driveFile' ? item.file.name : item.file.file.name }}</div>
+					<div v-if="item.type === 'uploaderItem'" :class="$style.fileSize">{{ item.file.compressedSize ? i18n.tsx._uploader.compressedToX({ x: bytes(item.file.compressedSize) }) : bytes(item.file.file.size) }}</div>
 				</div>
 			</div>
 		</template>
@@ -76,6 +83,7 @@ import { inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import bytes from '@/filters/bytes.js';
 import { getFileType, getFileTypeIcon } from '@/utility/file-type.js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import MkDraggable from '@/components/MkDraggable.vue';
@@ -224,17 +232,19 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 				text: i18n.ts.preview,
 				icon: 'ti ti-photo-search',
 				action: async () => {
-					const constents = props.modelValue.filter(item => isPreviewable(item.type)).map<Content>(item => ({
-						id: item.id,
-						type: getType(file.type),
-						url: file.url,
-						thumbnailUrl: file.thumbnailUrl,
-						width: file.properties.width,
-						height: file.properties.height,
-						filename: file.name,
-						file,
-						//sourceElement: TODO
-					}));
+					const constents = props.modelValue
+						.filter(item => isPreviewable(item.type === 'driveFile' ? item.file.type : item.file.file.type))
+						.map<Content>(item => ({
+							id: item.id,
+							type: getType(item.type === 'driveFile' ? item.file.type : item.file.file.type) ?? 'image',
+							url: item.type === 'driveFile' ? item.file.url : item.file.objectUrl,
+							thumbnailUrl: item.type === 'driveFile' ? item.file.thumbnailUrl : item.file.thumbnail,
+							width: item.type === 'driveFile' ? item.file.properties.width : null,
+							height: item.type === 'driveFile' ? item.file.properties.height : null,
+							filename: item.type === 'driveFile' ? item.file.name : item.file.name,
+							file: item.type === 'driveFile' ? item.file : undefined,
+							//sourceElement: TODO
+						}));
 					const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
 						defaultIndex: constents.findIndex(content => content.id === file.id),
 						contents: constents,
@@ -289,10 +299,11 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 
 .file {
 	position: relative;
-	width: 64px;
-	height: 64px;
-	border-radius: 4px;
-	overflow: hidden;
+	width: 104px;
+	padding: 4px;
+	border-radius: 8px;
+	background-color: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
+	box-sizing: border-box;
 
 	&:focus-visible {
 		outline-offset: 4px;
@@ -303,9 +314,19 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 	}
 }
 
+.thumbnailWrapper {
+	position: relative;
+	width: 96px;
+	height: 64px;
+	border-radius: 6px;
+	overflow: clip;
+	background-color: var(--MI_THEME-panel);
+}
+
 .thumbnail {
 	width: 100%;
 	height: 100%;
+	border-radius: 0;
 	z-index: 1;
 	color: var(--MI_THEME-fg);
 }
@@ -331,8 +352,8 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 .sensitive {
 	display: flex;
 	position: absolute;
-	width: 64px;
-	height: 64px;
+	width: 100%;
+	height: 100%;
 	top: 0;
 	left: 0;
 	z-index: 2;
@@ -354,6 +375,23 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 	}
 }
 
+.fileInfo {
+	margin-top: 4px;
+	font-size: 10px;
+}
+
+.fileName {
+	display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+	line-clamp: 2;
+	overflow: hidden;
+}
+
+.fileSize {
+	margin-top: 2px;
+}
+
 .uploadProgressWrapper {
 	position: absolute;
 	left: 0;
@@ -373,7 +411,7 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 		mask-image: linear-gradient(#000, #000), url("data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNTAiIC8+PC9zdmc+");
 		mask-position: center;
 		mask-repeat: no-repeat;
-		mask-size: 100% 100%, 90px 90px;
+		mask-size: 100% 100%, 136px 136px; /* 長辺 96px の正方形の対角線の長さ = 96 * sqrt(2) ≈ 136 */
 		mask-composite: exclude;
 		transition: mask-size 0.2s ease;
 	}

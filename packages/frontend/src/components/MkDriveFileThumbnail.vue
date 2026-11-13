@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	v-panel
+	v-panel="props.adaptiveBg"
 	:class="[$style.root, {
 		[$style.sensitiveHighlight]: highlightWhenSensitive && file.isSensitive,
 		[$style.large]: large,
@@ -42,13 +42,16 @@ import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { getFileType, getFileTypeIcon } from '@/utility/file-type.js';
 import { prefer } from '@/preferences.js';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	file: Misskey.entities.DriveFile;
 	fit: 'cover' | 'contain';
 	highlightWhenSensitive?: boolean;
 	forceBlurhash?: boolean;
 	large?: boolean;
-}>();
+	adaptiveBg?: boolean;
+}>(), {
+	adaptiveBg: true,
+});
 
 const is = computed(() => getFileType(props.file.type));
 const fileIcon = computed(() => getFileTypeIcon(is.value));
