@@ -5,6 +5,9 @@ const cjsSyntaxRegex = /__filename|__dirname|require\(|require\.resolve\(/;
 
 const shimComment = '// -- ESM Shim --';
 
+/**
+ * チャンクごとに、存在しないCommonJS固有の定義などを補完するプラグイン
+ */
 export function esmShimPlugin(): Plugin {
 	return {
 		name: 'esm-shim',

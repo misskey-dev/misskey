@@ -54,15 +54,11 @@ minimumReleaseAgeExclude:
   - slacc-linux-x64-musl
   - slacc-win32-arm64-msvc
   - slacc-win32-x64-msvc
-  - '@isaacs/nonrecursive-glob-match@1.0.1'
-  - minimatch@11.0.1
-  - '@seydx/node-av-darwin-arm64@6.2.0'
-  - '@seydx/node-av-darwin-x64@6.2.0'
-  - '@seydx/node-av-linux-arm64@6.2.0'
-  - '@seydx/node-av-linux-x64@6.2.0'
-  - '@seydx/node-av-win32-arm64-msvc@6.2.0'
-  - '@seydx/node-av-win32-x64-msvc@6.2.0'
-  - node-av@6.2.0
+  - '@seydx/node-av-*'
+  - node-av
+  - '@nestjs/common@12.4.2'
+  - '@nestjs/core@12.4.2'
+  - '@nestjs/testing@12.4.2'
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
