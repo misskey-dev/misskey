@@ -26,6 +26,10 @@ const THUMBNAIL_TIMEOUT_MS = 30 * 1000;
 /** サムネイルとして切り出す位置 (動画全体に対する割合) */
 const THUMBNAIL_POSITION_RATIO = 0.05;
 
+/** サムネイルの最大寸法 */
+const THUMBNAIL_MAX_WIDTH = 498;
+const THUMBNAIL_MAX_HEIGHT = 422;
+
 @Injectable()
 export class VideoProcessingService {
 	constructor(
@@ -91,10 +95,15 @@ export class VideoProcessingService {
 	 */
 	@bindThis
 	private async frameToWebp(scaler: Scaler, frame: Frame): Promise<IImage> {
-		const { width, height } = frame;
-		const pixels = await scaler.toBuffer(frame, { format: 'rgb' });
+		// 高解像度のフレームをそのまま RGB に展開すると大きなバッファになるため、
+		// 変換と同時に縦横比を保ったまま最大寸法に収まるよう縮小する (拡大はしない)
+		const scale = Math.min(1, THUMBNAIL_MAX_WIDTH / frame.width, THUMBNAIL_MAX_HEIGHT / frame.height);
+		const width = Math.max(1, Math.round(frame.width * scale));
+		const height = Math.max(1, Math.round(frame.height * scale));
+
+		const pixels = await scaler.toBuffer(frame, { format: 'rgb', resize: { width, height } });
 		const image = sharp(pixels, { raw: { width, height, channels: 3 } });
-		return await this.imageProcessingService.convertSharpToWebp(image, 498, 422);
+		return await this.imageProcessingService.convertSharpToWebp(image, THUMBNAIL_MAX_WIDTH, THUMBNAIL_MAX_HEIGHT);
 	}
 
 	@bindThis
