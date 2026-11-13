@@ -8,7 +8,8 @@
 		"lint": "pnpm typecheck && pnpm oxlint"
 	},
 	"devDependencies": {
-		"@types/node": "26.4.0",
+		"@types/node": "26.6.6",
+		"@types/punycode.js": "npm:@types/punycode@2.1.4",
 		"@types/tinycolor2": "1.4.6"
 	},
 	"files": [
@@ -18,9 +19,11 @@
 		"@misskey-dev/emoji-data": "17.0.3",
 		"i18n": "workspace:*",
 		"json5": "2.2.3",
+		"mfm-js": "0.28.0",
 		"misskey-js": "workspace:*",
-		"shiki": "4.4.3",
+		"punycode.js": "2.3.1",
+		"shiki": "4.6.0",
 		"tinycolor2": "1.6.0",
-		"vue": "3.5.42"
+		"vue": "3.5.44"
 	}
 }

@@ -59,7 +59,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { userPage } from '@/filters/user.js';
+import { userPage } from '@@/js/user.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';

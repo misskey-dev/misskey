@@ -83,6 +83,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.cannotTranslateInvisibleNote);
 			}
 
+			// makeNotesHiddenBefore などで中身が隠されるノート
+			const packedNote = await this.noteEntityService.pack(note, me);
+			if (packedNote.isHidden) {
+				throw new ApiError(meta.errors.cannotTranslateInvisibleNote);
+			}
+
 			let text = note.text ?? '';
 			if (note.cw != null) {
 				text = `${note.cw}\n-----\n${text}`;

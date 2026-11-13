@@ -33,7 +33,7 @@ import { globalEvents, useGlobalEvent } from '@/events.js';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkReactionsViewerDetails from '@/components/MkReactionsViewer.details.vue';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import { notePage } from '@/filters/note.js';
+import { notePage } from '@@/js/note.js';
 import type { DI as DIType } from '@/di.js';
 import type { ExtractInjectedType } from '@/types/misc.js';
 import type { MenuItem } from '@/types/menu.js';

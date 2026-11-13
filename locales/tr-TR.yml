@@ -2875,6 +2875,7 @@ _deck:
     antenna: "Antenler"
     list: "Liste"
     channel: "Kanal"
+    clip: "Klip"
     mentions: "Bahsetmeler"
     direct: "Doğrudan notlar"
     roleTimeline: "Rol Pano"

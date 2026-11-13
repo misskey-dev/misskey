@@ -5,6 +5,7 @@
 
 import { describe, expect, test, beforeAll, afterAll, beforeEach, afterEach, vi } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
+import * as Redis from 'ioredis';
 import ms from 'ms';
 import {
 	type MiNote,
@@ -34,6 +35,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 	let userNotePiningsRepository: UserNotePiningsRepository;
 	let usersRepository: UsersRepository;
 	let userProfilesRepository: UserProfilesRepository;
+	let redisClient: Redis.Redis;
 
 	// Local user
 	let alice: MiUser;
@@ -43,6 +45,8 @@ describe('CleanRemoteNotesProcessorService', () => {
 	let carol: MiUser;
 
 	const meta = new MiMeta();
+
+	const CURSOR_REDIS_KEY = 'cleanRemoteNotes:cursor';
 
 	// Mock job object
 	const createMockJob = () => ({
@@ -118,6 +122,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 		userNotePiningsRepository = app.get(DI.userNotePiningsRepository);
 		usersRepository = app.get(DI.usersRepository);
 		userProfilesRepository = app.get(DI.userProfilesRepository);
+		redisClient = app.get(DI.redis);
 
 		alice = await createUser({ username: 'alice', host: null });
 		bob = await createUser({ username: 'bob', host: 'remote1.example.com' });
@@ -126,9 +131,12 @@ describe('CleanRemoteNotesProcessorService', () => {
 		app.enableShutdownHooks();
 	});
 
-	beforeEach(() => {
+	beforeEach(async () => {
 		// Reset mocks
 		vi.clearAllMocks();
+
+		// Reset cursor in Redis
+		await redisClient.del(CURSOR_REDIS_KEY);
 
 		// Set default meta values
 		meta.enableRemoteNotesCleaning = true;
@@ -161,6 +169,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 				deletedCount: 0,
 				oldest: null,
 				newest: null,
+				cursor: null,
 				skipped: true,
 				transientErrors: 0,
 			});
@@ -176,6 +185,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 				deletedCount: 0,
 				oldest: null,
 				newest: null,
+				cursor: null,
 				skipped: false,
 				transientErrors: 0,
 			});
@@ -206,6 +216,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 				deletedCount: 2,
 				oldest: idService.parse(remoteNotes[3].id).date.getTime(),
 				newest: idService.parse(remoteNotes[2].id).date.getTime(),
+				cursor: null,
 				skipped: false,
 				transientErrors: 0,
 			});
@@ -856,6 +867,82 @@ describe('CleanRemoteNotesProcessorService', () => {
 	//               WHERE note_reaction."noteId" = note."id"
 	//               AND "user"."host" IS NULL)
 	// i.e. only reactions from local users (host IS NULL) prevent deletion.
+
+	// region cursor persistence
+	// 1回の実行で走査しきれないサーバーのために、走査位置をRedisへ保存して次回に引き継ぐ
+	describe('advanced - cursor persistence', () => {
+		const oldTimeBase = () => Date.now() - ms(`${meta.remoteNotesCleaningExpiryDaysForEachNotes} days`) - 10000;
+
+		test('should clear the stored cursor once the scan reaches the end', async () => {
+			await createNote({}, bob, oldTimeBase());
+
+			const job = createMockJob();
+			const result = await service.process(job as any);
+
+			expect(result.deletedCount).toBe(1);
+			// 末尾まで到達したので次回は先頭から
+			expect(result.cursor).toBe(null);
+			expect(await redisClient.get(CURSOR_REDIS_KEY)).toBe(null);
+		});
+
+		test('should resume from the stored cursor and leave notes before it untouched', async () => {
+			const oldTime = oldTimeBase();
+			const beforeCursor = await createNote({}, bob, oldTime);
+			const afterCursor = await createNote({}, bob, oldTime + 5000);
+
+			await redisClient.set(CURSOR_REDIS_KEY, beforeCursor.id);
+
+			const job = createMockJob();
+			const result = await service.process(job as any);
+
+			expect(result.deletedCount).toBe(1);
+
+			const remainingNotes = await notesRepository.find();
+			expect(remainingNotes.map(n => n.id)).toEqual([beforeCursor.id]);
+			expect(remainingNotes.map(n => n.id)).not.toContain(afterCursor.id);
+		});
+
+		test('should ignore a stored cursor that fell outside the target range', async () => {
+			await createNote({}, bob, oldTimeBase());
+
+			// 保持期間が延長された場合に起きる、newestLimit より新しいカーソル
+			await redisClient.set(CURSOR_REDIS_KEY, idService.gen(Date.now()));
+
+			const job = createMockJob();
+			const result = await service.process(job as any);
+
+			// 先頭から走査し直すので、範囲外カーソルがあっても削除できる
+			expect(result.deletedCount).toBe(1);
+		});
+
+		test('should keep the cursor when the run is cut short before reaching the end', async () => {
+			const AMOUNT = 250;
+			const oldTime = oldTimeBase();
+			for (let i = 0; i < AMOUNT; i++) {
+				await createNote({}, bob, oldTime - i);
+			}
+
+			const job = createMockJob();
+			// 1バッチ処理した直後にループを抜けさせる。maxDuration 経由だと初回バッチ前に
+			// 打ち切られることがあり、カーソルが保存される前に終わってしまう
+			let disabled = false;
+			job.updateProgress = vi.fn(() => {
+				if (!disabled) {
+					meta.enableRemoteNotesCleaning = false;
+					disabled = true;
+				}
+			});
+
+			const result = await service.process(job as any);
+
+			expect(result.deletedCount).toBeGreaterThan(0);
+			expect(result.deletedCount).toBeLessThan(AMOUNT);
+			// 途中で打ち切られた位置が次回へ引き継がれる
+			expect(result.cursor).not.toBe(null);
+			expect(await redisClient.get(CURSOR_REDIS_KEY)).toBe(result.cursor);
+		}, 30 * 1000);
+	});
+
 	describe('advanced - note_reaction', () => {
 		// ローカルユーザーがリアクションしたノートは削除されない
 		test('should not delete note that is reacted by a local user', async () => {
@@ -1129,6 +1216,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 				deletedCount: 0,
 				oldest: null,
 				newest: null,
+				cursor: null,
 				skipped: false,
 				transientErrors: 0,
 			});

@@ -2062,6 +2062,7 @@ _deck:
     antenna: "Trạm phát sóng"
     list: "Danh sách"
     channel: "Kênh"
+    clip: "Lưu bài viết"
     mentions: "Lượt nhắc"
     direct: "Nhắn riêng"
 _dialog:

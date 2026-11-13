@@ -2902,6 +2902,7 @@ _deck:
     antenna: "天線"
     list: "清單"
     channel: "頻道"
+    clip: "摘錄"
     mentions: "提及"
     direct: "指定使用者"
     roleTimeline: "角色時間軸"

@@ -19,7 +19,6 @@ import { MiUser } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type {
 	AuthenticationResponseJSON,
-	AuthenticatorTransportFuture,
 	CredentialDeviceType,
 	PublicKeyCredentialCreationOptionsJSON,
 	PublicKeyCredentialRequestOptionsJSON,
@@ -66,7 +65,7 @@ export class WebAuthnService {
 			userID: isoUint8Array.fromUTF8String(userId),
 			userName: userName,
 			userDisplayName: userDisplayName,
-			excludeCredentials: keys.map(key => (<{ id: string; transports?: AuthenticatorTransportFuture[]; }>{
+			excludeCredentials: keys.map(key => (<{ id: string; transports?: string[]; }>{
 				id: key.id,
 				transports: key.transports ?? undefined,
 			})),
@@ -91,7 +90,7 @@ export class WebAuthnService {
 		userVerified: boolean;
 		credentialDeviceType: CredentialDeviceType;
 		credentialBackedUp: boolean;
-		transports?: AuthenticatorTransportFuture[];
+		transports?: string[];
 	}> {
 		const challenge = await this.redisClient.get(`webauthn:registrationChallenge:${userId}`);
 
@@ -151,7 +150,7 @@ export class WebAuthnService {
 
 		const authenticationOptions = await generateAuthenticationOptions({
 			rpID: relyingParty.rpId,
-			allowCredentials: keys.map(key => (<{ id: string; transports?: AuthenticatorTransportFuture[]; }>{
+			allowCredentials: keys.map(key => (<{ id: string; transports?: string[]; }>{
 				id: key.id,
 				transports: key.transports ?? undefined,
 			})),
@@ -215,7 +214,7 @@ export class WebAuthnService {
 					id: key.id,
 					publicKey: Buffer.from(key.publicKey, 'base64url'),
 					counter: key.counter,
-					transports: key.transports ? key.transports as AuthenticatorTransportFuture[] : undefined,
+					transports: key.transports ?? undefined,
 				},
 				requireUserVerification: true,
 			});
@@ -295,7 +294,7 @@ export class WebAuthnService {
 					id: key.id,
 					publicKey: Buffer.from(key.publicKey, 'base64url'),
 					counter: key.counter,
-					transports: key.transports ? key.transports as AuthenticatorTransportFuture[] : undefined,
+					transports: key.transports ?? undefined,
 				},
 				requireUserVerification: true,
 			});

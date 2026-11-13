@@ -123,7 +123,7 @@ import EmA from '@/components/EmA.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
 import EmUserName from '@/components/EmUserName.vue';
 import EmTime from '@/components/EmTime.vue';
-import { userPage } from '@/utils.js';
+import { userPage } from '@@/js/user.js';
 import { i18n } from '@/i18n.js';
 
 function getAppearNote(note: Misskey.entities.Note) {

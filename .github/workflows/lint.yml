@@ -44,13 +44,13 @@ jobs:
   pnpm_install:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v7.0.0
+    - uses: actions/checkout@v7.0.1
       with:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.9
-    - uses: actions/setup-node@v7.0.0
+      uses: pnpm/action-setup@v6.1.1
+    - uses: actions/setup-node@v7.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -75,13 +75,13 @@ jobs:
         - misskey-bubble-game
         - misskey-reversi
     steps:
-    - uses: actions/checkout@v7.0.0
+    - uses: actions/checkout@v7.0.1
       with:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.9
-    - uses: actions/setup-node@v7.0.0
+      uses: pnpm/action-setup@v6.1.1
+    - uses: actions/setup-node@v7.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -100,13 +100,13 @@ jobs:
         - sw
         - misskey-js
     steps:
-    - uses: actions/checkout@v7.0.0
+    - uses: actions/checkout@v7.0.1
       with:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.9
-    - uses: actions/setup-node@v7.0.0
+      uses: pnpm/action-setup@v6.1.1
+    - uses: actions/setup-node@v7.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -119,13 +119,13 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-    - uses: actions/checkout@v7.0.0
+    - uses: actions/checkout@v7.0.1
       with:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.9
-    - uses: actions/setup-node@v7.0.0
+      uses: pnpm/action-setup@v6.1.1
+    - uses: actions/setup-node@v7.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'

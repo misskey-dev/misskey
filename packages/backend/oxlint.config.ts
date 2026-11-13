@@ -10,6 +10,7 @@ export default defineMisskeyDevOxlintConfig({
 			'built/**/*',
 			'built-test/**/*',
 			'migration/**/*',
+			'test-federation/volumes/**/*',
 		],
 		rules: {
 			'typescript/await-thenable': 'off',

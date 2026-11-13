@@ -108,6 +108,7 @@ import XTlColumn from '@/ui/deck/tl-column.vue';
 import XAntennaColumn from '@/ui/deck/antenna-column.vue';
 import XListColumn from '@/ui/deck/list-column.vue';
 import XChannelColumn from '@/ui/deck/channel-column.vue';
+import XClipColumn from '@/ui/deck/clip-column.vue';
 import XNotificationsColumn from '@/ui/deck/notifications-column.vue';
 import XWidgetsColumn from '@/ui/deck/widgets-column.vue';
 import XMentionsColumn from '@/ui/deck/mentions-column.vue';
@@ -132,6 +133,7 @@ const columnComponents = {
 	tl: XTlColumn,
 	list: XListColumn,
 	channel: XChannelColumn,
+	clip: XClipColumn,
 	antenna: XAntennaColumn,
 	mentions: XMentionsColumn,
 	direct: XDirectColumn,
