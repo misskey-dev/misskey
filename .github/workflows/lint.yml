@@ -17,7 +17,7 @@ on:
       - packages/misskey-js/**
       - packages/misskey-bubble-game/**
       - packages/misskey-reversi/**
-      - packages/shared/oxlint-browser.js
+      - packages/shared/lint-browser.js
       - scripts/check-dts*.mjs
       - .github/workflows/lint.yml
       - package.json
@@ -36,7 +36,7 @@ on:
       - packages/misskey-js/**
       - packages/misskey-bubble-game/**
       - packages/misskey-reversi/**
-      - packages/shared/oxlint-browser.js
+      - packages/shared/lint-browser.js
       - scripts/check-dts*.mjs
       - .github/workflows/lint.yml
       - package.json

@@ -15,7 +15,8 @@
 		"test:browser": "vitest --run --globals --config vitest.config.browser.ts",
 		"typecheck": "vue-tsc --noEmit",
 		"oxlint": "oxlint --quiet",
-		"lint": "pnpm typecheck && pnpm oxlint"
+		"vize-lint": "vize lint --quiet",
+		"lint": "pnpm oxlint ; pnpm vize-lint"
 	},
 	"dependencies": {
 		"@analytics/google-analytics": "1.1.0",
@@ -119,7 +120,6 @@
 		"msw-storybook-addon": "3.0.3",
 		"nodemon": "3.1.14",
 		"oxc-walker": "1.1.1",
-		"oxlint-plugin-vize": "0.751.0",
 		"playwright": "1.64.1",
 		"prettier": "3.9.10",
 		"react": "19.3.1",
@@ -136,6 +136,7 @@
 		"vite-plugin-turbosnap": "1.0.3",
 		"vitest": "5.0.5",
 		"vitest-fetch-mock": "0.4.5",
+		"vize": "0.751.0",
 		"vue-component-type-helpers": "3.3.14",
 		"vue-tsc": "3.3.11"
 	},

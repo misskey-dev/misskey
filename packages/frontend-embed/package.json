@@ -7,7 +7,8 @@
 		"build": "tsx build.ts",
 		"typecheck": "vue-tsc --noEmit",
 		"oxlint": "oxlint --quiet",
-		"lint": "pnpm typecheck && pnpm oxlint"
+		"vize-lint": "vize lint --quiet",
+		"lint": "pnpm oxlint ; pnpm vize-lint"
 	},
 	"dependencies": {
 		"buraha": "0.0.1",
@@ -39,11 +40,11 @@
 		"@vue/runtime-core": "3.5.44",
 		"intersection-observer": "0.12.2",
 		"lightningcss": "1.33.0",
-		"oxlint-plugin-vize": "0.751.0",
 		"sass-embedded": "1.107.1",
 		"tsx": "4.23.15",
 		"typescript": "6.0.3",
 		"vite": "8.3.5",
+		"vize": "0.751.0",
 		"vue-component-type-helpers": "3.3.14",
 		"vue-tsc": "3.3.11"
 	}

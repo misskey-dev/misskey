@@ -82,43 +82,53 @@ export const frontendJsRules = {
 	],
 };
 
-/** @type {import('oxlint').DummyRuleMap} */
-export const frontendVizeRules = {
+/** @type {import('vize').LinterConfig['rules']} */
+export const frontendVizeLinterRules = {
 	// 'vue/attributes-order': ['error', {
 	// 	alphabetical: false,
 	// }], // vize formatter
-	'vize/vue/no-mutating-props': ['error', {
-		shallowOnly: true,
-	}],
-	'vize/vue/no-use-v-if-with-v-for': 'error',
-	'vize/script/no-ref-as-operand': 'error',
-	'vize/vue/no-multi-spaces': 'error',
-	'vize/vue/no-v-html': 'warn',
-	'vize/vue/sfc-element-order': ['error', {
-		order: ['template', 'script:not([setup])', 'script[setup]', 'style'],
-	}],
-	// 'vize/vue/html-indent': ['warn', 'tab', {
+	'vue/no-mutating-props': 'error',
+	'vue/no-use-v-if-with-v-for': 'error',
+	'script/no-ref-as-operand': 'error',
+	'vue/no-multi-spaces': 'error',
+	'vue/no-v-html': 'warn',
+	'vue/sfc-element-order': 'error',
+	// 'vue/html-indent': ['warn', 'tab', {
 	// 	attribute: 1,
 	// 	baseIndent: 0,
 	// 	closeBracket: 0,
 	// 	alignAttributesVertically: true,
 	// 	ignores: [],
 	// }], // vize formatter
-	// 'vize/vue/html-closing-bracket-spacing': ['warn', {
+	// 'vue/html-closing-bracket-spacing': ['warn', {
 	// 	startTag: 'never',
 	// 	endTag: 'never',
 	// 	selfClosingTag: 'never',
 	// }], // vize formatter
-	'vize/vue/multi-word-component-names': 'warn',
-	'vize/vue/require-v-for-key': 'warn',
-	'vize/vue/no-unused-components': 'warn',
-	'vize/vue/no-unused-vars': 'warn',
-	'vize/script/no-dupe-keys': 'warn',
-	'vize/vue/valid-v-for': 'warn',
-	'vize/script/return-in-computed-property': 'warn',
-	'vize/type/no-reactivity-loss': 'warn',
-	// 'vize/vue/max-attributes-per-line': 'off', // vize formatter
-	'vize/vue/html-self-closing': ['error', {
+	'vue/multi-word-component-names': 'warn',
+	'vue/require-v-for-key': 'warn',
+	'vue/no-unused-components': 'warn',
+	'vue/no-unused-vars': 'warn',
+	'script/no-dupe-keys': 'warn',
+	'vue/valid-v-for': 'warn',
+	'script/return-in-computed-property': 'warn',
+	'type/no-reactivity-loss': 'warn',
+	// 'vue/max-attributes-per-line': 'off', // vize formatter
+	'vue/html-self-closing': 'error',
+	// 'vue/singleline-html-element-content-newline': 'off', // vize formatter
+	'vue/v-on-event-hyphenation': 'error',
+	'vue/attribute-hyphenation': 'error',
+};
+
+/** @type {import('vize').LinterConfig['ruleOptions']} */
+export const frontendVizeLinterRuleOptions = {
+	'vue/no-mutating-props': {
+		shallowOnly: true,
+	},
+	'vue/sfc-element-order': {
+		order: ['template', 'script:not([setup])', 'script[setup]', 'style'],
+	},
+	'vue/html-self-closing': {
 		html: {
 			void: 'any',
 			normal: 'never',
@@ -126,8 +136,7 @@ export const frontendVizeRules = {
 		},
 		svg: 'any',
 		math: 'any',
-	}],
-	// 'vize/vue/singleline-html-element-content-newline': 'off', // vize formatter
-	'vize/vue/v-on-event-hyphenation': ['error', 'never'],
-	'vize/vue/attribute-hyphenation': ['error', 'never'],
+	},
+	'vue/attribute-hyphenation': 'never',
+	'vue/v-on-event-hyphenation': 'never',
 };

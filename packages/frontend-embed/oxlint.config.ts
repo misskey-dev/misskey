@@ -1,14 +1,13 @@
-import { defineMisskeyDevOxlintConfig } from '@misskey-dev/oxlint-fmt-config';
-import { frontendJsRules, frontendGlobals, frontendVizeRules } from '../shared/oxlint-browser.js';
+import {
+	defineMisskeyDevOxlintConfig,
+	oxlintJsRules,
+	oxlintTsRules,
+	oxlintStylisticRules,
+} from '@misskey-dev/oxlint-fmt-config';
+import { frontendJsRules, frontendGlobals } from '../shared/lint-browser.js';
 
 export default defineMisskeyDevOxlintConfig({
 	overrides: {
-		jsPlugins: ['oxlint-plugin-vize'],
-		settings: {
-			vize: {
-				typeAware: true,
-			},
-		},
 		env: {
 			browser: true,
 		},
@@ -24,11 +23,20 @@ export default defineMisskeyDevOxlintConfig({
 				node: true,
 			},
 		}, {
-			files: ['src/**/*.{ts,tsx,vue}'],
+			files: ['src/**/*.{vue,ts,tsx}'],
 			plugins: ['vue'],
 			rules: {
+				...oxlintJsRules,
+				...oxlintTsRules,
+				...oxlintStylisticRules,
 				...frontendJsRules,
-				...frontendVizeRules,
+			},
+		}, {
+			files: ['src/**/*.{js,jsx}'],
+			rules: {
+				...oxlintJsRules,
+				...oxlintStylisticRules,
+				...frontendJsRules,
 			},
 		}],
 	},
