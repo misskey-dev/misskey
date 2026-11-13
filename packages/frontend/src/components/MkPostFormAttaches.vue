@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		direction="horizontal"
 		withGaps
 		stretchItems
+		:manualDragStart="props.draggable === false"
 		@update:modelValue="v => emit('update:modelValue', v)"
 	>
 		<template #default="{ item }">
@@ -48,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 				<div :class="$style.fileInfo">
-					<div :class="$style.fileName">{{ item.type === 'driveFile' ? item.file.name : item.file.file.name }}</div>
+					<div :class="$style.fileName">{{ item.type === 'driveFile' ? item.file.name : getUploadName(item.file) }}</div>
 					<div v-if="item.type === 'uploaderItem'" :class="$style.fileDetails">
 						<span><i class="ti ti-upload"></i></span>
 						<span v-if="item.file.compressedSize">{{ i18n.tsx._uploader.compressedToX({ x: bytes(item.file.compressedSize) }) }}</span>
@@ -104,6 +105,7 @@ import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
 import { isPreviewable, getType } from '@/utility/lightbox.js';
+import { getUploadName } from '@/composables/use-uploader.js';
 
 const props = defineProps<{
 	draggable?: boolean;
@@ -250,7 +252,7 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 							thumbnailUrl: item.type === 'driveFile' ? item.file.thumbnailUrl : item.file.thumbnail,
 							width: item.type === 'driveFile' ? item.file.properties.width : null,
 							height: item.type === 'driveFile' ? item.file.properties.height : null,
-							filename: item.type === 'driveFile' ? item.file.name : item.file.name,
+							filename: item.type === 'driveFile' ? item.file.name : getUploadName(item.file),
 							file: item.type === 'driveFile' ? item.file : undefined,
 							//sourceElement: TODO
 						}));

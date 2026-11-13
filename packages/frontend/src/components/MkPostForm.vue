@@ -157,7 +157,7 @@ import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
 import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
 import { isPreviewable, getType } from '@/utility/lightbox.js';
-import { useUploader } from '@/composables/use-uploader.js';
+import { useUploader, getUploadName } from '@/composables/use-uploader.js';
 import { startTour } from '@/utility/tour.js';
 import { closeTip } from '@/tips.js';
 
@@ -511,8 +511,7 @@ function chooseFileFrom(ev: PointerEvent) {
 		text: i18n.ts.fromUrl,
 		icon: 'ti ti-link',
 		action: () => chooseFileFromUrl().then(file => {
-			attachOrder.set(file.id, files.value.length);
-			files.value.push(file);
+			addDriveFiles([file]);
 		}),
 	}], anchorElement);
 }
@@ -522,7 +521,7 @@ function chooseFileFromPc(ev: PointerEvent) {
 
 	os.chooseFileFromPc({ multiple: true }).then(files => {
 		if (files.length === 0) return;
-		uploader.addFiles(files);
+		addLocalFiles(files);
 	});
 }
 
@@ -530,7 +529,7 @@ function chooseFileFromDrive(ev: PointerEvent) {
 	if (props.mock) return;
 
 	chooseDriveFile({ multiple: true }).then(driveFiles => {
-		files.value.push(...driveFiles);
+		addDriveFiles(driveFiles);
 	});
 }
 
@@ -586,7 +585,47 @@ function updateFileName(file: Misskey.entities.DriveFile, name: Misskey.entities
 	files.value[files.value.findIndex(x => x.id === file.id)].name = name;
 }
 
+/** 添付の表示順・送信順 (id → 順序) */
 const attachOrder = new Map<string, number>();
+
+/** 追加された添付に、既存の最大順序より後の順序を割り当てる (既に順序を持つものは変更しない) */
+function registerAttachOrder(ids: string[]) {
+	let next = Math.max(-1, ...attachOrder.values()) + 1;
+	for (const id of ids) {
+		if (attachOrder.has(id)) continue;
+		attachOrder.set(id, next++);
+	}
+}
+
+/** 以前の順序を破棄し、現在の files (と未アップロードのアイテム) の並びから順序を作り直す */
+function rebuildAttachOrder() {
+	attachOrder.clear();
+	registerAttachOrder([
+		...files.value.map(f => f.id),
+		...uploader.items.value.filter(i => i.uploaded == null).map(i => i.id),
+	]);
+}
+
+function getAttachOrder(id: string): number {
+	return attachOrder.get(id) ?? Number.MAX_SAFE_INTEGER;
+}
+
+function sortFilesByAttachOrder(_files: Misskey.entities.DriveFile[]): Misskey.entities.DriveFile[] {
+	return [..._files].sort((a, b) => getAttachOrder(a.id) - getAttachOrder(b.id));
+}
+
+function addDriveFiles(driveFiles: Misskey.entities.DriveFile[]) {
+	registerAttachOrder(driveFiles.map(f => f.id));
+	files.value.push(...driveFiles);
+}
+
+function addLocalFiles(localFiles: File[]) {
+	const existingIds = new Set(uploader.items.value.map(i => i.id));
+	uploader.addFiles(localFiles);
+	registerAttachOrder(uploader.items.value.filter(i => !existingIds.has(i.id)).map(i => i.id));
+}
+
+registerAttachOrder(files.value.map(f => f.id));
 
 const attaches = computed<Attach[]>({
 	get: () => {
@@ -594,16 +633,7 @@ const attaches = computed<Attach[]>({
 			...files.value.map(f => ({ id: f.id, type: 'driveFile' as const, file: f })),
 			...uploader.items.value.filter(i => i.uploaded == null).map(i => ({ id: i.id, type: 'uploaderItem' as const, file: i })),
 		];
-		_attaches.forEach((a, i) => {
-			if (!attachOrder.has(a.id)) {
-				attachOrder.set(a.id, i);
-			}
-		});
-		return _attaches.sort((a, b) => {
-			const aOrder = attachOrder.get(a.id) ?? 0;
-			const bOrder = attachOrder.get(b.id) ?? 0;
-			return aOrder - bOrder;
-		});
+		return _attaches.sort((a, b) => getAttachOrder(a.id) - getAttachOrder(b.id));
 	},
 	set: (newAttaches: Attach[]) => {
 		attachOrder.clear();
@@ -627,7 +657,7 @@ function handleShowUploaderMenu(item: UploaderItem, ev: MouseEvent | KeyboardEve
 				thumbnailUrl: item.type === 'driveFile' ? item.file.thumbnailUrl : item.file.thumbnail,
 				width: item.type === 'driveFile' ? item.file.properties.width : null,
 				height: item.type === 'driveFile' ? item.file.properties.height : null,
-				filename: item.type === 'driveFile' ? item.file.name : item.file.name,
+				filename: item.type === 'driveFile' ? item.file.name : getUploadName(item.file),
 				file: item.type === 'driveFile' ? item.file : undefined,
 				//sourceElement: TODO
 			}));
@@ -882,7 +912,7 @@ async function onPaste(ev: ClipboardEvent) {
 	}
 	if (pastedFiles.length > 0) {
 		ev.preventDefault();
-		uploader.addFiles(pastedFiles);
+		addLocalFiles(pastedFiles);
 		return;
 	}
 
@@ -919,7 +949,7 @@ async function onPaste(ev: ClipboardEvent) {
 
 		const fileName = formatTimeString(new Date(), pastedFileName).replace(/{{number}}/g, '0');
 		const file = new File([paste], `${fileName}.txt`, { type: 'text/plain' });
-		uploader.addFiles([file]);
+		addLocalFiles([file]);
 	}
 }
 
@@ -964,7 +994,7 @@ function onDrop(ev: DragEvent): void {
 	// ファイルだったら
 	if (ev.dataTransfer && ev.dataTransfer.files.length > 0) {
 		ev.preventDefault();
-		uploader.addFiles(Array.from(ev.dataTransfer.files));
+		addLocalFiles(Array.from(ev.dataTransfer.files));
 		return;
 	}
 
@@ -972,7 +1002,7 @@ function onDrop(ev: DragEvent): void {
 	{
 		const droppedData = getDragData(ev, 'driveFiles');
 		if (droppedData != null) {
-			files.value.push(...droppedData);
+			addDriveFiles(droppedData);
 			ev.preventDefault();
 		}
 	}
@@ -1011,7 +1041,7 @@ function saveDraft() {
 			cw: cw.value,
 			visibility: visibility.value,
 			localOnly: localOnly.value,
-			files: files.value,
+			files: sortFilesByAttachOrder(files.value),
 			poll: poll.value,
 			...( visibleUsers.value.length > 0 ? { visibleUserIds: visibleUsers.value.map(x => x.id) } : {}),
 			quoteId: quoteId.value,
@@ -1041,7 +1071,7 @@ async function saveServerDraft(options: {
 		visibility: visibility.value,
 		localOnly: localOnly.value,
 		hashtag: hashtags.value,
-		fileIds: files.value.map(f => f.id),
+		fileIds: sortFilesByAttachOrder(files.value).map(f => f.id),
 		poll: poll.value,
 		visibleUserIds: visibleUsers.value.map(x => x.id),
 		renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : quoteId.value ? quoteId.value : null,
@@ -1061,13 +1091,29 @@ function isAnnoying(text: string): boolean {
 		text.includes('$[position');
 }
 
-async function uploadFiles() {
-	await uploader.upload();
+/**
+ * @returns アップロード処理が例外なく完了したか
+ */
+async function uploadFiles(): Promise<boolean> {
+	try {
+		await uploader.upload();
+	} catch (err) {
+		// uploadFile はダイアログを表示してから理由無しで reject するため、その場合はここで重ねて表示しない
+		if (err != null) {
+			os.alert({
+				type: 'error',
+				text: err instanceof Error ? err.message : String(err),
+			});
+		}
+		return false;
+	}
 
 	for (const uploadedItem of uploader.items.value.filter(x => x.uploaded != null)) {
 		files.value.push(uploadedItem.uploaded!);
 		uploader.removeItem(uploadedItem);
 	}
+
+	return true;
 }
 
 async function post(ev?: PointerEvent) {
@@ -1086,10 +1132,10 @@ async function post(ev?: PointerEvent) {
 
 	if (scheduledAt.value != null) {
 		if (uploader.items.value.some(x => x.uploaded == null)) {
-			await uploadFiles();
+			const succeeded = await uploadFiles();
 
 			// アップロード失敗したものがあったら中止
-			if (uploader.items.value.some(x => x.uploaded == null)) {
+			if (!succeeded || uploader.items.value.some(x => x.uploaded == null)) {
 				return;
 			}
 		}
@@ -1132,10 +1178,10 @@ async function post(ev?: PointerEvent) {
 	posting.value = true;
 
 	if (uploader.items.value.some(x => x.uploaded == null)) {
-		await uploadFiles();
+		const succeeded = await uploadFiles();
 
 		// アップロード失敗したものがあったら中止
-		if (uploader.items.value.some(x => x.uploaded == null)) {
+		if (!succeeded || uploader.items.value.some(x => x.uploaded == null)) {
 			posting.value = false;
 			return;
 		}
@@ -1400,6 +1446,7 @@ async function openAccountMenu(ev: PointerEvent) {
 				visibility.value = draft.visibility;
 				localOnly.value = draft.localOnly ?? false;
 				files.value = draft.files ?? [];
+				rebuildAttachOrder();
 				hashtags.value = draft.hashtag ?? '';
 				if (draft.hashtag) withHashtags.value = true;
 				if (draft.poll) {
@@ -1555,6 +1602,7 @@ onMounted(() => {
 				visibility.value = draft.data.visibility;
 				localOnly.value = draft.data.localOnly;
 				files.value = (draft.data.files || []).filter(draftFile => draftFile);
+				rebuildAttachOrder();
 				if (draft.data.poll) {
 					poll.value = draft.data.poll;
 				}
@@ -1578,6 +1626,7 @@ onMounted(() => {
 			visibility.value = init.visibility;
 			localOnly.value = init.localOnly ?? false;
 			files.value = init.files ?? [];
+			rebuildAttachOrder();
 			if (init.poll) {
 				poll.value = {
 					choices: init.poll.choices.map(x => x.text),

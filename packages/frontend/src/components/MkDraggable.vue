@@ -32,6 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div
 		v-for="(item, i) in modelValue"
 		:key="`MkDraggableRoot:${item.id}`"
+		:ref="el => setItemEl(item.id, el)"
 		:class="$style.item"
 		:draggable="!manualDragStart"
 		@dragstart.stop="onDragstart($event, item)"
@@ -65,12 +66,14 @@ let dragContext: {
 	item: { id: string };
 	sourceInstanceId: string;
 	group: string;
+	sourceElement: HTMLElement | null;
 	removeFromSource: () => void;
 } | null = null;
 </script>
 
 <script lang="ts" setup generic="T extends { id: string; }">
 import { nextTick } from 'vue';
+import type { ComponentPublicInstance } from 'vue';
 import { getDragData, setDragData } from '@/drag-and-drop.js';
 import { genId } from '@/utility/id.js';
 
@@ -103,6 +106,15 @@ const emit = defineEmits<{
 const dropReadyArea = ref<[T['id'] | null, 'forward' | 'backward' | null]>([null, null]);
 const instanceId = genId();
 const group = props.group ?? instanceId;
+const itemEls = new Map<string, HTMLElement>();
+
+function setItemEl(id: string, el: Element | ComponentPublicInstance | null) {
+	if (el instanceof HTMLElement) {
+		itemEls.set(id, el);
+	} else {
+		itemEls.delete(id);
+	}
+}
 
 function onDragstart(ev: DragEvent, item: T) {
 	if (ev.dataTransfer == null) return;
@@ -114,6 +126,7 @@ function onDragstart(ev: DragEvent, item: T) {
 		item,
 		sourceInstanceId: instanceId,
 		group,
+		sourceElement: itemEls.get(item.id) ?? null,
 		removeFromSource: () => {
 			emit('update:modelValue', props.modelValue.filter(x => x.id !== item.id));
 		},
@@ -151,6 +164,10 @@ function onDragleave(ev: DragEvent, item: T) {
 function takeDraggedItem(ev: DragEvent): T | null {
 	const ctx = dragContext;
 	if (ctx == null || getDragData(ev, 'MkDraggable') == null || ctx.group !== group) return null;
+
+	// 入れ子になった MkDraggable で、ドラッグ元の項目自身 (の子孫) へのドロップは循環参照になるため中止する
+	const dropTarget = ev.currentTarget;
+	if (ctx.sourceElement != null && dropTarget instanceof Node && ctx.sourceElement.contains(dropTarget)) return null;
 
 	// ドロップで移動元の要素が DOM から外れると dragend が発火しないことがあるため、ここでも破棄する
 	dragContext = null;

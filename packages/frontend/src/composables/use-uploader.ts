@@ -185,8 +185,14 @@ export function useUploader(options: {
 	}
 
 	function removeItem(item: UploaderItem) {
+		// upload() が取得済みのキューから削除済みの項目をアップロードしないよう、中止扱いにしておく
+		if (item.uploaded == null) {
+			if (item.abort != null) item.abort();
+			item.aborted = true;
+		}
 		revokeItemObjectUrls(item);
-		items.value.splice(items.value.indexOf(item), 1);
+		const index = items.value.indexOf(item);
+		if (index !== -1) items.value.splice(index, 1);
 	}
 
 	function getMenu(item: UploaderItem, customPreviewHandler: (() => void) | null = null): MenuItem[] {
@@ -604,7 +610,7 @@ export function useUploader(options: {
 
 		for (const item of items.value.filter(item => item.uploaded == null)) {
 			// アップロード処理途中で値が変わる場合（途中で全キャンセルされたりなど）もあるので、Array filterではなくここでチェック
-			if (item.aborted) {
+			if (item.aborted || !items.value.includes(item)) {
 				continue;
 			}
 
