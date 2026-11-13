@@ -71,6 +71,9 @@ vite.config.ts.timestamp-*
 vite.config.local-dev.js.timestamp-*
 vite.config.local-dev.ts.timestamp-*
 
+# Vize temporary directories
+.vize
+
 # blender backups
 *.blend1
 *.blend2
