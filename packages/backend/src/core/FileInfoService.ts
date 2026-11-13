@@ -13,7 +13,7 @@ import probeImageSize from 'probe-image-size';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import * as blurhash from 'blurhash';
 import { Decoder, Demuxer, FilterAPI, Scaler, probe } from 'node-av/api';
-import { AV_PICTURE_TYPE_I, AVDISCARD_ALL, AVDISCARD_NONKEY } from 'node-av/constants';
+import { AV_CODEC_ID_APNG, AV_PICTURE_TYPE_I, AVDISCARD_ALL, AVDISCARD_NONKEY } from 'node-av/constants';
 import type { Packet } from 'node-av/lib';
 import { SensitiveMediaDetectionService } from '@/core/SensitiveMediaDetectionService.js';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -298,9 +298,17 @@ export class FileInfoService {
 			const videoStream = demuxer.video();
 			if (videoStream == null) return frameBuffers;
 
+			// APNG はデコードすると全フレームが I フレームになるが、キーフレームのフラグは先頭付近のパケットにしか付かない。
+			// パケットをキーフレームに絞ると大半のフレームが判定から漏れるため、APNG では絞らない
+			const keyframesOnly = videoStream.codecpar.codecId !== AV_CODEC_ID_APNG;
+
 			// 対応しているコンテナでは、使わないパケットをデマルチプレクサの段階で読み飛ばさせる
 			for (const stream of demuxer.streams) {
-				stream.discard = stream.index === videoStream.index ? AVDISCARD_NONKEY : AVDISCARD_ALL;
+				if (stream.index !== videoStream.index) {
+					stream.discard = AVDISCARD_ALL;
+				} else if (keyframesOnly) {
+					stream.discard = AVDISCARD_NONKEY;
+				}
 			}
 
 			using decoder = await Decoder.create(videoStream, {
@@ -325,7 +333,8 @@ export class FileInfoService {
 			let targetIndex = 0;
 			let nextIndex = 1;
 
-			for await (using frame of decoder.frames(keyframePacketsOnly(demuxer.packets(videoStream.index)))) {
+			const packets = demuxer.packets(videoStream.index);
+			for await (using frame of decoder.frames(keyframesOnly ? keyframePacketsOnly(packets) : packets)) {
 				// I-Frame のみを対象にする（VP9 とかはデコードしてみないとわからないっぽい）
 				if (frame == null || frame.pictType !== AV_PICTURE_TYPE_I) continue;
 
