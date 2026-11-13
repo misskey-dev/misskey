@@ -49,7 +49,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div :class="$style.fileInfo">
 					<div :class="$style.fileName">{{ item.type === 'driveFile' ? item.file.name : item.file.file.name }}</div>
-					<div v-if="item.type === 'uploaderItem'" :class="$style.fileSize">{{ item.file.compressedSize ? i18n.tsx._uploader.compressedToX({ x: bytes(item.file.compressedSize) }) : bytes(item.file.file.size) }}</div>
+					<div v-if="item.type === 'uploaderItem'" :class="$style.fileDetails">
+						<span><i class="ti ti-upload"></i></span>
+						<span v-if="item.file.compressedSize">{{ i18n.tsx._uploader.compressedToX({ x: bytes(item.file.compressedSize) }) }}</span>
+						<span v-else>{{ bytes(item.file.file.size) }}</span>
+						<span v-if="item.file.preprocessing">{{ i18n.ts.preprocessing }}</span>
+					</div>
+					<div v-else :class="$style.fileDetails">
+						<span><i class="ti ti-cloud"></i></span>
+						<span>{{ i18n.ts.fromDrive }}</span>
+					</div>
 				</div>
 			</div>
 		</template>
@@ -388,8 +397,12 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 	overflow: hidden;
 }
 
-.fileSize {
+.fileDetails {
 	margin-top: 2px;
+
+	& > span {
+		margin-right: 4px;
+	}
 }
 
 .uploadProgressWrapper {
