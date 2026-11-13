@@ -61,7 +61,12 @@ import { ref } from 'vue';
 
 // 別々のコンポーネントインスタンス間でD&Dを融通するためにグローバルに状態を持っておく必要がある
 const dragging = ref(false);
-let dropCallback: ((targetInstanceId: string) => void) | null = null;
+let dragContext: {
+	item: { id: string };
+	sourceInstanceId: string;
+	group: string;
+	removeFromSource: () => void;
+} | null = null;
 </script>
 
 <script lang="ts" setup generic="T extends { id: string; }">
@@ -102,19 +107,24 @@ const group = props.group ?? instanceId;
 function onDragstart(ev: DragEvent, item: T) {
 	if (ev.dataTransfer == null) return;
 	ev.dataTransfer.effectAllowed = 'move';
-	setDragData(ev, 'MkDraggable', { item, instanceId, group });
+	// Firefox では setData しないとドラッグが開始されないため、マーカーとして空データを載せる (実データは dragContext で保持)
+	setDragData(ev, 'MkDraggable', {});
+
+	dragContext = {
+		item,
+		sourceInstanceId: instanceId,
+		group,
+		removeFromSource: () => {
+			emit('update:modelValue', props.modelValue.filter(x => x.id !== item.id));
+		},
+	};
 
 	const target = ev.target as HTMLElement;
 	target.addEventListener('dragend', (ev) => {
 		dragging.value = false;
 		dropReadyArea.value = [null, null];
+		dragContext = null;
 	}, { once: true });
-
-	dropCallback = (targetInstanceId) => {
-		if (targetInstanceId === instanceId) return;
-		const newValue = props.modelValue.filter(x => x.id !== item.id);
-		emit('update:modelValue', newValue);
-	};
 
 	// Chromeのバグで、Dragstartハンドラ内ですぐにDOMを変更する(=リアクティブなプロパティを変更する)とDragが終了してしまう
 	// SEE: https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
@@ -134,30 +144,44 @@ function onDragleave(ev: DragEvent, item: T) {
 	dropReadyArea.value = [null, null];
 }
 
-function onDrop(ev: DragEvent, item: T, backward: boolean) {
-	const dragged = getDragData(ev, 'MkDraggable');
-	dropReadyArea.value = [null, null];
-	if (dragged == null || dragged.group !== group || dragged.item.id === item.id) return;
-	dropCallback?.(instanceId);
+/**
+ * このインスタンスにドロップ可能なドラッグであれば、ドラッグ中のアイテムを返す。
+ * 別インスタンスからのドロップの場合は移動元からアイテムを取り除く。
+ */
+function takeDraggedItem(ev: DragEvent): T | null {
+	const ctx = dragContext;
+	if (ctx == null || getDragData(ev, 'MkDraggable') == null || ctx.group !== group) return null;
 
-	const fromIndex = props.modelValue.findIndex(x => x.id === dragged.item.id);
+	// ドロップで移動元の要素が DOM から外れると dragend が発火しないことがあるため、ここでも破棄する
+	dragContext = null;
+	if (ctx.sourceInstanceId !== instanceId) ctx.removeFromSource();
+
+	return ctx.item as T;
+}
+
+function onDrop(ev: DragEvent, item: T, backward: boolean) {
+	dropReadyArea.value = [null, null];
+	if (dragContext == null || dragContext.item.id === item.id) return;
+	const draggedItem = takeDraggedItem(ev);
+	if (draggedItem == null) return;
+
+	const fromIndex = props.modelValue.findIndex(x => x.id === draggedItem.id);
 	let toIndex = props.modelValue.findIndex(x => x.id === item.id);
 
 	const newValue = [...props.modelValue];
 	if (fromIndex > -1) newValue.splice(fromIndex, 1);
 	toIndex = newValue.findIndex(x => x.id === item.id);
 	if (backward) toIndex += 1;
-	newValue.splice(toIndex, 0, dragged.item as T);
+	newValue.splice(toIndex, 0, draggedItem);
 
 	emit('update:modelValue', newValue);
 }
 
 function onEmptyDrop(ev: DragEvent) {
-	const dragged = getDragData(ev, 'MkDraggable');
-	if (dragged == null) return;
-	dropCallback?.(instanceId);
+	const draggedItem = takeDraggedItem(ev);
+	if (draggedItem == null) return;
 
-	emit('update:modelValue', [dragged.item as T]);
+	emit('update:modelValue', [draggedItem]);
 }
 </script>
 
