@@ -11,7 +11,7 @@ import { Test } from '@nestjs/testing';
 import { CoreModule } from '@/core/CoreModule.js';
 import { MfmService } from '@/core/MfmService.js';
 import { GlobalModule } from '@/GlobalModule.js';
-import {factory} from "typescript";
+import { factory } from "typescript";
 
 describe('MfmService', () => {
 	let mfmService: MfmService;

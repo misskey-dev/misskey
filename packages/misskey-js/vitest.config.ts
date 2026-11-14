@@ -12,6 +12,6 @@ export default defineConfig({
 				'test-d/**/*',
 				'build.js',
 			],
-		}
+		},
 	},
 });

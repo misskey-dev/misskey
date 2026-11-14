@@ -29,7 +29,7 @@ export async function signout() {
 	const idbPromises = ['MisskeyClient'].map((name, i, arr) => new Promise<void>((res, rej) => {
 		const delidb = indexedDB.deleteDatabase(name);
 		delidb.onsuccess = () => res();
-		delidb.onerror = e => rej(e);
+		delidb.onerror = ev => rej(ev);
 		delidb.onblocked = () => idbAbortController.signal.aborted && rej(new Error('Operation aborted'));
 	}));
 

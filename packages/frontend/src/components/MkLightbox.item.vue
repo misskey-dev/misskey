@@ -301,7 +301,7 @@ const contentHideFileText = computed(() => {
 const videoAspectRatio = ref<number | null>(
 	props.content.width != null && props.content.height != null && props.content.width > 0 && props.content.height > 0
 		? props.content.width / props.content.height
-		: null
+		: null,
 );
 
 function onVideoLoadedMetadata() {
