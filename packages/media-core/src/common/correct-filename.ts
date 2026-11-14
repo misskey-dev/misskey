@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/**
- * Array.includes()よりSet.has()の方が高速
- */
 const targetExtsToSkip = new Set([
 	'.gz',
 	'.tar',

@@ -222,6 +222,11 @@ try {
 			stdout: process.stdout,
 			stderr: process.stderr,
 		}),
+		runChildProcess('pnpm', ['--filter', '@misskey-dev/media-core', 'build'], {
+			cwd: _dirname + '/../',
+			stdout: process.stdout,
+			stderr: process.stderr,
+		}),
 	]);
 
 	startChildProcess('pnpm', ['build-pre', '--watch'], {
@@ -261,6 +266,12 @@ try {
 	});
 
 	startChildProcess('pnpm', ['--filter', 'misskey-js', 'watch', '--no-clean'], {
+		cwd: _dirname + '/../',
+		stdout: process.stdout,
+		stderr: process.stderr,
+	});
+
+	startChildProcess('pnpm', ['--filter', '@misskey-dev/media-core', 'watch'], {
 		cwd: _dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,
