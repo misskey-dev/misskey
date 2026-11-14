@@ -103,7 +103,7 @@ export class Paginator<
 	private offsetMode: boolean;
 	public noPaging: boolean;
 
-	// init() が呼ばれるたびに増やし、古い呼び出しの応答を反映しないようにする
+	// init() が呼ばれるたびに増やし、それより前に始まった取得の応答を反映しないようにする
 	private initGeneration = 0;
 	public searchQuery = ref<null | string>('');
 	private searchParamName: keyof E['req'] | 'search';
@@ -200,6 +200,9 @@ export class Paginator<
 		this.aheadQueue = [];
 		this.queuedAheadItemsCount.value = 0;
 		this.fetching.value = true;
+		// 取得中だった fetchOlder() / fetchNewer() の応答は捨てるので、取得中の状態も解除する
+		this.fetchingOlder.value = false;
+		this.fetchingNewer.value = false;
 
 		const data: E['req'] = {
 			...(typeof this.params === 'function' ? this.params() : this.params),
@@ -266,6 +269,7 @@ export class Paginator<
 
 	public async fetchOlder(): Promise<void> {
 		if (!this.canFetchOlder.value || this.fetching.value || this.fetchingOlder.value || this.items.value.length === 0) return;
+		const generation = this.initGeneration;
 		this.fetchingOlder.value = true;
 
 		const data: E['req'] = {
@@ -283,6 +287,9 @@ export class Paginator<
 		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(_ => {
 			return null;
 		})) as T[] | null;
+
+		// 取得中に init() (reload()) されていたら、この応答は古いので捨てる
+		if (generation !== this.initGeneration) return;
 
 		this.fetchingOlder.value = false;
 
@@ -319,6 +326,7 @@ export class Paginator<
 	public async fetchNewer(options: {
 		toQueue?: boolean;
 	} = {}): Promise<void> {
+		const generation = this.initGeneration;
 		this.fetchingNewer.value = true;
 
 		const data: E['req'] = {
@@ -336,6 +344,9 @@ export class Paginator<
 		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(_ => {
 			return null;
 		})) as T[] | null;
+
+		// 取得中に init() (reload()) されていたら、この応答は古いので捨てる
+		if (generation !== this.initGeneration) return;
 
 		this.fetchingNewer.value = false;
 

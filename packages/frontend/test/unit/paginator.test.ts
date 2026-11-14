@@ -95,4 +95,79 @@ describe('Paginator', () => {
 		expect(paginator.error.value).toBe(false);
 		expect(paginator.items.value.map(x => x.id)).toEqual(['a']);
 	});
+
+	test('fetchOlder() の取得中に reload() されたら、古いページは一覧に混ざらない', async () => {
+		const older = deferred<Item[]>();
+		const reloaded = deferred<Item[]>();
+		misskeyApiMock
+			.mockResolvedValueOnce([item('c'), item('b')])
+			.mockReturnValueOnce(older.promise)
+			.mockReturnValueOnce(reloaded.promise);
+
+		const paginator = new Paginator('i/favorites', {});
+		await paginator.init();
+
+		const fetchOlder = paginator.fetchOlder();
+		expect(paginator.fetchingOlder.value).toBe(true);
+		const reload = paginator.reload();
+		expect(paginator.fetchingOlder.value).toBe(false);
+
+		reloaded.resolve([item('c')]);
+		await reload;
+		older.resolve([item('a')]);
+		await fetchOlder;
+
+		expect(paginator.items.value.map(x => x.id)).toEqual(['c']);
+		expect(paginator.fetchingOlder.value).toBe(false);
+	});
+
+	test('reload() 前の fetchOlder() の応答が、reload() 後に始めた fetchOlder() の取得中の状態を解除しない', async () => {
+		const staleOlder = deferred<Item[]>();
+		const newOlder = deferred<Item[]>();
+		misskeyApiMock
+			.mockResolvedValueOnce([item('c')])
+			.mockReturnValueOnce(staleOlder.promise)
+			.mockResolvedValueOnce([item('c')])
+			.mockReturnValueOnce(newOlder.promise);
+
+		const paginator = new Paginator('i/favorites', {});
+		await paginator.init();
+
+		const staleFetch = paginator.fetchOlder();
+		await paginator.reload();
+		const newFetch = paginator.fetchOlder();
+		expect(paginator.fetchingOlder.value).toBe(true);
+
+		staleOlder.resolve([item('x')]);
+		await staleFetch;
+		expect(paginator.fetchingOlder.value).toBe(true);
+
+		newOlder.resolve([item('b')]);
+		await newFetch;
+		expect(paginator.fetchingOlder.value).toBe(false);
+		expect(paginator.items.value.map(x => x.id)).toEqual(['c', 'b']);
+	});
+
+	test('fetchNewer() の取得中に reload() されたら、古い応答は一覧に混ざらない', async () => {
+		const newer = deferred<Item[]>();
+		const reloaded = deferred<Item[]>();
+		misskeyApiMock
+			.mockResolvedValueOnce([item('b')])
+			.mockReturnValueOnce(newer.promise)
+			.mockReturnValueOnce(reloaded.promise);
+
+		const paginator = new Paginator('i/favorites', {});
+		await paginator.init();
+
+		const fetchNewer = paginator.fetchNewer();
+		const reload = paginator.reload();
+
+		reloaded.resolve([item('b')]);
+		await reload;
+		newer.resolve([item('c')]);
+		await fetchNewer;
+
+		expect(paginator.items.value.map(x => x.id)).toEqual(['b']);
+		expect(paginator.fetchingNewer.value).toBe(false);
+	});
 });
