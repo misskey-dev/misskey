@@ -140,7 +140,7 @@ async function describe(file: Misskey.entities.DriveFile) {
 	}, {
 		done: caption => {
 			let comment = caption.length === 0 ? null : caption;
-			misskeyApi('drive/files/update', {
+			os.apiWithDialog('drive/files/update', {
 				fileId: file.id,
 				comment: comment,
 			}).then(() => {
