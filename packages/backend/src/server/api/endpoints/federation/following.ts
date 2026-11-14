@@ -52,7 +52,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.followingsRepository.createQueryBuilder('following'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.andWhere('following.followerHost = :host', { host: ps.host });
+				.andWhere('following.followerHost = :host', { host: ps.host })
+				.andWhere('following.isFollowerSuspended = false');
 
 			if (!await this.roleService.isModerator(me)) {
 				this.queryService.generateFollowingRelationVisibilityQuery(query, 'following', me);
