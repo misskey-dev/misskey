@@ -26,6 +26,9 @@ jobs:
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            packages-private/diagnostics-backend/package.json
       - name: Install dependencies
         run: pnpm --filter diagnostics-backend... install --frozen-lockfile
 

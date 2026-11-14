@@ -13,7 +13,6 @@ on:
       - .github/workflows/api-misskey-js.yml
 jobs:
   report:
-
     runs-on: ubuntu-latest
 
     steps:
