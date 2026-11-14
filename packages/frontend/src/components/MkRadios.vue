@@ -202,7 +202,7 @@ function toggle(o: MkRadiosOption): void {
 		left: 3px;
 		border-radius: 100%;
 		opacity: 0;
-		transform: scale(0);
+		transform: scale(0.5);
 		transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 	}
 }
