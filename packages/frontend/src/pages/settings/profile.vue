@@ -151,12 +151,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<hr>
 
-		<SearchMarker :keywords="['qrcode']">
-			<FormLink to="/qr">
-				<template #icon><i class="ti ti-qrcode"></i></template>
-				<SearchLabel>{{ i18n.ts.qr }}</SearchLabel>
-			</FormLink>
-		</SearchMarker>
+		<div class="_gaps_s">
+			<SearchMarker :keywords="['role', 'display']">
+				<FormLink to="/settings/roles">
+					<template #icon><SearchIcon><i class="ti ti-badges"></i></SearchIcon></template>
+					<SearchLabel>{{ i18n.ts._roleDisplay.title }}</SearchLabel>
+				</FormLink>
+			</SearchMarker>
+
+			<SearchMarker :keywords="['qrcode']">
+				<FormLink to="/qr">
+					<template #icon><SearchIcon><i class="ti ti-qrcode"></i></SearchIcon></template>
+					<SearchLabel>{{ i18n.ts.qr }}</SearchLabel>
+				</FormLink>
+			</SearchMarker>
+		</div>
 	</div>
 </SearchMarker>
 </template>

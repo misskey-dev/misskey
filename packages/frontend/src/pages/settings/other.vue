@@ -49,17 +49,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker :keywords="['roles']">
-				<MkFolder>
-					<template #icon><SearchIcon><i class="ti ti-badges"></i></SearchIcon></template>
-					<template #label><SearchLabel>{{ i18n.ts.rolesAssignedToMe }}</SearchLabel></template>
-
-					<div class="_gaps_s">
-						<MkRolePreview v-for="role in $i.roles" :key="role.id" :role="role" :forModeration="false"/>
-					</div>
-				</MkFolder>
-			</SearchMarker>
-
 			<SearchMarker :keywords="['account', 'move', 'migration']">
 				<MkFolder>
 					<template #icon><SearchIcon><i class="ti ti-plane"></i></SearchIcon></template>
@@ -123,8 +112,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<hr>
+		<div class="_gaps_s">
+			<!-- ページ移動したのでリンクを残してある。そのうち消しても良いかも -->
+			<FormLink to="/settings/roles">
+				<template #icon><i class="ti ti-badges"></i></template>
+				{{ i18n.ts.rolesAssignedToMe }}
+			</FormLink>
 
-		<FormLink to="/registry"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
+			<FormLink to="/registry"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
+		</div>
 
 		<hr>
 
@@ -163,7 +159,6 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import FormSection from '@/components/form/section.vue';
 import { prefer } from '@/preferences.js';
-import MkRolePreview from '@/components/MkRolePreview.vue';
 import { signout } from '@/signout.js';
 import { hideAllTips as _hideAllTips, resetAllTips as _resetAllTips } from '@/tips.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
