@@ -102,6 +102,9 @@ export class Paginator<
 
 	private offsetMode: boolean;
 	public noPaging: boolean;
+
+	// init() が呼ばれるたびに増やし、古い呼び出しの応答を反映しないようにする
+	private initGeneration = 0;
 	public searchQuery = ref<null | string>('');
 	private searchParamName: keyof E['req'] | 'search';
 	private canFetchDetection: 'safe' | 'limit' | null = null;
@@ -191,6 +194,8 @@ export class Paginator<
 	}
 
 	public async init(): Promise<void> {
+		const generation = ++this.initGeneration;
+
 		this.items.value = [];
 		this.aheadQueue = [];
 		this.queuedAheadItemsCount.value = 0;
@@ -214,12 +219,14 @@ export class Paginator<
 		};
 
 		const apiRes = (await misskeyApi(this.endpoint, data).catch(_ => {
+			if (generation !== this.initGeneration) return null;
 			this.error.value = true;
 			this.fetching.value = false;
 			return null;
 		})) as T[] | null;
 
-		if (apiRes == null) {
+		// 取得中に init() (reload()) が再度呼ばれていたら、この応答は古いので捨てる
+		if (apiRes == null || generation !== this.initGeneration) {
 			return;
 		}
 
