@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive]" @click="onClick" @contextmenu.stop="onContextmenu">
+<div :class="['_stripe', hide ? $style.hidden : $style.visible, (image.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive]" @click="onClick" @contextmenu.stop="onContextmenu">
 	<component
 		:is="disableImageLink ? 'div' : 'a'"
 		v-bind="disableImageLink ? {
@@ -189,18 +189,8 @@ defineExpose<MediaComponentExposes>({
 .visible {
 	position: relative;
 	//box-shadow: 0 0 0 1px var(--MI_THEME-divider) inset;
-	background: var(--MI_THEME-bg);
-	background-size: 16px 16px;
-}
-
-html[data-color-scheme=dark] .visible {
-	--c: rgb(255 255 255 / 2%);
-	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--MI_THEME-bg) 16.67%, var(--MI_THEME-bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--MI_THEME-bg) 66.67%, var(--MI_THEME-bg) 100%);
-}
-
-html[data-color-scheme=light] .visible {
-	--c: rgb(0 0 0 / 2%);
-	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--MI_THEME-bg) 16.67%, var(--MI_THEME-bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--MI_THEME-bg) 66.67%, var(--MI_THEME-bg) 100%);
+	--MI_STRIPE-color: light-dark(rgb(0 0 0 / 0.02), rgb(255 255 255 / 0.02));
+	background-color: var(--MI_THEME-bg);
 }
 
 .menu {
