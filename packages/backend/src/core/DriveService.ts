@@ -569,7 +569,7 @@ export class DriveService {
 				userId: user ? user.id : IsNull(),
 			});
 
-			if (driveFolder == null) throw new Error('folder-not-found');
+			if (driveFolder == null) throw new IdentifiableError('b9adda75-abe9-4c6d-bf12-b5575833960d', 'No such folder.');
 
 			return driveFolder;
 		};

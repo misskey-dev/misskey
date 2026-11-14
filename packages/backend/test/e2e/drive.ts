@@ -7,7 +7,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { describe, beforeAll, test } from 'vitest';
-import { api, makeStreamCatcher, post, signup, uploadFile } from '../utils.js';
+import { api, castAsError, makeStreamCatcher, post, signup, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Drive', () => {
@@ -53,6 +53,13 @@ describe('Drive', () => {
 
 		assert.strictEqual(res.body?.name, 'テスト画像.jpg');
 		assert.strictEqual(res.body.type, 'image/jpeg');
+	});
+
+	test('存在しないフォルダを指定するとエラーになる', async () => {
+		const res = await uploadFile(alice, { folderId: '0000000000000000' });
+
+		assert.strictEqual(res.status, 400);
+		assert.strictEqual(castAsError(res.body as any).error.id, 'b9adda75-abe9-4c6d-bf12-b5575833960d');
 	});
 
 	test('添付ノート一覧を取得できる', async () => {
