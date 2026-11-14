@@ -15,7 +15,7 @@ export class MediaProxy {
 		this.url = url;
 	}
 
-	public getProxiedImageUrl(imageUrl: string, type?: 'preview' | 'emoji' | 'avatar', mustOrigin = false, noFallback = false): string {
+	public getProxiedImageUrl(imageUrl: string, type?: 'preview' | 'emoji' | 'avatar' | 'thumbnail', mustOrigin = false, noFallback = false): string {
 		const localProxy = `${this.url}/proxy`;
 		let _imageUrl = imageUrl;
 
@@ -26,11 +26,15 @@ export class MediaProxy {
 
 		return `${mustOrigin ? localProxy : this.serverMetadata.mediaProxy}/${
 			type === 'preview' ? 'preview.webp'
+			: type === 'thumbnail' ? 'thumbnail.webp'
 			: 'image.webp'
 		}?${query({
 			url: _imageUrl,
 			...(!noFallback ? { 'fallback': '1' } : {}),
-			...(type ? { [type]: '1' } : {}),
+			// thumbnail を理解しない外部プロキシでも GIF アニメ解除と縮小がかかるよう static=1 をフォールバックとして併用
+			...(type === 'thumbnail'
+				? { thumbnail: '1', static: '1' }
+				: type ? { [type]: '1' } : {}),
 			...(mustOrigin ? { origin: '1' } : {}),
 		})}`;
 	}
