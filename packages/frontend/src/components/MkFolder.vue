@@ -193,10 +193,10 @@ async function toggle(ev: PointerEvent) {
 }
 
 onMounted(() => {
-	const themeValue = themeManager.currentCompiledTheme!;
+	const themeValue = themeManager.currentCompiledTheme;
 	const parentBg = getBgColor(rootEl.value?.parentElement) ?? 'transparent';
-	const myBg = themeValue.panel;
-	bgSame.value = parentBg === myBg;
+	const myBg = themeValue?.panel;
+	bgSame.value = myBg !== undefined && parentBg === myBg;
 });
 
 watch(opened, (isOpened) => {
