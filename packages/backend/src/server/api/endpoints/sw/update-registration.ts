@@ -14,7 +14,7 @@ export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
-	secure: true,
+	kind: 'write:push-subscriptions',
 
 	description: 'Update push notification registration.',
 
@@ -62,10 +62,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private pushNotificationService: PushNotificationService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(meta, paramDef, async (ps, me, token) => {
 			const swSubscription = await this.swSubscriptionsRepository.findOneBy({
 				userId: me.id,
 				endpoint: ps.endpoint,
+				// アクセストークン経由の場合は、そのトークンで登録した購読のみを対象とする
+				...(token != null ? { accessTokenId: token.id } : {}),
 			});
 
 			if (swSubscription === null) {

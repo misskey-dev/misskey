@@ -25,9 +25,9 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import type { AccessTokensRepository, UsersRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
+import type { UsersRepository } from '@/models/_.js';
 import { CacheService } from '@/core/CacheService.js';
+import { AccessTokenService } from '@/core/AccessTokenService.js';
 import type { MiLocalUser } from '@/models/User.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -136,7 +136,7 @@ interface AuthorizationCodeGrant {
 	redirectUri: string;
 	codeChallenge: string;
 	scopes: string[];
-	grantedToken?: string;
+	grantedTokenId?: string;
 	revoked?: boolean;
 	used?: boolean;
 }
@@ -404,13 +404,11 @@ export class OAuth2ProviderService implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-		@Inject(DI.accessTokensRepository)
-		private accessTokensRepository: AccessTokensRepository,
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
-		private idService: IdService,
 		private httpRequestService: HttpRequestService,
 		private cacheService: CacheService,
+		private accessTokenService: AccessTokenService,
 		private htmlTemplateService: HtmlTemplateService,
 		loggerService: LoggerService,
 	) {
@@ -511,8 +509,8 @@ export class OAuth2ProviderService implements OnApplicationShutdown {
 		this.#logger.info(`Detected multiple code use from ${granted.clientId} for user ${granted.userId}. Revoking the code.`);
 		this.#grantCodeCache.delete(code);
 		granted.revoked = true;
-		if (granted.grantedToken) {
-			await this.accessTokensRepository.delete({ token: granted.grantedToken });
+		if (granted.grantedTokenId) {
+			await this.accessTokenService.delete({ id: granted.grantedTokenId, userId: granted.userId });
 		}
 	}
 
@@ -708,26 +706,22 @@ export class OAuth2ProviderService implements OnApplicationShutdown {
 				}
 
 				const accessToken = secureRndstr(128);
-				const now = new Date();
 
 				// NOTE: we don't have a setup for automatic token expiration
-				await this.accessTokensRepository.insert({
-					id: this.idService.gen(now.getTime()),
-					lastUsedAt: now,
+				const createdToken = await this.accessTokenService.create({
 					userId: granted.userId,
 					token: accessToken,
-					hash: accessToken,
 					name: granted.clientId,
 					permission: granted.scopes,
 				});
 
 				if (granted.revoked) {
 					this.#logger.info('Canceling the token as the authorization code was revoked in parallel during the process.');
-					await this.accessTokensRepository.delete({ token: accessToken });
+					await this.accessTokenService.delete(createdToken);
 					throw new InvalidGrantError('grant request is invalid');
 				}
 
-				granted.grantedToken = accessToken;
+				granted.grantedTokenId = createdToken.id;
 				this.#logger.info(`Generated access token for ${granted.clientId} for user ${granted.userId}, with scope: [${granted.scopes}]`);
 
 				reply.send({

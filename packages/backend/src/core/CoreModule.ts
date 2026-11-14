@@ -6,6 +6,7 @@
 import { Module } from '@nestjs/common';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { AbuseReportService } from '@/core/AbuseReportService.js';
+import { AccessTokenService } from '@/core/AccessTokenService.js';
 import { SystemWebhookEntityService } from '@/core/entities/SystemWebhookEntityService.js';
 import {
 	AbuseReportNotificationRecipientEntityService,
@@ -161,6 +162,7 @@ import type { Provider } from '@nestjs/common';
 const $LoggerService: Provider = { provide: 'LoggerService', useExisting: LoggerService };
 const $TelemetryService: Provider = { provide: 'TelemetryService', useExisting: TelemetryService };
 const $AbuseReportService: Provider = { provide: 'AbuseReportService', useExisting: AbuseReportService };
+const $AccessTokenService: Provider = { provide: 'AccessTokenService', useExisting: AccessTokenService };
 const $AbuseReportNotificationService: Provider = { provide: 'AbuseReportNotificationService', useExisting: AbuseReportNotificationService };
 const $AccountMoveService: Provider = { provide: 'AccountMoveService', useExisting: AccountMoveService };
 const $AccountUpdateService: Provider = { provide: 'AccountUpdateService', useExisting: AccountUpdateService };
@@ -314,6 +316,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 	providers: [
 		LoggerService,
 		AbuseReportService,
+		AccessTokenService,
 		AbuseReportNotificationService,
 		AccountMoveService,
 		AccountUpdateService,
@@ -465,6 +468,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		//#region 文字列ベースでのinjection用(循環参照対応のため)
 		$LoggerService,
 		$AbuseReportService,
+		$AccessTokenService,
 		$AbuseReportNotificationService,
 		$AccountMoveService,
 		$AccountUpdateService,
@@ -616,6 +620,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		QueueModule,
 		LoggerService,
 		AbuseReportService,
+		AccessTokenService,
 		AbuseReportNotificationService,
 		AccountMoveService,
 		AccountUpdateService,
@@ -766,6 +771,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		//#region 文字列ベースでのinjection用(循環参照対応のため)
 		$LoggerService,
 		$AbuseReportService,
+		$AccessTokenService,
 		$AbuseReportNotificationService,
 		$AccountMoveService,
 		$AccountUpdateService,

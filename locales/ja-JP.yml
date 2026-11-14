@@ -2589,6 +2589,7 @@ _permissions:
   "write:report-abuse": "違反を報告する"
   "write:chat": "ダイレクトメッセージを操作する"
   "read:chat": "ダイレクトメッセージを閲覧する"
+  "write:push-subscriptions": "プッシュ通知の購読を管理する"
 
 _auth:
   shareAccessTitle: "アプリへのアクセス許可"

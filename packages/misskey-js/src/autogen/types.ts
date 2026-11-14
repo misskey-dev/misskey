@@ -3635,10 +3635,9 @@ export type paths = {
     '/sw/register': {
         /**
          * sw/register
-         * @description Register to receive push notifications.
+         * @description Register to receive push notifications. When called with an access token, the token must also have the `read:notifications` permission. Only the push messages that the token is permitted to read are delivered (e.g. chat messages require `read:chat`), and the registration is removed when the token is revoked.
          *
-         *     **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
-         *     **Credential required**: *Yes*
+         *     **Credential required**: *Yes* / **Permission**: *write:push-subscriptions*
          */
         post: operations['sw___register'];
     };
@@ -3647,8 +3646,7 @@ export type paths = {
          * sw/show-registration
          * @description Check push notification registration exists.
          *
-         *     **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
-         *     **Credential required**: *Yes*
+         *     **Credential required**: *Yes* / **Permission**: *write:push-subscriptions*
          */
         post: operations['sw___show-registration'];
     };
@@ -3666,8 +3664,7 @@ export type paths = {
          * sw/update-registration
          * @description Update push notification registration.
          *
-         *     **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
-         *     **Credential required**: *Yes*
+         *     **Credential required**: *Yes* / **Permission**: *write:push-subscriptions*
          */
         post: operations['sw___update-registration'];
     };

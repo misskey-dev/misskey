@@ -9861,6 +9861,10 @@ export interface Locale extends ILocale {
          * ダイレクトメッセージを閲覧する
          */
         "read:chat": string;
+        /**
+         * プッシュ通知の購読を管理する
+         */
+        "write:push-subscriptions": string;
     };
     "_auth": {
         /**

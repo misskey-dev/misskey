@@ -15,9 +15,9 @@ export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
-	secure: true,
+	kind: 'write:push-subscriptions',
 
-	description: 'Register to receive push notifications.',
+	description: 'Register to receive push notifications. When called with an access token, the token must also have the `read:notifications` permission. Only the push messages that the token is permitted to read are delivered (e.g. chat messages require `read:chat`), and the registration is removed when the token is revoked.',
 
 	res: {
 		type: 'object',
@@ -53,6 +53,13 @@ export const meta = {
 			code: 'INVALID_ENDPOINT',
 			id: '4432adbe-17c0-4f9f-b43c-9ceb2f8910fe',
 		},
+
+		readNotificationsPermissionRequired: {
+			message: 'The access token must also have the read:notifications permission to receive push notifications.',
+			code: 'READ_NOTIFICATIONS_PERMISSION_REQUIRED',
+			kind: 'permission',
+			id: '5ca35223-1863-4408-9cb0-40f79ab213c2',
+		},
 	},
 } as const;
 
@@ -79,7 +86,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 		private pushNotificationService: PushNotificationService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(meta, paramDef, async (ps, me, token) => {
+			// 通知を読む権限の無いトークンでは何も受け取れないため登録させない
+			if (token != null && !token.permission.includes('read:notifications')) {
+				throw new ApiError(meta.errors.readNotificationsPermissionRequired);
+			}
+
 			if (!this.pushNotificationService.isValidEndpoint(ps.endpoint)) {
 				throw new ApiError(meta.errors.invalidEndpoint);
 			}
@@ -93,6 +105,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			if (exist != null) {
+				// 別のアクセストークンで再登録された場合は、紐づけ先を現在のトークンに付け替える
+				// (ネイティブトークンでの再登録では既存の紐づけを維持する)
+				if (token != null && exist.accessTokenId !== token.id) {
+					await this.swSubscriptionsRepository.update(exist.id, { accessTokenId: token.id });
+					this.pushNotificationService.refreshCache(me.id);
+				}
+
 				return {
 					state: 'already-subscribed' as const,
 					key: this.serverSettings.swPublicKey,
@@ -109,6 +128,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				auth: ps.auth,
 				publickey: ps.publickey,
 				sendReadMessage: ps.sendReadMessage,
+				// ネイティブトークン (ログイントークン) で登録された場合は null
+				accessTokenId: token?.id ?? null,
 			});
 
 			this.pushNotificationService.refreshCache(me.id);
