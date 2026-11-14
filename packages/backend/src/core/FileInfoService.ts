@@ -5,23 +5,24 @@
 
 import * as fs from 'node:fs';
 import * as crypto from 'node:crypto';
-import { join } from 'node:path';
 import * as stream from 'node:stream/promises';
 import { Injectable } from '@nestjs/common';
-import { FSWatcher } from 'chokidar';
 import * as fileType from 'file-type';
-import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import * as blurhash from 'blurhash';
-import { createTempDir } from '@/misc/create-temp.js';
+import { Decoder, Demuxer, FilterAPI, Scaler, probe } from 'node-av/api';
+import { AV_CODEC_ID_APNG, AV_PICTURE_TYPE_I, AVDISCARD_ALL, AVDISCARD_NONKEY } from 'node-av/constants';
+import type { Packet } from 'node-av/lib';
 import { SensitiveMediaDetectionService } from '@/core/SensitiveMediaDetectionService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
+import { decodeSemaphore, getAutorotateFilter, localInputOptions } from '@/misc/node-av-input.js';
 import type { Prediction } from '@/core/SensitiveMediaDetectionService.js';
+import '@/misc/node-av-log.js';
 
 export type FileInfo = {
 	size: number;
@@ -48,6 +49,43 @@ const TYPE_SVG = {
 	mime: 'image/svg+xml',
 	ext: 'svg',
 };
+
+/** 映像トラックの有無を調べる probe の制限時間 */
+const PROBE_TIMEOUT_MS = 10 * 1000;
+
+/**
+ * センシティブ判定用のフレーム抽出全体の制限時間。
+ * 長尺・高解像度の動画でデコードが延々と続くのを防ぐ。
+ * 時間切れになった場合は、そこまでに集まったフレームだけで判定する。
+ */
+const FRAME_EXTRACTION_TIMEOUT_MS = 60 * 1000;
+
+/** 判定対象から除外する暗部の割合 (これ以上暗いフレームは誤検知を招くため使わない) */
+const MAX_BLACK_PERCENTAGE = 50;
+
+/** 判定サービス側のデコーダが内部で使う画像サイズ */
+const DETECTION_IMAGE_SIZE = 299;
+
+function isAbortError(err: unknown): boolean {
+	return err instanceof Error && (err.name === 'TimeoutError' || err.name === 'AbortError');
+}
+
+/**
+ * キーフレーム以外のパケットを、デコーダへ渡す前に捨てる。
+ *
+ * デコーダの skip_frame=nokey でも非キーフレームはデコードされないが、
+ * パケットごとに decode / receive のネイティブ呼び出しが往復するため、長尺の動画ほど無駄が大きい。
+ * 終端を示す null はフラッシュに必要なのでそのまま流す。
+ */
+async function* keyframePacketsOnly(packets: AsyncIterable<Packet | null>): AsyncGenerator<Packet | null> {
+	for await (const packet of packets) {
+		if (packet != null && !packet.isKeyframe) {
+			packet.free();
+			continue;
+		}
+		yield packet;
+	}
+}
 
 @Injectable()
 export class FileInfoService {
@@ -206,77 +244,17 @@ export class FileInfoService {
 		}
 
 		if (analyzeVideo && (mime === 'image/apng' || mime.startsWith('video/'))) {
-			const [outDir, disposeOutDir] = await createTempDir();
-			try {
-				const command = FFmpeg()
-					.input(source)
-					.inputOptions([
-						'-skip_frame', 'nokey', // 可能ならキーフレームのみを取得してほしいとする（そうなるとは限らない）
-						'-lowres', '3', // 元の画質でデコードする必要はないので 1/8 画質でデコードしてもよいとする（そうなるとは限らない）
-					])
-					.noAudio()
-					.videoFilters([
-						{
-							filter: 'select', // フレームのフィルタリング
-							options: {
-								e: 'eq(pict_type,PICT_TYPE_I)', // I-Frame のみをフィルタする（VP9 とかはデコードしてみないとわからないっぽい）
-							},
-						},
-						{
-							filter: 'blackframe', // 暗いフレームの検出
-							options: {
-								amount: '0', // 暗さに関わらず全てのフレームで測定値を取る
-							},
-						},
-						{
-							filter: 'metadata',
-							options: {
-								mode: 'select', // フレーム選択モード
-								key: 'lavfi.blackframe.pblack', // フレームにおける暗部の百分率（前のフィルタからのメタデータを参照する）
-								value: '50',
-								function: 'less', // 50% 未満のフレームを選択する（50% 以上暗部があるフレームだと誤検知を招くかもしれないので）
-							},
-						},
-						{
-							filter: 'scale',
-							options: {
-								w: 299,
-								h: 299,
-							},
-						},
-					])
-					.format('image2')
-					.output(join(outDir, '%d.png'))
-					.outputOptions(['-vsync', '0']); // 可変フレームレートにすることで穴埋めをさせない
-				// 判定対象フレームを選定して正規化済みバッファとして集め、外部サービスへまとめて送る。
-				const frameBuffers: Buffer[] = [];
-				let frameIndex = 0;
-				let targetIndex = 0;
-				let nextIndex = 1;
-				for await (const path of this.asyncIterateFrames(outDir, command)) {
-					try {
-						const index = frameIndex++;
-						if (index !== targetIndex) {
-							continue;
-						}
-						targetIndex = nextIndex;
-						nextIndex += index; // fibonacci sequence によってフレーム数制限を掛ける
-						frameBuffers.push(await fs.promises.readFile(path));
-					} finally {
-						fs.promises.unlink(path);
-					}
-				}
-				const predictions = await this.sensitiveMediaDetectionService.detectSensitiveMany(frameBuffers);
-				const results = predictions.filter((x): x is Prediction[] => x != null).map(x => judgePrediction(x));
-				// 判定に成功したフレームが 0 件のとき（接続先未設定・通信失敗等）は、
-				// Math.ceil(0) との比較が 0 >= 0 で真になり全動画がセンシティブ扱いになってしまうため、
-				// 1 件以上判定できたときのみ集約する（失敗時は非センシティブ扱い: misskey-dev/misskey#16804）。
-				if (results.length > 0) {
-					sensitive = results.filter(x => x[0]).length >= Math.ceil(results.length * sensitiveThreshold);
-					porn = results.filter(x => x[1]).length >= Math.ceil(results.length * sensitiveThresholdForPorn);
-				}
-			} finally {
-				disposeOutDir();
+			// 判定対象フレームを選定して正規化済みバッファとして集め、外部サービスへまとめて送る。
+			// 判定サービスへの送信はデコードを伴わないので、枠はフレーム抽出の間だけ確保する
+			const frameBuffers = await decodeSemaphore.run(() => this.extractFramesForDetection(source));
+			const predictions = await this.sensitiveMediaDetectionService.detectSensitiveMany(frameBuffers);
+			const results = predictions.filter((x): x is Prediction[] => x != null).map(x => judgePrediction(x));
+			// 判定に成功したフレームが 0 件のとき（接続先未設定・通信失敗等）は、
+			// Math.ceil(0) との比較が 0 >= 0 で真になり全動画がセンシティブ扱いになってしまうため、
+			// 1 件以上判定できたときのみ集約する（失敗時は非センシティブ扱い: misskey-dev/misskey#16804）。
+			if (results.length > 0) {
+				sensitive = results.filter(x => x[0]).length >= Math.ceil(results.length * sensitiveThreshold);
+				porn = results.filter(x => x[1]).length >= Math.ceil(results.length * sensitiveThresholdForPorn);
 			}
 		} else if (isMimeImage(mime, 'sharp-convertible-image-with-bmp')) {
 			/*
@@ -300,47 +278,97 @@ export class FileInfoService {
 		return [sensitive, porn];
 	}
 
-	private async *asyncIterateFrames(cwd: string, command: FFmpeg.FfmpegCommand): AsyncGenerator<string, void> {
-		const watcher = new FSWatcher({
-			cwd,
-		});
-		let finished = false;
-		command.once('end', () => {
-			finished = true;
-			watcher.close();
-		});
-		command.run();
-		for (let i = 1; true; i++) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
-			const current = `${i}.png`;
-			const next = `${i + 1}.png`;
-			const framePath = join(cwd, current);
-			if (await this.exists(join(cwd, next))) {
-				yield framePath;
-			} else if (!finished) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
-				watcher.add(next);
-				await new Promise<void>((resolve, reject) => {
-					watcher.on('add', function onAdd(path) {
-						if (path === next) { // 次フレームの書き出しが始まっているなら、現在フレームの書き出しは終わっている
-							watcher.unwatch(current);
-							watcher.off('add', onAdd);
-							resolve();
-						}
-					});
-					command.once('end', resolve); // 全てのフレームを処理し終わったなら、最終フレームである現在フレームの書き出しは終わっている
-					command.once('error', reject);
-				});
-				yield framePath;
-			} else if (await this.exists(framePath)) {
-				yield framePath;
-			} else {
-				return;
-			}
-		}
-	}
-
+	/**
+	 * センシティブ判定に掛けるフレームを、正規化済みの PNG バッファとして抽出する。
+	 *
+	 * 制限時間を超えた場合はそこまでに集まった分を返す。フレームが 1 枚も取れなくても
+	 * 呼び出し元の「判定成功 0 件なら非センシティブ」の扱いに落ちるため、例外にはしない。
+	 *
+	 * @param source ファイルパス
+	 * @returns 299x299 に正規化された PNG バッファの配列
+	 */
 	@bindThis
-	private exists(path: string): Promise<boolean> {
-		return fs.promises.access(path).then(() => true, () => false);
+	private async extractFramesForDetection(source: string): Promise<Buffer[]> {
+		const signal = AbortSignal.timeout(FRAME_EXTRACTION_TIMEOUT_MS);
+		const frameBuffers: Buffer[] = [];
+
+		try {
+			await using demuxer = await Demuxer.open(source, { signal, options: localInputOptions });
+
+			const videoStream = demuxer.video();
+			if (videoStream == null) return frameBuffers;
+
+			// APNG はデコードすると全フレームが I フレームになるが、キーフレームのフラグは先頭付近のパケットにしか付かない。
+			// パケットをキーフレームに絞ると大半のフレームが判定から漏れるため、APNG では絞らない
+			const keyframesOnly = videoStream.codecpar.codecId !== AV_CODEC_ID_APNG;
+
+			// 対応しているコンテナでは、使わないパケットをデマルチプレクサの段階で読み飛ばさせる
+			for (const stream of demuxer.streams) {
+				if (stream.index !== videoStream.index) {
+					stream.discard = AVDISCARD_ALL;
+				} else if (keyframesOnly) {
+					stream.discard = AVDISCARD_NONKEY;
+				}
+			}
+
+			using decoder = await Decoder.create(videoStream, {
+				signal,
+				// キーフレームしか渡さないのでフレームスレッドの並列化はほぼ効かず、
+				// スレッドごとのフレームバッファでメモリだけが増える
+				threadCount: 1,
+				options: {
+					'skip_frame': 'nokey', // 可能ならキーフレームのみを取得してほしいとする（そうなるとは限らない）
+					'lowres': '3', // 元の画質でデコードする必要はないので 1/8 画質でデコードしてもよいとする（そうなるとは限らない）
+				},
+			});
+			// 暗さに関わらず全てのフレームで測定値を取り、lavfi.blackframe.pblack として受け取る
+			using filter = FilterAPI.create('blackframe=amount=0', { signal });
+			// 判定サービスには正しい向きの画像を渡す。回転は判定に使うフレームにだけ掛ける
+			const rotation = getAutorotateFilter(videoStream);
+			using rotator = rotation != null ? FilterAPI.create(rotation, { signal }) : null;
+			using scaler = new Scaler();
+			const resize = { width: DETECTION_IMAGE_SIZE, height: DETECTION_IMAGE_SIZE };
+
+			let frameIndex = 0;
+			let targetIndex = 0;
+			let nextIndex = 1;
+
+			const packets = demuxer.packets(videoStream.index);
+			for await (using frame of decoder.frames(keyframesOnly ? keyframePacketsOnly(packets) : packets)) {
+				// I-Frame のみを対象にする（VP9 とかはデコードしてみないとわからないっぽい）
+				if (frame == null || frame.pictType !== AV_PICTURE_TYPE_I) continue;
+
+				for await (using measured of filter.frames(frame)) {
+					if (measured == null) continue;
+
+					// フレームにおける暗部の百分率。取得できなかったフレームは判定に使わない
+					// （Number(null) が 0 になり、真っ暗なフレームを通してしまうため明示的に弾く）
+					const pblack = measured.getMetadata().get('lavfi.blackframe.pblack');
+					if (pblack == null || !(Number(pblack) < MAX_BLACK_PERCENTAGE)) continue;
+
+					const index = frameIndex++;
+					if (index !== targetIndex) continue;
+					const following = targetIndex + nextIndex;
+					targetIndex = nextIndex;
+					nextIndex = Math.max(following, targetIndex + 1);
+
+					if (rotator == null) {
+						frameBuffers.push(await scaler.toPng(measured, { resize }));
+						continue;
+					}
+					for await (using rotated of rotator.frames(measured)) {
+						if (rotated == null) continue;
+						frameBuffers.push(await scaler.toPng(rotated, { resize }));
+					}
+				}
+			}
+		} catch (err) {
+			// 時間切れは想定内。集まった分だけで判定を続ける
+			if (!isAbortError(err)) throw err;
+			this.logger.warn(`Frame extraction timed out after ${FRAME_EXTRACTION_TIMEOUT_MS}ms, using ${frameBuffers.length} frame(s). File path: ${source}`);
+		}
+
+		return frameBuffers;
 	}
 
 	@bindThis
@@ -364,24 +392,17 @@ export class FileInfoService {
 	 * @returns ビデオトラックがあるかどうか（エラー発生時は常に`true`を返す）
 	 */
 	@bindThis
-	private hasVideoTrackOnVideoFile(path: string): Promise<boolean> {
-		const sublogger = this.logger.createSubLogger('ffprobe');
+	private async hasVideoTrackOnVideoFile(path: string): Promise<boolean> {
+		const sublogger = this.logger.createSubLogger('probe');
 		sublogger.info(`Checking the video file. File path: ${path}`);
-		return new Promise((resolve) => {
-			try {
-				FFmpeg.ffprobe(path, (err, metadata) => {
-					if (err) {
-						sublogger.warn(`Could not check the video file. Returns true. File path: ${path}`, err);
-						resolve(true);
-						return;
-					}
-					resolve(metadata.streams.some((stream) => stream.codec_type === 'video'));
-				});
-			} catch (err) {
-				sublogger.warn(`Could not check the video file. Returns true. File path: ${path}`, err as Error);
-				resolve(true);
-			}
-		});
+		try {
+			const result = await probe(path, { signal: AbortSignal.timeout(PROBE_TIMEOUT_MS), options: localInputOptions });
+			return result.streams.some((stream) => stream.type === 'video');
+		} catch (err) {
+			const reason = isAbortError(err) ? `Timed out after ${PROBE_TIMEOUT_MS}ms` : 'Could not check the video file';
+			sublogger.warn(`${reason}. Returns true. File path: ${path}`, err as Error);
+			return true;
+		}
 	}
 
 	/**

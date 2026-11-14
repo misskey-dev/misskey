@@ -31,6 +31,7 @@ allowBuilds:
   v-code-diff: true
   vue-demi: true
   exifreader: false
+  node-av: true
   protobufjs: false
   pnpm: true
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
@@ -53,6 +54,8 @@ minimumReleaseAgeExclude:
   - slacc-linux-x64-musl
   - slacc-win32-arm64-msvc
   - slacc-win32-x64-msvc
+  - '@seydx/node-av-*'
+  - node-av
   - '@nestjs/common@12.4.2'
   - '@nestjs/core@12.4.2'
   - '@nestjs/testing@12.4.2'
