@@ -17,9 +17,7 @@
 		"vscode": {
 			"extensions": [
 				"editorconfig.editorconfig",
-				"dbaeumer.vscode-eslint",
 				"Vue.volar",
-				"dbaeumer.vscode-eslint",
 				"mrmlnc.vscode-json5"
 			]
 		}

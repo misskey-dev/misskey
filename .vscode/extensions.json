@@ -1,7 +1,7 @@
 {
 	"recommendations": [
 		"editorconfig.editorconfig",
-		"dbaeumer.vscode-eslint",
+		"oxc.oxc-vscode",
 		"Vue.volar",
 		"Orta.vscode-jest",
 		"mrmlnc.vscode-json5"

@@ -1,6 +1,9 @@
 import path from 'path';
+import { fileURLToPath } from 'url';
 import pluginVue from '@vitejs/plugin-vue';
 import { defineConfig, type UserConfig } from 'vite';
+import type { VueOptions } from 'vize';
+import { frontendVizeLinterRules, frontendVizeLinterRuleOptions } from '../shared/lint-browser.js';
 import { load as loadYaml } from 'js-yaml';
 import { promises as fsp } from 'fs';
 
@@ -64,7 +67,7 @@ function toBase62(n: number): string {
 	return result;
 }
 
-export function getConfig(): UserConfig {
+export function getConfig(): UserConfig & { vue?: VueOptions; } {
 	const localesHash = toBase62(hash(JSON.stringify(locales)));
 
 	return {
@@ -117,6 +120,18 @@ export function getConfig(): UserConfig {
 						return id;
 					}
 				},
+			},
+		},
+
+		vue: {
+			typeChecker: {
+				corsaPath: path.resolve(path.dirname(fileURLToPath(import.meta.resolve('@typescript/native'))), '../bin/tsc'),
+			},
+			linter: {
+				preset: 'incremental',
+				typeAware: true,
+				rules: frontendVizeLinterRules,
+				ruleOptions: frontendVizeLinterRuleOptions,
 			},
 		},
 

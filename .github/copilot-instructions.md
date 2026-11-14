@@ -52,7 +52,7 @@
 
 ## 変更を出す前の最低チェック
 
-1. ESLint 対象の変更ファイルへ package root から `eslint --quiet` を最後に 1 回実行し、実装変更には最も近い test を選んで実行する。
+1. oxlint 対象の変更ファイルへ package root から `oxlint --quiet` を最後に 1 回実行し、実装変更には最も近い test を選んで実行する。
    package / repo 全体 lint と広域 test は任意
 2. backend で `meta` / `paramDef` / `res` を変更した → `pnpm build-misskey-js-with-types` を実行し `packages/misskey-js/src/autogen/` の差分も commit に含めた
 3. entity / migration を変更した → `pnpm --filter backend check-migrations` が pending DDL 0 件で通る / 新規 migration は `up()` と `down()` 両方実装済
