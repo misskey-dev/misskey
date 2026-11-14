@@ -19,7 +19,7 @@ import type { MiRemoteUser, MiUser } from '@/models/User.js';
 import { MiDriveFile } from '@/models/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
+import { isBrowserSafeMime, getBaseMime } from '@/const.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -166,7 +166,7 @@ export class DriveService {
 
 			// 拡張子からContent-Typeを設定してそうな挙動を示すオブジェクトストレージ (upcloud?) も存在するので、
 			// 許可されているファイル形式でしかURLに拡張子をつけない
-			if (!FILE_TYPE_BROWSERSAFE.includes(type)) {
+			if (!isBrowserSafeMime(type)) {
 				ext = '';
 			}
 
@@ -375,7 +375,14 @@ export class DriveService {
 	@bindThis
 	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, ext?: string | null, filename?: string) {
 		if (type === 'image/apng') type = 'image/png';
-		if (!FILE_TYPE_BROWSERSAFE.includes(type)) type = 'application/octet-stream';
+		if (!isBrowserSafeMime(type)) type = 'application/octet-stream';
+
+		// S3 から直接配信される場合、ここで設定した ContentType がそのまま使われる。
+		// text/* で charset 未指定だとブラウザが OS ロケールに基づくエンコーディングで解釈し
+		// UTF-8 ファイルが文字化けするため、charset=utf-8 を補う。
+		if (getBaseMime(type).startsWith('text/') && !type.includes('charset=')) {
+			type = `${type}; charset=utf-8`;
+		}
 
 		const params = {
 			Bucket: this.meta.objectStorageBucket,

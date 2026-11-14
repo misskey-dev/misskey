@@ -82,9 +82,26 @@ export const FILE_TYPE_BROWSERSAFE = [
 	// backward compatibility
 	'audio/x-flac',
 	'audio/vnd.wave',
+
+	// テキストはブラウザでそのまま表示する
+	// charset 未指定だと iOS Safari 等で UTF-8 ファイルが文字化けするため
+	// getSafeContentType 側で charset=utf-8 を補う (UTF-8 以外のテキストは依然として化ける可能性あり)
+	// content sniffing による XSS を防ぐため setSafeContentTypeHeader 側で nosniff も常時付与する
+	// 現代ブラウザ (Chrome 27+, Firefox 50+, Safari 7+) は text/* を HTML/JS としてスニッフィングしないが
+	// nosniff は防御的多層保護として付与し続ける
+	'text/plain',
+	'text/csv',
 ];
 /*
 https://github.com/sindresorhus/file-type/blob/main/supported.js
 https://github.com/sindresorhus/file-type/blob/main/core.js
 https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Containers
 */
+
+export function getBaseMime(mime: string): string {
+	return mime.split(';', 1)[0].trim().toLowerCase();
+}
+
+export function isBrowserSafeMime(mime: string): boolean {
+	return FILE_TYPE_BROWSERSAFE.includes(getBaseMime(mime));
+}
