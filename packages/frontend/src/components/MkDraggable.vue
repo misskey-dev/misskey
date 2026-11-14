@@ -11,7 +11,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:enterFromClass="$style.transition_items_enterFrom"
 	:leaveToClass="$style.transition_items_leaveTo"
 	:moveClass="$style.transition_items_move"
-	:class="[$style.items, { [$style.dragging]: dragging, [$style.horizontal]: direction === 'horizontal', [$style.vertical]: direction === 'vertical', [$style.withGaps]: withGaps, [$style.canNest]: canNest }]"
+	:class="[$style.items, {
+		[$style.dragging]: dragging,
+		[$style.horizontal]: direction === 'horizontal',
+		[$style.vertical]: direction === 'vertical',
+		[$style.withGaps]: withGaps,
+		[$style.canNest]: canNest,
+		[$style.stretchItems]: stretchItems,
+	}]"
 >
 	<slot name="header"></slot>
 	<div
@@ -25,6 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div
 		v-for="(item, i) in modelValue"
 		:key="`MkDraggableRoot:${item.id}`"
+		:ref="el => setItemEl(item.id, el)"
 		:class="$style.item"
 		:draggable="!manualDragStart"
 		@dragstart.stop="onDragstart($event, item)"
@@ -35,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@dragleave="onDragleave($event, item)"
 			@drop.prevent.stop="onDrop($event, item, false)"
 		></div>
-		<div :key="`MkDraggableItem:${item.id}`" style="position: relative; z-index: 0;">
+		<div :key="`MkDraggableItem:${item.id}`" :class="$style.itemContent">
 			<slot :item="item" :index="i" :dragStart="(ev) => onDragstart(ev, item)"></slot>
 		</div>
 		<div
@@ -54,11 +62,18 @@ import { ref } from 'vue';
 
 // 別々のコンポーネントインスタンス間でD&Dを融通するためにグローバルに状態を持っておく必要がある
 const dragging = ref(false);
-let dropCallback: ((targetInstanceId: string) => void) | null = null;
+let dragContext: {
+	item: { id: string };
+	sourceInstanceId: string;
+	group: string;
+	sourceElement: HTMLElement | null;
+	removeFromSource: () => void;
+} | null = null;
 </script>
 
 <script lang="ts" setup generic="T extends { id: string; }">
 import { nextTick } from 'vue';
+import type { ComponentPublicInstance } from 'vue';
 import { getDragData, setDragData } from '@/drag-and-drop.js';
 import { genId } from '@/utility/id.js';
 
@@ -75,11 +90,13 @@ const props = withDefaults(defineProps<{
 	manualDragStart?: boolean;
 	withGaps?: boolean;
 	canNest?: boolean;
+	stretchItems?: boolean;
 }>(), {
 	group: null,
 	manualDragStart: false,
 	withGaps: false,
 	canNest: false,
+	stretchItems: false,
 });
 
 const emit = defineEmits<{
@@ -89,23 +106,38 @@ const emit = defineEmits<{
 const dropReadyArea = ref<[T['id'] | null, 'forward' | 'backward' | null]>([null, null]);
 const instanceId = genId();
 const group = props.group ?? instanceId;
+const itemEls = new Map<string, HTMLElement>();
+
+function setItemEl(id: string, el: Element | ComponentPublicInstance | null) {
+	if (el instanceof HTMLElement) {
+		itemEls.set(id, el);
+	} else {
+		itemEls.delete(id);
+	}
+}
 
 function onDragstart(ev: DragEvent, item: T) {
 	if (ev.dataTransfer == null) return;
 	ev.dataTransfer.effectAllowed = 'move';
-	setDragData(ev, 'MkDraggable', { item, instanceId, group });
+	// Firefox では setData しないとドラッグが開始されないため、マーカーとして空データを載せる (実データは dragContext で保持)
+	setDragData(ev, 'MkDraggable', {});
+
+	dragContext = {
+		item,
+		sourceInstanceId: instanceId,
+		group,
+		sourceElement: itemEls.get(item.id) ?? null,
+		removeFromSource: () => {
+			emit('update:modelValue', props.modelValue.filter(x => x.id !== item.id));
+		},
+	};
 
 	const target = ev.target as HTMLElement;
 	target.addEventListener('dragend', (ev) => {
 		dragging.value = false;
 		dropReadyArea.value = [null, null];
+		dragContext = null;
 	}, { once: true });
-
-	dropCallback = (targetInstanceId) => {
-		if (targetInstanceId === instanceId) return;
-		const newValue = props.modelValue.filter(x => x.id !== item.id);
-		emit('update:modelValue', newValue);
-	};
 
 	// Chromeのバグで、Dragstartハンドラ内ですぐにDOMを変更する(=リアクティブなプロパティを変更する)とDragが終了してしまう
 	// SEE: https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
@@ -125,30 +157,48 @@ function onDragleave(ev: DragEvent, item: T) {
 	dropReadyArea.value = [null, null];
 }
 
-function onDrop(ev: DragEvent, item: T, backward: boolean) {
-	const dragged = getDragData(ev, 'MkDraggable');
-	dropReadyArea.value = [null, null];
-	if (dragged == null || dragged.group !== group || dragged.item.id === item.id) return;
-	dropCallback?.(instanceId);
+/**
+ * このインスタンスにドロップ可能なドラッグであれば、ドラッグ中のアイテムを返す。
+ * 別インスタンスからのドロップの場合は移動元からアイテムを取り除く。
+ */
+function takeDraggedItem(ev: DragEvent): T | null {
+	const ctx = dragContext;
+	if (ctx == null || getDragData(ev, 'MkDraggable') == null || ctx.group !== group) return null;
 
-	const fromIndex = props.modelValue.findIndex(x => x.id === dragged.item.id);
+	// 入れ子になった MkDraggable で、ドラッグ元の項目自身 (の子孫) へのドロップは循環参照になるため中止する
+	const dropTarget = ev.currentTarget;
+	if (ctx.sourceElement != null && dropTarget instanceof Node && ctx.sourceElement.contains(dropTarget)) return null;
+
+	// ドロップで移動元の要素が DOM から外れると dragend が発火しないことがあるため、ここでも破棄する
+	dragContext = null;
+	if (ctx.sourceInstanceId !== instanceId) ctx.removeFromSource();
+
+	return ctx.item as T;
+}
+
+function onDrop(ev: DragEvent, item: T, backward: boolean) {
+	dropReadyArea.value = [null, null];
+	if (dragContext == null || dragContext.item.id === item.id) return;
+	const draggedItem = takeDraggedItem(ev);
+	if (draggedItem == null) return;
+
+	const fromIndex = props.modelValue.findIndex(x => x.id === draggedItem.id);
 	let toIndex = props.modelValue.findIndex(x => x.id === item.id);
 
 	const newValue = [...props.modelValue];
 	if (fromIndex > -1) newValue.splice(fromIndex, 1);
 	toIndex = newValue.findIndex(x => x.id === item.id);
 	if (backward) toIndex += 1;
-	newValue.splice(toIndex, 0, dragged.item as T);
+	newValue.splice(toIndex, 0, draggedItem);
 
 	emit('update:modelValue', newValue);
 }
 
 function onEmptyDrop(ev: DragEvent) {
-	const dragged = getDragData(ev, 'MkDraggable');
-	if (dragged == null) return;
-	dropCallback?.(instanceId);
+	const draggedItem = takeDraggedItem(ev);
+	if (draggedItem == null) return;
 
-	emit('update:modelValue', [dragged.item as T]);
+	emit('update:modelValue', [draggedItem]);
 }
 </script>
 
@@ -182,6 +232,19 @@ function onEmptyDrop(ev: DragEvent) {
 
 .item {
 	position: relative;
+}
+
+.itemContent {
+	position: relative;
+	z-index: 0;
+}
+
+.items.stretchItems {
+	align-items: stretch;
+
+	.item, .itemContent {
+		display: grid;
+	}
 }
 
 .items.vertical .item {
