@@ -1,4 +1,21 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(pnpm lint)",
+      "Bash(pnpm --filter * lint)",
+      "Bash(pnpm --filter backend check-migrations)",
+      "Bash(pnpm --filter * typecheck)",
+      "Bash(pnpm build)",
+      "Bash(pnpm build-misskey-js-with-types)",
+      "Bash(cp .github/misskey/test.yml .config/test.yml)",
+      "Bash(ncp .github/misskey/test.yml .config/test.yml)",
+      "Bash(pnpm backend-unit-test)",
+      "Bash(pnpm --filter backend test)",
+      "Bash(pnpm --filter backend test:e2e)",
+      "Bash(pnpm --filter backend test:fed)",
+      "Bash(pnpm --filter frontend test)"
+    ]
+  },
   "enabledPlugins": {
     "frontend-design@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
