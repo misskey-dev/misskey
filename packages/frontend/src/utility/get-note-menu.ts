@@ -235,6 +235,8 @@ export function getNoteMenu(props: {
 		claimAchievement('noteFavorited1');
 		os.apiWithDialog(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
 			noteId: appearNote.id,
+		}).then(() => {
+			globalEvents.emit(favorite ? 'noteFavorited' : 'noteUnfavorited', appearNote.id);
 		});
 	}
 
