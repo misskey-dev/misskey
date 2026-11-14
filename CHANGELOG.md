@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Fix: Windows で開発環境が起動できない問題を修正
 
 ### Client
 -
