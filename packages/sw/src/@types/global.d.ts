@@ -11,3 +11,10 @@ declare const _VERSION_: string;
 declare const _ENV_: string;
 declare const _DEV_: boolean;
 declare const _PERF_PREFIX_: string;
+
+// 仕様にはあるが、対応するブラウザエンジンが2つに満たないため @types/serviceworker から除かれているオプション
+// https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1725
+interface NotificationOptions {
+	actions?: NotificationAction[];
+	renotify?: boolean;
+}

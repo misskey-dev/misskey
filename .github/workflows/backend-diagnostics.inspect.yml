@@ -34,24 +34,29 @@ jobs:
           - 56312:6379
 
     steps:
+    # head は PR をマージした結果 (github.sha = refs/pull/<番号>/merge のコミット)、
+    # base はその第1親を使う。両者を同じ merge commit から決めることで、
+    # チェックアウトの間に base ブランチや merge ref が動いても比較対象がずれない
     - name: Checkout base
       uses: actions/checkout@v7.0.1
       with:
-        ref: ${{ github.base_ref }}
+        fetch-depth: 2
         path: base
         submodules: true
+    - name: Switch base to the merge commit's first parent
+      working-directory: base
+      run: git checkout --detach HEAD^1
     - name: Checkout head
       uses: actions/checkout@v7.0.1
       with:
-        ref: refs/pull/${{ github.event.number }}/merge
         path: head
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.10
+      uses: pnpm/action-setup@v6.1.1
       with:
         package_json_file: head/package.json
     - name: Use Node.js
-      uses: actions/setup-node@v7.0.0
+      uses: actions/setup-node@v7.1.0
       with:
         node-version-file: 'head/.node-version'
         cache: 'pnpm'
@@ -66,9 +71,7 @@ jobs:
       run: git diff --exit-code pnpm-lock.yaml
     - name: Configure base
       working-directory: base
-      run: |
-        cp .github/misskey/test.yml .config/default.yml
-        pnpm compile-config
+      run: cp .github/misskey/test.yml .config/default.yml
     - name: Build base
       working-directory: base
       run: pnpm build
@@ -80,9 +83,7 @@ jobs:
       run: git diff --exit-code pnpm-lock.yaml
     - name: Configure head
       working-directory: head
-      run: |
-        cp .github/misskey/test.yml .config/default.yml
-        pnpm compile-config
+      run: cp .github/misskey/test.yml .config/default.yml
     - name: Build head
       working-directory: head
       run: pnpm build

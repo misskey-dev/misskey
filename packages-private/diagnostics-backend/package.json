@@ -13,10 +13,10 @@
 	},
 	"dependencies": {
 		"diagnostics-shared": "workspace:*",
-		"execa": "10.1.1"
+		"execa": "10.2.1"
 	},
 	"devDependencies": {
-		"@types/node": "26.6.5",
+		"@types/node": "26.6.6",
 		"@types/pg": "8.23.1",
 		"ioredis": "6.0.0",
 		"pg": "8.23.1",

@@ -80,6 +80,8 @@ async function cancel(user: Misskey.entities.UserLite) {
 	const { canceled } = await os.confirm({
 		type: 'question',
 		text: i18n.tsx.cancelFollowRequestConfirm({ name: user.name || user.username }),
+		okText: i18n.ts.yes,
+		cancelText: i18n.ts.no,
 	});
 
 	if (canceled) return;

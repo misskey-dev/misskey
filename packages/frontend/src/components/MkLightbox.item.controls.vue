@@ -27,10 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-if="volume === 0" class="ti ti-volume-3"></i>
 			<i v-else class="ti ti-volume"></i>
 		</button>
-		<MkMediaRange
-			v-model="volume"
-			:class="$style.volumeSeekbar"
-		/>
+		<MkMediaRange v-model="volume"/>
 		<button class="_button" :class="$style.controlButton" @click="showMenu">
 			<i class="ti ti-settings"></i>
 		</button>

@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label><SearchLabel>{{ i18n.ts.notifyUsers }}</SearchLabel></template>
 					<MkPagination v-slot="{items}" :paginator="notifyUserPaginator" withControl>
 						<div class="_gaps_s">
-							<div v-for="item in items" :key="item.id" :class="[$style.userItem ]">
+							<div v-for="item in items" :key="item.id">
 								<div :class="$style.userItemMain">
 									<MkA :class="$style.userItemMainBody" :to="userPage(item.followee!)">
 										<MkUserCardMini :user="item.followee!"/>
