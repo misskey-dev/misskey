@@ -56,10 +56,15 @@ describe('Drive', () => {
 	});
 
 	test('存在しないフォルダを指定するとエラーになる', async () => {
-		const res = await uploadFile(alice, { folderId: '0000000000000000' });
+		const existing = await uploadFile(alice);
+		assert.strictEqual(existing.status, 200);
 
-		assert.strictEqual(res.status, 400);
-		assert.strictEqual(castAsError(res.body as any).error.id, 'b9adda75-abe9-4c6d-bf12-b5575833960d');
+		for (const force of [true, false]) {
+			const res = await uploadFile(alice, { folderId: '0000000000000000', force });
+
+			assert.strictEqual(res.status, 400);
+			assert.strictEqual(castAsError(res.body as any).error.id, 'b9adda75-abe9-4c6d-bf12-b5575833960d');
+		}
 	});
 
 	test('添付ノート一覧を取得できる', async () => {
