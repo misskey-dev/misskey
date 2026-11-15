@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { describe, test } from 'vitest';
 import * as assert from 'assert';
-import httpSignature from '@peertube/http-signature';
+import { verify } from 'node:crypto';
+import { describe, expect, test } from 'vitest';
 
-import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
-import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 import { assertActivityMatchesUrl, FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
 import { IObject } from '@/core/activitypub/type.js';
+import { verifyDraftSignature, parseRequestSignature, genRsaKeyPair, genEd25519KeyPair, importPrivateKey } from '@misskey-dev/node-http-message-signatures';
+import { createSignedGet, createSignedPost } from '@/core/activitypub/ApRequestService.js';
 
 export const buildParsedSignature = (signingString: string, signature: string, algorithm: string) => {
 	return {
@@ -31,106 +31,120 @@ function cartesianProduct<T, U>(a: T[], b: U[]): [T, U][] {
 	return a.flatMap(a => b.map(b => [a, b] as [T, U]));
 }
 
-describe('ap-request', () => {
-	test('createSignedPost with verify', async () => {
-		const keypair = await genRsaKeyPair();
-		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
-		const url = 'https://example.com/inbox';
-		const activity = { a: 1 };
-		const body = JSON.stringify(activity);
-		const headers = {
-			'User-Agent': 'UA',
-		};
+async function getKeyPair(level: string) {
+	if (level === '00') {
+		return await genRsaKeyPair();
+	} else if (level === '01') {
+		return await genEd25519KeyPair();
+	}
+	throw new Error('Invalid level');
+}
 
-		const req = await ApRequestCreator.createSignedPost({ key, url, body, additionalHeaders: headers });
+test.each(['GET', 'POST'])('RSA %s signatures survive request parsing and queue serialization', async method => {
+	const keypair = await genRsaKeyPair();
+	const key = { keyId: 'https://example.com/users/alice#main-key', privateKeyPem: keypair.privateKey };
+	const args = { level: '00', key, url: 'https://example.com/inbox?cursor=1', body: '{}', additionalHeaders: {} };
+	const signed = method === 'POST' ? await createSignedPost(args) : await createSignedGet(args);
+	const parsed = parseRequestSignature({ ...signed.request, url: '/inbox?cursor=1' });
+	assert.strictEqual(parsed.version, 'draft');
+	if (parsed.version !== 'draft') throw new Error('Expected draft signature');
+	assert.strictEqual(parsed.value.keyId, key.keyId);
+	assert.strictEqual(parsed.value.params.algorithm, 'rsa-sha256');
+	const queued = JSON.parse(JSON.stringify(parsed.value));
+	assert.strictEqual(await verifyDraftSignature(queued, keypair.publicKey), true);
+	assert.strictEqual(verify('RSA-SHA256', Buffer.from(queued.signingString), keypair.publicKey, Buffer.from(queued.params.signature, 'base64')), true);
+	queued.signingString += 'changed';
+	assert.strictEqual(await verifyDraftSignature(queued, keypair.publicKey), false);
+});
 
-		const parsed = buildParsedSignature(req.signingString, req.signature, 'rsa-sha256');
+describe('ap-request post', () => {
+	const url = 'https://example.com/inbox';
+	const activity = { a: 1 };
+	const body = JSON.stringify(activity);
+	const headers = {
+		'User-Agent': 'UA',
+	};
 
-		const result = httpSignature.verifySignature(parsed, keypair.publicKey);
-		assert.deepStrictEqual(result, true);
-	});
+	describe.each(['00', '01'])('createSignedPost with verify', (level) => {
+		test('pem', async () => {
+			const keypair = await getKeyPair(level);
+			const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
 
-	test('createSignedGet with verify', async () => {
-		const keypair = await genRsaKeyPair();
-		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
-		const url = 'https://example.com/outbox';
-		const headers = {
-			'User-Agent': 'UA',
-		};
+			const req = await createSignedPost({ level, key, url, body, additionalHeaders: headers });
 
-		const req = await ApRequestCreator.createSignedGet({ key, url, additionalHeaders: headers });
-
-		const parsed = buildParsedSignature(req.signingString, req.signature, 'rsa-sha256');
-
-		const result = httpSignature.verifySignature(parsed, keypair.publicKey);
-		assert.deepStrictEqual(result, true);
-	});
-
-	test('createSignedGet includes query string in request-target', async () => {
-		const keypair = await genRsaKeyPair();
-		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
-		const url = 'https://example.com/users/alice?page=2';
-
-		const req = await ApRequestCreator.createSignedGet({ key, url, additionalHeaders: { 'User-Agent': 'UA' } });
-
-		assert.ok(req.signingString.split('\n').includes('(request-target): get /users/alice?page=2'));
-
-		const parsed = buildParsedSignature(req.signingString, req.signature, 'rsa-sha256');
-		assert.deepStrictEqual(httpSignature.verifySignature(parsed, keypair.publicKey), true);
-	});
-
-	test('createSignedPost includes query string in request-target', async () => {
-		const keypair = await genRsaKeyPair();
-		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
-		const url = 'https://example.com/inbox?token=abc';
-		const body = JSON.stringify({ a: 1 });
-
-		const req = await ApRequestCreator.createSignedPost({
-			key,
-			url,
-			body,
-			additionalHeaders: { 'User-Agent': 'UA' },
+			const parsed = parseRequestSignature(req.request);
+			expect(parsed.version).toBe('draft');
+			expect(Array.isArray(parsed.value)).toBe(false);
+			const verify = await verifyDraftSignature(parsed.value as any, keypair.publicKey);
+			assert.deepStrictEqual(verify, true);
 		});
+		test('imported', async () => {
+			const keypair = await getKeyPair(level);
+			const key = { keyId: 'x', 'privateKey': await importPrivateKey(keypair.privateKey) };
 
-		assert.ok(req.signingString.split('\n').includes('(request-target): post /inbox?token=abc'));
+			const req = await createSignedPost({ level, key, url, body, additionalHeaders: headers });
 
-		const parsed = buildParsedSignature(req.signingString, req.signature, 'rsa-sha256');
-		assert.deepStrictEqual(httpSignature.verifySignature(parsed, keypair.publicKey), true);
+			const parsed = parseRequestSignature(req.request);
+			expect(parsed.version).toBe('draft');
+			expect(Array.isArray(parsed.value)).toBe(false);
+			const verify = await verifyDraftSignature(parsed.value as any, keypair.publicKey);
+			assert.deepStrictEqual(verify, true);
+		});
 	});
+});
 
-	test('request-target omits hash and preserves empty query delimiter', async () => {
-		const keypair = await genRsaKeyPair();
-		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
+describe('ap-request get', () => {
+	describe.each(['00', '01'])('createSignedGet with verify', (level) => {
+		test('pass', async () => {
+			const keypair = await getKeyPair(level);
+			const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
+			const url = 'https://example.com/outbox';
+			const headers = {
+				'User-Agent': 'UA',
+			};
 
-		const withHash = await ApRequestCreator.createSignedGet({
-			key,
-			url: 'https://example.com/users/alice?page=2#ignored',
-			additionalHeaders: { 'User-Agent': 'UA' },
+			const req = await createSignedGet({ level, key, url, additionalHeaders: headers });
+
+			const parsed = parseRequestSignature(req.request);
+			expect(parsed.version).toBe('draft');
+			expect(Array.isArray(parsed.value)).toBe(false);
+			const verify = await verifyDraftSignature(parsed.value as any, keypair.publicKey);
+			assert.deepStrictEqual(verify, true);
 		});
-		assert.ok(withHash.signingString.split('\n').includes('(request-target): get /users/alice?page=2'));
-
-		const emptyQueryWithHash = await ApRequestCreator.createSignedGet({
-			key,
-			url: 'https://example.com/outbox?#ignored',
-			additionalHeaders: { 'User-Agent': 'UA' },
-		});
-		assert.ok(emptyQueryWithHash.signingString.split('\n').includes('(request-target): get /outbox?'));
-
-		const emptyQuery = await ApRequestCreator.createSignedGet({
-			key,
-			url: 'https://example.com/outbox?',
-			additionalHeaders: { 'User-Agent': 'UA' },
-		});
-		assert.ok(emptyQuery.signingString.split('\n').includes('(request-target): get /outbox?'));
-
-		const withoutQuery = await ApRequestCreator.createSignedGet({
-			key,
-			url: 'https://example.com/outbox',
-			additionalHeaders: { 'User-Agent': 'UA' },
-		});
-		assert.ok(withoutQuery.signingString.split('\n').includes('(request-target): get /outbox'));
 	});
+});
 
+describe.each(['00', '01'])('request-target signing at level %s', level => {
+	test.each(['GET', 'POST'])('%s preserves queries and omits fragments', async method => {
+		const keypair = await getKeyPair(level);
+		const key = { keyId: 'x', privateKeyPem: keypair.privateKey };
+		const cases = [
+			['/users/alice?page=2', '/users/alice?page=2'],
+			['/inbox?token=abc', '/inbox?token=abc'],
+			['/users/alice?page=2#ignored', '/users/alice?page=2'],
+			['/outbox?#ignored', '/outbox?'],
+			['/outbox?', '/outbox?'],
+			['/outbox', '/outbox'],
+			['/outbox#ignored?', '/outbox'],
+			['/inbox?token=a%2Fb%26c', '/inbox?token=a%2Fb%26c'],
+		];
+		for (const [path, target] of cases) {
+			const url = `https://example.com:8443${path}`;
+			const args = { level, key, url, body: '{}', additionalHeaders: {} };
+			const signed = method === 'POST' ? await createSignedPost(args) : await createSignedGet(args);
+			assert.strictEqual(signed.request.url, url);
+			assert.strictEqual(signed.request.headers.Host, 'example.com:8443');
+			assert.strictEqual(signed.signingString.split('\n')[0], `(request-target): ${method.toLowerCase()} ${target}`);
+			const parsed = parseRequestSignature({ ...signed.request, url: target, headers: { ...signed.request.headers, Host: 'example.com:8443' } });
+			assert.strictEqual(parsed.version, 'draft');
+			if (parsed.version !== 'draft') throw new Error('Expected draft signature');
+			assert.strictEqual(await verifyDraftSignature(parsed.value, keypair.publicKey), true);
+			assert.strictEqual(verify(level === '00' ? 'RSA-SHA256' : null, Buffer.from(signed.signingString), keypair.publicKey, Buffer.from(signed.signature, 'base64')), true);
+		}
+	});
+});
+
+describe('assertActivityMatchesUrl', () => {
 	test('rejects non matching domain', () => {
 		assert.doesNotThrow(() => assertActivityMatchesUrl(
 			'https://alice.example.com/abc',

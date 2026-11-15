@@ -5,42 +5,183 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
+import { IsNull } from 'typeorm';
+import { genEd25519KeyPair, type CustomSigningKey, type PrivateKeyWithPem } from '@misskey-dev/node-http-message-signatures';
 import * as nodeCrypto from 'crypto';
 import type { MiUser } from '@/models/User.js';
 import type { UserKeypairsRepository } from '@/models/_.js';
-import { RedisKVCache } from '@/misc/cache.js';
+import { RedisKVCache, MemoryKVCache } from '@/misc/cache.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import * as slacc from 'slacc';
+import { createSlaccSigningKey } from '@misskey-dev/node-http-message-signatures/node/slacc';
+import { supportsDraftEd25519 } from '@/core/activitypub/misc/http-signature-capabilities.js';
+
+type CachedSigningKey = { identity: string; key: CustomSigningKey };
 
 @Injectable()
 export class UserKeypairService implements OnApplicationShutdown {
-	private cache: RedisKVCache<MiUserKeypair>;
+	private keypairEntityCache: RedisKVCache<MiUserKeypair>;
+	private privateKeyObjectCache: MemoryKVCache<CachedSigningKey>;
 
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
-
+		@Inject(DI.redisForSub)
+		private redisForSub: Redis.Redis,
 		@Inject(DI.userKeypairsRepository)
 		private userKeypairsRepository: UserKeypairsRepository,
+
+		private globalEventService: GlobalEventService,
+		private userEntityService: UserEntityService,
 	) {
-		this.cache = new RedisKVCache<MiUserKeypair>(this.redisClient, 'userKeypair:v2', {
+		this.keypairEntityCache = new RedisKVCache<MiUserKeypair>(this.redisClient, 'userKeypair:v2', {
 			lifetime: 1000 * 60 * 60 * 24, // 24h
 			memoryCacheLifetime: 1000 * 60 * 60, // 1h
 			fetcher: (key) => this.fetcher(key),
 			toRedisConverter: (value) => JSON.stringify(value),
 			fromRedisConverter: (value) => JSON.parse(value),
 		});
+		this.privateKeyObjectCache = new MemoryKVCache<CachedSigningKey>(1000 * 60 * 60 * 1, 10000);
+
+		this.redisForSub.on('message', this.onMessage);
 	}
 
 	@bindThis
 	public async getUserKeypair(userId: MiUser['id']): Promise<MiUserKeypair> {
-		return await this.cache.fetch(userId);
+		return await this.keypairEntityCache.fetch(userId);
+	}
+
+	/**
+	 * Get private key [Only PrivateKeyWithPem for queue data etc.]
+	 * @param userIdOrHint user id or MiUserKeypair
+	 * @param preferType
+	 *		If explicit `ed25519` or draft assertionMethod capability `02` is specified, use an existing Ed25519 key.
+	 *		Otherwise, main keypair will be returned.
+	 * @returns
+	 */
+	@bindThis
+	public async getLocalUserPrivateKeyPem(
+		userIdOrHint: MiUser['id'] | MiUserKeypair,
+		preferType?: string,
+	): Promise<PrivateKeyWithPem> {
+		const keypair = typeof userIdOrHint === 'string' ? await this.getUserKeypair(userIdOrHint) : userIdOrHint;
+		if (
+			(supportsDraftEd25519(preferType) || preferType === 'ed25519') &&
+			keypair.ed25519PublicKey != null && keypair.ed25519PrivateKey != null
+		) {
+			return {
+				keyId: `${this.userEntityService.genLocalUserUri(keypair.userId)}#ed25519-key`,
+				privateKeyPem: keypair.ed25519PrivateKey,
+			};
+		}
+		return {
+			keyId: `${this.userEntityService.genLocalUserUri(keypair.userId)}#main-key`,
+			privateKeyPem: keypair.privateKey,
+		};
+	}
+
+	/**
+	 * Get a cached native signing key for AP requests
+	 * Reuse the native handle while key material, key ID, and wire version match.
+	 * @param userIdOrHint user id, MiUserKeypair, or PrivateKeyWithPem
+	 * @param preferType
+	 * 		If explicit `ed25519` or draft assertionMethod capability `02` is specified, use an existing Ed25519 key.
+	 *		Otherwise, main keypair will be returned. (ignored if userIdOrHint is PrivateKeyWithPem)
+	 * @returns
+	 */
+	@bindThis
+	public async getLocalUserPrivateKey(
+		userIdOrHint: MiUser['id'] | MiUserKeypair | PrivateKeyWithPem,
+		preferType?: string,
+	): Promise<CustomSigningKey> {
+		const pem = typeof userIdOrHint === 'object' && 'privateKeyPem' in userIdOrHint
+			? userIdOrHint : await this.getLocalUserPrivateKeyPem(userIdOrHint, preferType);
+		// PEM includes the algorithm OID; identity binds material, key ID, and wire version.
+		const identity = nodeCrypto.createHash('sha256').update(JSON.stringify(['draft', pem.keyId, pem.privateKeyPem])).digest('hex');
+		const cached = this.privateKeyObjectCache.get(pem.keyId);
+		if (cached?.identity === identity) return cached.key;
+		const keyType = nodeCrypto.createPrivateKey(pem.privateKeyPem).asymmetricKeyType;
+		if (keyType !== 'rsa' && keyType !== 'ed25519') throw new Error('Unsupported actor signing key');
+		const key = createSlaccSigningKey(slacc, {
+			keyId: pem.keyId, version: 'draft', privateKey: pem.privateKeyPem,
+			algorithm: keyType === 'ed25519' ? 'ed25519' : 'rsa-v1_5-sha256',
+		});
+		this.privateKeyObjectCache.set(pem.keyId, { identity, key });
+		return key;
 	}
 
 	@bindThis
+	public async refresh(userId: MiUser['id']): Promise<void> {
+		const uri = this.userEntityService.genLocalUserUri(userId);
+		this.privateKeyObjectCache.delete(`${uri}#main-key`);
+		this.privateKeyObjectCache.delete(`${uri}#ed25519-key`);
+		return await this.keypairEntityCache.refresh(userId);
+	}
+
+	/**
+	 * If DB has ed25519 keypair, refresh cache and return it.
+	 * If not, create, save and return ed25519 keypair.
+	 * @param userId user id
+	 * @returns MiUserKeypair if keypair is created, void if keypair is already exists
+	 */
+	@bindThis
+	public async refreshAndPrepareEd25519KeyPair(userId: MiUser['id']): Promise<MiUserKeypair | void> {
+		let keypair = await this.keypairEntityCache.fetch(userId);
+		if (keypair.ed25519PublicKey != null) {
+			return;
+		}
+
+		await this.refresh(userId);
+		keypair = await this.keypairEntityCache.fetch(userId);
+		if (keypair.ed25519PublicKey != null) {
+			return;
+		}
+
+		const ed25519 = await genEd25519KeyPair();
+		const updated = await this.userKeypairsRepository.update(
+			{ userId, ed25519PublicKey: IsNull() },
+			{
+				ed25519PublicKey: ed25519.publicKey,
+				ed25519PrivateKey: ed25519.privateKey,
+			},
+		);
+		if (!updated.affected) {
+			await this.refresh(userId);
+			return;
+		}
+		this.globalEventService.publishInternalEvent('userKeypairUpdated', { userId });
+		const result = {
+			...keypair,
+			ed25519PublicKey: ed25519.publicKey,
+			ed25519PrivateKey: ed25519.privateKey,
+		};
+		this.keypairEntityCache.set(userId, result);
+		return result;
+	}
+
+	@bindThis
+	private async onMessage(_: string, data: string): Promise<void> {
+		const obj = JSON.parse(data);
+
+		if (obj.channel === 'internal') {
+			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
+			switch (type) {
+				case 'userKeypairUpdated': {
+					await this.refresh(body.userId);
+					break;
+				}
+			}
+		}
+	}
+	@bindThis
 	public dispose(): void {
-		this.cache.dispose();
+		this.redisForSub.off('message', this.onMessage);
+		this.keypairEntityCache.dispose();
+		this.privateKeyObjectCache.dispose();
 	}
 
 	@bindThis
@@ -56,7 +197,7 @@ export class UserKeypairService implements OnApplicationShutdown {
 		if (keyPair.privateKey.includes('-----BEGIN RSA PRIVATE KEY-----')) {
 			const pkcs8Key = nodeCrypto.createPrivateKey({ key: keyPair.privateKey, format: 'pem', type: 'pkcs1' }).export({ format: 'pem', type: 'pkcs8' });
 			keyPair.privateKey = pkcs8Key;
-			void this.userKeypairsRepository.update(userId, { privateKey: pkcs8Key });
+			await this.userKeypairsRepository.update(userId, { privateKey: pkcs8Key });
 		}
 
 		return keyPair;

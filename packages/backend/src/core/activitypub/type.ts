@@ -184,10 +184,9 @@ export interface IActor extends IObject {
 	discoverable?: boolean;
 	inbox: string;
 	sharedInbox?: string;	// 後方互換性のため
-	publicKey?: {
-		id: string;
-		publicKeyPem: string;
-	};
+	publicKey?: IKey | IKey[];
+	/** Standard embedded public keys; replaces the withdrawn additionalPublicKeys proposal. */
+	assertionMethod?: (IMultikey | string)[];
 	followers?: string | ICollection | IOrderedCollection;
 	following?: string | ICollection | IOrderedCollection;
 	featured?: string | IOrderedCollection;
@@ -256,8 +255,16 @@ export const isEmoji = (object: IObject): object is IApEmoji =>
 
 export interface IKey extends IObject {
 	type: 'Key';
+	id: string;
 	owner: string;
-	publicKeyPem: string | Buffer;
+	publicKeyPem: string;
+}
+
+export interface IMultikey extends IObject {
+	type: 'Multikey';
+	id: string;
+	controller: string;
+	publicKeyMultibase: string;
 }
 
 export const validDocumentTypes = ['Audio', 'Document', 'Image', 'Page', 'Video'];
