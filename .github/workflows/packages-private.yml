@@ -47,6 +47,9 @@ jobs:
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            packages-private/${{ matrix.workspace }}/package.json
       - run: pnpm --filter ${{ matrix.workspace }}... install --frozen-lockfile
       # lint = typecheck + eslint
       - run: pnpm --filter ${{ matrix.workspace }} run lint
