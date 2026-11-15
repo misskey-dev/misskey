@@ -36,9 +36,9 @@ jobs:
       if: matrix.use-merge-parent
       run: git checkout --detach HEAD^1
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.10
+      uses: pnpm/action-setup@v6.1.1
     - name: Use Node.js
-      uses: actions/setup-node@v7.0.0
+      uses: actions/setup-node@v7.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -48,9 +48,9 @@ jobs:
     - name: Copy Configure
       run: cp .config/example.yml .config/default.yml
     - name: Build
-      run: pnpm build
+      run: pnpm build-pre && pnpm --filter backend... build
     - name: Generate API JSON
-      run: pnpm --filter backend generate-api-json
+      run: pnpm --filter backend generate-api-json --no-build
     - name: Copy API.json
       run: cp packages/backend/built/api.json ${{ matrix.api-json-name }}
     - name: Upload Artifact
