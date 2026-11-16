@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { DB_MAX_USER_MODERATION_NOTE_LENGTH } from '@/const.js';
 import type { UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
@@ -21,7 +22,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
-		text: { type: 'string' },
+		text: { type: 'string', maxLength: DB_MAX_USER_MODERATION_NOTE_LENGTH },
 	},
 	required: ['userId', 'text'],
 } as const;

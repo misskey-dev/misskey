@@ -240,7 +240,11 @@ const isModerationNoteDirty = ref(false);
 watch(moderationNote, async (newValue) => {
 	// 再取得した値を同期しただけの場合は保存しない
 	if (newValue === (user.value.moderationNote ?? '')) return;
-	await misskeyApi('admin/update-user-note', { userId: user.value.id, text: newValue });
+	try {
+		await os.apiWithDialog('admin/update-user-note', { userId: user.value.id, text: newValue });
+	} catch {
+		return;
+	}
 	user.value = { ...user.value, moderationNote: newValue };
 });
 

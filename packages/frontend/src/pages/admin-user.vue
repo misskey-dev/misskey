@@ -306,7 +306,12 @@ function _fetch_() {
 }
 
 watch(moderationNote, async () => {
-	await misskeyApi('admin/update-user-note', { userId: user.value.id, text: moderationNote.value });
+	const text = moderationNote.value;
+	try {
+		await os.apiWithDialog('admin/update-user-note', { userId: user.value.id, text });
+	} catch {
+		return;
+	}
 	await refreshUser();
 });
 

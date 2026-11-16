@@ -20,6 +20,13 @@ export const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
 export const DB_MAX_NOTE_TEXT_LENGTH = 8192;
 
 /**
+ * Maximum user moderation note length that can be stored in DB.
+ * user_profile.moderationNote is varchar(8192).
+ * Surrogate pairs count as one
+ */
+export const DB_MAX_USER_MODERATION_NOTE_LENGTH = 8192;
+
+/**
  * Maximum image description length that can be stored in DB.
  * Surrogate pairs count as one
  */
