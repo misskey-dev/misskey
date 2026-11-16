@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</div>
 
-			<MkTextarea v-if="!isSystem" v-model="moderationNote" manualSave>
+			<MkTextarea v-if="!isSystem" ref="moderationNoteTextarea" v-model="moderationNote" manualSave @save="saveModerationNote">
 				<template #label>{{ i18n.ts.moderationNote }}</template>
 				<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
 			</MkTextarea>
@@ -207,7 +207,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, watch, ref, markRaw } from 'vue';
+import { computed, defineAsyncComponent, watch, ref, markRaw, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import type { ChartSrc } from '@/components/MkChart.vue';
@@ -233,6 +233,7 @@ import { ensureSignin, iAmAdmin, iAmModerator } from '@/i.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { Paginator } from '@/utility/paginator.js';
+import { alertModerationNoteTooLong, moderationNoteExceedsLimit } from '@/utility/moderation-note-length.js';
 
 const $i = ensureSignin();
 
@@ -264,6 +265,7 @@ const silenced = ref(info.value.isSilenced);
 const suspended = ref(info.value.isSuspended);
 const isSystem = ref(user.value.host == null && user.value.username.includes('.'));
 const moderationNote = ref(info.value.moderationNote);
+const moderationNoteTextarea = useTemplateRef<{ markChanged: () => void }>('moderationNoteTextarea');
 const filesPaginator = markRaw(new Paginator('admin/drive/files', {
 	limit: 10,
 	computedParams: computed(() => ({
@@ -305,15 +307,20 @@ function _fetch_() {
 	}));
 }
 
-watch(moderationNote, async () => {
-	const text = moderationNote.value;
+async function saveModerationNote(text: string) {
+	if (moderationNoteExceedsLimit(text)) {
+		moderationNoteTextarea.value?.markChanged();
+		await alertModerationNoteTooLong(text);
+		return;
+	}
 	try {
 		await os.apiWithDialog('admin/update-user-note', { userId: user.value.id, text });
 	} catch {
+		moderationNoteTextarea.value?.markChanged();
 		return;
 	}
 	await refreshUser();
-});
+}
 
 async function refreshUser() {
 	const result = await _fetch_();
