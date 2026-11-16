@@ -235,8 +235,15 @@ const uploader = useUploader({
 	multiple: true,
 });
 
+// watchForDraft は nextTick の中で watch を登録する。破棄より後に登録された場合も止める。
+let draftFormAlive = true;
+let stopVisibleUsersDraftWatch: (() => void) | null = null;
+
 onUnmounted(() => {
+	draftFormAlive = false;
 	uploader.dispose();
+	stopVisibleUsersDraftWatch?.();
+	stopVisibleUsersDraftWatch = null;
 });
 
 uploader.events.on('itemUploaded', ctx => {
@@ -436,8 +443,13 @@ function watchForDraft() {
 	watch(quoteId, () => saveDraft());
 	watch(reactionAcceptance, () => saveDraft());
 	watch(scheduledAt, () => saveDraft());
-	// 本文を変えずに宛先だけ変えたときも、同じ saveDraft に載せる
-	watch(visibleUsers, () => saveDraft(), { deep: true });
+	// 本文を変えずに宛先だけ変えたときも、同じ saveDraft に載せる。
+	// 他の watch と違い、遅れた users/show が破棄後に visibleUsers を変える。
+	stopVisibleUsersDraftWatch = watch(visibleUsers, () => saveDraft(), { deep: true });
+	if (!draftFormAlive) {
+		stopVisibleUsersDraftWatch();
+		stopVisibleUsersDraftWatch = null;
+	}
 }
 
 function checkMissingMention() {
