@@ -8,6 +8,13 @@ import { prefer } from '@/preferences.js';
 
 const abortControllers = new WeakMap<HTMLElement, AbortController>();
 
+const bounceKeyframes: Keyframe[] = [
+	{ offset: 0, transform: 'scale(0.9)', easing: 'ease' },
+	{ offset: 0.19, transform: 'scale(1.1)', easing: 'ease' },
+	{ offset: 0.48, transform: 'scale(0.95)', easing: 'ease' },
+	{ offset: 1, transform: 'scale(1)' },
+];
+
 export const clickAnimeDirective = {
 	mounted(el) {
 		if (!prefer.s.animation) return;
@@ -19,12 +26,14 @@ export const clickAnimeDirective = {
 		const abortController = new AbortController();
 		abortControllers.set(el, abortController);
 
+		let bounceAnimation: Animation | null = null;
+
 		target.classList.add('_anime_bounce_standBy');
 
 		el.addEventListener('mousedown', () => {
-			target.classList.remove('_anime_bounce');
+			bounceAnimation?.cancel();
+			bounceAnimation = null;
 
-			target.classList.add('_anime_bounce_standBy');
 			target.classList.add('_anime_bounce_ready');
 
 			target.addEventListener('mouseleave', () => {
@@ -33,13 +42,10 @@ export const clickAnimeDirective = {
 		}, { signal: abortController.signal });
 
 		el.addEventListener('click', () => {
-			target.classList.add('_anime_bounce');
 			target.classList.remove('_anime_bounce_ready');
-		}, { signal: abortController.signal });
 
-		el.addEventListener('animationend', () => {
-			target.classList.remove('_anime_bounce');
-			target.classList.add('_anime_bounce_standBy');
+			bounceAnimation?.cancel();
+			bounceAnimation = target.animate(bounceKeyframes, { duration: 700 });
 		}, { signal: abortController.signal });
 	},
 
