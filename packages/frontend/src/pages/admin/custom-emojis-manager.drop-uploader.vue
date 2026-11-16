@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		class="_button"
 		:class="[$style.dropArea, { [$style.dragOver]: isDragOver }]"
 		@click="onDropAreaClicked"
-		@dragover.prevent="onDragOver"
+		@dragover.prevent.stop="onDragOver"
 		@dragleave="isDragOver = false"
 		@drop.prevent.stop="onDrop"
 	>
