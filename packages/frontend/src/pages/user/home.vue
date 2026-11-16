@@ -243,6 +243,8 @@ watch(moderationNote, async (newValue) => {
 	try {
 		await os.apiWithDialog('admin/update-user-note', { userId: user.value.id, text: newValue });
 	} catch {
+		// MkTextarea は保存完了前に未保存フラグを落とす。失敗した入力は再取得で消さない。
+		isModerationNoteDirty.value = true;
 		return;
 	}
 	user.value = { ...user.value, moderationNote: newValue };
