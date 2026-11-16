@@ -436,6 +436,8 @@ function watchForDraft() {
 	watch(quoteId, () => saveDraft());
 	watch(reactionAcceptance, () => saveDraft());
 	watch(scheduledAt, () => saveDraft());
+	// 本文を変えずに宛先だけ変えたときも、同じ saveDraft に載せる
+	watch(visibleUsers, () => saveDraft(), { deep: true });
 }
 
 function checkMissingMention() {
