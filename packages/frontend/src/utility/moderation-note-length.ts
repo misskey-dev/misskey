@@ -8,12 +8,17 @@ import * as os from '@/os.js';
 
 /**
  * admin/update-user-note の maxLength と同じ。
- * 検証は AJV の既定で、UTF-16 の符号単位（String.length）を数える。
+ * AJV 8.20.0 は unicode: false のときだけ String.length を使う。
+ * このAPIは指定していないので、サロゲートペア（絵文字など）は1文字。
  */
 export const MAX_USER_MODERATION_NOTE_LENGTH = 8192;
 
+export function moderationNoteLength(text: string): number {
+	return [...text].length;
+}
+
 export function moderationNoteExceedsLimit(text: string): boolean {
-	return text.length > MAX_USER_MODERATION_NOTE_LENGTH;
+	return moderationNoteLength(text) > MAX_USER_MODERATION_NOTE_LENGTH;
 }
 
 export function alertModerationNoteTooLong(text: string): Promise<void> {
@@ -21,7 +26,7 @@ export function alertModerationNoteTooLong(text: string): Promise<void> {
 		type: 'error',
 		title: i18n.ts.tooLong,
 		text: i18n.tsx._dialog.charactersExceeded({
-			current: text.length,
+			current: moderationNoteLength(text),
 			max: MAX_USER_MODERATION_NOTE_LENGTH,
 		}),
 	});

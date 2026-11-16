@@ -31,4 +31,21 @@ describe('admin/update-user-note', () => {
 		})).toBe(false);
 		expect(validate.errors?.[0]?.keyword).toBe('maxLength');
 	});
+
+	test('counts a surrogate pair as one character', () => {
+		const emoji = '😀';
+		expect(emoji.length).toBe(2);
+		expect(validate({
+			userId: 'abc',
+			text: 'a'.repeat(DB_MAX_USER_MODERATION_NOTE_LENGTH - 1) + emoji,
+		})).toBe(true);
+	});
+
+	test('rejects one code point past the limit when it is a surrogate pair', () => {
+		expect(validate({
+			userId: 'abc',
+			text: 'a'.repeat(DB_MAX_USER_MODERATION_NOTE_LENGTH) + '😀',
+		})).toBe(false);
+		expect(validate.errors?.[0]?.keyword).toBe('maxLength');
+	});
 });

@@ -265,6 +265,7 @@ const silenced = ref(info.value.isSilenced);
 const suspended = ref(info.value.isSuspended);
 const isSystem = ref(user.value.host == null && user.value.username.includes('.'));
 const moderationNote = ref(info.value.moderationNote);
+const isModerationNoteDirty = ref(false);
 const moderationNoteTextarea = useTemplateRef<{ markChanged: () => void }>('moderationNoteTextarea');
 const filesPaginator = markRaw(new Paginator('admin/drive/files', {
 	limit: 10,
@@ -307,18 +308,26 @@ function _fetch_() {
 	}));
 }
 
+function keepUnsavedModerationNote() {
+	isModerationNoteDirty.value = true;
+	moderationNoteTextarea.value?.markChanged();
+}
+
 async function saveModerationNote(text: string) {
 	if (moderationNoteExceedsLimit(text)) {
-		moderationNoteTextarea.value?.markChanged();
+		// ダイアログを待つ前に未保存へ戻す。待っている間の再取得で消さない。
+		keepUnsavedModerationNote();
 		await alertModerationNoteTooLong(text);
 		return;
 	}
+	isModerationNoteDirty.value = true;
 	try {
 		await os.apiWithDialog('admin/update-user-note', { userId: user.value.id, text });
 	} catch {
-		moderationNoteTextarea.value?.markChanged();
+		keepUnsavedModerationNote();
 		return;
 	}
+	isModerationNoteDirty.value = false;
 	await refreshUser();
 }
 
@@ -331,7 +340,10 @@ async function refreshUser() {
 	silenced.value = info.value.isSilenced;
 	suspended.value = info.value.isSuspended;
 	isSystem.value = user.value.host == null && user.value.username.includes('.');
-	moderationNote.value = info.value.moderationNote;
+	// 上限超過や保存失敗の入力は、凍結などの再取得で消さない。
+	if (!isModerationNoteDirty.value) {
+		moderationNote.value = info.value.moderationNote;
+	}
 }
 
 async function updateRemoteUser() {
