@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						/>
 						<div v-else :class="$style.hiddenPlaceholder"></div>
 						<div :class="[$style.hiddenText, { [$style.withBlur]: content.type === 'video' && content.thumbnailUrl != null }]">
-							<div :class="$style.hiddenTextWrapper">
+							<div>
 								<b v-if="content.file?.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</b>
 								<b v-else style="display: block;"><i class="ti" :class="contentHideFileIcon"></i> {{ contentHideFileText }}</b>
 								<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template v-else>
 					<img
 						v-if="(!originalContentLoaded || !thumbnailContentLoaded) && (content.thumbnailUrl != null)"
-						:class="[$style.content, $style.thumbnail]"
+						:class="$style.content"
 						:src="content.thumbnailUrl"
 						draggable="false"
 						@load="thumbnailContentLoaded = true"

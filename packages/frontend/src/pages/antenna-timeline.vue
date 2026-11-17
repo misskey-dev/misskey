@@ -21,12 +21,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, ref, useTemplateRef, provide } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { MenuItem } from '@/types/menu.js';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
+import { antennasCache } from '@/cache.js';
 
 const router = useRouter();
 
@@ -47,6 +49,32 @@ function settings() {
 	});
 }
 
+async function chooseAntenna(ev: PointerEvent): Promise<void> {
+	const antennas = await antennasCache.fetch();
+	const items: (MenuItem | undefined)[] = [
+		...antennas.map(x => ({
+			text: x.name,
+			indicate: x.hasUnreadNote,
+			action: () => {
+				router.push('/timeline/antenna/:antennaId', {
+					params: {
+						antennaId: x.id,
+					},
+				});
+			},
+		})),
+		(antennas.length === 0 ? undefined : { type: 'divider' }),
+		{
+			icon: 'ti ti-plus',
+			text: i18n.ts.createNew,
+			action: () => {
+				router.push('/my/antennas');
+			},
+		},
+	];
+	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
+}
+
 watch(() => props.antennaId, async () => {
 	antenna.value = await misskeyApi('antennas/show', {
 		antennaId: props.antennaId,
@@ -54,6 +82,10 @@ watch(() => props.antennaId, async () => {
 }, { immediate: true });
 
 const headerActions = computed(() => antenna.value ? [{
+	icon: 'ti ti-switch-horizontal',
+	text: i18n.ts.selectAntenna,
+	handler: chooseAntenna,
+}, {
 	icon: 'ti ti-settings',
 	text: i18n.ts.settings,
 	handler: settings,

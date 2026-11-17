@@ -42,11 +42,14 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6.0.10
-      - uses: actions/setup-node@v7.0.0
+        uses: pnpm/action-setup@v6.1.1
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            packages-private/${{ matrix.workspace }}/package.json
       - run: pnpm --filter ${{ matrix.workspace }}... install --frozen-lockfile
       # lint = typecheck + eslint
       - run: pnpm --filter ${{ matrix.workspace }} run lint

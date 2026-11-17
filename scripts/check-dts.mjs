@@ -80,7 +80,8 @@ function readTsconfig(tsconfigPath) {
 		throw new Error(ts.flattenDiagnosticMessageText(config.error.messageText, '\n'));
 	}
 
-	return ts.parseJsonConfigFileContent(config.config, ts.sys, path.dirname(tsconfigPath));
+	// configFileName を渡さないと libReplacement (@typescript/lib-*) が cwd 基準で解決されてしまう
+	return ts.parseJsonConfigFileContent(config.config, ts.sys, path.dirname(tsconfigPath), undefined, tsconfigPath);
 }
 
 function createFormatHost(rootDir) {
