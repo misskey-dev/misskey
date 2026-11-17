@@ -1,4 +1,4 @@
-## Unreleased
+## 2026.11.1
 
 ### General
 - Fix: Windows で開発環境が起動できない問題を修正
