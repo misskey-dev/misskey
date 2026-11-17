@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { dirname } from 'node:path';
+import { basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execa } from 'execa';
 
@@ -21,6 +21,25 @@ let persistentChildProcessFailed = false;
 let shutdownPromise = null;
 
 /**
+ * Windows の `start` に渡す pnpm 起動部分のコマンドラインを組み立てる。
+ * `pnpm dev` 経由なら pnpm 自身が設定する `npm_execpath` を使い、同じ pnpm を起動する。
+ * pnpm は配布形態によって単体実行ファイル (pnpm.exe) と JS スクリプトのどちらにもなり得るため、
+ * JS の場合のみ node 経由で起動する。
+ * それ以外 (直接 `node scripts/dev.mjs` した場合など) は PATH 上の pnpm を使う。PATH 上の pnpm は
+ * .cmd シムであることが多く、`start` に直接渡すと `cmd /k` で開かれて終了しないため `cmd /c` を挟む。
+ *
+ * @returns {string} pnpm を起動するコマンドライン (引数を除く)。
+ */
+function resolvePnpmCommandLine() {
+	const execPath = process.env.npm_execpath;
+	if (execPath != null && basename(execPath).toLowerCase().startsWith('pnpm')) {
+		const command = /\.[cm]?js$/i.test(execPath) ? [process.execPath, execPath] : [execPath];
+		return command.map(argument => `"${argument}"`).join(' ');
+	}
+	return `"${process.env.ComSpec ?? 'cmd.exe'}" /d /c pnpm`;
+}
+
+/**
  * 開発用コマンドを起動し、終了時にまとめて停止できるよう追跡する。
  * Windows では Ctrl+C の配信先を分離し、出力を親コンソールへ中継する。
  *
@@ -34,9 +53,7 @@ function spawnChildProcess(command, args, options) {
 	const shouldForceColor = (process.stdout.isTTY || process.stderr.isTTY)
 		&& process.env.FORCE_COLOR == null
 		&& process.env.NO_COLOR == null;
-	const pnpmPath = _dirname + '/../node_modules/pnpm/bin/pnpm.mjs';
-	const windowsCommand = [process.execPath, pnpmPath, ...args]
-		.map(argument => `"${argument}"`)
+	const windowsCommand = [resolvePnpmCommandLine(), ...args.map(argument => `"${argument}"`)]
 		.join(' ');
 	const executable = isWindows && command === 'pnpm' ? process.env.ComSpec ?? 'cmd.exe' : command;
 	const executableArgs = isWindows && command === 'pnpm'
