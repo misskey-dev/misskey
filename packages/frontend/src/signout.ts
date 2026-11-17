@@ -18,7 +18,11 @@ export async function signout() {
 	waiting();
 
 	if (store.s.enablePreferencesAutoCloudBackup) {
-		await cloudBackup();
+		try {
+			await cloudBackup();
+		} catch {
+			// nop
+		}
 	}
 
 	localStorage.clear();
