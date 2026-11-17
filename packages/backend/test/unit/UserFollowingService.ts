@@ -39,7 +39,7 @@ describe('鍵解除時のフォローリクエスト承認', () => {
 				{ provide: DI.usersRepository, useValue: users },
 				{ provide: DI.userProfilesRepository, useValue: profiles },
 				{ provide: DI.followRequestsRepository, useValue: requests },
-				{ provide: DI.followingsRepository, useValue: followings },
+				{ provide: DI.followingsRepository, useValue: followings as unknown }, // 型推論が TS2590 (union type too complex) になるため unknown にする
 				{ provide: UserEntityService, useValue: userEntity },
 				{ provide: IdService, useValue: idService },
 			],
