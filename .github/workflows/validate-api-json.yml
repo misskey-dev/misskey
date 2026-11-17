@@ -23,9 +23,9 @@ jobs:
       with:
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.10
+      uses: pnpm/action-setup@v6.1.1
     - name: Use Node.js
-      uses: actions/setup-node@v7.0.0
+      uses: actions/setup-node@v7.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -37,6 +37,6 @@ jobs:
     - name: Copy Configure
       run: cp .config/example.yml .config/default.yml
     - name: Build and generate
-      run: pnpm build && pnpm --filter backend generate-api-json
+      run: pnpm build-pre && pnpm --filter backend... build && pnpm --filter backend generate-api-json --no-build
     - name: Validation
       run: npx @redocly/cli lint --extends=minimal ./packages/backend/built/api.json

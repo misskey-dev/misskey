@@ -454,7 +454,7 @@ export class ChatService {
 
 			query.setParameters(mutingQuery.getParameters());
 
-			const message = await query.getOne();
+			const message = await query.limit(1).getOne();
 
 			if (message) {
 				history.push(message);
@@ -497,7 +497,7 @@ export class ChatService {
 				query.andWhere('message.toRoomId NOT IN (:...found)', { found: found });
 			}
 
-			const message = await query.getOne();
+			const message = await query.limit(1).getOne();
 
 			if (message) {
 				history.push(message);
@@ -681,7 +681,16 @@ export class ChatService {
 			throw new Error('room is full');
 		}
 
-		// TODO: cehck block
+		const [blocked, blocking] = await Promise.all([
+			this.userBlockingService.checkBlocked(inviteeId, inviterId),
+			this.userBlockingService.checkBlocked(inviterId, inviteeId),
+		]);
+		if (blocked) {
+			throw new Error('blocked');
+		}
+		if (blocking) {
+			throw new Error('blocking');
+		}
 
 		const invitation = {
 			id: this.idService.gen(),

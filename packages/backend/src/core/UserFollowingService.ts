@@ -13,7 +13,7 @@ import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import { shouldRequireFollowApproval } from '@/misc/should-require-follow-approval.js';
+import { shouldRequireFollowApprovalByAccountAge } from '@/misc/should-require-follow-approval-by-account-age.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { UserWebhookService } from '@/core/UserWebhookService.js';
@@ -162,7 +162,7 @@ export class UserFollowingService implements OnModuleInit {
 		}
 
 		const followeeProfile = await this.userProfilesRepository.findOneByOrFail({ userId: followee.id });
-		const requiresAgeBasedApproval = this.userEntityService.isLocalUser(followee) && shouldRequireFollowApproval(
+		const requiresApprovalByAccountAge = this.userEntityService.isLocalUser(followee) && shouldRequireFollowApprovalByAccountAge(
 			followeeProfile,
 			this.userEntityService.isRemoteUser(follower),
 			// For remote users, the ID records when this server first discovered them.
@@ -176,7 +176,7 @@ export class UserFollowingService implements OnModuleInit {
 		// 上記のいずれかに当てはまる場合はすぐフォローせずにフォローリクエストを発行しておく
 		if (
 			followee.isLocked ||
-			requiresAgeBasedApproval ||
+			requiresApprovalByAccountAge ||
 			(followeeProfile.carefulBot && follower.isBot) ||
 			(this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee) && process.env.FORCE_FOLLOW_REMOTE_USER_FOR_TESTING !== 'true') ||
 			(this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower) && this.utilityService.isSilencedHost(this.meta.silencedHosts, follower.host))
@@ -646,7 +646,7 @@ export class UserFollowingService implements OnModuleInit {
 				continue;
 			}
 
-			if (shouldRequireFollowApproval(
+			if (shouldRequireFollowApprovalByAccountAge(
 				profile,
 				this.userEntityService.isRemoteUser(follower),
 				this.idService.parse(follower.id).date,

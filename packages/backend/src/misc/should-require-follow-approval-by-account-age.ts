@@ -5,7 +5,7 @@
 
 import type { MiUserProfile } from '@/models/UserProfile.js';
 
-export function shouldRequireFollowApproval(
+export function shouldRequireFollowApprovalByAccountAge(
 	profile: Pick<MiUserProfile, 'followApprovalLocalSeconds' | 'followApprovalRemoteSeconds'>,
 	isRemote: boolean,
 	createdAt: Date,

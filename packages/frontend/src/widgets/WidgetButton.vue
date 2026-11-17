@@ -12,6 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { onUnmounted } from 'vue';
 import { Interpreter, Parser } from '@syuilo/aiscript';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
@@ -55,9 +56,12 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 );
 
 const parser = new Parser();
+let aiscript: Interpreter | null = null;
 
 async function run() {
-	const aiscript = new Interpreter(createAiScriptEnv({
+	if (aiscript) aiscript.abort();
+
+	aiscript = new Interpreter(createAiScriptEnv({
 		storageKey: 'widget',
 		token: $i?.token,
 	}), {
@@ -98,6 +102,10 @@ async function run() {
 		});
 	}
 }
+
+onUnmounted(() => {
+	if (aiscript) aiscript.abort();
+});
 
 defineExpose<WidgetComponentExpose>({
 	name,

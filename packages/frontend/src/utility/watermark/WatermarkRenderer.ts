@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import QRCodeStyling from 'qr-code-styling';
 import { url, host } from '@@/js/config.js';
 import { getProxiedImageUrl } from '../media-proxy.js';
 import { fn as fn_watermark } from './watermark.js';
@@ -12,6 +11,8 @@ import { fn as fn_poladot } from '@/utility/image-compositor-functions/polkadot.
 import { fn as fn_checker } from '@/utility/image-compositor-functions/checker.js';
 import { ImageCompositor } from '@/lib/ImageCompositor.js';
 import { ensureSignin } from '@/i.js';
+import { qrOptions, qrcodeImageBitmap } from '@/utility/qr-code.js';
+import { fetchAsDataUri } from '@/utility/fetch-as-data-uri.js';
 
 type Align = { x: 'left' | 'center' | 'right'; y: 'top' | 'center' | 'bottom'; margin?: number; };
 
@@ -295,39 +296,25 @@ async function createTextureFromText(text: string | null, resolution = 2048) {
 async function createTextureFromQr(options: { data: string | null }, resolution = 512) {
 	const $i = ensureSignin();
 
-	const qrCodeInstance = new QRCodeStyling({
-		width: resolution,
-		height: resolution,
-		margin: 42,
-		type: 'canvas',
-		data: options.data == null || options.data === '' ? `${url}/users/${$i.id}` : options.data,
-		image: $i.avatarUrl,
-		qrOptions: {
-			typeNumber: 0,
-			mode: 'Byte',
-			errorCorrectionLevel: 'H',
-		},
-		imageOptions: {
-			hideBackgroundDots: true,
-			imageSize: 0.3,
+	let avatarDataUri: string | undefined;
+	try {
+		avatarDataUri = await fetchAsDataUri($i.avatarUrl);
+	} catch (err) {
+		console.warn('Failed to load avatar for QR code', err);
+	}
+
+	const image = await qrcodeImageBitmap(options.data == null || options.data === '' ? `${url}/users/${$i.id}` : options.data, {
+		...qrOptions,
+		size: resolution,
+		margin: 3,
+		color: '#000',
+		background: '#fff',
+		logo: avatarDataUri != null ? {
+			imageUrl: avatarDataUri,
+			size: 0.25,
 			margin: 16,
-			crossOrigin: 'anonymous',
-		},
-		dotsOptions: {
-			type: 'dots',
-		},
-		cornersDotOptions: {
-			type: 'dot',
-		},
-		cornersSquareOptions: {
-			type: 'extra-rounded',
-		},
+		} : undefined,
 	});
-
-	const blob = await qrCodeInstance.getRawData('png') as Blob | null;
-	if (blob == null) return null;
-
-	const image = await window.createImageBitmap(blob);
 
 	return image;
 }

@@ -8,7 +8,7 @@ import * as Redis from 'ioredis';
 import { DataSource } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiUser } from '@/models/User.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { normalizeTag } from '@/misc/normalize-tag.js';
 import { IdService } from '@/core/IdService.js';
 import { MiHashtag } from '@/models/Hashtag.js';
 import type { HashtagsRepository, MiMeta } from '@/models/_.js';
@@ -72,7 +72,7 @@ export class HashtagService {
 
 	@bindThis
 	public async updateHashtag(user: { id: MiUser['id']; host: MiUser['host']; }, tag: string, isUserAttached = false, inc = true) {
-		tag = normalizeForSearch(tag);
+		tag = normalizeTag(tag);
 
 		// TODO: サンプリング
 		this.updateHashtagsRanking(tag, user.id);
@@ -168,7 +168,7 @@ export class HashtagService {
 
 	@bindThis
 	public async updateHashtagsRanking(hashtag: string, userId: MiUser['id']): Promise<void> {
-		const hiddenTags = this.meta.hiddenTags.map(t => normalizeForSearch(t));
+		const hiddenTags = this.meta.hiddenTags.map(t => normalizeTag(t));
 		if (hiddenTags.includes(hashtag)) return;
 		if (this.utilityService.isKeyWordIncluded(hashtag, this.meta.sensitiveWords)) return;
 
