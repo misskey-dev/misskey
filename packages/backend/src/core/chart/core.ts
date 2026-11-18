@@ -13,6 +13,7 @@ import * as nestedProperty from 'nested-property';
 import { EntitySchema, LessThan, Between } from 'typeorm';
 import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/misc/prelude/time.js';
 import { sqlStringEscape } from '@/misc/sql-string-escape.js';
+import { Semaphore } from '@/misc/semaphore.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { MiRepository, miRepository } from '@/models/_.js';
@@ -64,6 +65,12 @@ const camelToSnake = (str: string): string => {
 };
 
 const removeDuplicates = (array: any[]) => Array.from(new Set(array));
+
+/**
+ * save() で同時に書き込むグループの数を、プロセス内の全チャートで共有して制限する。
+ * 1 グループあたり最大 2 本のクエリを同時に発行するため、DB 接続は最大で上限の 2 倍を使う。
+ */
+const saveSemaphore = new Semaphore(2);
 
 const COLUMN_RANGE_LIMITS = {
 	small: { min: -32768, max: 32767 }, // smallint
@@ -572,13 +579,21 @@ export default abstract class Chart<T extends Schema> {
 
 		const groups = removeDuplicates(buffer.map(log => log.group));
 
-		await Promise.all(
-			groups.map(group =>
-				Promise.all([
-					this.claimCurrentLog(group, 'hour'),
-					this.claimCurrentLog(group, 'day'),
-				]).then(([logHour, logDay]) =>
-					update(logHour, logDay))));
+		// 同時に処理するグループ数は saveSemaphore で制限する。
+		// 一部のグループで失敗しても残りのグループの書き込みは続け、最後に最初のエラーを投げる。
+		const results = await Promise.allSettled(groups.map(group => saveSemaphore.run(async () => {
+			const [logHour, logDay] = await Promise.all([
+				this.claimCurrentLog(group, 'hour'),
+				this.claimCurrentLog(group, 'day'),
+			]);
+			await update(logHour, logDay);
+		})));
+
+		const failures = results.filter(result => result.status === 'rejected');
+		if (failures.length > 0) {
+			this.logger.error(`${this.name}: Failed to save ${failures.length} of ${groups.length} groups`);
+			throw failures[0].reason;
+		}
 	}
 
 	@bindThis
