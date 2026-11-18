@@ -74,6 +74,13 @@ export class UserListChannel extends Channel {
 
 	@bindThis
 	private onListEvent(data: GlobalEvents['userList']['payload']) {
+		if (data.type === 'deleted') {
+			// リストが削除されたら、以降のノートを配信しない
+			this.listUsersFetchCount++;
+			this.membershipsMap = {};
+			return;
+		}
+
 		this.updateListUsers();
 
 		// クライアントに転送するのはメンバーの追加・削除のみ
@@ -86,12 +93,18 @@ export class UserListChannel extends Channel {
 	private async updateListUsers() {
 		const fetchCount = ++this.listUsersFetchCount;
 
-		const memberships = await this.userListMembershipsRepository.find({
-			where: {
-				userListId: this.listId,
-			},
-			select: { userId: true, withReplies: true },
-		});
+		let memberships: Pick<MiUserListMembership, 'userId' | 'withReplies'>[];
+		try {
+			memberships = await this.userListMembershipsRepository.find({
+				where: {
+					userListId: this.listId,
+				},
+				select: { userId: true, withReplies: true },
+			});
+		} catch {
+			// 取得に失敗した場合は何もしない
+			return;
+		}
 
 		// 読み込み中に次の読み込みが始まっていれば古い結果は使わない
 		if (fetchCount !== this.listUsersFetchCount) return;
@@ -121,8 +134,8 @@ export class UserListChannel extends Channel {
 		if (note.reply) {
 			const reply = note.reply;
 			if (this.membershipsMap[note.userId]?.withReplies) {
-				// 自分のフォローしていないユーザーの visibility: followers な投稿への返信は弾く
-				if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId)) return;
+				// 自分が見られない投稿への返信は弾く
+				if (!this.isNoteVisibleForMe(reply)) return;
 			} else {
 				// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
 				if (reply.userId !== this.user!.id && !isMe && reply.userId !== note.userId) return;

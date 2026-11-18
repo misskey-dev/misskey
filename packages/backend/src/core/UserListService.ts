@@ -155,14 +155,15 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 
 		if (removed.length === 0) return;
 
-		const notifyStream = options.notifyStream ?? true;
-		const packedTarget = notifyStream ? await this.userEntityService.pack(target) : null;
-
 		for (const { userListId } of removed) {
 			this.globalEventService.publishInternalEvent('userListMemberRemoved', { userListId, memberId: target.id });
-			if (packedTarget != null) {
-				this.globalEventService.publishUserListStream(userListId, 'userRemoved', packedTarget);
-			}
+		}
+
+		if (!(options.notifyStream ?? true)) return;
+
+		const packedTarget = await this.userEntityService.pack(target);
+		for (const { userListId } of removed) {
+			this.globalEventService.publishUserListStream(userListId, 'userRemoved', packedTarget);
 		}
 	}
 
@@ -213,10 +214,8 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 		if (arrayToInsert.length > 0) {
 			await this.userListMembershipsRepository.insert(arrayToInsert);
 
-			const packedDst = await this.userEntityService.pack(dst);
 			for (const { userListId } of arrayToInsert) {
 				this.globalEventService.publishInternalEvent('userListMemberAdded', { userListId, memberId: dst.id });
-				this.globalEventService.publishUserListStream(userListId, 'userAdded', packedDst);
 			}
 		}
 
@@ -224,6 +223,13 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 		if (this.userEntityService.isRemoteUser(dst)) {
 			const proxy = await this.systemAccountService.fetch('proxy');
 			this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
+		}
+
+		if (arrayToInsert.length > 0) {
+			const packedDst = await this.userEntityService.pack(dst);
+			for (const { userListId } of arrayToInsert) {
+				this.globalEventService.publishUserListStream(userListId, 'userAdded', packedDst);
+			}
 		}
 	}
 

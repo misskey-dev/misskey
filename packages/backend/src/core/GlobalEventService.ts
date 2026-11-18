@@ -142,6 +142,8 @@ export interface UserListEventTypes {
 	userRemoved: Packed<'UserLite'>;
 	// internal use only
 	membershipUpdated: { userId: MiUser['id']; };
+	// internal use only
+	deleted: undefined;
 }
 
 export interface ClipEventTypes {
