@@ -101,6 +101,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 		} as MiUserListMembership);
 
 		this.globalEventService.publishInternalEvent('userListMemberAdded', { userListId: list.id, memberId: target.id });
+		this.globalEventService.publishUserListStream(list.id, 'internalMembershipUpdated', { userId: target.id });
 		this.globalEventService.publishUserListStream(list.id, 'userAdded', await this.userEntityService.pack(target));
 
 		// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
@@ -118,6 +119,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 		});
 
 		this.globalEventService.publishInternalEvent('userListMemberRemoved', { userListId: list.id, memberId: target.id });
+		this.globalEventService.publishUserListStream(list.id, 'internalMembershipUpdated', { userId: target.id });
 		this.globalEventService.publishUserListStream(list.id, 'userRemoved', await this.userEntityService.pack(target));
 	}
 
@@ -157,15 +159,10 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 
 		for (const { userListId } of removed) {
 			this.globalEventService.publishInternalEvent('userListMemberRemoved', { userListId, memberId: target.id });
+			this.globalEventService.publishUserListStream(userListId, 'internalMembershipUpdated', { userId: target.id });
 		}
 
-		if (!(options.notifyClients ?? true)) {
-			// クライアントには伝えず、購読中のストリームに所属の読み直しだけを促す
-			for (const { userListId } of removed) {
-				this.globalEventService.publishUserListStream(userListId, 'internalMembershipUpdated', { userId: target.id });
-			}
-			return;
-		}
+		if (!(options.notifyClients ?? true)) return;
 
 		const packedTarget = await this.userEntityService.pack(target);
 		for (const { userListId } of removed) {
@@ -222,20 +219,28 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 
 			for (const { userListId } of arrayToInsert) {
 				this.globalEventService.publishInternalEvent('userListMemberAdded', { userListId, memberId: dst.id });
+				this.globalEventService.publishUserListStream(userListId, 'internalMembershipUpdated', { userId: dst.id });
 			}
 		}
 
-		// Have the proxy account follow the new account in the same way as addMember
-		if (this.userEntityService.isRemoteUser(dst)) {
-			const proxy = await this.systemAccountService.fetch('proxy');
-			this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
-		}
-
-		if (arrayToInsert.length > 0) {
-			const packedDst = await this.userEntityService.pack(dst);
-			for (const { userListId } of arrayToInsert) {
-				this.globalEventService.publishUserListStream(userListId, 'userAdded', packedDst);
-			}
+		// クライアントへの通知とプロキシのフォローは、一方が失敗しても他方を行う
+		const results = await Promise.allSettled([
+			(async () => {
+				if (arrayToInsert.length === 0) return;
+				const packedDst = await this.userEntityService.pack(dst);
+				for (const { userListId } of arrayToInsert) {
+					this.globalEventService.publishUserListStream(userListId, 'userAdded', packedDst);
+				}
+			})(),
+			(async () => {
+				// Have the proxy account follow the new account in the same way as addMember
+				if (!this.userEntityService.isRemoteUser(dst)) return;
+				const proxy = await this.systemAccountService.fetch('proxy');
+				this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
+			})(),
+		]);
+		for (const result of results) {
+			if (result.status === 'rejected') throw result.reason;
 		}
 	}
 

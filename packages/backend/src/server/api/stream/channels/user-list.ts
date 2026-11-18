@@ -24,6 +24,7 @@ export class UserListChannel extends Channel {
 	private listId: string;
 	private membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
 	private listUsersFetchCount = 0;
+	private isListDeleted = false;
 	private withFiles: boolean;
 	private withRenotes: boolean;
 
@@ -76,12 +77,17 @@ export class UserListChannel extends Channel {
 	private onListEvent(data: GlobalEvents['userList']['payload']) {
 		if (data.type === 'internalListDeleted') {
 			// リストが削除されたら、以降のノートを配信しない
+			this.isListDeleted = true;
 			this.listUsersFetchCount++;
 			this.membershipsMap = {};
 			return;
 		}
 
-		this.updateListUsers();
+		// 所属の読み直しは、メンバーシップの変更時に必ず発行される internalMembershipUpdated だけをきっかけにする
+		if (data.type === 'internalMembershipUpdated') {
+			this.updateListUsers();
+			return;
+		}
 
 		// クライアントに転送するのはメンバーの追加・削除のみ
 		if (data.type === 'userAdded' || data.type === 'userRemoved') {
@@ -151,7 +157,12 @@ export class UserListChannel extends Channel {
 		// eslint-disable-next-line no-param-reassign -- これ以降元の Note オブジェクトは見てはいけないので、いっそ再代入した方が安全
 		note = filtered;
 
-		this.send('note', await this.noteEntityService.withMyRenoteReaction(note, this.user?.id ?? null));
+		const packed = await this.noteEntityService.withMyRenoteReaction(note, this.user?.id ?? null);
+
+		// 処理中にリストが削除されていれば送らない
+		if (this.isListDeleted) return;
+
+		this.send('note', packed);
 	}
 
 	@bindThis
