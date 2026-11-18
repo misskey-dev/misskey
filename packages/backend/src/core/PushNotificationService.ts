@@ -128,7 +128,7 @@ export class PushNotificationService implements OnApplicationShutdown {
 				//swLogger.info(err.headers);
 				//swLogger.info(err.body);
 
-				if (err.statusCode === 410) {
+				if (err.statusCode === 410 || err.statusCode === 404) {
 					this.swSubscriptionsRepository.delete({
 						userId: userId,
 						endpoint: subscription.endpoint,

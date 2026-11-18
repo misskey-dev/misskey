@@ -368,13 +368,13 @@ export const uploadUrl = async (user: UserToken, url: string): Promise<misskey.e
 	return catcher;
 };
 
-export function connectStream<C extends keyof misskey.Channels>(user: UserToken, channel: C, listener: (message: Record<string, any>) => any, params?: misskey.Channels[C]['params']): Promise<WebSocket> {
+export function connectStream<C extends keyof misskey.Channels>(user: UserToken | null, channel: C, listener: (message: Record<string, any>) => any, params?: misskey.Channels[C]['params']): Promise<WebSocket> {
 	return new Promise((res, rej) => {
 		const url = new URL(`ws://127.0.0.1:${port}/streaming`);
 		const options: ClientOptions = {};
-		if (user.bearer) {
+		if (user?.bearer) {
 			options.headers = { Authorization: `Bearer ${user.token}` };
-		} else {
+		} else if (user) {
 			url.searchParams.set('i', user.token);
 		}
 		const ws = new WebSocket(url, options);

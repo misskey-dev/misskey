@@ -117,16 +117,23 @@ function onMousedown(evt: MouseEvent): void {
 
 	const scale = calcCircleScale(target.clientWidth, target.clientHeight, circleCenterX, circleCenterY);
 
-	window.setTimeout(() => {
-		ripple.style.transform = 'scale(' + (scale / 2) + ')';
-	}, 1);
-	window.setTimeout(() => {
-		ripple.style.transition = 'all 1s ease';
-		ripple.style.opacity = '0';
-	}, 1000);
-	window.setTimeout(() => {
-		if (ripples.value) ripples.value.removeChild(ripple);
-	}, 2000);
+	ripple.animate({
+		transform: ['scale(1)', `scale(${scale / 2})`],
+	}, {
+		duration: 500,
+		easing: 'cubic-bezier(0,.5,0,1)',
+		fill: 'forwards',
+	});
+
+	const removeRipple = () => ripple.remove();
+	ripple.animate({
+		opacity: [1, 0],
+	}, {
+		delay: 1000,
+		duration: 1000,
+		easing: 'ease',
+		fill: 'forwards',
+	}).finished.then(removeRipple, removeRipple);
 }
 </script>
 
@@ -310,9 +317,6 @@ function onMousedown(evt: MouseEvent): void {
 	height: 2px;
 	border-radius: 100%;
 	background: rgba(0, 0, 0, 0.1);
-	opacity: 1;
-	transform: scale(1);
-	transition: all 0.5s cubic-bezier(0,.5,0,1);
 }
 
 .content {
