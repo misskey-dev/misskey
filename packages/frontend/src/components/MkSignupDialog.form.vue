@@ -209,7 +209,14 @@ function onChangeUsername(): void {
 
 // 入力欄は debounce されていて email が更新されるのは遅延後なので、
 // それまでの間に前のアドレスの確認結果で送信できてしまわないよう、打鍵の時点で状態をクリアする
-function onInputEmail(): void {
+function onInputEmail(ev: Event): void {
+	// type="email" は前後の空白を取り除くので、打鍵しても値が変わらないことがある。
+	// その場合は update:modelValue が来ないので、状態を維持するか、クリア済みならここで確認し直す
+	if ((ev.target as HTMLInputElement).value === email.value) {
+		if (emailState.value === null) onChangeEmail();
+		return;
+	}
+
 	emailAbortController?.abort();
 	emailAbortController = null;
 	emailState.value = null;
