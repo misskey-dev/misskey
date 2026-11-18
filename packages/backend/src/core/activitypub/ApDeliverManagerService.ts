@@ -210,6 +210,28 @@ export class ApDeliverManagerService {
 		await manager.execute();
 	}
 
+	/**
+	 * Deliver activity to all known shared inboxes
+	 * (shared inboxes of remote users that have a follow relationship with any local user)
+	 * @param actor
+	 * @param activity Activity
+	 */
+	@bindThis
+	public async deliverToAllKnownSharedInboxes(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity): Promise<void> {
+		// following はサーバー全体で非常に大きくなりうる一方、sharedInbox の種類は高々リモートサーバーの数なので、
+		// 重複除去は DB 側で行い、アプリ側には一意な sharedInbox だけを取り出す。
+		const sharedInboxes = await this.followingsRepository.createQueryBuilder('following')
+			.select('COALESCE(following.followerSharedInbox, following.followeeSharedInbox)', 'inbox')
+			.distinct(true)
+			.where('following.followerSharedInbox IS NOT NULL')
+			.orWhere('following.followeeSharedInbox IS NOT NULL')
+			.getRawMany<{ inbox: string; }>();
+
+		const inboxes = new Map(sharedInboxes.map(({ inbox }) => [inbox, true]));
+
+		await this.queueService.deliverMany({ id: actor.id }, activity, inboxes);
+	}
+
 	@bindThis
 	public createDeliverManager(actor: { id: MiUser['id']; host: null; }, activity: IActivity | null): DeliverManager {
 		return new DeliverManager(
