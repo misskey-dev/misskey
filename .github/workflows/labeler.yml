@@ -5,6 +5,8 @@ on:
       - 'l10n_develop'
 
 jobs:
+  # どのディレクトリが変更されたかに応じてラベルを付与する
+  # 設定: .github/labeler.yml
   triage:
     permissions:
       contents: read
@@ -14,3 +16,55 @@ jobs:
     - uses: actions/labeler@v7
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
+
+  # 正味の変更行数に応じてサイズラベルを付与する
+  size:
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pr-size-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    steps:
+    - uses: actions/github-script@v9
+      with:
+        script: |
+          // 自動生成・自動同期されるファイルは行数に含めない
+          const ignoredPaths = [
+            /^pnpm-lock\.yaml$/,
+            // pnpm build-misskey-js-with-types で生成
+            /^packages\/misskey-js\/src\/autogen\//,
+            /^packages\/misskey-js\/etc\/misskey-js\.api\.md$/,
+            // locales/ja-JP.yml から生成
+            /^packages\/i18n\/src\/autogen\//,
+            // ja-JP.yml 以外は Crowdin から同期
+            /^locales\/(?!ja-JP\.yml$)[^/]+\.yml$/,
+          ];
+          const sizeLabels = [
+            [1000, 'size:XXL'],
+            [500, 'size:XL'],
+            [100, 'size:L'],
+            [30, 'size:M'],
+            [10, 'size:S'],
+            [0, 'size:XS'],
+          ];
+
+          const { owner, repo } = context.repo;
+          const pull_number = context.payload.pull_request.number;
+
+          const files = await github.paginate(github.rest.pulls.listFiles, { owner, repo, pull_number, per_page: 100 });
+          const changes = files
+            .filter(file => !ignoredPaths.some(re => re.test(file.filename)))
+            .reduce((sum, file) => sum + file.additions + file.deletions, 0);
+          const label = sizeLabels.find(([min]) => changes >= min)[1];
+          core.info(`${changes} lines changed (excluding generated files): ${label}`);
+
+          const { data: currentLabels } = await github.rest.issues.listLabelsOnIssue({ owner, repo, issue_number: pull_number, per_page: 100 });
+          for (const { name } of currentLabels) {
+            if (name.startsWith('size:') && name !== label) {
+              await github.rest.issues.removeLabel({ owner, repo, issue_number: pull_number, name });
+            }
+          }
+          if (!currentLabels.some(({ name }) => name === label)) {
+            await github.rest.issues.addLabels({ owner, repo, issue_number: pull_number, labels: [label] });
+          }
