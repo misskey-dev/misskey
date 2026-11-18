@@ -6,11 +6,13 @@
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import push from 'web-push';
 import * as Redis from 'ioredis';
+import { In } from 'typeorm';
+import type { permissions } from 'misskey-js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
-import type { MiMeta, MiSwSubscription, SwSubscriptionsRepository } from '@/models/_.js';
+import type { AccessTokensRepository, MiMeta, MiSwSubscription, SwSubscriptionsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { RedisKVCache } from '@/misc/cache.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -24,6 +26,22 @@ type PushNotificationsTypes = {
 	};
 	'readAllNotifications': undefined;
 	newChatMessage: Packed<'ChatMessage'>;
+};
+
+// アクセストークン経由で登録された購読に対して、各種別のプッシュ通知を送るために必要な権限
+const requiredPermissions = {
+	'notification': 'read:notifications',
+	'unreadAntennaNote': 'read:account',
+	'readAllNotifications': 'read:notifications',
+	newChatMessage: 'read:chat',
+} as const satisfies Record<keyof PushNotificationsTypes, typeof permissions[number]>;
+
+type SwSubscriptionWithPermission = MiSwSubscription & {
+	/**
+	 * 購読を登録したアクセストークンが持つ権限
+	 * ネイティブトークン (ログイントークン) で登録された購読の場合は null
+	 */
+	accessTokenPermission: string[] | null;
 };
 
 // Reduce length because push message servers have character limits
@@ -49,7 +67,7 @@ function truncateBody<T extends keyof PushNotificationsTypes>(type: T, body: Pus
 
 @Injectable()
 export class PushNotificationService implements OnApplicationShutdown {
-	private subscriptionsCache: RedisKVCache<MiSwSubscription[]>;
+	private subscriptionsCache: RedisKVCache<SwSubscriptionWithPermission[]>;
 
 	constructor(
 		@Inject(DI.config)
@@ -64,15 +82,37 @@ export class PushNotificationService implements OnApplicationShutdown {
 		@Inject(DI.swSubscriptionsRepository)
 		private swSubscriptionsRepository: SwSubscriptionsRepository,
 
+		@Inject(DI.accessTokensRepository)
+		private accessTokensRepository: AccessTokensRepository,
+
 		private httpRequestService: HttpRequestService,
 	) {
-		this.subscriptionsCache = new RedisKVCache<MiSwSubscription[]>(this.redisClient, 'userSwSubscriptions', {
+		this.subscriptionsCache = new RedisKVCache<SwSubscriptionWithPermission[]>(this.redisClient, 'userSwSubscriptions', {
 			lifetime: 1000 * 60 * 60 * 1, // 1h
 			memoryCacheLifetime: 1000 * 60 * 3, // 3m
-			fetcher: (key) => this.swSubscriptionsRepository.findBy({ userId: key }),
+			fetcher: (key) => this.fetchSubscriptions(key),
 			toRedisConverter: (value) => JSON.stringify(value),
 			fromRedisConverter: (value) => JSON.parse(value),
 		});
+	}
+
+	@bindThis
+	private async fetchSubscriptions(userId: string): Promise<SwSubscriptionWithPermission[]> {
+		const subscriptions = await this.swSubscriptionsRepository.findBy({ userId });
+
+		const accessTokenIds = subscriptions.map(s => s.accessTokenId).filter(id => id != null);
+		const accessTokens = accessTokenIds.length > 0 ? await this.accessTokensRepository.find({
+			where: { id: In(accessTokenIds) },
+			relations: { app: true },
+			select: { id: true, permission: true, app: { id: true, permission: true } },
+		}) : [];
+		// アプリ経由で発行されたトークンはアプリの権限が適用される
+		const permissionMap = new Map(accessTokens.map(t => [t.id, t.app != null ? t.app.permission : t.permission]));
+
+		return subscriptions.map(s => ({
+			...s,
+			accessTokenPermission: s.accessTokenId != null ? (permissionMap.get(s.accessTokenId) ?? []) : null,
+		}));
 	}
 
 	@bindThis
@@ -107,6 +147,9 @@ export class PushNotificationService implements OnApplicationShutdown {
 			].includes(type) && !subscription.sendReadMessage) continue;
 
 			if (!this.isValidEndpoint(subscription.endpoint)) continue;
+
+			// アクセストークン経由で登録された購読には、そのトークンで閲覧できる内容のみを送る
+			if (subscription.accessTokenId != null && !(subscription.accessTokenPermission ?? []).includes(requiredPermissions[type])) continue;
 
 			const pushSubscription = {
 				endpoint: subscription.endpoint,

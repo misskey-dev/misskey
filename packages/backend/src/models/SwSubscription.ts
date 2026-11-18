@@ -6,6 +6,7 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
+import { MiAccessToken } from './AccessToken.js';
 
 @Entity('sw_subscription')
 export class MiSwSubscription {
@@ -21,6 +22,24 @@ export class MiSwSubscription {
 	})
 	@JoinColumn()
 	public user: MiUser | null;
+
+	/**
+	 * 購読を登録したアクセストークンのID
+	 * ネイティブトークン (ログイントークン) で登録された場合は null
+	 * トークンが削除されると購読も削除される
+	 */
+	@Index()
+	@Column({
+		...id(),
+		nullable: true,
+	})
+	public accessTokenId: MiAccessToken['id'] | null;
+
+	@ManyToOne(() => MiAccessToken, {
+		onDelete: 'CASCADE',
+	})
+	@JoinColumn()
+	public accessToken: MiAccessToken | null;
 
 	@Column('varchar', {
 		length: 512,
