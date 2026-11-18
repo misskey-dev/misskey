@@ -74,7 +74,7 @@ export class UserListChannel extends Channel {
 
 	@bindThis
 	private onListEvent(data: GlobalEvents['userList']['payload']) {
-		if (data.type === 'deleted') {
+		if (data.type === 'internalListDeleted') {
 			// リストが削除されたら、以降のノートを配信しない
 			this.listUsersFetchCount++;
 			this.membershipsMap = {};

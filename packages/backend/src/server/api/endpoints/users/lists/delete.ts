@@ -55,7 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			await this.userListsRepository.delete(userList.id);
-			this.globalEventService.publishUserListStream(userList.id, 'deleted');
+			this.globalEventService.publishUserListStream(userList.id, 'internalListDeleted');
 		});
 	}
 }

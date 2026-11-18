@@ -67,8 +67,8 @@ export class UserBlockingService implements OnModuleInit {
 			this.cancelRequest(blockee, blocker, silent),
 			this.userFollowingService.unfollow(blocker, blockee, silent),
 			this.userFollowingService.unfollow(blockee, blocker, silent),
-			// ブロックされたことがリアルタイムで伝わってしまうため、Streamでは通知しない
-			this.userListService.removeMemberFromAllLists(blockee, blocker, { notifyStream: false }),
+			// ブロックされたことがリアルタイムで伝わってしまうため、クライアントには通知しない
+			this.userListService.removeMemberFromAllLists(blockee, blocker, { notifyClients: false }),
 			this.removeRoomInvitations(blocker, blockee),
 			this.removeRoomInvitations(blockee, blocker),
 		]);

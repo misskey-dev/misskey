@@ -140,10 +140,9 @@ type NoteStreamEventTypes = {
 export interface UserListEventTypes {
 	userAdded: Packed<'UserLite'>;
 	userRemoved: Packed<'UserLite'>;
-	// internal use only
-	membershipUpdated: { userId: MiUser['id']; };
-	// internal use only
-	deleted: undefined;
+	// internal なイベントはクライアントには転送しない
+	internalMembershipUpdated: { userId: MiUser['id']; };
+	internalListDeleted: undefined;
 }
 
 export interface ClipEventTypes {

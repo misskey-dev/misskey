@@ -138,11 +138,11 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 			withReplies: options.withReplies,
 		});
 
-		this.globalEventService.publishUserListStream(list.id, 'membershipUpdated', { userId: target.id });
+		this.globalEventService.publishUserListStream(list.id, 'internalMembershipUpdated', { userId: target.id });
 	}
 
 	@bindThis
-	public async removeMemberFromAllLists(listOwner: { id: MiUser['id'] }, target: MiUser, options: { notifyStream?: boolean } = {}) {
+	public async removeMemberFromAllLists(listOwner: { id: MiUser['id'] }, target: MiUser, options: { notifyClients?: boolean } = {}) {
 		const removed = await this.userListMembershipsRepository.createQueryBuilder()
 			.delete()
 			.where({
@@ -159,7 +159,13 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 			this.globalEventService.publishInternalEvent('userListMemberRemoved', { userListId, memberId: target.id });
 		}
 
-		if (!(options.notifyStream ?? true)) return;
+		if (!(options.notifyClients ?? true)) {
+			// クライアントには伝えず、購読中のストリームに所属の読み直しだけを促す
+			for (const { userListId } of removed) {
+				this.globalEventService.publishUserListStream(userListId, 'internalMembershipUpdated', { userId: target.id });
+			}
+			return;
+		}
 
 		const packedTarget = await this.userEntityService.pack(target);
 		for (const { userListId } of removed) {
