@@ -114,14 +114,16 @@ class DeliverManager {
 			// followers deliver
 			// リモートフォロワーの数に比べて配送先 inbox の数はずっと少ないため、重複除去は DB 側で行う。
 			// sharedInbox を持たないリモートユーザーは個別の inbox に配送する。
+			// 同じ URL が、あるフォロワーでは sharedInbox、別のフォロワーでは個別の inbox として記録されていることがある。
+			// 結果が行の順序に左右されないよう inbox ごとにまとめ、1 件でも sharedInbox として記録されていれば sharedInbox として扱う
 			const followerInboxes = await this.followingsRepository.createQueryBuilder('following')
 				.select('COALESCE(following.followerSharedInbox, following.followerInbox)', 'inbox')
-				.addSelect('following.followerSharedInbox IS NOT NULL', 'isSharedInbox')
-				.distinct(true)
+				.addSelect('BOOL_OR(following.followerSharedInbox IS NOT NULL)', 'isSharedInbox')
 				.where('following.followeeId = :followeeId', { followeeId: this.actor.id })
 				.andWhere('following.followerHost IS NOT NULL')
 				// inbox を持たないフォロワーには配送できないので除外する
 				.andWhere('(following.followerSharedInbox IS NOT NULL OR following.followerInbox IS NOT NULL)')
+				.groupBy('COALESCE(following.followerSharedInbox, following.followerInbox)')
 				.getRawMany<{ inbox: string; isSharedInbox: boolean; }>();
 
 			for (const { inbox, isSharedInbox } of followerInboxes) {

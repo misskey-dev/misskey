@@ -119,22 +119,19 @@ export class AntennaService implements OnApplicationShutdown {
 		let memberships: Promise<Set<MiUserList['id']>> | null = null;
 
 		// 照会するリストは、判定を始めた時点のアンテナ設定で確定させる (DB への照会は初回の判定まで遅らせる)
-		const userListIds = [...new Set(antennas
+		const userListIds = new Set(antennas
 			.filter(antenna => antenna.src === 'list')
 			.map(antenna => antenna.userListId)
-			.filter(userListId => userListId != null))];
+			.filter(userListId => userListId != null));
 
 		const fetchMemberships = async (): Promise<Set<MiUserList['id']>> => {
-			if (userListIds.length === 0) return new Set();
+			if (userListIds.size === 0) return new Set();
 
 			const rows = await this.userListMembershipsRepository.find({
-				where: {
-					userId,
-					userListId: In(userListIds),
-				},
+				where: { userId },
 				select: { userListId: true },
 			});
-			return new Set(rows.map(row => row.userListId));
+			return new Set(rows.map(row => row.userListId).filter(id => userListIds.has(id)));
 		};
 
 		return async (userListId) => {

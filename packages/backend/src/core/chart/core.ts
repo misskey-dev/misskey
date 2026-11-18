@@ -564,7 +564,8 @@ export default abstract class Chart<T extends Schema> {
 			}
 
 			// ログ更新
-			await Promise.all([
+			// 片方が失敗しても、もう片方のクエリが終わるまで待つ
+			const updateResults = await Promise.allSettled([
 				this.repositoryForHour.createQueryBuilder()
 					.update()
 					.set(queryForHour as any)
@@ -576,6 +577,9 @@ export default abstract class Chart<T extends Schema> {
 					.where('id = :id', { id: logDay.id })
 					.execute(),
 			]);
+			for (const result of updateResults) {
+				if (result.status === 'rejected') throw result.reason;
+			}
 
 			this.logger.info(`${this.name + (logHour.group ? `:${logHour.group}` : '')}: Updated`);
 		};
@@ -585,11 +589,14 @@ export default abstract class Chart<T extends Schema> {
 		// 同時に処理するグループ数は saveSemaphore で制限する。
 		// 一部のグループで失敗しても残りのグループの書き込みは続け、最後に最初のエラーを投げる。
 		const results = await Promise.allSettled(groups.map(group => saveSemaphore.run(async () => {
-			const [logHour, logDay] = await Promise.all([
+			// 片方が失敗しても、もう片方のクエリが終わるまで待つ
+			const [logHourResult, logDayResult] = await Promise.allSettled([
 				this.claimCurrentLog(group, 'hour', now),
 				this.claimCurrentLog(group, 'day', now),
 			]);
-			await update(logHour, logDay);
+			if (logHourResult.status === 'rejected') throw logHourResult.reason;
+			if (logDayResult.status === 'rejected') throw logDayResult.reason;
+			await update(logHourResult.value, logDayResult.value);
 		})));
 
 		const failures = results.filter(result => result.status === 'rejected');
