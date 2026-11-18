@@ -14,9 +14,13 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import type Logger from '@/logger.js';
 
 @Injectable()
 export class DeleteAccountService {
+	private logger: Logger;
+
 	constructor(
 		@Inject(DI.meta)
 		private meta: MiMeta,
@@ -31,7 +35,9 @@ export class DeleteAccountService {
 		private globalEventService: GlobalEventService,
 		private moderationLogService: ModerationLogService,
 		private systemAccountService: SystemAccountService,
+		private loggerService: LoggerService,
 	) {
+		this.logger = this.loggerService.getLogger('account-delete');
 	}
 
 	@bindThis
@@ -60,7 +66,10 @@ export class DeleteAccountService {
 			// 知り得る全SharedInboxにDelete配信
 			const content = this.apRendererService.addContext(this.apRendererService.renderDelete(this.userEntityService.genLocalUserUri(user.id), user));
 
-			await this.apDeliverManagerService.deliverToAllKnownSharedInboxes(user, content);
+			// Delete の配送はベストエフォートなので、配送ジョブの登録に失敗してもアカウントの削除は続ける
+			await this.apDeliverManagerService.deliverToAllKnownSharedInboxes(user, content).catch(err => {
+				this.logger.error(`Failed to enqueue Delete activity deliveries for ${user.id}`, { err });
+			});
 
 			this.queueService.createDeleteAccountJob(user, {
 				soft: false,
