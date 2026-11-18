@@ -139,12 +139,11 @@ export class UserListChannel extends Channel {
 
 		if (note.reply) {
 			const reply = note.reply;
-			if (this.membershipsMap[note.userId]?.withReplies) {
-				// 自分が見られない投稿への返信は弾く
+			// 「チャンネル接続主への返信」「チャンネル接続主が行った返信」「投稿者の投稿者自身への返信」は、設定にかかわらず対象
+			if (reply.userId !== this.user!.id && !isMe && reply.userId !== note.userId) {
+				// それ以外の返信は「返信を含める」が有効なメンバーのものだけを対象とし、自分が見られない投稿への返信は弾く
+				if (!this.membershipsMap[note.userId]?.withReplies) return;
 				if (!this.isNoteVisibleForMe(reply)) return;
-			} else {
-				// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
-				if (reply.userId !== this.user!.id && !isMe && reply.userId !== note.userId) return;
 			}
 		}
 

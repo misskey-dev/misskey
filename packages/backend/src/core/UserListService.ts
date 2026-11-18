@@ -236,7 +236,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 				// Have the proxy account follow the new account in the same way as addMember
 				if (!this.userEntityService.isRemoteUser(dst)) return;
 				const proxy = await this.systemAccountService.fetch('proxy');
-				this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
+				await this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
 			})(),
 		]);
 		for (const result of results) {
