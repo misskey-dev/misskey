@@ -6,6 +6,7 @@
 import { Inject, Injectable, OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { ModuleRef } from '@nestjs/core';
+import { In } from 'typeorm';
 import type { UserListMembershipsRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiUserList } from '@/models/UserList.js';
@@ -71,20 +72,10 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 		if (obj.channel === 'internal') {
 			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
 			switch (type) {
-				case 'userListMemberAdded': {
-					const { userListId, memberId } = body;
-					const members = await this.membersCache.get(userListId);
-					if (members) {
-						members.add(memberId);
-					}
-					break;
-				}
+
+				case 'userListMemberAdded':
 				case 'userListMemberRemoved': {
-					const { userListId, memberId } = body;
-					const members = await this.membersCache.get(userListId);
-					if (members) {
-						members.delete(memberId);
-					}
+					await this.membersCache.delete(body.userListId);
 					break;
 				}
 				default:
@@ -147,6 +138,94 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 		}, {
 			withReplies: options.withReplies,
 		});
+
+		this.globalEventService.publishUserListStream(list.id, 'membershipUpdated', { userId: target.id });
+	}
+
+	@bindThis
+	public async removeMemberFromAllLists(listOwner: { id: MiUser['id'] }, target: MiUser, options: { notifyStream?: boolean } = {}) {
+		const removed = await this.userListMembershipsRepository.createQueryBuilder()
+			.delete()
+			.where({
+				userId: target.id,
+				userListUserId: listOwner.id,
+			})
+			.returning(['userListId'])
+			.execute()
+			.then(result => result.raw as Pick<MiUserListMembership, 'userListId'>[]);
+
+		if (removed.length === 0) return;
+
+		const notifyStream = options.notifyStream ?? true;
+		const packedTarget = notifyStream ? await this.userEntityService.pack(target) : null;
+
+		for (const { userListId } of removed) {
+			this.globalEventService.publishInternalEvent('userListMemberRemoved', { userListId, memberId: target.id });
+			if (packedTarget != null) {
+				this.globalEventService.publishUserListStream(userListId, 'userRemoved', packedTarget);
+			}
+		}
+	}
+
+	/**
+	 * src が入っているリストに dst を追加する (アカウント移行用)
+	 * - src はリストから外さない
+	 * - リストのメンバー数の上限は確認しない
+	 */
+	@bindThis
+	public async copyMemberships(src: { id: MiUser['id'] }, dst: MiUser) {
+		// Return if there is no list to be updated.
+		const oldMemberships = await this.userListMembershipsRepository.find({
+			where: {
+				userId: src.id,
+			},
+			select: { userListId: true, userListUserId: true },
+		});
+		if (oldMemberships.length === 0) return;
+
+		const existingUserListIds = await this.userListMembershipsRepository.find({
+			where: {
+				userId: dst.id,
+				userListId: In(oldMemberships.map(membership => membership.userListId)),
+			},
+			select: { userListId: true },
+		}).then(memberships => new Set(memberships.map(membership => membership.userListId)));
+
+		const newMemberships: Map<string, { userId: string; userListId: string; userListUserId: string; }> = new Map();
+
+		// 重複しないようにIDを生成
+		const genId = (): string => {
+			let id: string;
+			do {
+				id = this.idService.gen();
+			} while (newMemberships.has(id));
+			return id;
+		};
+		for (const membership of oldMemberships) {
+			if (existingUserListIds.has(membership.userListId)) continue; // skip if dst exists in this user's list
+			newMemberships.set(genId(), {
+				userId: dst.id,
+				userListId: membership.userListId,
+				userListUserId: membership.userListUserId,
+			});
+		}
+
+		const arrayToInsert = Array.from(newMemberships.entries()).map(entry => ({ ...entry[1], id: entry[0] }));
+		if (arrayToInsert.length > 0) {
+			await this.userListMembershipsRepository.insert(arrayToInsert);
+
+			const packedDst = await this.userEntityService.pack(dst);
+			for (const { userListId } of arrayToInsert) {
+				this.globalEventService.publishInternalEvent('userListMemberAdded', { userListId, memberId: dst.id });
+				this.globalEventService.publishUserListStream(userListId, 'userAdded', packedDst);
+			}
+		}
+
+		// Have the proxy account follow the new account in the same way as addMember
+		if (this.userEntityService.isRemoteUser(dst)) {
+			const proxy = await this.systemAccountService.fetch('proxy');
+			this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
+		}
 	}
 
 	@bindThis

@@ -6,6 +6,7 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteStreamingHidingService } from '../NoteStreamingHidingService.js';
 import { DI } from '@/di-symbols.js';
@@ -22,7 +23,7 @@ export class UserListChannel extends Channel {
 	public static requireCredential = false as const;
 	private listId: string;
 	private membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
-	private listUsersClock: NodeJS.Timeout;
+	private listUsersFetchCount = 0;
 	private withFiles: boolean;
 	private withRenotes: boolean;
 
@@ -61,24 +62,39 @@ export class UserListChannel extends Channel {
 		if (!listExist) return false;
 
 		// Subscribe stream
-		this.subscriber.on(`userListStream:${this.listId}`, this.send);
+		this.subscriber.on(`userListStream:${this.listId}`, this.onListEvent);
 
 		this.subscriber.on('notesStream', this.onNote);
 
+		// 初回。以降はイベントを受けたときだけ読み直す
 		this.updateListUsers();
-		this.listUsersClock = setInterval(this.updateListUsers, 5000);
 
 		return true;
 	}
 
 	@bindThis
+	private onListEvent(data: GlobalEvents['userList']['payload']) {
+		this.updateListUsers();
+
+		// クライアントに転送するのはメンバーの追加・削除のみ
+		if (data.type === 'userAdded' || data.type === 'userRemoved') {
+			this.send(data);
+		}
+	}
+
+	@bindThis
 	private async updateListUsers() {
+		const fetchCount = ++this.listUsersFetchCount;
+
 		const memberships = await this.userListMembershipsRepository.find({
 			where: {
 				userListId: this.listId,
 			},
-			select: { userId: true },
+			select: { userId: true, withReplies: true },
 		});
+
+		// 読み込み中に次の読み込みが始まっていれば古い結果は使わない
+		if (fetchCount !== this.listUsersFetchCount) return;
 
 		const membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
 		for (const membership of memberships) {
@@ -128,9 +144,7 @@ export class UserListChannel extends Channel {
 	@bindThis
 	public dispose() {
 		// Unsubscribe events
-		this.subscriber.off(`userListStream:${this.listId}`, this.send);
+		this.subscriber.off(`userListStream:${this.listId}`, this.onListEvent);
 		this.subscriber.off('notesStream', this.onNote);
-
-		clearInterval(this.listUsersClock);
 	}
 }

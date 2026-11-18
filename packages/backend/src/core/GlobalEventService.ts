@@ -140,6 +140,8 @@ type NoteStreamEventTypes = {
 export interface UserListEventTypes {
 	userAdded: Packed<'UserLite'>;
 	userRemoved: Packed<'UserLite'>;
+	// internal use only
+	membershipUpdated: { userId: MiUser['id']; };
 }
 
 export interface ClipEventTypes {
