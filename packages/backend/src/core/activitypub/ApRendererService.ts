@@ -12,6 +12,7 @@ import type { Config } from '@/config.js';
 import type { MiPartialLocalUser, MiLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import type { IMentionedRemoteUsers, MiNote } from '@/models/Note.js';
 import type { MiBlocking } from '@/models/Blocking.js';
+import type { MiFollowRequest } from '@/models/FollowRequest.js';
 import type { MiRelay } from '@/models/Relay.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiNoteReaction } from '@/models/NoteReaction.js';
@@ -240,6 +241,11 @@ export class ApRendererService {
 			actor: this.userEntityService.getUserUri(follower),
 			object: this.userEntityService.getUserUri(followee),
 		};
+	}
+
+	@bindThis
+	public getLocalFollowRequestActivityId(request: Pick<MiFollowRequest, 'id' | 'requestId'>): string {
+		return request.requestId ?? `${this.config.url}/follows/${request.id}`;
 	}
 
 	@bindThis

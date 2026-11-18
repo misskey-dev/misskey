@@ -86,6 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, onDeactivated, onUnmounted, ref } from 'vue';
 import { url as local } from '@@/js/config.js';
 import { versatileLang } from '@@/js/intl-const.js';
+import { maybeMakeRelative } from '@@/js/url.js';
 import type { SummalyResult } from '@misskey-dev/summaly';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -94,7 +95,6 @@ import MkButton from '@/components/MkButton.vue';
 import { transformPlayerUrl } from '@/utility/url-preview.js';
 import { store } from '@/store.js';
 import { prefer } from '@/preferences.js';
-import { maybeMakeRelative } from '@@/js/url.js';
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -123,7 +123,7 @@ const icon = computed(() => summalyResult.value?.icon ?? null);
 const sitename = computed(() => summalyResult.value?.sitename ?? null);
 const sensitive = computed(() => summalyResult.value?.sensitive ?? false);
 const player = computed(() => summalyResult.value?.player ?? { url: null, width: null, height: null });
-const playerEnabled = ref(false);
+const playerEnabled = ref(prefer.s.expandUrlPreviewAutomatically);
 const tweetId = ref<string | null>(null);
 const tweetExpanded = ref(props.detail);
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;

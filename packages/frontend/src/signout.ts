@@ -12,13 +12,19 @@ import { clear } from '@/utility/idb-proxy.js';
 import { $i } from '@/i.js';
 import { encodePushSubscriptionKey } from '@/utility/encode-push-subscription-key.js';
 
-export async function signout() {
+export async function signout(showWaiting = true) {
 	if (!$i) return;
 
-	waiting();
+	if (showWaiting) {
+		waiting();
+	}
 
 	if (store.s.enablePreferencesAutoCloudBackup) {
-		await cloudBackup();
+		try {
+			await cloudBackup();
+		} catch {
+			// nop
+		}
 	}
 
 	localStorage.clear();

@@ -358,6 +358,7 @@ inputNewDescription: "新しいキャプションを入力してください"
 inputNewFolderName: "新しいフォルダ名を入力してください"
 circularReferenceFolder: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
 hasChildFilesOrFolders: "このフォルダは空でないため、削除できません。"
+uploadFolderDeletionConfirm: "このフォルダは既定アップロード先に指定されています。削除すると、既定アップロード先は解除され、ファイルはルートにアップロードされます。"
 copyUrl: "URLをコピー"
 rename: "名前を変更"
 avatar: "アイコン"
@@ -1016,6 +1017,7 @@ cannotUploadBecauseInappropriate: "不適切な内容を含む可能性がある
 cannotUploadBecauseNoFreeSpace: "ドライブの空き容量が無いためアップロードできません。"
 cannotUploadBecauseExceedsFileSizeLimit: "ファイルサイズの制限を超えているためアップロードできません。"
 cannotUploadBecauseUnallowedFileType: "許可されていないファイル種別のためアップロードできません。"
+cannotUploadBecauseNoSuchFolder: "アップロード先のフォルダが見つかりません。既定アップロード先の設定を確認してください。"
 beta: "ベータ"
 enableAutoSensitive: "自動センシティブ判定"
 enableAutoSensitiveDescription: "利用可能な場合は、機械学習を利用して自動でメディアにセンシティブフラグを設定します。この機能をオフにしても、サーバーによっては自動で設定されることがあります。"
@@ -1581,6 +1583,7 @@ _settings:
   settingsPersistence_description1: "設定の永続化を有効にすると、設定情報が失われるのを防止できます。"
   settingsPersistence_description2: "環境によっては有効化できない場合があります。"
   autoplayEmbededPlayerOfUrlPreview: "URLプレビューの埋め込みプレイヤーを自動再生"
+  expandUrlPreviewAutomatically: "URLプレビューを自動展開"
 
   _chat:
     showSenderName: "送信者の名前を表示"

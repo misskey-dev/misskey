@@ -298,13 +298,17 @@ interface UploadOptions {
 	name?: string;
 	/** A Blob can be provided instead of path */
 	blob?: Blob;
+	/** The folder ID to upload the file to */
+	folderId?: string;
+	/** Whether to force upload even if a duplicate file hash exists */
+	force?: boolean;
 }
 
 /**
  * Upload file
  * @param user User
  */
-export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadOptions = {}): Promise<{
+export const uploadFile = async (user?: UserToken, { path, name, blob, folderId, force }: UploadOptions = {}): Promise<{
 	status: number,
 	headers: Headers,
 	body: misskey.entities.DriveFile | null
@@ -322,9 +326,12 @@ export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadO
 		basename(absPath.toString()),
 	);
 
-	formData.append('force', 'true');
+	formData.append('force', (force ?? true) ? 'true' : 'false');
 	if (name) {
 		formData.append('name', name);
+	}
+	if (folderId) {
+		formData.append('folderId', folderId);
 	}
 
 	const headers: Record<string, string> = {};
