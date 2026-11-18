@@ -72,7 +72,6 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 		if (obj.channel === 'internal') {
 			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
 			switch (type) {
-
 				case 'userListMemberAdded':
 				case 'userListMemberRemoved': {
 					await this.membersCache.delete(body.userListId);
