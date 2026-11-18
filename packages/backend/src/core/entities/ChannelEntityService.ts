@@ -91,8 +91,9 @@ export class ChannelEntityService {
 			});
 		}
 
+		// ピン留めノートの本体は詳細表示でしか使わない
 		const pinnedNotes = Array.of<MiNote>();
-		if (channel.pinnedNoteIds.length > 0) {
+		if (detailed && channel.pinnedNoteIds.length > 0) {
 			pinnedNotes.push(
 				...(
 					opts?.pinnedNotes
@@ -139,57 +140,62 @@ export class ChannelEntityService {
 		me?: { id: MiUser['id'] } | null | undefined,
 		detailed?: boolean,
 	): Promise<Packed<'Channel'>[]> {
+		if (src.length === 0) return [];
+
 		// IDのみの要素がある場合、DBからオブジェクトを取得して補う
-		const channels = src.filter(it => typeof it === 'object') as MiChannel[];
-		channels.push(
-			...(await this.channelsRepository.find({
-				where: {
-					id: In(src.filter(it => typeof it !== 'object') as MiChannel['id'][]),
-				},
-			})),
+		const idsToFetch = src.filter(it => typeof it !== 'object') as MiChannel['id'][];
+		const fetchedChannels = idsToFetch.length > 0
+			? await this.channelsRepository.findBy({ id: In(idsToFetch) })
+			: [];
+		const channelMap = new Map(
+			[...(src.filter(it => typeof it === 'object') as MiChannel[]), ...fetchedChannels].map(it => [it.id, it]),
 		);
-		channels.sort((a, b) => a.id.localeCompare(b.id));
 
-		const bannerFiles = await this.driveFilesRepository
-			.findBy({
-				id: In(channels.map(it => it.bannerId).filter(it => it != null)),
-			})
-			.then(it => new Map(it.map(it => [it.id, it])));
+		// 呼び出し元が指定した順序を保つ (取得できなかったIDは除く)
+		const channels = src
+			.map(it => channelMap.get(typeof it === 'object' ? it.id : it))
+			.filter(it => it != null);
+		const channelIds = channels.map(it => it.id);
+		const bannerIds = channels.map(it => it.bannerId).filter(it => it != null);
+		const pinnedNoteIds = channels.flatMap(it => it.pinnedNoteIds);
 
-		const followings = me
-			? await this.channelFollowingsRepository
-				.findBy({
-					followerId: me.id,
-					followeeId: In(channels.map(it => it.id)),
-				})
-				.then(it => new Set(it.map(it => it.followeeId)))
-			: new Set<MiChannel['id']>();
-
-		const favorites = me
-			? await this.channelFavoritesRepository
-				.findBy({
-					userId: me.id,
-					channelId: In(channels.map(it => it.id)),
-				})
-				.then(it => new Set(it.map(it => it.channelId)))
-			: new Set<MiChannel['id']>();
-
-		const muting = me
-			? await this.channelMutingRepository
-				.findBy({
-					userId: me.id,
-					channelId: In(channels.map(it => it.id)),
-				})
-				.then(it => new Set(it.map(it => it.channelId)))
-			: new Set<MiChannel['id']>();
-
-		const pinnedNotes = await this.notesRepository
-			.find({
-				where: {
-					id: In(channels.flatMap(it => it.pinnedNoteIds)),
-				},
-			})
-			.then(it => new Map(it.map(it => [it.id, it])));
+		const [bannerFiles, followings, favorites, muting, pinnedNotes] = await Promise.all([
+			bannerIds.length > 0
+				? this.driveFilesRepository
+					.findBy({ id: In(bannerIds) })
+					.then(it => new Map(it.map(it => [it.id, it])))
+				: new Map<MiDriveFile['id'], MiDriveFile>(),
+			me
+				? this.channelFollowingsRepository
+					.findBy({
+						followerId: me.id,
+						followeeId: In(channelIds),
+					})
+					.then(it => new Set(it.map(it => it.followeeId)))
+				: new Set<MiChannel['id']>(),
+			me
+				? this.channelFavoritesRepository
+					.findBy({
+						userId: me.id,
+						channelId: In(channelIds),
+					})
+					.then(it => new Set(it.map(it => it.channelId)))
+				: new Set<MiChannel['id']>(),
+			me
+				? this.channelMutingRepository
+					.findBy({
+						userId: me.id,
+						channelId: In(channelIds),
+					})
+					.then(it => new Set(it.map(it => it.channelId)))
+				: new Set<MiChannel['id']>(),
+			// ピン留めノートの本体は詳細表示でしか使わない
+			detailed && pinnedNoteIds.length > 0
+				? this.notesRepository
+					.findBy({ id: In(pinnedNoteIds) })
+					.then(it => new Map(it.map(it => [it.id, it])))
+				: new Map<MiNote['id'], MiNote>(),
+		]);
 
 		return Promise.all(channels.map(it => this.pack(it, me, detailed, {
 			bannerFiles,
