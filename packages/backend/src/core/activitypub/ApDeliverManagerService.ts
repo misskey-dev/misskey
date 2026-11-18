@@ -228,6 +228,8 @@ export class ApDeliverManagerService {
 			.orWhere('following.followeeSharedInbox IS NOT NULL')
 			.getRawMany<{ inbox: string; }>();
 
+		if (sharedInboxes.length === 0) return;
+
 		const inboxes = new Map(sharedInboxes.map(({ inbox }) => [inbox, true]));
 
 		await this.queueService.deliverMany({ id: actor.id }, activity, inboxes);

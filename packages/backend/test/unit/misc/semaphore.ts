@@ -29,7 +29,7 @@ describe('misc:Semaphore', () => {
 
 	test('runs at most `limit` tasks at the same time, in arrival order', async () => {
 		const semaphore = new Semaphore(2);
-		const gates = [deferred(), deferred(), deferred()];
+		const gates = [deferred(), deferred(), deferred(), deferred()];
 		const started: number[] = [];
 
 		const tasks = gates.map((gate, i) => semaphore.run(async () => {
@@ -41,22 +41,35 @@ describe('misc:Semaphore', () => {
 		await flush();
 		expect(started).toEqual([0, 1]);
 
+		// 枠が 1 つ空くと、待っている 2 件のうち先に来た方だけが始まる
 		gates[1].resolve();
 		await flush();
 		expect(started).toEqual([0, 1, 2]);
 
+		// もう 1 つ空くと、残りの 1 件が始まる
 		gates[0].resolve();
+		await flush();
+		expect(started).toEqual([0, 1, 2, 3]);
+
 		gates[2].resolve();
-		await expect(Promise.all(tasks)).resolves.toEqual([0, 1, 2]);
+		gates[3].resolve();
+		await expect(Promise.all(tasks)).resolves.toEqual([0, 1, 2, 3]);
 	});
 
 	test('releases the slot when a task fails', async () => {
 		const semaphore = new Semaphore(1);
+		const gate = deferred();
 		const failing = semaphore.run(async () => {
-			throw new Error('boom');
+			await gate.promise;
 		});
+		// 失敗するタスクが枠を使っている間に、次のタスクを待たせておく
+		const next = semaphore.run(async () => 'next');
+
+		await flush();
+		gate.reject(new Error('boom'));
 		await expect(failing).rejects.toThrow('boom');
 
-		await expect(semaphore.run(async () => 'next')).resolves.toBe('next');
+		// 待っていたタスクが枠を引き継いで完了する
+		await expect(next).resolves.toBe('next');
 	});
 });

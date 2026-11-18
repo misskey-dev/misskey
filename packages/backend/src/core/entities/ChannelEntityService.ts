@@ -153,7 +153,7 @@ export class ChannelEntityService {
 
 		// 呼び出し元が指定した順序を保つ (取得できなかったIDは除く)
 		const channels = src
-			.map(it => channelMap.get(typeof it === 'object' ? it.id : it))
+			.map(it => typeof it === 'object' ? it : channelMap.get(it))
 			.filter(it => it != null);
 		const channelIds = channels.map(it => it.id);
 		const bannerIds = channels.map(it => it.bannerId).filter(it => it != null);

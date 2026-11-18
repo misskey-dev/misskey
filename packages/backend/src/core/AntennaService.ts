@@ -118,11 +118,13 @@ export class AntennaService implements OnApplicationShutdown {
 		// 呼び出し中ここで所属情報をキャッシュすることで毎回問い合わせを行わずに済むようにする
 		let memberships: Promise<Set<MiUserList['id']>> | null = null;
 
+		// 照会するリストは、判定を始めた時点のアンテナ設定で確定させる (DB への照会は初回の判定まで遅らせる)
+		const userListIds = [...new Set(antennas
+			.filter(antenna => antenna.src === 'list')
+			.map(antenna => antenna.userListId)
+			.filter(userListId => userListId != null))];
+
 		const fetchMemberships = async (): Promise<Set<MiUserList['id']>> => {
-			const userListIds = [...new Set(antennas
-				.filter(antenna => antenna.src === 'list')
-				.map(antenna => antenna.userListId)
-				.filter(userListId => userListId != null))];
 			if (userListIds.length === 0) return new Set();
 
 			const rows = await this.userListMembershipsRepository.find({

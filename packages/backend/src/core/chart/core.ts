@@ -371,8 +371,8 @@ export default abstract class Chart<T extends Schema> {
 	 * 現在(=今のHour or Day)のログをデータベースから探して、あればそれを返し、なければ作成して返します。
 	 */
 	@bindThis
-	private async claimCurrentLog(group: string | null, span: 'hour' | 'day'): Promise<RawRecord<T>> {
-		const [y, m, d, h] = Chart.getCurrentDate();
+	private async claimCurrentLog(group: string | null, span: 'hour' | 'day', now?: Date): Promise<RawRecord<T>> {
+		const [y, m, d, h] = now != null ? Chart.parseDate(now) : Chart.getCurrentDate();
 
 		const current = dateUTC(
 			span === 'hour' ? [y, m, d, h] :
@@ -476,6 +476,9 @@ export default abstract class Chart<T extends Schema> {
 		// (この処理が始まった後に追加された分は次回の書き込み対象になる)
 		const buffer = this.buffer;
 		this.buffer = [];
+
+		// 同時実行数の制限で待たされている間に時間の区切りをまたいでも、全グループを同じ期間に記録する
+		const now = new Date();
 
 		// TODO: 前の時間のログがbufferにあった場合のハンドリング
 		// 例えば、save が20分ごとに行われるとして、前回行われたのは 01:50 だったとする。
@@ -583,8 +586,8 @@ export default abstract class Chart<T extends Schema> {
 		// 一部のグループで失敗しても残りのグループの書き込みは続け、最後に最初のエラーを投げる。
 		const results = await Promise.allSettled(groups.map(group => saveSemaphore.run(async () => {
 			const [logHour, logDay] = await Promise.all([
-				this.claimCurrentLog(group, 'hour'),
-				this.claimCurrentLog(group, 'day'),
+				this.claimCurrentLog(group, 'hour', now),
+				this.claimCurrentLog(group, 'day', now),
 			]);
 			await update(logHour, logDay);
 		})));

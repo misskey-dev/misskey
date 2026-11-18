@@ -69,6 +69,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (note.replyId == null) return [];
 
+			// 負の offset は 0 として扱う
+			const offset = Math.max(ps.offset, 0);
+			const maxDepth = offset + ps.limit;
+
+			// これほど深い返信の連なりは存在しえないので、クエリのパラメーターとして安全に扱えない値なら空を返す
+			if (!Number.isSafeInteger(maxDepth)) return [];
+
 			// 返信元を1件ずつ問い合わせると往復が返信の深さだけ発生するため、再帰クエリで1回にまとめる
 			// たどる深さは offset + limit までに明示的に制限する
 			const ancestors: { id: MiNote['id'] }[] = await this.notesRepository.query(`
@@ -80,7 +87,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					WHERE "ancestor"."depth" < $2
 				)
 				SELECT "id" FROM "ancestor" WHERE "depth" > $3 ORDER BY "depth"
-			`, [note.replyId, ps.offset + ps.limit, ps.offset]);
+			`, [note.replyId, maxDepth, offset]);
 
 			if (ancestors.length === 0) return [];
 

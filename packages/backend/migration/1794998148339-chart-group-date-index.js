@@ -43,7 +43,9 @@ export class ChartGroupDateIndex1794998148339 {
 	async recreateUniqueIndex(queryRunner, indexName, tableName, columns) {
 		const columnList = columns.map(column => `"${column}"`).join(', ');
 
-		if (isConcurrentIndexMigrationEnabled) {
+		// CONCURRENTLY はトランザクション内では使えない。
+		// TypeORM の revert は migration ごとの transaction 設定を見ないため、down() がトランザクション内で呼ばれた場合は通常の方法で作り直す。
+		if (isConcurrentIndexMigrationEnabled && !queryRunner.isTransactionActive) {
 			// 途中で中断して再実行した場合に備え、既に目的の列順で有効な索引ができていれば作り直さない
 			const current = await queryRunner.query(`SELECT pg_index.indisvalid AS "isValid", pg_attribute.attname AS "leadingColumn" FROM pg_index INNER JOIN pg_class ON pg_index.indexrelid = pg_class.oid INNER JOIN pg_attribute ON pg_attribute.attrelid = pg_index.indrelid AND pg_attribute.attnum = pg_index.indkey[0] WHERE pg_class.relname = '${indexName}'`);
 			if (current.length > 0 && current[0].isValid === true && current[0].leadingColumn === columns[0]) return;
