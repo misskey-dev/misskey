@@ -120,10 +120,11 @@ class DeliverManager {
 				.distinct(true)
 				.where('following.followeeId = :followeeId', { followeeId: this.actor.id })
 				.andWhere('following.followerHost IS NOT NULL')
-				.getRawMany<{ inbox: string | null; isSharedInbox: boolean; }>();
+				// inbox を持たないフォロワーには配送できないので除外する
+				.andWhere('(following.followerSharedInbox IS NOT NULL OR following.followerInbox IS NOT NULL)')
+				.getRawMany<{ inbox: string; isSharedInbox: boolean; }>();
 
 			for (const { inbox, isSharedInbox } of followerInboxes) {
-				if (inbox === null) throw new Error('inbox is null');
 				inboxes.set(inbox, isSharedInbox);
 			}
 		}
