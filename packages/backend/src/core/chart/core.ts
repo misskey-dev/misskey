@@ -276,7 +276,9 @@ export default abstract class Chart<T extends Schema> {
 				...Chart.convertSchemaToColumnDefinitions(schema),
 			},
 			indices: [{
-				columns: grouped ? ['date', 'group'] : ['date'],
+				// グループ付きチャートは「あるグループの最新のログ」「あるグループの期間内のログ」を引くため、group を先頭にする。
+				// date を先頭にした索引は、下の uniques (一意制約) が作る索引で賄われる。
+				columns: grouped ? ['group', 'date'] : ['date'],
 				unique: true,
 			}],
 			uniques: [{
