@@ -5,8 +5,9 @@
 
 import { registerAsUiLib } from '@/aiscript/ui.js';
 import { errors, Interpreter, Parser, values } from '@syuilo/aiscript';
+import { Interpreter as LegacyInterpreter, Parser as LegacyParser } from '@syuilo/aiscript-0-19-0';
 import { describe, expect, test } from 'vitest';
-import { type Ref, ref } from 'vue';
+import { ref } from 'vue';
 import type {
 	AsUiButton,
 	AsUiButtons,
@@ -24,17 +25,18 @@ import type {
 type ExeResult = {
 	root: AsUiRoot;
 	get: (id: string) => AsUiComponent;
+	components: Map<string, AsUiComponent>;
 	outputs: values.Value[];
 }
 async function exe(script: string): Promise<ExeResult> {
 	const rootRef = ref<AsUiRoot>();
-	const componentRefs = ref<Ref<AsUiComponent>[]>([]);
+	const components = new Map<string, AsUiComponent>();
 	const outputs: values.Value[] = [];
 
 	const interpreter = new Interpreter(
-		registerAsUiLib(componentRefs.value, (root) => {
-			rootRef.value = root.value;
-		}),
+		registerAsUiLib((root) => {
+			rootRef.value = root;
+		}, components),
 		{
 			out: (value) => {
 				outputs.push(value);
@@ -48,21 +50,16 @@ async function exe(script: string): Promise<ExeResult> {
 	if (root === undefined) {
 		expect.unreachable('root must not be undefined');
 	}
-	const components = componentRefs.value.map(
-		(componentRef) => componentRef.value,
-	);
-	expect(root).toBe(components[0]);
+	expect(root).toBe(components.get('___root___'));
 	expect(root.type).toBe('root');
 	const get = (id: string) => {
-		const component = componentRefs.value.find(
-			(componentRef) => componentRef.value.id === id,
-		);
+		const component = components.get(id);
 		if (component === undefined) {
 			expect.unreachable(`component "${id}" is not defined`);
 		}
-		return component.value;
+		return component;
 	};
-	return { root, get, outputs };
+	return { root, get, components, outputs };
 }
 
 describe('AiScript UI API', () => {
@@ -138,11 +135,11 @@ describe('AiScript UI API', () => {
 				}, 'id2')
 				Ui:render([container])
 			`);
-			expect(root.children).toStrictEqual(['id2']);
+			expect(root.children).toStrictEqual([get('id2')]);
 			expect(get('id2')).toStrictEqual({
 				type: 'container',
 				id: 'id2',
-				children: ['id1'],
+				children: [get('id1')],
 				align: 'left',
 				bgColor: '#fff',
 				fgColor: '#000',
@@ -224,7 +221,7 @@ describe('AiScript UI API', () => {
 				}, 'id')
 				Ui:render([text])
 			`);
-			expect(root.children).toStrictEqual(['id']);
+			expect(root.children).toStrictEqual([get('id')]);
 			expect(get('id')).toStrictEqual({
 				type: 'text',
 				id: 'id',
@@ -273,7 +270,7 @@ describe('AiScript UI API', () => {
 				}, 'id')
 				Ui:render([mfm])
 			`);
-			expect(root.children).toStrictEqual(['id']);
+			expect(root.children).toStrictEqual([get('id')]);
 			const { onClickEv, ...mfm } = get('id') as AsUiMfm;
 			expect(mfm).toStrictEqual({
 				type: 'mfm',
@@ -325,7 +322,7 @@ describe('AiScript UI API', () => {
 				}, 'id')
 				Ui:render([text_input])
 			`);
-			expect(root.children).toStrictEqual(['id']);
+			expect(root.children).toStrictEqual([get('id')]);
 			const { onInput, ...textInput } = get('id') as AsUiTextInput;
 			expect(textInput).toStrictEqual({
 				type: 'textInput',
@@ -365,7 +362,7 @@ describe('AiScript UI API', () => {
 				}, 'id')
 				Ui:render([textarea])
 			`);
-			expect(root.children).toStrictEqual(['id']);
+			expect(root.children).toStrictEqual([get('id')]);
 			const { onInput, ...textarea } = get('id') as AsUiTextarea;
 			expect(textarea).toStrictEqual({
 				type: 'textarea',
@@ -405,7 +402,7 @@ describe('AiScript UI API', () => {
 				}, 'id')
 				Ui:render([number_input])
 			`);
-			expect(root.children).toStrictEqual(['id']);
+			expect(root.children).toStrictEqual([get('id')]);
 			const { onInput, ...numberInput } = get('id') as AsUiNumberInput;
 			expect(numberInput).toStrictEqual({
 				type: 'numberInput',
@@ -446,7 +443,7 @@ describe('AiScript UI API', () => {
 				}, 'id')
 				Ui:render([button])
 			`);
-			expect(root.children).toStrictEqual(['id']);
+			expect(root.children).toStrictEqual([get('id')]);
 			const { onClick, ...button } = get('id') as AsUiButton;
 			expect(button).toStrictEqual({
 				type: 'button',
@@ -485,7 +482,7 @@ describe('AiScript UI API', () => {
 				}, 'id')
 				Ui:render([buttons])
 			`);
-			expect(root.children).toStrictEqual(['id']);
+			expect(root.children).toStrictEqual([get('id')]);
 			expect(get('id')).toStrictEqual({
 				type: 'buttons',
 				id: 'id',
@@ -526,7 +523,7 @@ describe('AiScript UI API', () => {
 				}, 'id')
 				Ui:render([buttons])
 			`);
-			expect(root.children).toStrictEqual(['id']);
+			expect(root.children).toStrictEqual([get('id')]);
 			const { buttons, ...buttonsOptions } = get('id') as AsUiButtons;
 			expect(buttonsOptions).toStrictEqual({
 				type: 'buttons',
@@ -566,7 +563,7 @@ describe('AiScript UI API', () => {
 				}, 'id')
 				Ui:render([switch])
 			`);
-			expect(root.children).toStrictEqual(['id']);
+			expect(root.children).toStrictEqual([get('id')]);
 			const { onChange, ...switchOptions } = get('id') as AsUiSwitch;
 			expect(switchOptions).toStrictEqual({
 				type: 'switch',
@@ -610,7 +607,7 @@ describe('AiScript UI API', () => {
 				}, 'id')
 				Ui:render([select])
 			`);
-			expect(root.children).toStrictEqual(['id']);
+			expect(root.children).toStrictEqual([get('id')]);
 			const { onChange, ...select } = get('id') as AsUiSelect;
 			expect(select).toStrictEqual({
 				type: 'select',
@@ -678,7 +675,7 @@ describe('AiScript UI API', () => {
 				}, 'id')
 				Ui:render([folder])
 			`);
-			expect(root.children).toStrictEqual(['id']);
+			expect(root.children).toStrictEqual([get('id')]);
 			expect(get('id')).toStrictEqual({
 				type: 'folder',
 				id: 'id',
@@ -713,7 +710,7 @@ describe('AiScript UI API', () => {
 			expect(get('id2')).toStrictEqual({
 				type: 'folder',
 				id: 'id2',
-				children: ['id1'],
+				children: [get('id1')],
 				title: '',
 				opened: true,
 			});
@@ -736,7 +733,7 @@ describe('AiScript UI API', () => {
 				}, 'id')
 				Ui:render([post_form_button])
 			`);
-			expect(root.children).toStrictEqual(['id']);
+			expect(root.children).toStrictEqual([get('id')]);
 			expect(get('id')).toStrictEqual({
 				type: 'postFormButton',
 				id: 'id',
@@ -780,7 +777,7 @@ describe('AiScript UI API', () => {
 				}, 'id')
 				Ui:render([post_form])
 			`);
-			expect(root.children).toStrictEqual(['id']);
+			expect(root.children).toStrictEqual([get('id')]);
 			expect(get('id')).toStrictEqual({
 				type: 'postForm',
 				id: 'id',
@@ -820,6 +817,104 @@ describe('AiScript UI API', () => {
 					localOnly: undefined,
 				},
 			});
+		});
+	});
+
+	describe('retention', () => {
+		test.concurrent('component without id is not retained', async () => {
+			const { root, components } = await exe(`
+				Ui:render([Ui:C:text({ text: 'a' })])
+			`);
+			expect([...components.keys()]).toStrictEqual(['___root___']);
+			expect(root.children).toMatchObject([{ type: 'text', text: 'a' }]);
+		});
+
+		test.concurrent('component is retained once its id is read', async () => {
+			const { outputs } = await exe(`
+				let id = Ui:C:text({ text: 'a' }).id
+				<: Ui:get(id).id == id
+			`);
+			expect(outputs).toStrictEqual([values.TRUE]);
+		});
+
+		test.concurrent('component is retained once its props are enumerated', async () => {
+			const { components } = await exe(`
+				let text = Ui:C:text({ text: 'a' })
+				Obj:vals(text)
+			`);
+			expect(components.size).toBe(2);
+		});
+
+		test.concurrent('component is retained once its id is read (legacy interpreter)', async () => {
+			const components = new Map<string, AsUiComponent>();
+			const outputs: unknown[] = [];
+			const interpreter = new LegacyInterpreter(
+				registerAsUiLib(() => {}, components) as unknown as ConstructorParameters<typeof LegacyInterpreter>[0],
+				{
+					out: (value) => {
+						outputs.push(value);
+					},
+				},
+			);
+			await interpreter.exec(new LegacyParser().parse(`
+				let id = Ui:C:text({ text: 'a' }).id
+				<: Ui:get(id).id == id
+			`));
+			expect(outputs).toMatchObject([{ type: 'bool', value: true }]);
+		});
+	});
+
+	describe('same id', () => {
+		test.concurrent('later definition wins', async () => {
+			const { root, get } = await exe(`
+				let text1 = Ui:C:text({ text: 'a' }, 'id')
+				let text2 = Ui:C:text({ text: 'b' }, 'id')
+				Ui:render([text1, text2])
+			`);
+			expect(root.children).toStrictEqual([get('id'), get('id')]);
+			expect(get('id')).toMatchObject({ type: 'text', text: 'b' });
+		});
+
+		test.concurrent('old instance updates the same component', async () => {
+			const { get } = await exe(`
+				let text1 = Ui:C:text({ text: 'a' }, 'id')
+				Ui:C:text({ text: 'b' }, 'id')
+				text1.update({ text: 'c' })
+			`);
+			expect(get('id')).toMatchObject({ type: 'text', text: 'c' });
+		});
+
+		test.concurrent('type can be changed', async () => {
+			const { root, get } = await exe(`
+				let container = Ui:C:container({ padding: 1 }, 'id')
+				Ui:render([container])
+				Ui:C:text({ text: 'a' }, 'id')
+			`);
+			expect(root.children).toStrictEqual([get('id')]);
+			expect(get('id')).toStrictEqual({
+				type: 'text',
+				id: 'id',
+				text: 'a',
+				size: undefined,
+				bold: undefined,
+				color: undefined,
+				font: undefined,
+			});
+		});
+
+		test.concurrent('child referenced by id before creation', async () => {
+			const { root, get } = await exe(`
+				Ui:render([{ id: 'id' }])
+				Ui:C:text({ text: 'a' }, 'id')
+			`);
+			expect(root.children).toStrictEqual([get('id')]);
+			expect(get('id')).toMatchObject({ type: 'text', text: 'a' });
+		});
+
+		test.concurrent('root id is reserved', async () => {
+			await expect(() => exe(`
+				Ui:C:text({}, '___root___')
+			`)).rejects.toBeInstanceOf(errors.AiScriptRuntimeError);
 		});
 	});
 });
