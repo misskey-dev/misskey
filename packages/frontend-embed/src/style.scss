@@ -256,21 +256,6 @@ rt {
 	justify-content: center;
 }
 
-._borderButton {
-	@extend ._button;
-	display: block;
-	width: 100%;
-	padding: 10px;
-	box-sizing: border-box;
-	text-align: center;
-	border: solid 0.5px var(--MI_THEME-divider);
-	border-radius: var(--MI-radius);
-
-	&:active {
-		border-color: var(--MI_THEME-accent);
-	}
-}
-
 ._popup {
 	background: var(--MI_THEME-popup);
 	border-radius: var(--MI-radius);

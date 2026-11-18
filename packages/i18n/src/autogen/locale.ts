@@ -6286,6 +6286,14 @@ export interface Locale extends ILocale {
          * 環境によっては有効化できない場合があります。
          */
         "settingsPersistence_description2": string;
+        /**
+         * URLプレビューの埋め込みプレイヤーを自動再生
+         */
+        "autoplayEmbededPlayerOfUrlPreview": string;
+        /**
+         * URLプレビューを自動展開
+         */
+        "expandUrlPreviewAutomatically": string;
         "_chat": {
             /**
              * 送信者の名前を表示

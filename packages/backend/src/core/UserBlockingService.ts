@@ -133,7 +133,7 @@ export class UserBlockingService implements OnModuleInit {
 
 		// リモートにフォローリクエストをしていたらUndoFollow送信
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee, this.apRendererService.getLocalFollowRequestActivityId(request)), follower));
 			this.queueService.deliver(follower, content, followee.inbox, false);
 		}
 
