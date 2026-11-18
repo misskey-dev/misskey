@@ -484,12 +484,6 @@ rt {
 	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace !important;
 }
 
-._zoom {
-	transition-duration: 0.5s, 0.5s;
-	transition-property: opacity, transform;
-	transition-timing-function: cubic-bezier(0,.5,.5,1);
-}
-
 ._woodenFrame {
 	padding: 7px;
 	background: #8C4F26;
@@ -567,33 +561,12 @@ html[data-color-scheme=dark] ._woodenFrame {
 	}
 }
 
-._anime_bounce {
-	will-change: transform;
-  animation: global-bounce ease 0.7s;
-  animation-iteration-count: 1;
-  transform-origin: 50% 50%;
-}
 ._anime_bounce_ready {
 	will-change: transform;
 	transform:  scaleX(0.90) scaleY(0.90) ;
 }
 ._anime_bounce_standBy {
 	transition: transform 0.1s ease;
-}
-
-@keyframes global-bounce {
-  0% {
-    transform:  scaleX(0.90) scaleY(0.90) ;
-  }
-  19% {
-    transform:  scaleX(1.10) scaleY(1.10) ;
-  }
-  48% {
-    transform:  scaleX(0.95) scaleY(0.95) ;
-  }
-  100% {
-    transform:  scaleX(1.00) scaleY(1.00) ;
-  }
 }
 
 // MFM -----------------------------

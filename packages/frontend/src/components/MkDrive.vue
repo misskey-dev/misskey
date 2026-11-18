@@ -475,10 +475,21 @@ async function renameFolder(folderToRename: Misskey.entities.DriveFolder) {
 	globalEvents.emit('driveFoldersUpdated', [updatedFolder]);
 }
 
-function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
+async function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
+	if (prefer.s.uploadFolder === folderToDelete.id) {
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.ts.uploadFolderDeletionConfirm,
+		});
+		if (canceled) return;
+	}
+
 	misskeyApi('drive/folders/delete', {
 		folderId: folderToDelete.id,
 	}).then(() => {
+		if (prefer.s.uploadFolder === folderToDelete.id) {
+			prefer.commit('uploadFolder', null);
+		}
 		// 削除時に親フォルダに移動
 		cd(folderToDelete.parentId);
 		globalEvents.emit('driveFoldersDeleted', [folderToDelete]);

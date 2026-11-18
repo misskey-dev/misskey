@@ -102,6 +102,12 @@ export function uploadFile(file: File | Blob, options: {
 							title: i18n.ts.failedToUpload,
 							text: i18n.ts.cannotUploadBecauseUnallowedFileType,
 						});
+					} else if (res.error?.id === 'b9adda75-abe9-4c6d-bf12-b5575833960d') {
+						os.alert({
+							type: 'error',
+							title: i18n.ts.failedToUpload,
+							text: i18n.ts.cannotUploadBecauseNoSuchFolder,
+						});
 					} else {
 						os.alert({
 							type: 'error',

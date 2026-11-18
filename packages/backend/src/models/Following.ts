@@ -58,6 +58,14 @@ export class MiFollowing {
 	})
 	public notify: 'normal' | null;
 
+	// フォロー関係の元になった Follow アクティビティの ID
+	// この列の追加前に作られたフォロー関係では null
+	@Column('varchar', {
+		length: 512, nullable: true,
+		comment: 'id of Follow Activity.',
+	})
+	public requestId: string | null;
+
 	//#region Denormalized fields
 	@Index()
 	@Column('varchar', {
