@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository } from '@/models/_.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
@@ -113,23 +112,19 @@ class DeliverManager {
 		// Process follower recipes first to avoid duplication when processing direct recipes later.
 		if (this.recipes.some(r => isFollowers(r))) {
 			// followers deliver
-			// TODO: SELECT DISTINCT ON ("followerSharedInbox") "followerSharedInbox" みたいな問い合わせにすればよりパフォーマンス向上できそう
-			// ただ、sharedInboxがnullなリモートユーザーも稀におり、その対応ができなさそう？
-			const followers = await this.followingsRepository.find({
-				where: {
-					followeeId: this.actor.id,
-					followerHost: Not(IsNull()),
-				},
-				select: {
-					followerSharedInbox: true,
-					followerInbox: true,
-				},
-			});
+			// リモートフォロワーの数に比べて配送先 inbox の数はずっと少ないため、重複除去は DB 側で行う。
+			// sharedInbox を持たないリモートユーザーは個別の inbox に配送する。
+			const followerInboxes = await this.followingsRepository.createQueryBuilder('following')
+				.select('COALESCE(following.followerSharedInbox, following.followerInbox)', 'inbox')
+				.addSelect('following.followerSharedInbox IS NOT NULL', 'isSharedInbox')
+				.distinct(true)
+				.where('following.followeeId = :followeeId', { followeeId: this.actor.id })
+				.andWhere('following.followerHost IS NOT NULL')
+				.getRawMany<{ inbox: string | null; isSharedInbox: boolean; }>();
 
-			for (const following of followers) {
-				const inbox = following.followerSharedInbox ?? following.followerInbox;
+			for (const { inbox, isSharedInbox } of followerInboxes) {
 				if (inbox === null) throw new Error('inbox is null');
-				inboxes.set(inbox, following.followerSharedInbox != null);
+				inboxes.set(inbox, isSharedInbox);
 			}
 		}
 
