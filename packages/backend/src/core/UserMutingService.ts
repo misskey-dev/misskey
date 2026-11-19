@@ -25,9 +25,16 @@ export class UserMutingService {
 
 	@bindThis
 	public async mute(user: MiUser, target: MiUser, expiresAt: Date | null = null): Promise<void> {
+		// 過去の日時が指定された場合は即期限切れになるため、無期限として扱う
+		const normalizedExpiresAt = (expiresAt != null && expiresAt.getTime() > Date.now()) ? expiresAt : null;
+
+		// 二重ミュートでユニーク制約違反の生エラーが露出しないよう冪等化する
+		const exist = await this.mutingsRepository.existsBy({ muterId: user.id, muteeId: target.id });
+		if (exist) return;
+
 		await this.mutingsRepository.insert({
 			id: this.idService.gen(),
-			expiresAt: expiresAt ?? null,
+			expiresAt: normalizedExpiresAt,
 			muterId: user.id,
 			muteeId: target.id,
 		});
