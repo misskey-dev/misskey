@@ -9,6 +9,7 @@ import type { MutingsRepository, MiMuting } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 
@@ -32,12 +33,18 @@ export class UserMutingService {
 		const exist = await this.mutingsRepository.existsBy({ muterId: user.id, muteeId: target.id });
 		if (exist) return;
 
-		await this.mutingsRepository.insert({
-			id: this.idService.gen(),
-			expiresAt: normalizedExpiresAt,
-			muterId: user.id,
-			muteeId: target.id,
-		});
+		try {
+			await this.mutingsRepository.insert({
+				id: this.idService.gen(),
+				expiresAt: normalizedExpiresAt,
+				muterId: user.id,
+				muteeId: target.id,
+			});
+		} catch (err) {
+			// 並行リクエストで先行挿入が確定した場合
+			if (isDuplicateKeyValueError(err)) return;
+			throw err;
+		}
 
 		this.cacheService.userMutingsCache.refresh(user.id);
 	}
