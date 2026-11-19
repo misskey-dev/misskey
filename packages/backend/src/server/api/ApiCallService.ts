@@ -342,7 +342,9 @@ export class ApiCallService implements OnApplicationShutdown {
 					userId: user.id,
 					ip: ip,
 				}).orIgnore(true).execute();
-			} catch {
+			} catch (err) {
+				// IP ログ欠損が無検知で進行すると監査要件を満たせなくなるため、失敗を可視化する
+				this.logger.warn(`failed to record user IP: ${err instanceof Error ? err.message : err}`);
 			}
 		}
 	}
