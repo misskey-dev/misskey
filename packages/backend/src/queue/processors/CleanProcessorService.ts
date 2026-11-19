@@ -43,13 +43,13 @@ export class CleanProcessorService {
 	public async process(): Promise<void> {
 		this.logger.info('Cleaning...');
 
-		this.userIpsRepository.delete({
+		await this.userIpsRepository.delete({
 			createdAt: LessThan(new Date(Date.now() - (1000 * 60 * 60 * 24 * 90))),
 		});
 
 		// 使われてないアンテナを停止
 		if (this.config.deactivateAntennaThreshold > 0) {
-			this.antennasRepository.update({
+			await this.antennasRepository.update({
 				lastUsedAt: LessThan(new Date(Date.now() - this.config.deactivateAntennaThreshold)),
 			}, {
 				isActive: false,
@@ -67,7 +67,7 @@ export class CleanProcessorService {
 			});
 		}
 
-		this.reversiService.cleanOutdatedGames();
+		await this.reversiService.cleanOutdatedGames();
 
 		this.logger.succ('Cleaned.');
 	}
