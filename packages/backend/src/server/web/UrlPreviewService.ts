@@ -102,16 +102,18 @@ export class UrlPreviewService implements OnApplicationShutdown {
 		}
 
 		// レートリミット (IPあたり)
-		const rateLimit = await this.rateLimiterService.limit({ key: 'url-preview', duration: 60 * 1000, max: 100 }, getIpHash(request.ip));
-		if (rateLimit != null) {
-			reply.code(429);
-			return {
-				error: new ApiError({
-					message: 'Too many requests',
-					code: 'TOO_MANY_REQUESTS',
-					id: 'fd49d0ec-6d1c-4c9d-9e0b-0b8b3a3f4c5d',
-				}),
-			};
+		if (this.config.enableIpRateLimit) {
+			const rateLimit = await this.rateLimiterService.limit({ key: 'url-preview', duration: 60 * 1000, max: 100 }, getIpHash(request.ip));
+			if (rateLimit != null) {
+				reply.code(429);
+				return {
+					error: new ApiError({
+						message: 'Too many requests',
+						code: 'TOO_MANY_REQUESTS',
+						id: 'fd49d0ec-6d1c-4c9d-9e0b-0b8b3a3f4c5d',
+					}),
+				};
+			}
 		}
 
 		this.logger.info(this.meta.urlPreviewSummaryProxyUrl
