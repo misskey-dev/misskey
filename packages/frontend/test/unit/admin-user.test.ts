@@ -9,11 +9,16 @@ import { Suspense, defineComponent, h } from 'vue';
 import { provideMetadataReceiver } from '@/page.js';
 import AdminUser from '@/pages/admin-user.vue';
 
-const { saveNote, getUserInfo } = vi.hoisted(() => ({ saveNote: vi.fn(), getUserInfo: vi.fn() }));
+const { saveNote, getUserInfo, showAlert } = vi.hoisted(() => ({
+	saveNote: vi.fn(),
+	getUserInfo: vi.fn(),
+	showAlert: vi.fn(),
+}));
 
 vi.mock('@/os.js', async importOriginal => ({
 	...await importOriginal<typeof import('@/os.js')>(),
 	apiWithDialog: saveNote,
+	alert: showAlert,
 }));
 
 vi.mock('@/i.js', async importOriginal => ({
@@ -51,6 +56,7 @@ afterEach(() => {
 	cleanup();
 	saveNote.mockReset();
 	getUserInfo.mockReset();
+	showAlert.mockReset();
 });
 
 function renderAdminUser() {
@@ -68,6 +74,30 @@ function renderAdminUser() {
 		},
 	});
 }
+
+test('saves a moderation note with 8192 characters including an emoji', async () => {
+	const page = renderAdminUser();
+	const text = 'a'.repeat(8191) + '😀';
+
+	await fireEvent.update(await page.findByRole('textbox'), text);
+	await fireEvent.click(page.getByRole('button', { name: 'Save' }));
+
+	expect(saveNote).toHaveBeenCalledExactlyOnceWith('admin/update-user-note', { userId: 'user123', text });
+	expect(showAlert).not.toHaveBeenCalled();
+});
+
+test('keeps an overlong moderation note in the editor without saving', async () => {
+	const page = renderAdminUser();
+	const note = await page.findByRole('textbox');
+	const text = 'a'.repeat(8192) + '😀';
+
+	await fireEvent.update(note, text);
+	await fireEvent.click(page.getByRole('button', { name: 'Save' }));
+
+	expect(showAlert).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ type: 'error' }));
+	expect(saveNote).not.toHaveBeenCalled();
+	expect(note).toHaveProperty('value', text);
+});
 
 test('retries a failed moderation note save after switching admin tabs', async () => {
 	saveNote.mockRejectedValueOnce(new Error('Save failed'));
