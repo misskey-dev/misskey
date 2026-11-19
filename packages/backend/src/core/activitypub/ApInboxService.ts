@@ -103,7 +103,15 @@ export class ApInboxService {
 			}
 
 			for (const item of items) {
-				const act = await resolver.resolve(item);
+				// 悪意ある・壊れたコレクションに1つでも問題のあるアイテムが含まれていても、
+				// 処理全体が中断されないよう、アイテムごとの失敗は続行する
+				let act: IObject | null;
+				try {
+					act = await resolver.resolve(item);
+				} catch (err) {
+					this.logger.warn(`failed to resolve collection item: ${err instanceof Error ? err.message : err}`);
+					continue;
+				}
 				if (act.id == null || this.utilityService.extractDbHost(act.id) !== this.utilityService.extractDbHost(actor.uri)) {
 					this.logger.debug('skipping activity: activity id is null or mismatching');
 					continue;
