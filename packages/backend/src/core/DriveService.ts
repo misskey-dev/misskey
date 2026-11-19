@@ -598,12 +598,12 @@ export class DriveService {
 		file.maybeSensitive = info.sensitive;
 		file.maybePorn = info.porn;
 		file.isSensitive = user
-			? this.userEntityService.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
+			? this.userEntityService.isLocalUser(user) && profile?.alwaysMarkNsfw ? true :
 			sensitive ?? false
 			: false;
 
 		if (user && this.utilityService.isMediaSilencedHost(this.meta.mediaSilencedHosts, user.host)) file.isSensitive = true;
-		if (info.sensitive && profile!.autoSensitive) file.isSensitive = true;
+		if (info.sensitive && profile?.autoSensitive) file.isSensitive = true;
 		if (info.sensitive && this.meta.setSensitiveFlagAutomatically) file.isSensitive = true;
 		if (userRoleNSFW) file.isSensitive = true;
 
