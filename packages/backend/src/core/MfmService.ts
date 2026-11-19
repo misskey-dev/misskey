@@ -125,7 +125,7 @@ export class MfmService {
 								return txt;
 							}
 							// http(s)以外のスキームを持つURLはMFMのリンクとして扱えないため、テキストのみを出力する
-							if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(href) && !/^https?:\/\//.test(href)) {
+							if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(href) && !/^https?:\/\//i.test(href)) {
 								return txt;
 							}
 							if (!txt || txt === href) {	// #6383: Missing text node
