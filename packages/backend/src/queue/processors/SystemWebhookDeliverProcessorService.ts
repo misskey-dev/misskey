@@ -56,7 +56,7 @@ export class SystemWebhookDeliverProcessorService {
 				}),
 			});
 
-			this.systemWebhooksRepository.update({ id: job.data.webhookId }, {
+			await this.systemWebhooksRepository.update({ id: job.data.webhookId }, {
 				latestSentAt: new Date(),
 				latestStatus: res.status,
 			});
@@ -65,7 +65,7 @@ export class SystemWebhookDeliverProcessorService {
 		} catch (res) {
 			this.logger.error(res as Error);
 
-			this.systemWebhooksRepository.update({ id: job.data.webhookId }, {
+			await this.systemWebhooksRepository.update({ id: job.data.webhookId }, {
 				latestSentAt: new Date(),
 				latestStatus: res instanceof StatusError ? res.statusCode : 1,
 			});
