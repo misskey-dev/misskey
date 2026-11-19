@@ -393,20 +393,19 @@ export class DriveService {
 		);
 		if (this.meta.objectStorageSetPublicRead) params.ACL = 'public-read';
 
-		await this.s3Service.upload(this.meta, params)
-			.then(
-				result => {
-					if ('Bucket' in result) { // CompleteMultipartUploadCommandOutput
-						this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
-					} else { // AbortMultipartUploadCommandOutput
-						this.registerLogger.error(`Upload Result Aborted: key = ${key}, filename = ${filename}`);
-					}
-				})
+		const result = await this.s3Service.upload(this.meta, params)
 			.catch(
 				err => {
 					this.registerLogger.error(`Upload Failed: key = ${key}, filename = ${filename}`, err);
+					throw err;
 				},
 			);
+
+		if ('Bucket' in result) { // CompleteMultipartUploadCommandOutput
+			this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
+		} else { // AbortMultipartUploadCommandOutput
+			this.registerLogger.error(`Upload Result Aborted: key = ${key}, filename = ${filename}`);
+		}
 	}
 
 	// Expire oldest file (without avatar or banner) of remote user
@@ -434,7 +433,7 @@ export class DriveService {
 		for (const fileId of exceedFileIds) {
 			const file = await this.driveFilesRepository.findOneBy({ id: fileId });
 			if (file == null) continue;
-			this.deleteFile(file, true);
+			await this.deleteFile(file, true);
 		}
 	}
 
