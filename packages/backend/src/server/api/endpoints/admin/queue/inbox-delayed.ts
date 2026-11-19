@@ -50,12 +50,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const jobs = await this.inboxQueue.getJobs(['delayed']);
+			// 遅延ジョブが大量蓄積している場合のメモリ消費を抑えるため、取得件数を制限する
+			const jobs = await this.inboxQueue.getJobs(['delayed'], 0, 1000);
 
 			const counts = new Map<string, number>();
 
 			for (const job of jobs) {
-				const host = new URL(job.data.signature.keyId).host;
+				// ジョブデータのURLが不正な形式の場合に集計全体が失敗しないようガードする
+				let host: string | null = null;
+				try {
+					host = new URL(job.data.signature.keyId).host;
+				} catch {
+					continue;
+				}
 				counts.set(host, (counts.get(host) ?? 0) + 1);
 			}
 
