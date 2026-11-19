@@ -16,10 +16,10 @@ import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { NoteDeleteService } from '@/core/NoteDeleteService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { acquireApObjectLock } from '@/misc/distributed-lock.js';
+import { StatusError } from '@/misc/status-error.js';
 import { concat, toArray, toSingle, unique } from '@/misc/prelude/array.js';
 import type Logger from '@/logger.js';
 import { IdService } from '@/core/IdService.js';
-import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -109,6 +109,8 @@ export class ApInboxService {
 				try {
 					act = await resolver.resolve(item);
 				} catch (err) {
+					// 一時的な失敗（リモートの5xxなど）の可能性があるものは、ジョブのリトライに任せる
+					if (err instanceof StatusError && err.statusCode >= 500) throw err;
 					this.logger.warn(`failed to resolve collection item: ${err instanceof Error ? err.message : err}`);
 					continue;
 				}
