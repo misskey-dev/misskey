@@ -678,6 +678,17 @@ watch(() => fileUser.value?.avatarUrl, (avatarUrl) => {
 		avatarImage.value = img;
 		redrawIfStopped();
 	}, { once: true });
+	// ロード失敗時はフォールバック画像を試す
+	img.addEventListener('error', () => {
+		if (avatarImage.value !== img && !img.src.endsWith('/static-assets/avatar.png')) {
+			const fallback = new Image();
+			fallback.addEventListener('load', () => {
+				avatarImage.value = fallback;
+				redrawIfStopped();
+			}, { once: true });
+			fallback.src = '/static-assets/avatar.png';
+		}
+	}, { once: true });
 	img.src = avatarUrl ?? '/static-assets/avatar.png';
 }, { immediate: true });
 
