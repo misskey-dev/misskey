@@ -126,9 +126,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					detected_source_language: string;
 					text: string;
 				}[];
-			};
+			} | null;
 
-			const translation = json.translations?.[0];
+			const translation = json?.translations?.[0];
 			if (translation == null) {
 				throw new ApiError(meta.errors.unavailable);
 			}
