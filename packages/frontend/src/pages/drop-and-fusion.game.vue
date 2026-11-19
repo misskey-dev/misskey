@@ -550,6 +550,7 @@ function getMonoRenderOptions(mono: Mono) {
 	};
 }
 
+let readyGoTimerIds: number[] = [];
 let viewScale = 1;
 let seed: string = Date.now().toString();
 let containerElRect: DOMRect | null = null;
@@ -721,12 +722,14 @@ async function start() {
 
 	gameLoaded.value = true;
 
-	window.setTimeout(() => {
-		readyGo.value = 'go';
+	readyGoTimerIds = [
 		window.setTimeout(() => {
-			readyGo.value = null;
-		}, 1000);
-	}, 1500);
+			readyGo.value = 'go';
+			readyGoTimerIds.push(window.setTimeout(() => {
+				readyGo.value = null;
+			}, 1000));
+		}, 1500),
+	];
 }
 
 function onClick(ev: PointerEvent) {
@@ -802,6 +805,11 @@ function reset() {
 }
 
 function dispose() {
+	for (const timerId of readyGoTimerIds) {
+		window.clearTimeout(timerId);
+	}
+	readyGoTimerIds = [];
+
 	game.dispose();
 	if (renderer) Matter.Render.stop(renderer);
 	if (tickRaf) {
@@ -994,11 +1002,11 @@ function attachGameEvents() {
 		if (replaying.value) return;
 
 		dropReady.value = false;
-		window.setTimeout(() => {
+		readyGoTimerIds.push(window.setTimeout(() => {
 			if (!isGameOver.value) {
 				dropReady.value = true;
 			}
-		}, game.frameToMs(game.DROP_COOLTIME));
+		}, game.frameToMs(game.DROP_COOLTIME)));
 	});
 
 	game.addListener('fusioned', (x, y, nextMono, scoreDelta) => {
