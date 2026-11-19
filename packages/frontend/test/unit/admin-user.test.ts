@@ -4,12 +4,12 @@
  */
 
 import { afterEach, expect, test, vi } from 'vitest';
-import { cleanup, fireEvent, render } from '@testing-library/vue';
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/vue';
 import { Suspense, defineComponent, h } from 'vue';
 import { provideMetadataReceiver } from '@/page.js';
 import AdminUser from '@/pages/admin-user.vue';
 
-const { saveNote } = vi.hoisted(() => ({ saveNote: vi.fn() }));
+const { saveNote, getUserInfo } = vi.hoisted(() => ({ saveNote: vi.fn(), getUserInfo: vi.fn() }));
 
 vi.mock('@/os.js', async importOriginal => ({
 	...await importOriginal<typeof import('@/os.js')>(),
@@ -30,7 +30,7 @@ vi.mock('@/utility/misskey-api.js', async importOriginal => ({
 			return { id: 'user123', username: 'testuser', host: null };
 		}
 		if (endpoint === 'admin/show-user') {
-			return { moderationNote: 'Saved note', policies: {}, roles: [] };
+			return getUserInfo();
 		}
 		return null;
 	},
@@ -50,11 +50,12 @@ const PageWithHeader = defineComponent({
 afterEach(() => {
 	cleanup();
 	saveNote.mockReset();
+	getUserInfo.mockReset();
 });
 
-test('retries a failed moderation note save after switching admin tabs', async () => {
-	saveNote.mockRejectedValueOnce(new Error('Save failed'));
-	const page = render(defineComponent({
+function renderAdminUser() {
+	getUserInfo.mockReturnValue({ moderationNote: 'Saved note', policies: {}, roles: [] });
+	return render(defineComponent({
 		setup() {
 			provideMetadataReceiver(() => {});
 			return () => h('div', [h(Suspense, () => h(AdminUser, { userId: 'user123' }))]);
@@ -66,6 +67,11 @@ test('retries a failed moderation note save after switching admin tabs', async (
 			stubs: ['MkAvatar', 'MkUserName', 'MkTime', 'FormSection', 'MkKeyValue'],
 		},
 	});
+}
+
+test('retries a failed moderation note save after switching admin tabs', async () => {
+	saveNote.mockRejectedValueOnce(new Error('Save failed'));
+	const page = renderAdminUser();
 
 	await fireEvent.update(await page.findByRole('textbox'), 'Unsaved note');
 	await fireEvent.click(page.getByRole('button', { name: 'Save' }));
@@ -92,4 +98,28 @@ test('retries a failed moderation note save after switching admin tabs', async (
 
 	rejectRetry(new Error('Retry failed'));
 	await page.findByRole('button', { name: 'Save' });
+});
+
+test('keeps the latest moderation note when an earlier refresh finishes last', async () => {
+	const page = renderAdminUser();
+	const note = await page.findByRole('textbox');
+
+	let finishEarlierRefresh!: () => void;
+	getUserInfo.mockImplementationOnce(() => new Promise(resolve => {
+		finishEarlierRefresh = () => resolve({ moderationNote: 'Earlier note', isModerator: true, policies: {}, roles: [] });
+	}));
+
+	await fireEvent.update(note, 'Earlier note');
+	await fireEvent.click(page.getByRole('button', { name: 'Save' }));
+	await waitFor(() => expect(getUserInfo).toHaveBeenCalledTimes(2));
+
+	getUserInfo.mockResolvedValueOnce({ moderationNote: 'Latest server note', policies: {}, roles: [] });
+	await fireEvent.update(note, 'Latest note');
+	await fireEvent.click(page.getByRole('button', { name: 'Save' }));
+	await waitFor(() => expect(note).toHaveProperty('value', 'Latest server note'));
+
+	finishEarlierRefresh();
+	// The earlier response still updates profile details but must keep the saved note.
+	await page.findByText('Moderator');
+	expect(note).toHaveProperty('value', 'Latest server note');
 });

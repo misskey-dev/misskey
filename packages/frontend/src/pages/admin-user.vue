@@ -266,6 +266,7 @@ const suspended = ref(info.value.isSuspended);
 const isSystem = ref(user.value.host == null && user.value.username.includes('.'));
 const moderationNote = ref(info.value.moderationNote);
 const moderationNoteSaveState = ref<'saved' | 'saving' | 'unsaved'>('saved');
+let moderationNoteSaveVersion = 0;
 const moderationNoteTextarea = useTemplateRef<{ markChanged: () => void }>('moderationNoteTextarea');
 const filesPaginator = markRaw(new Paginator('admin/drive/files', {
 	limit: 10,
@@ -333,11 +334,13 @@ async function saveModerationNote(text: string) {
 		keepUnsavedModerationNote();
 		return;
 	}
+	moderationNoteSaveVersion += 1;
 	moderationNoteSaveState.value = 'saved';
 	await refreshUser();
 }
 
 async function refreshUser() {
+	const noteSaveVersion = moderationNoteSaveVersion;
 	const result = await _fetch_();
 	user.value = result.user;
 	info.value = result.info;
@@ -347,7 +350,8 @@ async function refreshUser() {
 	suspended.value = info.value.isSuspended;
 	isSystem.value = user.value.host == null && user.value.username.includes('.');
 	// 上限超過や保存失敗の入力は、凍結などの再取得で消さない。
-	if (moderationNoteSaveState.value === 'saved') {
+	// 保存前に始まった再取得で、保存済みのノートを戻さない。
+	if (moderationNoteSaveState.value === 'saved' && noteSaveVersion === moderationNoteSaveVersion) {
 		moderationNote.value = info.value.moderationNote;
 	}
 }
