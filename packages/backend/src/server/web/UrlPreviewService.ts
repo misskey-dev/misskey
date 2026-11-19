@@ -16,8 +16,12 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { ApiError } from '@/server/api/error.js';
+import { RateLimiterService } from '@/server/api/RateLimiterService.js';
+import { getIpHash } from '@/misc/get-ip-hash.js';
 import { MiMeta } from '@/models/Meta.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
+
+const MAX_URL_LENGTH = 8192;
 
 @Injectable()
 export class UrlPreviewService implements OnApplicationShutdown {
@@ -34,6 +38,7 @@ export class UrlPreviewService implements OnApplicationShutdown {
 
 		private httpRequestService: HttpRequestService,
 		private utilityService: UtilityService,
+		private rateLimiterService: RateLimiterService,
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('url-preview');
@@ -75,6 +80,36 @@ export class UrlPreviewService implements OnApplicationShutdown {
 					message: 'URL preview is disabled',
 					code: 'URL_PREVIEW_DISABLED',
 					id: '58b36e13-d2f5-0323-b0c6-76aa9dabefb8',
+				}),
+			};
+		}
+
+		// URLの検証 (スキーム・長さ)
+		if (url.length > MAX_URL_LENGTH) {
+			reply.code(400);
+			return;
+		}
+		let parsedUrl: URL;
+		try {
+			parsedUrl = new URL(url);
+		} catch {
+			reply.code(400);
+			return;
+		}
+		if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+			reply.code(400);
+			return;
+		}
+
+		// レートリミット (IPあたり)
+		const rateLimit = await this.rateLimiterService.limit({ key: 'url-preview', duration: 60 * 1000, max: 100 }, getIpHash(request.ip));
+		if (rateLimit != null) {
+			reply.code(429);
+			return {
+				error: new ApiError({
+					message: 'Too many requests',
+					code: 'TOO_MANY_REQUESTS',
+					id: 'fd49d0ec-6d1c-4c9d-9e0b-0b8b3a3f4c5d',
 				}),
 			};
 		}
