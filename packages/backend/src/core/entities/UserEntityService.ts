@@ -527,8 +527,13 @@ export class UserEntityService implements OnModuleInit {
 			...(isDetailed ? {
 				url: profile!.url,
 				uri: user.uri,
-				// resolvePerson はリモートへのネットワークfetchを伴うため、packのホットパスではDBキャッシュのみを参照する
-				movedTo: user.movedToUri ? this.apPersonService.fetchPerson(user.movedToUri).then(user => user?.id ?? null).catch(() => null) : null,
+				// resolvePerson はリモートへのネットワークfetchを伴うため、packのホットパスではDBキャッシュのみを参照する。
+				// 未登録の場合はレスポンスをブロックしないよう非同期で解決し、次回以降のpackで参照できるようにする
+				movedTo: user.movedToUri ? this.apPersonService.fetchPerson(user.movedToUri).then(fetched => {
+					if (fetched != null) return fetched.id;
+					this.apPersonService.resolvePerson(user.movedToUri!).catch(() => {});
+					return null;
+				}).catch(() => null) : null,
 				alsoKnownAs: user.alsoKnownAs ?
 					Promise.all(toArray(user.alsoKnownAs).map(uri => this.apPersonService.fetchPerson(uri).then(user => user?.id).catch(() => null)))
 				.then(xs => xs.length === 0 ? null : xs.filter(x => x != null))
