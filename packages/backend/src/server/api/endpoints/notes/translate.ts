@@ -122,15 +122,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			const json = (await res.json()) as {
-				translations: {
+				translations?: {
 					detected_source_language: string;
 					text: string;
 				}[];
 			};
 
+			const translation = json.translations?.[0];
+			if (translation == null) {
+				throw new ApiError(meta.errors.unavailable);
+			}
+
 			return {
-				sourceLang: json.translations[0].detected_source_language,
-				text: json.translations[0].text,
+				sourceLang: translation.detected_source_language,
+				text: translation.text,
 			};
 		});
 	}
