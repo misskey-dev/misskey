@@ -228,6 +228,7 @@ async function run() {
 		THIS_ID: values.STR(flash.value.id),
 		THIS_URL: values.STR(`${url}/play/${flash.value.id}`),
 	}, {
+		abortOnError: true,
 		in: aiScriptReadline,
 		out: () => {
 			// nop

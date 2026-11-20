@@ -79,6 +79,7 @@ async function run() {
 			root.value = _root;
 		}),
 	}, {
+		abortOnError: true,
 		in: aiScriptReadline,
 		out: (value) => {
 			// nop

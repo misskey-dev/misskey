@@ -87,6 +87,7 @@ const run = async () => {
 		storageKey: 'widget',
 		token: $i?.token,
 	}), {
+		abortOnError: true,
 		in: aiScriptReadline,
 		out: (value) => {
 			pushLog('print', value.type === 'str' ? value.value : utils.valToString(value));
