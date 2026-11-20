@@ -15,6 +15,10 @@ export default defineConfig((args) => {
 	// 通常のビルド時にexternalとするモジュール
 	const externalModules: ExternalOption = [
 		/^slacc-.*/,
+		// CJSのreflect-metadataをバンドルすると、ESMの@nestjs/commonが行う`import 'reflect-metadata'`の評価が
+		// デコレーター適用より後ろへずれ、`Reflect.getOwnMetadata is not a function`で落ちる経路がある（cli.jsなど）
+		// externalにしてNode本来のESM評価順で読み込ませる
+		'reflect-metadata',
 		'class-transformer',
 		'class-validator',
 		/^@sentry\/.*/,
