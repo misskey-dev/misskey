@@ -615,8 +615,8 @@ importers:
         specifier: 1.1.2
         version: 1.1.2
       web-push:
-        specifier: 3.6.7
-        version: 3.6.7(supports-color@10.2.2)
+        specifier: 4.0.0
+        version: 4.0.0(supports-color@10.2.2)
       ws:
         specifier: 8.23.0
         version: 8.23.0(bufferutil@4.2.0)(utf-8-validate@6.0.6)
@@ -742,8 +742,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@26.6.6)(@vitest/browser-playwright@5.1.0)(@vitest/coverage-v8@5.1.0)(@vitest/ui@5.1.0)(happy-dom@21.0.4(bufferutil@4.2.0)(utf-8-validate@6.0.6))(msw@3.0.5(@types/node@26.6.6)(@typescript/typescript6@6.0.2)(supports-color@10.2.2)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(sass-embedded@1.108.2)(sass@1.108.2)(tsx@4.23.15)))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(sass-embedded@1.108.2)(sass@1.108.2)(tsx@4.23.15))
       vitest-mock-extended:
-        specifier: 5.1.1
-        version: 5.1.1(@typescript/typescript6@6.0.2)(msw@3.0.5(@types/node@26.6.6)(@typescript/typescript6@6.0.2)(supports-color@10.2.2)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(sass-embedded@1.108.2)(sass@1.108.2)(tsx@4.23.15)))(vitest@5.1.0)
+        specifier: 6.0.1
+        version: 6.0.1(@typescript/typescript6@6.0.2)(msw@3.0.5(@types/node@26.6.6)(@typescript/typescript6@6.0.2)(supports-color@10.2.2)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(sass-embedded@1.108.2)(sass@1.108.2)(tsx@4.23.15)))(vitest@5.1.0)
     optionalDependencies:
       bufferutil:
         specifier: 4.2.0
@@ -825,7 +825,7 @@ importers:
         version: 6.0.11(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(sass-embedded@1.108.2)(sass@1.108.2)(tsx@4.23.15))(vue@3.5.45(typescript@6.0.3))
       aiscript-vscode:
         specifier: github:aiscript-dev/aiscript-vscode#v0.1.16
-        version: git+https://github.com/aiscript-dev/aiscript-vscode.git#1dc7f60cda78d030dadfc518a33c472202b2ef67
+        version: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67
       analytics:
         specifier: 0.8.19
         version: 0.8.19(@types/dlv@1.1.5)
@@ -1129,7 +1129,7 @@ importers:
         version: 10.6.7(@types/react@19.3.0)(bufferutil@4.2.0)(prettier@3.10.1)(react@19.3.1)(utf-8-validate@6.0.6)
       storybook-addon-misskey-theme:
         specifier: github:misskey-dev/storybook-addon-misskey-theme
-        version: git+https://github.com/misskey-dev/storybook-addon-misskey-theme.git#cf583db098365b2ccc81a82f63ca9c93bc32b640(06741f6e76ea3fa786d542a3afc0b7cf)
+        version: https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640(06741f6e76ea3fa786d542a3afc0b7cf)
       tsx:
         specifier: 4.23.15
         version: 4.23.15
@@ -4527,8 +4527,12 @@ packages:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
 
-  aiscript-vscode@git+https://github.com/aiscript-dev/aiscript-vscode.git#1dc7f60cda78d030dadfc518a33c472202b2ef67:
-    resolution: {commit: 1dc7f60cda78d030dadfc518a33c472202b2ef67, repo: https://github.com/aiscript-dev/aiscript-vscode.git, type: git}
+  agent-base@9.0.0:
+    resolution: {integrity: sha512-TQf59BsZnytt8GdJKLPfUZ54g/iaUL2OWDSFCCvMOhsHduDQxO8xC4PNeyIkVcA5KwL2phPSv0douC0fgWzmnA==}
+    engines: {node: '>= 20'}
+
+  aiscript-vscode@https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67:
+    resolution: {gitHosted: true, integrity: sha512-S4eSTHasZz29AMlnU2/zdGP8zikiDiYfYW9kNooAfwVo8OghXdxKuTDDKDAjWsbBxa1+P4uQHa4BNk9MY74rJQ==, tarball: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67}
     version: 0.1.16
     engines: {vscode: ^1.83.0}
 
@@ -5936,8 +5940,8 @@ packages:
     resolution: {integrity: sha512-xT3GPW6/ZbGuw4UvwHqErSCEjNUlwbQJuZn9/q5U4WEKfp2kENVCAlousG1zLxHeaQ/ffOHUNpWamvkbBW0eNw==}
     engines: {node: '>=6.0.0'}
 
-  http_ece@1.2.0:
-    resolution: {integrity: sha512-JrF8SSLVmcvc5NducxgyOrKXe3EsyHMgBFgSaIUGmArKe+rwr0uphRkRXvwiom3I+fpIfoItveHrfudL8/rxuA==}
+  http_ece@1.2.1:
+    resolution: {integrity: sha512-+tzLoMYgXvicu60sVFoswTiu6BiQ6EX3DORRJQ3W2dNpNWCyZ3tcmRFZZ3jgVyw8ziWUCeUARKCkYDY6JgFx+w==}
     engines: {node: '>=16'}
 
   https-proxy-agent@5.0.1:
@@ -5947,6 +5951,10 @@ packages:
   https-proxy-agent@7.0.6:
     resolution: {integrity: sha512-vK9P5/iUfdl95AI+JVyUuIcVtd4ofvtrOr3HNtM2yxC9bnMbEdp3x01OhQNnjb8IJYi38VlTE3mBXwcfvywuSw==}
     engines: {node: '>= 14'}
+
+  https-proxy-agent@9.1.0:
+    resolution: {integrity: sha512-ag87y7cJJ9/3+GxFr8Oy4O5faDsGRGnBGsJj/YjOSsSx/5eadKLYTMPlzuR6obgoCDDm0abAAZitXXQkMOPSpA==}
+    engines: {node: '>= 20'}
 
   human-signals@2.1.0:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
@@ -7379,6 +7387,15 @@ packages:
   proto-list@1.2.4:
     resolution: {integrity: sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==}
 
+  proxy-agent-negotiate@1.1.0:
+    resolution: {integrity: sha512-N8IBcM3UgCVzz2L2Lqv8DVntDnnC8/hiV4nEDUPkqq72TPUgYWjQc+bdZlBPZK9LzPAvOY//gAt0S0DApoOXWQ==}
+    engines: {node: '>= 20'}
+    peerDependencies:
+      kerberos: ^2.0.0
+    peerDependenciesMeta:
+      kerberos:
+        optional: true
+
   proxy-from-env@2.1.0:
     resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
     engines: {node: '>=10'}
@@ -8073,8 +8090,8 @@ packages:
     resolution: {integrity: sha512-eLoXW/DHyl62zxY4SCaIgnRhuMr6ri4juEYARS8E6sCEqzKpOiE521Ucofdx+KnDZl5xmvGYaaKCk5FEOxJCoQ==}
     engines: {node: '>= 0.4'}
 
-  storybook-addon-misskey-theme@git+https://github.com/misskey-dev/storybook-addon-misskey-theme.git#cf583db098365b2ccc81a82f63ca9c93bc32b640:
-    resolution: {commit: cf583db098365b2ccc81a82f63ca9c93bc32b640, repo: https://github.com/misskey-dev/storybook-addon-misskey-theme.git, type: git}
+  storybook-addon-misskey-theme@https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640:
+    resolution: {gitHosted: true, integrity: sha512-QaH1uZSlApQ2CZPkHfhmNm89I92L02s3MdbUPG66TmAyqMaqzxd/AvobORBjtTZ0ymUSa3ii482dRXi+fFb19w==, tarball: https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640}
     version: 0.0.0
     peerDependencies:
       '@storybook/blocks': ^7.0.0-rc.4
@@ -8713,8 +8730,8 @@ packages:
     peerDependencies:
       vitest: '>=2.0.0'
 
-  vitest-mock-extended@5.1.1:
-    resolution: {integrity: sha512-k5Ji2+t4+nsdepXeakCkilyKydtgaULtP0HsjwQGIZsYr5hDTqrwCtC0+Sh0YBKUS7cY/Wxplf7SVjcZstTIMQ==}
+  vitest-mock-extended@6.0.1:
+    resolution: {integrity: sha512-tsyqBqOascdCkcWTA7YvDKRmk4KPhvpY0FyfbO+bCSPrbRwfsHbw7O4VcpL9kODlrW2o4qahNNjEchoW4FrwRw==}
     peerDependencies:
       typescript: 3.x || 4.x || 5.x || 6.x || 7.x
       vitest: '>=4.0.0'
@@ -8864,8 +8881,8 @@ packages:
     resolution: {integrity: sha512-r0CEmvpH63r4T15ebFqeOjGqU4+EgTx4I510NtK35EMciSdcTxCw3Byy3JnBonz7iyIFZ0AbVo0bbFpEVuhCYA==}
     hasBin: true
 
-  web-push@3.6.7:
-    resolution: {integrity: sha512-OpiIUe8cuGjrj3mMBFWY+e4MMIkW3SVT+7vEIjvD9kejGUypv8GPDf84JdPWskK8zMRIJ6xYGm+Kxr8YkPyA0A==}
+  web-push@4.0.0:
+    resolution: {integrity: sha512-iKzGK/q3k+kjoPK+fkbs8ymYvEqu5RJNAypEskW+UAYsC44upqb0f+T8QSYW4naowl9bzjlHRe8CI0NFCBzZeQ==}
     engines: {node: '>= 16'}
     hasBin: true
 
@@ -12233,7 +12250,9 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  aiscript-vscode@git+https://github.com/aiscript-dev/aiscript-vscode.git#1dc7f60cda78d030dadfc518a33c472202b2ef67:
+  agent-base@9.0.0: {}
+
+  aiscript-vscode@https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67:
     dependencies:
       vscode-languageclient: 9.0.1
 
@@ -13992,7 +14011,7 @@ snapshots:
 
   http-link-header@1.1.4: {}
 
-  http_ece@1.2.0: {}
+  http_ece@1.2.1: {}
 
   https-proxy-agent@5.0.1(supports-color@10.2.2):
     dependencies:
@@ -14006,6 +14025,15 @@ snapshots:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@10.2.2)
     transitivePeerDependencies:
+      - supports-color
+
+  https-proxy-agent@9.1.0(supports-color@10.2.2):
+    dependencies:
+      agent-base: 9.0.0
+      debug: 4.4.3(supports-color@10.2.2)
+      proxy-agent-negotiate: 1.1.0
+    transitivePeerDependencies:
+      - kerberos
       - supports-color
 
   human-signals@2.1.0: {}
@@ -15705,6 +15733,8 @@ snapshots:
 
   proto-list@1.2.4: {}
 
+  proxy-agent-negotiate@1.1.0: {}
+
   proxy-from-env@2.1.0: {}
 
   ps-list@8.1.1: {}
@@ -16513,7 +16543,7 @@ snapshots:
       es-errors: 1.3.0
       internal-slot: 1.1.0
 
-  storybook-addon-misskey-theme@git+https://github.com/misskey-dev/storybook-addon-misskey-theme.git#cf583db098365b2ccc81a82f63ca9c93bc32b640(06741f6e76ea3fa786d542a3afc0b7cf):
+  storybook-addon-misskey-theme@https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640(06741f6e76ea3fa786d542a3afc0b7cf):
     dependencies:
       '@storybook/blocks': 8.6.19(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(storybook@10.6.7(@types/react@19.3.0)(bufferutil@4.2.0)(prettier@3.10.1)(react@19.3.1)(utf-8-validate@6.0.6))
       '@storybook/components': 8.6.19(storybook@10.6.7(@types/react@19.3.0)(bufferutil@4.2.0)(prettier@3.10.1)(react@19.3.1)(utf-8-validate@6.0.6))
@@ -17076,7 +17106,7 @@ snapshots:
     transitivePeerDependencies:
       - msw
 
-  vitest-mock-extended@5.1.1(@typescript/typescript6@6.0.2)(msw@3.0.5(@types/node@26.6.6)(@typescript/typescript6@6.0.2)(supports-color@10.2.2)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(sass-embedded@1.108.2)(sass@1.108.2)(tsx@4.23.15)))(vitest@5.1.0):
+  vitest-mock-extended@6.0.1(@typescript/typescript6@6.0.2)(msw@3.0.5(@types/node@26.6.6)(@typescript/typescript6@6.0.2)(supports-color@10.2.2)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(sass-embedded@1.108.2)(sass@1.108.2)(tsx@4.23.15)))(vitest@5.1.0):
     dependencies:
       ts-essentials: 10.2.1(@typescript/typescript6@6.0.2)
       typescript: '@typescript/typescript6@6.0.2'
@@ -17299,14 +17329,14 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  web-push@3.6.7(supports-color@10.2.2):
+  web-push@4.0.0(supports-color@10.2.2):
     dependencies:
       asn1.js: 5.4.1
-      http_ece: 1.2.0
-      https-proxy-agent: 7.0.6(supports-color@10.2.2)
+      http_ece: 1.2.1
+      https-proxy-agent: 9.1.0(supports-color@10.2.2)
       jws: 4.0.1
-      minimist: 1.2.8
     transitivePeerDependencies:
+      - kerberos
       - supports-color
 
   web-resource-inliner@8.0.0:
