@@ -199,7 +199,7 @@ export class HashtagService {
 			'NX', // "NX -- Set expiry only when the key has no expiry" = 有効期限がないときだけ設定
 		);
 
-		redisPipeline.exec();
+		await redisPipeline.exec();
 	}
 
 	@bindThis
@@ -212,7 +212,7 @@ export class HashtagService {
 		for (let i = 0; i < range; i++) {
 			const window = `${now.getUTCFullYear()}${(now.getUTCMonth() + 1).toString().padStart(2, '0')}${now.getUTCDate().toString().padStart(2, '0')}${now.getUTCHours().toString().padStart(2, '0')}${now.getUTCMinutes().toString().padStart(2, '0')}`;
 			redisPipeline.pfcount(`hashtagUsers:${hashtag}:${window}`);
-			now.setMinutes(now.getMinutes() - (i * 10), 0, 0);
+			now.setMinutes(now.getMinutes() - 10, 0, 0);
 		}
 
 		const result = await redisPipeline.exec();
@@ -234,7 +234,7 @@ export class HashtagService {
 			for (const hashtag of hashtags) {
 				redisPipeline.pfcount(`hashtagUsers:${hashtag}:${window}`);
 			}
-			now.setMinutes(now.getMinutes() - (i * 10), 0, 0);
+			now.setMinutes(now.getMinutes() - 10, 0, 0);
 		}
 
 		const result = await redisPipeline.exec();
