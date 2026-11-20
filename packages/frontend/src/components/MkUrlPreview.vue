@@ -123,7 +123,7 @@ const icon = computed(() => summalyResult.value?.icon ?? null);
 const sitename = computed(() => summalyResult.value?.sitename ?? null);
 const sensitive = computed(() => summalyResult.value?.sensitive ?? false);
 const player = computed(() => summalyResult.value?.player ?? { url: null, width: null, height: null });
-const playerEnabled = ref(prefer.s.expandUrlPreviewAutomatically);
+const playerEnabled = ref(props.showActions && prefer.s.expandUrlPreviewAutomatically);
 const tweetId = ref<string | null>(null);
 const tweetExpanded = ref(props.detail);
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
