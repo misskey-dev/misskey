@@ -123,7 +123,7 @@ const icon = computed(() => summalyResult.value?.icon ?? null);
 const sitename = computed(() => summalyResult.value?.sitename ?? null);
 const sensitive = computed(() => summalyResult.value?.sensitive ?? false);
 const player = computed(() => summalyResult.value?.player ?? { url: null, width: null, height: null });
-const playerEnabled = ref(props.showActions && prefer.s.expandUrlPreviewAutomatically);
+const playerEnabled = ref(false); // 初期値はsummaly取り終わったあとに設定
 const tweetId = ref<string | null>(null);
 const tweetExpanded = ref(props.detail);
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
@@ -170,6 +170,10 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 		unknownUrl.value = false;
 
 		summalyResult.value = info;
+
+		if (!info.sensitive) {
+			playerEnabled.value = (props.showActions && prefer.s.expandUrlPreviewAutomatically);
+		}
 	});
 
 function adjustTweetHeight(message: MessageEvent) {
