@@ -8,6 +8,9 @@ import type { UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -33,6 +36,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private usersRepository: UsersRepository,
 
 		private moderationLogService: ModerationLogService,
+		private globalEventService: GlobalEventService,
+		private userEntityService: UserEntityService,
+		private accountUpdateService: AccountUpdateService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
@@ -56,6 +62,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				userHost: user.host,
 				fileId: user.bannerId,
 			});
+
+			if (this.userEntityService.isLocalUser(user)) {
+				this.globalEventService.publishInternalEvent('localUserUpdated', { id: user.id });
+
+				this.globalEventService.publishMainStream(user.id, 'meUpdated', await this.userEntityService.pack(user.id, user, {
+					schema: 'MeDetailed',
+				}));
+
+				// フォロワーにUpdateを配信
+				this.accountUpdateService.publishToFollowers(user.id);
+			} else {
+				this.globalEventService.publishInternalEvent('remoteUserUpdated', { id: user.id });
+			}
 		});
 	}
 }
