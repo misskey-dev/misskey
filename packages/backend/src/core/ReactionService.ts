@@ -47,6 +47,17 @@ const legacies: Record<string, string> = {
 	'star': '⭐',
 };
 
+/**
+ * 特殊ケース対応用のUnicode絵文字の正規化
+ * 保存時 key → value に変換する。
+ */
+const unicodeConvertTable: Record<string, string> = {
+	// eye in speech bubble (Twemojiのバグで、異体字セレクタが抜けていた) を正規化。
+	// 本来は fe0f ありが正だが、すでに fe0f なしの絵文字がリアクションとして使われてしまっているので、
+	// バックエンドでは fe0f なしに統一する。
+	'\u{1f441}\u{fe0f}\u200d\u{1f5e8}\u{fe0f}': '\u{1f441}\u{200d}\u{1f5e8}',
+};
+
 type DecodedReaction = {
 	/**
 	 * リアクション名 (Unicode Emoji or ':name@hostname' or ':name@.')
@@ -392,7 +403,11 @@ export class ReactionService {
 		const match = emojiRegex.exec(reaction);
 		if (match) {
 			// 合字を含む1つの絵文字
-			const unicode = match[0];
+			let unicode = match[0];
+
+			if (unicodeConvertTable[unicode]) {
+				unicode = unicodeConvertTable[unicode];
+			}
 
 			// 異体字セレクタ除去
 			return unicode.match('\u200d') ? unicode : unicode.replace(/\ufe0f/g, '');

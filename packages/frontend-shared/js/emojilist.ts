@@ -5,6 +5,15 @@
 
 export const unicodeEmojiCategories = ['face', 'people', 'animals_and_nature', 'food_and_drink', 'activity', 'travel_and_places', 'objects', 'symbols', 'flags'] as const;
 
+/**
+ * 特殊ケース対応用のUnicode絵文字の正規化
+ * key → value に変換する。
+ */
+const unicodeConvertTable: Record<string, string> = {
+	// eye in speech bubble (Twemojiのバグで、異体字セレクタが抜けていた) を正規化。
+	'\u{1f441}\u{200d}\u{1f5e8}': '\u{1f441}\u{fe0f}\u200d\u{1f5e8}\u{fe0f}',
+};
+
 export type UnicodeEmojiDef = {
 	name: string;
 	char: string;
@@ -53,8 +62,12 @@ export function getUnicodeEmoji(char: string): UnicodeEmojiDef | string {
 }
 
 export function isSupportedEmoji(char: string): boolean {
-	return unicodeEmojisMap.has(forceColorizeEmoji(char)) || unicodeEmojisMap.has(char);
+	const _char = unicodeConvertTable[char] ?? char;
+	return unicodeEmojisMap.has(forceColorizeEmoji(_char)) || unicodeEmojisMap.has(_char);
 }
+
+// @ts-ignore
+window.isSupportedEmoji = isSupportedEmoji;
 
 export function getEmojiName(char: string): string {
 	// Colorize it because emojilist.json assumes that
@@ -89,6 +102,18 @@ function forceColorizeEmoji(char: string) {
 		chars.splice(1, 0, '\uFE0F');
 		return chars.join('');
 	}
+}
+
+export function normalizeEmojiOrReaction(emoji: string) {
+	let normalized = emoji.replace(/^:(\w+):$/, ':$1@.:');
+
+	if (unicodeConvertTable[normalized]) {
+		normalized = unicodeConvertTable[normalized];
+	} else {
+		normalized = normalized.match('\u200d') ? normalized : normalized.replace(/\ufe0f/g, '');
+	}
+
+	return normalized;
 }
 
 export interface CustomEmojiFolderTree {

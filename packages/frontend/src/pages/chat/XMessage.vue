@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar :user="record.user" :link="false" :class="$style.reactionAvatar"/>
 				<MkReactionIcon
 					:withTooltip="true"
-					:reaction="record.reaction.replace(/^:(\w+):$/, ':$1@.:')"
+					:reaction="normalizeEmojiOrReaction(record.reaction)"
 					:noStyle="true"
 					:class="$style.reactionIcon"
 				/>
@@ -73,6 +73,7 @@ import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
+import { normalizeEmojiOrReaction } from '@@/js/emojilist.js';
 
 const $i = ensureSignin();
 

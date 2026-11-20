@@ -15,6 +15,7 @@ import { store } from '@/store.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
+import { normalizeEmojiOrReaction } from '@@/js/emojilist.js';
 
 export const noteEvents = new EventEmitter<{
 	[ev: `reacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; } | null; }) => void;
@@ -203,7 +204,7 @@ export function useNoteCapture(props: {
 	const $note = reactive<ReactiveNoteData>({
 		reactions: Object.entries(note.reactions).reduce((acc, [name, count]) => {
 			// Normalize reactions
-			const normalizedName = name.replace(/^:(\w+):$/, ':$1@.:');
+			const normalizedName = normalizeEmojiOrReaction(name);
 			if (acc[normalizedName] == null) {
 				acc[normalizedName] = count;
 			} else {
@@ -213,7 +214,7 @@ export function useNoteCapture(props: {
 		}, {} as Misskey.entities.Note['reactions']),
 		reactionCount: note.reactionCount,
 		reactionEmojis: note.reactionEmojis,
-		myReaction: note.myReaction,
+		myReaction: note.myReaction != null ? normalizeEmojiOrReaction(note.myReaction) : null,
 		pollChoices: note.poll?.choices ?? [],
 	});
 
@@ -226,8 +227,7 @@ export function useNoteCapture(props: {
 	let latestPollVotedKey: string | null = null;
 
 	function onReacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; } | null; }): void {
-		let normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
-		normalizedName = normalizedName.match('\u200d') ? normalizedName : normalizedName.replace(/\ufe0f/g, '');
+		const normalizedName = normalizeEmojiOrReaction(ctx.reaction);
 		if (reactionUserMap.has(ctx.userId) && reactionUserMap.get(ctx.userId) === normalizedName) return;
 		reactionUserMap.set(ctx.userId, normalizedName);
 
@@ -246,8 +246,7 @@ export function useNoteCapture(props: {
 	}
 
 	function onUnreacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; } | null; }): void {
-		let normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
-		normalizedName = normalizedName.match('\u200d') ? normalizedName : normalizedName.replace(/\ufe0f/g, '');
+		const normalizedName = normalizeEmojiOrReaction(ctx.reaction);
 
 		// 確実に一度リアクションされて取り消されている場合のみ処理をとめる（APIで初回読み込み→Streamでアップデート等の場合、reactionUserMapに情報がないため）
 		if (reactionUserMap.has(ctx.userId) && reactionUserMap.get(ctx.userId) === noReaction) return;
