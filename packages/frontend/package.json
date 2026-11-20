@@ -14,8 +14,8 @@
 		"test:e2e": "playwright test --config playwright.config.ts",
 		"test:browser": "vitest --run --globals --config vitest.config.browser.ts",
 		"typecheck": "vue-tsc --noEmit",
-		"eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",
-		"lint": "pnpm typecheck && pnpm eslint"
+		"oxlint": "oxlint --quiet ; vize lint --quiet",
+		"lint": "pnpm typecheck && pnpm oxlint"
 	},
 	"dependencies": {
 		"@analytics/google-analytics": "1.1.0",
@@ -104,15 +104,11 @@
 		"@types/textarea-caret": "3.0.4",
 		"@types/throttle-debounce": "5.0.2",
 		"@types/tinycolor2": "1.4.6",
-		"@typescript-eslint/eslint-plugin": "8.72.1",
-		"@typescript-eslint/parser": "8.72.1",
 		"@vitest/browser-playwright": "5.0.5",
 		"@vitest/coverage-v8": "5.0.5",
 		"@vue/compiler-core": "3.5.44",
 		"astring": "1.9.0",
 		"chromatic": "18.13.6",
-		"eslint-plugin-import": "2.32.0",
-		"eslint-plugin-vue": "10.12.0",
 		"execa": "10.2.1",
 		"happy-dom": "21.0.4",
 		"intersection-observer": "0.12.2",
@@ -139,8 +135,8 @@
 		"vite-plugin-turbosnap": "1.0.3",
 		"vitest": "5.0.5",
 		"vitest-fetch-mock": "0.4.5",
+		"vize": "0.751.0",
 		"vue-component-type-helpers": "3.3.14",
-		"vue-eslint-parser": "10.4.1",
 		"vue-tsc": "3.3.11"
 	},
 	"msw": {

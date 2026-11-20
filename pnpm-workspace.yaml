@@ -6,6 +6,7 @@ packages:
   - packages/frontend-embed
   - packages/i18n
   - packages/icons-subsetter
+  - packages/shared
   - packages/sw
   - packages/misskey-js
   - packages/misskey-js/generator
@@ -53,6 +54,9 @@ minimumReleaseAgeExclude:
   - slacc-linux-x64-musl
   - slacc-win32-arm64-msvc
   - slacc-win32-x64-msvc
+  - vize
+  - '@vizejs/native'
+  - '@vizejs/native-*'
   - '@nestjs/common@12.4.2'
   - '@nestjs/core@12.4.2'
   - '@nestjs/testing@12.4.2'

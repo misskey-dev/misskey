@@ -12,9 +12,9 @@ upstream path: commands/quality-gate.md
 upstream license: MIT — https://github.com/affaan-m/everything-claude-code/blob/main/LICENSE
 project-level notice: see .claude/THIRD_PARTY_LICENSES.md (Misskey 内サードパーティ一覧 + MIT 全文)
 
-Imported into Misskey .claude/ on 2026-05-10. Pipeline 概念 (lint → typecheck → test) は upstream ECC 版から借用 (MIT)。実コマンド層は Misskey の pnpm + tsc + ESLint + Vitest に固定し、formatter (Prettier/Biome) フェーズは削除した。
+Imported into Misskey .claude/ on 2026-05-10. Pipeline 概念 (lint → typecheck → test) は upstream ECC 版から借用 (MIT)。実コマンド層は Misskey の pnpm + tsc + oxlint + Vitest に固定し、formatter (Prettier/Biome) フェーズは削除した。
 
-note: 元 ECC 版は言語自動判定 + format/lint/type のジェネリック版だったが、Misskey 専用に pnpm + tsc + ESLint + Vitest の組み合わせに固定。
+note: 元 ECC 版は言語自動判定 + format/lint/type のジェネリック版だったが、Misskey 専用に pnpm + tsc + oxlint + Vitest の組み合わせに固定。
 重い test:e2e / test:fed は含めず、変更内容または明示依頼に応じて個別実行する。
 -->
 
@@ -30,13 +30,13 @@ package または repo 全体の状態が必要なときに任意で使う。
 - `repo` (default) — 全 workspace の lint + backend / frontend の unit test
 - `backend` — `packages/backend` のみ
 - `frontend` — `packages/frontend` のみ
-- `path/to/file.ts` — 単一ファイルへの ESLint `--quiet` のみ
+- `path/to/file.ts` — 単一ファイルへの oxlint `--quiet` のみ
 
 ## Pipeline
 
 ### Repo scope
 
-各パッケージの `lint` スクリプト実体は `pnpm typecheck && pnpm eslint` ([packages/backend/package.json](../../packages/backend/package.json), [packages/frontend/package.json](../../packages/frontend/package.json))。
+各パッケージの `lint` スクリプト実体は `pnpm typecheck && pnpm oxlint` ([packages/backend/package.json](../../packages/backend/package.json), [packages/frontend/package.json](../../packages/frontend/package.json))。
 ルートの `pnpm lint` は `pnpm --no-bail -r lint && pnpm check-dts` なので、そのまま実行すると workspace lint の失敗時に `check-dts` が実行されない。
 次の 4 コマンドをそれぞれ独立した Bash 呼び出しとして実行し、先の失敗にかかわらず全結果を収集する:
 
@@ -58,7 +58,7 @@ pnpm --filter frontend typecheck   # vue-tsc 単体 (Vue SFC の型を見るた�
 
 ### Backend scope
 
-`pnpm --filter backend lint` は内部で `pnpm typecheck && pnpm eslint` を実行する ([packages/backend/package.json](../../packages/backend/package.json)) ので、`lint` を回せば typecheck も終わる。
+`pnpm --filter backend lint` は内部で `pnpm typecheck && pnpm oxlint` を実行する ([packages/backend/package.json](../../packages/backend/package.json)) ので、`lint` を回せば typecheck も終わる。
 広域検証では typecheck の二重実行を避けるため `lint` + `test` のみ:
 
 ```bash
@@ -70,7 +70,7 @@ pnpm --filter backend test
 
 ### Frontend scope
 
-`pnpm --filter frontend lint` も内部で `pnpm typecheck && pnpm eslint` を実行する ([packages/frontend/package.json](../../packages/frontend/package.json)) ため、広域検証では Backend 同様に `lint` + `test` のみ:
+`pnpm --filter frontend lint` も内部で `pnpm typecheck && pnpm oxlint` を実行する ([packages/frontend/package.json](../../packages/frontend/package.json)) ため、広域検証では Backend 同様に `lint` + `test` のみ:
 
 ```bash
 pnpm --filter frontend lint
@@ -82,10 +82,12 @@ pnpm --filter frontend test
 ### Single file scope
 
 repo-relative path を package-relative path に変換し、該当 package root で実行する。
+oxlint は cwd から `oxlint.config.ts` を探すため、repo root から実行すると package のルールが効かない。
+指定ファイルが全て `ignorePatterns` に該当すると exit 1 になるので `--no-error-on-unmatched-pattern` を付ける。
 
 ```bash
-(cd packages/backend && pnpm exec eslint --quiet -- src/path/to/file.ts)
-(cd packages/frontend && pnpm exec eslint --quiet -- src/path/to/component.vue)
+pnpm --filter backend exec oxlint --quiet --no-error-on-unmatched-pattern -- src/path/to/file.ts
+pnpm --filter frontend exec oxlint --quiet --no-error-on-unmatched-pattern -- src/path/to/component.vue
 ```
 
 ## Output
@@ -114,5 +116,5 @@ Other tests: SKIPPED (repo scope の対象外)
 ## 元 ECC 版との差分
 
 - ジェネリックな言語自動判定を排除し、Misskey 固定 pipeline に。
-- formatter フェーズなし (変更ファイル lint は ESLint `--quiet`)。
+- formatter フェーズなし (変更ファイル lint は oxlint `--quiet`)。
 - e2e / federation / Playwright は scope に自動追加せず、変更内容または明示依頼に応じて個別実行。

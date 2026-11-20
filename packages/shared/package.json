@@ -1,3 +1,8 @@
 {
-	"type": "module"
+	"name": "shared",
+	"private": true,
+	"type": "module",
+	"devDependencies": {
+		"vize": "0.751.0"
+	}
 }
