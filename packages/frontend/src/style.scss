@@ -112,7 +112,6 @@ a {
 	text-decoration: none;
 	cursor: pointer;
 	color: inherit;
-	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 	-webkit-touch-callout: none;
 
@@ -126,7 +125,6 @@ a {
 }
 
 textarea, input {
-	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 	user-select: text;
 	-webkit-user-select: text;
@@ -303,7 +301,6 @@ rt {
 	cursor: pointer;
 	color: inherit;
 	touch-action: manipulation;
-	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 	font-size: 1em;
 	font-family: inherit;
