@@ -23,7 +23,13 @@ const io: StorageProvider = {
 		if (savedProfileRaw == null) {
 			return null;
 		} else {
-			return JSON.parse(savedProfileRaw);
+			// 破損したデータで起動が阻害されないようガードする
+			try {
+				return JSON.parse(savedProfileRaw);
+			} catch (e) {
+				console.error('failed to parse saved preferences', e);
+				return null;
+			}
 		}
 	},
 

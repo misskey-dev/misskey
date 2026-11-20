@@ -62,7 +62,13 @@ export const miLocalStorage = {
 		if (item === null) {
 			return undefined;
 		}
-		return JSON.parse(item);
+		// 破損したデータで例外にならないようガードする
+		try {
+			return JSON.parse(item);
+		} catch (e) {
+			console.error(`failed to parse localStorage item: ${key}`, e);
+			return undefined;
+		}
 	},
 	setItemAsJson: (key: Keys, value: any): void => {
 		miLocalStorage.setItem(key, JSON.stringify(value));
