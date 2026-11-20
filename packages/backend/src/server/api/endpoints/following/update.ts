@@ -103,7 +103,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				withReplies: ps.withReplies != null ? ps.withReplies : undefined,
 			});
 
-			return await this.userEntityService.pack(follower.id, me);
+			return await this.userEntityService.pack(followee.id, me);
 		});
 	}
 }
