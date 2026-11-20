@@ -56,6 +56,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				avatarBlurhash: null,
 			});
 
+			this.moderationLogService.log(me, 'unsetUserAvatar', {
+				userId: user.id,
+				userUsername: user.username,
+				userHost: user.host,
+				fileId: user.avatarId,
+			});
+
 			if (this.userEntityService.isLocalUser(user)) {
 				this.globalEventService.publishInternalEvent('localUserUpdated', { id: user.id });
 
@@ -68,13 +75,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			} else {
 				this.globalEventService.publishInternalEvent('remoteUserUpdated', { id: user.id });
 			}
-
-			this.moderationLogService.log(me, 'unsetUserAvatar', {
-				userId: user.id,
-				userUsername: user.username,
-				userHost: user.host,
-				fileId: user.avatarId,
-			});
 		});
 	}
 }
