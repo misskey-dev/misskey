@@ -18,7 +18,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		ids: { type: 'array', items: {
+		ids: { type: 'array', maxItems: 100, items: {
 			type: 'string', format: 'misskey:id',
 		} },
 		category: {
@@ -36,7 +36,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private customEmojiService: CustomEmojiService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.customEmojiService.setCategoryBulk(ps.ids, ps.category ?? null);
+			await this.customEmojiService.setCategoryBulk(ps.ids, ps.category ?? null, me);
 		});
 	}
 }

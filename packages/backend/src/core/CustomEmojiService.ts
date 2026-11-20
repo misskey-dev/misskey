@@ -212,7 +212,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async addAliasesBulk(ids: MiEmoji['id'][], aliases: string[]) {
+	public async addAliasesBulk(ids: MiEmoji['id'][], aliases: string[], moderator?: MiUser) {
 		const emojis = await this.emojisRepository.findBy({
 			id: In(ids),
 		});
@@ -222,6 +222,15 @@ export class CustomEmojiService implements OnApplicationShutdown {
 				updatedAt: new Date(),
 				aliases: [...new Set(emoji.aliases.concat(aliases))],
 			});
+
+			if (moderator) {
+				const updated = await this.emojisRepository.findOneByOrFail({ id: emoji.id });
+				this.moderationLogService.log(moderator, 'updateCustomEmoji', {
+					emojiId: emoji.id,
+					before: emoji,
+					after: updated,
+				});
+			}
 		}
 
 		this.localEmojisCache.refresh();
@@ -232,13 +241,28 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async setAliasesBulk(ids: MiEmoji['id'][], aliases: string[]) {
+	public async setAliasesBulk(ids: MiEmoji['id'][], aliases: string[], moderator?: MiUser) {
+		const emojis = moderator
+			? await this.emojisRepository.findBy({ id: In(ids) })
+			: [];
+
 		await this.emojisRepository.update({
 			id: In(ids),
 		}, {
 			updatedAt: new Date(),
 			aliases: aliases,
 		});
+
+		if (moderator) {
+			for (const emoji of emojis) {
+				const updated = await this.emojisRepository.findOneByOrFail({ id: emoji.id });
+				this.moderationLogService.log(moderator, 'updateCustomEmoji', {
+					emojiId: emoji.id,
+					before: emoji,
+					after: updated,
+				});
+			}
+		}
 
 		this.localEmojisCache.refresh();
 
@@ -248,7 +272,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async removeAliasesBulk(ids: MiEmoji['id'][], aliases: string[]) {
+	public async removeAliasesBulk(ids: MiEmoji['id'][], aliases: string[], moderator?: MiUser) {
 		const emojis = await this.emojisRepository.findBy({
 			id: In(ids),
 		});
@@ -258,6 +282,15 @@ export class CustomEmojiService implements OnApplicationShutdown {
 				updatedAt: new Date(),
 				aliases: emoji.aliases.filter(x => !aliases.includes(x)),
 			});
+
+			if (moderator) {
+				const updated = await this.emojisRepository.findOneByOrFail({ id: emoji.id });
+				this.moderationLogService.log(moderator, 'updateCustomEmoji', {
+					emojiId: emoji.id,
+					before: emoji,
+					after: updated,
+				});
+			}
 		}
 
 		this.localEmojisCache.refresh();
@@ -268,13 +301,28 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async setCategoryBulk(ids: MiEmoji['id'][], category: string | null) {
+	public async setCategoryBulk(ids: MiEmoji['id'][], category: string | null, moderator?: MiUser) {
+		const emojis = moderator
+			? await this.emojisRepository.findBy({ id: In(ids) })
+			: [];
+
 		await this.emojisRepository.update({
 			id: In(ids),
 		}, {
 			updatedAt: new Date(),
 			category: category,
 		});
+
+		if (moderator) {
+			for (const emoji of emojis) {
+				const updated = await this.emojisRepository.findOneByOrFail({ id: emoji.id });
+				this.moderationLogService.log(moderator, 'updateCustomEmoji', {
+					emojiId: emoji.id,
+					before: emoji,
+					after: updated,
+				});
+			}
+		}
 
 		this.localEmojisCache.refresh();
 
@@ -284,13 +332,28 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async setLicenseBulk(ids: MiEmoji['id'][], license: string | null) {
+	public async setLicenseBulk(ids: MiEmoji['id'][], license: string | null, moderator?: MiUser) {
+		const emojis = moderator
+			? await this.emojisRepository.findBy({ id: In(ids) })
+			: [];
+
 		await this.emojisRepository.update({
 			id: In(ids),
 		}, {
 			updatedAt: new Date(),
 			license: license,
 		});
+
+		if (moderator) {
+			for (const emoji of emojis) {
+				const updated = await this.emojisRepository.findOneByOrFail({ id: emoji.id });
+				this.moderationLogService.log(moderator, 'updateCustomEmoji', {
+					emojiId: emoji.id,
+					before: emoji,
+					after: updated,
+				});
+			}
+		}
 
 		this.localEmojisCache.refresh();
 
