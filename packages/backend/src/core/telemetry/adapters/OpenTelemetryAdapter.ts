@@ -10,6 +10,7 @@ import { registerDiagLogger } from '@/core/telemetry/telemetry-diag.js';
 import { installHttpClientInstrumentation } from '@/core/telemetry/http-client-instrumentation.js';
 import { installDatabaseInstrumentation } from '@/core/telemetry/database-instrumentation.js';
 import { installRedisInstrumentation } from '@/core/telemetry/redis-instrumentation.js';
+import { SanitizingSpanProcessor } from '@/core/telemetry/SanitizingSpanProcessor.js';
 import { executeSpan, getQueueTraceContextMode, injectActiveTraceContext, recordSpanError, startSpanWithQueueTraceContext } from '@/core/telemetry/queue-trace-context.js';
 import type { LogTraceContext } from '@/logging/types.js';
 import type { Context, PropagationAPI, Span, SpanStatusCode, TextMapGetter, TextMapPropagator, TextMapSetter, Tracer } from '@opentelemetry/api';
@@ -86,7 +87,10 @@ export class OpenTelemetryAdapter implements TelemetryAdapter {
 			...(config.endpoint != null ? { url: config.endpoint } : {}),
 			...(config.headers != null ? { headers: config.headers } : {}),
 		});
-		const spanProcessor = new BatchSpanProcessor({ exporter });
+		// 自動計装が集めた属性のうち許可したものだけを送るよう、exporterの手前でsanitizerを通す。
+		const spanProcessor = new SanitizingSpanProcessor(new BatchSpanProcessor({ exporter }), {
+			allowDbStatement: config.capturePgStatement === true,
+		});
 
 		// SpanProcessorはprovider生成時に渡す。tracingを所有するproviderはMisskey側の1つだけにする。
 		const provider = new TracerProvider({
