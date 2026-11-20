@@ -136,6 +136,8 @@ export class PushNotificationService implements OnApplicationShutdown {
 						publickey: subscription.publickey,
 					}).then(() => {
 						this.refreshCache(userId);
+					}).catch(err => {
+						console.error('Failed to delete a sw subscription', err);
 					});
 				}
 			});
