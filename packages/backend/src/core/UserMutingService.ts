@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
+import { In, LessThan } from 'typeorm';
 import type { MutingsRepository, MiMuting } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/User.js';
@@ -33,20 +33,41 @@ export class UserMutingService {
 		const exist = await this.mutingsRepository.existsBy({ muterId: user.id, muteeId: target.id });
 		if (exist) return;
 
+		await this.insertMuting(user, target, normalizedExpiresAt);
+
+		this.cacheService.userMutingsCache.refresh(user.id);
+	}
+
+	private async insertMuting(user: MiUser, target: MiUser, expiresAt: Date | null): Promise<void> {
 		try {
 			await this.mutingsRepository.insert({
 				id: this.idService.gen(),
-				expiresAt: normalizedExpiresAt,
+				expiresAt: expiresAt ?? null,
 				muterId: user.id,
 				muteeId: target.id,
 			});
-		} catch (err) {
-			// 並行リクエストで先行挿入が確定した場合
-			if (isDuplicateKeyValueError(err)) return;
-			throw err;
-		}
+		} catch (e) {
+			if (!isDuplicateKeyValueError(e)) throw e;
 
-		this.cacheService.userMutingsCache.refresh(user.id);
+			// The (muterId, muteeId) unique index is occupied by a row that may have already
+			// expired but not yet been cleaned up by the expiry cron. Retry after removing it.
+			const expiredRows = await this.mutingsRepository.find({
+				where: {
+					muterId: user.id,
+					muteeId: target.id,
+					expiresAt: LessThan(new Date()),
+				},
+			});
+			if (expiredRows.length === 0) throw e;
+
+			await this.mutingsRepository.delete({ id: In(expiredRows.map(x => x.id)) });
+			await this.mutingsRepository.insert({
+				id: this.idService.gen(),
+				expiresAt: expiresAt ?? null,
+				muterId: user.id,
+				muteeId: target.id,
+			});
+		}
 	}
 
 	@bindThis
