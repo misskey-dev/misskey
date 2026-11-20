@@ -51,7 +51,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="prefer.r['deck.menuPosition'].value === 'right'" :class="$style.sideMenu">
 					<div :class="$style.sideMenuTop">
 						<button ref="swicthProfileButtonEl" v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${prefer.s['deck.profile']}`" :class="$style.sideMenuButton" class="_button" @click="switchProfileMenu"><i class="ti ti-caret-down"></i></button>
-						<button v-tooltip.noDelay.left="i18n.ts._deck.deleteProfile" :class="$style.sideMenuButton" class="_button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
 					</div>
 					<div :class="$style.sideMenuMiddle">
 						<button ref="addColumnButtonEl" v-tooltip.noDelay.left="i18n.ts._deck.addColumn" :class="$style.sideMenuButton" class="_button" @click="addColumn"><i class="ti ti-plus"></i></button>
@@ -65,7 +64,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="prefer.r['deck.menuPosition'].value === 'bottom'" :class="$style.bottomMenu">
 				<div :class="$style.bottomMenuLeft">
 					<button ref="swicthProfileButtonEl" v-tooltip.noDelay.top="`${i18n.ts._deck.profile}: ${prefer.s['deck.profile']}`" :class="$style.bottomMenuButton" class="_button" @click="switchProfileMenu"><i class="ti ti-caret-down"></i></button>
-					<button v-tooltip.noDelay.top="i18n.ts._deck.deleteProfile" :class="$style.bottomMenuButton" class="_button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
 				</div>
 				<div :class="$style.bottomMenuMiddle">
 					<button ref="addColumnButtonEl" v-tooltip.noDelay.top="i18n.ts._deck.addColumn" :class="$style.bottomMenuButton" class="_button" @click="addColumn"><i class="ti ti-plus"></i></button>
@@ -117,7 +115,7 @@ import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
 import XChatColumn from '@/ui/deck/chat-column.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { mainRouter } from '@/router.js';
-import { columns, layout, columnTypes, switchProfileMenu, addColumn as addColumnToStore, deleteProfile as deleteProfile_ } from '@/deck.js';
+import { columns, layout, columnTypes, switchProfileMenu, addColumn as addColumnToStore } from '@/deck.js';
 import { shouldSuggestRestoreBackup } from '@/preferences/utility.js';
 import { shouldSuggestReload } from '@/utility/reload-suggest.js';
 import { startTour } from '@/utility/tour.js';
@@ -217,20 +215,6 @@ function onWheel(ev: WheelEvent) {
 	if (ev.deltaX === 0 && columnsEl.value != null) {
 		columnsEl.value.scrollLeft += ev.deltaY;
 	}
-}
-
-async function deleteProfile() {
-	if (prefer.s['deck.profile'] == null) return;
-
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		text: i18n.tsx.deleteAreYouSure({ x: prefer.s['deck.profile'] }),
-	});
-	if (canceled) return;
-
-	await deleteProfile_(prefer.s['deck.profile']);
-
-	os.success();
 }
 
 function showTour() {
