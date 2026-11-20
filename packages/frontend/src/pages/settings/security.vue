@@ -114,7 +114,7 @@ async function regenerateToken() {
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
 
-	os.waiting();
+	const hideWaiting = os.waiting();
 
 	// トークンが消えるので先にバックアップを終わらせる
 	if (store.s.enablePreferencesAutoCloudBackup) {
@@ -125,12 +125,17 @@ async function regenerateToken() {
 		}
 	}
 
-	await misskeyApi('i/regenerate-token', {
-		password: auth.result.password,
-		token: auth.result.token,
-	});
+	try {
+		await misskeyApi('i/regenerate-token', {
+			password: auth.result.password,
+			token: auth.result.token,
+		});
 
-	await signout(false);
+		await signout(false);
+	} catch (err) {
+		hideWaiting();
+		throw err;
+	}
 }
 
 const headerActions = computed(() => []);
