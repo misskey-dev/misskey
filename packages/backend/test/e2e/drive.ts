@@ -13,10 +13,12 @@ import type * as misskey from 'misskey-js';
 describe('Drive', () => {
 	let alice: misskey.entities.SignupResponse;
 	let bob: misskey.entities.SignupResponse;
+	let carol: misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
+		carol = await signup({ username: 'carol' });
 	}, 1000 * 60 * 2);
 
 	test('ファイルURLからアップロードできる', async () => {
@@ -84,6 +86,78 @@ describe('Drive', () => {
 
 		const attached2 = await api('drive/files/attached-notes', { fileId: ids[2] }, alice);
 		assert.strictEqual(attached2.body.length, 0);
+	});
+
+	describe('ファイルの削除', () => {
+		const ACCESS_DENIED = '5eb8d909-2540-4970-90b8-dd6f86088121';
+
+		test('本人は通常のファイルを削除できる', async () => {
+			const file = (await uploadFile(bob)).body!;
+
+			const res = await api('drive/files/delete', { fileId: file.id }, bob);
+			assert.strictEqual(res.status, 204);
+
+			const show = await api('drive/files/show', { fileId: file.id }, bob);
+			assert.strictEqual(show.status, 400);
+		});
+
+		test('本人がアイコン・バナーに設定中のファイルを削除すると、設定が解除される', async () => {
+			const avatar = (await uploadFile(bob)).body!;
+			const banner = (await uploadFile(bob)).body!;
+			await api('i/update', { avatarId: avatar.id, bannerId: banner.id }, bob);
+
+			const res1 = await api('drive/files/delete', { fileId: avatar.id }, bob);
+			assert.strictEqual(res1.status, 204);
+
+			// アイコンのみ解除され、バナーは残る
+			const i1 = await api('i', {}, bob);
+			assert.strictEqual(i1.body.avatarId, null);
+			assert.strictEqual(i1.body.avatarBlurhash, null);
+			assert.strictEqual(i1.body.bannerId, banner.id);
+
+			const res2 = await api('drive/files/delete', { fileId: banner.id }, bob);
+			assert.strictEqual(res2.status, 204);
+
+			const i2 = await api('i', {}, bob);
+			assert.strictEqual(i2.body.bannerId, null);
+			assert.strictEqual(i2.body.bannerUrl, null);
+			assert.strictEqual(i2.body.bannerBlurhash, null);
+		});
+
+		test('モデレーター以外は他人のアイコンに設定中のファイルを削除できない', async () => {
+			const file = (await uploadFile(bob)).body!;
+			await api('i/update', { avatarId: file.id }, bob);
+
+			const res = await api('drive/files/delete', { fileId: file.id }, carol);
+			assert.strictEqual(res.status, 400);
+			assert.strictEqual(castAsError(res.body as any).error.id, ACCESS_DENIED);
+
+			// 設定は解除されない
+			const i = await api('i', {}, bob);
+			assert.strictEqual(i.body.avatarId, file.id);
+
+			await api('i/update', { avatarId: null }, bob);
+		});
+
+		test('モデレーターが他人のアイコン・バナーに設定中のファイルを削除すると、設定が解除される', async () => {
+			const avatar = (await uploadFile(bob)).body!;
+			const banner = (await uploadFile(bob)).body!;
+			await api('i/update', { avatarId: avatar.id, bannerId: banner.id }, bob);
+
+			// alice は最初に登録したユーザーなので root (管理者)
+			const res1 = await api('drive/files/delete', { fileId: avatar.id }, alice);
+			assert.strictEqual(res1.status, 204);
+			const res2 = await api('drive/files/delete', { fileId: banner.id }, alice);
+			assert.strictEqual(res2.status, 204);
+
+			const i = await api('i', {}, bob);
+			assert.strictEqual(i.status, 200);
+			assert.strictEqual(i.body.avatarId, null);
+			assert.strictEqual(i.body.avatarBlurhash, null);
+			assert.strictEqual(i.body.bannerId, null);
+			assert.strictEqual(i.body.bannerUrl, null);
+			assert.strictEqual(i.body.bannerBlurhash, null);
+		});
 	});
 
 	test('添付ノート一覧は他の人から見えない', async () => {

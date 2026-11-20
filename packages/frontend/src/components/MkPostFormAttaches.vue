@@ -51,9 +51,9 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
-import { globalEvents } from '@/events.js';
 import type { Content } from '@/components/MkLightbox.item.vue';
 import { isPreviewable, getType } from '@/utility/lightbox.js';
+import { deleteDriveFile } from '@/utility/delete-drive-file.js';
 
 const props = defineProps<{
 	modelValue: Misskey.entities.DriveFile[];
@@ -86,17 +86,7 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 
 	detachMedia(file.id);
 
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		text: i18n.tsx.driveFileDeleteConfirm({ name: file.name }),
-	});
-	if (canceled) return;
-
-	await os.apiWithDialog('drive/files/delete', {
-		fileId: file.id,
-	});
-
-	globalEvents.emit('driveFilesDeleted', [file]);
+	await deleteDriveFile(file);
 }
 
 function toggleSensitive(file: Misskey.entities.DriveFile) {

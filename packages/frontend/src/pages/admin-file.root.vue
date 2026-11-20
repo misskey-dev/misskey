@@ -94,8 +94,9 @@ import MkInfo from '@/components/MkInfo.vue';
 import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { iAmAdmin, iAmModerator } from '@/i.js';
+import { $i, iAmAdmin, iAmModerator } from '@/i.js';
 import MkTabs from '@/components/MkTabs.vue';
+import { deleteDriveFile } from '@/utility/delete-drive-file.js';
 
 const props = defineProps<{
 	file: Misskey.entities.DriveFile,
@@ -109,6 +110,12 @@ const XNotes = defineAsyncComponent(() => import('./drive.file.notes.vue'));
 const XChat = defineAsyncComponent(() => import('./admin-file.chat.vue'));
 
 async function del() {
+	// 自分のファイルの場合は通常の削除フローを使う
+	if ($i != null && props.file.userId === $i.id) {
+		await deleteDriveFile(props.file);
+		return;
+	}
+
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.tsx.removeAreYouSure({ x: props.file.name }),
