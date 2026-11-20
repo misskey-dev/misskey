@@ -28,6 +28,8 @@ import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { emojiRegex } from '@/misc/emoji-regex.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { trackPromise } from '@/misc/promise-tracker.js';
 
 export class ChatMessageAccessError extends Error {}
 
@@ -83,6 +85,7 @@ export class ChatService {
 		private chatEntityService: ChatEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
+		private apDeliverManagerService: ApDeliverManagerService,
 		private apRendererService: ApRendererService,
 		private queueService: QueueService,
 		private pushNotificationService: PushNotificationService,
@@ -237,6 +240,19 @@ export class ChatService {
 				this.pushNotificationService.pushNotification(toUser.id, 'newChatMessage', packedMessageForTo);
 			}, 3000);
 		}
+
+		//#region AP deliver
+		if (this.userEntityService.isLocalUser(fromUser) && this.userEntityService.isRemoteUser(toUser)) {
+			(async () => {
+				const content = await this.apRendererService.renderChatMessage(inserted, false);
+				const activity = this.apRendererService.addContext(content);
+
+				const dm = this.apDeliverManagerService.createDeliverManager(fromUser, activity);
+				dm.addDirectRecipe(toUser);
+				trackPromise(dm.execute());
+			})();
+		}
+		//#endregion
 
 		return packedMessage;
 	}

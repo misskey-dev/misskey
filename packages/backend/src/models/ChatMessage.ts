@@ -55,6 +55,8 @@ export class MiChatMessage {
 	})
 	public text: string | null;
 
+	// 連合用
+	// ローカルはnull
 	@Column('varchar', {
 		length: 512, nullable: true,
 	})
@@ -82,4 +84,22 @@ export class MiChatMessage {
 		length: 1024, array: true, default: '{}',
 	})
 	public reactions: string[];
+
+	// 連合用
+	@Column('varchar', {
+		length: 128, array: true, default: '{}',
+	})
+	public emojis: string[];
+
+	// 連合用
+	@Column('boolean', {
+		default: false,
+	})
+	public isDelivering: boolean;
+
+	// 連合用
+	@Column('boolean', {
+		default: false,
+	})
+	public isDeliverFailed: boolean;
 }
