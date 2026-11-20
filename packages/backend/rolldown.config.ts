@@ -28,6 +28,7 @@ export default defineConfig((args) => {
 		'sharp',
 		'jsdom',
 		're2',
+		/^@seydx\/node-av-.*/,
 		'ipaddr.js',
 		'file-type',
 		// バンドルするとSentryの自動計装が正しく行われなくなるため外しておく

@@ -430,9 +430,6 @@ importers:
       chalk-template:
         specifier: 1.1.3
         version: 1.1.3
-      chokidar:
-        specifier: 5.0.0
-        version: 5.0.0
       color-convert:
         specifier: 3.1.3
         version: 3.1.3
@@ -457,9 +454,6 @@ importers:
       file-type:
         specifier: 22.3.0
         version: 22.3.0(supports-color@10.2.2)
-      fluent-ffmpeg:
-        specifier: 2.1.3
-        version: 2.1.3
       got:
         specifier: 16.2.0
         version: 16.2.0
@@ -520,6 +514,9 @@ importers:
       nested-property:
         specifier: 4.0.0
         version: 4.0.0
+      node-av:
+        specifier: 7.0.3
+        version: 7.0.3
       node-fetch:
         specifier: 3.3.2
         version: 3.3.2
@@ -629,9 +626,6 @@ importers:
       '@types/accepts':
         specifier: 1.3.7
         version: 1.3.7
-      '@types/fluent-ffmpeg':
-        specifier: 2.1.28
-        version: 2.1.28
       '@types/http-link-header':
         specifier: 1.0.7
         version: 1.0.7
@@ -735,6 +729,30 @@ importers:
         specifier: 5.1.1
         version: 5.1.1(@typescript/typescript6@6.0.2)(vitest@5.0.5)
     optionalDependencies:
+      '@seydx/node-av-darwin-arm64':
+        specifier: 7.0.3
+        version: 7.0.3
+      '@seydx/node-av-darwin-x64':
+        specifier: 7.0.3
+        version: 7.0.3
+      '@seydx/node-av-linux-arm64':
+        specifier: 7.0.3
+        version: 7.0.3
+      '@seydx/node-av-linux-arm64-musl':
+        specifier: 7.0.3
+        version: 7.0.3
+      '@seydx/node-av-linux-x64':
+        specifier: 7.0.3
+        version: 7.0.3
+      '@seydx/node-av-linux-x64-musl':
+        specifier: 7.0.3
+        version: 7.0.3
+      '@seydx/node-av-win32-arm64-msvc':
+        specifier: 7.0.3
+        version: 7.0.3
+      '@seydx/node-av-win32-x64-msvc':
+        specifier: 7.0.3
+        version: 7.0.3
       bufferutil:
         specifier: 4.1.0
         version: 4.1.0
@@ -3488,6 +3506,58 @@ packages:
       pinia:
         optional: true
 
+  '@seydx/node-av-darwin-arm64@7.0.3':
+    resolution: {integrity: sha512-vrTvejf0H4m1JzD5GmKA1QtN2f58m1mirpb5RzUuHRGK7GRig1Bq4ieYeUmE45D77Z6+w3QYyIxM/XEIGz2dSQ==}
+    engines: {node: '>=22.18.0'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@seydx/node-av-darwin-x64@7.0.3':
+    resolution: {integrity: sha512-XjeV60GgWHcvjG/nC5yyI3TjjTH/Us+ItzlxXeaLbVObhgfFXjLwhboOhXzMaCv/7hZ7bmuGUQeaMyv0ZVKHag==}
+    engines: {node: '>=22.18.0'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@seydx/node-av-linux-arm64-musl@7.0.3':
+    resolution: {integrity: sha512-bVWGWx8aU3p//F79kpCI1gEv4bWYTQNnTS9kOoxcKKycBUWjAa0ur4f32YoFa4+wPkIVCOR5xfw6IjSbdOXRFA==}
+    engines: {node: '>=22.18.0'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@seydx/node-av-linux-arm64@7.0.3':
+    resolution: {integrity: sha512-bMvLqEpw+juveRmQVsFUsCMJFNoknngBstGdL90Dj9BY3/anpGYtxkpYKNBxQGdwbPtRWUG/4soW5DU81x10Zw==}
+    engines: {node: '>=22.18.0'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@seydx/node-av-linux-x64-musl@7.0.3':
+    resolution: {integrity: sha512-g+FVi8eszqDVnCRkQ5l83Hh0UPOJarksxUEKRkOqMVxNtmpQkAKmS1heu1Je7DtOOWSnplMq0LbwlYFZ5V9+eQ==}
+    engines: {node: '>=22.18.0'}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@seydx/node-av-linux-x64@7.0.3':
+    resolution: {integrity: sha512-0Cb2r1R5jOiQAgLwFd6uUdokdMSYQhL7G7aUiN31oZOciqvD8xqkdZUu06haGXzz2mTyiBWq3LyqGgbxHMCggg==}
+    engines: {node: '>=22.18.0'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@seydx/node-av-win32-arm64-msvc@7.0.3':
+    resolution: {integrity: sha512-LqzQ7p7OUNeoFcf8TC5xK4FYCY7d90vlEEKpjuUybUEnGhsl+hbhCdacobr6425HoX2wFLAf7x+9C+WqJ2qSOw==}
+    engines: {node: '>=22.18.0'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@seydx/node-av-win32-x64-msvc@7.0.3':
+    resolution: {integrity: sha512-5qgSyJJ8HD+8WgHoe6kiriBsR8lxWdq/M0ltkeAhlccIrjPDkg3qgmiVNjhgZlLArzE/cd1VfaSfK3OPbZjlAg==}
+    engines: {node: '>=22.18.0'}
+    cpu: [x64]
+    os: [win32]
+
   '@shikijs/core@4.6.0':
     resolution: {integrity: sha512-bfd4OKgvoyXYiYmMRuleA656P4V7M/Du9lcTl38Ngm6KszMj7bq4J1IGZwSYR4c95Tv5UQALtYNWUwaI9UT3xw==}
     engines: {node: '>=20'}
@@ -3890,9 +3960,6 @@ packages:
 
   '@types/estree@1.0.10':
     resolution: {integrity: sha512-lTyOMnOcmRBzdCv6/4zUZCrEhV0xrqQiUZBZtVcbmLHBXKLnN8q89v/wKRF/Q0HbwVsqbIG3o5HDoFl9sduM+g==}
-
-  '@types/fluent-ffmpeg@2.1.28':
-    resolution: {integrity: sha512-5ovxsDwBcPfJ+eYs1I/ZpcYCnkce7pvH9AHSvrZllAp1ZPpTRDZAFjF3TRFbukxSgIYTTNYePbS0rKUmaxVbXw==}
 
   '@types/hammerjs@2.0.46':
     resolution: {integrity: sha512-ynRvcq6wvqexJ9brDMS4BnBLzmr0e14d6ZJTEShTBWKymQiHwlAyGu0ZPEFI2Fh1U53F7tN9ufClWM5KvqkKOw==}
@@ -4588,9 +4655,6 @@ packages:
   async-function@1.0.0:
     resolution: {integrity: sha512-hsU18Ae8CDTR6Kgu9DYf0EbCr/a5iGL0rytQDobUcdpYOKokk8LEjVphnXkDkgpi0wYVsqrXuP0bZxJaTqdgoA==}
     engines: {node: '>= 0.4'}
-
-  async@0.2.10:
-    resolution: {integrity: sha512-eAkdoKxU6/LkKDBzLpT+t6Ff5EtfSF4wx1WfJiPEEV7WNLnDaRXk0oVysiEPm262roaachGexwUv94WhSgN5TQ==}
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
@@ -5604,11 +5668,6 @@ packages:
 
   flatted@3.4.4:
     resolution: {integrity: sha512-5+ybhBZANEJxaH3X5evAFatUxLfEHSr7n6kYJ+1Qd0mUqr4eu9gIf6GDbWHf8RJijHrjjO8G+la14SlL2SeS1Q==}
-
-  fluent-ffmpeg@2.1.3:
-    resolution: {integrity: sha512-Be3narBNt2s6bsaqP6Jzq91heDgOEaDCJAXcE3qcma/EJBSy5FB4cvO31XBInuAuKBx8Kptf8dkhjK0IOru39Q==}
-    engines: {node: '>=18'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   follow-redirects@1.16.2:
     resolution: {integrity: sha512-/kVP2U8z596Ia0gwFrwyIeo74ta5aVmSeU1FfAUMAmcEP5EP7zydmag3SLiN64NaRKef3lxsq7i/g7ltJQDGow==}
@@ -6804,9 +6863,22 @@ packages:
 
   node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
+    deprecated: This package is no longer needed on supported Node.js versions. Node.js 16+ includes AbortController and AbortSignal as built-in globals. All Node.js versions requiring this polyfill are end-of-life. Use the built-in globals instead.
 
   node-addon-api@7.1.1:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
+
+  node-av@7.0.3:
+    resolution: {integrity: sha512-CLyXn/c80U+aJ916U9x5VwwAFInMnKGk+Bt8OoMMoUj5HC2GCrST/IFtRERbo5DcwXTfCB20xETw8+bG4q2Ejw==}
+    engines: {node: '>=22.18.0'}
+    peerDependencies:
+      '@seydx/node-av-ffmpeg': '*'
+      werift: '>=0.24.3'
+    peerDependenciesMeta:
+      '@seydx/node-av-ffmpeg':
+        optional: true
+      werift:
+        optional: true
 
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
@@ -8172,6 +8244,7 @@ packages:
 
   tldts-core@7.4.20:
     resolution: {integrity: sha512-C630TWXZCZmLq0F2bW4QqwnaaxCQ/svpAqvJwnC4JvgEM5ohhBnGsEzTLSOXcN+xjz+kEaHS5uoWIw2klnqd0A==}
+    deprecated: Partial release, see https://github.com/remusao/tldts/issues/2735. Use >=7.4.22.
 
   tldts@7.4.19:
     resolution: {integrity: sha512-48dH6aSpQnpbzDUc4vIQZ1VjB8tkK+e8c1yx05/SZK+rkssgjEOlxDd/yU8/a4vGYQ9vRgJr9dwMq9TJ0b3X2Q==}
@@ -8803,10 +8876,6 @@ packages:
   which-typed-array@1.1.24:
     resolution: {integrity: sha512-wk4Mf4pR5mRP7eYuuTBCIQ9d0ud2Fv2jRLQpfgnRjbOxAFHmjKFValgTpitVKzJJS8ajnYQV2Du1SZ8j6b/EUQ==}
     engines: {node: '>= 0.4'}
-
-  which@1.3.1:
-    resolution: {integrity: sha512-HxJdYWq1MTIQbJ3nw0cqssHoTNU267KlrDuGZ1WYlxDStUtKUhOaJmh112/TZmHxxUfuJqPXSOm7tDyas0OSIQ==}
-    hasBin: true
 
   which@2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
@@ -10676,6 +10745,30 @@ snapshots:
       '@sentry/core': 11.10.0
       vue: 3.5.44(typescript@6.0.3)
 
+  '@seydx/node-av-darwin-arm64@7.0.3':
+    optional: true
+
+  '@seydx/node-av-darwin-x64@7.0.3':
+    optional: true
+
+  '@seydx/node-av-linux-arm64-musl@7.0.3':
+    optional: true
+
+  '@seydx/node-av-linux-arm64@7.0.3':
+    optional: true
+
+  '@seydx/node-av-linux-x64-musl@7.0.3':
+    optional: true
+
+  '@seydx/node-av-linux-x64@7.0.3':
+    optional: true
+
+  '@seydx/node-av-win32-arm64-msvc@7.0.3':
+    optional: true
+
+  '@seydx/node-av-win32-x64-msvc@7.0.3':
+    optional: true
+
   '@shikijs/core@4.6.0':
     dependencies:
       '@shikijs/primitive': 4.6.0
@@ -11187,10 +11280,6 @@ snapshots:
   '@types/esrecurse@4.3.1': {}
 
   '@types/estree@1.0.10': {}
-
-  '@types/fluent-ffmpeg@2.1.28':
-    dependencies:
-      '@types/node': 26.6.6
 
   '@types/hammerjs@2.0.46': {}
 
@@ -12179,8 +12268,6 @@ snapshots:
   astring@1.9.0: {}
 
   async-function@1.0.0: {}
-
-  async@0.2.10: {}
 
   asynckit@0.4.0: {}
 
@@ -13509,11 +13596,6 @@ snapshots:
       keyv: 4.5.4
 
   flatted@3.4.4: {}
-
-  fluent-ffmpeg@2.1.3:
-    dependencies:
-      async: 0.2.10
-      which: 1.3.1
 
   follow-redirects@1.16.2(debug@4.4.3(supports-color@10.2.2)):
     optionalDependencies:
@@ -14948,6 +15030,17 @@ snapshots:
 
   node-addon-api@7.1.1:
     optional: true
+
+  node-av@7.0.3:
+    optionalDependencies:
+      '@seydx/node-av-darwin-arm64': 7.0.3
+      '@seydx/node-av-darwin-x64': 7.0.3
+      '@seydx/node-av-linux-arm64': 7.0.3
+      '@seydx/node-av-linux-arm64-musl': 7.0.3
+      '@seydx/node-av-linux-x64': 7.0.3
+      '@seydx/node-av-linux-x64-musl': 7.0.3
+      '@seydx/node-av-win32-arm64-msvc': 7.0.3
+      '@seydx/node-av-win32-x64-msvc': 7.0.3
 
   node-domexception@1.0.0: {}
 
@@ -17131,10 +17224,6 @@ snapshots:
       get-proto: 1.0.1
       gopd: 1.2.0
       has-tostringtag: 1.0.2
-
-  which@1.3.1:
-    dependencies:
-      isexe: 2.0.0
 
   which@2.0.2:
     dependencies:
