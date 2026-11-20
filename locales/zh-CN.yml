@@ -89,7 +89,7 @@ exportRequested: "已请求导出，这可能需要一段时间，导出的文�
 importRequested: "导入请求已提交，这可能需要花一点时间。"
 lists: "列表"
 noLists: "列表为空"
-note: "帖子详情"
+note: "发帖"
 notes: "帖子"
 following: "关注中"
 followers: "关注者"
