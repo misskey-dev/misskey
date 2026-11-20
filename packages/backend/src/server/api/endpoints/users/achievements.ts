@@ -24,6 +24,7 @@ export const meta = {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
 			id: '9ae5f2b6-5c97-4c7f-91b4-ebc6f274b7f1',
+			httpStatusCode: 404,
 		},
 	},
 } as const;
