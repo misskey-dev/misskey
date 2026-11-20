@@ -71,6 +71,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchEmoji);
 			}
 
+			// Duplication Check
+			const isDuplicate = await this.customEmojiService.checkDuplicate(emoji.name);
+			if (isDuplicate) throw new ApiError(meta.errors.duplicateName);
+
 			let driveFile: MiDriveFile;
 
 			try {
@@ -80,10 +84,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				// TODO: need to return Drive Error
 				throw new ApiError();
 			}
-
-			// Duplication Check
-			const isDuplicate = await this.customEmojiService.checkDuplicate(emoji.name);
-			if (isDuplicate) throw new ApiError(meta.errors.duplicateName);
 
 			const addedEmoji = await this.customEmojiService.add({
 				originalUrl: driveFile.url,
