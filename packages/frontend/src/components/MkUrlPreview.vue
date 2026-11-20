@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		></iframe>
 	</div>
 	<div :class="$style.action">
-		<MkButton :small="true" inline @click="tweetExpanded = false">
+		<MkButton :small="true" inline @click="setTweetExpanded(false)">
 			<i class="ti ti-x"></i> {{ i18n.ts.close }}
 		</MkButton>
 	</div>
@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</component>
 	<template v-if="showActions">
 		<div v-if="tweetId" :class="$style.action">
-			<MkButton :small="true" inline @click="tweetExpanded = true">
+			<MkButton :small="true" inline @click="setTweetExpanded(true)">
 				<i class="ti ti-brand-x"></i> {{ i18n.ts.expandTweet }}
 			</MkButton>
 		</div>
@@ -126,6 +126,7 @@ const player = computed(() => summalyResult.value?.player ?? { url: null, width:
 const playerEnabled = ref(false); // 初期値はsummaly取り終わったあとに設定
 const tweetId = ref<string | null>(null);
 const tweetExpanded = ref(false); // 初期値はsummaly取り終わったあとに設定
+let tweetExpandedByUser = false;
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
 const tweetHeight = ref(150);
 const unknownUrl = ref(false);
@@ -165,11 +166,17 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 
 		return res.json();
 	})
+	.catch(err => {
+		if (_DEV_) {
+			console.warn('Failed to fetch url preview', err);
+		}
+		return null;
+	})
 	.then((info: SummalyResult | null) => {
 		if (!info || info.url == null) {
 			fetching.value = false;
 			unknownUrl.value = true;
-			if (props.detail) tweetExpanded.value = true;
+			autoExpandTweet();
 			return;
 		}
 
@@ -179,12 +186,21 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 		summalyResult.value = info;
 
 		if (!info.sensitive) {
-			if (props.detail) tweetExpanded.value = true;
+			autoExpandTweet();
 			if (!isDeactivated) {
 				playerEnabled.value = (props.showActions && prefer.s.expandUrlPreviewAutomatically);
 			}
 		}
 	});
+
+function setTweetExpanded(expanded: boolean) {
+	tweetExpandedByUser = true;
+	tweetExpanded.value = expanded;
+}
+
+function autoExpandTweet() {
+	if (props.detail && !tweetExpandedByUser) tweetExpanded.value = true;
+}
 
 function adjustTweetHeight(message: MessageEvent) {
 	if (message.origin !== 'https://platform.twitter.com') return;
