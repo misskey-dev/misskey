@@ -5,11 +5,9 @@
 
 import * as fs from 'node:fs';
 import rename from 'rename';
+import { contentDisposition, correctFilename, isMimeImage } from '@misskey-dev/media-core';
+import type { IImageStreamable } from '@misskey-dev/media-core';
 import type { Config } from '@/config.js';
-import type { IImageStreamable } from '@/core/ImageProcessingService.js';
-import { contentDisposition } from '@/misc/content-disposition.js';
-import { correctFilename } from '@/misc/correct-filename.js';
-import { isMimeImage } from '@/misc/is-mime-image.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { attachStreamCleanup, handleRangeRequest, setFileResponseHeaders, getSafeContentType, needsCleanup } from './FileServerUtils.js';
 import type { FileServerFileResolver } from './FileServerFileResolver.js';
