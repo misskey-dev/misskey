@@ -43,6 +43,10 @@
 		],
 		"jsx": "preserve"
 	},
+	"contentMappers": [{
+		"package": "vize",
+		"extensions": [".vue"]
+	}],
 	"compileOnSave": false,
 	"include": [
 		"./src/**/*.ts",

@@ -53,6 +53,11 @@ minimumReleaseAgeExclude:
   - slacc-linux-x64-musl
   - slacc-win32-arm64-msvc
   - slacc-win32-x64-msvc
+  - '@vizejs/native'
+  - '@vizejs/native-*'
+  - vize
+  - '@tsrs/*'
+  - tsrs
   - '@nestjs/common@12.4.2'
   - '@nestjs/core@12.4.2'
   - '@nestjs/testing@12.4.2'
