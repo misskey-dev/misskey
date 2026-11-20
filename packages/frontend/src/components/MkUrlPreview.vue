@@ -83,7 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onDeactivated, onUnmounted, ref } from 'vue';
+import { computed, defineAsyncComponent, onActivated, onDeactivated, onUnmounted, ref } from 'vue';
 import { url as local } from '@@/js/config.js';
 import { versatileLang } from '@@/js/intl-const.js';
 import { maybeMakeRelative } from '@@/js/url.js';
@@ -125,12 +125,18 @@ const sensitive = computed(() => summalyResult.value?.sensitive ?? false);
 const player = computed(() => summalyResult.value?.player ?? { url: null, width: null, height: null });
 const playerEnabled = ref(false); // 初期値はsummaly取り終わったあとに設定
 const tweetId = ref<string | null>(null);
-const tweetExpanded = ref(props.detail);
+const tweetExpanded = ref(false); // 初期値はsummaly取り終わったあとに設定
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
 const tweetHeight = ref(150);
 const unknownUrl = ref(false);
+let isDeactivated = false;
+
+onActivated(() => {
+	isDeactivated = false;
+});
 
 onDeactivated(() => {
+	isDeactivated = true;
 	playerEnabled.value = false;
 });
 
@@ -163,6 +169,7 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 		if (!info || info.url == null) {
 			fetching.value = false;
 			unknownUrl.value = true;
+			if (props.detail) tweetExpanded.value = true;
 			return;
 		}
 
@@ -172,7 +179,10 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 		summalyResult.value = info;
 
 		if (!info.sensitive) {
-			playerEnabled.value = (props.showActions && prefer.s.expandUrlPreviewAutomatically);
+			if (props.detail) tweetExpanded.value = true;
+			if (!isDeactivated) {
+				playerEnabled.value = (props.showActions && prefer.s.expandUrlPreviewAutomatically);
+			}
 		}
 	});
 
