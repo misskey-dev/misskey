@@ -413,6 +413,27 @@ rt {
 	backdrop-filter: var(--MI-blur, blur(15px));
 }
 
+@property --MI_STRIPE-color {
+	syntax: '<color>';
+	inherits: false;
+	initial-value: transparent;
+}
+
+/* 色は --MI_STRIPE-color で指定する */
+._stripe {
+	background-image: linear-gradient(
+		45deg,
+		var(--MI_STRIPE-color) 16.67%,
+		transparent 16.67%,
+		transparent 50%,
+		var(--MI_STRIPE-color) 50%,
+		var(--MI_STRIPE-color) 66.67%,
+		transparent 66.67%,
+		transparent 100%
+	) !important;
+	background-size: 16px 16px !important;
+}
+
 ._formLinksGrid {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
