@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<Mfm :text="v"/>
 	</div>
 
-	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="saveManually"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
@@ -68,6 +68,7 @@ const emit = defineEmits<{
 	(ev: 'enter'): void;
 	(ev: 'update:modelValue', value: string): void;
 	(ev: 'savingStateChange', saved: boolean, invalid: boolean): void;
+	(ev: 'save', value: string): void;
 }>();
 
 const { modelValue, autofocus } = toRefs(props);
@@ -114,6 +115,13 @@ function updated() {
 	emit('update:modelValue', v.value ?? '');
 }
 
+function saveManually() {
+	const value = v.value ?? '';
+	updated();
+	// 同じ文字列の再保存でも親が受け取れるようにする
+	emit('save', value);
+}
+
 const debouncedUpdated = debounce(1000, updated);
 
 watch(modelValue, newValue => {
@@ -152,6 +160,14 @@ onUnmounted(() => {
 	if (autocompleteWorker) {
 		autocompleteWorker.detach();
 	}
+});
+
+function markChanged() {
+	changed.value = true;
+}
+
+defineExpose({
+	markChanged,
 });
 </script>
 

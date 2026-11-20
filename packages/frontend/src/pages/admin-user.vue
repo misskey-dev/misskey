@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</div>
 
-			<MkTextarea v-if="!isSystem" v-model="moderationNote" manualSave>
+			<MkTextarea v-if="!isSystem" ref="moderationNoteTextarea" v-model="moderationNote" manualSave @save="saveModerationNote">
 				<template #label>{{ i18n.ts.moderationNote }}</template>
 				<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
 			</MkTextarea>
@@ -207,7 +207,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, watch, ref, markRaw } from 'vue';
+import { computed, defineAsyncComponent, watch, ref, markRaw, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import type { ChartSrc } from '@/components/MkChart.vue';
@@ -233,6 +233,7 @@ import { ensureSignin, iAmAdmin, iAmModerator } from '@/i.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { Paginator } from '@/utility/paginator.js';
+import { alertModerationNoteTooLong, moderationNoteExceedsLimit } from '@/utility/moderation-note-length.js';
 
 const $i = ensureSignin();
 
@@ -264,6 +265,9 @@ const silenced = ref(info.value.isSilenced);
 const suspended = ref(info.value.isSuspended);
 const isSystem = ref(user.value.host == null && user.value.username.includes('.'));
 const moderationNote = ref(info.value.moderationNote);
+const moderationNoteSaveState = ref<'saved' | 'saving' | 'unsaved'>('saved');
+let moderationNoteSaveVersion = 0;
+const moderationNoteTextarea = useTemplateRef<{ markChanged: () => void }>('moderationNoteTextarea');
 const filesPaginator = markRaw(new Paginator('admin/drive/files', {
 	limit: 10,
 	computedParams: computed(() => ({
@@ -305,12 +309,38 @@ function _fetch_() {
 	}));
 }
 
-watch(moderationNote, async () => {
-	await misskeyApi('admin/update-user-note', { userId: user.value.id, text: moderationNote.value });
-	await refreshUser();
+watch(moderationNoteTextarea, textarea => {
+	if (moderationNoteSaveState.value === 'unsaved') {
+		textarea?.markChanged();
+	}
 });
 
+function keepUnsavedModerationNote() {
+	moderationNoteSaveState.value = 'unsaved';
+	moderationNoteTextarea.value?.markChanged();
+}
+
+async function saveModerationNote(text: string) {
+	if (moderationNoteExceedsLimit(text)) {
+		// ダイアログを待つ前に未保存へ戻す。待っている間の再取得で消さない。
+		keepUnsavedModerationNote();
+		await alertModerationNoteTooLong(text);
+		return;
+	}
+	moderationNoteSaveState.value = 'saving';
+	try {
+		await os.apiWithDialog('admin/update-user-note', { userId: user.value.id, text });
+	} catch {
+		keepUnsavedModerationNote();
+		return;
+	}
+	moderationNoteSaveVersion += 1;
+	moderationNoteSaveState.value = 'saved';
+	await refreshUser();
+}
+
 async function refreshUser() {
+	const noteSaveVersion = moderationNoteSaveVersion;
 	const result = await _fetch_();
 	user.value = result.user;
 	info.value = result.info;
@@ -319,7 +349,11 @@ async function refreshUser() {
 	silenced.value = info.value.isSilenced;
 	suspended.value = info.value.isSuspended;
 	isSystem.value = user.value.host == null && user.value.username.includes('.');
-	moderationNote.value = info.value.moderationNote;
+	// 上限超過や保存失敗の入力は、凍結などの再取得で消さない。
+	// 保存前に始まった再取得で、保存済みのノートを戻さない。
+	if (moderationNoteSaveState.value === 'saved' && noteSaveVersion === moderationNoteSaveVersion) {
+		moderationNote.value = info.value.moderationNote;
+	}
 }
 
 async function updateRemoteUser() {

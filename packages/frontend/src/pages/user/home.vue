@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</span>
 						</div>
 						<div v-if="iAmModerator" class="moderationNote">
-							<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave @savingStateChange="(changed) => { isModerationNoteDirty = changed; }">
+							<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" ref="moderationNoteTextarea" v-model="moderationNote" manualSave @save="saveModerationNote" @savingStateChange="(changed) => { isModerationNoteDirty = changed; }">
 								<template #label>{{ i18n.ts.moderationNote }}</template>
 								<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
 							</MkTextarea>
@@ -187,6 +187,7 @@ import MkSparkle from '@/components/MkSparkle.vue';
 import { prefer } from '@/preferences.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { isBirthday } from '@/utility/is-birthday.js';
+import { alertModerationNoteTooLong, moderationNoteExceedsLimit } from '@/utility/moderation-note-length.js';
 import type XTimeline_TypeReferenceOnly from './index.timeline.vue';
 
 function calcAge(birthdate: string): number {
@@ -236,13 +237,33 @@ const isEditingMemo = ref(false);
 const moderationNote = ref(props.user.moderationNote ?? '');
 const editModerationNote = ref(false);
 const isModerationNoteDirty = ref(false);
+const isModerationNoteSaving = ref(false);
+const moderationNoteTextarea = useTemplateRef<{ markChanged: () => void }>('moderationNoteTextarea');
 
-watch(moderationNote, async (newValue) => {
-	// 再取得した値を同期しただけの場合は保存しない
-	if (newValue === (user.value.moderationNote ?? '')) return;
-	await misskeyApi('admin/update-user-note', { userId: user.value.id, text: newValue });
+function keepUnsavedModerationNote() {
+	isModerationNoteDirty.value = true;
+	moderationNoteTextarea.value?.markChanged();
+}
+
+async function saveModerationNote(newValue: string) {
+	if (moderationNoteExceedsLimit(newValue)) {
+		// ダイアログを待つ前に未保存へ戻す。待っている間の再取得で消さない。
+		keepUnsavedModerationNote();
+		await alertModerationNoteTooLong(newValue);
+		return;
+	}
+	isModerationNoteSaving.value = true;
+	try {
+		await os.apiWithDialog('admin/update-user-note', { userId: user.value.id, text: newValue });
+	} catch {
+		// MkTextarea は保存完了前に未保存フラグを落とす。失敗した入力は再取得で消さない。
+		keepUnsavedModerationNote();
+		return;
+	} finally {
+		isModerationNoteSaving.value = false;
+	}
 	user.value = { ...user.value, moderationNote: newValue };
-});
+}
 
 const style = computed(() => {
 	if (props.user.bannerUrl == null) return {};
@@ -289,8 +310,10 @@ async function updateMemo() {
 
 watch(() => props.user, () => {
 	user.value = props.user;
-	// 編集中は上書きしない (入力中の内容を消してしまう)
-	if (!isModerationNoteDirty.value) moderationNote.value = props.user.moderationNote ?? '';
+	// 編集中や保存中は上書きしない (入力中の内容を消してしまう)
+	if (!isModerationNoteDirty.value && !isModerationNoteSaving.value) {
+		moderationNote.value = props.user.moderationNote ?? '';
+	}
 	if (isEditingMemo.value) return;
 	memoDraft.value = props.user.memo;
 });
