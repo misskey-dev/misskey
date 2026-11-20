@@ -4,7 +4,7 @@
  */
 
 import { toUnicode } from 'punycode.js';
-import { defineAsyncComponent, ref, watch } from 'vue';
+import { defineAsyncComponent, ref, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host, url } from '@@/js/config.js';
 import type { Router } from '@/router.js';
@@ -82,15 +82,6 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			userId: user.id,
 		}).then(() => {
 			user.isBlocking = !user.isBlocking;
-		});
-	}
-
-	async function toggleNotify() {
-		os.apiWithDialog('following/update', {
-			userId: user.id,
-			notify: user.notify === 'normal' ? 'none' : 'normal',
-		}).then(() => {
-			user.notify = user.notify === 'normal' ? 'none' : 'normal';
 		});
 	}
 
@@ -365,9 +356,24 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			text: i18n.ts.showRepliesToOthersInTimeline,
 			ref: withRepliesRef,
 		}, {
-			icon: user.notify === 'none' ? 'ti ti-bell' : 'ti ti-bell-off',
-			text: user.notify === 'none' ? i18n.ts.notifyNotes : i18n.ts.unnotifyNotes,
-			action: toggleNotify,
+			icon: 'ti ti-bell',
+			text: i18n.ts.notifyNotes,
+			type: 'parent',
+			children: async () => {
+				return (['normal', 'withFile', 'none'] as const).map(v => ({
+					type: 'radioOption',
+					text: v === 'normal' ? i18n.ts.notifyAllNotes : v === 'withFile' ? i18n.ts.notifyNotesWithFiles : i18n.ts.unnotifyNotes,
+					active: computed(() => user.notify === v),
+					action: () => {
+						os.apiWithDialog('following/update', {
+							userId: user.id,
+							notify: v,
+						}).then(() => {
+							user.notify = v;
+						});
+					},
+				}));
+			},
 		});
 
 		watch(withRepliesRef, (withReplies) => {

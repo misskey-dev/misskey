@@ -56,7 +56,7 @@ export class MiFollowing {
 		length: 32,
 		nullable: true,
 	})
-	public notify: 'normal' | null;
+	public notify: 'normal' | 'withFile' | null;
 
 	// フォロー関係の元になった Follow アクティビティの ID
 	// この列の追加前に作られたフォロー関係では null
