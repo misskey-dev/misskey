@@ -69,7 +69,12 @@ type SearchQuery = {
 	hostname?: string;
 };
 
-const storedQuery = JSON.parse(defaultMemoryStorage.getItem('admin-users-query') ?? '{}') as SearchQuery;
+let storedQuery: SearchQuery = {};
+try {
+	storedQuery = JSON.parse(defaultMemoryStorage.getItem('admin-users-query') ?? '{}') as SearchQuery;
+} catch {
+	storedQuery = {};
+}
 
 const {
 	model: sort,

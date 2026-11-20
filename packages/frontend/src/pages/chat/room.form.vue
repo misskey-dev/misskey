@@ -64,6 +64,14 @@ let autocompleteInstance: Autocomplete | null = null;
 
 const canSend = computed(() => (text.value != null && text.value !== '') || file.value != null);
 
+function safeParse(value: string | null): Record<string, any> {
+	try {
+		return JSON.parse(value ?? '{}');
+	} catch {
+		return {};
+	}
+}
+
 function getDraftKey() {
 	return props.user ? 'user:' + props.user.id : 'room:' + props.room?.id;
 }
@@ -227,7 +235,7 @@ function clear() {
 }
 
 function saveDraft() {
-	const drafts = JSON.parse(miLocalStorage.getItem('chatMessageDrafts') || '{}');
+	const drafts = safeParse(miLocalStorage.getItem('chatMessageDrafts'));
 
 	drafts[getDraftKey()] = {
 		updatedAt: new Date(),
@@ -241,7 +249,7 @@ function saveDraft() {
 }
 
 function deleteDraft() {
-	const drafts = JSON.parse(miLocalStorage.getItem('chatMessageDrafts') || '{}');
+	const drafts = safeParse(miLocalStorage.getItem('chatMessageDrafts'));
 
 	delete drafts[getDraftKey()];
 
@@ -283,7 +291,7 @@ onMounted(() => {
 	}
 
 	// 書きかけの投稿を復元
-	const draft = JSON.parse(miLocalStorage.getItem('chatMessageDrafts') || '{}')[getDraftKey()];
+	const draft = safeParse(miLocalStorage.getItem('chatMessageDrafts'))[getDraftKey()];
 	if (draft) {
 		text.value = draft.data.text;
 		file.value = draft.data.file;

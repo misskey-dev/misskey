@@ -54,15 +54,15 @@ const pointsRenote = ref<string>();
 const pointsTotal = ref<string>();
 
 function dragListen(fn: (ev: MouseEvent | TouchEvent) => void) {
-	window.addEventListener('mousemove', fn);
-	window.addEventListener('mouseleave', dragClear.bind(null, fn));
-	window.addEventListener('mouseup', dragClear.bind(null, fn));
-}
+	const dragClear = () => {
+		window.removeEventListener('mousemove', fn);
+		window.removeEventListener('mouseleave', dragClear);
+		window.removeEventListener('mouseup', dragClear);
+	};
 
-function dragClear(fn: (ev: MouseEvent | TouchEvent) => void) {
-	window.removeEventListener('mousemove', fn);
-	window.removeEventListener('mouseleave', dragClear as any);
-	window.removeEventListener('mouseup', dragClear as any);
+	window.addEventListener('mousemove', fn);
+	window.addEventListener('mouseleave', dragClear);
+	window.addEventListener('mouseup', dragClear);
 }
 
 function getPositionX(event: MouseEvent | TouchEvent) {

@@ -106,6 +106,8 @@ function fetchDriveInfo(): void {
 		capacity.value = info.capacity;
 		usage.value = info.usage;
 		fetching.value = false;
+	}).catch(() => {
+		fetching.value = false;
 	});
 }
 

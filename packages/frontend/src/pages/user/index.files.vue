@@ -48,6 +48,8 @@ onMounted(() => {
 	}).then(_notes => {
 		notes.value = _notes;
 		fetching.value = false;
+	}).catch(() => {
+		fetching.value = false;
 	});
 });
 </script>

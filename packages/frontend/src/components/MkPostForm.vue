@@ -185,6 +185,15 @@ const emit = defineEmits<{
 }>();
 
 const textareaEl = useTemplateRef('textareaEl');
+
+function safeParse<T>(value: string | null, fallback: T): T {
+	try {
+		return JSON.parse(value ?? '') as T;
+	} catch {
+		return fallback;
+	}
+}
+
 const cwInputEl = useTemplateRef('cwInputEl');
 const hashtagsInputEl = useTemplateRef('hashtagsInputEl');
 const visibilityButton = useTemplateRef('visibilityButton');
@@ -215,7 +224,7 @@ const scheduledAt = ref<number | null>(null);
 const draghover = ref(false);
 const quoteId = ref<string | null>(null);
 const hasNotSpecifiedMentions = ref(false);
-const recentHashtags = ref(JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]'));
+const recentHashtags = ref(safeParse<string[]>(miLocalStorage.getItem('hashtags'), []));
 const imeText = ref('');
 const showingOptions = ref(false);
 const textAreaReadOnly = ref(false);
@@ -881,7 +890,7 @@ type StoredDrafts = {
 function saveDraft() {
 	if (props.instant || props.mock) return;
 
-	const draftsData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}') as StoredDrafts;
+	const draftsData = safeParse<StoredDrafts>(miLocalStorage.getItem('drafts'), {});
 
 	draftsData[draftKey.value] = {
 		updatedAt: new Date().toISOString(),
@@ -904,7 +913,7 @@ function saveDraft() {
 }
 
 function deleteDraft() {
-	const draftsData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}') as StoredDrafts;
+	const draftsData = safeParse<StoredDrafts>(miLocalStorage.getItem('drafts'), {});
 
 	delete draftsData[draftKey.value];
 
@@ -1089,7 +1098,7 @@ async function post(ev?: PointerEvent) {
 			emit('posted');
 			if (postData.text && postData.text !== '') {
 				const hashtags_ = mfm.parse(postData.text).map(x => x.type === 'hashtag' && x.props.hashtag).filter(x => x) as string[];
-				const history = JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]') as string[];
+				const history = safeParse<string[]>(miLocalStorage.getItem('hashtags'), []);
 				miLocalStorage.setItem('hashtags', JSON.stringify(unique(hashtags_.concat(history))));
 			}
 			posting.value = false;
@@ -1410,7 +1419,7 @@ onMounted(() => {
 	nextTick(() => {
 		// 書きかけの投稿を復元
 		if (!props.instant && !props.mention && !props.specified && !props.mock) {
-			const draft = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}')[draftKey.value] as StoredDrafts[string] | undefined;
+			const draft = safeParse<StoredDrafts>(miLocalStorage.getItem('drafts'), {})[draftKey.value];
 			if (draft != null) {
 				text.value = draft.data.text;
 				useCw.value = draft.data.useCw;

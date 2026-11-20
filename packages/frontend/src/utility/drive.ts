@@ -83,7 +83,13 @@ export function uploadFile(file: File | Blob, options: {
 						text: i18n.ts.cannotUploadBecauseExceedsFileSizeLimit,
 					});
 				} else if (ev.target?.response) {
-					const res = JSON.parse(ev.target.response);
+					let res: any;
+					try {
+						res = JSON.parse(ev.target.response);
+					} catch (err) {
+						reject(err);
+						return;
+					}
 					if (res.error?.id === 'bec5bd69-fba3-43c9-b4fb-2894b66ad5d2') {
 						os.alert({
 							type: 'error',
@@ -127,7 +133,13 @@ export function uploadFile(file: File | Blob, options: {
 				return;
 			}
 
-			const driveFile = JSON.parse(ev.target.response);
+			let driveFile: Misskey.entities.DriveFile;
+			try {
+				driveFile = JSON.parse(ev.target.response);
+			} catch (err) {
+				reject(err);
+				return;
+			}
 			globalEvents.emit('driveFileCreated', driveFile);
 			resolve(driveFile);
 		}) as (ev: ProgressEvent<EventTarget>) => void;
