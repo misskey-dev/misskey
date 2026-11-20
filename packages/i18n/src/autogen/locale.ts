@@ -337,9 +337,17 @@ export interface Locale extends ILocale {
      */
     "download": string;
     /**
-     * ファイル「{name}」を削除しますか？このファイルを使用した一部のコンテンツも削除されます。
+     * ファイル「{name}」を削除しますか？
      */
-    "driveFileDeleteConfirm": ParameterizedString<"name">;
+    "driveFileDeleteConfirmTitle": ParameterizedString<"name">;
+    /**
+     * このファイルを使用した一部のコンテンツも削除されます。
+     */
+    "driveFileDeleteConfirmDescription": string;
+    /**
+     * 削除すると、アイコンまたはバナーの設定が解除されます。また、このファイルを使用した一部のコンテンツも削除されます。
+     */
+    "driveFileDeleteConfirmDescriptionWithAvatarOrBanner": string;
     /**
      * {name}のフォローを解除しますか？
      */
