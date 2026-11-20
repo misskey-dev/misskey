@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkReactionIcon
 				v-else-if="notification.type === 'reaction'"
 				:withTooltip="true"
-				:reaction="notification.reaction.replace(/^:(\w+):$/, ':$1@.:')"
+				:reaction="normalizeEmojiOrReaction(notification.reaction)"
 				:noStyle="true"
 				style="width: 100%; height: 100% !important; object-fit: contain;"
 			/>
@@ -158,7 +158,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.reactionsItemReaction">
 						<MkReactionIcon
 							:withTooltip="true"
-							:reaction="reaction.reaction.replace(/^:(\w+):$/, ':$1@.:')"
+							:reaction="normalizeEmojiOrReaction(reaction.reaction)"
 							:noStyle="true"
 							style="width: 100%; height: 100% !important; object-fit: contain;"
 						/>
@@ -186,6 +186,7 @@ import { userPage } from '@@/js/user.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { ensureSignin } from '@/i.js';
+import { normalizeEmojiOrReaction } from '@@/js/emojilist.js';
 
 const $i = ensureSignin();
 

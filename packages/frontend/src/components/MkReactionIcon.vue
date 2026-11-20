@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, useTemplateRef } from 'vue';
 import { useTooltip } from '@/composables/use-tooltip.js';
+import { normalizeEmojiOrReaction } from '@@/js/emojilist.js';
 import * as os from '@/os.js';
 
 const props = defineProps<{
@@ -27,7 +28,7 @@ if (props.withTooltip) {
 		if (elRef.value == null) return;
 		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkReactionTooltip.vue')), {
 			showing,
-			reaction: props.reaction.replace(/^:(\w+):$/, ':$1@.:'),
+			reaction: normalizeEmojiOrReaction(props.reaction),
 			anchorElement: elRef.value.$el,
 		}, {
 			closed: () => dispose(),

@@ -20,7 +20,7 @@
 		"js-built"
 	],
 	"dependencies": {
-		"@misskey-dev/emoji-data": "17.0.3",
+		"@misskey-dev/emoji-data": "17.0.6",
 		"i18n": "workspace:*",
 		"json5": "2.2.3",
 		"mfm-js": "0.28.0",
