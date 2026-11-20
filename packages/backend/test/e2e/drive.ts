@@ -90,6 +90,7 @@ describe('Drive', () => {
 
 	describe('ファイルの削除', () => {
 		const ACCESS_DENIED = '5eb8d909-2540-4970-90b8-dd6f86088121';
+		const NO_SUCH_FILE = '067bc436-2718-4795-b0fb-ecbe43949e31';
 
 		test('本人は通常のファイルを削除できる', async () => {
 			const file = (await uploadFile(bob)).body!;
@@ -97,8 +98,15 @@ describe('Drive', () => {
 			const res = await api('drive/files/delete', { fileId: file.id }, bob);
 			assert.strictEqual(res.status, 204);
 
-			const show = await api('drive/files/show', { fileId: file.id }, bob);
+			// DB からの削除はレスポンス後に非同期で行われるため、不在になるまで再照会する
+			const deadline = Date.now() + 10 * 1000;
+			let show = await api('drive/files/show', { fileId: file.id }, bob);
+			while (show.status !== 400 && Date.now() < deadline) {
+				await new Promise(resolve => setTimeout(resolve, 100));
+				show = await api('drive/files/show', { fileId: file.id }, bob);
+			}
 			assert.strictEqual(show.status, 400);
+			assert.strictEqual(castAsError(show.body as any).error.id, NO_SUCH_FILE);
 		});
 
 		test('本人がアイコン・バナーに設定中のファイルを削除すると、設定が解除される', async () => {

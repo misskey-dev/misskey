@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
 import { DriveService } from '@/core/DriveService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
@@ -80,29 +81,29 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// アイコン/バナーに設定されているファイルの場合は、その設定を解除する
 			if (owner != null && (isAvatar || isBanner)) {
-				await this.unsetAvatarAndBanner(owner, isAvatar, isBanner);
+				await this.unsetAvatarAndBanner(owner, file.id, isAvatar, isBanner);
 			}
 
 			await this.driveService.deleteFile(file, false, me);
 		});
 	}
 
-	private async unsetAvatarAndBanner(user: MiUser, unsetAvatar: boolean, unsetBanner: boolean) {
-		const updates = {} as Partial<MiUser>;
+	private async unsetAvatarAndBanner(user: MiUser, fileId: MiDriveFile['id'], unsetAvatar: boolean, unsetBanner: boolean) {
+		// 対象ファイルが設定されたままの場合のみ解除する
+		const [avatarResult, bannerResult] = await Promise.all([
+			unsetAvatar ? this.usersRepository.update({ id: user.id, avatarId: fileId }, {
+				avatarId: null,
+				avatarUrl: null,
+				avatarBlurhash: null,
+			}) : null,
+			unsetBanner ? this.usersRepository.update({ id: user.id, bannerId: fileId }, {
+				bannerId: null,
+				bannerUrl: null,
+				bannerBlurhash: null,
+			}) : null,
+		]);
 
-		if (unsetAvatar) {
-			updates.avatarId = null;
-			updates.avatarUrl = null;
-			updates.avatarBlurhash = null;
-		}
-
-		if (unsetBanner) {
-			updates.bannerId = null;
-			updates.bannerUrl = null;
-			updates.bannerBlurhash = null;
-		}
-
-		await this.usersRepository.update(user.id, updates);
+		if (!avatarResult?.affected && !bannerResult?.affected) return;
 
 		if (this.userEntityService.isLocalUser(user)) {
 			this.globalEventService.publishInternalEvent('localUserUpdated', { id: user.id });
