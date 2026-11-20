@@ -12,7 +12,6 @@ export function OAuthPage(props: CommonProps<{
 	clientLogo?: string;
 	scope: string[];
 }>) {
-
 	//- Should be removed by the page when it loads, so that it won't needlessly
 	//- stay when user navigates away via the navigation bar
 	//- XXX: Remove navigation bar in auth page?

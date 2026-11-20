@@ -45,7 +45,7 @@ function settings() {
 	router.push('/my/lists/:listId', {
 		params: {
 			listId: props.listId,
-		}
+		},
 	});
 }
 

@@ -10,14 +10,14 @@ import { describe, expect, test } from "vitest";
 describe('AiScript common script', () => {
 	test('assertStringAndIsIn', () => {
 		expect(
-			() => assertStringAndIsIn(values.STR('a'), ['a', 'b'])
+			() => assertStringAndIsIn(values.STR('a'), ['a', 'b']),
 		).not.toThrow();
 		expect(
-			() => assertStringAndIsIn(values.STR('c'), ['a', 'b'])
+			() => assertStringAndIsIn(values.STR('c'), ['a', 'b']),
 		).toThrow('"c" is not in "a", "b"');
 		expect(() => assertStringAndIsIn(
 			values.STR('invalid'),
-			['left', 'center', 'right']
+			['left', 'center', 'right'],
 		)).toThrow('"invalid" is not in "left", "center", "right"');
 	});
 });

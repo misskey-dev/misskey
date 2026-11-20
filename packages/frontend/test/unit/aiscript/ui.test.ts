@@ -27,7 +27,8 @@ type ExeResult = {
 	get: (id: string) => AsUiComponent;
 	components: Map<string, AsUiComponent>;
 	outputs: values.Value[];
-}
+};
+
 async function exe(script: string): Promise<ExeResult> {
 	const rootRef = ref<AsUiRoot>();
 	const components = new Map<string, AsUiComponent>();
@@ -40,8 +41,8 @@ async function exe(script: string): Promise<ExeResult> {
 		{
 			out: (value) => {
 				outputs.push(value);
-			}
-		}
+			},
+		},
 	);
 	const ast = Parser.parse(script);
 	await interpreter.exec(ast);
@@ -547,7 +548,7 @@ describe('AiScript UI API', () => {
 			await onClickA!();
 			await onClickB!();
 			expect(outputs).toStrictEqual(
-				[values.STR('clicked a'), values.STR('clicked b')]
+				[values.STR('clicked a'), values.STR('clicked b')],
 			);
 		});
 	});

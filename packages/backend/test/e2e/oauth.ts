@@ -1072,7 +1072,6 @@ describe('OAuth', () => {
 				});
 			});
 
-
 			test('Disallow loopback', async () => {
 				await sendEnvUpdateRequest({ key: 'MISSKEY_TEST_CHECK_IP_RANGE', value: '1' });
 

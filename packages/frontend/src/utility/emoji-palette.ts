@@ -70,7 +70,7 @@ export async function addToEmojiPalette(emoji: string) {
 
 		if (res.canceled || res.result === 'doNothing') return;
 
-		emojis = emojis.filter((e) => e !== emoji);
+		emojis = emojis.filter((paletteEmoji) => paletteEmoji !== emoji);
 
 		if (res.result === 'append') {
 			emojis.push(emoji);

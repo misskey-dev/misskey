@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XChart ref="chartWaiting" type="waiting"/>
 		</div>
 	</div>
-	<MkFolder :defaultOpen="true" :max-height="250">
+	<MkFolder :defaultOpen="true" :maxHeight="250">
 		<template #icon><i class="ti ti-alert-triangle"></i></template>
 		<template #label>Errored instances</template>
 		<template #suffix>({{ number(jobs.reduce((a, b) => a + b[1], 0)) }} jobs)</template>
