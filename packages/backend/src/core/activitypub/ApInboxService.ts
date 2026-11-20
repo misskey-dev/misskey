@@ -347,6 +347,10 @@ export class ApInboxService {
 				return;
 			}
 
+			if (renote.userHost === null && renote.localOnly) {
+				return 'skip: invalid actor for this activity';
+			}
+
 			if (!await this.noteEntityService.isVisibleForMe(renote, actor.id)) {
 				return 'skip: invalid actor for this activity';
 			}
