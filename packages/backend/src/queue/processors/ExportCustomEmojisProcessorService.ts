@@ -4,6 +4,7 @@
  */
 
 import * as fs from 'node:fs';
+import * as fsPromises from 'node:fs/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
@@ -59,7 +60,7 @@ export class ExportCustomEmojisProcessorService {
 		const metaFileName = 'meta.json';
 		const metaPath = path + '/' + metaFileName;
 
-		fs.writeFileSync(metaPath, '', 'utf-8');
+		await fsPromises.writeFile(metaPath, '', 'utf-8');
 
 		const metaStream = fs.createWriteStream(metaPath, { flags: 'a' });
 
@@ -92,7 +93,7 @@ export class ExportCustomEmojisProcessorService {
 		// fileName ごとに最後にダウンロードに成功したファイルだけを保持する
 		const emojiFiles = new Map<string, string>();
 
-		for (const emoji of customEmojis) {
+		for (const [index, emoji] of customEmojis.entries()) {
 			if (!/^[a-zA-Z0-9_]+$/.test(emoji.name)) {
 				this.logger.error(`invalid emoji name: ${emoji.name}`);
 				continue;
@@ -101,7 +102,7 @@ export class ExportCustomEmojisProcessorService {
 			const fileName = emoji.name + (ext ? '.' + ext : '');
 			// 失敗時に同じ fileName の別レコードのファイルを消さないよう、一時パスはレコードごとに分ける
 			const emojiPath = path + '/emoji-' + emoji.id;
-			fs.writeFileSync(emojiPath, '', 'binary');
+			await fsPromises.writeFile(emojiPath, '', 'binary');
 			let downloaded = false;
 
 			try {
@@ -114,11 +115,11 @@ export class ExportCustomEmojisProcessorService {
 			if (downloaded) {
 				const prevPath = emojiFiles.get(fileName);
 				if (prevPath != null) {
-					fs.unlinkSync(prevPath);
+					await fsPromises.unlink(prevPath);
 				}
 				emojiFiles.set(fileName, emojiPath);
 			} else {
-				fs.unlinkSync(emojiPath);
+				await fsPromises.unlink(emojiPath);
 			}
 
 			const content = JSON.stringify({
@@ -126,9 +127,12 @@ export class ExportCustomEmojisProcessorService {
 				downloaded: downloaded,
 				emoji: emoji,
 			});
-			const isFirst = customEmojis.indexOf(emoji) === 0;
-
-			await writeMeta(isFirst ? content : ',\n' + content);
+			// indexOfによるO(n)検索を避けるため、ループインデックスで判定する
+			if (index === 0) {
+				await writeMeta(content);
+			} else {
+				await writeMeta(',\n' + content);
+			}
 		}
 
 		await writeMeta(']}');
