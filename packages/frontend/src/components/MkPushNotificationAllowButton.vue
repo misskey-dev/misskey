@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:rounded="rounded"
 	:inline="inline"
 	:autofocus="autofocus"
-	:wait="wait"
+	:wait="wait || processing"
 	:full="full"
 	@click="subscribe"
 >
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:rounded="rounded"
 	:inline="inline"
 	:autofocus="autofocus"
-	:wait="wait"
+	:wait="wait || processing"
 	:full="full"
 	@click="unsubscribe"
 >
@@ -73,33 +73,34 @@ const supported = ref(false);
 // If this browser has already subscribed to push notification
 const pushSubscription = ref<PushSubscription | null>(null);
 const pushRegistrationInServer = ref<{ state?: string; key?: string; userId: string; endpoint: string; sendReadMessage: boolean; } | undefined>();
+// If a subscribe/unsubscribe operation is currently being processed
+const processing = ref(false);
 
 async function subscribe() {
+	if (processing.value) return;
 	if (!registration.value || !supported.value || !instance.swPublickey) return;
 
-	if ('Notification' in window) {
-		let permission = Notification.permission;
+	const swr = registration.value;
+	const swPublickey = instance.swPublickey;
 
-		if (Notification.permission === 'default') {
-			permission = await promiseDialog(Notification.requestPermission(), null, null, i18n.ts.pleaseAllowPushNotification);
+	processing.value = true;
+
+	try {
+		if ('Notification' in window) {
+			let permission = Notification.permission;
+
+			if (Notification.permission === 'default') {
+				permission = await promiseDialog(Notification.requestPermission(), null, null, i18n.ts.pleaseAllowPushNotification);
+			}
+
+			if (permission !== 'granted') {
+				showPermissionDeniedAlert();
+				return;
+			}
 		}
 
-		if (permission !== 'granted') {
-			alert({
-				type: 'error',
-				title: i18n.ts.browserPushNotificationDisabled,
-				text: i18n.tsx.browserPushNotificationDisabledDescription({ serverName: instanceName }),
-			});
-			return;
-		}
-	}
-
-	// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
-	await promiseDialog(registration.value.pushManager.subscribe({
-		userVisibleOnly: true,
-		applicationServerKey: urlBase64ToUint8Array(instance.swPublickey),
-	})
-		.then(async subscription => {
+		await promiseDialog((async () => {
+			const subscription = await createBrowserSubscription(swr, swPublickey);
 			pushSubscription.value = subscription;
 
 			// Register
@@ -108,42 +109,125 @@ async function subscribe() {
 				auth: encodePushSubscriptionKey(subscription.getKey('auth')),
 				publickey: encodePushSubscriptionKey(subscription.getKey('p256dh')),
 			});
-		}, async err => { // When subscribe failed
-			// 通知が許可されていなかったとき
-			if (err?.name === 'NotAllowedError') {
-				console.info('User denied the notification permission request.');
+		})(), null, (err: unknown) => {
+			if (err instanceof DOMException && err.name === 'NotAllowedError') {
+				showPermissionDeniedAlert();
 				return;
 			}
 
-			// 違うapplicationServerKey (または gcm_sender_id)のサブスクリプションが
-			// 既に存在していることが原因でエラーになった可能性があるので、
-			// そのサブスクリプションを解除しておく
-			// （これは実行されなさそうだけど、おまじない的に古い実装から残してある）
-			await unsubscribe();
-		}), null, null);
+			alert({
+				type: 'error',
+				title: i18n.ts.somethingHappened,
+				text: getErrorMessage(err),
+			});
+		});
+	} catch (err) {
+		// エラーは promiseDialog のコールバックで表示済み
+		console.error(err);
+	} finally {
+		processing.value = false;
+	}
+}
+
+async function createBrowserSubscription(swr: ServiceWorkerRegistration, swPublickey: string): Promise<PushSubscription> {
+	// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
+	const options: PushSubscriptionOptionsInit = {
+		userVisibleOnly: true,
+		applicationServerKey: urlBase64ToUint8Array(swPublickey),
+	};
+
+	try {
+		return await swr.pushManager.subscribe(options);
+	} catch (err) {
+		// 違うapplicationServerKey (または gcm_sender_id)のサブスクリプションが
+		// 既に存在している場合は InvalidStateError になるので、
+		// ブラウザ側のサブスクリプションを解除してから再試行する。
+		// それ以外のエラーでは有効な購読を消さないよう、そのまま失敗させる
+		if (!(err instanceof DOMException && err.name === 'InvalidStateError')) throw err;
+
+		const existing = await swr.pushManager.getSubscription();
+		if (existing == null) throw err;
+
+		// 古い購読に紐づくサーバー側の登録も、可能なら消しておく (失敗しても続行する)
+		// 古いキーの購読はどのアカウントでも使えないため、同じブラウザの他アカウント分もまとめて消す。
+		// 他アカウントは各自で再度有効化する必要がある
+		await misskeyApi('sw/unregister', {
+			endpoint: existing.endpoint,
+			auth: encodePushSubscriptionKey(existing.getKey('auth')),
+			publickey: encodePushSubscriptionKey(existing.getKey('p256dh')),
+		}, null).catch(unregisterErr => {
+			console.warn('Failed to unregister the stale push subscription from the server.', unregisterErr);
+		});
+
+		await existing.unsubscribe();
+		pushSubscription.value = null;
+		pushRegistrationInServer.value = undefined;
+
+		return await swr.pushManager.subscribe(options);
+	}
 }
 
 async function unsubscribe() {
-	if (!pushSubscription.value) return;
+	if (processing.value) return;
+
+	const subscription = pushSubscription.value;
+	if (!subscription) return;
 
 	const params = {
-		endpoint: pushSubscription.value.endpoint,
-		auth: encodePushSubscriptionKey(pushSubscription.value.getKey('auth')),
-		publickey: encodePushSubscriptionKey(pushSubscription.value.getKey('p256dh')),
+		endpoint: subscription.endpoint,
+		auth: encodePushSubscriptionKey(subscription.getKey('auth')),
+		publickey: encodePushSubscriptionKey(subscription.getKey('p256dh')),
 	};
-	const accounts = await getAccounts();
 
-	pushRegistrationInServer.value = undefined;
+	processing.value = true;
 
-	if ($i && accounts.length >= 2) {
-		// ブラウザの購読は他アカウントと共有しているので、このアカウントの登録のみ解除する
-		apiWithDialog('sw/unregister', params, $i.token);
-	} else {
-		// ブラウザの購読ごと解除するので、この購読に紐づく全アカウントの登録を解除する
-		pushSubscription.value.unsubscribe();
-		apiWithDialog('sw/unregister', params, null);
-		pushSubscription.value = null;
+	try {
+		const accounts = await getAccounts();
+
+		if ($i && accounts.length >= 2) {
+			// ブラウザの購読は他アカウントと共有しているので、このアカウントの登録のみ解除する
+			await apiWithDialog('sw/unregister', params, $i.token);
+			pushRegistrationInServer.value = undefined;
+		} else {
+			// ブラウザの購読ごと解除するので、この購読に紐づく全アカウントの登録を解除する
+			// サーバー側の登録を先に消し、成功してからブラウザの購読を解除する
+			await apiWithDialog('sw/unregister', params, null);
+			pushRegistrationInServer.value = undefined;
+
+			try {
+				await subscription.unsubscribe();
+				pushSubscription.value = null;
+			} catch (err) {
+				console.error(err);
+				// サーバー側の登録は解除済みなので、ブラウザの購読が残っていても通知は届かない
+				alert({
+					type: 'error',
+					title: i18n.ts.somethingHappened,
+					text: getErrorMessage(err),
+				});
+			}
+		}
+	} catch (err) {
+		// API エラーは apiWithDialog で表示済み
+		console.error(err);
+	} finally {
+		processing.value = false;
 	}
+}
+
+function showPermissionDeniedAlert() {
+	alert({
+		type: 'error',
+		title: i18n.ts.browserPushNotificationDisabled,
+		text: i18n.tsx.browserPushNotificationDisabledDescription({ serverName: instanceName }),
+	});
+}
+
+function getErrorMessage(err: unknown): string | undefined {
+	if (typeof err === 'object' && err != null && 'message' in err && typeof err.message === 'string') {
+		return err.message;
+	}
+	return undefined;
 }
 
 /**
