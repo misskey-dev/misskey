@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository } from '@/models/_.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
@@ -113,23 +112,22 @@ class DeliverManager {
 		// Process follower recipes first to avoid duplication when processing direct recipes later.
 		if (this.recipes.some(r => isFollowers(r))) {
 			// followers deliver
-			// TODO: SELECT DISTINCT ON ("followerSharedInbox") "followerSharedInbox" みたいな問い合わせにすればよりパフォーマンス向上できそう
-			// ただ、sharedInboxがnullなリモートユーザーも稀におり、その対応ができなさそう？
-			const followers = await this.followingsRepository.find({
-				where: {
-					followeeId: this.actor.id,
-					followerHost: Not(IsNull()),
-				},
-				select: {
-					followerSharedInbox: true,
-					followerInbox: true,
-				},
-			});
+			// リモートフォロワーの数に比べて配送先 inbox の数はずっと少ないため、重複除去は DB 側で行う。
+			// sharedInbox を持たないリモートユーザーは個別の inbox に配送する。
+			// 同じ URL が、あるフォロワーでは sharedInbox、別のフォロワーでは個別の inbox として記録されていることがある。
+			// 結果が行の順序に左右されないよう inbox ごとにまとめ、1 件でも sharedInbox として記録されていれば sharedInbox として扱う
+			const followerInboxes = await this.followingsRepository.createQueryBuilder('following')
+				.select('COALESCE(following.followerSharedInbox, following.followerInbox)', 'inbox')
+				.addSelect('BOOL_OR(following.followerSharedInbox IS NOT NULL)', 'isSharedInbox')
+				.where('following.followeeId = :followeeId', { followeeId: this.actor.id })
+				.andWhere('following.followerHost IS NOT NULL')
+				// inbox を持たないフォロワーには配送できないので除外する
+				.andWhere('(following.followerSharedInbox IS NOT NULL OR following.followerInbox IS NOT NULL)')
+				.groupBy('COALESCE(following.followerSharedInbox, following.followerInbox)')
+				.getRawMany<{ inbox: string; isSharedInbox: boolean; }>();
 
-			for (const following of followers) {
-				const inbox = following.followerSharedInbox ?? following.followerInbox;
-				if (inbox === null) throw new Error('inbox is null');
-				inboxes.set(inbox, following.followerSharedInbox != null);
+			for (const { inbox, isSharedInbox } of followerInboxes) {
+				inboxes.set(inbox, isSharedInbox);
 			}
 		}
 
@@ -213,6 +211,30 @@ export class ApDeliverManagerService {
 		);
 		for (const to of targets) manager.addDirectRecipe(to);
 		await manager.execute();
+	}
+
+	/**
+	 * Deliver activity to all known shared inboxes
+	 * (shared inboxes of remote users that have a follow relationship with any local user)
+	 * @param actor
+	 * @param activity Activity
+	 */
+	@bindThis
+	public async deliverToAllKnownSharedInboxes(actor: { id: MiLocalUser['id']; host: null; }, activity: IActivity): Promise<void> {
+		// following はサーバー全体で非常に大きくなりうる一方、sharedInbox の種類は高々リモートサーバーの数なので、
+		// 重複除去は DB 側で行い、アプリ側には一意な sharedInbox だけを取り出す。
+		const sharedInboxes = await this.followingsRepository.createQueryBuilder('following')
+			.select('COALESCE(following.followerSharedInbox, following.followeeSharedInbox)', 'inbox')
+			.distinct(true)
+			.where('following.followerSharedInbox IS NOT NULL')
+			.orWhere('following.followeeSharedInbox IS NOT NULL')
+			.getRawMany<{ inbox: string; }>();
+
+		if (sharedInboxes.length === 0) return;
+
+		const inboxes = new Map(sharedInboxes.map(({ inbox }) => [inbox, true]));
+
+		await this.queueService.deliverMany({ id: actor.id }, activity, inboxes);
 	}
 
 	@bindThis

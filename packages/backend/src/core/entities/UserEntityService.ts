@@ -241,6 +241,9 @@ export class UserEntityService implements OnModuleInit {
 
 	@bindThis
 	public async getRelations(me: MiUser['id'], targets: MiUser['id'][]): Promise<Map<MiUser['id'], UserRelation>> {
+		if (targets.length === 0) return new Map();
+
+		// 各クエリは対象ユーザー (targets) で絞り込むこと
 		const [
 			followers,
 			followees,
@@ -251,43 +254,50 @@ export class UserEntityService implements OnModuleInit {
 			muters,
 			renoteMuters,
 		] = await Promise.all([
-			this.followingsRepository.findBy({ followerId: me })
+			this.followingsRepository.findBy({ followerId: me, followeeId: In(targets) })
 				.then(f => new Map(f.map(it => [it.followeeId, it]))),
 			this.followingsRepository.createQueryBuilder('f')
 				.select('f.followerId')
 				.where('f.followeeId = :me', { me })
+				.andWhere('f.followerId IN (:...targets)', { targets })
 				.getRawMany<{ f_followerId: string }>()
-				.then(it => it.map(it => it.f_followerId)),
+				.then(it => new Set(it.map(it => it.f_followerId))),
 			this.followRequestsRepository.createQueryBuilder('f')
 				.select('f.followeeId')
 				.where('f.followerId = :me', { me })
+				.andWhere('f.followeeId IN (:...targets)', { targets })
 				.getRawMany<{ f_followeeId: string }>()
-				.then(it => it.map(it => it.f_followeeId)),
+				.then(it => new Set(it.map(it => it.f_followeeId))),
 			this.followRequestsRepository.createQueryBuilder('f')
 				.select('f.followerId')
 				.where('f.followeeId = :me', { me })
+				.andWhere('f.followerId IN (:...targets)', { targets })
 				.getRawMany<{ f_followerId: string }>()
-				.then(it => it.map(it => it.f_followerId)),
+				.then(it => new Set(it.map(it => it.f_followerId))),
 			this.blockingsRepository.createQueryBuilder('b')
 				.select('b.blockeeId')
 				.where('b.blockerId = :me', { me })
+				.andWhere('b.blockeeId IN (:...targets)', { targets })
 				.getRawMany<{ b_blockeeId: string }>()
-				.then(it => it.map(it => it.b_blockeeId)),
+				.then(it => new Set(it.map(it => it.b_blockeeId))),
 			this.blockingsRepository.createQueryBuilder('b')
 				.select('b.blockerId')
 				.where('b.blockeeId = :me', { me })
+				.andWhere('b.blockerId IN (:...targets)', { targets })
 				.getRawMany<{ b_blockerId: string }>()
-				.then(it => it.map(it => it.b_blockerId)),
+				.then(it => new Set(it.map(it => it.b_blockerId))),
 			this.mutingsRepository.createQueryBuilder('m')
 				.select('m.muteeId')
 				.where('m.muterId = :me', { me })
+				.andWhere('m.muteeId IN (:...targets)', { targets })
 				.getRawMany<{ m_muteeId: string }>()
-				.then(it => it.map(it => it.m_muteeId)),
+				.then(it => new Set(it.map(it => it.m_muteeId))),
 			this.renoteMutingsRepository.createQueryBuilder('m')
 				.select('m.muteeId')
 				.where('m.muterId = :me', { me })
+				.andWhere('m.muteeId IN (:...targets)', { targets })
 				.getRawMany<{ m_muteeId: string }>()
-				.then(it => it.map(it => it.m_muteeId)),
+				.then(it => new Set(it.map(it => it.m_muteeId))),
 		]);
 
 		return new Map(
@@ -300,13 +310,13 @@ export class UserEntityService implements OnModuleInit {
 						id: target,
 						following: following,
 						isFollowing: following != null,
-						isFollowed: followees.includes(target),
-						hasPendingFollowRequestFromYou: followersRequests.includes(target),
-						hasPendingFollowRequestToYou: followeesRequests.includes(target),
-						isBlocking: blockers.includes(target),
-						isBlocked: blockees.includes(target),
-						isMuted: muters.includes(target),
-						isRenoteMuted: renoteMuters.includes(target),
+						isFollowed: followees.has(target),
+						hasPendingFollowRequestFromYou: followersRequests.has(target),
+						hasPendingFollowRequestToYou: followeesRequests.has(target),
+						isBlocking: blockers.has(target),
+						isBlocked: blockees.has(target),
+						isMuted: muters.has(target),
+						isRenoteMuted: renoteMuters.has(target),
 					},
 				];
 			}),

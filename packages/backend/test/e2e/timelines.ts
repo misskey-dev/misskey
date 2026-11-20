@@ -375,6 +375,25 @@ describe('Timelines', () => {
 				}, waitForPushToTlOptions);
 			});
 
+			test('[withRenotes: false] フォローしているユーザーによるアンケート付きの引用が含まれる', async () => {
+				const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
+
+				await api('following/create', { userId: bob.id }, alice);
+				const carolNote = await post(carol, { text: 'hi' });
+				// リノートしつつ自身のアンケートを付けたノート (純粋なリノートではないので withRenotes: false でも除外されない)
+				const bobNote = await post(bob, { renoteId: carolNote.id, poll: { choices: ['kinoko', 'takenoko'] } });
+
+				await vi.waitFor(async () => {
+					const res = await api('notes/timeline', {
+						limit: 100,
+						withRenotes: false,
+					}, alice);
+
+					assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+					assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
+				}, waitForPushToTlOptions);
+			});
+
 			test('[withRenotes: false] フォローしているユーザーの他人の投稿のリノートが含まれない', async () => {
 				const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 

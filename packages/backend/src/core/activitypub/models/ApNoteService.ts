@@ -388,6 +388,8 @@ export class ApNoteService {
 
 		const eomjiTags = toArray(tags).filter(isEmoji);
 
+		if (eomjiTags.length === 0) return [];
+
 		const existingEmojis = await this.emojisRepository.findBy({
 			host,
 			name: In(eomjiTags.map(tag => tag.name.replaceAll(':', ''))),
