@@ -7,7 +7,7 @@ type ShutdownSignalProcess = {
 	once(event: 'SIGTERM' | 'SIGINT', listener: () => Promise<void>): unknown;
 };
 
-const SHUTDOWN_TIMEOUT_MS = 10_000;
+const SHUTDOWN_TIMEOUT_MS = 20_000;
 
 export type ShutdownTask = () => Promise<void>;
 
