@@ -870,8 +870,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 					if (!isThreadMuted) {
 						nm.push(data.reply.userId, 'reply');
-						this.globalEventService.publishMainStream(data.reply.userId, 'reply', noteObj);
-						this.webhookService.enqueueUserWebhook(data.reply.userId, 'reply', { note: noteObj });
+
+						// noteObj は skipHide で pack されているため、受信者向けに pack し直す
+						const packedForReplyUser = await this.noteEntityService.pack(note, { id: data.reply.userId }, { detail: true });
+						if (!packedForReplyUser.isHidden) {
+							this.globalEventService.publishMainStream(data.reply.userId, 'reply', packedForReplyUser);
+							this.webhookService.enqueueUserWebhook(data.reply.userId, 'reply', { note: packedForReplyUser });
+						}
 					}
 				}
 			}
@@ -887,8 +892,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 				// Publish event
 				if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
-					this.globalEventService.publishMainStream(data.renote.userId, 'renote', noteObj);
-					this.webhookService.enqueueUserWebhook(data.renote.userId, 'renote', { note: noteObj });
+					// noteObj は skipHide で pack されているため、受信者向けに pack し直す
+					const packedForRenoteUser = await this.noteEntityService.pack(note, { id: data.renote.userId }, { detail: true });
+					if (!packedForRenoteUser.isHidden) {
+						this.globalEventService.publishMainStream(data.renote.userId, 'renote', packedForRenoteUser);
+						this.webhookService.enqueueUserWebhook(data.renote.userId, 'renote', { note: packedForRenoteUser });
+					}
 				}
 			}
 

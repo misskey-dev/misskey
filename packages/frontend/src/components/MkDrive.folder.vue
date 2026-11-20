@@ -247,7 +247,15 @@ function move() {
 	});
 }
 
-function deleteFolder() {
+async function deleteFolder() {
+	if (prefer.s.uploadFolder === props.folder.id) {
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.ts.uploadFolderDeletionConfirm,
+		});
+		if (canceled) return;
+	}
+
 	misskeyApi('drive/folders/delete', {
 		folderId: props.folder.id,
 	}).then(() => {

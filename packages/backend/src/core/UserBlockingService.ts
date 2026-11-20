@@ -12,7 +12,7 @@ import type { MiBlocking } from '@/models/Blocking.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import type { FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListMembershipsRepository, ChatRoomsRepository, ChatRoomInvitationsRepository } from '@/models/_.js';
+import type { FollowRequestsRepository, BlockingsRepository, ChatRoomsRepository, ChatRoomInvitationsRepository } from '@/models/_.js';
 import Logger from '@/logger.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -21,6 +21,7 @@ import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { UserListService } from '@/core/UserListService.js';
 
 @Injectable()
 export class UserBlockingService implements OnModuleInit {
@@ -36,12 +37,6 @@ export class UserBlockingService implements OnModuleInit {
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
 
-		@Inject(DI.userListsRepository)
-		private userListsRepository: UserListsRepository,
-
-		@Inject(DI.userListMembershipsRepository)
-		private userListMembershipsRepository: UserListMembershipsRepository,
-
 		@Inject(DI.chatRoomsRepository)
 		private chatRoomsRepository: ChatRoomsRepository,
 
@@ -50,6 +45,7 @@ export class UserBlockingService implements OnModuleInit {
 
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
+		private userListService: UserListService,
 		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
@@ -71,7 +67,8 @@ export class UserBlockingService implements OnModuleInit {
 			this.cancelRequest(blockee, blocker, silent),
 			this.userFollowingService.unfollow(blocker, blockee, silent),
 			this.userFollowingService.unfollow(blockee, blocker, silent),
-			this.removeFromList(blockee, blocker),
+			// ブロックされたことがリアルタイムで伝わってしまうため、クライアントには通知しない
+			this.userListService.removeMemberFromAllLists(blockee, blocker, { notifyClients: false }),
 			this.removeRoomInvitations(blocker, blockee),
 			this.removeRoomInvitations(blockee, blocker),
 		]);
@@ -133,7 +130,7 @@ export class UserBlockingService implements OnModuleInit {
 
 		// リモートにフォローリクエストをしていたらUndoFollow送信
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee, this.apRendererService.getLocalFollowRequestActivityId(request)), follower));
 			this.queueService.deliver(follower, content, followee.inbox, false);
 		}
 
@@ -141,20 +138,6 @@ export class UserBlockingService implements OnModuleInit {
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, request.requestId!), followee));
 			this.queueService.deliver(followee, content, follower.inbox, false);
-		}
-	}
-
-	@bindThis
-	private async removeFromList(listOwner: MiUser, user: MiUser) {
-		const userLists = await this.userListsRepository.findBy({
-			userId: listOwner.id,
-		});
-
-		for (const userList of userLists) {
-			await this.userListMembershipsRepository.delete({
-				userListId: userList.id,
-				userId: user.id,
-			});
 		}
 	}
 

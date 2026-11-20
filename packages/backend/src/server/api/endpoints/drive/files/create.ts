@@ -69,6 +69,12 @@ export const meta = {
 			code: 'UNALLOWED_FILE_TYPE',
 			id: '4becd248-7f2c-48c4-a9f0-75edc4f9a1ea',
 		},
+
+		noSuchFolder: {
+			message: 'No such folder.',
+			code: 'NO_SUCH_FOLDER',
+			id: 'b9adda75-abe9-4c6d-bf12-b5575833960d',
+		},
 	},
 } as const;
 
@@ -130,6 +136,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					if (err.id === 'c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6') throw new ApiError(meta.errors.noFreeSpace);
 					if (err.id === 'f9e4e5f3-4df4-40b5-b400-f236945f7073') throw new ApiError(meta.errors.maxFileSizeExceeded);
 					if (err.id === 'bd71c601-f9b0-4808-9137-a330647ced9b') throw new ApiError(meta.errors.unallowedFileType);
+					if (err.id === 'b9adda75-abe9-4c6d-bf12-b5575833960d') throw new ApiError(meta.errors.noSuchFolder);
 				}
 				throw new ApiError();
 			} finally {
