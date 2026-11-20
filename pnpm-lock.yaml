@@ -615,8 +615,8 @@ importers:
         specifier: 1.1.2
         version: 1.1.2
       web-push:
-        specifier: 4.0.0
-        version: 4.0.0(supports-color@10.2.2)
+        specifier: 3.6.7
+        version: 3.6.7(supports-color@10.2.2)
       ws:
         specifier: 8.23.0
         version: 8.23.0(bufferutil@4.2.0)(utf-8-validate@6.0.6)
@@ -4544,10 +4544,6 @@ packages:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
 
-  agent-base@9.0.0:
-    resolution: {integrity: sha512-TQf59BsZnytt8GdJKLPfUZ54g/iaUL2OWDSFCCvMOhsHduDQxO8xC4PNeyIkVcA5KwL2phPSv0douC0fgWzmnA==}
-    engines: {node: '>= 20'}
-
   aiscript-vscode@https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67:
     resolution: {gitHosted: true, integrity: sha512-S4eSTHasZz29AMlnU2/zdGP8zikiDiYfYW9kNooAfwVo8OghXdxKuTDDKDAjWsbBxa1+P4uQHa4BNk9MY74rJQ==, tarball: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67}
     version: 0.1.16
@@ -5957,8 +5953,8 @@ packages:
     resolution: {integrity: sha512-xT3GPW6/ZbGuw4UvwHqErSCEjNUlwbQJuZn9/q5U4WEKfp2kENVCAlousG1zLxHeaQ/ffOHUNpWamvkbBW0eNw==}
     engines: {node: '>=6.0.0'}
 
-  http_ece@1.2.1:
-    resolution: {integrity: sha512-+tzLoMYgXvicu60sVFoswTiu6BiQ6EX3DORRJQ3W2dNpNWCyZ3tcmRFZZ3jgVyw8ziWUCeUARKCkYDY6JgFx+w==}
+  http_ece@1.2.0:
+    resolution: {integrity: sha512-JrF8SSLVmcvc5NducxgyOrKXe3EsyHMgBFgSaIUGmArKe+rwr0uphRkRXvwiom3I+fpIfoItveHrfudL8/rxuA==}
     engines: {node: '>=16'}
 
   https-proxy-agent@5.0.1:
@@ -5968,10 +5964,6 @@ packages:
   https-proxy-agent@7.0.6:
     resolution: {integrity: sha512-vK9P5/iUfdl95AI+JVyUuIcVtd4ofvtrOr3HNtM2yxC9bnMbEdp3x01OhQNnjb8IJYi38VlTE3mBXwcfvywuSw==}
     engines: {node: '>= 14'}
-
-  https-proxy-agent@9.1.0:
-    resolution: {integrity: sha512-ag87y7cJJ9/3+GxFr8Oy4O5faDsGRGnBGsJj/YjOSsSx/5eadKLYTMPlzuR6obgoCDDm0abAAZitXXQkMOPSpA==}
-    engines: {node: '>= 20'}
 
   human-signals@2.1.0:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
@@ -7403,15 +7395,6 @@ packages:
 
   proto-list@1.2.4:
     resolution: {integrity: sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==}
-
-  proxy-agent-negotiate@1.1.0:
-    resolution: {integrity: sha512-N8IBcM3UgCVzz2L2Lqv8DVntDnnC8/hiV4nEDUPkqq72TPUgYWjQc+bdZlBPZK9LzPAvOY//gAt0S0DApoOXWQ==}
-    engines: {node: '>= 20'}
-    peerDependencies:
-      kerberos: ^2.0.0
-    peerDependenciesMeta:
-      kerberos:
-        optional: true
 
   proxy-from-env@2.1.0:
     resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
@@ -8898,8 +8881,8 @@ packages:
     resolution: {integrity: sha512-r0CEmvpH63r4T15ebFqeOjGqU4+EgTx4I510NtK35EMciSdcTxCw3Byy3JnBonz7iyIFZ0AbVo0bbFpEVuhCYA==}
     hasBin: true
 
-  web-push@4.0.0:
-    resolution: {integrity: sha512-iKzGK/q3k+kjoPK+fkbs8ymYvEqu5RJNAypEskW+UAYsC44upqb0f+T8QSYW4naowl9bzjlHRe8CI0NFCBzZeQ==}
+  web-push@3.6.7:
+    resolution: {integrity: sha512-OpiIUe8cuGjrj3mMBFWY+e4MMIkW3SVT+7vEIjvD9kejGUypv8GPDf84JdPWskK8zMRIJ6xYGm+Kxr8YkPyA0A==}
     engines: {node: '>= 16'}
     hasBin: true
 
@@ -12291,8 +12274,6 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  agent-base@9.0.0: {}
-
   aiscript-vscode@https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67:
     dependencies:
       vscode-languageclient: 9.0.1
@@ -14052,7 +14033,7 @@ snapshots:
 
   http-link-header@1.1.4: {}
 
-  http_ece@1.2.1: {}
+  http_ece@1.2.0: {}
 
   https-proxy-agent@5.0.1(supports-color@10.2.2):
     dependencies:
@@ -14066,15 +14047,6 @@ snapshots:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@10.2.2)
     transitivePeerDependencies:
-      - supports-color
-
-  https-proxy-agent@9.1.0(supports-color@10.2.2):
-    dependencies:
-      agent-base: 9.0.0
-      debug: 4.4.3(supports-color@10.2.2)
-      proxy-agent-negotiate: 1.1.0
-    transitivePeerDependencies:
-      - kerberos
       - supports-color
 
   human-signals@2.1.0: {}
@@ -15774,8 +15746,6 @@ snapshots:
 
   proto-list@1.2.4: {}
 
-  proxy-agent-negotiate@1.1.0: {}
-
   proxy-from-env@2.1.0: {}
 
   ps-list@8.1.1: {}
@@ -17370,14 +17340,14 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  web-push@4.0.0(supports-color@10.2.2):
+  web-push@3.6.7(supports-color@10.2.2):
     dependencies:
       asn1.js: 5.4.1
-      http_ece: 1.2.1
-      https-proxy-agent: 9.1.0(supports-color@10.2.2)
+      http_ece: 1.2.0
+      https-proxy-agent: 7.0.6(supports-color@10.2.2)
       jws: 4.0.1
+      minimist: 1.2.8
     transitivePeerDependencies:
-      - kerberos
       - supports-color
 
   web-resource-inliner@8.0.0:
