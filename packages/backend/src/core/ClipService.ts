@@ -167,11 +167,11 @@ export class ClipService {
 			throw e;
 		}
 
-		this.clipsRepository.update(clip.id, {
+		await this.clipsRepository.update(clip.id, {
 			lastClippedAt: new Date(),
 		});
 
-		this.notesRepository.increment({ id: noteId }, 'clippedCount', 1);
+		await this.notesRepository.increment({ id: noteId }, 'clippedCount', 1);
 
 		this.publishUpdated(clip.id);
 	}
@@ -196,7 +196,7 @@ export class ClipService {
 			throw new ClipService.NoSuchNoteError();
 		}
 
-		this.notesRepository.decrement({ id: noteId }, 'clippedCount', 1);
+		await this.notesRepository.decrement({ id: noteId }, 'clippedCount', 1);
 
 		this.publishUpdated(clip.id);
 	}
