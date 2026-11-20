@@ -159,7 +159,7 @@ async function createBrowserSubscription(swr: ServiceWorkerRegistration, swPubli
 			console.warn('Failed to unregister the stale push subscription from the server.', unregisterErr);
 		});
 
-		if (!await existing.unsubscribe()) throw err;
+		await existing.unsubscribe();
 		pushSubscription.value = null;
 		pushRegistrationInServer.value = undefined;
 
@@ -194,18 +194,16 @@ async function unsubscribe() {
 			await apiWithDialog('sw/unregister', params, null);
 			pushRegistrationInServer.value = undefined;
 
-			const unsubscribed = await subscription.unsubscribe().catch(err => {
-				console.error(err);
-				return false;
-			});
-
-			if (unsubscribed) {
+			try {
+				await subscription.unsubscribe();
 				pushSubscription.value = null;
-			} else {
+			} catch (err) {
+				console.error(err);
 				// サーバー側の登録は解除済みなので、ブラウザの購読が残っていても通知は届かない
 				alert({
 					type: 'error',
 					title: i18n.ts.somethingHappened,
+					text: getErrorMessage(err),
 				});
 			}
 		}
