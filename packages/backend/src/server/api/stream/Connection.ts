@@ -177,7 +177,8 @@ export default class Connection {
 
 	@bindThis
 	private onReadNotification(payload: JsonValue | undefined) {
-		this.notificationService.readAllNotification(this.user!.id);
+		if (this.user == null) return;
+		this.notificationService.readAllNotification(this.user.id);
 	}
 
 	/**
