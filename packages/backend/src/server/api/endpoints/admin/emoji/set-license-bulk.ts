@@ -18,7 +18,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		ids: { type: 'array', maxItems: 100, items: {
+		ids: { type: 'array', items: {
 			type: 'string', format: 'misskey:id',
 		} },
 		license: {
