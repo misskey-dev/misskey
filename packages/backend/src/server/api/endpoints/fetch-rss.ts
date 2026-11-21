@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import Parser from 'rss-parser';
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { ApiError } from '../error.js';
+import type Parser from 'rss-parser';
 
 const MAX_URL_LENGTH = 8192;
 const MAX_RESPONSE_SIZE = 1024 * 1024;
@@ -318,6 +318,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		}
 
 		const text = await res.text();
+		const { default: Parser } = await import('rss-parser');
 		const rssParser = new Parser({
 			xml2js: {
 				async: true,
