@@ -6,18 +6,17 @@
 import type { Directive } from 'vue';
 
 export const animDirective = {
-	beforeMount(src) {
-		src.style.opacity = '0';
-		src.style.transform = 'scale(0.9)';
-		// ページネーションと相性が悪いので
-		//if (typeof binding.value === 'number') src.style.transitionDelay = `${binding.value * 30}ms`;
-		src.classList.add('_zoom');
-	},
-
 	mounted(src) {
-		window.setTimeout(() => {
-			src.style.opacity = '1';
-			src.style.transform = 'none';
-		}, 1);
+		// 終了値は指定せず、要素本来のスタイルに向かってアニメーションさせる
+		src.animate([{
+			offset: 0,
+			opacity: 0,
+			transform: 'scale(0.9)',
+		}], {
+			duration: 500,
+			easing: 'cubic-bezier(0,.5,.5,1)',
+			// ページネーションと相性が悪いので
+			//delay: typeof binding.value === 'number' ? binding.value * 30 : 0,
+		});
 	},
 } as Directive<HTMLElement>;
