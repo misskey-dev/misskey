@@ -85,20 +85,9 @@ export class UrlPreviewService implements OnApplicationShutdown {
 		}
 
 		// URLの検証 (スキーム・長さ)
-		if (url.length > MAX_URL_LENGTH) {
-			reply.code(400);
-			return;
-		}
-		let parsedUrl: URL;
-		try {
-			parsedUrl = new URL(url);
-		} catch {
-			reply.code(400);
-			return;
-		}
-		if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
-			reply.code(400);
-			return;
+		// プレビューを取得できないURLとして、取得失敗時と同じ 422 を返す
+		if (!this.isFetchableUrl(url)) {
+			return this.previewFailed(reply);
 		}
 
 		// レートリミット (IPあたり)
@@ -161,16 +150,33 @@ export class UrlPreviewService implements OnApplicationShutdown {
 		} catch (err) {
 			this.logger.warn(`Failed to get preview of ${url}: ${err}`);
 
-			reply.code(422);
-			reply.header('Cache-Control', 'max-age=86400, immutable');
-			return {
-				error: new ApiError({
-					message: 'Failed to get preview',
-					code: 'URL_PREVIEW_FAILED',
-					id: '09d01cb5-53b9-4856-82e5-38a50c290a3b',
-				}),
-			};
+			return this.previewFailed(reply);
 		}
+	}
+
+	@bindThis
+	private isFetchableUrl(url: string): boolean {
+		if (url.length > MAX_URL_LENGTH) return false;
+
+		try {
+			const { protocol } = new URL(url);
+			return protocol === 'http:' || protocol === 'https:';
+		} catch {
+			return false;
+		}
+	}
+
+	@bindThis
+	private previewFailed(reply: FastifyReply): object {
+		reply.code(422);
+		reply.header('Cache-Control', 'max-age=86400, immutable');
+		return {
+			error: new ApiError({
+				message: 'Failed to get preview',
+				code: 'URL_PREVIEW_FAILED',
+				id: '09d01cb5-53b9-4856-82e5-38a50c290a3b',
+			}),
+		};
 	}
 
 	@bindThis
