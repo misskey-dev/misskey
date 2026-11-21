@@ -362,25 +362,38 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			id: In(ids),
 		});
 
+		// 途中で削除に失敗しても、それまでに削除できた分は反映とモデログの記録を行ってからエラーにする
+		const deleted: MiEmoji[] = [];
+		let deleteError: unknown = null;
 		for (const emoji of emojis) {
-			await this.emojisRepository.delete(emoji.id);
+			try {
+				await this.emojisRepository.delete(emoji.id);
+			} catch (err) {
+				deleteError = err;
+				break;
+			}
+			deleted.push(emoji);
 		}
 
-		this.localEmojisCache.refresh();
+		if (deleted.length > 0) {
+			this.localEmojisCache.refresh();
 
-		this.globalEventService.publishBroadcastStream('emojiDeleted', {
-			emojis: await this.emojiEntityService.packDetailedMany(emojis),
-		});
+			this.globalEventService.publishBroadcastStream('emojiDeleted', {
+				emojis: await this.emojiEntityService.packDetailedMany(deleted),
+			});
 
-		// 監査ログの記録に失敗しても残りの削除や反映が止まらないよう、反映後に記録する
-		if (moderator) {
-			for (const emoji of emojis) {
-				await this.moderationLogService.log(moderator, 'deleteCustomEmoji', {
-					emojiId: emoji.id,
-					emoji: emoji,
-				});
+			// モデログの記録に失敗しても残りの削除や反映が止まらないよう、反映後に記録する
+			if (moderator) {
+				for (const emoji of deleted) {
+					await this.moderationLogService.log(moderator, 'deleteCustomEmoji', {
+						emojiId: emoji.id,
+						emoji: emoji,
+					});
+				}
 			}
 		}
+
+		if (deleteError != null) throw deleteError;
 	}
 
 	@bindThis
