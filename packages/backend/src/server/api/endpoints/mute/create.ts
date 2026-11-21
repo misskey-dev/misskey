@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { IsNull, MoreThan } from 'typeorm';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MutingsRepository } from '@/models/_.js';
@@ -42,6 +43,12 @@ export const meta = {
 			message: 'You are already muting that user.',
 			code: 'ALREADY_MUTING',
 			id: '7e7359cb-160c-4956-b08f-4d1c653cd007',
+		},
+
+		expiresAtIsPast: {
+			message: 'Cannot set past date to "expiresAt".',
+			code: 'EXPIRES_AT_IS_PAST',
+			id: 'e8f5b7e2-4d7a-4f4f-b1e1-2e8b9a6b3f0a',
 		},
 	},
 } as const;
@@ -83,19 +90,30 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			// Check if already muting
+			// 期限切れのミュートは、期限切れデータを削除する定期ジョブが実行されるまでの間、
+			// 存在しないものとして扱う（期限切れ後すぐに再ミュートできるようにするため）
 			const exist = await this.mutingsRepository.exists({
-				where: {
-					muterId: muter.id,
-					muteeId: mutee.id,
-				},
+				where: [
+					{
+						muterId: muter.id,
+						muteeId: mutee.id,
+						expiresAt: IsNull(),
+					},
+					{
+						muterId: muter.id,
+						muteeId: mutee.id,
+						expiresAt: MoreThan(new Date()),
+					},
+				],
 			});
 
 			if (exist) {
 				throw new ApiError(meta.errors.alreadyMuting);
 			}
 
+			// Check if expiresAt is past
 			if (ps.expiresAt && ps.expiresAt <= Date.now()) {
-				return;
+				throw new ApiError(meta.errors.expiresAtIsPast);
 			}
 
 			await this.userMutingService.mute(muter, mutee, ps.expiresAt ? new Date(ps.expiresAt) : null);

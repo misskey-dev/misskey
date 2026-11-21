@@ -187,6 +187,7 @@ export class DriveService {
 
 			//#region Uploads
 			this.registerLogger.info(`uploading original: ${key}`);
+			const uploadKeys = [key];
 			const uploads = [
 				this.upload(key, fs.createReadStream(path), type, null, name),
 			];
@@ -196,6 +197,7 @@ export class DriveService {
 				webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 				this.registerLogger.info(`uploading webpublic: ${webpublicKey}`);
+				uploadKeys.push(webpublicKey);
 				uploads.push(this.upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, alts.webpublic.ext, name));
 			}
 
@@ -204,10 +206,29 @@ export class DriveService {
 				thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 				this.registerLogger.info(`uploading thumbnail: ${thumbnailKey}`);
+				uploadKeys.push(thumbnailKey);
 				uploads.push(this.upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type, alts.thumbnail.ext, `${name}.thumbnail`));
 			}
 
-			await Promise.all(uploads);
+			// 一部のアップロードだけが失敗した場合、成功したオブジェクトはDBに記録されず孤立するため削除してから失敗とする
+			const results = await Promise.allSettled(uploads);
+			const failure = results.find((result): result is PromiseRejectedResult => result.status === 'rejected');
+			if (failure != null) {
+				const cleanups = await Promise.allSettled(results.map((result, i) => result.status === 'fulfilled'
+					? this.deleteObjectStorageFile(uploadKeys[i])
+					: Promise.resolve()));
+
+				// 削除に失敗したオブジェクトは、再試行できるよう削除ジョブに引き継ぐ
+				await Promise.allSettled(cleanups.map(async (cleanup, i) => {
+					if (cleanup.status === 'fulfilled') return;
+					this.registerLogger.warn(`Failed to delete an uploaded object after upload failure: key = ${uploadKeys[i]}`, cleanup.reason);
+					await this.queueService.createDeleteObjectStorageFileJob(uploadKeys[i]).catch(err => {
+						this.registerLogger.error(`Failed to enqueue deletion of an orphaned object: key = ${uploadKeys[i]}`, err);
+					});
+				}));
+
+				throw failure.reason;
+			}
 			//#endregion
 
 			file.url = url;
@@ -393,20 +414,21 @@ export class DriveService {
 		);
 		if (this.meta.objectStorageSetPublicRead) params.ACL = 'public-read';
 
-		await this.s3Service.upload(this.meta, params)
-			.then(
-				result => {
-					if ('Bucket' in result) { // CompleteMultipartUploadCommandOutput
-						this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
-					} else { // AbortMultipartUploadCommandOutput
-						this.registerLogger.error(`Upload Result Aborted: key = ${key}, filename = ${filename}`);
-					}
-				})
+		const result = await this.s3Service.upload(this.meta, params)
 			.catch(
 				err => {
 					this.registerLogger.error(`Upload Failed: key = ${key}, filename = ${filename}`, err);
+					throw err;
 				},
 			);
+
+		if ('Bucket' in result) { // CompleteMultipartUploadCommandOutput
+			this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
+		} else { // AbortMultipartUploadCommandOutput
+			// 中断されたアップロードは保存されていないため、失敗として扱う
+			this.registerLogger.error(`Upload Result Aborted: key = ${key}, filename = ${filename}`);
+			throw new Error(`Upload Result Aborted: key = ${key}`);
+		}
 	}
 
 	// Expire oldest file (without avatar or banner) of remote user
@@ -434,7 +456,7 @@ export class DriveService {
 		for (const fileId of exceedFileIds) {
 			const file = await this.driveFilesRepository.findOneBy({ id: fileId });
 			if (file == null) continue;
-			this.deleteFile(file, true);
+			await this.deleteFile(file, true);
 		}
 	}
 
@@ -599,12 +621,12 @@ export class DriveService {
 		file.maybeSensitive = info.sensitive;
 		file.maybePorn = info.porn;
 		file.isSensitive = user
-			? this.userEntityService.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
+			? this.userEntityService.isLocalUser(user) && profile?.alwaysMarkNsfw ? true :
 			sensitive ?? false
 			: false;
 
 		if (user && this.utilityService.isMediaSilencedHost(this.meta.mediaSilencedHosts, user.host)) file.isSensitive = true;
-		if (info.sensitive && profile!.autoSensitive) file.isSensitive = true;
+		if (info.sensitive && profile?.autoSensitive) file.isSensitive = true;
 		if (info.sensitive && this.meta.setSensitiveFlagAutomatically) file.isSensitive = true;
 		if (userRoleNSFW) file.isSensitive = true;
 
@@ -769,7 +791,7 @@ export class DriveService {
 			}
 		}
 
-		this.deletePostProcess(file, isExpired, deleter);
+		await this.deletePostProcess(file, isExpired, deleter);
 	}
 
 	@bindThis

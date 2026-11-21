@@ -174,7 +174,7 @@ export class HashtagService {
 
 		// YYYYMMDDHHmm (10分間隔)
 		const now = new Date();
-		now.setMinutes(Math.floor(now.getMinutes() / 10) * 10, 0, 0);
+		now.setUTCMinutes(Math.floor(now.getUTCMinutes() / 10) * 10, 0, 0);
 		const window = `${now.getUTCFullYear()}${(now.getUTCMonth() + 1).toString().padStart(2, '0')}${now.getUTCDate().toString().padStart(2, '0')}${now.getUTCHours().toString().padStart(2, '0')}${now.getUTCMinutes().toString().padStart(2, '0')}`;
 
 		const exist = await this.redisClient.sismember(`hashtagUsers:${hashtag}`, userId);
@@ -199,20 +199,20 @@ export class HashtagService {
 			'NX', // "NX -- Set expiry only when the key has no expiry" = 有効期限がないときだけ設定
 		);
 
-		redisPipeline.exec();
+		await redisPipeline.exec();
 	}
 
 	@bindThis
 	public async getChart(hashtag: string, range: number): Promise<number[]> {
 		const now = new Date();
-		now.setMinutes(Math.floor(now.getMinutes() / 10) * 10, 0, 0);
+		now.setUTCMinutes(Math.floor(now.getUTCMinutes() / 10) * 10, 0, 0);
 
 		const redisPipeline = this.redisClient.pipeline();
 
 		for (let i = 0; i < range; i++) {
 			const window = `${now.getUTCFullYear()}${(now.getUTCMonth() + 1).toString().padStart(2, '0')}${now.getUTCDate().toString().padStart(2, '0')}${now.getUTCHours().toString().padStart(2, '0')}${now.getUTCMinutes().toString().padStart(2, '0')}`;
 			redisPipeline.pfcount(`hashtagUsers:${hashtag}:${window}`);
-			now.setMinutes(now.getMinutes() - (i * 10), 0, 0);
+			now.setUTCMinutes(now.getUTCMinutes() - 10, 0, 0);
 		}
 
 		const result = await redisPipeline.exec();
@@ -225,7 +225,7 @@ export class HashtagService {
 	@bindThis
 	public async getCharts(hashtags: string[], range: number): Promise<Record<string, number[]>> {
 		const now = new Date();
-		now.setMinutes(Math.floor(now.getMinutes() / 10) * 10, 0, 0);
+		now.setUTCMinutes(Math.floor(now.getUTCMinutes() / 10) * 10, 0, 0);
 
 		const redisPipeline = this.redisClient.pipeline();
 
@@ -234,7 +234,7 @@ export class HashtagService {
 			for (const hashtag of hashtags) {
 				redisPipeline.pfcount(`hashtagUsers:${hashtag}:${window}`);
 			}
-			now.setMinutes(now.getMinutes() - (i * 10), 0, 0);
+			now.setUTCMinutes(now.getUTCMinutes() - 10, 0, 0);
 		}
 
 		const result = await redisPipeline.exec();
