@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { In, LessThan } from 'typeorm';
+import { In, IsNull, LessThan, MoreThan } from 'typeorm';
 import type { MutingsRepository, MiMuting } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/User.js';
@@ -30,8 +30,12 @@ export class UserMutingService {
 		const normalizedExpiresAt = (expiresAt != null && expiresAt.getTime() > Date.now()) ? expiresAt : null;
 
 		// 二重ミュートでユニーク制約違反の生エラーが露出しないよう冪等化する
-		const exist = await this.mutingsRepository.existsBy({ muterId: user.id, muteeId: target.id });
-		if (exist) return;
+		// 期限切れ済みの行は後続の insert で掃き直されるため、実効中のミュートのみを判定対象にする
+		const exist = await this.mutingsRepository.findOneBy([
+			{ muterId: user.id, muteeId: target.id, expiresAt: IsNull() },
+			{ muterId: user.id, muteeId: target.id, expiresAt: MoreThan(new Date()) },
+		]);
+		if (exist != null) return;
 
 		await this.insertMuting(user, target, normalizedExpiresAt);
 
