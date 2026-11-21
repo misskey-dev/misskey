@@ -187,6 +187,7 @@ export class DriveService {
 
 			//#region Uploads
 			this.registerLogger.info(`uploading original: ${key}`);
+			const uploadKeys = [key];
 			const uploads = [
 				this.upload(key, fs.createReadStream(path), type, null, name),
 			];
@@ -196,6 +197,7 @@ export class DriveService {
 				webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 				this.registerLogger.info(`uploading webpublic: ${webpublicKey}`);
+				uploadKeys.push(webpublicKey);
 				uploads.push(this.upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, alts.webpublic.ext, name));
 			}
 
@@ -204,10 +206,19 @@ export class DriveService {
 				thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 				this.registerLogger.info(`uploading thumbnail: ${thumbnailKey}`);
+				uploadKeys.push(thumbnailKey);
 				uploads.push(this.upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type, alts.thumbnail.ext, `${name}.thumbnail`));
 			}
 
-			await Promise.all(uploads);
+			// 一部のアップロードだけが失敗した場合、成功したオブジェクトはDBに記録されず孤立するため削除してから失敗とする
+			const results = await Promise.allSettled(uploads);
+			const failure = results.find((result): result is PromiseRejectedResult => result.status === 'rejected');
+			if (failure != null) {
+				await Promise.allSettled(results.map((result, i) => result.status === 'fulfilled'
+					? this.deleteObjectStorageFile(uploadKeys[i])
+					: Promise.resolve()));
+				throw failure.reason;
+			}
 			//#endregion
 
 			file.url = url;
