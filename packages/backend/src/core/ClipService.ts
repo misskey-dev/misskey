@@ -167,11 +167,13 @@ export class ClipService {
 			throw e;
 		}
 
-		await this.clipsRepository.update(clip.id, {
-			lastClippedAt: new Date(),
-		});
-
-		await this.notesRepository.increment({ id: noteId }, 'clippedCount', 1);
+		// 一方の更新が失敗しても、もう一方の更新が省略されないように両方を同時に開始する
+		await Promise.all([
+			this.clipsRepository.update(clip.id, {
+				lastClippedAt: new Date(),
+			}),
+			this.notesRepository.increment({ id: noteId }, 'clippedCount', 1),
+		]);
 
 		this.publishUpdated(clip.id);
 	}

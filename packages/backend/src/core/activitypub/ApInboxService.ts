@@ -109,8 +109,8 @@ export class ApInboxService {
 				try {
 					act = await resolver.resolve(item);
 				} catch (err) {
-					// 一時的な失敗（リモートの5xxなど）の可能性があるものは、ジョブのリトライに任せる
-					if (err instanceof StatusError && err.statusCode >= 500) throw err;
+					// 一時的な失敗（リモートの5xxや429など）の可能性があるものは、ジョブのリトライに任せる
+					if (err instanceof StatusError && err.isRetryable) throw err;
 					this.logger.warn(`failed to resolve collection item: ${err instanceof Error ? err.message : err}`);
 					continue;
 				}

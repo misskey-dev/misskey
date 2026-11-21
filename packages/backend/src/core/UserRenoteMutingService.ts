@@ -37,6 +37,8 @@ export class UserRenoteMutingService {
 		} catch (e) {
 			if (isDuplicateKeyValueError(e)) {
 				// duplicate means already muted
+				// 先行したリクエストのキャッシュ更新が失敗していても再試行で修復できるよう、こちらでも更新する
+				await this.cacheService.renoteMutingsCache.refresh(user.id);
 				return;
 			}
 			throw e;

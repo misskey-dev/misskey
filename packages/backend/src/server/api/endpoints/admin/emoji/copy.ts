@@ -85,6 +85,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError();
 			}
 
+			// アップロード中に同名の絵文字が登録された場合に備えて、登録の直前にも重複を確認する
+			if (await this.customEmojiService.checkDuplicate(emoji.name)) {
+				await this.driveService.deleteFile(driveFile);
+				throw new ApiError(meta.errors.duplicateName);
+			}
+
 			const addedEmoji = await this.customEmojiService.add({
 				originalUrl: driveFile.url,
 				publicUrl: driveFile.webpublicUrl ?? driveFile.url,
