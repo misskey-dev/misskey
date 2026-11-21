@@ -71,36 +71,45 @@ export class ApiServerService {
 			};
 
 			if (endpoint.meta.requireFile) {
-				fastify.all<{
+				fastify.route<{
 					Params: { endpoint: string; },
 					Body: Record<string, unknown>,
 					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, async (request, reply) => {
-					if (request.method === 'GET' && !endpoint.meta.allowGet) {
-						reply.code(405);
-						reply.send();
-						return;
-					}
+				}>({
+					method: ['GET', 'POST'],
+					url: '/' + endpoint.name,
+					handler: async (request, reply) => {
+						if (request.method === 'GET' && !endpoint.meta.allowGet) {
+							reply.code(405);
+							reply.send();
+							return;
+						}
 
-					// Await so that any error can automatically be translated to HTTP 500
-					await this.apiCallService.handleMultipartRequest(ep, request, reply);
-					return reply;
+						// Await so that any error can automatically be translated to HTTP 500
+						await this.apiCallService.handleMultipartRequest(ep, request, reply);
+						return reply;
+					},
 				});
 			} else {
-				fastify.all<{
+				fastify.route<{
 					Params: { endpoint: string; },
 					Body: Record<string, unknown>,
 					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, { bodyLimit: 1024 * 1024 }, async (request, reply) => {
-					if (request.method === 'GET' && !endpoint.meta.allowGet) {
-						reply.code(405);
-						reply.send();
-						return;
-					}
+				}>({
+					method: ['GET', 'POST'],
+					url: '/' + endpoint.name,
+					bodyLimit: 1024 * 1024,
+					handler: async (request, reply) => {
+						if (request.method === 'GET' && !endpoint.meta.allowGet) {
+							reply.code(405);
+							reply.send();
+							return;
+						}
 
-					// Await so that any error can automatically be translated to HTTP 500
-					await this.apiCallService.handleRequest(ep, request, reply);
-					return reply;
+						// Await so that any error can automatically be translated to HTTP 500
+						await this.apiCallService.handleRequest(ep, request, reply);
+						return reply;
+					},
 				});
 			}
 		}
@@ -176,15 +185,19 @@ export class ApiServerService {
 			}
 		});
 
-		fastify.all('/clear-browser-cache', (request, reply) => {
-			if (['GET', 'POST'].includes(request.method)) {
-				reply.header('Clear-Site-Data', '"cache", "prefetchCache", "prerenderCache", "executionContexts"');
-				reply.code(204);
-				reply.send();
-			} else {
-				reply.code(405);
-				reply.send();
-			}
+		fastify.route({
+			method: ['GET', 'POST'],
+			url: '/clear-browser-cache',
+			handler: (request, reply) => {
+				if (['GET', 'POST'].includes(request.method)) {
+					reply.header('Clear-Site-Data', '"cache", "prefetchCache", "prerenderCache", "executionContexts"');
+					reply.code(204);
+					reply.send();
+				} else {
+					reply.code(405);
+					reply.send();
+				}
+			},
 		});
 
 		// Make sure any unknown path under /api returns HTTP 404 Not Found,
