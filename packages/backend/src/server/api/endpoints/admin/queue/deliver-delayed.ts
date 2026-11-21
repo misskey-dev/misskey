@@ -50,15 +50,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			// 遅延ジョブが大量蓄積している場合のメモリ消費を抑えるため、バッチ取得して集計する
+			// 遅延ジョブが大量蓄積している場合のメモリ消費を抑えるため、ジョブ本体はバッチ取得して集計する。
+			// 取得中に順位が変わっても漏れや重複が起きないよう、先に対象のジョブIDを確定させておく
 			const BATCH_SIZE = 1000;
+			const jobIds = await this.deliverQueue.getRanges(['delayed'], 0, -1, true);
 			const counts = new Map<string, number>();
 
-			for (let start = 0; ; start += BATCH_SIZE) {
-				const jobs = await this.deliverQueue.getJobs(['delayed'], start, start + BATCH_SIZE - 1);
-				if (jobs.length === 0) break;
+			for (let start = 0; start < jobIds.length; start += BATCH_SIZE) {
+				const jobs = await Promise.all(jobIds.slice(start, start + BATCH_SIZE).map(id => this.deliverQueue.getJob(id)));
 
 				for (const job of jobs) {
+					// 取得までの間に処理・削除されたジョブは除外する
+					if (job == null) continue;
+
 					// ジョブデータのURLが不正な形式の場合に集計全体が失敗しないようガードする
 					let host: string | null = null;
 					try {
@@ -68,8 +72,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}
 					counts.set(host, (counts.get(host) ?? 0) + 1);
 				}
-
-				if (jobs.length < BATCH_SIZE) break;
 			}
 
 			const res = [...counts.entries()].sort((a, b) => b[1] - a[1]);
