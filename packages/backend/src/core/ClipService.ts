@@ -167,13 +167,11 @@ export class ClipService {
 			throw e;
 		}
 
-		// 一方の更新が失敗しても、もう一方の更新が省略されないように両方を同時に開始する
-		await Promise.all([
-			this.clipsRepository.update(clip.id, {
-				lastClippedAt: new Date(),
-			}),
-			this.notesRepository.increment({ id: noteId }, 'clippedCount', 1),
-		]);
+		this.clipsRepository.update(clip.id, {
+			lastClippedAt: new Date(),
+		});
+
+		this.notesRepository.increment({ id: noteId }, 'clippedCount', 1);
 
 		this.publishUpdated(clip.id);
 	}
@@ -198,7 +196,7 @@ export class ClipService {
 			throw new ClipService.NoSuchNoteError();
 		}
 
-		await this.notesRepository.decrement({ id: noteId }, 'clippedCount', 1);
+		this.notesRepository.decrement({ id: noteId }, 'clippedCount', 1);
 
 		this.publishUpdated(clip.id);
 	}
