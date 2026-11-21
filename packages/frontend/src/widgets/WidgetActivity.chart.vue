@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 const props = defineProps<{
 	activity: {
 		total: number;
@@ -53,12 +53,19 @@ const pointsReply = ref<string>();
 const pointsRenote = ref<string>();
 const pointsTotal = ref<string>();
 
+// ドラッグ中にアンマウントされた場合でもリスナーを解除できるよう、有効な解除処理を保持する
+let activeDragClear: (() => void) | null = null;
+
 function dragListen(fn: (ev: MouseEvent | TouchEvent) => void) {
+	activeDragClear?.();
+
 	const dragClear = () => {
 		window.removeEventListener('mousemove', fn);
 		window.removeEventListener('mouseleave', dragClear);
 		window.removeEventListener('mouseup', dragClear);
+		if (activeDragClear === dragClear) activeDragClear = null;
 	};
+	activeDragClear = dragClear;
 
 	window.addEventListener('mousemove', fn);
 	window.addEventListener('mouseleave', dragClear);
@@ -108,6 +115,10 @@ function render() {
 
 onMounted(() => {
 	render();
+});
+
+onUnmounted(() => {
+	activeDragClear?.();
 });
 </script>
 
