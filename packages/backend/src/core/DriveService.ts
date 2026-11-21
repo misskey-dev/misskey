@@ -214,9 +214,19 @@ export class DriveService {
 			const results = await Promise.allSettled(uploads);
 			const failure = results.find((result): result is PromiseRejectedResult => result.status === 'rejected');
 			if (failure != null) {
-				await Promise.allSettled(results.map((result, i) => result.status === 'fulfilled'
+				const cleanups = await Promise.allSettled(results.map((result, i) => result.status === 'fulfilled'
 					? this.deleteObjectStorageFile(uploadKeys[i])
 					: Promise.resolve()));
+
+				// 削除に失敗したオブジェクトは、再試行できるよう削除ジョブに引き継ぐ
+				await Promise.allSettled(cleanups.map(async (cleanup, i) => {
+					if (cleanup.status === 'fulfilled') return;
+					this.registerLogger.warn(`Failed to delete an uploaded object after upload failure: key = ${uploadKeys[i]}`, cleanup.reason);
+					await this.queueService.createDeleteObjectStorageFileJob(uploadKeys[i]).catch(err => {
+						this.registerLogger.error(`Failed to enqueue deletion of an orphaned object: key = ${uploadKeys[i]}`, err);
+					});
+				}));
+
 				throw failure.reason;
 			}
 			//#endregion
