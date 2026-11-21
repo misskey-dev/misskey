@@ -8,6 +8,7 @@ import * as Misskey from 'misskey-js';
 import { apiUrl } from '@@/js/config.js';
 import type { UploaderFeatures } from '@/composables/use-uploader.js';
 import * as os from '@/os.js';
+import { safeJsonParse } from '@/utility/safe-json-parse.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
@@ -83,11 +84,9 @@ export function uploadFile(file: File | Blob, options: {
 						text: i18n.ts.cannotUploadBecauseExceedsFileSizeLimit,
 					});
 				} else if (ev.target?.response) {
-					let res: any;
-					try {
-						res = JSON.parse(ev.target.response);
-					} catch (err) {
-						reject(err);
+					const res = safeJsonParse<any>(ev.target.response, null);
+					if (res == null) {
+						reject(new Error('Failed to parse the upload response'));
 						return;
 					}
 					if (res.error?.id === 'bec5bd69-fba3-43c9-b4fb-2894b66ad5d2') {
@@ -133,11 +132,9 @@ export function uploadFile(file: File | Blob, options: {
 				return;
 			}
 
-			let driveFile: Misskey.entities.DriveFile;
-			try {
-				driveFile = JSON.parse(ev.target.response);
-			} catch (err) {
-				reject(err);
+			const driveFile = safeJsonParse<Misskey.entities.DriveFile | null>(ev.target.response, null);
+			if (driveFile == null) {
+				reject(new Error('Failed to parse the upload response'));
 				return;
 			}
 			globalEvents.emit('driveFileCreated', driveFile);

@@ -47,6 +47,7 @@ import { prefer } from '@/preferences.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
 import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
+import { safeJsonParse } from '@/utility/safe-json-parse.js';
 
 const props = defineProps<{
 	user?: Misskey.entities.UserDetailed | null;
@@ -63,14 +64,6 @@ const textareaReadOnly = ref(false);
 let autocompleteInstance: Autocomplete | null = null;
 
 const canSend = computed(() => (text.value != null && text.value !== '') || file.value != null);
-
-function safeParse(value: string | null): Record<string, any> {
-	try {
-		return JSON.parse(value ?? '{}');
-	} catch {
-		return {};
-	}
-}
 
 function getDraftKey() {
 	return props.user ? 'user:' + props.user.id : 'room:' + props.room?.id;
@@ -235,7 +228,7 @@ function clear() {
 }
 
 function saveDraft() {
-	const drafts = safeParse(miLocalStorage.getItem('chatMessageDrafts'));
+	const drafts = safeJsonParse<Record<string, any>>(miLocalStorage.getItem('chatMessageDrafts'), {});
 
 	drafts[getDraftKey()] = {
 		updatedAt: new Date(),
@@ -249,7 +242,7 @@ function saveDraft() {
 }
 
 function deleteDraft() {
-	const drafts = safeParse(miLocalStorage.getItem('chatMessageDrafts'));
+	const drafts = safeJsonParse<Record<string, any>>(miLocalStorage.getItem('chatMessageDrafts'), {});
 
 	delete drafts[getDraftKey()];
 
@@ -291,7 +284,7 @@ onMounted(() => {
 	}
 
 	// 書きかけの投稿を復元
-	const draft = safeParse(miLocalStorage.getItem('chatMessageDrafts'))[getDraftKey()];
+	const draft = safeJsonParse<Record<string, any>>(miLocalStorage.getItem('chatMessageDrafts'), {})[getDraftKey()];
 	if (draft) {
 		text.value = draft.data.text;
 		file.value = draft.data.file;
