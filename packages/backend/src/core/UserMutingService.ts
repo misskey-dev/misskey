@@ -26,32 +26,41 @@ export class UserMutingService {
 
 	@bindThis
 	public async mute(user: MiUser, target: MiUser, expiresAt: Date | null = null): Promise<void> {
-		// 過去の日時が指定された場合は即期限切れになるため、無期限として扱う
-		const normalizedExpiresAt = (expiresAt != null && expiresAt.getTime() > Date.now()) ? expiresAt : null;
-
 		// 二重ミュートでユニーク制約違反の生エラーが露出しないよう冪等化する
 		// 期限切れ済みの行は後続の insert で掃き直されるため、実効中のミュートのみを判定対象にする
-		const exist = await this.mutingsRepository.findOneBy([
-			{ muterId: user.id, muteeId: target.id, expiresAt: IsNull() },
-			{ muterId: user.id, muteeId: target.id, expiresAt: MoreThan(new Date()) },
-		]);
-		if (exist != null) return;
+		if (await this.existsActiveMuting(user, target)) return;
 
-		await this.insertMuting(user, target, normalizedExpiresAt);
+		await this.insertMuting(user, target, expiresAt);
 
 		this.cacheService.userMutingsCache.refresh(user.id);
 	}
 
+	@bindThis
+	private async existsActiveMuting(user: MiUser, target: MiUser): Promise<boolean> {
+		return await this.mutingsRepository.exists({
+			where: [
+				{ muterId: user.id, muteeId: target.id, expiresAt: IsNull() },
+				{ muterId: user.id, muteeId: target.id, expiresAt: MoreThan(new Date()) },
+			],
+		});
+	}
+
+	@bindThis
 	private async insertMuting(user: MiUser, target: MiUser, expiresAt: Date | null): Promise<void> {
+		const insert = () => this.mutingsRepository.insert({
+			id: this.idService.gen(),
+			expiresAt: expiresAt,
+			muterId: user.id,
+			muteeId: target.id,
+		});
+
 		try {
-			await this.mutingsRepository.insert({
-				id: this.idService.gen(),
-				expiresAt: expiresAt ?? null,
-				muterId: user.id,
-				muteeId: target.id,
-			});
+			await insert();
 		} catch (e) {
 			if (!isDuplicateKeyValueError(e)) throw e;
+
+			// 並行リクエストで有効なミュートが先に作成された場合は、それを結果として扱う
+			if (await this.existsActiveMuting(user, target)) return;
 
 			// The (muterId, muteeId) unique index is occupied by a row that may have already
 			// expired but not yet been cleaned up by the expiry cron. Retry after removing it.
@@ -65,12 +74,13 @@ export class UserMutingService {
 			if (expiredRows.length === 0) throw e;
 
 			await this.mutingsRepository.delete({ id: In(expiredRows.map(x => x.id)) });
-			await this.mutingsRepository.insert({
-				id: this.idService.gen(),
-				expiresAt: expiresAt ?? null,
-				muterId: user.id,
-				muteeId: target.id,
-			});
+
+			try {
+				await insert();
+			} catch (retryError) {
+				if (isDuplicateKeyValueError(retryError) && await this.existsActiveMuting(user, target)) return;
+				throw retryError;
+			}
 		}
 	}
 
