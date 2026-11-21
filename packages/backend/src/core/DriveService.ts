@@ -415,7 +415,9 @@ export class DriveService {
 		if ('Bucket' in result) { // CompleteMultipartUploadCommandOutput
 			this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
 		} else { // AbortMultipartUploadCommandOutput
+			// 中断されたアップロードは保存されていないため、失敗として扱う
 			this.registerLogger.error(`Upload Result Aborted: key = ${key}, filename = ${filename}`);
+			throw new Error(`Upload Result Aborted: key = ${key}`);
 		}
 	}
 
