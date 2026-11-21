@@ -47,6 +47,7 @@ import { prefer } from '@/preferences.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
 import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
+import { safeJsonParse } from '@/utility/safe-json-parse.js';
 
 const props = defineProps<{
 	user?: Misskey.entities.UserDetailed | null;
@@ -227,7 +228,7 @@ function clear() {
 }
 
 function saveDraft() {
-	const drafts = JSON.parse(miLocalStorage.getItem('chatMessageDrafts') || '{}');
+	const drafts = safeJsonParse<Record<string, any>>(miLocalStorage.getItem('chatMessageDrafts'), {});
 
 	drafts[getDraftKey()] = {
 		updatedAt: new Date(),
@@ -241,7 +242,7 @@ function saveDraft() {
 }
 
 function deleteDraft() {
-	const drafts = JSON.parse(miLocalStorage.getItem('chatMessageDrafts') || '{}');
+	const drafts = safeJsonParse<Record<string, any>>(miLocalStorage.getItem('chatMessageDrafts'), {});
 
 	delete drafts[getDraftKey()];
 
@@ -283,7 +284,7 @@ onMounted(() => {
 	}
 
 	// 書きかけの投稿を復元
-	const draft = JSON.parse(miLocalStorage.getItem('chatMessageDrafts') || '{}')[getDraftKey()];
+	const draft = safeJsonParse<Record<string, any>>(miLocalStorage.getItem('chatMessageDrafts'), {})[getDraftKey()];
 	if (draft) {
 		text.value = draft.data.text;
 		file.value = draft.data.file;

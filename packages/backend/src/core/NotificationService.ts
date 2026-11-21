@@ -63,7 +63,7 @@ export class NotificationService implements OnApplicationShutdown {
 
 		if (latestNotificationId == null) return;
 
-		this.redisClient.set(`latestReadNotification:${userId}`, latestNotificationId);
+		await this.redisClient.set(`latestReadNotification:${userId}`, latestNotificationId);
 
 		if (force || latestReadNotificationId == null || (latestReadNotificationId < latestNotificationId)) {
 			return this.postReadAllNotifications(userId);

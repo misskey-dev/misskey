@@ -27,7 +27,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private notificationService: NotificationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			this.notificationService.flushAllNotifications(me.id);
+			await this.notificationService.flushAllNotifications(me.id);
 		});
 	}
 }

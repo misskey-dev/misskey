@@ -71,6 +71,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchEmoji);
 			}
 
+			// Duplication Check
+			const isDuplicate = await this.customEmojiService.checkDuplicate(emoji.name);
+			if (isDuplicate) throw new ApiError(meta.errors.duplicateName);
+
 			let driveFile: MiDriveFile;
 
 			try {
@@ -81,9 +85,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError();
 			}
 
-			// Duplication Check
-			const isDuplicate = await this.customEmojiService.checkDuplicate(emoji.name);
-			if (isDuplicate) throw new ApiError(meta.errors.duplicateName);
+			// アップロード中に同名の絵文字が登録された場合に備えて、登録の直前にも重複を確認する
+			if (await this.customEmojiService.checkDuplicate(emoji.name)) {
+				await this.driveService.deleteFileSync(driveFile);
+				throw new ApiError(meta.errors.duplicateName);
+			}
 
 			const addedEmoji = await this.customEmojiService.add({
 				originalUrl: driveFile.url,

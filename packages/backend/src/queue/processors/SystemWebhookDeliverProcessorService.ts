@@ -56,19 +56,13 @@ export class SystemWebhookDeliverProcessorService {
 				}),
 			});
 
-			this.systemWebhooksRepository.update({ id: job.data.webhookId }, {
-				latestSentAt: new Date(),
-				latestStatus: res.status,
-			});
+			await this.recordLatestStatus(job.data.webhookId, res.status);
 
 			return 'Success';
 		} catch (res) {
 			this.logger.error(res as Error);
 
-			this.systemWebhooksRepository.update({ id: job.data.webhookId }, {
-				latestSentAt: new Date(),
-				latestStatus: res instanceof StatusError ? res.statusCode : 1,
-			});
+			await this.recordLatestStatus(job.data.webhookId, res instanceof StatusError ? res.statusCode : 1);
 
 			if (res instanceof StatusError) {
 				// 4xx
@@ -82,6 +76,21 @@ export class SystemWebhookDeliverProcessorService {
 				// DNS error, socket error, timeout ...
 				throw res;
 			}
+		}
+	}
+
+	/**
+	 * 配信状態を記録する。記録の失敗で配信の成否や再試行の判定が変わらないよう、失敗はログに残すだけにする
+	 */
+	@bindThis
+	private async recordLatestStatus(webhookId: string, latestStatus: number): Promise<void> {
+		try {
+			await this.systemWebhooksRepository.update({ id: webhookId }, {
+				latestSentAt: new Date(),
+				latestStatus,
+			});
+		} catch (err) {
+			this.logger.error(`failed to record the delivery status of system webhook ${webhookId}`, { e: err });
 		}
 	}
 }

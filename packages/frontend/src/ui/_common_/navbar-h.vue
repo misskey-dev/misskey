@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
+import { computed, defineAsyncComponent, onMounted, onUnmounted, ref } from 'vue';
 import { openInstanceMenu } from './common.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
@@ -96,10 +96,16 @@ async function openAccountMenu(ev: PointerEvent) {
 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
+function onResize() {
+	settingsWindowed.value = (window.innerWidth >= WINDOW_THRESHOLD);
+}
+
 onMounted(() => {
-	window.addEventListener('resize', () => {
-		settingsWindowed.value = (window.innerWidth >= WINDOW_THRESHOLD);
-	}, { passive: true });
+	window.addEventListener('resize', onResize, { passive: true });
+});
+
+onUnmounted(() => {
+	window.removeEventListener('resize', onResize);
 });
 
 </script>

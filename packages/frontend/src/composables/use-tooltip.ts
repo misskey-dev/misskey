@@ -119,6 +119,9 @@ export function useTooltip(
 
 	onBeforeUnmount(() => {
 		close();
+		// unmount時に未実行のタイマーが残っている場合があるためクリアする
+		window.clearTimeout(timeoutId);
+		if (autoHidingTimer != null) window.clearInterval(autoHidingTimer);
 		if (boundEl != null) {
 			removeListeners(boundEl);
 			boundEl = null;
