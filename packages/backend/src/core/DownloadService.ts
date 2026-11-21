@@ -7,7 +7,7 @@ import * as fs from 'node:fs';
 import * as stream from 'node:stream/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import chalk from 'chalk';
-import got, * as Got from 'got';
+import type { Progress, Response } from 'got';
 import { parse } from 'content-disposition';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -46,7 +46,8 @@ export class DownloadService {
 		const urlObj = new URL(url);
 		let filename = urlObj.pathname.split('/').pop() ?? 'untitled';
 
-		const req = got.stream(url, {
+		const Got = await import('got');
+		const req = Got.default.stream(url, {
 			headers: {
 				'User-Agent': this.config.userAgent,
 			},
@@ -82,7 +83,7 @@ export class DownloadService {
 				limit: 0,
 			},
 			enableUnixSockets: false,
-		}).on('response', (res: Got.Response) => {
+		}).on('response', (res: Response) => {
 			const contentLength = res.headers['content-length'];
 			if (contentLength != null) {
 				const size = Number(contentLength);
@@ -103,7 +104,7 @@ export class DownloadService {
 					this.logger.warn(`Failed to parse content-disposition: ${contentDisposition}`, { stack: e });
 				}
 			}
-		}).on('downloadProgress', (progress: Got.Progress) => {
+		}).on('downloadProgress', (progress: Progress) => {
 			if (progress.transferred > maxSize) {
 				this.logger.warn(`maxSize exceeded (${progress.transferred} > ${maxSize}) on downloadProgress`);
 				req.destroy();
