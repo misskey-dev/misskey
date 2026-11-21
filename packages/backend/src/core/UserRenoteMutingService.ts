@@ -13,6 +13,7 @@ import type { MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 
 @Injectable()
 export class UserRenoteMutingService {
@@ -27,11 +28,19 @@ export class UserRenoteMutingService {
 
 	@bindThis
 	public async mute(user: MiUser, target: MiUser, expiresAt: Date | null = null): Promise<void> {
-		await this.renoteMutingsRepository.insert({
-			id: this.idService.gen(),
-			muterId: user.id,
-			muteeId: target.id,
-		});
+		try {
+			await this.renoteMutingsRepository.insert({
+				id: this.idService.gen(),
+				muterId: user.id,
+				muteeId: target.id,
+			});
+		} catch (e) {
+			if (isDuplicateKeyValueError(e)) {
+				// duplicate means already muted
+				return;
+			}
+			throw e;
+		}
 
 		await this.cacheService.renoteMutingsCache.refresh(user.id);
 	}
