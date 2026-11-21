@@ -165,6 +165,18 @@ export class UserEntityService implements OnModuleInit {
 	public isLocalUser = isLocalUser;
 	public isRemoteUser = isRemoteUser;
 
+	/** 未登録の移行先を非同期で解決中の URI。同じ URI の解決が並行して重複しないようにする */
+	private resolvingMovedToUris = new Set<string>();
+
+	@bindThis
+	private resolveMovedToInBackground(uri: string): void {
+		if (this.resolvingMovedToUris.has(uri)) return;
+		this.resolvingMovedToUris.add(uri);
+		this.apPersonService.resolvePerson(uri)
+			.catch(() => {})
+			.finally(() => this.resolvingMovedToUris.delete(uri));
+	}
+
 	@bindThis
 	public async getRelation(me: MiUser['id'], target: MiUser['id']): Promise<UserRelation> {
 		const [
@@ -531,7 +543,7 @@ export class UserEntityService implements OnModuleInit {
 				// 未登録の場合はレスポンスをブロックしないよう非同期で解決し、次回以降のpackで参照できるようにする
 				movedTo: user.movedToUri ? this.apPersonService.fetchPerson(user.movedToUri).then(fetched => {
 					if (fetched != null) return fetched.id;
-					this.apPersonService.resolvePerson(user.movedToUri!).catch(() => {});
+					this.resolveMovedToInBackground(user.movedToUri!);
 					return null;
 				}).catch(() => null) : null,
 				alsoKnownAs: user.alsoKnownAs ?
