@@ -416,7 +416,9 @@ export class OAuth2ProviderService implements OnApplicationShutdown {
 	) {
 		// 認可リクエストは無認証でエントリを作成できるため、エントリ数上限を設けてメモリ消費を抑える
 		this.#authorizationTransactionCache = new MemoryKVCache<AuthorizationTransaction>(1000 * 60 * 5, 1000);
-		this.#grantCodeCache = new MemoryKVCache<AuthorizationCodeGrant>(1000 * 60 * 5, 1000);
+		// 認可コードの発行にはログインが必要なため上限は設けない。
+		// 上限で追い出されると、使用済みコードの再利用を検知してトークンを失効させる処理 (RFC 6749 4.1.2) が働かなくなる
+		this.#grantCodeCache = new MemoryKVCache<AuthorizationCodeGrant>(1000 * 60 * 5);
 		this.#logger = loggerService.getLogger('oauth');
 	}
 
