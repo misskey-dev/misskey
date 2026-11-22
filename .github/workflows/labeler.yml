@@ -4,6 +4,10 @@ on:
     branches-ignore:
       - 'l10n_develop'
 
+concurrency:
+  group: labeler-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   # どのディレクトリが変更されたかに応じてラベルを付与する
   # 設定: .github/labeler.yml
@@ -19,12 +23,12 @@ jobs:
 
   # 正味の変更行数に応じてサイズラベルを付与する
   size:
+    # actions/labeler はラベル一覧を丸ごと置き換えるため、並行して付けると消されてしまう
+    needs: triage
+    if: ${{ !cancelled() }}
     permissions:
       pull-requests: write
     runs-on: ubuntu-latest
-    concurrency:
-      group: pr-size-${{ github.event.pull_request.number }}
-      cancel-in-progress: true
     steps:
     - uses: actions/github-script@v9
       with:
