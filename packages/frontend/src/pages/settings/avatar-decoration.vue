@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkButton danger @click="detachAllDecorations">{{ i18n.ts.detachAll }}</MkButton>
 			</div>
-			<MkFoldableSection v-for="category in Object.keys(groupedDecorations)" :key="category" :expanded="true">
+			<MkFoldableSection v-for="category in categories" :key="category" :expanded="true">
 				<template #header>{{ category || i18n.ts.other }}</template>
 				<div :class="$style.decorations">
 					<XDecoration
@@ -61,13 +61,14 @@ import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { definePage } from '@/page.js';
-import { groupAvatarDecorations } from '@/utility/group-avatar-decorations.js';
+import { groupAvatarDecorations, sortAvatarDecorationCategories } from '@/utility/group-avatar-decorations.js';
 
 const $i = ensureSignin();
 
 const loading = ref(true);
 const avatarDecorations = ref<Misskey.entities.GetAvatarDecorationsResponse>([]);
 const groupedDecorations = computed(() => groupAvatarDecorations(avatarDecorations.value));
+const categories = computed(() => sortAvatarDecorationCategories(Object.keys(groupedDecorations.value)));
 
 misskeyApi('get-avatar-decorations').then(_avatarDecorations => {
 	avatarDecorations.value = _avatarDecorations;

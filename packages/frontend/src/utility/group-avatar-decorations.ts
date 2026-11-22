@@ -23,3 +23,18 @@ export function groupAvatarDecorations<T extends AvatarDecorationBase>(decoratio
 
 	return grouped;
 }
+
+/**
+ * アバターデコレーションのカテゴリ名を表示順にソートします。
+ * 数字を含むカテゴリ名は数値として比較し（例: `2.` → `10.`）、未分類（空文字）は最後にします。
+ * @param categories カテゴリ名の配列
+ * @returns ソートされたカテゴリ名の新しい配列
+ */
+export function sortAvatarDecorationCategories(categories: string[]) {
+	return [...categories].sort((a, b) => {
+		if (a === b) return 0;
+		if (a === '') return 1;
+		if (b === '') return -1;
+		return a.localeCompare(b, undefined, { numeric: true });
+	});
+}
