@@ -1571,7 +1571,6 @@ _settings:
   settingsPersistence_title: "設定的持久化"
   settingsPersistence_description1: "啟用「設定的持久化」後，可以防止設定資訊遺失。"
   settingsPersistence_description2: "依環境不同，可能無法啟用。"
-  autoplayEmbededPlayerOfUrlPreview: ""
   _chat:
     showSenderName: "顯示發送者的名稱"
     sendOnEnter: "按下 Enter 發送訊息"
