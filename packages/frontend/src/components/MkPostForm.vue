@@ -659,7 +659,8 @@ function showOtherSettings() {
 						};
 					});
 				}
-				if (draft.visibleUserIds) {
+				visibleUsers.value = [];
+				if (draft.visibleUserIds != null && draft.visibleUserIds.length > 0) {
 					misskeyApi('users/show', { userIds: draft.visibleUserIds }).then(users => {
 						users.forEach(u => pushVisibleUser(u));
 					});
@@ -670,15 +671,6 @@ function showOtherSettings() {
 				reactionAcceptance.value = draft.reactionAcceptance;
 				scheduledAt.value = draft.scheduledAt ?? null;
 				if (draft.channel) targetChannel.value = draft.channel as unknown as Misskey.entities.Channel;
-
-				visibleUsers.value = [];
-				draft.visibleUserIds?.forEach(uid => {
-					if (!visibleUsers.value.some(u => u.id === uid)) {
-						misskeyApi('users/show', { userId: uid }).then(user => {
-							pushVisibleUser(user);
-						});
-					}
-				});
 
 				serverDraftId.value = draft.id;
 			},
