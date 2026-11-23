@@ -198,15 +198,17 @@ describe('misc:ffmpeg', () => {
 				expect(resolveBinary('ffprobe')).toBe('ffprobe');
 			});
 
-			test('相対パスの FFMPEG_PATH でも隣の ffprobe を絶対パスで返す', async () => {
+			test('相対パスの FFMPEG_PATH でも隣の ffprobe を起動できる', async () => {
 				const binDir = join(dir, 'relative-bin');
 				await fs.mkdir(binDir);
 				const fakeFfmpeg = await writeFakeBinary('relative-bin/ffmpeg', 'exit 0');
-				const fakeFfprobe = await writeFakeBinary('relative-bin/ffprobe', 'exit 0');
-				vi.stubEnv('FFMPEG_PATH', relative(process.cwd(), fakeFfmpeg));
+				await writeFakeBinary('relative-bin/ffprobe', 'exit 5');
+				const relativeFfmpeg = relative(process.cwd(), fakeFfmpeg);
+				vi.stubEnv('FFMPEG_PATH', relativeFfmpeg);
 				vi.stubEnv('PATH', join(dir, 'empty'));
-				expect(resolveBinary('ffmpeg')).toBe(fakeFfmpeg);
-				expect(resolveBinary('ffprobe')).toBe(fakeFfprobe);
+				expect(resolveBinary('ffmpeg')).toBe(relativeFfmpeg);
+				// PATH から探されず、指定したディレクトリの ffprobe が起動される
+				await expect(hasVideoStream(video)).rejects.toMatchObject({ command: 'ffprobe', exitCode: 5 });
 			});
 
 			test('ffprobe が PATH になければ FFMPEG_PATH と同じディレクトリを探す', async () => {
@@ -221,6 +223,14 @@ describe('misc:ffmpeg', () => {
 
 			test('時間内に終わらなければ止めて FFmpegError で失敗する', async () => {
 				vi.stubEnv('FFMPEG_PATH', await writeFakeBinary('slow-ffmpeg', 'exec sleep 30'));
+				const startedAt = Date.now();
+				await expect(extractDetectionFrames(video, dir, { timeout: 200 })).rejects.toMatchObject({ timedOut: true });
+				expect(Date.now() - startedAt).toBeLessThan(5 * 1000);
+			});
+
+			test('期限前に終了したプロセスの孫がパイプを握ったままでもタイムアウトで打ち切る', async () => {
+				// 本体はすぐ終了するが、バックグラウンドの sleep が stdout / stderr を握り続ける
+				vi.stubEnv('FFMPEG_PATH', await writeFakeBinary('exiting-wrapper-ffmpeg', 'sleep 10 &\nexit 0'));
 				const startedAt = Date.now();
 				await expect(extractDetectionFrames(video, dir, { timeout: 200 })).rejects.toMatchObject({ timedOut: true });
 				expect(Date.now() - startedAt).toBeLessThan(5 * 1000);

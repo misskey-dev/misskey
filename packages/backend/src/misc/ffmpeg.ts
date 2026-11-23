@@ -5,7 +5,7 @@
 
 import * as fs from 'node:fs';
 import { spawn } from 'node:child_process';
-import { delimiter, dirname, join, resolve } from 'node:path';
+import { delimiter, dirname, join, sep } from 'node:path';
 
 /**
  * Misskey が使う ffmpeg / ffprobe の呼び出しだけを用途ごとの関数として提供する。
@@ -80,10 +80,10 @@ function findInPath(name: string): string | null {
 	return null;
 }
 
-/** 環境変数で指定されたパスが実行可能ファイルなら、その絶対パスを返す */
+/** 環境変数で指定されたパスが実行可能ファイルなら、そのまま返す */
 function resolveEnvPath(envPath: string | undefined): string | null {
 	if (envPath == null || envPath === '' || !isExecutableFile(envPath)) return null;
-	return resolve(envPath);
+	return envPath;
 }
 
 /**
@@ -102,7 +102,9 @@ export function resolveBinary(command: Command): string {
 
 	const ffmpegPath = resolveEnvPath(process.env.FFMPEG_PATH);
 	if (ffmpegPath != null) {
-		const sibling = join(dirname(ffmpegPath), process.platform === 'win32' ? 'ffprobe.exe' : 'ffprobe');
+		// join() は `./ffmpeg` の `./` を落とし、PATH から探すコマンド名になってしまうので、区切り文字で連結する。
+		// 正規化もしないので、シンボリックリンクを経由する `..` もカーネルがそのまま解決する
+		const sibling = `${dirname(ffmpegPath)}${sep}${process.platform === 'win32' ? 'ffprobe.exe' : 'ffprobe'}`;
 		if (isExecutableFile(sibling)) return sibling;
 	}
 	return 'ffprobe';
@@ -119,6 +121,7 @@ function run(command: Command, args: readonly string[], timeout: number): Promis
 		const stdout: Buffer[] = [];
 		let stderr = '';
 		let timedOut = false;
+		let exited: { exitCode: number | null; signal: NodeJS.Signals | null } | null = null;
 		let settled = false;
 		let killTimer: NodeJS.Timeout | null = null;
 
@@ -134,8 +137,20 @@ function run(command: Command, args: readonly string[], timeout: number): Promis
 			}
 		};
 
+		// タイムアウト後は close を待たずに打ち切る。孫プロセスがパイプを握ったままだと close が来ないため
+		const abandon = ({ exitCode, signal }: { exitCode: number | null; signal: NodeJS.Signals | null }) => {
+			child.stdout.destroy();
+			child.stderr.destroy();
+			settle({ error: new FFmpegError({ command, exitCode, signal, timedOut, stderr }) });
+		};
+
 		const timeoutTimer = setTimeout(() => {
 			timedOut = true;
+			if (exited != null) {
+				// プロセス自体は終了済みで、パイプだけが閉じていない
+				abandon(exited);
+				return;
+			}
 			child.kill('SIGTERM');
 			killTimer = setTimeout(() => child.kill('SIGKILL'), KILL_GRACE);
 		}, timeout);
@@ -147,12 +162,9 @@ function run(command: Command, args: readonly string[], timeout: number): Promis
 		});
 		child.once('error', (error) => settle({ error }));
 		child.once('exit', (exitCode, signal) => {
-			// 通常は出力ファイルの書き込みまで終わったことを保証するため close を待つ。
-			// ただしタイムアウト時は、孫プロセスがパイプを握ったままでも待ち続けないよう、ここで打ち切る
-			if (!timedOut) return;
-			child.stdout.destroy();
-			child.stderr.destroy();
-			settle({ error: new FFmpegError({ command, exitCode, signal, timedOut, stderr }) });
+			// 通常は出力ファイルの書き込みまで終わったことを保証するため close を待つ
+			exited = { exitCode, signal };
+			if (timedOut) abandon(exited);
 		});
 		child.once('close', (exitCode, signal) => {
 			if (exitCode === 0 && !timedOut) {
