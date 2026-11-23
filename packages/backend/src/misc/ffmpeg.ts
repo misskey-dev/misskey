@@ -3,13 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as fs from 'node:fs';
 import { spawn } from 'node:child_process';
-import { join } from 'node:path';
+import { delimiter, dirname, join } from 'node:path';
 
 /**
  * Misskey が使う ffmpeg / ffprobe の呼び出しだけを用途ごとの関数として提供する。
  * 汎用のコマンドビルダーにはしない（必要になった呼び出しを都度ここに足す）。
  */
+
+type Command = 'ffmpeg' | 'ffprobe';
 
 /** エラーメッセージに含める stderr の最大文字数（末尾を残す） */
 const STDERR_LIMIT = 4096;
@@ -18,77 +21,185 @@ const STDERR_LIMIT = 4096;
 const COMMON_ARGS = {
 	ffmpeg: ['-hide_banner', '-loglevel', 'error', '-nostdin'],
 	ffprobe: ['-hide_banner', '-loglevel', 'error'],
-} as const satisfies Record<string, readonly string[]>;
+} as const satisfies Record<Command, readonly string[]>;
+
+/** 実行時間の上限（ミリ秒）の既定値 */
+const DEFAULT_TIMEOUT = {
+	probe: 30 * 1000,
+	thumbnail: 60 * 1000,
+	detectionFrames: 5 * 60 * 1000,
+} as const;
+
+/** タイムアウトで SIGTERM を送ってから、終了しなければ SIGKILL を送るまでの猶予（ミリ秒） */
+const KILL_GRACE = 5 * 1000;
+
+export type FFmpegRunOptions = {
+	/** 実行時間の上限（ミリ秒）。超えたらプロセスを止めて FFmpegError で失敗する */
+	timeout?: number;
+};
 
 export class FFmpegError extends Error {
-	constructor(
-		public readonly command: string,
-		public readonly exitCode: number | null,
-		public readonly signal: NodeJS.Signals | null,
-		public readonly stderr: string,
-	) {
-		super(`${command} exited with ${exitCode != null ? `code ${exitCode}` : `signal ${signal}`}: ${stderr.trim()}`);
+	public readonly command: string;
+	public readonly exitCode: number | null;
+	public readonly signal: NodeJS.Signals | null;
+	public readonly timedOut: boolean;
+	public readonly stderr: string;
+
+	constructor(opts: { command: string; exitCode: number | null; signal: NodeJS.Signals | null; timedOut: boolean; stderr: string }) {
+		const reason = opts.timedOut
+			? 'timed out'
+			: `exited with ${opts.exitCode != null ? `code ${opts.exitCode}` : `signal ${opts.signal}`}`;
+		super(`${opts.command} ${reason}: ${opts.stderr.trim()}`);
 		this.name = 'FFmpegError';
+		this.command = opts.command;
+		this.exitCode = opts.exitCode;
+		this.signal = opts.signal;
+		this.timedOut = opts.timedOut;
+		this.stderr = opts.stderr;
 	}
+}
+
+function isExecutableFile(path: string): boolean {
+	try {
+		fs.accessSync(path, fs.constants.X_OK);
+		return fs.statSync(path).isFile();
+	} catch {
+		return false;
+	}
+}
+
+function findInPath(name: string): string | null {
+	const exts = process.platform === 'win32' ? ['.exe', ''] : [''];
+	for (const dir of (process.env.PATH ?? '').split(delimiter)) {
+		if (dir === '') continue;
+		for (const ext of exts) {
+			const candidate = join(dir, name + ext);
+			if (isExecutableFile(candidate)) return candidate;
+		}
+	}
+	return null;
+}
+
+/**
+ * 起動するバイナリを決める。fluent-ffmpeg と同じく環境変数 FFMPEG_PATH / FFPROBE_PATH を優先する。
+ * 環境変数のパスが存在しない場合は PATH から探す。ffprobe が PATH にもなければ、FFMPEG_PATH と同じディレクトリを探す。
+ */
+export function resolveBinary(command: Command): string {
+	const envPath = command === 'ffmpeg' ? process.env.FFMPEG_PATH : process.env.FFPROBE_PATH;
+	if (envPath != null && envPath !== '' && isExecutableFile(envPath)) return envPath;
+
+	if (command === 'ffprobe' && findInPath('ffprobe') == null) {
+		const ffmpegPath = process.env.FFMPEG_PATH;
+		if (ffmpegPath != null && ffmpegPath !== '') {
+			const sibling = join(dirname(ffmpegPath), process.platform === 'win32' ? 'ffprobe.exe' : 'ffprobe');
+			if (isExecutableFile(sibling)) return sibling;
+		}
+	}
+
+	return command;
 }
 
 /**
  * コマンドを起動し、正常終了したら stdout を返す。
- * 0 以外で終了したら FFmpegError、起動自体に失敗したら（ENOENT など）spawn のエラーで reject する。
+ * 0 以外での終了とタイムアウトは FFmpegError、起動自体の失敗（ENOENT など）は spawn のエラーで reject する。
  */
-function run(command: keyof typeof COMMON_ARGS, args: readonly string[]): Promise<string> {
+function run(command: Command, args: readonly string[], timeout: number): Promise<string> {
 	return new Promise((resolve, reject) => {
 		// シェルを経由せず引数配列で渡すので、パスに含まれる文字がシェルに解釈されることはない
-		const child = spawn(command, [...COMMON_ARGS[command], ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+		const child = spawn(resolveBinary(command), [...COMMON_ARGS[command], ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
 		const stdout: Buffer[] = [];
 		let stderr = '';
+		let timedOut = false;
+		let killTimer: NodeJS.Timeout | null = null;
+
+		const timeoutTimer = setTimeout(() => {
+			timedOut = true;
+			child.kill('SIGTERM');
+			killTimer = setTimeout(() => child.kill('SIGKILL'), KILL_GRACE);
+		}, timeout);
+
 		child.stdout.on('data', (chunk: Buffer) => stdout.push(chunk));
 		child.stderr.setEncoding('utf8');
 		child.stderr.on('data', (chunk: string) => {
 			stderr = (stderr + chunk).slice(-STDERR_LIMIT);
 		});
-		child.once('error', reject);
-		child.once('close', (code, signal) => {
-			if (code === 0) {
+		child.once('error', (err) => {
+			clearTimeout(timeoutTimer);
+			reject(err);
+		});
+		// close は stdout / stderr が閉じてから発火するので、出力ファイルの書き込みも終わっている
+		child.once('close', (exitCode, signal) => {
+			clearTimeout(timeoutTimer);
+			if (killTimer != null) clearTimeout(killTimer);
+			if (exitCode === 0 && !timedOut) {
 				resolve(Buffer.concat(stdout).toString('utf8'));
 			} else {
-				reject(new FFmpegError(command, code, signal, stderr));
+				reject(new FFmpegError({ command, exitCode, signal, timedOut, stderr }));
 			}
 		});
 	});
 }
 
 /**
- * 動画の長さ（秒）を返す。コンテナに長さの情報がない場合は null。
- */
-export async function probeDuration(source: string): Promise<number | null> {
-	const out = await run('ffprobe', [
-		'-show_entries', 'format=duration',
-		'-of', 'default=noprint_wrappers=1:nokey=1',
-		source,
-	]);
-	const duration = Number.parseFloat(out.trim());
-	return Number.isFinite(duration) && duration >= 0 ? duration : null;
-}
-
-/**
  * 映像ストリームを 1 つ以上含むかどうかを返す。
  * 音声ファイルのカバーアートのような静止画ストリームも映像ストリームとして数える。
  */
-export async function hasVideoStream(source: string): Promise<boolean> {
+export async function hasVideoStream(source: string, opts?: FFmpegRunOptions): Promise<boolean> {
 	const out = await run('ffprobe', [
 		'-select_streams', 'v',
 		'-show_entries', 'stream=codec_type',
 		'-of', 'csv=p=0',
 		source,
-	]);
+	], opts?.timeout ?? DEFAULT_TIMEOUT.probe);
 	return out.trim() !== '';
 }
 
-export function buildThumbnailArgs(source: string, seekSeconds: number, outPath: string): string[] {
+export type VideoStreamInfo = {
+	/** 入力ファイル内でのストリーム番号（-map 0:<index> に渡す） */
+	index: number;
+	/** 長さ（秒）。ストリームにもコンテナにも長さの情報がない場合は null */
+	duration: number | null;
+};
+
+function parseDuration(value: unknown): number | null {
+	const duration = typeof value === 'string' || typeof value === 'number' ? Number(value) : Number.NaN;
+	return Number.isFinite(duration) && duration >= 0 ? duration : null;
+}
+
+/**
+ * 解像度が最も大きい映像ストリームを返す。映像ストリームがなければ null。
+ * 長さは、音声だけが長いファイルでもずれないよう、ストリーム自身の長さを優先する。
+ */
+export async function probeVideoStream(source: string, opts?: FFmpegRunOptions): Promise<VideoStreamInfo | null> {
+	const out = await run('ffprobe', [
+		'-show_entries', 'stream=index,codec_type,width,height,duration:format=duration',
+		'-of', 'json',
+		source,
+	], opts?.timeout ?? DEFAULT_TIMEOUT.probe);
+	const probed = JSON.parse(out) as {
+		streams?: { index: number; codec_type?: string; width?: number; height?: number; duration?: string }[];
+		format?: { duration?: string };
+	};
+
+	let best: NonNullable<typeof probed.streams>[number] | null = null;
+	for (const stream of probed.streams ?? []) {
+		if (stream.codec_type !== 'video') continue;
+		const size = (stream.width ?? 0) * (stream.height ?? 0);
+		if (best == null || size > (best.width ?? 0) * (best.height ?? 0)) best = stream;
+	}
+	if (best == null) return null;
+
+	return {
+		index: best.index,
+		duration: parseDuration(best.duration) ?? parseDuration(probed.format?.duration),
+	};
+}
+
+export function buildThumbnailArgs(source: string, streamIndex: number, seekSeconds: number, outPath: string): string[] {
 	return [
 		'-ss', String(seekSeconds), // 入力側でシークする（デコード量が減る）
 		'-i', source,
+		'-map', `0:${streamIndex}`,
 		'-frames:v', '1',
 		'-y',
 		outPath, // 出力形式は拡張子から決まる
@@ -96,13 +207,23 @@ export function buildThumbnailArgs(source: string, seekSeconds: number, outPath:
 }
 
 /**
- * 動画の長さの 5% の位置のフレームを 1 枚書き出す。
- * 長さが分からない動画では先頭のフレームを使う。
+ * 映像ストリームの長さの 5% の位置のフレームを 1 枚書き出す。
+ * 長さが分からない動画や、その位置でフレームが取れなかった動画では、先頭のフレームを使う。
  */
-export async function extractVideoThumbnail(source: string, outPath: string): Promise<void> {
-	const duration = await probeDuration(source);
-	const seekSeconds = duration != null ? duration * 0.05 : 0;
-	await run('ffmpeg', buildThumbnailArgs(source, seekSeconds, outPath));
+export async function extractVideoThumbnail(source: string, outPath: string, opts?: FFmpegRunOptions): Promise<void> {
+	const stream = await probeVideoStream(source, opts);
+	if (stream == null) throw new Error('No video stream in input');
+
+	const seekSeconds = stream.duration != null ? stream.duration * 0.05 : 0;
+	await run('ffmpeg', buildThumbnailArgs(source, stream.index, seekSeconds, outPath), opts?.timeout ?? DEFAULT_TIMEOUT.thumbnail);
+	if (fs.existsSync(outPath)) return;
+
+	// シーク先にフレームがないと、ffmpeg は何も書き出さずに正常終了する
+	if (seekSeconds > 0) {
+		await run('ffmpeg', buildThumbnailArgs(source, stream.index, 0, outPath), opts?.timeout ?? DEFAULT_TIMEOUT.thumbnail);
+		if (fs.existsSync(outPath)) return;
+	}
+	throw new Error('ffmpeg did not output any frame');
 }
 
 export function buildDetectionFramesArgs(source: string, outDir: string): string[] {
@@ -134,6 +255,6 @@ export function buildDetectionFramesArgs(source: string, outDir: string): string
  * センシティブ判定に使うフレームを outDir に 1.png, 2.png, ... として書き出す。
  * 返る Promise は ffmpeg の終了で settle するので、書き出し中のフレームを並行して読み進められる。
  */
-export function extractDetectionFrames(source: string, outDir: string): Promise<void> {
-	return run('ffmpeg', buildDetectionFramesArgs(source, outDir)).then(() => undefined);
+export async function extractDetectionFrames(source: string, outDir: string, opts?: FFmpegRunOptions): Promise<void> {
+	await run('ffmpeg', buildDetectionFramesArgs(source, outDir), opts?.timeout ?? DEFAULT_TIMEOUT.detectionFrames);
 }

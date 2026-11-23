@@ -7,7 +7,7 @@ import * as fs from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { afterAll, beforeAll, describe, expect, test } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import {
 	FFmpegError,
 	buildDetectionFramesArgs,
@@ -15,11 +15,25 @@ import {
 	extractDetectionFrames,
 	extractVideoThumbnail,
 	hasVideoStream,
-	probeDuration,
+	probeVideoStream,
+	resolveBinary,
 } from '@/misc/ffmpeg.js';
 import { createTempDir } from '@/misc/create-temp.js';
 
 const resources = join(dirname(fileURLToPath(import.meta.url)), '../../resources');
+
+/** テスト用の ffmpeg を同期実行し、失敗したら原因が分かる形で投げる */
+function ffmpegSync(args: string[]): Buffer {
+	const result = spawnSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-nostdin', ...args], { timeout: 60 * 1000 });
+	if (result.error) throw result.error;
+	if (result.status !== 0) throw new Error(`ffmpeg failed: ${result.stderr.toString()}`);
+	return result.stdout;
+}
+
+/** 画像をデコードした画素列（PNG のエンコード差に影響されない比較用） */
+function decodePixels(path: string): Buffer {
+	return ffmpegSync(['-i', path, '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-']);
+}
 
 describe('misc:ffmpeg', () => {
 	describe('引数の組み立て', () => {
@@ -39,9 +53,10 @@ describe('misc:ffmpeg', () => {
 		});
 
 		test('サムネイルの書き出し', () => {
-			expect(buildThumbnailArgs('/in/video.mp4', 0.5, '/out/out.png')).toEqual([
+			expect(buildThumbnailArgs('/in/video.mp4', 0, 0.5, '/out/out.png')).toEqual([
 				'-ss', '0.5',
 				'-i', '/in/video.mp4',
+				'-map', '0:0',
 				'-frames:v', '1',
 				'-y',
 				'/out/out.png',
@@ -53,40 +68,60 @@ describe('misc:ffmpeg', () => {
 		let dir: string;
 		let cleanup: () => void;
 		let video: string;
+		let longAudioVideo: string;
 
 		beforeAll(async () => {
 			[dir, cleanup] = await createTempDir();
+			// 10 秒・30fps・1 秒ごとにキーフレームを持つテスト動画
 			video = join(dir, 'video.mp4');
-			// 10 秒・30fps・1 秒ごとにキーフレームを持つテスト動画を生成する
-			const result = spawnSync('ffmpeg', [
-				'-hide_banner', '-loglevel', 'error', '-y',
-				'-f', 'lavfi', '-i', 'testsrc=duration=10:size=320x240:rate=30',
-				'-c:v', 'mpeg4', '-g', '30',
-				video,
+			ffmpegSync(['-y', '-f', 'lavfi', '-i', 'testsrc=duration=10:size=320x240:rate=30', '-c:v', 'mpeg4', '-g', '30', video]);
+			// 映像は 1 秒、音声は 40 秒（コンテナの長さは音声に引きずられて 40 秒になる）
+			longAudioVideo = join(dir, 'long-audio.mp4');
+			ffmpegSync([
+				'-y',
+				'-f', 'lavfi', '-i', 'testsrc=duration=1:size=320x240:rate=30',
+				'-f', 'lavfi', '-i', 'sine=duration=40',
+				'-map', '0:v', '-map', '1:a', '-c:v', 'mpeg4', '-c:a', 'aac',
+				longAudioVideo,
 			]);
-			if (result.status !== 0) {
-				throw new Error(`failed to generate test video: ${result.stderr.toString()}`);
-			}
 		});
 
 		afterAll(() => {
 			cleanup();
 		});
 
-		test('動画の長さを取得できる', async () => {
-			const duration = await probeDuration(video);
-			expect(duration).not.toBeNull();
-			expect(duration).toBeCloseTo(10, 0);
+		afterEach(() => {
+			vi.unstubAllEnvs();
+		});
+
+		test('映像ストリームの長さを取得できる', async () => {
+			const stream = await probeVideoStream(video);
+			expect(stream?.index).toBe(0);
+			expect(stream?.duration).toBeCloseTo(10, 0);
+		});
+
+		test('音声のほうが長くても映像ストリーム自身の長さを返す', async () => {
+			const stream = await probeVideoStream(longAudioVideo);
+			expect(stream?.duration).toBeCloseTo(1, 0);
 		});
 
 		test('映像ストリームの有無を判定できる', async () => {
 			expect(await hasVideoStream(video)).toBe(true);
 			expect(await hasVideoStream(join(resources, 'kick_gaba7.webm'))).toBe(false);
+			expect(await probeVideoStream(join(resources, 'kick_gaba7.webm'))).toBeNull();
 		});
 
-		test('サムネイルを 1 枚書き出せる', async () => {
+		test('長さの 5% の位置のフレームをサムネイルにする', async () => {
 			const out = join(dir, 'thumbnail.png');
 			await extractVideoThumbnail(video, out);
+			const expected = join(dir, 'expected.png');
+			ffmpegSync(['-y', '-ss', '0.5', '-i', video, '-frames:v', '1', expected]);
+			expect(decodePixels(out).equals(decodePixels(expected))).toBe(true);
+		});
+
+		test('音声のほうが長い動画でもサムネイルを書き出せる', async () => {
+			const out = join(dir, 'long-audio.png');
+			await extractVideoThumbnail(longAudioVideo, out);
 			expect((await fs.stat(out)).size).toBeGreaterThan(0);
 		});
 
@@ -103,6 +138,47 @@ describe('misc:ffmpeg', () => {
 			const notVideo = join(dir, 'not-video.mp4');
 			await fs.writeFile(notVideo, 'this is not a video');
 			await expect(extractVideoThumbnail(notVideo, join(dir, 'never.png'))).rejects.toBeInstanceOf(FFmpegError);
+		});
+
+		describe('バイナリの指定', () => {
+			async function writeFakeBinary(name: string, body: string): Promise<string> {
+				const path = join(dir, name);
+				await fs.writeFile(path, `#!/bin/sh\n${body}\n`, { mode: 0o755 });
+				return path;
+			}
+
+			test('FFMPEG_PATH / FFPROBE_PATH のバイナリを使う', async () => {
+				const fakeFfmpeg = await writeFakeBinary('fake-ffmpeg', 'exit 3');
+				const fakeFfprobe = await writeFakeBinary('fake-ffprobe', 'exit 4');
+				vi.stubEnv('FFMPEG_PATH', fakeFfmpeg);
+				vi.stubEnv('FFPROBE_PATH', fakeFfprobe);
+				expect(resolveBinary('ffmpeg')).toBe(fakeFfmpeg);
+				expect(resolveBinary('ffprobe')).toBe(fakeFfprobe);
+				await expect(extractDetectionFrames(video, dir)).rejects.toMatchObject({ command: 'ffmpeg', exitCode: 3 });
+				await expect(hasVideoStream(video)).rejects.toMatchObject({ command: 'ffprobe', exitCode: 4 });
+			});
+
+			test('環境変数のパスが存在しなければ PATH から探す', () => {
+				vi.stubEnv('FFMPEG_PATH', join(dir, 'does-not-exist'));
+				expect(resolveBinary('ffmpeg')).toBe('ffmpeg');
+			});
+
+			test('ffprobe が PATH になければ FFMPEG_PATH と同じディレクトリを探す', async () => {
+				const binDir = join(dir, 'bin');
+				await fs.mkdir(binDir);
+				const fakeFfmpeg = await writeFakeBinary('bin/ffmpeg', 'exit 0');
+				const fakeFfprobe = await writeFakeBinary('bin/ffprobe', 'exit 0');
+				vi.stubEnv('FFMPEG_PATH', fakeFfmpeg);
+				vi.stubEnv('PATH', join(dir, 'empty'));
+				expect(resolveBinary('ffprobe')).toBe(fakeFfprobe);
+			});
+
+			test('時間内に終わらなければ止めて FFmpegError で失敗する', async () => {
+				vi.stubEnv('FFMPEG_PATH', await writeFakeBinary('slow-ffmpeg', 'exec sleep 30'));
+				const startedAt = Date.now();
+				await expect(extractDetectionFrames(video, dir, { timeout: 200 })).rejects.toMatchObject({ timedOut: true });
+				expect(Date.now() - startedAt).toBeLessThan(5 * 1000);
+			});
 		});
 	});
 });
