@@ -38,6 +38,12 @@ export type FFmpegRunOptions = {
 	timeout?: number;
 };
 
+/** プロセスの終了状態（child_process の exit / close イベントの引数） */
+type ExitStatus = {
+	exitCode: number | null;
+	signal: NodeJS.Signals | null;
+};
+
 export class FFmpegError extends Error {
 	public readonly command: string;
 	public readonly exitCode: number | null;
@@ -45,11 +51,12 @@ export class FFmpegError extends Error {
 	public readonly timedOut: boolean;
 	public readonly stderr: string;
 
-	constructor(opts: { command: string; exitCode: number | null; signal: NodeJS.Signals | null; timedOut: boolean; stderr: string }) {
+	constructor(opts: ExitStatus & { command: string; timedOut: boolean; stderr: string }) {
 		const reason = opts.timedOut
 			? 'timed out'
 			: `exited with ${opts.exitCode != null ? `code ${opts.exitCode}` : `signal ${opts.signal}`}`;
 		super(`${opts.command} ${reason}: ${opts.stderr.trim()}`);
+
 		this.name = 'FFmpegError';
 		this.command = opts.command;
 		this.exitCode = opts.exitCode;
@@ -107,62 +114,77 @@ export function resolveBinary(command: Command): string {
 		const sibling = `${dirname(ffmpegPath)}${sep}${process.platform === 'win32' ? 'ffprobe.exe' : 'ffprobe'}`;
 		if (isExecutableFile(sibling)) return sibling;
 	}
+
 	return 'ffprobe';
 }
 
 /**
  * コマンドを起動し、正常終了したら stdout を返す。
  * 0 以外での終了とタイムアウトは FFmpegError、起動自体の失敗（ENOENT など）は spawn のエラーで reject する。
+ *
+ * 正常時は、出力ファイルの書き込みまで終わったことを保証するため close（stdout / stderr が閉じた後）を待つ。
+ * タイムアウト時は close を待たずに打ち切る。孫プロセスがパイプを握ったままだと close が来ないため。
  */
 function run(command: Command, args: readonly string[], timeout: number): Promise<string> {
-	return new Promise((resolvePromise, reject) => {
+	return new Promise((resolve, reject) => {
 		// シェルを経由せず引数配列で渡すので、パスに含まれる文字がシェルに解釈されることはない
-		const child = spawn(resolveBinary(command), [...COMMON_ARGS[command], ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+		const child = spawn(resolveBinary(command), [...COMMON_ARGS[command], ...args], {
+			stdio: ['ignore', 'pipe', 'pipe'],
+		});
+
+		// 出力の収集
 		const stdout: Buffer[] = [];
 		let stderr = '';
-		let timedOut = false;
-		let exited: { exitCode: number | null; signal: NodeJS.Signals | null } | null = null;
-		let settled = false;
-		let killTimer: NodeJS.Timeout | null = null;
-
-		const settle = (result: { stdout: string } | { error: Error }) => {
-			if (settled) return;
-			settled = true;
-			clearTimeout(timeoutTimer);
-			if (killTimer != null) clearTimeout(killTimer);
-			if ('error' in result) {
-				reject(result.error);
-			} else {
-				resolvePromise(result.stdout);
-			}
-		};
-
-		// タイムアウト後は close を待たずに打ち切る。孫プロセスがパイプを握ったままだと close が来ないため
-		const abandon = ({ exitCode, signal }: { exitCode: number | null; signal: NodeJS.Signals | null }) => {
-			child.stdout.destroy();
-			child.stderr.destroy();
-			settle({ error: new FFmpegError({ command, exitCode, signal, timedOut, stderr }) });
-		};
-
-		const timeoutTimer = setTimeout(() => {
-			timedOut = true;
-			if (exited != null) {
-				// プロセス自体は終了済みで、パイプだけが閉じていない
-				abandon(exited);
-				return;
-			}
-			child.kill('SIGTERM');
-			killTimer = setTimeout(() => child.kill('SIGKILL'), KILL_GRACE);
-		}, timeout);
-
 		child.stdout.on('data', (chunk: Buffer) => stdout.push(chunk));
 		child.stderr.setEncoding('utf8');
 		child.stderr.on('data', (chunk: string) => {
 			stderr = (stderr + chunk).slice(-STDERR_LIMIT);
 		});
+
+		// 結果の確定（二重に確定しないよう、最初の 1 回だけ有効）
+		let settled = false;
+		let killTimer: NodeJS.Timeout | null = null;
+		const settle = (result: { stdout: string } | { error: Error }) => {
+			if (settled) return;
+			settled = true;
+
+			clearTimeout(timeoutTimer);
+			if (killTimer != null) clearTimeout(killTimer);
+
+			if ('error' in result) {
+				reject(result.error);
+			} else {
+				resolve(result.stdout);
+			}
+		};
+		const fail = (status: ExitStatus) => {
+			settle({ error: new FFmpegError({ ...status, command, timedOut, stderr }) });
+		};
+
+		// タイムアウト
+		let timedOut = false;
+		let exited: ExitStatus | null = null;
+		const abandon = (status: ExitStatus) => {
+			child.stdout.destroy();
+			child.stderr.destroy();
+			fail(status);
+		};
+		const timeoutTimer = setTimeout(() => {
+			timedOut = true;
+
+			// プロセス自体は終了済みで、パイプだけが閉じていない
+			if (exited != null) {
+				abandon(exited);
+				return;
+			}
+
+			child.kill('SIGTERM');
+			killTimer = setTimeout(() => child.kill('SIGKILL'), KILL_GRACE);
+		}, timeout);
+
+		// プロセスの終了
 		child.once('error', (error) => settle({ error }));
 		child.once('exit', (exitCode, signal) => {
-			// 通常は出力ファイルの書き込みまで終わったことを保証するため close を待つ
 			exited = { exitCode, signal };
 			if (timedOut) abandon(exited);
 		});
@@ -170,7 +192,7 @@ function run(command: Command, args: readonly string[], timeout: number): Promis
 			if (exitCode === 0 && !timedOut) {
 				settle({ stdout: Buffer.concat(stdout).toString('utf8') });
 			} else {
-				settle({ error: new FFmpegError({ command, exitCode, signal, timedOut, stderr }) });
+				fail({ exitCode, signal });
 			}
 		});
 	});
@@ -209,20 +231,18 @@ function parseDuration(value: unknown): number | null {
 export async function probeVideoStream(source: string, opts?: FFmpegRunOptions): Promise<VideoStreamInfo | null> {
 	const out = await run('ffprobe', [
 		'-select_streams', 'V', // 大文字の V はカバーアートのような添付画像を除いた映像ストリーム
-		'-show_entries', 'stream=index,codec_type,width,height,duration:format=duration',
+		'-show_entries', 'stream=index,width,height,duration:format=duration',
 		'-of', 'json',
 		source,
 	], opts?.timeout ?? DEFAULT_TIMEOUT.probe);
-	const probed = JSON.parse(out) as {
-		streams?: { index: number; codec_type?: string; width?: number; height?: number; duration?: string }[];
-		format?: { duration?: string };
-	};
 
-	let best: NonNullable<typeof probed.streams>[number] | null = null;
+	type ProbedStream = { index: number; width?: number; height?: number; duration?: string };
+	const probed = JSON.parse(out) as { streams?: ProbedStream[]; format?: { duration?: string } };
+
+	const area = (stream: ProbedStream) => (stream.width ?? 0) * (stream.height ?? 0);
+	let best: ProbedStream | null = null;
 	for (const stream of probed.streams ?? []) {
-		if (stream.codec_type !== 'video') continue;
-		const size = (stream.width ?? 0) * (stream.height ?? 0);
-		if (best == null || size > (best.width ?? 0) * (best.height ?? 0)) best = stream;
+		if (best == null || area(stream) > area(best)) best = stream;
 	}
 	if (best == null) return null;
 
@@ -251,15 +271,18 @@ export async function extractVideoThumbnail(source: string, outPath: string, opt
 	const stream = await probeVideoStream(source, opts);
 	if (stream == null) throw new Error('No video stream in input');
 
+	const timeout = opts?.timeout ?? DEFAULT_TIMEOUT.thumbnail;
 	const seekSeconds = stream.duration != null ? stream.duration * 0.05 : 0;
-	await run('ffmpeg', buildThumbnailArgs(source, stream.index, seekSeconds, outPath), opts?.timeout ?? DEFAULT_TIMEOUT.thumbnail);
+
+	await run('ffmpeg', buildThumbnailArgs(source, stream.index, seekSeconds, outPath), timeout);
 	if (fs.existsSync(outPath)) return;
 
-	// シーク先にフレームがないと、ffmpeg は何も書き出さずに正常終了する
+	// シーク先にフレームがないと、ffmpeg は何も書き出さずに正常終了するので、先頭で取り直す
 	if (seekSeconds > 0) {
-		await run('ffmpeg', buildThumbnailArgs(source, stream.index, 0, outPath), opts?.timeout ?? DEFAULT_TIMEOUT.thumbnail);
+		await run('ffmpeg', buildThumbnailArgs(source, stream.index, 0, outPath), timeout);
 		if (fs.existsSync(outPath)) return;
 	}
+
 	throw new Error('ffmpeg did not output any frame');
 }
 

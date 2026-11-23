@@ -213,7 +213,9 @@ export class FileInfoService {
 				let frameIndex = 0;
 				let targetIndex = 0;
 				let nextIndex = 1;
-				for await (const path of this.asyncIterateFrames(outDir, () => extractDetectionFrames(source, outDir))) {
+
+				const frames = this.asyncIterateFrames(outDir, () => extractDetectionFrames(source, outDir));
+				for await (const path of frames) {
 					try {
 						const index = frameIndex++;
 						if (index !== targetIndex) {
@@ -227,6 +229,7 @@ export class FileInfoService {
 						await fs.promises.unlink(path).catch(() => {});
 					}
 				}
+
 				const predictions = await this.sensitiveMediaDetectionService.detectSensitiveMany(frameBuffers);
 				const results = predictions.filter((x): x is Prediction[] => x != null).map(x => judgePrediction(x));
 				// 判定に成功したフレームが 0 件のとき（接続先未設定・通信失敗等）は、
@@ -261,51 +264,67 @@ export class FileInfoService {
 		return [sensitive, porn];
 	}
 
+	/**
+	 * start() で書き出しを始め、cwd に 1.png, 2.png, ... と書き出されるフレームのパスを、書き込みが終わった順に返す。
+	 */
 	private async *asyncIterateFrames(cwd: string, start: () => Promise<void>): AsyncGenerator<string, void> {
-		const watcher = new FSWatcher({
-			cwd,
-		});
-		let finished = false;
-		// コールバック内でしか代入しないので、null に絞り込まれないよう型を明示する
-		let failure = null as { error: unknown } | null;
-		// 書き出しプロセスの終了で settle する。失敗しても reject せず failure に記録する
-		const done = start().then(() => {
-			finished = true;
-		}, (error: unknown) => {
-			finished = true;
-			failure = { error };
-		}).then(() => watcher.close());
+		const watcher = new FSWatcher({ cwd });
+
+		// 書き出しプロセスの状態（Promise のコールバックから更新する）
+		const extraction: { finished: boolean; failure: { error: unknown } | null } = {
+			finished: false,
+			failure: null,
+		};
+
+		// 書き出しプロセスの終了を待つ Promise。失敗しても reject せず、extraction.failure に記録する
+		const done = start()
+			.catch((error: unknown) => {
+				extraction.failure = { error };
+			})
+			.then(async () => {
+				extraction.finished = true;
+				await watcher.close();
+			});
+
 		for (let i = 1; true; i++) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 			const current = `${i}.png`;
 			const next = `${i + 1}.png`;
 			const framePath = join(cwd, current);
+
+			// 次のフレームが書き出され始めているなら、現在のフレームの書き込みは終わっている
 			if (await this.exists(join(cwd, next))) {
 				yield framePath;
-			} else if (!finished) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
-				watcher.add(next);
-				await Promise.race([
-					new Promise<void>((resolve) => {
-						watcher.on('add', function onAdd(path) {
-							if (path === next) { // 次フレームの書き出しが始まっているなら、現在フレームの書き出しは終わっている
-								watcher.unwatch(current);
-								watcher.off('add', onAdd);
-								resolve();
-							}
-						});
-					}),
-					done, // 全てのフレームを処理し終わったなら、最終フレームである現在フレームの書き出しは終わっている
-				]);
-				if (failure != null) throw failure.error;
-				// フィルタで全フレームが除外されると、ffmpeg は 1 枚も書き出さずに正常終了する
-				if (!await this.exists(framePath)) return;
-				yield framePath;
-			} else if (await this.exists(framePath)) {
-				yield framePath;
-			} else {
-				if (failure != null) throw failure.error;
-				return;
+				continue;
 			}
+
+			// 次のフレームが現れる（= 現在のフレームを書き終えた）か、
+			// 書き出しプロセスが終了する（= 現在のフレームが最後だった）まで待つ
+			if (!extraction.finished) {
+				watcher.add(next);
+				await Promise.race([this.waitForAdd(watcher, next), done]);
+				watcher.unwatch(current);
+			}
+
+			if (extraction.failure != null) throw extraction.failure.error;
+
+			// フィルタで全フレームが除外されると、1 枚も書き出さずに正常終了する
+			if (!await this.exists(framePath)) return;
+
+			yield framePath;
 		}
+	}
+
+	/**
+	 * watcher に name のファイルが追加されるまで待つ。
+	 */
+	private waitForAdd(watcher: FSWatcher, name: string): Promise<void> {
+		return new Promise((resolve) => {
+			watcher.on('add', function onAdd(path) {
+				if (path !== name) return;
+				watcher.off('add', onAdd);
+				resolve();
+			});
+		});
 	}
 
 	@bindThis
