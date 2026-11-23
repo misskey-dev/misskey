@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import FFmpeg from 'fluent-ffmpeg';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { ImageProcessingService } from '@/core/ImageProcessingService.js';
@@ -12,6 +11,7 @@ import type { IImage } from '@/core/ImageProcessingService.js';
 import { createTempDir } from '@/misc/create-temp.js';
 import { bindThis } from '@/decorators.js';
 import { appendQuery, query } from '@/misc/prelude/url.js';
+import { extractVideoThumbnail } from '@/misc/ffmpeg.js';
 
 @Injectable()
 export class VideoProcessingService {
@@ -28,19 +28,7 @@ export class VideoProcessingService {
 		const [dir, cleanup] = await createTempDir();
 
 		try {
-			await new Promise((res, rej) => {
-				FFmpeg({
-					source,
-				})
-					.on('end', res)
-					.on('error', rej)
-					.screenshot({
-						folder: dir,
-						filename: 'out.png',	// must have .png extension
-						count: 1,
-						timestamps: ['5%'],
-					});
-			});
+			await extractVideoThumbnail(source, `${dir}/out.png`);
 
 			return await this.imageProcessingService.convertToWebp(`${dir}/out.png`, 498, 422);
 		} finally {
