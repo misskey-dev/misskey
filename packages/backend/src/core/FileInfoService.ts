@@ -223,7 +223,8 @@ export class FileInfoService {
 						nextIndex += index; // fibonacci sequence によってフレーム数制限を掛ける
 						frameBuffers.push(await fs.promises.readFile(path));
 					} finally {
-						fs.promises.unlink(path);
+						// 一時ディレクトリごと後で削除するので、ここでの削除の失敗は無視する
+						await fs.promises.unlink(path).catch(() => {});
 					}
 				}
 				const predictions = await this.sensitiveMediaDetectionService.detectSensitiveMany(frameBuffers);
@@ -295,6 +296,8 @@ export class FileInfoService {
 					done, // 全てのフレームを処理し終わったなら、最終フレームである現在フレームの書き出しは終わっている
 				]);
 				if (failure != null) throw failure.error;
+				// フィルタで全フレームが除外されると、ffmpeg は 1 枚も書き出さずに正常終了する
+				if (!await this.exists(framePath)) return;
 				yield framePath;
 			} else if (await this.exists(framePath)) {
 				yield framePath;

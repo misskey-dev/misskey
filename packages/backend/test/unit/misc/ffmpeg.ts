@@ -5,7 +5,7 @@
 
 import * as fs from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
-import { dirname, join } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import {
@@ -90,6 +90,21 @@ describe('misc:ffmpeg', () => {
 			cleanup();
 		});
 
+		/** 160x120 の動画に、それより大きい 640x360 のカバーアートを付けた mp4 を作る */
+		async function makeCoverArtVideo(): Promise<string> {
+			const cover = join(dir, 'cover.jpg');
+			ffmpegSync(['-y', '-f', 'lavfi', '-i', 'color=c=red:size=640x360', '-frames:v', '1', cover]);
+			const out = join(dir, 'cover-art.mp4');
+			ffmpegSync([
+				'-y',
+				'-f', 'lavfi', '-i', 'testsrc=duration=2:size=160x120:rate=30',
+				'-i', cover,
+				'-map', '0:v', '-map', '1:v', '-c:v:0', 'mpeg4', '-c:v:1', 'copy', '-disposition:v:1', 'attached_pic',
+				out,
+			]);
+			return out;
+		}
+
 		afterEach(() => {
 			vi.unstubAllEnvs();
 		});
@@ -103,6 +118,17 @@ describe('misc:ffmpeg', () => {
 		test('音声のほうが長くても映像ストリーム自身の長さを返す', async () => {
 			const stream = await probeVideoStream(longAudioVideo);
 			expect(stream?.duration).toBeCloseTo(1, 0);
+		});
+
+		test('カバーアートのほうが大きくても動画のストリームを選ぶ', async () => {
+			const video = await makeCoverArtVideo();
+			const stream = await probeVideoStream(video);
+			expect(stream?.index).toBe(0);
+
+			const out = join(dir, 'cover-art.png');
+			await extractVideoThumbnail(video, out);
+			const size = ffmpegSync(['-i', out, '-f', 'rawvideo', '-pix_fmt', 'gray', '-']).length;
+			expect(size).toBe(160 * 120);
 		});
 
 		test('映像ストリームの有無を判定できる', async () => {
@@ -163,6 +189,26 @@ describe('misc:ffmpeg', () => {
 				expect(resolveBinary('ffmpeg')).toBe('ffmpeg');
 			});
 
+			test('存在しない FFMPEG_PATH の隣にある ffprobe は使わない', async () => {
+				const binDir = join(dir, 'missing-ffmpeg-bin');
+				await fs.mkdir(binDir);
+				await writeFakeBinary('missing-ffmpeg-bin/ffprobe', 'exit 0');
+				vi.stubEnv('FFMPEG_PATH', join(binDir, 'ffmpeg'));
+				vi.stubEnv('PATH', join(dir, 'empty'));
+				expect(resolveBinary('ffprobe')).toBe('ffprobe');
+			});
+
+			test('相対パスの FFMPEG_PATH でも隣の ffprobe を絶対パスで返す', async () => {
+				const binDir = join(dir, 'relative-bin');
+				await fs.mkdir(binDir);
+				const fakeFfmpeg = await writeFakeBinary('relative-bin/ffmpeg', 'exit 0');
+				const fakeFfprobe = await writeFakeBinary('relative-bin/ffprobe', 'exit 0');
+				vi.stubEnv('FFMPEG_PATH', relative(process.cwd(), fakeFfmpeg));
+				vi.stubEnv('PATH', join(dir, 'empty'));
+				expect(resolveBinary('ffmpeg')).toBe(fakeFfmpeg);
+				expect(resolveBinary('ffprobe')).toBe(fakeFfprobe);
+			});
+
 			test('ffprobe が PATH になければ FFMPEG_PATH と同じディレクトリを探す', async () => {
 				const binDir = join(dir, 'bin');
 				await fs.mkdir(binDir);
@@ -175,6 +221,14 @@ describe('misc:ffmpeg', () => {
 
 			test('時間内に終わらなければ止めて FFmpegError で失敗する', async () => {
 				vi.stubEnv('FFMPEG_PATH', await writeFakeBinary('slow-ffmpeg', 'exec sleep 30'));
+				const startedAt = Date.now();
+				await expect(extractDetectionFrames(video, dir, { timeout: 200 })).rejects.toMatchObject({ timedOut: true });
+				expect(Date.now() - startedAt).toBeLessThan(5 * 1000);
+			});
+
+			test('孫プロセスがパイプを握ったままでもタイムアウトで打ち切る', async () => {
+				// 本体は SIGTERM で終了するが、バックグラウンドの sleep が stdout / stderr を握り続ける
+				vi.stubEnv('FFMPEG_PATH', await writeFakeBinary('wrapper-ffmpeg', 'sleep 10 &\nexec sleep 30'));
 				const startedAt = Date.now();
 				await expect(extractDetectionFrames(video, dir, { timeout: 200 })).rejects.toMatchObject({ timedOut: true });
 				expect(Date.now() - startedAt).toBeLessThan(5 * 1000);
