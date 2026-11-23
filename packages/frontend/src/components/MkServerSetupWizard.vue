@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkInput v-model="q_name" data-cy-server-name>
+	<MkInput v-model="q_name" data-testid="server-setup-server-name">
 		<template #label>{{ i18n.ts.instanceName }}</template>
 	</MkInput>
 
@@ -186,7 +186,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<template #footer>
-			<MkButton gradate large rounded data-cy-server-setup-wizard-apply style="margin: 0 auto;" @click="applySettings">
+			<MkButton gradate large rounded data-testid="server-setup-wizard-apply" style="margin: 0 auto;" @click="applySettings">
 				<i class="ti ti-check"></i> {{ i18n.ts._serverSetupWizard.applyTheseSettings }}
 			</MkButton>
 		</template>

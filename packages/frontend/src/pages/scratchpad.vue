@@ -14,32 +14,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton primary @click="run()"><i class="ti ti-player-play"></i></MkButton>
 			</div>
 
-			<MkContainer v-if="root && components.length > 1" :key="uiKey" :foldable="true">
+			<MkContainer v-if="root && root.children?.length" :key="uiKey" :foldable="true">
 				<template #header>UI</template>
 				<div :class="$style.ui">
-					<MkAsUi :component="root" :components="components" size="small"/>
+					<MkAsUi :component="root" size="small"/>
 				</div>
 			</MkContainer>
 
 			<MkContainer :foldable="true" class="">
 				<template #header>{{ i18n.ts.output }}</template>
 				<div :class="$style.logs">
-					<div v-for="log in logs" :key="log.id" class="log" :class="{ print: log.print }">{{ log.text }}</div>
+					<div v-for="log in logs" :key="log.id" class="log" :class="log.type">{{ log.text }}</div>
 				</div>
 			</MkContainer>
 
 			<MkContainer :foldable="true" :expanded="false">
 				<template #header>{{ i18n.ts.uiInspector }}</template>
 				<div :class="$style.uiInspector">
-					<div v-for="c in components" :key="c.value.id" :class="{ [$style.uiInspectorUnShown]: !showns.has(c.value.id) }">
-						<div :class="$style.uiInspectorType">{{ c.value.type }}</div>
-						<div :class="$style.uiInspectorId">{{ c.value.id }}</div>
+					<div v-for="c in inspectedComponents" :key="c.id" :class="{ [$style.uiInspectorUnShown]: !shownComponents.has(c) }">
+						<div :class="$style.uiInspectorType">{{ c.type }}</div>
+						<div :class="$style.uiInspectorId">{{ c.id }}</div>
 						<button :class="$style.uiInspectorPropsToggle" @click="() => uiInspectorOpenedComponents.set(c, !uiInspectorOpenedComponents.get(c))">
 							<i v-if="uiInspectorOpenedComponents.get(c)" class="ti ti-chevron-up icon"></i>
 							<i v-else class="ti ti-chevron-down icon"></i>
 						</button>
 						<div v-if="uiInspectorOpenedComponents.get(c)">
-							<MkTextarea :modelValue="stringifyUiProps(c.value)" code readonly></MkTextarea>
+							<MkTextarea :modelValue="stringifyUiProps(c)" code readonly></MkTextarea>
 						</div>
 					</div>
 					<div :class="$style.uiInspectorDescription">{{ i18n.ts.uiInspectorDescription }}</div>
@@ -55,9 +55,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onDeactivated, onUnmounted, ref, watch, computed } from 'vue';
+import { onDeactivated, onUnmounted, ref, shallowReactive, shallowRef, watch, computed } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
-import type { Ref } from 'vue';
 import type { AsUiComponent } from '@/aiscript/ui.js';
 import type { AsUiRoot } from '@/aiscript/ui.js';
 import type { Value } from '@syuilo/aiscript/interpreter/value.js';
@@ -81,16 +80,26 @@ const code = ref('');
 const logs = ref<{
 	id: number;
 	text: string;
-	print: boolean;
+	type: 'print' | 'end' | 'error';
 }[]>([]);
 const root = ref<AsUiRoot | undefined>();
-const components = ref<Ref<AsUiComponent>[]>([]);
+const components = shallowRef(shallowReactive(new Map<string, AsUiComponent>()));
 const uiKey = ref(0);
-const uiInspectorOpenedComponents = ref(new WeakMap<AsUiComponent | Ref<AsUiComponent>, boolean>);
+const uiInspectorOpenedComponents = ref(new WeakMap<AsUiComponent, boolean>);
 
 const saved = miLocalStorage.getItem('scratchpad');
 if (saved) {
 	code.value = saved;
+}
+
+function pushLog(type: 'print' | 'end' | 'error', text: string): void {
+	logs.value.push({ id: Math.random(), text, type });
+}
+
+function processError(title: string, err: unknown): void {
+	const text = String(err);
+	pushLog('error', text);
+	os.alert({ type: 'error', title, text });
 }
 
 watch(code, () => {
@@ -99,7 +108,7 @@ watch(code, () => {
 
 function stringifyUiProps(uiProps: AsUiComponent) {
 	return JSON.stringify(
-		{ ...uiProps, type: undefined, id: undefined },
+		{ ...uiProps, type: undefined, id: undefined, children: uiProps.children?.map(child => child.id) },
 		(k, v) => typeof v === 'function' ? '<function>' : v,
 		2,
 	);
@@ -108,43 +117,35 @@ function stringifyUiProps(uiProps: AsUiComponent) {
 async function run() {
 	if (aiscript) aiscript.abort();
 	root.value = undefined;
-	components.value = [];
+	components.value = shallowReactive(new Map());
 	uiKey.value++;
 	logs.value = [];
+
 	aiscript = new Interpreter(({
 		...createAiScriptEnv({
 			storageKey: 'widget',
 			token: $i?.token,
 		}),
-		...registerAsUiLib(components.value, (_root) => {
-			root.value = _root.value;
-		}),
+		...registerAsUiLib((_root) => {
+			root.value = _root;
+		}, components.value),
 	}), {
 		in: aiScriptReadline,
 		out: (value) => {
 			if (value.type === 'str' && value.value.toLowerCase().replace(',', '').includes('hello world')) {
 				claimAchievement('outputHelloWorldOnScratchpad');
 			}
-			logs.value.push({
-				id: Math.random(),
-				text: value.type === 'str' ? value.value : utils.valToString(value),
-				print: true,
-			});
+			pushLog('print', value.type === 'str' ? value.value : utils.valToString(value));
 		},
 		err: (err) => {
-			os.alert({
-				type: 'error',
-				title: 'AiScript Error',
-				text: err.toString(),
-			});
+			processError('AiScript Error', err);
 		},
 		log: (type, params) => {
 			switch (type) {
-				case 'end': logs.value.push({
-					id: Math.random(),
-					text: utils.valToString(params.val as Value, true),
-					print: false,
-				}); break;
+				case 'end': {
+					pushLog('end', utils.valToString(params.val as Value, true));
+					break;
+				}
 				default: break;
 			}
 		},
@@ -154,23 +155,14 @@ async function run() {
 	try {
 		ast = parser.parse(code.value);
 	} catch (err: any) {
-		os.alert({
-			type: 'error',
-			title: 'Syntax Error',
-			text: err.toString(),
-		});
+		processError('Syntax Error', err);
 		return;
 	}
 	try {
 		await aiscript.exec(ast);
 	} catch (err: any) {
-		// AiScript runtime errors should be processed by error callback function
-		// so errors caught here are AiScript's internal errors.
-		os.alert({
-			type: 'error',
-			title: 'Internal Error',
-			text: err.toString(),
-		});
+		// in case AiScript Interpreter has some bug
+		processError('AiScript Internal Error', err);
 	}
 }
 
@@ -186,21 +178,21 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-const showns = computed(() => {
-	if (root.value == null) return new Set<string>();
-	const result = new Set<string>();
+const shownComponents = computed(() => {
+	const result = new Set<AsUiComponent>();
+	if (root.value == null) return result;
 	(function addChildrenToResult(c: AsUiComponent) {
-		result.add(c.id);
-		const children = c.children;
-		if (children) {
-			const childComponents = components.value.filter(v => children.includes(v.value.id));
-			for (const child of childComponents) {
-				addChildrenToResult(child.value);
-			}
+		if (result.has(c)) return;
+		result.add(c);
+		for (const child of c.children ?? []) {
+			addChildrenToResult(child);
 		}
 	})(root.value);
 	return result;
 });
+
+// Ui:get で取得できるものと、描画されているもの
+const inspectedComponents = computed(() => new Set([...components.value.values(), ...shownComponents.value]));
 
 definePage(() => ({
 	title: i18n.ts.scratchpad,
@@ -232,10 +224,13 @@ definePage(() => ({
 	padding: 16px;
 
 	&:global {
-		> .log {
-			&:not(.print) {
-				opacity: 0.7;
-			}
+		> .log.print {
+		}
+		> .log.end {
+			opacity: 0.7;
+		}
+		> .log.error {
+			color: var(--MI_THEME-error);
 		}
 	}
 }

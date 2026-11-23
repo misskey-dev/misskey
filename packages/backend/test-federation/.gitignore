@@ -4,3 +4,4 @@ volumes
 docker.env
 *.test.conf
 *.test.default.yml
+*.test.config.json

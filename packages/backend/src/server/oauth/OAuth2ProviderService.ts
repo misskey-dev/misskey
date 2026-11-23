@@ -536,6 +536,13 @@ export class OAuth2ProviderService implements OnApplicationShutdown {
 	public async createServer(fastify: FastifyInstance): Promise<void> {
 		registerFormBodyParser(fastify);
 
+		fastify.addHook('onRequest', (request, reply, done) => {
+			// クリックジャッキング防止のためiFrameの中に入れられないようにする
+			reply.header('X-Frame-Options', 'DENY');
+			reply.header('Content-Security-Policy', "frame-ancestors 'none'");
+			done();
+		});
+
 		fastify.get('/authorize', async (request, reply) => {
 			let validatedRedirectUri: string | undefined;
 			let state: string | undefined;

@@ -112,6 +112,8 @@ async function onClick() {
 			const { canceled } = await os.confirm({
 				type: 'question',
 				text: i18n.tsx.cancelFollowRequestConfirm({ name: props.user.name || props.user.username }),
+				okText: i18n.ts.yes,
+				cancelText: i18n.ts.no,
 			});
 
 			if (canceled) {

@@ -87,7 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 					<div v-if="appearNote.files && appearNote.files.length > 0" style="margin-top: 8px;">
-						<MkMediaList ref="galleryEl" :mediaList="appearNote.files"/>
+						<MkMediaList ref="galleryEl" :mediaList="appearNote.files" :user="appearNote.user"/>
 					</div>
 					<MkPoll
 						v-if="appearNote.poll"
@@ -192,25 +192,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 		MkDateSeparatedList uses TransitionGroup which requires single element in the child elements
 		so MkNote create empty div instead of no elements
 	-->
-	</div>
+</div>
 </template>
 
 <script lang="ts" setup>
 import { inject, ref, useTemplateRef, provide, computed } from 'vue';
 import type { Ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { $i } from '@/i.js';
 import { useNote } from '@/composables/use-note.js';
 import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
-import { userPage } from '@/filters/user.js';
-import { noteEvents } from '@/composables/use-note-capture.js';
+import { userPage } from '@@/js/user.js';
 import { getNoteSummary } from '@/utility/get-note-summary.js';
 import { isEnabledUrlPreview } from '@/utility/url-preview.js';
 import { focusPrev, focusNext } from '@/utility/focus.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import number from '@/filters/number.js';
-import * as sound from '@/utility/sound.js';
 import { DI } from '@/di.js';
 import type { Keymap } from '@/utility/hotkey.js';
 
@@ -361,7 +357,7 @@ const keymap = {
 			renoteCollapsed.value = false;
 		} else if (appearNote.cw != null) {
 			showContent.value = !showContent.value;
-		} else if (isLong.value) {
+		} else if (isLong) {
 			collapsed.value = !collapsed.value;
 		}
 	},
@@ -580,7 +576,6 @@ const keymap = {
 	&.useSticky {
 		position: sticky !important;
 		top: calc(22px + var(--MI-stickyTop, 0px));
-		left: 0;
 	}
 }
 

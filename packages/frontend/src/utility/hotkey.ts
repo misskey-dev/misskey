@@ -53,7 +53,6 @@ let latestHotkey: Pattern & { callback: CallbackFunction } | null = null;
 export const makeHotkey = (keymap: Keymap, ignoreElements = IGNORE_ELEMENTS) => {
 	const actions = parseKeymap(keymap);
 	return (ev: KeyboardEvent) => {
-		if ('pswp' in window && window.pswp != null) return;
 		if (window.document.activeElement != null) {
 			if (ignoreElements.includes(window.document.activeElement.tagName.toLowerCase())) return;
 			if (getHTMLElementOrNull(window.document.activeElement)?.isContentEditable) return;

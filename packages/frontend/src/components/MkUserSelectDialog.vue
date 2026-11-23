@@ -74,7 +74,7 @@ import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 
 const emit = defineEmits<{
-	(ev: 'ok', selected: Misskey.entities.UserDetailed): void;
+	(ev: 'ok', selected: Misskey.entities.UserLite): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
@@ -117,20 +117,18 @@ function search() {
 	});
 }
 
-async function ok() {
-	if (selected.value == null) return;
+function ok() {
+	const user = selected.value;
+	if (user == null) return;
 
-	const user = await misskeyApi('users/show', {
-		userId: selected.value.id,
-	});
 	emit('ok', user);
 
 	dialogEl.value?.close();
 
 	// 最近使ったユーザー更新
 	let recents = store.s.recentlyUsedUsers;
-	recents = recents.filter(x => x !== selected.value?.id);
-	recents.unshift(selected.value.id);
+	recents = recents.filter(x => x !== user.id);
+	recents.unshift(user.id);
 	store.set('recentlyUsedUsers', recents.splice(0, 16));
 }
 

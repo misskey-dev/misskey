@@ -303,8 +303,40 @@ id: 'aidx'
 
 #sentryForBackend:
 #  enableNodeProfiling: true
+#  # Specify Sentry integration names to disable individual auto-instrumentation.
+#  # The names are integration .name values, not factory function names.
+#  # To check enabled names, set `options.debug: true` and see
+#  # "Integration installed: <name>" in the Sentry logs.
+#  #
+#  # As of 2026-10-01 / @sentry/node 11.0.0, useful names for Misskey include:
+#  #   Postgres  ... DB queries (when pg is externalized)
+#  #   Redis     ... ioredis commands
+#  #   Fastify   ... inbound HTTP routes
+#  #   Http      ... inbound/outbound HTTP; disabling this can also affect request isolation
+#  #   NodeFetch ... fetch/undici requests
+#  disabledIntegrations: ['Postgres']
 #  options:
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
+#    # By default, Misskey prevents Sentry trace headers (`sentry-trace` and
+#    # `baggage`) from being sent to remote ActivityPub/Webhook/etc. hosts.
+#    # To intentionally propagate distributed traces to trusted internal services,
+#    # list only those internal URL patterns here.
+#    # Avoid broad patterns that match remote servers unless you intentionally
+#    # want to restore Sentry's legacy behavior of propagating traces to all
+#    # outbound HTTP requests.
+#    #tracePropagationTargets: []
+#    # Internal allowlist example:
+#    #tracePropagationTargets:
+#    #  - 'internal-service.example'
+#    # Sentry SDK v11 collects everything unless `dataCollection` is set, so
+#    # Misskey applies a restricted default: no user info, no cookies, no URL
+#    # query params (they may carry an access token), no HTTP bodies, no DB
+#    # query values, and peer-identifying request/response headers denied.
+#    # To change what is collected, set `dataCollection` here. It replaces
+#    # Misskey's default as a whole, so `dataCollection: {}` restores Sentry's
+#    # own defaults and collects everything.
+#    #dataCollection:
+#    #  userInfo: true
 
 #sentryForFrontend:
 #  vueIntegration:
@@ -354,6 +386,22 @@ id: 'aidx'
 #outgoingAddressFamily: ipv4
 
 # Proxy for HTTP/HTTPS
+#
+# IMPORTANT: When a proxy is configured, Misskey does NOT check whether
+# the destination of outgoing requests (remote ActivityPub objects,
+# media proxy, URL previews, file uploads from URL, webhooks, etc.) is
+# a private / loopback / link-local address, because the connection is
+# made to the proxy rather than to the destination itself.
+# `allowedPrivateNetworks` is also not applied to proxied requests.
+# In that case, filtering of destinations is entirely delegated to the
+# proxy, so you MUST configure the proxy to deny access to internal
+# networks (e.g. RFC 1918, loopback, link-local, and cloud metadata
+# addresses such as 169.254.169.254).
+# Hosts listed in `proxyBypassHosts` are connected to directly without
+# going through the proxy. Depending on the type of request, Misskey's
+# own private address check may not be applied to these connections,
+# so only list hosts you trust here.
+#
 #proxy: http://127.0.0.1:3128
 
 proxyBypassHosts:
@@ -383,9 +431,8 @@ proxyBypassHosts:
 # For security reasons, uploading attachments from the intranet is prohibited,
 # but exceptions can be made from the following settings. Default value is "undefined".
 # Read changelog to learn more (Improvements of 12.90.0 (2021/09/04)).
-#allowedPrivateNetworks: [
-#  '127.0.0.1/32'
-#]
+#allowedPrivateNetworks:
+#  - '127.0.0.1/32'
 
 # Upload or download file size limits (bytes)
 #maxFileSize: 262144000
@@ -395,6 +442,29 @@ proxyBypassHosts:
 
 # Log settings
 # logging:
+#   # Log output format. "json" outputs one-line JSON; defaults to "pretty".
+#   format: pretty
+#   # Minimum level for all loggers. Defaults to info in production and debug otherwise.
+#   level: info
+#   # The longest matching logger domain takes precedence over the global level.
+#   domains:
+#     core.boot: info
+#     queue: error
+#     queue.deliver: debug
+#     db.sql: off
+#   # HTTP status classes to record in the access log. No output when unspecified.
+#   access:
+#     statusClasses:
+#       - '2xx'
+#       - '3xx'
+#       - '4xx'
+#       - '5xx'
+#     # Enable body logging explicitly only during development.
+#     bodies:
+#       request: false
+#       response: false
+#       # 16 KiB by default, up to 128 KiB.
+#       maxBytes: 16384
 #   sql:
 #     # Outputs query parameters during SQL execution to the log.
 #     # default: false

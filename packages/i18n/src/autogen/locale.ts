@@ -657,6 +657,10 @@ export interface Locale extends ILocale {
      */
     "selectAntenna": string;
     /**
+     * クリップを選択
+     */
+    "selectClip": string;
+    /**
      * アンテナを編集
      */
     "editAntenna": string;
@@ -1440,6 +1444,10 @@ export interface Locale extends ILocale {
      * このフォルダは空でないため、削除できません。
      */
     "hasChildFilesOrFolders": string;
+    /**
+     * このフォルダは既定アップロード先に指定されています。削除すると、既定アップロード先は解除され、ファイルはルートにアップロードされます。
+     */
+    "uploadFolderDeletionConfirm": string;
     /**
      * URLをコピー
      */
@@ -4073,6 +4081,10 @@ export interface Locale extends ILocale {
      */
     "cannotUploadBecauseUnallowedFileType": string;
     /**
+     * アップロード先のフォルダが見つかりません。既定アップロード先の設定を確認してください。
+     */
+    "cannotUploadBecauseNoSuchFolder": string;
+    /**
      * ベータ
      */
     "beta": string;
@@ -4172,6 +4184,10 @@ export interface Locale extends ILocale {
      * 読み込めません
      */
     "cannotLoad": string;
+    /**
+     * プレビューできません
+     */
+    "cannotPreview": string;
     /**
      * プロフィール表示回数
      */
@@ -5205,6 +5221,15 @@ export interface Locale extends ILocale {
      */
     "keepOriginalFilenameDescription": string;
     /**
+     * センシティブなメディアは選択できません
+     */
+    "cannotSelectSensitiveMedia": string;
+    /**
+     * 自分でセンシティブ設定を行っていないのにこのエラーが出ている場合、自動判定によりセンシティブなメディアとされている可能性があります。
+     * サーバーの規則に照らして不要な場合は、ファイルのセンシティブ設定を解除してもう一度お試しください。
+     */
+    "cannotSelectSensitiveMediaDescription": string;
+    /**
      * 説明文はありません
      */
     "noDescription": string;
@@ -5703,6 +5728,10 @@ export interface Locale extends ILocale {
      * スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、サムネイルが表示されなくなります。
      */
     "urlPreviewSensitiveListDescription": string;
+    /**
+     * ピクセルアート拡大モード
+     */
+    "pixelatedZoom": string;
     "_imageEditing": {
         "_vars": {
             /**
@@ -6269,6 +6298,14 @@ export interface Locale extends ILocale {
          * 環境によっては有効化できない場合があります。
          */
         "settingsPersistence_description2": string;
+        /**
+         * URLプレビューの埋め込みプレイヤーを自動再生
+         */
+        "autoplayEmbededPlayerOfUrlPreview": string;
+        /**
+         * URLプレビューを自動展開
+         */
+        "expandUrlPreviewAutomatically": string;
         "_chat": {
             /**
              * 送信者の名前を表示
@@ -6343,6 +6380,64 @@ export interface Locale extends ILocale {
          * 設定の強制バックアップ
          */
         "forceBackup": string;
+    };
+    "_followApproval": {
+        /**
+         * フォロー承認
+         */
+        "groupTitle": string;
+        /**
+         * すべてのフォローが承認制になるため、期間による設定は適用されません。フォローの承認制を解除すると、以下の設定が再び適用されます。
+         */
+        "inactiveDescription": string;
+        /**
+         * 新しいアカウントからのフォローを承認制にする
+         */
+        "title": string;
+        /**
+         * フォローを承認制にしている場合や、新しいアカウントからのフォローを保留する場合にも、あなたがフォローしている相手は自動承認します。
+         */
+        "autoAcceptDescription": string;
+        /**
+         * 指定した期間が経過していない相手からのフォローを、フォローリクエストとして保留します。既存のフォロワーには影響しません。フォローしている相手の自動承認が有効な場合、その相手は自動承認されます。
+         */
+        "description": string;
+        /**
+         * ローカルユーザーからのフォロー
+         */
+        "local": string;
+        /**
+         * このサーバーでのアカウント作成からの期間で判定します。
+         */
+        "localDescription": string;
+        /**
+         * リモートユーザーからのフォロー
+         */
+        "remote": string;
+        /**
+         * 相手のサーバーでの作成日時ではなく、このサーバーが初めてそのアカウントを認識してからの期間で判定します。
+         */
+        "remoteDescription": string;
+        /**
+         * 既定値を使う（現在は無効）
+         */
+        "useDefault": string;
+        /**
+         * 期間を指定する
+         */
+        "custom": string;
+        /**
+         * 承認が必要な期間
+         */
+        "period": string;
+        /**
+         * 単位
+         */
+        "unit": string;
+        /**
+         * 期間が正しくありません。1秒以上の期間を、指定できる範囲内で入力してください。
+         */
+        "invalidPeriod": string;
     };
     "_accountSettings": {
         /**
@@ -6528,6 +6623,18 @@ export interface Locale extends ILocale {
          * 有効にすると、このお知らせを既読にする際に確認ダイアログが表示されます。また、一括既読操作の対象になりません。
          */
         "needConfirmationToReadDescription": string;
+        /**
+         * 自動アーカイブ日時
+         */
+        "autoArchiveAt": string;
+        /**
+         * 指定した日時を過ぎると、このお知らせは自動的にアーカイブされます。空欄の場合は自動的にアーカイブされません。
+         */
+        "autoArchiveAtDescription": string;
+        /**
+         * 自動アーカイブ日時には現在より後の日時を指定してください。
+         */
+        "autoArchiveAtMustBeInFuture": string;
         /**
          * お知らせを終了
          */
@@ -11261,6 +11368,10 @@ export interface Locale extends ILocale {
              * チャンネル
              */
             "channel": string;
+            /**
+             * クリップ
+             */
+            "clip": string;
             /**
              * メンション
              */

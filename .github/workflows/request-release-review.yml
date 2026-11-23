@@ -6,7 +6,11 @@ on:
 
 jobs:
   reply:
-    if: github.event.comment.body == '/request-release-review'
+    # 改行や空白付きで投稿されても拾えるよう、ここでは軽く絞り込み、完全一致の判定はスクリプト内で trim して行う
+    if: >-
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '/request-release-review') &&
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -17,6 +21,11 @@ jobs:
         uses: actions/github-script@v9
         with:
           script: |
+            if (context.payload.comment.body.trim() !== '/request-release-review') {
+              console.log('Comment is not exactly /request-release-review; skipping')
+              return
+            }
+
             const body = `To dev team (@misskey-dev/dev):
 
             リリースが提案されています :rocket:

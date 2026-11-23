@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/preferences" :label="i18n.ts.preferences" :keywords="['general', 'preferences']" icon="ti ti-adjustments">
 	<div class="_gaps_m">
-		<MkFeatureBanner icon="/client-assets/gear_3d.png" color="#00ff9d">
+		<MkFeatureBanner icon="/fluent-emoji/2699.png" color="#00ff9d">
 			<SearchText>{{ i18n.ts._settings.preferencesBanner }}</SearchText>
 		</MkFeatureBanner>
 
@@ -491,7 +491,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><SearchIcon><i class="ti ti-accessible"></i></SearchIcon></template>
 
 					<div class="_gaps_m">
-						<MkFeatureBanner icon="/client-assets/mens_room_3d.png" color="#0011ff">
+						<MkFeatureBanner icon="/fluent-emoji/1f6b9.png" color="#0011ff">
 							<SearchText>{{ i18n.ts._settings.accessibilityBanner }}</SearchText>
 						</MkFeatureBanner>
 
@@ -762,6 +762,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
+							<SearchMarker :keywords="['url', 'preview', 'autoplay', 'player', 'embed']">
+								<MkPreferenceContainer k="autoplayEmbededPlayerOfUrlPreview">
+									<MkSwitch v-model="autoplayEmbededPlayerOfUrlPreview">
+										<template #label><SearchLabel>{{ i18n.ts._settings.autoplayEmbededPlayerOfUrlPreview }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['url', 'preview', 'expand', 'player', 'embed']">
+								<MkPreferenceContainer k="expandUrlPreviewAutomatically">
+									<MkSwitch v-model="expandUrlPreviewAutomatically">
+										<template #label><SearchLabel>{{ i18n.ts._settings.expandUrlPreviewAutomatically }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
 							<SearchMarker :keywords="['effect', 'show']">
 								<MkPreferenceContainer k="enableSeasonalScreenEffect">
 									<MkSwitch v-model="enableSeasonalScreenEffect">
@@ -935,6 +951,8 @@ const showMediaListByGridInWideArea = prefer.model('showMediaListByGridInWideAre
 const reactionsDisplaySize = prefer.model('reactionsDisplaySize');
 const limitWidthOfReaction = prefer.model('limitWidthOfReaction');
 const squareAvatars = prefer.model('squareAvatars');
+const autoplayEmbededPlayerOfUrlPreview = prefer.model('autoplayEmbededPlayerOfUrlPreview');
+const expandUrlPreviewAutomatically = prefer.model('expandUrlPreviewAutomatically');
 const enableSeasonalScreenEffect = prefer.model('enableSeasonalScreenEffect');
 const showAvatarDecorations = prefer.model('showAvatarDecorations');
 const nsfw = prefer.model('nsfw');

@@ -4,13 +4,13 @@
 
 ```ts
 
-import type { AuthenticationResponseJSON } from '@simplewebauthn/browser';
+import type { AuthenticationResponseJSON as AuthenticationResponseJSON_2 } from '@simplewebauthn/browser';
 import { EventEmitter } from 'eventemitter3';
 import { Options } from 'reconnecting-websocket';
 import type { PublicKeyCredentialCreationOptionsJSON as PublicKeyCredentialCreationOptionsJSON_2 } from '@simplewebauthn/browser';
 import type { PublicKeyCredentialRequestOptionsJSON as PublicKeyCredentialRequestOptionsJSON_2 } from '@simplewebauthn/browser';
 import _ReconnectingWebSocket from 'reconnecting-websocket';
-import type { RegistrationResponseJSON } from '@simplewebauthn/browser';
+import type { RegistrationResponseJSON as RegistrationResponseJSON_2 } from '@simplewebauthn/browser';
 
 // Warning: (ae-forgotten-export) The symbol "components" needs to be exported by the entry point index.d.ts
 //
@@ -779,6 +779,16 @@ export type Channels = {
         };
         events: {
             note: (payload: Note) => void;
+        };
+        receives: null;
+    };
+    clip: {
+        params: {
+            clipId: string;
+        };
+        events: {
+            updated: () => void;
+            deleted: () => void;
         };
         receives: null;
     };
@@ -2553,7 +2563,7 @@ type I2faKeyDoneRequest_2 = {
     password: string;
     token?: string | null;
     name: string;
-    credential: RegistrationResponseJSON;
+    credential: RegistrationResponseJSON_2;
 };
 
 // @public (undocumented)
@@ -2884,6 +2894,8 @@ type MiauthGenTokenRequest = operations['miauth___gen-token']['requestBody']['co
 // @public (undocumented)
 type MiauthGenTokenResponse = operations['miauth___gen-token']['responses']['200']['content']['application/json'];
 
+// Warning: (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
 type ModerationLog = {
     id: ID;
@@ -2891,165 +2903,11 @@ type ModerationLog = {
     userId: User['id'];
     user: UserDetailedNotMe;
 } & ({
-    type: 'updateServerSettings';
-    info: ModerationLogPayloads['updateServerSettings'];
-} | {
-    type: 'suspend';
-    info: ModerationLogPayloads['suspend'];
-} | {
-    type: 'unsuspend';
-    info: ModerationLogPayloads['unsuspend'];
-} | {
-    type: 'updateUserNote';
-    info: ModerationLogPayloads['updateUserNote'];
-} | {
-    type: 'addCustomEmoji';
-    info: ModerationLogPayloads['addCustomEmoji'];
-} | {
-    type: 'updateCustomEmoji';
-    info: ModerationLogPayloads['updateCustomEmoji'];
-} | {
-    type: 'deleteCustomEmoji';
-    info: ModerationLogPayloads['deleteCustomEmoji'];
-} | {
-    type: 'assignRole';
-    info: ModerationLogPayloads['assignRole'];
-} | {
-    type: 'unassignRole';
-    info: ModerationLogPayloads['unassignRole'];
-} | {
-    type: 'createRole';
-    info: ModerationLogPayloads['createRole'];
-} | {
-    type: 'updateRole';
-    info: ModerationLogPayloads['updateRole'];
-} | {
-    type: 'deleteRole';
-    info: ModerationLogPayloads['deleteRole'];
-} | {
-    type: 'clearQueue';
-    info: ModerationLogPayloads['clearQueue'];
-} | {
-    type: 'promoteQueue';
-    info: ModerationLogPayloads['promoteQueue'];
-} | {
-    type: 'deleteDriveFile';
-    info: ModerationLogPayloads['deleteDriveFile'];
-} | {
-    type: 'deleteNote';
-    info: ModerationLogPayloads['deleteNote'];
-} | {
-    type: 'createGlobalAnnouncement';
-    info: ModerationLogPayloads['createGlobalAnnouncement'];
-} | {
-    type: 'createUserAnnouncement';
-    info: ModerationLogPayloads['createUserAnnouncement'];
-} | {
-    type: 'updateGlobalAnnouncement';
-    info: ModerationLogPayloads['updateGlobalAnnouncement'];
-} | {
-    type: 'updateUserAnnouncement';
-    info: ModerationLogPayloads['updateUserAnnouncement'];
-} | {
-    type: 'deleteGlobalAnnouncement';
-    info: ModerationLogPayloads['deleteGlobalAnnouncement'];
-} | {
-    type: 'deleteUserAnnouncement';
-    info: ModerationLogPayloads['deleteUserAnnouncement'];
-} | {
-    type: 'resetPassword';
-    info: ModerationLogPayloads['resetPassword'];
-} | {
-    type: 'suspendRemoteInstance';
-    info: ModerationLogPayloads['suspendRemoteInstance'];
-} | {
-    type: 'unsuspendRemoteInstance';
-    info: ModerationLogPayloads['unsuspendRemoteInstance'];
-} | {
-    type: 'updateRemoteInstanceNote';
-    info: ModerationLogPayloads['updateRemoteInstanceNote'];
-} | {
-    type: 'markSensitiveDriveFile';
-    info: ModerationLogPayloads['markSensitiveDriveFile'];
-} | {
-    type: 'unmarkSensitiveDriveFile';
-    info: ModerationLogPayloads['unmarkSensitiveDriveFile'];
-} | {
-    type: 'createInvitation';
-    info: ModerationLogPayloads['createInvitation'];
-} | {
-    type: 'createAd';
-    info: ModerationLogPayloads['createAd'];
-} | {
-    type: 'updateAd';
-    info: ModerationLogPayloads['updateAd'];
-} | {
-    type: 'deleteAd';
-    info: ModerationLogPayloads['deleteAd'];
-} | {
-    type: 'createAvatarDecoration';
-    info: ModerationLogPayloads['createAvatarDecoration'];
-} | {
-    type: 'updateAvatarDecoration';
-    info: ModerationLogPayloads['updateAvatarDecoration'];
-} | {
-    type: 'deleteAvatarDecoration';
-    info: ModerationLogPayloads['deleteAvatarDecoration'];
-} | {
-    type: 'resolveAbuseReport';
-    info: ModerationLogPayloads['resolveAbuseReport'];
-} | {
-    type: 'forwardAbuseReport';
-    info: ModerationLogPayloads['forwardAbuseReport'];
-} | {
-    type: 'updateAbuseReportNote';
-    info: ModerationLogPayloads['updateAbuseReportNote'];
-} | {
-    type: 'unsetMfa';
-    info: ModerationLogPayloads['unsetMfa'];
-} | {
-    type: 'unsetUserAvatar';
-    info: ModerationLogPayloads['unsetUserAvatar'];
-} | {
-    type: 'unsetUserBanner';
-    info: ModerationLogPayloads['unsetUserBanner'];
-} | {
-    type: 'createSystemWebhook';
-    info: ModerationLogPayloads['createSystemWebhook'];
-} | {
-    type: 'updateSystemWebhook';
-    info: ModerationLogPayloads['updateSystemWebhook'];
-} | {
-    type: 'deleteSystemWebhook';
-    info: ModerationLogPayloads['deleteSystemWebhook'];
-} | {
-    type: 'createAbuseReportNotificationRecipient';
-    info: ModerationLogPayloads['createAbuseReportNotificationRecipient'];
-} | {
-    type: 'updateAbuseReportNotificationRecipient';
-    info: ModerationLogPayloads['updateAbuseReportNotificationRecipient'];
-} | {
-    type: 'deleteAbuseReportNotificationRecipient';
-    info: ModerationLogPayloads['deleteAbuseReportNotificationRecipient'];
-} | {
-    type: 'deleteAccount';
-    info: ModerationLogPayloads['deleteAccount'];
-} | {
-    type: 'deletePage';
-    info: ModerationLogPayloads['deletePage'];
-} | {
-    type: 'deleteFlash';
-    info: ModerationLogPayloads['deleteFlash'];
-} | {
-    type: 'deleteGalleryPost';
-    info: ModerationLogPayloads['deleteGalleryPost'];
-} | {
-    type: 'deleteChatRoom';
-    info: ModerationLogPayloads['deleteChatRoom'];
-} | {
-    type: 'updateProxyAccountDescription';
-    info: ModerationLogPayloads['updateProxyAccountDescription'];
-});
+    [K in keyof ModerationLogPayloads]: {
+        type: K;
+        info: ModerationLogPayloads[K];
+    };
+}[keyof ModerationLogPayloads]);
 
 // @public (undocumented)
 export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "updateRemoteInstanceNote", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "forwardAbuseReport", "updateAbuseReportNote", "createInvitation", "createAd", "updateAd", "deleteAd", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration", "unsetMfa", "unsetUserAvatar", "unsetUserBanner", "createSystemWebhook", "updateSystemWebhook", "deleteSystemWebhook", "createAbuseReportNotificationRecipient", "updateAbuseReportNotificationRecipient", "deleteAbuseReportNotificationRecipient", "deleteAccount", "deletePage", "deleteFlash", "deleteGalleryPost", "deleteChatRoom", "updateProxyAccountDescription"];
@@ -3562,7 +3420,7 @@ type SigninFlowRequest = {
     username: string;
     password?: string;
     token?: string;
-    credential?: AuthenticationResponseJSON;
+    credential?: AuthenticationResponseJSON_2;
     'hcaptcha-response'?: string | null;
     'g-recaptcha-response'?: string | null;
     'turnstile-response'?: string | null;
@@ -3592,7 +3450,7 @@ type SigninWithPasskeyInitResponse = {
 
 // @public (undocumented)
 type SigninWithPasskeyRequest = {
-    credential?: AuthenticationResponseJSON;
+    credential?: AuthenticationResponseJSON_2;
     context?: string;
 };
 
@@ -3922,10 +3780,9 @@ type VerifyEmailRequest = operations['verify-email']['requestBody']['content']['
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:60:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.ts:57:3 - (ae-forgotten-export) The symbol "ReconnectingWebSocket" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:226:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:241:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:236:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:251:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

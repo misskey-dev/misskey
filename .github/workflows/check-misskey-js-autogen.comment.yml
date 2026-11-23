@@ -1,0 +1,73 @@
+name: Check Misskey JS autogen (comment)
+
+on:
+  workflow_run:
+    types: [completed]
+    workflows:
+      - Check Misskey JS autogen # check-misskey-js-autogen.yml
+
+jobs:
+  comment-misskey-js-autogen:
+    runs-on: ubuntu-latest
+    # No code is cloned or executed here, so it is safe to hold pull-requests: write
+    if: ${{ github.event.workflow_run.event == 'pull_request' }}
+    permissions:
+      actions: read
+      pull-requests: write
+
+    steps:
+      # The result is missing when the run failed before the check job (e.g. the PR does not build), so do not fail here
+      - name: Download result
+        id: download-result
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: misskey-js-autogen-result
+          path: result
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      # The artifact comes from a run that built fork code, so validate it before using
+      - name: Load result
+        id: load-result
+        if: steps.download-result.outcome == 'success'
+        run: |
+          pr_number="$(cat result/pr-number)"
+          changes="$(cat result/changes)"
+
+          case "$pr_number" in
+            ''|*[!0-9]*) echo "invalid pr number"; exit 1;;
+          esac
+          case "$changes" in
+            true|false) ;;
+            *) echo "invalid result"; exit 1;;
+          esac
+
+          echo "pr-number=$pr_number" >> "$GITHUB_OUTPUT"
+          echo "changes=$changes" >> "$GITHUB_OUTPUT"
+
+      - name: send message
+        if: steps.load-result.outputs.changes == 'true'
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          pr-number: ${{ steps.load-result.outputs.pr-number }}
+          comment-tag: check-misskey-js-autogen
+          message: |-
+            Thank you for sending us a great Pull Request! 👍
+            Please regenerate misskey-js type definitions! 🙏
+
+            example:
+            ```sh
+            pnpm run build-misskey-js-with-types
+            ```
+
+      - name: send message
+        if: steps.load-result.outputs.changes == 'false'
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          pr-number: ${{ steps.load-result.outputs.pr-number }}
+          comment-tag: check-misskey-js-autogen
+          mode: delete
+          message: "Thank you!"
+          create_if_not_exists: false

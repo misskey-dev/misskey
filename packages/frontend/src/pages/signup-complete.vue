@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_m" style="padding: 32px;">
 				<div>{{ i18n.tsx.clickToFinishEmailVerification({ ok: i18n.ts.gotIt }) }}</div>
 				<div>
-					<MkButton gradate large rounded type="submit" :disabled="submitting" data-cy-admin-ok style="margin: 0 auto;">
+					<MkButton gradate large rounded type="submit" :disabled="submitting" data-testid="admin-ok" style="margin: 0 auto;">
 						{{ submitting ? i18n.ts.processing : i18n.ts.gotIt }}<MkEllipsis v-if="submitting"/>
 					</MkButton>
 				</div>

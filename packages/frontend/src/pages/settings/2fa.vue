@@ -95,7 +95,7 @@ import MkLink from '@/components/MkLink.vue';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { updateCurrentAccountPartial } from '@/accounts.js';
+import { updateCurrentAccount } from '@/accounts.js';
 
 const $i = ensureSignin();
 
@@ -133,7 +133,7 @@ async function unregisterTOTP(): Promise<void> {
 		password: auth.result.password,
 		token: auth.result.token,
 	}).then(res => {
-		updateCurrentAccountPartial({
+		updateCurrentAccount({
 			twoFactorEnabled: false,
 		});
 	}).catch(error => {

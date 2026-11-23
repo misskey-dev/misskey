@@ -36,6 +36,8 @@ import { instance as meta } from '@/instance.js';
 	right: 0;
 	width: 100vw;
 	height: 100vh;
+	// 固定レイヤがホイール操作を奪い、コンテンツ列以外の上でページをスクロールできなくなるのを防ぐ (issue #17680)
+	pointer-events: none;
 }
 
 .logoWrapper {

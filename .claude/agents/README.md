@@ -10,7 +10,8 @@ frontmatter (`name` + `description` + `tools`) は、Claude が **自動でエ�
 
 レビュー面を増やしすぎないよう、役割を分ける:
 
-- **この `.claude/agents/` の 2 つ**: backend endpoint / Vue SFC の **Misskey 固有・機械的チェック** (endpoint-list 登録漏れ・misskey-js 再生成漏れ・ja-JP.yml 限定・SPDX 形式・Storybook 併設 等)。別コンテキストで差分を機械走査する価値がある領域に限定する
+- **この `.claude/agents/` の 2 つ**: backend endpoint / Vue SFC の **Misskey 固有・機械的チェック** (endpoint-list 登録漏れ・misskey-js 再生成漏れ・ja-JP.yml 限定・Storybook 併設 等)。
+  別コンテキストで差分を機械走査する価値がある領域に限定する
 - **`pr-review-toolkit` プラグイン (code-reviewer / silent-failure-hunter 等)**: 言語非依存の一般的なコード品質・バグ・設計レビュー。Misskey 固有規約は見ない
 - **`working-on-*` skill の checklist**: コードを **書いている最中** の自己チェック (レビュー専用ではなく実装ガイド)
 

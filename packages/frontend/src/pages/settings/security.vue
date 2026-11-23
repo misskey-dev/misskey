@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/security" :label="i18n.ts.security" :keywords="['security']" icon="ti ti-lock" :inlining="['2fa']">
 	<div class="_gaps_m">
-		<MkFeatureBanner icon="/client-assets/locked_with_key_3d.png" color="#ffbf00">
+		<MkFeatureBanner icon="/fluent-emoji/1f510.png" color="#ffbf00">
 			<SearchText>{{ i18n.ts._settings.securityBanner }}</SearchText>
 		</MkFeatureBanner>
 
@@ -66,6 +66,9 @@ import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import { cloudBackup } from '@/preferences/utility.js';
+import { signout } from '@/signout.js';
+import { store } from '@/store.js';
 import { definePage } from '@/page.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { Paginator } from '@/utility/paginator.js';
@@ -111,10 +114,28 @@ async function regenerateToken() {
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
 
-	misskeyApi('i/regenerate-token', {
-		password: auth.result.password,
-		token: auth.result.token,
-	});
+	const hideWaiting = os.waiting();
+
+	// トークンが消えるので先にバックアップを終わらせる
+	if (store.s.enablePreferencesAutoCloudBackup) {
+		try {
+			await cloudBackup();
+		} catch {
+			// nop
+		}
+	}
+
+	try {
+		await misskeyApi('i/regenerate-token', {
+			password: auth.result.password,
+			token: auth.result.token,
+		});
+
+		await signout(false);
+	} catch (err) {
+		hideWaiting();
+		throw err;
+	}
 }
 
 const headerActions = computed(() => []);

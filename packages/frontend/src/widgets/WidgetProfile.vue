@@ -26,7 +26,7 @@ import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { ensureSignin } from '@/i.js';
-import { userPage } from '@/filters/user.js';
+import { userPage } from '@@/js/user.js';
 
 const $i = ensureSignin();
 

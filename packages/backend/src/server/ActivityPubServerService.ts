@@ -631,6 +631,10 @@ export class ActivityPubServerService {
 		};
 
 		fastify.register(fastifyAccepts);
+
+		// raw-body shares `request.raw` with the body parser, so a string parser here would switch that stream
+		// to string mode and break raw-body. Keep only the `parseAs: 'buffer'` parsers below. The rest get 415 error.
+		fastify.removeAllContentTypeParsers();
 		fastify.addContentTypeParser('application/activity+json', { parseAs: 'buffer' }, almostDefaultJsonParser);
 		fastify.addContentTypeParser('application/ld+json', { parseAs: 'buffer' }, almostDefaultJsonParser);
 
@@ -916,7 +920,7 @@ export class ActivityPubServerService {
 
 			reply.header('Cache-Control', 'public, max-age=180');
 			this.setResponseType(request, reply);
-			return (this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee)));
+			return (this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee, this.apRendererService.getLocalFollowRequestActivityId(followRequest))));
 		});
 
 		done();

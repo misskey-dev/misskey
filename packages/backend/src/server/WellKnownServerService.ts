@@ -111,10 +111,10 @@ export class WellKnownServerService {
 			return this.oauth2ProviderService.generateRFC8414();
 		});
 
-		/* TODO
-fastify.get('/.well-known/change-password', async (request, reply) => {
-});
-*/
+		fastify.get('/.well-known/change-password', async (request, reply) => {
+			const redirectUri = new URL('/settings/security', this.config.url);
+			reply.redirect(redirectUri.toString(), 302);
+		});
 
 		fastify.get<{ Querystring: { resource: string } }>(webFingerPath, async (request, reply) => {
 			if (this.meta.federation === 'none') {
