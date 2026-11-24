@@ -1,0 +1,87 @@
+{
+	"type": "module",
+	"name": "@misskey-dev/media-core",
+	"version": "2026.10.1",
+	"description": "Media processing library shared by Misskey and the standalone media proxy",
+	"license": "AGPL-3.0-only",
+	"main": "./built/index.js",
+	"types": "./built/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./built/index.d.ts",
+			"import": "./built/index.js",
+			"default": "./built/index.js"
+		},
+		"./standalone": {
+			"types": "./built/standalone.d.ts",
+			"import": "./built/standalone.js",
+			"default": "./built/standalone.js"
+		},
+		"./video": {
+			"types": "./built/video.d.ts",
+			"import": "./built/video.js",
+			"default": "./built/video.js"
+		}
+	},
+	"sideEffects": false,
+	"scripts": {
+		"build": "node -e \"require('node:fs').rmSync('built', { recursive: true, force: true })\" && tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
+		"watch": "nodemon -w src -e ts --exec \"tsc -p tsconfig.json && tsc-alias -p tsconfig.json\"",
+		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"typecheck": "tsc --noEmit && tsc -p test --noEmit",
+		"test": "vitest run",
+		"lint": "pnpm typecheck && pnpm eslint"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/misskey-dev/misskey.git",
+		"directory": "packages/media-core"
+	},
+	"files": [
+		"built",
+		"assets",
+		"LICENSE",
+		"README.md",
+		"SPECIFICATION.md"
+	],
+	"peerDependencies": {
+		"@misskey-dev/sharp-read-bmp": "^2.0.0",
+		"fastify": "^5.0.0",
+		"fluent-ffmpeg": "^2.1.0",
+		"sharp": "^0.35.0"
+	},
+	"peerDependenciesMeta": {
+		"fastify": {
+			"optional": true
+		},
+		"fluent-ffmpeg": {
+			"optional": true
+		}
+	},
+	"dependencies": {
+		"@fastify/static": "10.1.7",
+		"blurhash": "2.0.5",
+		"cacheable-lookup": "7.0.0",
+		"content-disposition": "3.0.0",
+		"file-type": "22.2.0",
+		"got": "16.1.0",
+		"hpagent": "1.2.0",
+		"ipaddr.js": "2.5.0",
+		"is-svg": "6.1.0",
+		"probe-image-size": "7.4.0",
+		"tmp": "0.2.7"
+	},
+	"devDependencies": {
+		"@misskey-dev/sharp-read-bmp": "2.0.0",
+		"@types/fluent-ffmpeg": "2.1.28",
+		"@types/node": "26.6.5",
+		"@types/tmp": "0.2.6",
+		"@typescript-eslint/parser": "8.72.0",
+		"fastify": "5.12.7",
+		"fluent-ffmpeg": "2.1.3",
+		"nodemon": "3.1.14",
+		"sharp": "0.35.5",
+		"tsc-alias": "1.9.9",
+		"vitest": "5.0.5"
+	}
+}

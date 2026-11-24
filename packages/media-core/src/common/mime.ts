@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
+import { FILE_TYPE_BROWSERSAFE } from '@/common/const.js';
 
 const dictionary = {
 	'safe-file': FILE_TYPE_BROWSERSAFE,
@@ -14,3 +14,15 @@ const dictionary = {
 };
 
 export const isMimeImage = (mime: string, type: keyof typeof dictionary): boolean => dictionary[type].includes(mime);
+
+export function fixMime(mime: string): string {
+	// see https://github.com/misskey-dev/misskey/pull/10686
+	if (mime === 'audio/x-flac') {
+		return 'audio/flac';
+	}
+	if (mime === 'audio/vnd.wave') {
+		return 'audio/wav';
+	}
+
+	return mime;
+}

@@ -4,6 +4,7 @@
  */
 
 import * as fs from 'node:fs';
+import { fixMime } from '@misskey-dev/media-core';
 import type { DriveFilesRepository, MiDriveFile } from '@/models/_.js';
 import { createTemp } from '@/misc/create-temp.js';
 import type { DownloadService } from '@/core/DownloadService.js';
@@ -120,7 +121,7 @@ export class FileServerFileResolver {
 			file,
 			filename: file.name,
 			// 古いファイルは修正前のmimeを持っているのでできるだけ修正してあげる
-			mime: this.fileInfoService.fixMime(file.type),
+			mime: fixMime(file.type),
 			ext: null,
 			path,
 		};
