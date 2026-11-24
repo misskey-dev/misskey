@@ -119,7 +119,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}));
 				}
 			} catch (e) {
-				if (e === 'Injection') return [];
+				if (e instanceof Error && e.message === 'Injection') return [];
 				throw e;
 			}
 

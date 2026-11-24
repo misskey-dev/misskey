@@ -35,6 +35,7 @@ import Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
 import { parseUntrustedHtml, UNTRUSTED_HTML_MAX_LENGTH } from '@/misc/parse-untrusted-html.js';
 import { HtmlTemplateService } from '@/server/web/HtmlTemplateService.js';
+import { RateLimiterService } from '@/server/api/RateLimiterService.js';
 import { OAuthPage } from '@/server/web/views/oauth.js';
 import type { FastifyInstance, FastifyReply } from 'fastify';
 
@@ -340,6 +341,13 @@ function createForbiddenAccessDenied(description: string): OAuthProviderError {
 	return error;
 }
 
+function createTooManyAuthorizationRequests(): OAuthProviderError {
+	const error = new AccessDeniedError('Too many authorization requests');
+	error.status = 429;
+	error.statusCode = 429;
+	return error;
+}
+
 function normalizeOAuthProviderError(error: unknown): OAuthProviderError {
 	if (error instanceof OAuthProviderError) {
 		return error;
@@ -415,9 +423,13 @@ export class OAuth2ProviderService implements OnApplicationShutdown {
 		private httpRequestService: HttpRequestService,
 		private cacheService: CacheService,
 		private htmlTemplateService: HtmlTemplateService,
+		private rateLimiterService: RateLimiterService,
 		loggerService: LoggerService,
 	) {
-		this.#authorizationTransactionCache = new MemoryKVCache<AuthorizationTransaction>(1000 * 60 * 5);
+		// 認可リクエストは無認証でエントリを作成できるため、エントリ数上限を設けてメモリ消費を抑える
+		this.#authorizationTransactionCache = new MemoryKVCache<AuthorizationTransaction>(1000 * 60 * 5, 1000);
+		// 上限で追い出されると、使用済みコードの再利用を検知してトークンを失効させる処理 (RFC 6749 4.1.2) が働かなくなるため上限は設けない。
+		// 代わりに /decision でユーザーごとの発行回数を制限してメモリ消費を抑える
 		this.#grantCodeCache = new MemoryKVCache<AuthorizationCodeGrant>(1000 * 60 * 5);
 		this.#logger = loggerService.getLogger('oauth');
 	}
@@ -618,6 +630,12 @@ export class OAuth2ProviderService implements OnApplicationShutdown {
 
 				this.#logger.info(`Checking the user before sending authorization code to ${transaction.client.id}`);
 				const user = await this.#findUserByLoginToken(loginToken);
+
+				// 認可コードは有効期限までメモリに保持されるため、ユーザーごとの発行回数を有効期限と同じ期間で制限する
+				const rateLimit = await this.rateLimiterService.limit({ key: 'oauth-decision', duration: 1000 * 60 * 5, max: 30 }, user.id);
+				if (rateLimit != null) {
+					throw createTooManyAuthorizationRequests();
+				}
 
 				this.#logger.info(`Sending authorization code on behalf of user ${user.id} to ${transaction.client.id} through ${transaction.request.redirectUri}, with scope: [${transaction.request.scopes}]`);
 

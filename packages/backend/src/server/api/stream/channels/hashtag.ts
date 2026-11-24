@@ -33,9 +33,12 @@ export class HashtagChannel extends Channel {
 	@bindThis
 	public async init(params: JsonObject): Promise<boolean> {
 		if (!Array.isArray(params.q)) return false;
+		// タグ組み合わせの数に上限がないと、ノートごとの照合コストが肥大化するため制限する
+		if (params.q.length > 64) return false;
 		if (!params.q.every((x): x is string[] => (
 			Array.isArray(x) &&
 			x.length >= 1 &&
+			x.length <= 16 &&
 			x.every(y => typeof y === 'string' && Array.from(y).length <= 128)
 		))) return false;
 		this.q = params.q.map(tags => tags.map(tag => normalizeTag(tag)));

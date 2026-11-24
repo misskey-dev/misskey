@@ -36,7 +36,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private customEmojiService: CustomEmojiService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.customEmojiService.setCategoryBulk(ps.ids, ps.category ?? null);
+			await this.customEmojiService.setCategoryBulk(ps.ids, ps.category ?? null, me);
 		});
 	}
 }

@@ -16,8 +16,12 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { ApiError } from '@/server/api/error.js';
+import { RateLimiterService } from '@/server/api/RateLimiterService.js';
+import { getIpHash } from '@/misc/get-ip-hash.js';
 import { MiMeta } from '@/models/Meta.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
+
+const MAX_URL_LENGTH = 8192;
 
 @Injectable()
 export class UrlPreviewService implements OnApplicationShutdown {
@@ -34,6 +38,7 @@ export class UrlPreviewService implements OnApplicationShutdown {
 
 		private httpRequestService: HttpRequestService,
 		private utilityService: UtilityService,
+		private rateLimiterService: RateLimiterService,
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('url-preview');
@@ -77,6 +82,27 @@ export class UrlPreviewService implements OnApplicationShutdown {
 					id: '58b36e13-d2f5-0323-b0c6-76aa9dabefb8',
 				}),
 			};
+		}
+
+		// URLの検証 (スキーム・長さ)
+		// プレビューを取得できないURLとして、取得失敗時と同じ 422 を返す
+		if (!this.isFetchableUrl(url)) {
+			return this.previewFailed(reply);
+		}
+
+		// レートリミット (IPあたり)
+		if (this.config.enableIpRateLimit) {
+			const rateLimit = await this.rateLimiterService.limit({ key: 'url-preview', duration: 60 * 1000, max: 100 }, getIpHash(request.ip));
+			if (rateLimit != null) {
+				reply.code(429);
+				return {
+					error: new ApiError({
+						message: 'Too many requests',
+						code: 'TOO_MANY_REQUESTS',
+						id: 'fd49d0ec-6d1c-4c9d-9e0b-0b8b3a3f4c5d',
+					}),
+				};
+			}
 		}
 
 		this.logger.info(this.meta.urlPreviewSummaryProxyUrl
@@ -124,16 +150,33 @@ export class UrlPreviewService implements OnApplicationShutdown {
 		} catch (err) {
 			this.logger.warn(`Failed to get preview of ${url}: ${err}`);
 
-			reply.code(422);
-			reply.header('Cache-Control', 'max-age=86400, immutable');
-			return {
-				error: new ApiError({
-					message: 'Failed to get preview',
-					code: 'URL_PREVIEW_FAILED',
-					id: '09d01cb5-53b9-4856-82e5-38a50c290a3b',
-				}),
-			};
+			return this.previewFailed(reply);
 		}
+	}
+
+	@bindThis
+	private isFetchableUrl(url: string): boolean {
+		if (url.length > MAX_URL_LENGTH) return false;
+
+		try {
+			const { protocol } = new URL(url);
+			return protocol === 'http:' || protocol === 'https:';
+		} catch {
+			return false;
+		}
+	}
+
+	@bindThis
+	private previewFailed(reply: FastifyReply): object {
+		reply.code(422);
+		reply.header('Cache-Control', 'max-age=86400, immutable');
+		return {
+			error: new ApiError({
+				message: 'Failed to get preview',
+				code: 'URL_PREVIEW_FAILED',
+				id: '09d01cb5-53b9-4856-82e5-38a50c290a3b',
+			}),
+		};
 	}
 
 	@bindThis

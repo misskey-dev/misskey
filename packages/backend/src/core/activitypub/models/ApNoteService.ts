@@ -229,9 +229,15 @@ export class ApNoteService {
 		}
 
 		// 添付ファイル
+		// リモートが大量の添付を送ってきた場合の連鎖フェッチを防ぐため、解決件数を制限する
+		const MAX_ATTACHMENTS = 16;
+		const attachments = toArray(note.attachment);
+		if (attachments.length > MAX_ATTACHMENTS) {
+			console.warn(`Too many attachments: ${attachments.length} (limit: ${MAX_ATTACHMENTS}), ignoring the rest.`);
+		}
 		const files: MiDriveFile[] = [];
 
-		for (const attach of toArray(note.attachment)) {
+		for (const attach of attachments.slice(0, MAX_ATTACHMENTS)) {
 			attach.sensitive ??= note.sensitive;
 			const file = await this.apImageService.resolveImage(actor, attach);
 			if (file) files.push(file);

@@ -127,7 +127,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			});
 
 			if (moderator) {
-				this.moderationLogService.log(moderator, 'addCustomEmoji', {
+				await this.moderationLogService.log(moderator, 'addCustomEmoji', {
 					emojiId: emoji.id,
 					emoji: emoji,
 				});
@@ -202,7 +202,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		if (moderator) {
 			const updated = await this.emojisRepository.findOneByOrFail({ id: id });
-			this.moderationLogService.log(moderator, 'updateCustomEmoji', {
+			await this.moderationLogService.log(moderator, 'updateCustomEmoji', {
 				emojiId: emoji.id,
 				before: emoji,
 				after: updated,
@@ -212,7 +212,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async addAliasesBulk(ids: MiEmoji['id'][], aliases: string[]) {
+	public async addAliasesBulk(ids: MiEmoji['id'][], aliases: string[], moderator?: MiUser) {
 		const emojis = await this.emojisRepository.findBy({
 			id: In(ids),
 		});
@@ -224,15 +224,24 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			});
 		}
 
+		const updatedEmojis = moderator ? await this.emojisRepository.findBy({ id: In(ids) }) : [];
+
 		this.localEmojisCache.refresh();
 
 		this.globalEventService.publishBroadcastStream('emojiUpdated', {
 			emojis: await this.emojiEntityService.packDetailedMany(ids),
 		});
+
+		// 監査ログの記録に失敗しても確定済みの変更がキャッシュ・クライアントへ反映されるよう、反映後に記録する
+		if (moderator) await this.logBulkUpdate(moderator, emojis, updatedEmojis);
 	}
 
 	@bindThis
-	public async setAliasesBulk(ids: MiEmoji['id'][], aliases: string[]) {
+	public async setAliasesBulk(ids: MiEmoji['id'][], aliases: string[], moderator?: MiUser) {
+		const emojis = moderator
+			? await this.emojisRepository.findBy({ id: In(ids) })
+			: [];
+
 		await this.emojisRepository.update({
 			id: In(ids),
 		}, {
@@ -240,15 +249,20 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			aliases: aliases,
 		});
 
+		const updatedEmojis = moderator ? await this.emojisRepository.findBy({ id: In(ids) }) : [];
+
 		this.localEmojisCache.refresh();
 
 		this.globalEventService.publishBroadcastStream('emojiUpdated', {
 			emojis: await this.emojiEntityService.packDetailedMany(ids),
 		});
+
+		// 監査ログの記録に失敗しても確定済みの変更がキャッシュ・クライアントへ反映されるよう、反映後に記録する
+		if (moderator) await this.logBulkUpdate(moderator, emojis, updatedEmojis);
 	}
 
 	@bindThis
-	public async removeAliasesBulk(ids: MiEmoji['id'][], aliases: string[]) {
+	public async removeAliasesBulk(ids: MiEmoji['id'][], aliases: string[], moderator?: MiUser) {
 		const emojis = await this.emojisRepository.findBy({
 			id: In(ids),
 		});
@@ -260,15 +274,24 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			});
 		}
 
+		const updatedEmojis = moderator ? await this.emojisRepository.findBy({ id: In(ids) }) : [];
+
 		this.localEmojisCache.refresh();
 
 		this.globalEventService.publishBroadcastStream('emojiUpdated', {
 			emojis: await this.emojiEntityService.packDetailedMany(ids),
 		});
+
+		// 監査ログの記録に失敗しても確定済みの変更がキャッシュ・クライアントへ反映されるよう、反映後に記録する
+		if (moderator) await this.logBulkUpdate(moderator, emojis, updatedEmojis);
 	}
 
 	@bindThis
-	public async setCategoryBulk(ids: MiEmoji['id'][], category: string | null) {
+	public async setCategoryBulk(ids: MiEmoji['id'][], category: string | null, moderator?: MiUser) {
+		const emojis = moderator
+			? await this.emojisRepository.findBy({ id: In(ids) })
+			: [];
+
 		await this.emojisRepository.update({
 			id: In(ids),
 		}, {
@@ -276,15 +299,24 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			category: category,
 		});
 
+		const updatedEmojis = moderator ? await this.emojisRepository.findBy({ id: In(ids) }) : [];
+
 		this.localEmojisCache.refresh();
 
 		this.globalEventService.publishBroadcastStream('emojiUpdated', {
 			emojis: await this.emojiEntityService.packDetailedMany(ids),
 		});
+
+		// 監査ログの記録に失敗しても確定済みの変更がキャッシュ・クライアントへ反映されるよう、反映後に記録する
+		if (moderator) await this.logBulkUpdate(moderator, emojis, updatedEmojis);
 	}
 
 	@bindThis
-	public async setLicenseBulk(ids: MiEmoji['id'][], license: string | null) {
+	public async setLicenseBulk(ids: MiEmoji['id'][], license: string | null, moderator?: MiUser) {
+		const emojis = moderator
+			? await this.emojisRepository.findBy({ id: In(ids) })
+			: [];
+
 		await this.emojisRepository.update({
 			id: In(ids),
 		}, {
@@ -292,11 +324,16 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			license: license,
 		});
 
+		const updatedEmojis = moderator ? await this.emojisRepository.findBy({ id: In(ids) }) : [];
+
 		this.localEmojisCache.refresh();
 
 		this.globalEventService.publishBroadcastStream('emojiUpdated', {
 			emojis: await this.emojiEntityService.packDetailedMany(ids),
 		});
+
+		// 監査ログの記録に失敗しても確定済みの変更がキャッシュ・クライアントへ反映されるよう、反映後に記録する
+		if (moderator) await this.logBulkUpdate(moderator, emojis, updatedEmojis);
 	}
 
 	@bindThis
@@ -312,7 +349,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		});
 
 		if (moderator) {
-			this.moderationLogService.log(moderator, 'deleteCustomEmoji', {
+			await this.moderationLogService.log(moderator, 'deleteCustomEmoji', {
 				emojiId: emoji.id,
 				emoji: emoji,
 			});
@@ -325,22 +362,51 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			id: In(ids),
 		});
 
+		// 途中で削除に失敗しても、それまでに削除できた分は反映とモデログの記録を行ってからエラーにする
+		const deleted: MiEmoji[] = [];
+		let deleteError: unknown = null;
 		for (const emoji of emojis) {
-			await this.emojisRepository.delete(emoji.id);
+			try {
+				await this.emojisRepository.delete(emoji.id);
+			} catch (err) {
+				deleteError = err;
+				break;
+			}
+			deleted.push(emoji);
+		}
 
+		if (deleted.length > 0) {
+			this.localEmojisCache.refresh();
+
+			this.globalEventService.publishBroadcastStream('emojiDeleted', {
+				emojis: await this.emojiEntityService.packDetailedMany(deleted),
+			});
+
+			// モデログの記録に失敗しても残りの削除や反映が止まらないよう、反映後に記録する
 			if (moderator) {
-				this.moderationLogService.log(moderator, 'deleteCustomEmoji', {
-					emojiId: emoji.id,
-					emoji: emoji,
-				});
+				for (const emoji of deleted) {
+					await this.moderationLogService.log(moderator, 'deleteCustomEmoji', {
+						emojiId: emoji.id,
+						emoji: emoji,
+					});
+				}
 			}
 		}
 
-		this.localEmojisCache.refresh();
+		if (deleteError != null) throw deleteError;
+	}
 
-		this.globalEventService.publishBroadcastStream('emojiDeleted', {
-			emojis: await this.emojiEntityService.packDetailedMany(emojis),
-		});
+	@bindThis
+	private async logBulkUpdate(moderator: MiUser, before: MiEmoji[], after: MiEmoji[]): Promise<void> {
+		// 絵文字ごとに再取得するとN+1になるため、一括取得した結果をマップで引く
+		const afterMap = new Map(after.map(emoji => [emoji.id, emoji]));
+		for (const emoji of before) {
+			await this.moderationLogService.log(moderator, 'updateCustomEmoji', {
+				emojiId: emoji.id,
+				before: emoji,
+				after: afterMap.get(emoji.id),
+			});
+		}
 	}
 
 	@bindThis
