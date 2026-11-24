@@ -911,13 +911,28 @@ export class ClientServerService {
 			let sendHeader = true;
 
 			if (request.headers['origin']) {
-				const originURL = new URL(request.headers['origin']);
-				if (originURL.protocol !== 'https:') { // Clear-Site-Data only supports https
+				try {
+					const originURL = new URL(request.headers['origin']);
+					if (originURL.protocol !== 'https:') { // Clear-Site-Data only supports https
+						sendHeader = false;
+					}
+					if (originURL.host !== configUrl.host) {
+						sendHeader = false;
+					}
+				} catch {
+					// `Origin: null` など
 					sendHeader = false;
 				}
-				if (originURL.host !== configUrl.host) {
-					sendHeader = false;
-				}
+			}
+
+			// このページがサブリソースとして（fetchなど経由で）読み込まれた場合には送出しない
+			const secFetchDest = request.headers['sec-fetch-dest'];
+			if (secFetchDest != null && secFetchDest !== 'document') {
+				sendHeader = false;
+			}
+			const secFetchMode = request.headers['sec-fetch-mode'];
+			if (secFetchMode != null && secFetchMode !== 'navigate') {
+				sendHeader = false;
 			}
 
 			if (sendHeader) {

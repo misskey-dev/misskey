@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, inject, ref } from 'vue';
-import { normalizeCustomEmojiName, isLocalCustomEmojiName, getCustomEmojiImagePath } from '@@/js/emoji-name.js';
+import { normalizeCustomEmojiName, isLocalCustomEmojiName, getCustomEmojiImagePath, isCustomEmojiImagePath } from '@@/js/emoji-name.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 
 import { DI } from '@/di.js';
@@ -59,7 +59,7 @@ const url = computed(() => {
 	if (rawUrl.value == null) return undefined;
 
 	const proxied =
-		(rawUrl.value.startsWith('/emoji/') || (props.useOriginalSize && isLocal.value))
+		(isCustomEmojiImagePath(rawUrl.value) || (props.useOriginalSize && isLocal.value))
 			? rawUrl.value
 			: mediaProxy.getProxiedImageUrl(
 				rawUrl.value,
