@@ -15,6 +15,27 @@ const WHITE = false;
 
 export type MapCell = 'null' | 'empty';
 
+/** カスタムマップの最大幅 */
+export const MAP_MAX_WIDTH = 32;
+/** カスタムマップの最大高さ */
+export const MAP_MAX_HEIGHT = 32;
+
+/**
+ * マップデータとして受け入れ可能かどうかを検証します
+ */
+export function isValidMap(map: unknown): map is string[] {
+	if (!Array.isArray(map)) return false;
+	if (map.length === 0 || map.length > MAP_MAX_HEIGHT) return false;
+
+	const firstRow: unknown = map[0];
+	if (typeof firstRow !== 'string') return false;
+
+	const width = firstRow.length;
+	if (width === 0 || width > MAP_MAX_WIDTH) return false;
+
+	return map.every((row: unknown) => typeof row === 'string' && row.length === width && /^[ bw-]+$/.test(row));
+}
+
 export type Options = {
 	isLlotheo: boolean;
 	canPutEverywhere: boolean;
@@ -63,6 +84,11 @@ export class Game {
 		//#endregion
 
 		//#region Parse map data
+		// 幅・高さが0のマップや行ごとに長さが異なるマップでは座標計算が破綻するため拒否する
+		if (map.length === 0 || map[0].length === 0 || map.some(row => row.length !== map[0].length)) {
+			throw new Error('invalid map');
+		}
+
 		this.mapWidth = map[0].length;
 		this.mapHeight = map.length;
 		const mapData = map.join('');
