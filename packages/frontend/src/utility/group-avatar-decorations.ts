@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { versatileLang } from '@@/js/intl-const.js';
+
 type AvatarDecorationBase = { category?: string | null | undefined };
 
 /**
@@ -35,6 +37,6 @@ export function sortAvatarDecorationCategories(categories: string[]) {
 		if (a === b) return 0;
 		if (a === '') return 1;
 		if (b === '') return -1;
-		return a.localeCompare(b, undefined, { numeric: true });
+		return a.localeCompare(b, versatileLang, { numeric: true });
 	});
 }
