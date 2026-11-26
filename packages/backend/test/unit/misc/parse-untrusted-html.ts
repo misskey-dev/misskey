@@ -8,6 +8,7 @@ import {
 	parseUntrustedHtml,
 	UNTRUSTED_HTML_MAX_DEPTH,
 	UNTRUSTED_HTML_MAX_LENGTH,
+	UNTRUSTED_HTML_MAX_TAG_NAME_LENGTH,
 	UntrustedHtmlLimitError,
 } from '@/misc/parse-untrusted-html.js';
 
@@ -44,6 +45,68 @@ describe(parseUntrustedHtml, () => {
 		const html = '<div>'.repeat(Math.floor(UNTRUSTED_HTML_MAX_LENGTH / 5));
 		const start = performance.now();
 		expect(() => parseUntrustedHtml(html)).toThrow(UntrustedHtmlLimitError);
+		expect(performance.now() - start).toBeLessThan(5000);
+	});
+
+	test.each([
+		['<!--', '-->'],
+		['<![CDATA[', ']]>'],
+	])('handles many unterminated %s in linear time', (opener, terminator) => {
+		// node-html-parser はこの入力を二乗時間でパースし、1MB では 30 秒前後かかる
+		const html = terminator + opener.repeat(Math.floor((UNTRUSTED_HTML_MAX_LENGTH - terminator.length) / opener.length));
+		const start = performance.now();
+		parseUntrustedHtml(html);
+		expect(performance.now() - start).toBeLessThan(5000);
+	});
+
+	test('keeps comments and CDATA sections that have a terminator', () => {
+		const doc = parseUntrustedHtml('<p>a<!-- comment -->b<!---->c<![CDATA[d]]>e</p>');
+		expect(doc.querySelector('p')?.textContent).toBe('ab' + 'c' + '<![CDATA[d]]>' + 'e');
+	});
+
+	test('treats unterminated comment and CDATA openers as text, as before', () => {
+		// 2 つ目の <!-- と <![CDATA[ は後ろに終端が無いので、node-html-parser でもテキストとして扱われる
+		const doc = parseUntrustedHtml('<p>a<!-- b --> c <!-- d<a href="/x">e</a> f <![CDATA[ g</p>');
+		expect(doc.querySelector('p')?.textContent).toBe('a c <!-- de f <![CDATA[ g');
+		expect(doc.querySelector('a')?.attributes.href).toBe('/x');
+	});
+
+	test('keeps self-closing tags whose unquoted attribute value ends with an unterminated opener, as before', () => {
+		// node-html-parser は引用符の無い属性値に < が含まれると、続く / を属性値ではなく自己終了とみなす
+		const doc = parseUntrustedHtml('<div><a title=x<!--/>b</div>');
+		expect(doc.querySelector('a')?.attributes.title).toBe('x<!--');
+		expect(doc.querySelector('a')?.childNodes.length).toBe(0);
+		expect(doc.querySelector('div')?.textContent).toBe('b');
+	});
+
+	test('closes a comment with a terminator that overlaps a later opener, as before', () => {
+		// <!--> の --> が手前のコメントの終端になる
+		expect(parseUntrustedHtml('<!--a<!-->b').textContent).toBe('b');
+	});
+
+	test('keeps unterminated openers inside raw text elements, as before', () => {
+		const doc = parseUntrustedHtml('<pre><code><!-- &amp; <![CDATA[</code></pre>');
+		expect(doc.querySelector('pre')?.textContent).toBe('<code><!-- & <![CDATA[</code>');
+	});
+
+	test('accepts tag names up to the length limit', () => {
+		const name = 'a'.repeat(UNTRUSTED_HTML_MAX_TAG_NAME_LENGTH);
+		const doc = parseUntrustedHtml(`<p>x<${name}>y</${name}></p>`);
+		expect(doc.querySelector('p')?.textContent).toBe('xy');
+	});
+
+	test('rejects too long tag names', () => {
+		const name = 'a'.repeat(UNTRUSTED_HTML_MAX_TAG_NAME_LENGTH + 1);
+		expect(() => parseUntrustedHtml(`<p>x<${name}>y</p>`)).toThrow(UntrustedHtmlLimitError);
+	});
+
+	test('handles many mismatched closing tags inside an element with a long name in linear time', () => {
+		// node-html-parser は一致しない閉じタグのたびに親のタグ名全体を変換するため、
+		// タグ名の長さを制限しないと 1MB で 10 秒前後かかる
+		const open = `<${'a'.repeat(UNTRUSTED_HTML_MAX_TAG_NAME_LENGTH)}>`;
+		const html = open + '</b>'.repeat(Math.floor((UNTRUSTED_HTML_MAX_LENGTH - open.length) / 4));
+		const start = performance.now();
+		parseUntrustedHtml(html);
 		expect(performance.now() - start).toBeLessThan(5000);
 	});
 });
