@@ -108,6 +108,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
+			<SearchMarker :keywords="['error', 'log']">
+				<MkFolder>
+					<template #icon><SearchIcon><i class="ti ti-bug"></i></SearchIcon></template>
+					<template #label><SearchLabel>{{ i18n.ts._clientErrorLog.title }}</SearchLabel></template>
+					<XErrorLog/>
+				</MkFolder>
+			</SearchMarker>
+
 			<SearchMarker :keywords="['developer', 'mode', 'debug']">
 				<MkFolder>
 					<template #icon><SearchIcon><i class="ti ti-code"></i></SearchIcon></template>
@@ -149,6 +157,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import XMigration from './migration.vue';
+import XErrorLog from './error-log.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
