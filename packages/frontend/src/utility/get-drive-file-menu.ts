@@ -13,6 +13,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
+import { deleteDriveFile } from '@/utility/delete-drive-file.js';
 
 function rename(file: Misskey.entities.DriveFile) {
 	os.inputText({
@@ -83,20 +84,6 @@ function addApp() {
 	alert('not implemented yet');
 }
 */
-async function deleteFile(file: Misskey.entities.DriveFile) {
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		text: i18n.tsx.driveFileDeleteConfirm({ name: file.name }),
-	});
-	if (canceled) return;
-
-	await os.apiWithDialog('drive/files/delete', {
-		fileId: file.id,
-	});
-
-	globalEvents.emit('driveFilesDeleted', [file]);
-}
-
 /** 自分のドライブファイルを操作する際のメニュー */
 export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Misskey.entities.DriveFolder | null): MenuItem[] {
 	const _isImage = file.type.startsWith('image/');
@@ -148,7 +135,7 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		text: i18n.ts.delete,
 		icon: 'ti ti-trash',
 		danger: true,
-		action: () => deleteFile(file),
+		action: () => deleteDriveFile(file),
 	});
 
 	if (prefer.s.devMode) {
