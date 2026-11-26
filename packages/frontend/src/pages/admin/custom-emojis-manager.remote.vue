@@ -160,6 +160,7 @@ import { deviceKind } from '@/utility/device-kind.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 import MkSortOrderEditor from '@/components/MkSortOrderEditor.vue';
 import { useLoading } from '@/composables/use-loading.js';
+import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 
 type GridItem = {
 	checked: boolean;
@@ -379,7 +380,9 @@ async function refreshCustomEmojis() {
 	gridItems.value = customEmojis.value.map(it => ({
 		checked: false,
 		id: it.id,
-		url: it.publicUrl,
+		// リモートのURLを管理者のブラウザから直接読み込ませないよう、メディアプロキシを経由する
+		// (生のURLは publicUrl 列で確認できる)
+		url: getProxiedImageUrl(it.publicUrl, 'emoji'),
 		name: it.name,
 		license: it.license,
 		host: it.host!,

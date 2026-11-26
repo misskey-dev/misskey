@@ -3,6 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export { Game } from './game.js';
+export { Game, isValidMap, MAP_MAX_WIDTH, MAP_MAX_HEIGHT } from './game.js';
 export * as Serializer from './serializer.js';
 export * as maps from './maps.js';

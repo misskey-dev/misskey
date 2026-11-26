@@ -60,7 +60,7 @@ The following are generally **not** considered vulnerabilities. Some of them may
 - **Behavior in non-production environments.** Checks (e.g. rate limits, CAPTCHA) may be bypassed when not running in production mode. Checks not applied correctly in production **are** in scope.
 - **Bypasses of the "Lockdown" features** (e.g. "Require sign-in to view contents"). These features only *hide* content and do not guarantee strict protection. Please report bypasses via Issues; maintainers will decide whether they are bugs.
 - **Remote servers not respecting visibility settings, deletion requests, etc.** This is a limitation of federation. (Tampering with local data or affecting local users through crafted activities **is** in scope.)
-- **Lack of sanitization in content configured by administrators of their own server** (e.g. arbitrary HTML/JavaScript in the server description). Administrators are trusted, and this is intentional; suggestions to sanitize such content as a defense-in-depth measure are not considered vulnerabilities. (It **is** in scope if non-administrators can set such content, or if such content is executed on other servers, e.g. via federation.)
+- **Lack of sanitization in content configured by the staff of their own server (administrators and moderators)** (e.g. arbitrary HTML/JavaScript in the server description). Administrators and moderators are trusted, and this is intentional; suggestions to sanitize such content as a defense-in-depth measure are not considered vulnerabilities. (It **is** in scope if users who are neither administrators nor moderators can set such content, or if such content is executed on other servers, e.g. via federation.)
 - **Behavior of plugins installed by the user.** Plugins run with the privileges the user grants them.
 - **Vulnerabilities in the AiScript runtime itself.** Please report them to the [AiScript repository](https://github.com/aiscript-dev/aiscript). Sandbox escapes caused by Misskey's own implementation **are** in scope.
 - **Denial of service via many requests to endpoints meant to be called frequently** (e.g. typeahead suggestions), unless the processing is unreasonably heavy for its purpose, or the requests expose or change more than the endpoint is intended to.
@@ -70,7 +70,7 @@ The following are generally **not** considered vulnerabilities. Some of them may
 
 ### Privilege escalation and permission issues
 
-Privilege escalation, and operations that regular users, moderators, or users without the relevant role policy should not be able to perform, **are** in scope.
+Privilege escalation, and operations that regular users, moderators, or users without the relevant role policy should not be able to perform, **are** in scope. (The effects of content that moderators are permitted to configure, such as ads and announcements, on other users including administrators are covered by the out-of-scope item on content configured by server staff above, and are not considered privilege escalation.)
 
 However, some permission settings may be intentional. Before reporting, please investigate the background (e.g. the related code, commit history, Issues, and Pull Requests) to determine:
 

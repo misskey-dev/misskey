@@ -12,6 +12,14 @@ import { bindThis } from '@/decorators.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type ChannelRequest } from '../channel.js';
 import { REQUEST } from '@nestjs/core';
+
+// タグのグループの最大数
+const MAX_TAG_GROUPS = 32;
+// 1つのタググループ内の最大タグ数
+const MAX_TAGS_PER_GROUP = 32;
+// タグの最大文字数
+const MAX_TAG_LENGTH = 128;
+
 @Injectable({ scope: Scope.TRANSIENT })
 export class HashtagChannel extends Channel {
 	public readonly chName = 'hashtag';
@@ -33,10 +41,12 @@ export class HashtagChannel extends Channel {
 	@bindThis
 	public async init(params: JsonObject): Promise<boolean> {
 		if (!Array.isArray(params.q)) return false;
+		if (params.q.length < 1 || params.q.length > MAX_TAG_GROUPS) return false;
 		if (!params.q.every((x): x is string[] => (
 			Array.isArray(x) &&
 			x.length >= 1 &&
-			x.every(y => typeof y === 'string' && Array.from(y).length <= 128)
+			x.length <= MAX_TAGS_PER_GROUP &&
+			x.every(y => typeof y === 'string' && y.length >= 1 && Array.from(y).length <= MAX_TAG_LENGTH)
 		))) return false;
 		this.q = params.q.map(tags => tags.map(tag => normalizeTag(tag)));
 

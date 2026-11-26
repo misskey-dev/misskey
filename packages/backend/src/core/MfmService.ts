@@ -13,6 +13,7 @@ import { normalizeTag } from '@/misc/normalize-tag.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import { escapeHtml } from '@/misc/escape-html.js';
+import { parseUntrustedHtml } from '@/misc/parse-untrusted-html.js';
 import type * as mfm from 'mfm-js';
 
 const urlRegex = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+/;
@@ -39,7 +40,7 @@ export class MfmService {
 
 		const normalizedHashtagNames = options.hashtagNames == null ? undefined : new Set<string>(options.hashtagNames.map(x => normalizeTag(x)));
 
-		const doc = htmlParser.parse(`<div>${html}</div>`);
+		const doc = parseUntrustedHtml(`<div>${html}</div>`);
 
 		let text = '';
 

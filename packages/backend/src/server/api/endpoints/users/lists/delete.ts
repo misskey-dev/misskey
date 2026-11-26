@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -40,6 +41,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
+
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const userList = await this.userListsRepository.findOneBy({
@@ -52,6 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			await this.userListsRepository.delete(userList.id);
+			this.globalEventService.publishUserListStream(userList.id, 'internalListDeleted');
 		});
 	}
 }

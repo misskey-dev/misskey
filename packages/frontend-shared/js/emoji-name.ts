@@ -46,3 +46,13 @@ export function isLocalCustomEmojiReaction(reaction: string): boolean {
 export function getCustomEmojiImagePath(name: string, host: string | null | undefined): string {
 	return host ? `/emoji/${name}@${host}.webp` : `/emoji/${name}.webp`;
 }
+
+// `パストラバーサルを受け付けないようにする
+const customEmojiImagePathRegex = /^\/emoji\/[\w+\-.@]+\.webp$/;
+
+/**
+ * `getCustomEmojiImagePath` が生成する形式の (自サーバーの `/emoji/` エンドポイントを指す) パスかどうかを判定する
+ */
+export function isCustomEmojiImagePath(url: string): boolean {
+	return customEmojiImagePathRegex.test(url);
+}

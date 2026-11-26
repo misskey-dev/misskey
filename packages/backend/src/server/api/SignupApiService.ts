@@ -340,6 +340,11 @@ export class SignupApiService {
 
 		const code = body['code'];
 
+		if (typeof code !== 'string') {
+			reply.code(400);
+			return;
+		}
+
 		try {
 			const pendingUser = await this.userPendingsRepository.findOneByOrFail({ code });
 
