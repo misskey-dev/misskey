@@ -5,7 +5,7 @@
 
 import { watch, version as vueVersion } from 'vue';
 import { compareVersions } from 'compare-versions';
-import { version, lang, isSafeMode } from '@@/js/config.js';
+import { version, lang, isSafeMode, host } from '@@/js/config.js';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
 import { storeBootloaderErrors } from '@@/js/store-boot-errors';
@@ -116,6 +116,9 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	//#endregion
 
 	await store.ready;
+	if ($i && $i.token && store.s.accountTokens[host + '/' + $i.id] !== $i.token) {
+		await store.set('accountTokens', { ...store.s.accountTokens, [host + '/' + $i.id]: $i.token });
+	}
 	await deckStore.ready;
 
 	const fetchInstanceMetaPromise = fetchInstance();
