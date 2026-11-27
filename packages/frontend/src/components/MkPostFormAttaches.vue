@@ -10,21 +10,56 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:class="$style.files"
 		direction="horizontal"
 		withGaps
+		stretchItems
+		:manualDragStart="props.draggable === false"
 		@update:modelValue="v => emit('update:modelValue', v)"
 	>
 		<template #default="{ item }">
 			<div
-				:class="$style.file"
+				:class="[$style.file, { [$style.dragEnabled]: props.draggable !== false }]"
 				role="button"
 				tabindex="0"
-				@click="showFileMenu(item, $event)"
-				@keydown.space.enter="showFileMenu(item, $event)"
+				@click="handleClick(item, $event)"
+				@keydown.space.enter="handleClick(item, $event)"
 				@contextmenu.prevent.stop="showFileMenu(item, $event)"
 			>
-				<!-- pointer-eventsをnoneにしておかないとiOSなどでドラッグしたときに画像の方に判定が持ってかれる -->
-				<MkDriveFileThumbnail style="pointer-events: none;" :data-id="item.id" :class="$style.thumbnail" :file="item" fit="cover"/>
-				<div v-if="item.isSensitive" :class="$style.sensitive" style="pointer-events: none;">
-					<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
+				<div :class="$style.thumbnailWrapper">
+					<MkDriveFileThumbnail v-if="item.type === 'driveFile'" :data-id="item.id" :class="$style.thumbnail" :file="item.file" fit="cover" :adaptiveBg="false"/>
+					<template v-else-if="item.type === 'uploaderItem'">
+						<img v-if="item.file.thumbnail" :src="item.file.thumbnail" :class="[$style.thumbnail, $style.uploaderThumbnail]" />
+						<div v-else :class="[$style.thumbnail, $style.uploaderThumbnailIcon]">
+							<i :class="[$style.icon, getFileTypeIcon(getFileType(item.file.file.type))]"></i>
+						</div>
+						<div :class="[$style.uploadProgressWrapper, { uploading: item.file.uploading }]">
+							<svg :class="$style.uploadProgressSvg" viewBox="0 0 64 64">
+								<circle
+									:class="$style.uploadProgressFg"
+									cx="32" cy="32" r="16"
+									:stroke-dasharray="progressDashArray(item.file)"
+								/>
+							</svg>
+							<div :class="$style.uploadAbortButton">
+								<!-- 実際のボタン機能はhandleClick -->
+								<i class="ti ti-x"></i>
+							</div>
+						</div>
+					</template>
+					<div v-if="(item.type === 'driveFile' && item.file.isSensitive) || (item.type === 'uploaderItem' && item.file.isSensitive)" :class="$style.sensitive">
+						<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
+					</div>
+				</div>
+				<div :class="$style.fileInfo">
+					<div :class="$style.fileName">{{ item.type === 'driveFile' ? item.file.name : getUploadName(item.file) }}</div>
+					<div v-if="item.type === 'uploaderItem'" :class="$style.fileDetails">
+						<span><i class="ti ti-upload"></i></span>
+						<span v-if="item.file.preprocessing">{{ i18n.ts.preprocessing }}</span>
+						<span v-else-if="item.file.compressedSize">{{ i18n.tsx._uploader.compressedToX({ x: bytes(item.file.compressedSize) }) }}</span>
+						<span v-else>{{ bytes(item.file.file.size) }}</span>
+					</div>
+					<div v-else :class="$style.fileDetails">
+						<span><i class="ti ti-cloud"></i></span>
+						<span>{{ i18n.ts.fromDrive }}</span>
+					</div>
 				</div>
 			</div>
 		</template>
@@ -39,46 +74,64 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
+<script lang="ts">
+import type { UploaderItem } from '@/composables/use-uploader.js';
+
+export type Attach = {
+	id: string;
+	type: 'driveFile';
+	file: Misskey.entities.DriveFile;
+} | {
+	id: string;
+	type: 'uploaderItem';
+	file: UploaderItem;
+};
+</script>
+
 <script lang="ts" setup>
 import { inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu';
-import { copyToClipboard } from '@/utility/copy-to-clipboard';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import bytes from '@/filters/bytes.js';
+import { getFileType, getFileTypeIcon } from '@/utility/file-type.js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import MkDraggable from '@/components/MkDraggable.vue';
+import type { Content } from '@/components/MkLightbox.item.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
-import type { Content } from '@/components/MkLightbox.item.vue';
 import { isPreviewable, getType } from '@/utility/lightbox.js';
+import { getUploadName } from '@/composables/use-uploader.js';
 
 const props = defineProps<{
-	modelValue: Misskey.entities.DriveFile[];
-	detachMediaFn?: (id: string) => void;
+	draggable?: boolean;
+	modelValue: Attach[];
 }>();
 
 const mock = inject(DI.mock, false);
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: Misskey.entities.DriveFile[]): void;
+	(ev: 'update:modelValue', value: Attach[]): void;
 	(ev: 'detach', id: string): void;
-	(ev: 'changeSensitive', file: Misskey.entities.DriveFile, isSensitive: boolean): void;
-	(ev: 'changeName', file: Misskey.entities.DriveFile, newName: string): void;
+	(ev: 'uploaderItemAborted', id: string): void;
+	(ev: 'changeDriveFileSensitivity', file: Misskey.entities.DriveFile, isSensitive: boolean): void;
+	(ev: 'changeDriveFileName', file: Misskey.entities.DriveFile, newName: string): void;
+	(ev: 'showUploaderMenu', uploaderItem: UploaderItem, event: MouseEvent | KeyboardEvent): void;
 }>();
 
-let menuShowing = false;
+function progressDashArray(item: UploaderItem): string {
+	const progress = item.progress ? item.progress.value / item.progress.max : 0;
+	return `${progress * 100} ${100 - progress * 100}`;
+}
 
 function detachMedia(id: string) {
 	if (mock) return;
 
-	if (props.detachMediaFn) {
-		props.detachMediaFn(id);
-	} else {
-		emit('detach', id);
-	}
+	emit('detach', id);
 }
 
 async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
@@ -99,9 +152,9 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 	globalEvents.emit('driveFilesDeleted', [file]);
 }
 
-function toggleSensitive(file: Misskey.entities.DriveFile) {
+function toggleDriveFileSensitivity(file: Misskey.entities.DriveFile) {
 	if (mock) {
-		emit('changeSensitive', file, !file.isSensitive);
+		emit('changeDriveFileSensitivity', file, !file.isSensitive);
 		return;
 	}
 
@@ -109,11 +162,11 @@ function toggleSensitive(file: Misskey.entities.DriveFile) {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
 	}).then(() => {
-		emit('changeSensitive', file, !file.isSensitive);
+		emit('changeDriveFileSensitivity', file, !file.isSensitive);
 	});
 }
 
-async function rename(file: Misskey.entities.DriveFile) {
+async function renameDriveFile(file: Misskey.entities.DriveFile) {
 	if (mock) return;
 
 	const { canceled, result } = await os.inputText({
@@ -126,12 +179,12 @@ async function rename(file: Misskey.entities.DriveFile) {
 		fileId: file.id,
 		name: result,
 	}).then(() => {
-		emit('changeName', file, result);
+		emit('changeDriveFileName', file, result);
 		file.name = result;
 	});
 }
 
-async function describe(file: Misskey.entities.DriveFile) {
+async function describeDriveFile(file: Misskey.entities.DriveFile) {
 	if (mock) return;
 
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkFileCaptionEditWindow.vue').then(x => x.default), {
@@ -151,77 +204,96 @@ async function describe(file: Misskey.entities.DriveFile) {
 	});
 }
 
-function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | KeyboardEvent): void {
-	if (menuShowing) return;
+function handleClick(attach: Attach, ev: PointerEvent | KeyboardEvent): void {
+	if (ev instanceof PointerEvent && ev.button !== 0) return; // 左クリック以外は無視
 
-	const menuItems: MenuItem[] = [];
+	if (attach.type === 'driveFile' || (attach.type === 'uploaderItem' && !attach.file.uploading)) {
+		showFileMenu(attach, ev);
+	} else {
+		if (attach.file.abort) {
+			attach.file.abort();
+		}
+		attach.file.aborted = true;
+		attach.file.uploadFailed = true;
+		emit('uploaderItemAborted', attach.file.id);
+	}
+}
 
-	menuItems.push({
-		text: i18n.ts.renameFile,
-		icon: 'ti ti-forms',
-		action: () => { rename(file); },
-	}, {
-		text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-		icon: file.isSensitive ? 'ti ti-eye-exclamation' : 'ti ti-eye',
-		action: () => { toggleSensitive(file); },
-	}, {
-		text: i18n.ts.describeFile,
-		icon: 'ti ti-text-caption',
-		action: () => { describe(file); },
-	});
+function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
+	if (attach.type === 'driveFile') {
+		const file = attach.file;
 
-	if (isPreviewable(file.type)) {
+		const menuItems: MenuItem[] = [];
 		menuItems.push({
-			text: i18n.ts.preview,
-			icon: 'ti ti-photo-search',
-			action: async () => {
-				const constents = props.modelValue.filter(item => isPreviewable(item.type)).map<Content>(item => ({
-					id: item.id,
-					type: getType(item.type),
-					url: item.url,
-					thumbnailUrl: item.thumbnailUrl,
-					width: item.properties.width,
-					height: item.properties.height,
-					filename: item.name,
-					file: item,
-					//sourceElement: TODO
-				}));
-				const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
-					defaultIndex: constents.findIndex(content => content.id === file.id),
-					contents: constents,
-					initiallyRevealedContentIds: [file.id],
-				}, {
-					closed: () => dispose(),
-				});
-			},
+			text: i18n.ts.renameFile,
+			icon: 'ti ti-forms',
+			action: () => { renameDriveFile(file); },
+		}, {
+			text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
+			icon: file.isSensitive ? 'ti ti-eye-exclamation' : 'ti ti-eye',
+			action: () => { toggleDriveFileSensitivity(file); },
+		}, {
+			text: i18n.ts.describeFile,
+			icon: 'ti ti-text-caption',
+			action: () => { describeDriveFile(file); },
 		});
-	}
 
-	menuItems.push({
-		type: 'divider',
-	}, {
-		text: i18n.ts.attachCancel,
-		icon: 'ti ti-circle-x',
-		action: () => { detachMedia(file.id); },
-	}, {
-		text: i18n.ts.deleteFile,
-		icon: 'ti ti-trash',
-		danger: true,
-		action: () => { detachAndDeleteMedia(file); },
-	});
+		if (isPreviewable(file.type)) {
+			menuItems.push({
+				text: i18n.ts.preview,
+				icon: 'ti ti-photo-search',
+				action: async () => {
+					const constents = props.modelValue
+						.filter(item => isPreviewable(item.type === 'driveFile' ? item.file.type : item.file.file.type))
+						.map<Content>(item => ({
+							id: item.id,
+							type: getType(item.type === 'driveFile' ? item.file.type : item.file.file.type) ?? 'image',
+							url: item.type === 'driveFile' ? item.file.url : item.file.objectUrl,
+							thumbnailUrl: item.type === 'driveFile' ? item.file.thumbnailUrl : item.file.thumbnail,
+							width: item.type === 'driveFile' ? item.file.properties.width : null,
+							height: item.type === 'driveFile' ? item.file.properties.height : null,
+							filename: item.type === 'driveFile' ? item.file.name : getUploadName(item.file),
+							file: item.type === 'driveFile' ? item.file : undefined,
+							//sourceElement: TODO
+						}));
+					const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLightbox.vue').then(x => x.default), {
+						defaultIndex: constents.findIndex(content => content.id === file.id),
+						contents: constents,
+						initiallyRevealedContentIds: [file.id],
+					}, {
+						closed: () => dispose(),
+					});
+				},
+			});
+		}
 
-	if (prefer.s.devMode) {
-		menuItems.push({ type: 'divider' }, {
-			icon: 'ti ti-hash',
-			text: i18n.ts.copyFileId,
-			action: () => {
-				copyToClipboard(file.id);
-			},
+		menuItems.push({
+			type: 'divider',
+		}, {
+			text: i18n.ts.attachCancel,
+			icon: 'ti ti-circle-x',
+			action: () => { detachMedia(file.id); },
+		}, {
+			text: i18n.ts.deleteFile,
+			icon: 'ti ti-trash',
+			danger: true,
+			action: () => { detachAndDeleteMedia(file); },
 		});
-	}
 
-	os.popupMenu(menuItems, ev.currentTarget ?? ev.target).then(() => menuShowing = false);
-	menuShowing = true;
+		if (prefer.s.devMode) {
+			menuItems.push({ type: 'divider' }, {
+				icon: 'ti ti-hash',
+				text: i18n.ts.copyFileId,
+				action: () => {
+					copyToClipboard(file.id);
+				},
+			});
+		}
+
+		os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
+	} else if (attach.type === 'uploaderItem') {
+		emit('showUploaderMenu', attach.file, ev);
+	}
 }
 </script>
 
@@ -238,29 +310,61 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | Keybo
 
 .file {
 	position: relative;
-	width: 64px;
-	height: 64px;
-	border-radius: 4px;
-	overflow: hidden;
-	cursor: move;
+	width: 104px;
+	padding: 4px;
+	border-radius: 8px;
+	background-color: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
+	box-sizing: border-box;
 
 	&:focus-visible {
 		outline-offset: 4px;
 	}
+
+	&.dragEnabled {
+		cursor: move;
+	}
+}
+
+.thumbnailWrapper {
+	position: relative;
+	width: 96px;
+	height: 64px;
+	border-radius: 6px;
+	overflow: clip;
+	background-color: var(--MI_THEME-panel);
 }
 
 .thumbnail {
 	width: 100%;
 	height: 100%;
+	border-radius: 0;
 	z-index: 1;
 	color: var(--MI_THEME-fg);
+}
+
+.uploaderThumbnail {
+	object-fit: cover;
+	object-position: center;
+}
+
+.uploaderThumbnailIcon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.icon {
+	pointer-events: none;
+	margin: auto;
+	font-size: 32px;
+	color: #777;
 }
 
 .sensitive {
 	display: flex;
 	position: absolute;
-	width: 64px;
-	height: 64px;
+	width: 100%;
+	height: 100%;
 	top: 0;
 	left: 0;
 	z-index: 2;
@@ -279,6 +383,113 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | Keybo
 
 	&.exceeded {
 		color: var(--MI_THEME-error);
+	}
+}
+
+.fileInfo {
+	margin-top: 4px;
+	font-size: 10px;
+}
+
+.fileName {
+	display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+	line-clamp: 2;
+	height: 2lh;
+	overflow: hidden;
+}
+
+.fileDetails {
+	margin-top: 2px;
+
+	& > span {
+		margin-right: 4px;
+	}
+}
+
+.uploadProgressWrapper {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.75);
+		mask-image: linear-gradient(#000, #000), url("data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNTAiIC8+PC9zdmc+");
+		mask-position: center;
+		mask-repeat: no-repeat;
+		mask-size: 100% 100%, 136px 136px; /* 長辺 96px の正方形の対角線の長さ = 96 * sqrt(2) ≈ 136 */
+		mask-composite: exclude;
+		transition: mask-size 0.2s ease;
+	}
+}
+
+.uploadProgressSvg {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 32px;
+	height: 32px;
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+}
+
+.uploadProgressFg {
+	fill: none;
+	stroke-width: 32;
+	stroke: rgba(0, 0, 0, 0.75);
+	stroke-dashoffset: 25;
+	transition: stroke-dasharray 0.2s ease;
+}
+
+.uploadAbortButton {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 16px;
+	line-height: 32px;
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0.75);
+	color: #fff;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+	cursor: pointer;
+}
+
+.uploadProgressWrapper:global(.uploading) {
+	backdrop-filter: brightness(1.5);
+
+	&::before {
+		mask-size: 100% 100%, 36px 36px;
+	}
+
+	.uploadProgressSvg {
+		opacity: 1;
+	}
+}
+
+.file:hover .uploadProgressWrapper:global(.uploading) {
+	.uploadProgressSvg {
+		opacity: 0;
+	}
+
+	.uploadAbortButton {
+		opacity: 1;
 	}
 }
 </style>

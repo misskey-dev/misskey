@@ -9,7 +9,8 @@ type DragDataMap = {
 	driveFiles: Misskey.entities.DriveFile[];
 	driveFolders: Misskey.entities.DriveFolder[];
 	deckColumn: string;
-	MkDraggable: { item: { id: string }; instanceId: string; group: string; };
+	// 実データは MkDraggable 内で保持する (File 等が JSON シリアライズで失われるため)。ここではドラッグ種別の判定にのみ使う
+	MkDraggable: Record<string, never>;
 };
 
 // NOTE: dataTransfer の format は大文字小文字区別されないっぽいので toLowerCase が必要
