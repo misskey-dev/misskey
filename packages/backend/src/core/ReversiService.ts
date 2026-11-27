@@ -513,7 +513,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			crc32,
 			logs: serializeLogs,
 		};
-		this.cacheGame(updatedGame);
+		await this.cacheGame(updatedGame);
 
 		this.globalEventService.publishReversiGameStream(game.id, 'log', {
 			...log,
