@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<MkStickyContainer>
 		<template #header>
-			<div :class="$style.view">
+			<div :class="['_stripe', $style.view]">
 				<video ref="videoEl" :class="$style.video" autoplay muted playsinline></video>
 				<div ref="overlayEl"></div>
 				<div :class="$style.controls">
@@ -358,8 +358,8 @@ onUnmounted(() => {
 	position: sticky;
 	top: var(--MI-stickyTop, 0);
 	z-index: 1;
-	background: var(--MI_THEME-bg);
-	background-size: 16px 16px;
+	--MI_STRIPE-color: light-dark(rgb(0 0 0 / 0.02), rgb(255 255 255 / 0.02));
+	background-color: var(--MI_THEME-bg);
 	width: 100%;
 	height: var(--MI-QrReadVideoHeight);
 }
@@ -379,16 +379,6 @@ onUnmounted(() => {
 	justify-content: end;
 	align-items: center;
 	gap: 10px;
-}
-
-html[data-color-scheme=dark] .view {
-	--c: rgb(255 255 255 / 2%);
-	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--MI_THEME-bg) 16.67%, var(--MI_THEME-bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--MI_THEME-bg) 66.67%, var(--MI_THEME-bg) 100%);
-}
-
-html[data-color-scheme=light] .view {
-	--c: rgb(0 0 0 / 2%);
-	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--MI_THEME-bg) 16.67%, var(--MI_THEME-bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--MI_THEME-bg) 66.67%, var(--MI_THEME-bg) 100%);
 }
 
 .contents {
