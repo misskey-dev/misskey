@@ -6,6 +6,7 @@
 import { execFile } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { createServer, type Socket } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
@@ -620,10 +621,11 @@ describe('SearchService', () => {
 		});
 
 
-		const runMutation: RunSearchIndexMutation = async submit => {
+		const runMutation: RunSearchIndexMutation = async (submit, noteIds) => {
 			const taskUid = await submit();
 			await ctx.service.waitForMeilisearchTask(taskUid);
-			return taskUid;
+			const indexedCount = noteIds == null ? undefined : await ctx.service.reconcileIndexedNotes(noteIds, runMutation);
+			return { taskUid, indexedCount };
 		};
 
 		test('backfills the selected period across batches and preserves indexed notes outside it', async () => {
@@ -754,7 +756,7 @@ describe('SearchService', () => {
 			const maintenance = ctx.app.get(SearchIndexMaintenanceQueue);
 			const { jobId } = await maintenance.enqueue({ operation: 'reset' }, null);
 			const submit = vi.fn().mockRejectedValue(new Error('Missing response'));
-			const clear = vi.spyOn(ctx.service, 'clearNoteIndex').mockImplementation(run => run(submit));
+			const clear = vi.spyOn(ctx.service, 'clearNoteIndex').mockImplementation(async run => (await run(submit)).taskUid);
 			const wait = vi.spyOn(ctx.service, 'waitForMeilisearchTask').mockResolvedValue();
 			const processor = new SearchIndexMaintenanceProcessorService(ctx.service, maintenance, ctx.app.get(ModerationLogService), new QueueLoggerService(ctx.app.get(LoggerService)));
 			const client = await maintenance.queue.getBackend().client;
@@ -775,6 +777,38 @@ describe('SearchService', () => {
 				expect(wait).toHaveBeenCalledExactlyOnceWith(0, undefined);
 				expect(clear).toHaveBeenCalledTimes(1);
 				expect(submit).toHaveBeenCalledTimes(1);
+				expect(await maintenance.getPendingMutation()).toBeNull();
+			} finally {
+				await client.del(lockKey, maintenance.queue.toKey('pending-mutation'));
+				await maintenance.queue.remove(jobId);
+			}
+		});
+
+		test('a replacement worker removes stale documents from a previously submitted reindex batch', async () => {
+			const user = await createUser(ctx);
+			const deleted = await createNote({ ...ctx, indexer: undefined }, user);
+			const maintenance = ctx.app.get(SearchIndexMaintenanceQueue);
+			const processor = new SearchIndexMaintenanceProcessorService(ctx.service, maintenance, ctx.app.get(ModerationLogService), new QueueLoggerService(ctx.app.get(LoggerService)));
+			const { jobId } = await maintenance.enqueue({ operation: 'reindex' }, null);
+			const client = await maintenance.queue.getBackend().client;
+			const lockKey = maintenance.queue.toKey(`${jobId}:lock`);
+
+			try {
+				const original = (await maintenance.queue.getJob(jobId))!;
+				original.token = 'first-worker';
+				await client.set(lockKey, original.token);
+				const mutation = await maintenance.beginMutation(original, [deleted.id]);
+
+				await ctx.notesRepository.delete(deleted.id);
+				const staleAdd = await meilisearchIndex.addDocuments([{ id: deleted.id, text: deleted.text }], { primaryKey: 'id' });
+				await maintenance.recordTask(mutation, staleAdd.taskUid);
+				await ctx.service.waitForMeilisearchTask(staleAdd.taskUid);
+
+				const resumed = (await maintenance.queue.getJob(jobId))!;
+				resumed.token = 'replacement-worker';
+				await client.set(lockKey, resumed.token);
+				await expect(processor.process(resumed)).resolves.toContain('Re-indexed 0 notes');
+				expect((await meilisearchIndex.getDocuments()).results).toEqual([]);
 				expect(await maintenance.getPendingMutation()).toBeNull();
 			} finally {
 				await client.del(lockKey, maintenance.queue.toKey('pending-mutation'));
@@ -842,6 +876,40 @@ describe('SearchService', () => {
 					timeout: 7_000,
 				})).rejects.toMatchObject({ code: 1, killed: false });
 			} finally {
+				await rm(tempDir, { recursive: true, force: true });
+			}
+		});
+
+		test('CLI exits when Redis accepts the connection but does not reply', async () => {
+			let acceptedConnection = false;
+			const sockets = new Set<Socket>();
+			const silentServer = createServer(socket => {
+				acceptedConnection = true;
+				sockets.add(socket);
+				socket.once('close', () => sockets.delete(socket));
+			});
+			const tempDir = await mkdtemp(join(tmpdir(), 'misskey-meilisearch-cli-'));
+			try {
+				await new Promise<void>((resolve, reject) => {
+					silentServer.once('error', reject).listen(0, '127.0.0.1', resolve);
+				});
+				const address = silentServer.address();
+				if (address == null || typeof address === 'string') throw new Error('Expected a TCP test address.');
+				const configPath = join(tempDir, 'config.yml');
+				await writeFile(configPath, JSON.stringify({
+					url: meiliConfig.url, port: meiliConfig.port, id: meiliConfig.id,
+					db: { ...meiliConfig.db, port: 1 }, redis: { host: '127.0.0.1', port: address.port },
+					fulltextSearch: { provider: 'meilisearch' }, meilisearch: meiliConfig.meilisearch,
+				}));
+
+				await expect(promisify(execFile)(process.execPath, ['./built/cli.js', 'meilisearch-reindex'], {
+					env: { ...process.env, MISSKEY_CONFIG_YML: configPath },
+					timeout: 12_000,
+				})).rejects.toMatchObject({ code: 1, killed: false });
+				expect(acceptedConnection).toBe(true);
+			} finally {
+				for (const socket of sockets) socket.destroy();
+				silentServer.close();
 				await rm(tempDir, { recursive: true, force: true });
 			}
 		});

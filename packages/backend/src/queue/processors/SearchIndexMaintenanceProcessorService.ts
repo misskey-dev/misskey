@@ -10,6 +10,7 @@ import { bindThis } from '@/decorators.js';
 import { SearchIndexMaintenanceQueue } from '../SearchIndexMaintenanceQueue.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { Job } from 'bullmq';
+import type { RunSearchIndexMutation } from '@/core/SearchService.js';
 import type Logger from '@/logger.js';
 import type { ModerationLogPayloads } from '@/types.js';
 import type { SearchIndexMutation } from '../SearchIndexMaintenanceQueue.js';
@@ -56,7 +57,7 @@ export class SearchIndexMaintenanceProcessorService {
 			const indexedCount = await this.searchService.reIndexNotes({
 				sinceDate: data.sinceDate,
 				untilDate: data.untilDate,
-				runMutation: submit => this.runMutation(job, submit, signal),
+				runMutation: (submit, noteIds) => this.runMutation(job, submit, signal, noteIds),
 				onBatch: async count => await job.updateProgress({ indexedCount: count }),
 			});
 			await this.log(data.actor, 'reIndexNotesCompleted', { jobId, indexedCount });
@@ -81,25 +82,30 @@ export class SearchIndexMaintenanceProcessorService {
 		return await this.searchService.clearNoteIndex(submit => this.runMutation(job, submit, signal));
 	}
 
-	private async runMutation(job: Job<SearchIndexMaintenanceJobData>, submit: () => Promise<number>, signal?: AbortSignal): Promise<number> {
+	private async runMutation(
+		job: Job<SearchIndexMaintenanceJobData>, submit: () => Promise<number>, signal?: AbortSignal, noteIds?: string[],
+	): ReturnType<RunSearchIndexMutation> {
 		signal?.throwIfAborted();
-		const mutation = await this.maintenanceQueue.beginMutation(job);
+		const mutation = await this.maintenanceQueue.beginMutation(job, noteIds);
 		if (signal?.aborted) {
 			// This execution knows it has not sent the write.
 			await this.maintenanceQueue.releaseMutation(mutation);
 			signal.throwIfAborted();
 		}
 
-		// A refused or interrupted response does not tell us whether Meilisearch queued the write.
-		// Keep the reservation if either sending the request or saving its task ID fails.
+		const taskUid = await this.submitMutation(mutation, submit);
+		const indexedCount = await this.finishMutation(job, mutation, taskUid, signal);
+		return { taskUid, indexedCount };
+	}
+
+	private async submitMutation(mutation: SearchIndexMutation, submit: () => Promise<number>): Promise<number> {
+		// An interrupted response may mean Meilisearch accepted the write. Keep the reservation on errors.
 		const taskUid = await submit();
 		await this.maintenanceQueue.recordTask(mutation, taskUid);
-		await this.finishMutation(job, mutation, taskUid, signal);
-
 		return taskUid;
 	}
 
-	private async finishMutation(job: Job<SearchIndexMaintenanceJobData>, mutation: SearchIndexMutation, taskUid: number, signal?: AbortSignal): Promise<void> {
+	private async finishMutation(job: Job<SearchIndexMaintenanceJobData>, mutation: SearchIndexMutation, taskUid: number, signal?: AbortSignal): Promise<number | undefined> {
 		if (job.data.operation === 'reset' && mutation.jobId === job.id) {
 			// If the job stalls after releasing the reservation, its next owner can still find the original reset.
 			await job.updateData({ ...job.data, taskUid });
@@ -108,10 +114,27 @@ export class SearchIndexMaintenanceProcessorService {
 		try {
 			await this.searchService.waitForMeilisearchTask(taskUid, signal);
 		} catch (err) {
-			if (err instanceof MeilisearchTaskFailedError) await this.maintenanceQueue.releaseMutation(mutation);
+			// A failed cleanup leaves the deleted documents unreconciled.
+			if (err instanceof MeilisearchTaskFailedError && !mutation.cleanup) {
+				await this.maintenanceQueue.releaseMutation(mutation);
+			}
 			throw err;
 		}
+		let indexedCount: number | undefined;
+		if (mutation.noteIds != null && !mutation.cleanup) {
+			indexedCount = await this.searchService.reconcileIndexedNotes(mutation.noteIds, async submit => {
+				signal?.throwIfAborted();
+				const cleanup = await this.maintenanceQueue.beginCleanup(job, mutation);
+				// Keep the original batch IDs in the reservation until its cleanup has finished.
+				signal?.throwIfAborted();
+				const cleanupTaskUid = await this.submitMutation(cleanup, submit);
+				await this.searchService.waitForMeilisearchTask(cleanupTaskUid, signal);
+				await this.maintenanceQueue.releaseMutation(cleanup);
+				return { taskUid: cleanupTaskUid };
+			});
+		}
 		await this.maintenanceQueue.releaseMutation(mutation);
+		return indexedCount;
 	}
 
 	private async log<T extends 'resetNoteIndexCompleted' | 'resetNoteIndexFailed' | 'reIndexNotesCompleted' | 'reIndexNotesFailed'>(

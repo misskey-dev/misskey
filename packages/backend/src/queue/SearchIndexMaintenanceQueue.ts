@@ -20,7 +20,13 @@ export class SearchIndexMaintenanceError extends Error {
 	}
 }
 
-export type SearchIndexMutation = { jobId: string; id: string; taskUid?: number };
+export type SearchIndexMutation = {
+	jobId: string;
+	id: string;
+	taskUid?: number;
+	noteIds?: string[];
+	cleanup?: boolean;
+};
 
 const deduplicationId = 'meilisearch-note-index-maintenance';
 
@@ -28,8 +34,15 @@ const deduplicationId = 'meilisearch-note-index-maintenance';
 // has no expiry: even a stalled worker can resume immediately before sending the request.
 const beginMutation = `
 if redis.call('GET', KEYS[2]) ~= ARGV[1] then return -1 end
-if redis.call('EXISTS', KEYS[1]) ~= 0 then return 0 end
-redis.call('HSET', KEYS[1], 'jobId', ARGV[2], 'id', ARGV[3])
+if ARGV[5] == '' then
+  if redis.call('EXISTS', KEYS[1]) ~= 0 then return 0 end
+  redis.call('HSET', KEYS[1], 'jobId', ARGV[2], 'id', ARGV[3])
+  if ARGV[4] ~= '' then redis.call('HSET', KEYS[1], 'noteIds', ARGV[4]) end
+else
+  if redis.call('HGET', KEYS[1], 'id') ~= ARGV[5] then return 0 end
+  redis.call('HSET', KEYS[1], 'jobId', ARGV[2], 'id', ARGV[3], 'cleanup', '1')
+  redis.call('HDEL', KEYS[1], 'taskUid')
+end
 return 1
 `;
 
@@ -57,6 +70,8 @@ export class SearchIndexMaintenanceQueue {
 				...config.redisForJobQueue,
 				keyPrefix: undefined,
 				connectTimeout: 5_000,
+				commandTimeout: 5_000,
+				socketTimeout: 5_000,
 				enableOfflineQueue: false,
 				retryStrategy: () => null,
 			},
@@ -120,22 +135,38 @@ export class SearchIndexMaintenanceQueue {
 
 	public async getPendingMutation(): Promise<SearchIndexMutation | null> {
 		const client = await this.getClient();
-		const { jobId, id, taskUid } = await client.hgetall(this.mutationKey);
+		const { jobId, id, taskUid, noteIds, cleanup } = await client.hgetall(this.mutationKey);
 		if (jobId == null && id == null && taskUid == null) return null;
 		const uid = taskUid == null ? undefined : Number(taskUid);
 		if (!jobId || !id || (uid != null && (!Number.isSafeInteger(uid) || uid < 0))) {
 			throw new Error('Invalid Meilisearch write reservation. Check the pending-mutation Redis hash.');
 		}
 
-		return { jobId, id, taskUid: uid };
+		const ids: unknown = noteIds == null ? undefined : JSON.parse(noteIds);
+		if (ids != null && (!Array.isArray(ids) || !ids.every((id: unknown): id is string => typeof id === 'string'))) {
+			throw new Error('Invalid note IDs in the pending Meilisearch write reservation.');
+		}
+
+		return { jobId, id, taskUid: uid, noteIds: ids ?? undefined, cleanup: cleanup === '1' };
 	}
 
-	public async beginMutation(job: Job<SearchIndexMaintenanceJobData>): Promise<SearchIndexMutation> {
+	public async beginMutation(job: Job<SearchIndexMaintenanceJobData>, noteIds?: string[]): Promise<SearchIndexMutation> {
+		return await this.reserveMutation(job, noteIds);
+	}
+
+	public async beginCleanup(job: Job<SearchIndexMaintenanceJobData>, previous: SearchIndexMutation): Promise<SearchIndexMutation> {
+		return await this.reserveMutation(job, previous.noteIds, previous.id);
+	}
+
+	private async reserveMutation(job: Job<SearchIndexMaintenanceJobData>, noteIds?: string[], previousId?: string): Promise<SearchIndexMutation> {
 		if (job.id == null || !job.token) throw new Error('Lost the BullMQ job lock before sending a Meilisearch write.');
 
 		const client = await this.getClient();
-		const mutation: SearchIndexMutation = { jobId: job.id, id: randomUUID() };
-		const result = await client.runCommand('misskeyBeginSearchMutation', [this.mutationKey, this.queue.toKey(`${job.id}:lock`), job.token, job.id, mutation.id]);
+		const mutation: SearchIndexMutation = { jobId: job.id, id: randomUUID(), noteIds, cleanup: previousId != null };
+		const result = await client.runCommand('misskeyBeginSearchMutation', [
+			this.mutationKey, this.queue.toKey(`${job.id}:lock`), job.token, job.id, mutation.id,
+			noteIds == null ? '' : JSON.stringify(noteIds), previousId ?? '',
+		]);
 		if (result === -1) throw new Error('Lost the BullMQ job lock before sending a Meilisearch write.');
 		if (result !== 1) throw new Error('A previous Meilisearch write is still unresolved.');
 

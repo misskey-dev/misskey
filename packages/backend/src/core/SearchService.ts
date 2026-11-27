@@ -21,7 +21,9 @@ import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type { Index, Meilisearch } from 'meilisearch';
 
-export type RunSearchIndexMutation = (submit: () => Promise<number>) => Promise<number>;
+export type RunSearchIndexMutation = (
+	submit: () => Promise<number>, noteIds?: MiNote['id'][],
+) => Promise<{ taskUid: number; indexedCount?: number }>;
 
 export class MeilisearchTaskFailedError extends Error {}
 
@@ -205,7 +207,7 @@ export class SearchService {
 	@bindThis
 	public async clearNoteIndex(runMutation: RunSearchIndexMutation): Promise<number> {
 		const { index } = this.requireMeilisearch();
-		return await runMutation(async () => (await index.deleteAllDocuments()).taskUid);
+		return (await runMutation(async () => (await index.deleteAllDocuments()).taskUid)).taskUid;
 	}
 
 	@bindThis
@@ -278,22 +280,27 @@ export class SearchService {
 			const notes = await batchQuery.getMany();
 			if (notes.length === 0) return indexedCount;
 
-			await props.runMutation(async () => (await this.addDocuments(index, notes)).taskUid);
-
-			// A note deleted after the batch read may have been re-added by this batch.
-			const noteIds = notes.map(note => note.id);
-			const remaining = await this.findRemainingNoteIds(noteIds);
-			const remainingIds = new Set(remaining);
-			const deletedIds = noteIds.filter(id => !remainingIds.has(id));
-			if (deletedIds.length > 0) {
-				await props.runMutation(async () => (await index.deleteDocuments(deletedIds)).taskUid);
-			}
-			indexedCount += remainingIds.size;
+			const result = await props.runMutation(
+				async () => (await this.addDocuments(index, notes)).taskUid,
+				notes.map(note => note.id),
+			);
+			indexedCount += result.indexedCount ?? notes.length;
 			await props.onBatch?.(indexedCount);
 
 			if (notes.length < 100) return indexedCount;
 			cursor = notes[notes.length - 1].id;
 		}
+	}
+
+	@bindThis
+	public async reconcileIndexedNotes(noteIds: MiNote['id'][], runCleanup: RunSearchIndexMutation): Promise<number> {
+		const { index } = this.requireMeilisearch();
+		const remainingIds = new Set(await this.findRemainingNoteIds(noteIds));
+		const deletedIds = noteIds.filter(id => !remainingIds.has(id));
+		if (deletedIds.length > 0) {
+			await runCleanup(async () => (await index.deleteDocuments(deletedIds)).taskUid);
+		}
+		return remainingIds.size;
 	}
 
 	private async findRemainingNoteIds(noteIds: MiNote['id'][]): Promise<MiNote['id'][]> {
