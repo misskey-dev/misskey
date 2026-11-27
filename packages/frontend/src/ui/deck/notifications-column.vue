@@ -15,6 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, useTemplateRef } from 'vue';
 import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
+import type { MenuItem } from '@/types/menu.js';
 import { updateColumn } from '@/deck.js';
 import MkStreamingNotificationsTimeline from '@/components/MkStreamingNotificationsTimeline.vue';
 import * as os from '@/os.js';
@@ -41,9 +42,19 @@ async function func() {
 	});
 }
 
-const menu = [{
-	icon: 'ti ti-pencil',
-	text: i18n.ts.notificationSetting,
-	action: func,
-}];
+const menu: MenuItem[] = [
+	{
+		icon: 'ti ti-pencil',
+		text: i18n.ts.notificationSetting,
+		action: func,
+	},
+	{
+		icon: 'ti ti-check',
+		text: i18n.ts.markAllAsRead,
+		action: () => {
+			os.apiWithDialog('notifications/mark-all-as-read', {});
+		},
+	},
+];
 </script>
+
