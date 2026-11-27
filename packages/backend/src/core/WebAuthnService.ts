@@ -92,13 +92,11 @@ export class WebAuthnService {
 		credentialBackedUp: boolean;
 		transports?: string[];
 	}> {
-		const challenge = await this.redisClient.get(`webauthn:registrationChallenge:${userId}`);
+		const challenge = await this.redisClient.getdel(`webauthn:registrationChallenge:${userId}`);
 
 		if (!challenge) {
 			throw new IdentifiableError('7dbfb66c-9216-4e2b-9c27-cef2ac8efb84', 'challenge not found');
 		}
-
-		await this.redisClient.del(`webauthn:registrationChallenge:${userId}`);
 
 		const relyingParty = this.getRelyingParty();
 

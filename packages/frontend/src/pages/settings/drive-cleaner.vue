@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div>
 								<span>{{ i18n.ts.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
 							</div>
-							<div v-if="sortModeSelect === 'sizeDesc'">
+							<div v-if="sortModeSelect === 'sizeDesc' && usage > 0">
 								<div :class="$style.meter"><div :class="$style.meterValue" :style="genUsageBar(file.size)"></div></div>
 							</div>
 						</div>
@@ -105,6 +105,9 @@ function fetchDriveInfo(): void {
 	misskeyApi('drive').then(info => {
 		capacity.value = info.capacity;
 		usage.value = info.usage;
+		fetching.value = false;
+	}).catch(() => {
+		usage.value = 0;
 		fetching.value = false;
 	});
 }

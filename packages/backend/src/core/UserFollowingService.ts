@@ -272,7 +272,8 @@ export class UserFollowingService implements OnModuleInit {
 			followeeInbox: this.userEntityService.isRemoteUser(followee) ? followee.inbox : null,
 			followeeSharedInbox: this.userEntityService.isRemoteUser(followee) ? followee.sharedInbox : null,
 		}).catch(err => {
-			if (isDuplicateKeyValueError(err) && this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
+			if (isDuplicateKeyValueError(err) && (this.userEntityService.isLocalUser(followee))) {
+				// 並行フォローでユニーク制約違反になった場合（ローカル→ローカル、リモート→ローカル）は重複として扱う
 				logger.info(`Insert duplicated ignore. ${follower.id} => ${followee.id}`);
 				alreadyFollowed = true;
 			} else {

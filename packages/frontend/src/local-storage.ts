@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { safeJsonParse } from '@/utility/safe-json-parse.js';
+
 export type Keys = (
 	'v' |
 	'lastVersion' |
@@ -58,11 +60,10 @@ export const miLocalStorage = {
 		window.localStorage.removeItem(key);
 	},
 	getItemAsJson: (key: Keys): any | undefined => {
-		const item = miLocalStorage.getItem(key);
-		if (item === null) {
-			return undefined;
-		}
-		return JSON.parse(item);
+		// 破損したデータで例外にならないようガードする
+		return safeJsonParse<any>(miLocalStorage.getItem(key), undefined, err => {
+			console.error(`failed to parse localStorage item: ${key}`, err);
+		});
 	},
 	setItemAsJson: (key: Keys, value: any): void => {
 		miLocalStorage.setItem(key, JSON.stringify(value));

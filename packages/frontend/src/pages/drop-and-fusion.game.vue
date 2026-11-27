@@ -550,6 +550,11 @@ function getMonoRenderOptions(mono: Mono) {
 	};
 }
 
+const timerIds = new Set<number>();
+// dispose() のたびに進める世代番号。await を挟む処理は、再開時に世代が変わっていたら以降の処理を行わない
+let lifecycleGeneration = 0;
+// アンマウント・非アクティブ化後に onMounted の続き (ゲーム開始・BGM 再生) を行わないためのフラグ
+let isPageInactive = false;
 let viewScale = 1;
 let seed: string = Date.now().toString();
 let containerElRect: DOMRect | null = null;
@@ -664,6 +669,14 @@ function getTextureImageUrl(mono: Mono) {
 	}
 }
 
+function setManagedTimeout(callback: () => void, ms: number) {
+	const timerId = window.setTimeout(() => {
+		timerIds.delete(timerId);
+		callback();
+	}, ms);
+	timerIds.add(timerId);
+}
+
 function tick() {
 	const hasNextTick = game.tick();
 	if (hasNextTick) {
@@ -709,21 +722,24 @@ function tickReplay() {
 }
 
 async function start() {
+	const generation = lifecycleGeneration;
 	renderer = createRendererInstance(game);
 	await loadMonoTextures();
+	// テクスチャの読み込み中に dispose された場合は、描画ループやタイマーを開始しない
+	if (generation !== lifecycleGeneration) return;
 	Matter.Render.lookAt(renderer, {
 		min: { x: 0, y: 0 },
 		max: { x: game.GAME_WIDTH, y: game.GAME_HEIGHT },
 	});
 	Matter.Render.run(renderer);
 	game.start();
-	window.requestAnimationFrame(tick);
+	tickRaf = window.requestAnimationFrame(tick);
 
 	gameLoaded.value = true;
 
-	window.setTimeout(() => {
+	setManagedTimeout(() => {
 		readyGo.value = 'go';
-		window.setTimeout(() => {
+		setManagedTimeout(() => {
 			readyGo.value = null;
 		}, 1000);
 	}, 1500);
@@ -802,10 +818,18 @@ function reset() {
 }
 
 function dispose() {
+	lifecycleGeneration++;
+
+	for (const timerId of timerIds) {
+		window.clearTimeout(timerId);
+	}
+	timerIds.clear();
+
 	game.dispose();
 	if (renderer) Matter.Render.stop(renderer);
 	if (tickRaf) {
 		window.cancelAnimationFrame(tickRaf);
+		tickRaf = null;
 	}
 }
 
@@ -822,7 +846,10 @@ function replay() {
 		getMonoRenderOptions,
 	});
 	attachGameEvents();
+	const generation = lifecycleGeneration;
 	os.promiseDialog(loadMonoTextures(), async () => {
+		// テクスチャの読み込み中に dispose された場合は、リプレイを開始しない
+		if (generation !== lifecycleGeneration) return;
 		renderer = createRendererInstance(game);
 		Matter.Render.lookAt(renderer, {
 			min: { x: 0, y: 0 },
@@ -830,7 +857,7 @@ function replay() {
 		});
 		Matter.Render.run(renderer);
 		game.start();
-		window.requestAnimationFrame(tickReplay);
+		tickRaf = window.requestAnimationFrame(tickReplay);
 	});
 }
 
@@ -994,7 +1021,7 @@ function attachGameEvents() {
 		if (replaying.value) return;
 
 		dropReady.value = false;
-		window.setTimeout(() => {
+		setManagedTimeout(() => {
 			if (!isGameOver.value) {
 				dropReady.value = true;
 			}
@@ -1206,10 +1233,14 @@ onMounted(async () => {
 	});
 	*/
 
+	if (isPageInactive) return;
 	await start();
+	if (isPageInactive) return;
 
 	const bgmBuffer = await sound.loadAudio('/client-assets/drop-and-fusion/bgm_1.mp3');
 	if (!bgmBuffer) return;
+	// BGM の読み込み中にアンマウント・非アクティブ化された場合は再生しない
+	if (isPageInactive) return;
 	bgmNodes = sound.createSourceNode(bgmBuffer, {
 		volume: props.mute ? 0 : bgmVolume.value,
 	});
@@ -1219,11 +1250,13 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
+	isPageInactive = true;
 	dispose();
 	bgmNodes?.soundSource.stop();
 });
 
 onDeactivated(() => {
+	isPageInactive = true;
 	dispose();
 	bgmNodes?.soundSource.stop();
 });

@@ -60,6 +60,7 @@ import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { dateString } from '@/filters/date.js';
 import { Paginator } from '@/utility/paginator.js';
+import { safeJsonParse } from '@/utility/safe-json-parse.js';
 
 type SearchQuery = {
 	sort?: '-createdAt' | '+createdAt' | '-updatedAt' | '+updatedAt';
@@ -69,7 +70,7 @@ type SearchQuery = {
 	hostname?: string;
 };
 
-const storedQuery = JSON.parse(defaultMemoryStorage.getItem('admin-users-query') ?? '{}') as SearchQuery;
+const storedQuery = safeJsonParse<SearchQuery>(defaultMemoryStorage.getItem('admin-users-query'), {});
 
 const {
 	model: sort,

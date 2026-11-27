@@ -4,7 +4,7 @@
  */
 
 import { createVisibilityAwareInterval } from '@@/js/interval.js';
-import type { StorageProvider } from '@/preferences/manager.js';
+import type { PossiblyNonNormalizedPreferencesProfile, StorageProvider } from '@/preferences/manager.js';
 import { cloudBackup } from '@/preferences/utility.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { isSameScope, PreferencesManager } from '@/preferences/manager.js';
@@ -13,18 +13,17 @@ import { $i } from '@/i.js';
 import { TypedBroadcastChannel as BroadcastChannel } from '@/utility/typed-broadcast-channel.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { TAB_ID } from '@/tab-id.js';
+import { safeJsonParse } from '@/utility/safe-json-parse.js';
 
 // クラウド同期用グループ名
 const syncGroup = 'default';
 
 const io: StorageProvider = {
 	load: () => {
-		const savedProfileRaw = miLocalStorage.getItem('preferences');
-		if (savedProfileRaw == null) {
-			return null;
-		} else {
-			return JSON.parse(savedProfileRaw);
-		}
+		// 破損したデータで起動が阻害されないようガードする
+		return safeJsonParse<PossiblyNonNormalizedPreferencesProfile | null>(miLocalStorage.getItem('preferences'), null, err => {
+			console.error('failed to parse saved preferences', err);
+		});
 	},
 
 	save: (ctx) => {

@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { ApiError } from '../../error.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 
@@ -15,6 +16,15 @@ export const meta = {
 		type: 'array',
 		items: {
 			ref: 'Achievement',
+		},
+	},
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '9ae5f2b6-5c97-4c7f-91b4-ebc6f274b7f1',
+			httpStatusCode: 404,
 		},
 	},
 } as const;
@@ -34,7 +44,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private userProfilesRepository: UserProfilesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: ps.userId });
+			const profile = await this.userProfilesRepository.findOneBy({ userId: ps.userId });
+
+			if (profile == null) {
+				throw new ApiError(meta.errors.noSuchUser);
+			}
 
 			return profile.achievements;
 		});

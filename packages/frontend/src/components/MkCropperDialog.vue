@@ -113,21 +113,28 @@ onMounted(() => {
 	selection.initialAspectRatio = props.aspectRatio ?? 1;
 	selection.outlined = true;
 
-	window.setTimeout(() => {
-		if (cropper == null) return;
-		cropper.getCropperImage()!.$center('contain');
-		selection.$center();
-	}, 100);
+	adjustmentTimerIds = [
+		window.setTimeout(() => {
+			if (cropper == null) return;
+			cropper.getCropperImage()!.$center('contain');
+			selection.$center();
+		}, 100),
 
-	// モーダルオープンアニメーションが終わったあとで再度調整
-	window.setTimeout(() => {
-		if (cropper == null) return;
-		cropper.getCropperImage()!.$center('contain');
-		selection.$center();
-	}, 500);
+		// モーダルオープンアニメーションが終わったあとで再度調整
+		window.setTimeout(() => {
+			if (cropper == null) return;
+			cropper.getCropperImage()!.$center('contain');
+			selection.$center();
+		}, 500),
+	];
 });
 
+let adjustmentTimerIds: number[] = [];
+
 onUnmounted(() => {
+	for (const timerId of adjustmentTimerIds) {
+		window.clearTimeout(timerId);
+	}
 	URL.revokeObjectURL(imgUrl);
 });
 </script>

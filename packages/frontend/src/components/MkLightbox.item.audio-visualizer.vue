@@ -672,13 +672,33 @@ watch(() => props.volume, (to) => {
 	}
 });
 
-watch(() => fileUser.value?.avatarUrl, (avatarUrl) => {
+watch(() => fileUser.value?.avatarUrl, (avatarUrl, _, onCleanup) => {
+	// アバターが切り替わった後に古い読み込みが完了しても、現在の画像を上書きしない
+	let stale = false;
+	onCleanup(() => {
+		stale = true;
+	});
+
+	const fallbackUrl = new URL('/static-assets/avatar.png', window.location.href).href;
+
 	const img = new Image();
 	img.addEventListener('load', () => {
+		if (stale) return;
 		avatarImage.value = img;
 		redrawIfStopped();
 	}, { once: true });
-	img.src = avatarUrl ?? '/static-assets/avatar.png';
+	// ロード失敗時はフォールバック画像を試す
+	img.addEventListener('error', () => {
+		if (stale || img.src === fallbackUrl) return;
+		const fallback = new Image();
+		fallback.addEventListener('load', () => {
+			if (stale) return;
+			avatarImage.value = fallback;
+			redrawIfStopped();
+		}, { once: true });
+		fallback.src = fallbackUrl;
+	}, { once: true });
+	img.src = avatarUrl ?? fallbackUrl;
 }, { immediate: true });
 
 watch(audioEl, () => {
