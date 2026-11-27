@@ -190,6 +190,12 @@ export const moderationLogTypes = [
 	'deleteGalleryPost',
 	'deleteChatRoom',
 	'updateProxyAccountDescription',
+	'reIndexNotesRequested',
+	'reIndexNotesCompleted',
+	'reIndexNotesFailed',
+	'resetNoteIndexRequested',
+	'resetNoteIndexCompleted',
+	'resetNoteIndexFailed',
 ] as const;
 
 export const rolePolicies = [

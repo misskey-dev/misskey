@@ -5,6 +5,8 @@
 
 import { describe, expect, test, vi } from 'vitest';
 import { ApiCallService } from '@/server/api/ApiCallService.js';
+import { meta as reindexMeta, paramDef as reindexParams } from '@/server/api/endpoints/admin/search/reindex.js';
+import { meta as resetMeta, paramDef as resetParams } from '@/server/api/endpoints/admin/search/reset.js';
 import Logger from '@/logger.js';
 import { envOption } from '@/env.js';
 import { logManager } from '@/logging/logging-runtime.js';
@@ -22,9 +24,9 @@ function createReply() {
 }
 
 /** APIサービスの依存関係を最小限の仮実装へ差し替えます。 */
-function createService() {
+function createService(auth: [unknown, unknown] = [null, null], roles: unknown[] = []) {
 	const authenticateService = {
-		authenticate: vi.fn().mockResolvedValue([null, null]),
+		authenticate: vi.fn().mockResolvedValue(auth),
 	};
 	const telemetryService = {
 		startSpan: vi.fn((_name: string, callback: () => unknown) => callback()),
@@ -38,7 +40,7 @@ function createService() {
 		{} as never,
 		authenticateService as never,
 		{} as never,
-		{} as never,
+		{ getUserRoles: vi.fn().mockResolvedValue(roles) } as never,
 		apiLoggerService as never,
 		telemetryService as never,
 	);
@@ -93,6 +95,33 @@ describe('ApiCallService structured error logging', () => {
 			service.dispose();
 			envOption.quiet = previousQuiet;
 			logManager.setBackend(new PrettyConsoleBackend({ output: () => undefined }));
+		}
+	});
+});
+
+describe.each([
+	['admin/search/reindex', reindexMeta, reindexParams],
+	['admin/search/reset', resetMeta, resetParams],
+] as const)('%s authorization', (name, meta, params) => {
+	const user = { id: 'test-user' };
+	const request = { method: 'POST', headers: {}, body: {}, ip: '127.0.0.1' };
+
+	test.each([
+		{ auth: [null, null], roles: [], status: 400, code: 'ACCESS_DENIED' },
+		{ auth: [user, null], roles: [], status: 403, code: 'ROLE_PERMISSION_DENIED' },
+		{ auth: [user, null], roles: [{ isModerator: true, isAdministrator: false }], status: 403, code: 'ROLE_PERMISSION_DENIED' },
+		{ auth: [user, { permission: [] }], roles: [{ isAdministrator: true }], status: 400, code: 'ACCESS_DENIED' },
+	] as const)('rejects requests without administrator account credentials (%j)', async ({ auth, roles, status, code }) => {
+		const { service } = createService([...auth], [...roles]);
+		const reply = createReply();
+		const exec = vi.fn();
+		try {
+			await service.handleRequest({ name, meta, params, exec } as never, request as never, reply as never);
+			expect(exec).not.toHaveBeenCalled();
+			expect(reply.code).toHaveBeenCalledWith(status);
+			expect(reply.send).toHaveBeenCalledWith({ error: expect.objectContaining({ code }) });
+		} finally {
+			service.dispose();
 		}
 	});
 });

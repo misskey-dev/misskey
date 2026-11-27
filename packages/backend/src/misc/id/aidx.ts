@@ -22,7 +22,7 @@ const AIDX_LENGTH = TIME_LENGTH + NODE_LENGTH + NOISE_LENGTH;
 const nodeId = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', NODE_LENGTH)();
 let counter = 0;
 
-function getTime(time: number): string {
+export function getAidxTime(time: number): string {
 	time = time - TIME2000;
 	if (time < 0) time = 0;
 
@@ -36,7 +36,7 @@ function getNoise(): string {
 export function genAidx(t: number): string {
 	if (isNaN(t)) throw new Error('Failed to create AIDX: Invalid Date');
 	counter++;
-	return getTime(t) + nodeId + getNoise();
+	return getAidxTime(t) + nodeId + getNoise();
 }
 
 export function parseAidx(id: string): { date: Date; } {

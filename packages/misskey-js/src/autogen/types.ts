@@ -749,12 +749,22 @@ export type paths = {
     '/admin/search/reindex': {
         /**
          * admin/search/reindex
-         * @description No description provided.
+         * @description Queue indexing of existing notes in Meilisearch without clearing the index.
          *
          *     **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
-         *     **Credential required**: *Yes* / **Permission**: *write:admin:search*
+         *     **Credential required**: *Yes*
          */
         post: operations['admin___search___reindex'];
+    };
+    '/admin/search/reset': {
+        /**
+         * admin/search/reset
+         * @description Queue deletion of all Meilisearch note search documents while preserving notes and index settings.
+         *
+         *     **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+         *     **Credential required**: *Yes*
+         */
+        post: operations['admin___search___reset'];
     };
     '/admin/send-email': {
         /**
@@ -11605,7 +11615,9 @@ export interface operations {
         requestBody: {
             content: {
                 'application/json': {
+                    /** @description Inclusive start in Unix milliseconds. */
                     sinceDate?: number | null;
+                    /** @description Exclusive end in Unix milliseconds. */
                     untilDate?: number | null;
                 };
             };
@@ -11658,8 +11670,67 @@ export interface operations {
                     'application/json': components['schemas']['Error'];
                 };
             };
-            /** @description Too many requests */
-            429: {
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    admin___search___reset: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @description Must be true to delete all note search documents. */
+                    confirm: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        jobId: string;
+                    };
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
                 headers: {
                     [name: string]: unknown;
                 };

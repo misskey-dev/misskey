@@ -138,6 +138,9 @@ export const moderationLogTypes = [
 	'reIndexNotesRequested',
 	'reIndexNotesCompleted',
 	'reIndexNotesFailed',
+	'resetNoteIndexRequested',
+	'resetNoteIndexCompleted',
+	'resetNoteIndexFailed',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -406,15 +409,27 @@ export type ModerationLogPayloads = {
 		after: string | null;
 	};
 	reIndexNotesRequested: {
+		jobId: string;
 		sinceDate: number | null;
 		untilDate: number | null;
 	};
 	reIndexNotesCompleted: {
-		fetchedCount: number;
-		errorCount: number;
-		durationMs: number;
+		jobId: string;
+		indexedCount: number;
 	};
 	reIndexNotesFailed: {
+		jobId: string;
+		reason: string;
+	};
+	resetNoteIndexRequested: {
+		jobId: string;
+	};
+	resetNoteIndexCompleted: {
+		jobId: string;
+		taskUid: number;
+	};
+	resetNoteIndexFailed: {
+		jobId: string;
 		reason: string;
 	};
 };

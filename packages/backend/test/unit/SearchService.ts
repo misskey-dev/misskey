@@ -3,12 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import type { Index, Meilisearch } from 'meilisearch';
 import { type Config, loadConfig } from '@/config.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
+import { QueueService } from '@/core/QueueService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { QueueLoggerService } from '@/queue/QueueLoggerService.js';
+import { SearchIndexMaintenanceProcessorService } from '@/queue/processors/SearchIndexMaintenanceProcessorService.js';
+import ResetIndexEndpoint from '@/server/api/endpoints/admin/search/reset.js';
 import { SearchService } from '@/core/SearchService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
@@ -601,6 +608,146 @@ describe('SearchService', () => {
 			await cleanupContext(ctx);
 			const clearTask = await meilisearchIndex.deleteAllDocuments();
 			await meilisearch.tasks.waitForTask(clearTask.taskUid);
+		});
+
+
+		test('backfills the selected period across batches and preserves indexed notes outside it', async () => {
+			const user = await createUser(ctx);
+			const sinceDate = Date.now() - 10_000;
+			const untilDate = sinceDate + 1000;
+			const existing = await createNote(ctx, user, {}, sinceDate - 1);
+			const unindexed = { ...ctx, indexer: undefined };
+			const ids = Array.from({ length: 101 }, () => ctx.idService.gen(sinceDate));
+			await ctx.notesRepository.insert(ids.map(id => ({ id, userId: user.id, text: 'backfill', visibility: 'home' })));
+			await createNote(unindexed, user, {}, untilDate);
+			await createNote(unindexed, user, { visibility: 'followers', cw: 'private' }, sinceDate);
+			await createNote(unindexed, user, { text: null, cw: null }, sinceDate);
+			const cwOnly = await createNote(unindexed, user, { text: null, cw: 'content warning' }, sinceDate);
+			const onBatch = vi.fn();
+
+			await ctx.service.reIndexNotes({ sinceDate, untilDate, onBatch });
+
+			expect(onBatch.mock.calls.map(([count]) => count)).toEqual([100, 102]);
+			const documents = await meilisearchIndex.getDocuments({ limit: 200 });
+			expect(documents.results.map(doc => doc.id).sort()).toEqual([...ids, existing.id, cwOnly.id].sort());
+		});
+
+		test('removes backfilled search documents whose notes were deleted during the batch', async () => {
+			const user = await createUser(ctx);
+			const note = await createNote({ ...ctx, indexer: undefined }, user);
+			const indexedCount = vi.fn();
+			const waitForTask = meilisearch.tasks.waitForTask.bind(meilisearch.tasks);
+			vi.spyOn(meilisearch.tasks, 'waitForTask').mockImplementationOnce(async (...args) => {
+				await ctx.notesRepository.delete(note.id);
+				return await waitForTask(...args);
+			});
+
+			await ctx.service.reIndexNotes({ onBatch: indexedCount });
+
+			expect((await meilisearchIndex.getDocuments()).results).toEqual([]);
+			expect(indexedCount).toHaveBeenCalledExactlyOnceWith(0);
+		});
+
+		test('keeps local notes and filters remote notes to the configured hosts', async () => {
+			const scopedSearch = new SearchService(
+				{ ...meiliConfig, meilisearch: { ...meiliConfig.meilisearch!, scope: ['allowed.example'] } },
+				meilisearch,
+				ctx.notesRepository,
+				ctx.cacheService,
+				ctx.app.get(QueryService),
+				ctx.idService,
+				ctx.app.get(LoggerService),
+				ctx.app.get(DI.meta),
+			);
+			const unindexed = { ...ctx, indexer: undefined };
+			const localUser = await createUser(ctx);
+			const includedUser = await createUser(ctx, { host: 'allowed.example' });
+			const excludedUser = await createUser(ctx, { host: 'excluded.example' });
+			const localNote = await createNote(unindexed, localUser);
+			const includedNote = await createNote(unindexed, includedUser);
+			await createNote(unindexed, excludedUser);
+
+			expect(await scopedSearch.reIndexNotes({})).toBe(2);
+			const docs = await meilisearchIndex.getDocuments();
+			expect(docs.results.map(doc => doc.id).sort()).toEqual([localNote.id, includedNote.id].sort());
+		});
+
+		test('clears only note search documents and preserves settings and source notes', async () => {
+			const user = await createUser(ctx);
+			const note = await createNote(ctx, user);
+			const settings = await meilisearchIndex.getSettings();
+
+			const taskUid = await ctx.service.clearNoteIndex();
+			await ctx.service.waitForMeilisearchTask(taskUid);
+
+			expect((await meilisearchIndex.getDocuments()).results).toEqual([]);
+			expect(await ctx.notesRepository.findOneBy({ id: note.id })).not.toBeNull();
+			expect(await meilisearchIndex.getSettings()).toEqual(settings);
+		});
+
+		test('reports a failed Meilisearch task and does not advance progress', async () => {
+			const user = await createUser(ctx);
+			await createNote(ctx, user);
+			const onBatch = vi.fn();
+			const waitForTask = vi.spyOn(meilisearch.tasks, 'waitForTask').mockImplementationOnce(async uid => {
+				const task = await meilisearch.tasks.getTask(typeof uid === 'number' ? uid : uid.taskUid);
+				return { ...task, status: 'failed' };
+			});
+
+			try {
+				await expect(ctx.service.reIndexNotes({ onBatch })).rejects.toThrow('failed');
+				expect(onBatch).not.toHaveBeenCalled();
+			} finally {
+				waitForTask.mockRestore();
+			}
+		});
+
+
+		test('accepts only one simultaneous request across the CLI and admin API', async () => {
+			const user = await createUser(ctx);
+			const queue = ctx.app.get(QueueService);
+			const endpoint = new ResetIndexEndpoint(queue);
+			await expect(endpoint.exec({ confirm: false }, user as never, null)).rejects.toMatchObject({ code: 'INVALID_PARAM' });
+			await expect(endpoint.exec({}, user as never, null)).rejects.toMatchObject({ code: 'INVALID_PARAM' });
+
+			const results = await Promise.allSettled([
+				queue.enqueueSearchIndexMaintenance({ operation: 'reindex' }, null),
+				endpoint.exec({ confirm: true }, user as never, null),
+			]);
+			const accepted = results.flatMap(result => result.status === 'fulfilled' ? [result.value] : []);
+
+			try {
+				expect(accepted).toHaveLength(1);
+				const rejected = results.find(result => result.status === 'rejected');
+				expect(rejected).toMatchObject({ reason: { code: 'ALREADY_RUNNING' } });
+				expect(await queue.queueRetryJob('db', accepted[0].jobId)).toBe(false);
+			} finally {
+				for (const { jobId } of accepted) await queue.queueRemoveJob('db', jobId);
+			}
+		});
+
+		test('does not replay a reset after losing the submission response and can resume a known task', async () => {
+			const queue = ctx.app.get(QueueService);
+			const { jobId } = await queue.enqueueSearchIndexMaintenance({ operation: 'reset' }, null);
+			const clear = vi.spyOn(ctx.service, 'clearNoteIndex').mockRejectedValue(new Error('Missing response'));
+			const wait = vi.spyOn(ctx.service, 'waitForMeilisearchTask').mockResolvedValue();
+			const processor = new SearchIndexMaintenanceProcessorService(ctx.service, ctx.app.get(ModerationLogService), new QueueLoggerService(ctx.app.get(LoggerService)));
+
+			try {
+				const job = (await queue.dbQueue.getJob(jobId))!;
+				job.token = 'current-lock';
+				vi.spyOn(job, 'extendLock').mockResolvedValue(1);
+				await expect(processor.process(job)).rejects.toThrow('Missing response');
+				const resumed = (await queue.dbQueue.getJob(jobId))!;
+				await expect(processor.process(resumed)).rejects.toThrow('may have been submitted');
+				expect(clear).toHaveBeenCalledTimes(1);
+				await resumed.updateData({ ...resumed.data, taskUid: 0 });
+				await expect(processor.process(resumed)).resolves.toContain('task 0');
+				expect(wait).toHaveBeenCalledExactlyOnceWith(0);
+				expect(clear).toHaveBeenCalledTimes(1);
+			} finally {
+				await queue.queueRemoveJob('db', jobId);
+			}
 		});
 
 		defineSearchNoteTests(() => ctx, { supportsFollowersVisibility: false, sinceIdOrder: 'desc' });

@@ -15,6 +15,8 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 import { type SystemWebhookPayload } from '@/core/SystemWebhookService.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -24,6 +26,7 @@ import type {
 	ArchiveAnnouncementJobData,
 	DeliverJobData,
 	RelationshipJobData,
+	SearchIndexMaintenanceRequest,
 	SystemWebhookDeliverJobData,
 	ThinUser,
 	UserWebhookDeliverJobData,
@@ -100,11 +103,23 @@ function parseRedisInfo(infoText: string): Record<string, string> {
 	return result;
 }
 
+export class SearchIndexMaintenanceError extends Error {
+	constructor(
+		public readonly code: 'MEILISEARCH_NOT_ACTIVE' | 'ALREADY_RUNNING' | 'INVALID_PARAM',
+		message: string,
+		public readonly jobId?: string,
+	) {
+		super(message);
+	}
+}
+
 @Injectable()
 export class QueueService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+		private moderationLogService: ModerationLogService,
+		private loggerService: LoggerService,
 
 		@Inject('queue:system') public systemQueue: SystemQueue,
 		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
@@ -335,36 +350,53 @@ export class QueueService {
 		});
 	}
 
-	/**
-	 * Meilisearch の再インデックスジョブを投入する。
-	 *
-	 * 同時に複数走らせると Meilisearch とサーバの負荷が大きいため、
-	 * 固定 jobId で重複排除する (active/wait/delayed に同名 job が居る場合 BullMQ は add をスキップする)。
-	 * 重複時の挙動を呼び出し側 (endpoint) でハンドリングできるよう、投入前に `getReIndexNotesJob()` で
-	 * 既存ジョブを確認できる。
-	 */
 	@bindThis
-	public createReIndexNotesJob(actor: ThinUser, opts: { sinceDate?: number | null; untilDate?: number | null } = {}) {
-		return this.dbQueue.add('reIndexNotes', {
-			actor: { id: actor.id },
-			sinceDate: opts.sinceDate ?? null,
-			untilDate: opts.untilDate ?? null,
-		}, {
-			jobId: 'reIndexNotes',
-			removeOnComplete: {
-				age: 3600 * 24 * 7, // keep up to 7 days
-				count: 5,
-			},
-			removeOnFail: {
-				age: 3600 * 24 * 30, // keep up to 30 days
-				count: 20,
-			},
-		});
-	}
+	public async enqueueSearchIndexMaintenance(request: SearchIndexMaintenanceRequest, actor: ThinUser | null): Promise<{ jobId: string }> {
+		if (this.config.fulltextSearch?.provider !== 'meilisearch' || !this.config.meilisearch) {
+			throw new SearchIndexMaintenanceError('MEILISEARCH_NOT_ACTIVE', 'Meilisearch provider is not active.');
+		}
 
-	@bindThis
-	public getReIndexNotesJob() {
-		return this.dbQueue.getJob('reIndexNotes');
+		if (request.operation === 'reindex') {
+			const { sinceDate, untilDate } = request;
+			const isValidDate = (date: number | null | undefined) => date == null
+				|| (Number.isSafeInteger(date) && Math.abs(date) <= 8_640_000_000_000_000);
+			if (!isValidDate(sinceDate) || !isValidDate(untilDate) || (sinceDate != null && untilDate != null && sinceDate >= untilDate)) {
+				throw new SearchIndexMaintenanceError('INVALID_PARAM', 'Provide valid timestamps with sinceDate earlier than untilDate.');
+			}
+		}
+
+		const jobId = randomUUID();
+		const job = await this.dbQueue.add(request.operation === 'reset' ? 'resetNoteIndex' : 'reIndexNotes', {
+			...request,
+			actor: actor == null ? null : { id: actor.id },
+		}, {
+			jobId,
+			deduplication: { id: 'meilisearch-note-index-maintenance' },
+			removeOnComplete: { age: 3600 * 24 * 7 },
+			removeOnFail: { age: 3600 * 24 * 30 },
+		});
+		if (job.id !== jobId) {
+			throw new SearchIndexMaintenanceError('ALREADY_RUNNING', 'A Meilisearch maintenance job is already queued or running.', job.id);
+		}
+
+		if (actor != null) {
+			try {
+				if (request.operation === 'reset') {
+					await this.moderationLogService.log(actor, 'resetNoteIndexRequested', { jobId });
+				} else {
+					await this.moderationLogService.log(actor, 'reIndexNotesRequested', {
+						jobId,
+						sinceDate: request.sinceDate ?? null,
+						untilDate: request.untilDate ?? null,
+					});
+				}
+			} catch (err) {
+				// The job has been accepted even if the audit insert failed.
+				this.loggerService.getLogger('queue').error(`Failed to log search maintenance request ${jobId}`, { error: err });
+			}
+		}
+
+		return { jobId };
 	}
 
 	@bindThis
@@ -858,12 +890,14 @@ export class QueueService {
 		const queue = this.getQueue(queueType);
 		const job = await queue.getJob(jobId);
 		if (job != null) {
+			if (queueType === 'db' && (job.name === 'reIndexNotes' || job.name === 'resetNoteIndex')) return false;
 			if (job.finishedOn != null) {
 				await job.retry();
 			} else {
 				await job.promote();
 			}
 		}
+		return true;
 	}
 
 	@bindThis

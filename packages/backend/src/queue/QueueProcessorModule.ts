@@ -44,7 +44,7 @@ import { TickChartsProcessorService } from './processors/TickChartsProcessorServ
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
 import { ExportFavoritesProcessorService } from './processors/ExportFavoritesProcessorService.js';
 import { RelationshipProcessorService } from './processors/RelationshipProcessorService.js';
-import { ReIndexNotesProcessorService } from './processors/ReIndexNotesProcessorService.js';
+import { SearchIndexMaintenanceProcessorService } from './processors/SearchIndexMaintenanceProcessorService.js';
 
 @Module({
 	imports: [
@@ -90,7 +90,7 @@ import { ReIndexNotesProcessorService } from './processors/ReIndexNotesProcessor
 		CheckExpiredMutingsProcessorService,
 		CheckModeratorsActivityProcessorService,
 		CleanRemoteNotesProcessorService,
-		ReIndexNotesProcessorService,
+		SearchIndexMaintenanceProcessorService,
 		QueueProcessorService,
 	],
 	exports: [

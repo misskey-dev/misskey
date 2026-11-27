@@ -3,22 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
-import type { Config } from '@/config.js';
-import { DI } from '@/di-symbols.js';
-import type Logger from '@/logger.js';
+import { Injectable } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
+import { QueueService } from '@/core/QueueService.js';
+import type { SearchIndexMaintenanceRequest } from '@/queue/types.js';
 
 @Injectable()
 export class CommandService {
-	private logger: Logger;
-
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		private metaService: MetaService,
+		private queueService: QueueService,
 	) {
 	}
 
@@ -45,5 +40,11 @@ export class CommandService {
 			turnstileSecretKey: null,
 			enableTestcaptcha: false,
 		});
+	}
+
+	@bindThis
+	public async enqueueSearchIndexMaintenance(request: SearchIndexMaintenanceRequest) {
+		const { jobId } = await this.queueService.enqueueSearchIndexMaintenance(request, null);
+		console.log(`Meilisearch maintenance job queued: ${jobId}`);
 	}
 }

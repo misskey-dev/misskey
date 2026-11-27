@@ -912,12 +912,24 @@ declare module '../api.js' {
     ): Promise<SwitchCaseResponseType<E, P>>;
 
     /**
-     * No description provided.
+     * Queue indexing of existing notes in Meilisearch without clearing the index.
      * 
      * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
-     * **Credential required**: *Yes* / **Permission**: *write:admin:search*
+     * **Credential required**: *Yes*
      */
     request<E extends 'admin/search/reindex', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * Queue deletion of all Meilisearch note search documents while preserving notes and index settings.
+     * 
+     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+     * **Credential required**: *Yes*
+     */
+    request<E extends 'admin/search/reset', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

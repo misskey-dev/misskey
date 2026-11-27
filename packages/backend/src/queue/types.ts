@@ -63,6 +63,7 @@ export type DbJobMap = {
 	importCustomEmojis: DbUserImportJobData;
 	deleteAccount: DbUserDeleteJobData;
 	reIndexNotes: DbReIndexNotesJobData;
+	resetNoteIndex: DbResetNoteIndexJobData;
 };
 
 export type DbJobDataWithUser = {
@@ -101,11 +102,27 @@ export type DbUserImportToDbJobData = {
 	withReplies?: boolean;
 };
 
-export type DbReIndexNotesJobData = {
-	/** トリガーした管理者 user id (ModerationLog / adminStream 通知に使用) */
-	actor: ThinUser;
+export type SearchIndexMaintenanceRequest = {
+	operation: 'reindex';
 	sinceDate?: number | null;
 	untilDate?: number | null;
+} | {
+	operation: 'reset';
+};
+
+export type DbReIndexNotesJobData = {
+	operation?: 'reindex';
+	/** Null when started by the server CLI. */
+	actor: ThinUser | null;
+	sinceDate?: number | null;
+	untilDate?: number | null;
+};
+
+export type DbResetNoteIndexJobData = {
+	operation: 'reset';
+	actor: ThinUser | null;
+	submissionStarted?: boolean;
+	taskUid?: number;
 };
 
 export type ObjectStorageJobData = ObjectStorageFileJobData | Record<string, unknown>;

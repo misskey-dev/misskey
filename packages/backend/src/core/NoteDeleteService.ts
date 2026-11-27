@@ -108,12 +108,12 @@ export class NoteDeleteService {
 			}
 		}
 
-		this.searchService.unindexNote(note);
-
 		await this.notesRepository.delete({
 			id: note.id,
 			userId: user.id,
 		});
+
+		this.searchService.unindexNote(note);
 
 		if (deleter && (note.userId !== deleter.id)) {
 			const user = await this.usersRepository.findOneByOrFail({ id: note.userId });

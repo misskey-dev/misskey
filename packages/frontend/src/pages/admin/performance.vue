@@ -140,35 +140,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkFolder>
 				</SearchMarker>
 
-				<SearchMarker :keywords="['meilisearch', 'search', 'reindex', 'index']">
+				<SearchMarker v-if="$i?.isAdmin" :keywords="['meilisearch', 'search', 'reindex', 'reset', 'index']">
 					<MkFolder :defaultOpen="false">
-						<template #icon><SearchIcon><i class="ti ti-refresh"></i></SearchIcon></template>
-						<template #label><SearchLabel>{{ i18n.ts._meilisearchReIndex.title }}</SearchLabel></template>
-						<template #suffix>{{ reIndexRunning ? i18n.ts._meilisearchReIndex.statusRunning : i18n.ts._meilisearchReIndex.statusIdle }}</template>
+						<template #icon><SearchIcon><i class="ti ti-search"></i></SearchIcon></template>
+						<template #label><SearchLabel>{{ i18n.ts._meilisearchMaintenance.title }}</SearchLabel></template>
 
 						<div class="_gaps_s">
-							<MkInfo><SearchText>{{ i18n.ts._meilisearchReIndex.description }}</SearchText></MkInfo>
-
-							<MkFolder :defaultOpen="false">
-								<template #label>{{ i18n.ts._meilisearchReIndex.advanced }}</template>
-								<div class="_gaps_s">
-									<MkInput v-model="reIndexSinceDateStr" type="date">
-										<template #label>{{ i18n.ts._meilisearchReIndex.sinceDate }}</template>
-									</MkInput>
-									<MkInput v-model="reIndexUntilDateStr" type="date">
-										<template #label>{{ i18n.ts._meilisearchReIndex.untilDate }}</template>
-									</MkInput>
-								</div>
-							</MkFolder>
-
-							<div class="_buttons">
-								<MkButton primary :disabled="reIndexRunning" @click="startReIndex">
-									<i class="ti ti-refresh"></i> {{ i18n.ts._meilisearchReIndex.start }}
+							<MkInfo><SearchText>{{ i18n.ts._meilisearchMaintenance.description }}</SearchText></MkInfo>
+							<form class="_gaps_s" @submit.prevent="startSearchMaintenance('reindex')">
+								<MkInput v-model="sinceDateInput" type="date" :ariaLabel="i18n.ts._meilisearchMaintenance.sinceDate">
+									<template #label>{{ i18n.ts._meilisearchMaintenance.sinceDate }}</template>
+								</MkInput>
+								<MkInput v-model="untilDateInput" type="date" :ariaLabel="i18n.ts._meilisearchMaintenance.untilDate">
+									<template #label>{{ i18n.ts._meilisearchMaintenance.untilDate }}</template>
+								</MkInput>
+								<MkButton primary type="submit" :disabled="searchJobBusy">
+									<i class="ti ti-refresh"></i> {{ i18n.ts._meilisearchMaintenance.reindex }}
 								</MkButton>
-								<MkButton @click="openJobQueue">
-									<i class="ti ti-external-link"></i> {{ i18n.ts._meilisearchReIndex.openJobQueue }}
-								</MkButton>
+							</form>
+							<MkButton danger :disabled="searchJobBusy" @click="startSearchMaintenance('reset')">
+								<i class="ti ti-trash"></i> {{ i18n.ts._meilisearchMaintenance.reset }}
+							</MkButton>
+							<div aria-live="polite">
+								<MkInfo v-if="searchJobStatus != null" :warn="searchJobStatus === 'failed' || searchJobStatus === 'unavailable'">
+									{{ i18n.ts._meilisearchMaintenance._status[searchJobStatus] }}<br>
+									{{ searchJobId }}
+								</MkInfo>
 							</div>
+							<MkA to="/admin/job-queue" class="_link">{{ i18n.ts.jobQueue }}</MkA>
 						</div>
 					</MkFolder>
 				</SearchMarker>
@@ -210,13 +209,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed } from 'vue';
+import { useInterval } from '@@/js/use-interval.js';
+import { $i } from '@/i.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { useRouter } from '@/router.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -225,6 +225,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
 import { useForm } from '@/composables/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
+import type { api } from 'misskey-js';
 
 const meta = await misskeyApi('admin/meta');
 
@@ -311,74 +312,86 @@ const rbtForm = useForm({
 	fetchInstance(true);
 });
 
-const router = useRouter();
+const sinceDateInput = ref('');
+const untilDateInput = ref('');
+const searchJobId = ref<string | null>(null);
+const searchJobStatus = ref<'queued' | 'running' | 'completed' | 'failed' | 'unavailable' | null>(null);
+const submittingSearchJob = ref(false);
+const searchJobBusy = computed(() => submittingSearchJob.value || searchJobStatus.value === 'queued' || searchJobStatus.value === 'running');
+let checkingSearchJob = false;
 
-const reIndexSinceDateStr = ref('');
-const reIndexUntilDateStr = ref('');
-const reIndexRunning = ref(false);
-let reIndexPollTimer: ReturnType<typeof setInterval> | null = null;
+async function refreshSearchJob() {
+	const jobId = searchJobId.value;
+	if (jobId == null || checkingSearchJob || searchJobStatus.value === 'completed' || searchJobStatus.value === 'failed') return;
 
-async function refreshReIndexStatus() {
+	checkingSearchJob = true;
 	try {
-		const job = await misskeyApi('admin/queue/show-job', { queue: 'db', jobId: 'reIndexNotes' });
-		// QueueJob には state プロパティが無いため、finishedOn / isFailed の有無で「未完了 = 実行中」と判定する
-		reIndexRunning.value = job != null && job.finishedOn == null && !job.isFailed;
-	} catch {
-		reIndexRunning.value = false;
-	}
-}
-
-function parseDateInput(value: string): number | null {
-	if (!value) return null;
-	const t = new Date(value).getTime();
-	return Number.isFinite(t) ? t : null;
-}
-
-async function startReIndex() {
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		title: i18n.ts._meilisearchReIndex.confirmTitle,
-		text: i18n.ts._meilisearchReIndex.confirmText,
-	});
-	if (canceled) return;
-
-	try {
-		await misskeyApi('admin/search/reindex', {
-			sinceDate: parseDateInput(reIndexSinceDateStr.value),
-			untilDate: parseDateInput(reIndexUntilDateStr.value),
-		});
-		reIndexRunning.value = true;
-		const { canceled: navCanceled } = await os.confirm({
-			type: 'success',
-			title: i18n.ts._meilisearchReIndex.startedTitle,
-			text: i18n.ts._meilisearchReIndex.startedText,
-			okText: i18n.ts._meilisearchReIndex.openJobQueue,
-			cancelText: i18n.ts.close,
-		});
-		if (!navCanceled) openJobQueue();
-	} catch (err: any) {
-		if (err?.code === 'ALREADY_RUNNING') {
-			reIndexRunning.value = true;
-			await os.alert({ type: 'warning', text: i18n.ts._meilisearchReIndex.alreadyRunning });
-		} else if (err?.code === 'MEILISEARCH_NOT_ACTIVE') {
-			await os.alert({ type: 'error', text: i18n.ts._meilisearchReIndex.notActive });
+		const job = await misskeyApi('admin/queue/show-job', { queue: 'db', jobId });
+		if (searchJobId.value !== jobId) return;
+		if (job.finishedOn != null) {
+			searchJobStatus.value = job.isFailed ? 'failed' : 'completed';
 		} else {
-			throw err;
+			searchJobStatus.value = job.processedOn != null ? 'running' : 'queued';
 		}
+	} catch {
+		if (searchJobId.value === jobId) searchJobStatus.value = 'unavailable';
+	} finally {
+		checkingSearchJob = false;
 	}
 }
 
-function openJobQueue() {
-	router.push('/admin/job-queue');
+useInterval(refreshSearchJob, 5_000, { immediate: false, afterMounted: true });
+
+function parseLocalDate(value: string | null) {
+	return value ? new Date(`${value}T00:00:00`).getTime() : null;
 }
 
-onMounted(() => {
-	refreshReIndexStatus();
-	reIndexPollTimer = window.setInterval(refreshReIndexStatus, 10 * 1000);
-});
-onUnmounted(() => {
-	if (reIndexPollTimer != null) window.clearInterval(reIndexPollTimer);
-});
+async function startSearchMaintenance(operation: 'reindex' | 'reset') {
+	if (searchJobBusy.value) return;
+	submittingSearchJob.value = true;
+
+	try {
+		const sinceDate = parseLocalDate(sinceDateInput.value);
+		const untilDate = parseLocalDate(untilDateInput.value);
+		if (operation === 'reindex' && (
+			(sinceDate != null && !Number.isFinite(sinceDate)) || (untilDate != null && !Number.isFinite(untilDate))
+			|| (sinceDate != null && untilDate != null && sinceDate >= untilDate)
+		)) {
+			await os.alert({ type: 'error', text: i18n.ts._meilisearchMaintenance.invalidRange });
+			return;
+		}
+
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: operation === 'reset' ? i18n.ts._meilisearchMaintenance.confirmReset : i18n.ts._meilisearchMaintenance.confirmReindex,
+			okText: operation === 'reset' ? i18n.ts._meilisearchMaintenance.reset : i18n.ts._meilisearchMaintenance.reindex,
+		});
+		if (canceled) return;
+
+		const { jobId } = operation === 'reset'
+			? await misskeyApi('admin/search/reset', { confirm: true })
+			: await misskeyApi('admin/search/reindex', { sinceDate, untilDate });
+		searchJobId.value = jobId;
+		searchJobStatus.value = 'queued';
+		await refreshSearchJob();
+	} catch (err) {
+		const error = err as Partial<api.APIError> | null;
+		if (error?.code === 'ALREADY_RUNNING') {
+			if (typeof error.info?.jobId === 'string') {
+				searchJobId.value = error.info.jobId;
+				searchJobStatus.value = 'queued';
+				await refreshSearchJob();
+			}
+			await os.alert({ type: 'warning', text: i18n.ts._meilisearchMaintenance.alreadyRunning });
+		} else if (error?.code === 'MEILISEARCH_NOT_ACTIVE') {
+			await os.alert({ type: 'error', text: i18n.ts._meilisearchMaintenance.notActive });
+		} else {
+			await os.alert({ type: 'error', text: typeof error?.message === 'string' ? error.message : i18n.ts.error });
+		}
+	} finally {
+		submittingSearchJob.value = false;
+	}
+}
 
 const remoteNotesCleaningForm = useForm({
 	enableRemoteNotesCleaning: meta.enableRemoteNotesCleaning,

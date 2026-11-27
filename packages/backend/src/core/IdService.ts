@@ -4,14 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { ulid } from 'ulid';
+import { encodeTime, ulid } from 'ulid';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { genAid, isSafeAidT, parseAid, parseAidFull } from '@/misc/id/aid.js';
-import { genAidx, isSafeAidxT, parseAidx, parseAidxFull } from '@/misc/id/aidx.js';
-import { genMeid, isSafeMeidT, parseMeid, parseMeidFull } from '@/misc/id/meid.js';
-import { genMeidg, isSafeMeidgT, parseMeidg, parseMeidgFull } from '@/misc/id/meidg.js';
-import { genObjectId, isSafeObjectIdT, parseObjectId, parseObjectIdFull } from '@/misc/id/object-id.js';
+import { genAid, getAidTime, isSafeAidT, parseAid, parseAidFull } from '@/misc/id/aid.js';
+import { genAidx, getAidxTime, isSafeAidxT, parseAidx, parseAidxFull } from '@/misc/id/aidx.js';
+import { genMeid, getMeidTime, isSafeMeidT, parseMeid, parseMeidFull } from '@/misc/id/meid.js';
+import { genMeidg, getMeidgTime, isSafeMeidgT, parseMeidg, parseMeidgFull } from '@/misc/id/meidg.js';
+import { genObjectId, getObjectIdTime, isSafeObjectIdT, parseObjectId, parseObjectIdFull } from '@/misc/id/object-id.js';
 import { bindThis } from '@/decorators.js';
 import { parseUlid, parseUlidFull } from '@/misc/id/ulid.js';
 
@@ -54,6 +54,20 @@ export class IdService {
 			case 'meidg': return genMeidg(t);
 			case 'ulid': return ulid(t);
 			case 'objectid': return genObjectId(t);
+			default: throw new Error('unrecognized id generation method');
+		}
+	}
+
+	/** ID prefix at or immediately after the given timestamp, with no random suffix. */
+	@bindThis
+	public getTimeBoundary(time: number): string {
+		switch (this.method) {
+			case 'aid': return getAidTime(time);
+			case 'aidx': return getAidxTime(time);
+			case 'meid': return time <= 0 ? '8' : getMeidTime(time);
+			case 'meidg': return time <= 0 ? 'g0' : 'g' + getMeidgTime(time);
+			case 'ulid': return encodeTime(Math.max(0, time), 10);
+			case 'objectid': return getObjectIdTime(Math.ceil(time / 1000) * 1000);
 			default: throw new Error('unrecognized id generation method');
 		}
 	}

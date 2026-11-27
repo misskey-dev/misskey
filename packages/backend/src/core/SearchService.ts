@@ -17,7 +17,6 @@ import { CacheService } from '@/core/CacheService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import Logger from '@/logger.js';
 import type { Index, Meilisearch } from 'meilisearch';
 
 type K = string;
@@ -47,17 +46,6 @@ export type SearchPagination = {
 	untilId?: MiNote['id'];
 	sinceId?: MiNote['id'];
 	limit: number;
-};
-
-export type ReIndexNotesResult = {
-	/** 再インデックスしたノートの数 */
-	fetchedCount: number;
-	/** 最後にインデックスしたノートのID */
-	lastNoteId?: MiNote['id'];
-	/** 最後にインデックスしたノートの投稿日時 */
-	lastNoteDate?: Date;
-	/** 再インデックスに失敗したノートのID */
-	errorNoteIds: MiNote['id'][];
 };
 
 function compileValue(value: V): string {
@@ -91,12 +79,14 @@ function compileQuery(q: Q): string {
 @Injectable()
 export class SearchService {
 	public static MeilisearchNotActiveError = class extends Error {
+		constructor() {
+			super('Meilisearch provider is not active.');
+		}
 	};
 
 	private readonly meilisearchIndexScope: 'local' | 'global' | string[] = 'local';
 	private readonly meilisearchNoteIndex: Index | null = null;
 	private readonly provider: FulltextSearchProvider;
-	private readonly logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -147,13 +137,12 @@ export class SearchService {
 		}
 
 		this.provider = config.fulltextSearch?.provider ?? 'sqlLike';
-		this.logger = this.loggerService.getLogger('SearchService');
-		this.logger.info(`-- Provider: ${this.provider}`);
+		this.loggerService.getLogger('SearchService').info(`-- Provider: ${this.provider}`);
 	}
 
 	@bindThis
-	private async addDocuments(notes: Pick<MiNote, 'id' | 'userId' | 'userHost' | 'channelId' | 'cw' | 'text' | 'tags'>[]) {
-		return this.meilisearchNoteIndex?.addDocuments(notes.map(note => ({
+	private async addDocuments(index: Index, notes: Pick<MiNote, 'id' | 'userId' | 'userHost' | 'channelId' | 'cw' | 'text' | 'tags'>[]) {
+		return index.addDocuments(notes.map(note => ({
 			id: note.id,
 			createdAt: this.idService.parse(note.id).date.getTime(),
 			userId: note.userId,
@@ -169,7 +158,7 @@ export class SearchService {
 
 	@bindThis
 	public async indexNote(note: MiNote): Promise<void> {
-		if (!this.meilisearch) return;
+		if (!this.meilisearchNoteIndex) return;
 		if (note.text == null && note.cw == null) return;
 		if (!['home', 'public'].includes(note.visibility)) return;
 
@@ -188,7 +177,7 @@ export class SearchService {
 			}
 		}
 
-		await this.addDocuments([note]);
+		await this.addDocuments(this.meilisearchNoteIndex, [note]);
 	}
 
 	@bindThis
@@ -199,112 +188,87 @@ export class SearchService {
 		await this.meilisearchNoteIndex?.deleteDocument(note.id);
 	}
 
-	@bindThis
-	public async unindexNoteAll() {
-		await this.meilisearchNoteIndex?.deleteAllDocuments();
-	}
-
-	/**
-	 * 一定期間の間に投稿されたノートをmeilisearchに再インデックスする.
-	 *
-	 * `onBatch` は 100 件 (= バッチ単位) の処理が完了するたびに呼ばれる。
-	 * 戻り値が Promise の場合は完了を待ってから次のバッチを処理するため、
-	 * `await job.updateProgress(...)` のような副作用を安全に挟み込める。
-	 */
-	@bindThis
-	public async reIndexNotes(props: {
-		sinceDate?: number | null;
-		untilDate?: number | null;
-		onBatch?: (progress: { fetchedCount: number; errorCount: number }) => void | Promise<void>;
-	}): Promise<ReIndexNotesResult> {
+	private requireMeilisearch() {
 		if (this.provider !== 'meilisearch' || !this.meilisearch || !this.meilisearchNoteIndex) {
 			throw new SearchService.MeilisearchNotActiveError();
 		}
 
-		const fetchNote = (sinceId?: MiNote['id'], untilId?: MiNote['id'], offset?: number, limit?: number) => {
-			const query = this.notesRepository.createQueryBuilder('note')
-				// 速い条件だけ先に
-				.andWhere('note.visibility IN (:...visibilities)', { visibilities: ['home', 'public'] });
+		return { client: this.meilisearch, index: this.meilisearchNoteIndex };
+	}
 
-			if (sinceId) {
-				query.andWhere('note.id > :sinceId', { sinceId });
-			}
+	@bindThis
+	public async clearNoteIndex(): Promise<number> {
+		const { index } = this.requireMeilisearch();
+		return (await index.deleteAllDocuments()).taskUid;
+	}
 
-			if (untilId) {
-				query.andWhere('note.id < :untilId', { untilId });
-			}
+	@bindThis
+	public async waitForMeilisearchTask(taskUid: number): Promise<void> {
+		const { client } = this.requireMeilisearch();
+		// Keep the job active until Meilisearch finishes, including when its task queue is backed up.
+		const task = await client.tasks.waitForTask(taskUid, { timeout: 0 });
+		if (task.status !== 'succeeded') {
+			throw new Error(`Meilisearch task ${taskUid} ${task.status}${task.error ? `: ${task.error.message}` : ''}`);
+		}
+	}
 
-			query.andWhere('note.text IS NOT NULL OR note.cw IS NOT NULL');
+	@bindThis
+	public async reIndexNotes(props: {
+		sinceDate?: number | null;
+		untilDate?: number | null;
+		onBatch?: (indexedCount: number) => void | Promise<void>;
+	}): Promise<number> {
+		const { index } = this.requireMeilisearch();
+		const now = Date.now();
+		if (props.sinceDate != null && props.sinceDate > now) return 0;
 
-			switch (this.meilisearchIndexScope) {
-				case 'global': {
-					break;
-				}
-				case 'local': {
-					query.andWhere('note.userHost IS NULL');
-					break;
-				}
-				default: {
-					query.andWhere('note.userHost IN (:...userHosts)', { userHosts: this.meilisearchIndexScope });
-					break;
-				}
-			}
+		const sinceId = props.sinceDate == null ? null : this.idService.getTimeBoundary(props.sinceDate);
+		const untilId = props.untilDate == null || props.untilDate > now ? null : this.idService.getTimeBoundary(props.untilDate);
 
-			return query
-				.select([
-					'note.id',
-					'note.userId',
-					'note.userHost',
-					'note.channelId',
-					'note.cw',
-					'note.text',
-					'note.tags',
-				])
-				.orderBy('note.id', 'DESC')
-				.skip(offset)
-				.take(limit)
-				.getMany();
-		};
+		const query = this.notesRepository.createQueryBuilder('note')
+			.select(['note.id', 'note.userId', 'note.userHost', 'note.channelId', 'note.cw', 'note.text', 'note.tags'])
+			.where('note.visibility IN (:...visibilities)', { visibilities: ['home', 'public'] })
+			.andWhere('(note.text IS NOT NULL OR note.cw IS NOT NULL)')
+			.orderBy('note.id', 'DESC')
+			.limit(100);
 
-		this.logger.info('-- Start Re-indexing notes...');
+		if (sinceId != null) query.andWhere('note.id >= :sinceId', { sinceId });
+		if (untilId != null) query.andWhere('note.id < :untilId', { untilId });
 
-		const sinceId = props.sinceDate ? this.idService.gen(props.sinceDate) : undefined;
-		const untilId = props.untilDate ? this.idService.gen(props.untilDate) : undefined;
-		const errorNoteIds: MiNote['id'][] = [];
-		let lastNoteId: MiNote['id'] | undefined = undefined;
-		let fetchedCount = 0;
-
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		while (true) {
-			const notes = await fetchNote(sinceId, untilId, fetchedCount, 100);
-			if (notes.length === 0) {
-				break;
-			}
-
-			try {
-				await this.addDocuments(notes);
-			} catch (err) {
-				this.logger.error('-- Failed to index note', err as Error);
-				errorNoteIds.push(...notes.map(n => n.id));
-				break;
-			}
-
-			lastNoteId = notes[notes.length - 1].id;
-			fetchedCount += notes.length;
-
-			if (props.onBatch) {
-				await props.onBatch({ fetchedCount, errorCount: errorNoteIds.length });
-			}
+		const scope = this.meilisearchIndexScope;
+		if (scope === 'local' || (Array.isArray(scope) && scope.length === 0)) {
+			query.andWhere('note.userHost IS NULL');
+		} else if (scope !== 'global') {
+			query.andWhere('(note.userHost IS NULL OR note.userHost IN (:...userHosts))', { userHosts: scope });
 		}
 
-		this.logger.info(`-- Re-indexing finished. Total: ${fetchedCount}`);
+		let cursor: MiNote['id'] | undefined;
+		let indexedCount = 0;
 
-		return {
-			fetchedCount: fetchedCount,
-			lastNoteId: lastNoteId,
-			lastNoteDate: lastNoteId ? this.idService.parse(lastNoteId).date : undefined,
-			errorNoteIds: errorNoteIds,
-		};
+		for (;;) {
+			const batchQuery = query.clone();
+			if (cursor != null) batchQuery.andWhere('note.id < :cursor', { cursor });
+			const notes = await batchQuery.getMany();
+			if (notes.length === 0) return indexedCount;
+
+			const task = await this.addDocuments(index, notes);
+			await this.waitForMeilisearchTask(task.taskUid);
+
+			// A note deleted after the batch read may have been re-added by this batch.
+			const noteIds = notes.map(note => note.id);
+			const remaining = await this.notesRepository.find({ select: { id: true }, where: { id: In(noteIds) } });
+			const remainingIds = new Set(remaining.map(note => note.id));
+			const deletedIds = noteIds.filter(id => !remainingIds.has(id));
+			if (deletedIds.length > 0) {
+				const cleanup = await index.deleteDocuments(deletedIds);
+				await this.waitForMeilisearchTask(cleanup.taskUid);
+			}
+			indexedCount += remainingIds.size;
+			await props.onBatch?.(indexedCount);
+
+			if (notes.length < 100) return indexedCount;
+			cursor = notes[notes.length - 1].id;
+		}
 	}
 
 	@bindThis
