@@ -362,5 +362,26 @@ export function switchProfileMenu(ev: PointerEvent) {
 		},
 	});
 
+	// 誤って押さないよう、デッキのメニューに直接置かずこのメニューの中に置く
+	const currentProfile = prefer.s['deck.profile'];
+	if (currentProfile != null) {
+		items.push({ type: 'divider' }, {
+			text: i18n.ts._deck.deleteProfile,
+			icon: 'ti ti-trash',
+			danger: true,
+			action: async () => {
+				const { canceled } = await os.confirm({
+					type: 'warning',
+					text: i18n.tsx.deleteAreYouSure({ x: currentProfile }),
+				});
+				if (canceled) return;
+
+				deleteProfile(currentProfile);
+
+				os.success();
+			},
+		});
+	}
+
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
