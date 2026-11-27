@@ -527,6 +527,21 @@ describe('RoleService', () => {
 	});
 
 	describe('getUserBadgeRoles', () => {
+		test('同じOperation内で条件ロールの計算結果を共有する', async () => {
+			const user = await createUser({ isBot: true });
+			const badge = await createConditionalRole({ id: aidx(), type: 'isBot' }, { asBadge: true });
+			await createConditionalRole({ id: aidx(), type: 'isBot' }, { asBadge: false });
+			const findUserById = vi.spyOn(app.get(CacheService), 'findUserById');
+
+			await operationContextService.runRoot(async () => {
+				await expect(roleService.getUserRoles(user.id)).resolves.toHaveLength(2);
+				const badges = await roleService.getUserBadgeRoles(user.id);
+				expect(badges.map(role => role.id)).toEqual([badge.id]);
+			});
+
+			expect(findUserById).toHaveBeenCalledTimes(1);
+		});
+
 		test('手動アサイン済みのバッジロールのみが返る', async () => {
 			const user = await createUser();
 			const badgeRole = await createRole({ name: 'badge', asBadge: true });

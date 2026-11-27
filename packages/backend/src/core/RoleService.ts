@@ -137,10 +137,6 @@ const userRolesMemo = defineOperationMemo<MiUser['id'], readonly MiRole[]>(
 	'RoleService.userRoles',
 	userId => userId,
 );
-const userBadgeRolesMemo = defineOperationMemo<MiUser['id'], readonly MiRole[]>(
-	'RoleService.userBadgeRoles',
-	userId => userId,
-);
 const userPoliciesMemo = defineOperationMemo<MiUser['id'] | null, Readonly<RolePolicies>>(
 	'RoleService.userPolicies',
 	userId => userId ?? anonymousUserPoliciesKey,
@@ -441,27 +437,9 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	 * 指定ユーザーのバッジロール一覧取得
 	 */
 	@bindThis
-	private getUserBadgeRolesInternal(userId: MiUser['id']): Promise<readonly MiRole[]> {
-		return this.operationContextService.memoizeIfActive(userBadgeRolesMemo, userId, async () => {
-			const assigns = await this.getUserAssignsInternal(userId);
-			const roles = await this.getRolesInternal();
-			const assignedRoleIds = new Set(assigns.map(assignment => assignment.roleId));
-			const assignedRoles = roles.filter(role => assignedRoleIds.has(role.id));
-			const assignedBadgeRoles = assignedRoles.filter(role => role.asBadge);
-			const badgeCondRoles = roles.filter(role => role.asBadge && role.target === 'conditional');
-			if (badgeCondRoles.length > 0) {
-				const user = await this.cacheService.findUserById(userId);
-				const matchedBadgeCondRoles = badgeCondRoles.filter(role => this.evalCond(user, assignedRoles, role.condFormula));
-				return [...assignedBadgeRoles, ...matchedBadgeCondRoles];
-			} else {
-				return assignedBadgeRoles;
-			}
-		});
-	}
-
-	@bindThis
 	public async getUserBadgeRoles(userId: MiUser['id']): Promise<MiRole[]> {
-		return [...await this.getUserBadgeRolesInternal(userId)];
+		const roles = await this.getUserRolesInternal(userId);
+		return roles.filter(role => role.asBadge);
 	}
 
 	@bindThis
@@ -567,7 +545,6 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	private invalidateUserRoleCalculations(userId: MiUser['id']): void {
 		this.operationContextService.invalidateIfActive(userAssignsMemo, userId);
 		this.operationContextService.invalidateIfActive(userRolesMemo, userId);
-		this.operationContextService.invalidateIfActive(userBadgeRolesMemo, userId);
 		this.operationContextService.invalidateIfActive(userPoliciesMemo, userId);
 	}
 
@@ -576,7 +553,6 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		// ロール定義の変更はロールアサイン自体には影響しないため、userAssignsMemoは保持する。
 		this.operationContextService.invalidateAllIfActive(rolesMemo);
 		this.operationContextService.invalidateAllIfActive(userRolesMemo);
-		this.operationContextService.invalidateAllIfActive(userBadgeRolesMemo);
 		this.operationContextService.invalidateAllIfActive(userPoliciesMemo);
 	}
 
@@ -680,6 +656,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		return users;
 	}
 
+	// assign / unassign / create / update / delete と同様に、書き込み経路を追加するときは
+	// プロセス内キャッシュを更新し、同じOperation内の関連するmemoも破棄する。
 	@bindThis
 	public async assign(userId: MiUser['id'], roleId: MiRole['id'], expiresAt: Date | null = null, moderator?: MiUser): Promise<void> {
 		const now = Date.now();

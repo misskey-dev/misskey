@@ -70,18 +70,65 @@ describe('OperationContextService', () => {
 		expect(loader).toHaveBeenCalledTimes(2);
 	});
 
-	test('keeps rejected loads stable for the duration of the operation', async () => {
+	test('retries a failed load within the same operation', async () => {
 		const service = new OperationContextService();
-		const token = defineOperationMemo<string, never>('test', key => key);
+		const token = defineOperationMemo<string, number>('test', key => key);
 		const error = new Error('failed');
-		const loader = vi.fn(() => Promise.reject(error));
+		const loader = vi.fn(() => 42).mockImplementationOnce(() => { throw error; });
 
 		await service.runRoot(async () => {
 			await expect(service.memoizeIfActive(token, 'key', loader)).rejects.toBe(error);
-			await expect(service.memoizeIfActive(token, 'key', loader)).rejects.toBe(error);
+			await expect(service.memoizeIfActive(token, 'key', loader)).resolves.toBe(42);
+			await expect(service.memoizeIfActive(token, 'key', loader)).resolves.toBe(42);
 		});
 
-		expect(loader).toHaveBeenCalledOnce();
+		expect(loader).toHaveBeenCalledTimes(2);
+	});
+
+	test('does not evict a replacement when the invalidated load rejects', async () => {
+		const service = new OperationContextService();
+		const token = defineOperationMemo<string, object>('test', key => key);
+		const failedLoad = Promise.withResolvers<object>();
+		const error = new Error('failed');
+		const loader = () => ({});
+
+		await service.runRoot(async () => {
+			const first = service.memoizeIfActive(token, 'key', () => failedLoad.promise);
+			service.invalidateIfActive(token, 'key');
+			const replacement = await service.memoizeIfActive(token, 'key', loader);
+
+			failedLoad.reject(error);
+			await expect(first).rejects.toBe(error);
+			await expect(service.memoizeIfActive(token, 'key', loader)).resolves.toBe(replacement);
+		});
+	});
+
+	test.each(['success', 'failure'] as const)('bypasses the memo in detached work after operation %s', async outcome => {
+		const service = new OperationContextService();
+		const token = defineOperationMemo<string, object>('test', key => key);
+		const error = new Error('failed');
+		const resume = Promise.withResolvers<void>();
+		const loader = () => ({});
+		let detached!: Promise<void>;
+
+		const operation = service.runRoot(async () => {
+			const cached = await service.memoizeIfActive(token, 'key', loader);
+			detached = resume.promise.then(async () => {
+				const first = await service.memoizeIfActive(token, 'key', loader);
+				const second = await service.memoizeIfActive(token, 'key', loader);
+				expect(first).not.toBe(cached);
+				expect(second).not.toBe(first);
+			});
+			if (outcome === 'failure') throw error;
+		});
+
+		if (outcome === 'failure') {
+			await expect(operation).rejects.toBe(error);
+		} else {
+			await operation;
+		}
+		resume.resolve();
+		await detached;
 	});
 
 	test('can invalidate one memoized key after a write', async () => {

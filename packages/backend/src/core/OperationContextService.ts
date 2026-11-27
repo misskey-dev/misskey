@@ -34,6 +34,12 @@ export function defineOperationMemo<K, V>(
  */
 class OperationContext {
 	private readonly memo = new Map<symbol, Map<PropertyKey, Promise<unknown>>>();
+	public closed = false;
+
+	public close(): void {
+		this.closed = true;
+		this.memo.clear();
+	}
 
 	public memoize<K, V>(
 		token: OperationMemoToken<K, V>,
@@ -50,7 +56,13 @@ class OperationContext {
 		const cached = entries.get(cacheKey);
 		if (cached != null) return cached as Promise<V>;
 
-		const value = Promise.resolve().then(loader);
+		const value = Promise.resolve().then(loader).catch(error => {
+			const currentEntries = this.memo.get(token.id);
+			if (currentEntries?.get(cacheKey) === value) {
+				currentEntries.delete(cacheKey);
+			}
+			throw error;
+		});
 		entries.set(cacheKey, value);
 		return value;
 	}
@@ -91,9 +103,8 @@ class OperationContext {
  * それぞれの入口で新しいrunRoot()を呼ぶ。
  *
  * ライフサイクル:
- * Contextを参照するasync resourceが解放されるとGC対象になる。callback内で開始した
- * fire-and-forgetの処理は、ContextとmemoをOperation終了後も保持し得るため、
- * Operationに属する処理はすべてawaitし、短命な処理だけを対象とする。
+ * callbackの完了時にContextを閉じてmemoを破棄する。callback内で開始した
+ * fire-and-forgetの処理にContextが伝播していても、Operation終了後はmemoを使用しない。
  *
  * 制約:
  * これは認可やデータアクセスを隔離するsecurity boundaryではない。値の参照を明示的に
@@ -112,17 +123,24 @@ export class OperationContextService {
 	 */
 	@bindThis
 	public runRoot<T>(
-		callback: () => T,
-	): T {
-		return this.storage.run(new OperationContext(), callback);
+		callback: () => Promise<T>,
+	): Promise<T> {
+		const context = new OperationContext();
+		return this.storage.run(context, async () => {
+			try {
+				return await callback();
+			} finally {
+				context.close();
+			}
+		});
 	}
 
 	/**
-	 * Operation内では同じtoken/keyのloaderを1回だけ実行する。
+	 * Operation内では同じtoken/keyの読み込み結果を共有する。
 	 * 実行中のPromise自体を保持するため、同時呼び出しも1つに束ねられる。
-	 * rejectionもinvalidateされるまで同じOperation内で保持される。
+	 * 読み込みが失敗した場合はエントリを破棄し、次回の呼び出しで再試行できる。
 	 *
-	 * 境界が未導入の処理ではキャッシュせず、loaderを通常どおり実行する。
+	 * 有効なContextがない場合はキャッシュせず、loaderを通常どおり実行する。
 	 */
 	@bindThis
 	public memoizeIfActive<K, V>(
@@ -131,7 +149,7 @@ export class OperationContextService {
 		loader: () => V | PromiseLike<V>,
 	): Promise<V> {
 		const context = this.storage.getStore();
-		if (context == null) return Promise.resolve().then(loader);
+		if (context == null || context.closed) return Promise.resolve().then(loader);
 
 		return context.memoize(token, key, loader);
 	}
