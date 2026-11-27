@@ -5,7 +5,6 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull } from 'typeorm';
-import { Feed } from 'feed';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, NotesRepository, UserProfilesRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
@@ -63,6 +62,7 @@ export class FeedService {
 				&& !shouldHideNoteByTime(user.makeNotesFollowersOnlyBefore, createdAt);
 		}));
 
+		const { Feed } = await import('feed');
 		const feed = new Feed({
 			id: author.link,
 			title: `${author.name} (@${user.username}@${this.config.host})`,

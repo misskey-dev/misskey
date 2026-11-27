@@ -7,13 +7,11 @@ import { URL } from 'node:url';
 import * as http from 'node:http';
 import * as https from 'node:https';
 import { Injectable } from '@nestjs/common';
-import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { Upload } from '@aws-sdk/lib-storage';
-import { NodeHttpHandler, NodeHttpHandlerOptions } from '@smithy/node-http-handler';
 import type { MiMeta } from '@/models/Meta.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
-import type { DeleteObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3';
+import type { DeleteObjectCommandInput, PutObjectCommandInput, S3Client } from '@aws-sdk/client-s3';
+import type { NodeHttpHandlerOptions } from '@smithy/node-http-handler';
 
 @Injectable()
 export class S3Service {
@@ -23,7 +21,11 @@ export class S3Service {
 	}
 
 	@bindThis
-	public getS3Client(meta: MiMeta): S3Client {
+	private async getS3Client(meta: MiMeta): Promise<S3Client> {
+		const [{ S3Client }, { NodeHttpHandler }] = await Promise.all([
+			import('@aws-sdk/client-s3'),
+			import('@smithy/node-http-handler'),
+		]);
 		const u = meta.objectStorageEndpoint
 			? `${meta.objectStorageUseSSL ? 'https' : 'http'}://${meta.objectStorageEndpoint}`
 			: `${meta.objectStorageUseSSL ? 'https' : 'http'}://example.net`; // dummy url to select http(s) agent
@@ -53,7 +55,10 @@ export class S3Service {
 
 	@bindThis
 	public async upload(meta: MiMeta, input: PutObjectCommandInput) {
-		const client = this.getS3Client(meta);
+		const [client, { Upload }] = await Promise.all([
+			this.getS3Client(meta),
+			import('@aws-sdk/lib-storage'),
+		]);
 		return new Upload({
 			client,
 			params: input,
@@ -64,8 +69,9 @@ export class S3Service {
 	}
 
 	@bindThis
-	public delete(meta: MiMeta, input: DeleteObjectCommandInput) {
-		const client = this.getS3Client(meta);
+	public async delete(meta: MiMeta, input: DeleteObjectCommandInput) {
+		const { DeleteObjectCommand } = await import('@aws-sdk/client-s3');
+		const client = await this.getS3Client(meta);
 		return client.send(new DeleteObjectCommand(input));
 	}
 }

@@ -5,12 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import {
-	generateAuthenticationOptions,
-	generateRegistrationOptions, verifyAuthenticationResponse,
-	verifyRegistrationResponse,
-} from '@simplewebauthn/server';
-import { AttestationFormat, isoCBOR, isoUint8Array } from '@simplewebauthn/server/helpers';
+import type { AttestationFormat } from '@simplewebauthn/server/helpers';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta, UserSecurityKeysRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
@@ -59,6 +54,10 @@ export class WebAuthnService {
 			userId: userId,
 		});
 
+		const [{ generateRegistrationOptions }, { isoUint8Array }] = await Promise.all([
+			import('@simplewebauthn/server'),
+			import('@simplewebauthn/server/helpers'),
+		]);
 		const registrationOptions = await generateRegistrationOptions({
 			rpName: relyingParty.rpName,
 			rpID: relyingParty.rpId,
@@ -104,6 +103,7 @@ export class WebAuthnService {
 
 		let verification;
 		try {
+			const { verifyRegistrationResponse } = await import('@simplewebauthn/server');
 			verification = await verifyRegistrationResponse({
 				response: response,
 				expectedChallenge: challenge,
@@ -148,6 +148,7 @@ export class WebAuthnService {
 			throw new IdentifiableError('f27fd449-9af4-4841-9249-1f989b9fa4a4', 'no keys found');
 		}
 
+		const { generateAuthenticationOptions } = await import('@simplewebauthn/server');
 		const authenticationOptions = await generateAuthenticationOptions({
 			rpID: relyingParty.rpId,
 			allowCredentials: keys.map(key => (<{ id: string; transports?: string[]; }>{
@@ -170,6 +171,7 @@ export class WebAuthnService {
 	public async initiateSignInWithPasskeyAuthentication(context: string): Promise<PublicKeyCredentialRequestOptionsJSON> {
 		const relyingParty = await this.getRelyingParty();
 
+		const { generateAuthenticationOptions } = await import('@simplewebauthn/server');
 		const authenticationOptions = await generateAuthenticationOptions({
 			rpID: relyingParty.rpId,
 			userVerification: 'preferred',
@@ -205,6 +207,7 @@ export class WebAuthnService {
 
 		let verification;
 		try {
+			const { verifyAuthenticationResponse } = await import('@simplewebauthn/server');
 			verification = await verifyAuthenticationResponse({
 				response: response,
 				expectedChallenge: challenge,
@@ -270,6 +273,7 @@ export class WebAuthnService {
 				cborMap.set(-2, cert.slice(1, halfLength + 1)); // x
 				cborMap.set(-3, cert.slice(halfLength + 1)); // y
 
+				const { isoCBOR } = await import('@simplewebauthn/server/helpers');
 				const cborPubKey = Buffer.from(isoCBOR.encode(cborMap)).toString('base64url');
 				await this.userSecurityKeysRepository.update({
 					id: response.id,
@@ -285,6 +289,7 @@ export class WebAuthnService {
 
 		let verification;
 		try {
+			const { verifyAuthenticationResponse } = await import('@simplewebauthn/server');
 			verification = await verifyAuthenticationResponse({
 				response: response,
 				expectedChallenge: challenge,
