@@ -16,8 +16,8 @@ describe('NotePiningService', () => {
 			delete: vi.fn(() => deletePromise),
 		};
 		const service = new NotePiningService(
-			{} as never,
-			{} as never,
+			{} as any,
+			{} as any,
 			{
 				findOneBy: vi.fn().mockResolvedValue({
 					id: 'noteId',
@@ -25,14 +25,14 @@ describe('NotePiningService', () => {
 					localOnly: false,
 					visibility: 'private',
 				}),
-			} as never,
-			userNotePiningsRepository as never,
-			{ isLocalUser: () => false } as never,
-			{} as never,
-			{} as never,
-			{} as never,
-			{} as never,
-			{} as never,
+			} as any,
+			userNotePiningsRepository as any,
+			{ isLocalUser: () => false } as any,
+			{} as any,
+			{} as any,
+			{} as any,
+			{} as any,
+			{} as any,
 		);
 
 		let resolved = false;
