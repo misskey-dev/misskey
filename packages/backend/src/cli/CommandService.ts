@@ -6,14 +6,11 @@
 import { Injectable } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
-import { QueueService } from '@/core/QueueService.js';
-import type { SearchIndexMaintenanceRequest } from '@/queue/types.js';
 
 @Injectable()
 export class CommandService {
 	constructor(
 		private metaService: MetaService,
-		private queueService: QueueService,
 	) {
 	}
 
@@ -40,11 +37,5 @@ export class CommandService {
 			turnstileSecretKey: null,
 			enableTestcaptcha: false,
 		});
-	}
-
-	@bindThis
-	public async enqueueSearchIndexMaintenance(request: SearchIndexMaintenanceRequest) {
-		const { jobId } = await this.queueService.enqueueSearchIndexMaintenance(request, null);
-		console.log(`Meilisearch maintenance job queued: ${jobId}`);
 	}
 }

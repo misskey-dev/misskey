@@ -3426,6 +3426,7 @@ _meilisearchMaintenance:
   invalidRange: "開始日が終了日より前になるように指定してください。"
   alreadyRunning: "Meilisearchの検索インデックスを操作するジョブが既に登録されています。"
   notActive: "このサーバーでは全文検索にMeilisearchが使われていません。"
+  recoveryRequired: "前回のMeilisearchへの書き込み結果を確認できません。ジョブキューの詳細と運用手順（docs/meilisearch-maintenance.md）を確認してください。"
   _status:
     queued: "ジョブを受け付けました。"
     running: "ジョブを実行中です。"

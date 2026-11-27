@@ -326,7 +326,7 @@ async function refreshSearchJob() {
 
 	checkingSearchJob = true;
 	try {
-		const job = await misskeyApi('admin/queue/show-job', { queue: 'db', jobId });
+		const job = await misskeyApi('admin/queue/show-job', { queue: 'searchIndexMaintenance', jobId });
 		if (searchJobId.value !== jobId) return;
 		if (job.finishedOn != null) {
 			searchJobStatus.value = job.isFailed ? 'failed' : 'completed';
@@ -383,6 +383,8 @@ async function startSearchMaintenance(operation: 'reindex' | 'reset') {
 				await refreshSearchJob();
 			}
 			await os.alert({ type: 'warning', text: i18n.ts._meilisearchMaintenance.alreadyRunning });
+		} else if (error?.code === 'SEARCH_INDEX_RECOVERY_REQUIRED') {
+			await os.alert({ type: 'error', text: i18n.ts._meilisearchMaintenance.recoveryRequired });
 		} else if (error?.code === 'MEILISEARCH_NOT_ACTIVE') {
 			await os.alert({ type: 'error', text: i18n.ts._meilisearchMaintenance.notActive });
 		} else {

@@ -8,6 +8,7 @@ import * as Bull from 'bullmq';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { baseQueueOptions, QUEUE } from '@/queue/const.js';
+import { SearchIndexMaintenanceQueue } from '@/queue/SearchIndexMaintenanceQueue.js';
 import { allSettled } from '@/misc/promise-tracker.js';
 import {
 	DeliverJobData,
@@ -71,6 +72,12 @@ const $db: Provider = {
 	inject: [DI.config],
 };
 
+const $searchIndexMaintenance: Provider = {
+	provide: SearchIndexMaintenanceQueue,
+	useFactory: (config: Config) => new SearchIndexMaintenanceQueue(config),
+	inject: [DI.config],
+};
+
 const $relationship: Provider = {
 	provide: 'queue:relationship',
 	useFactory: (config: Config) => createQueue<RelationshipJobData>(QUEUE.RELATIONSHIP, config),
@@ -105,6 +112,7 @@ const $systemWebhookDeliver: Provider = {
 		$deliver,
 		$inbox,
 		$db,
+		$searchIndexMaintenance,
 		$relationship,
 		$objectStorage,
 		$userWebhookDeliver,
@@ -117,6 +125,7 @@ const $systemWebhookDeliver: Provider = {
 		$deliver,
 		$inbox,
 		$db,
+		$searchIndexMaintenance,
 		$relationship,
 		$objectStorage,
 		$userWebhookDeliver,
@@ -131,6 +140,7 @@ export class QueueModule implements OnApplicationShutdown {
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 		@Inject('queue:db') public dbQueue: DbQueue,
+		private searchIndexMaintenance: SearchIndexMaintenanceQueue,
 		@Inject('queue:relationship') public relationshipQueue: RelationshipQueue,
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:userWebhookDeliver') public userWebhookDeliverQueue: UserWebhookDeliverQueue,
@@ -148,6 +158,7 @@ export class QueueModule implements OnApplicationShutdown {
 			this.deliverQueue.close(),
 			this.inboxQueue.close(),
 			this.dbQueue.close(),
+			this.searchIndexMaintenance.queue.close(),
 			this.relationshipQueue.close(),
 			this.objectStorageQueue.close(),
 			this.userWebhookDeliverQueue.close(),

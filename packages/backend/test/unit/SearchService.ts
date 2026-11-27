@@ -3,8 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { execFile } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { promisify } from 'node:util';
 import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
+import { MeilisearchApiError } from 'meilisearch';
 import type { Index, Meilisearch } from 'meilisearch';
 import { type Config, loadConfig } from '@/config.js';
 import { GlobalModule } from '@/GlobalModule.js';
@@ -14,9 +21,11 @@ import { QueryService } from '@/core/QueryService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { QueueLoggerService } from '@/queue/QueueLoggerService.js';
+import { SearchIndexMaintenanceQueue } from '@/queue/SearchIndexMaintenanceQueue.js';
 import { SearchIndexMaintenanceProcessorService } from '@/queue/processors/SearchIndexMaintenanceProcessorService.js';
 import ResetIndexEndpoint from '@/server/api/endpoints/admin/search/reset.js';
-import { SearchService } from '@/core/SearchService.js';
+import { MeilisearchTaskFailedError, SearchService } from '@/core/SearchService.js';
+import type { RunSearchIndexMutation } from '@/core/SearchService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
@@ -611,6 +620,12 @@ describe('SearchService', () => {
 		});
 
 
+		const runMutation: RunSearchIndexMutation = async submit => {
+			const taskUid = await submit();
+			await ctx.service.waitForMeilisearchTask(taskUid);
+			return taskUid;
+		};
+
 		test('backfills the selected period across batches and preserves indexed notes outside it', async () => {
 			const user = await createUser(ctx);
 			const sinceDate = Date.now() - 10_000;
@@ -625,7 +640,7 @@ describe('SearchService', () => {
 			const cwOnly = await createNote(unindexed, user, { text: null, cw: 'content warning' }, sinceDate);
 			const onBatch = vi.fn();
 
-			await ctx.service.reIndexNotes({ sinceDate, untilDate, onBatch });
+			await ctx.service.reIndexNotes({ sinceDate, untilDate, onBatch, runMutation });
 
 			expect(onBatch.mock.calls.map(([count]) => count)).toEqual([100, 102]);
 			const documents = await meilisearchIndex.getDocuments({ limit: 200 });
@@ -636,13 +651,16 @@ describe('SearchService', () => {
 			const user = await createUser(ctx);
 			const note = await createNote({ ...ctx, indexer: undefined }, user);
 			const indexedCount = vi.fn();
-			const waitForTask = meilisearch.tasks.waitForTask.bind(meilisearch.tasks);
-			vi.spyOn(meilisearch.tasks, 'waitForTask').mockImplementationOnce(async (...args) => {
+			const getTask = meilisearch.tasks.getTask.bind(meilisearch.tasks);
+			vi.spyOn(meilisearch.tasks, 'getTask').mockImplementationOnce(async (...args) => {
 				await ctx.notesRepository.delete(note.id);
-				return await waitForTask(...args);
+				return await getTask(...args);
 			});
+			const createRunner = vi.spyOn(ctx.notesRepository.manager.connection, 'createQueryRunner');
 
-			await ctx.service.reIndexNotes({ onBatch: indexedCount });
+			await ctx.service.reIndexNotes({ onBatch: indexedCount, runMutation });
+
+			expect(createRunner).toHaveBeenCalledWith('master');
 
 			expect((await meilisearchIndex.getDocuments()).results).toEqual([]);
 			expect(indexedCount).toHaveBeenCalledExactlyOnceWith(0);
@@ -667,7 +685,7 @@ describe('SearchService', () => {
 			const includedNote = await createNote(unindexed, includedUser);
 			await createNote(unindexed, excludedUser);
 
-			expect(await scopedSearch.reIndexNotes({})).toBe(2);
+			expect(await scopedSearch.reIndexNotes({ runMutation })).toBe(2);
 			const docs = await meilisearchIndex.getDocuments();
 			expect(docs.results.map(doc => doc.id).sort()).toEqual([localNote.id, includedNote.id].sort());
 		});
@@ -677,8 +695,7 @@ describe('SearchService', () => {
 			const note = await createNote(ctx, user);
 			const settings = await meilisearchIndex.getSettings();
 
-			const taskUid = await ctx.service.clearNoteIndex();
-			await ctx.service.waitForMeilisearchTask(taskUid);
+			await ctx.service.clearNoteIndex(runMutation);
 
 			expect((await meilisearchIndex.getDocuments()).results).toEqual([]);
 			expect(await ctx.notesRepository.findOneBy({ id: note.id })).not.toBeNull();
@@ -689,19 +706,26 @@ describe('SearchService', () => {
 			const user = await createUser(ctx);
 			await createNote(ctx, user);
 			const onBatch = vi.fn();
-			const waitForTask = vi.spyOn(meilisearch.tasks, 'waitForTask').mockImplementationOnce(async uid => {
-				const task = await meilisearch.tasks.getTask(typeof uid === 'number' ? uid : uid.taskUid);
+			const getTask = meilisearch.tasks.getTask.bind(meilisearch.tasks);
+			vi.spyOn(meilisearch.tasks, 'getTask').mockImplementationOnce(async (...args) => {
+				const task = await getTask(...args);
 				return { ...task, status: 'failed' };
 			});
 
-			try {
-				await expect(ctx.service.reIndexNotes({ onBatch })).rejects.toThrow('failed');
-				expect(onBatch).not.toHaveBeenCalled();
-			} finally {
-				waitForTask.mockRestore();
-			}
+			await expect(ctx.service.reIndexNotes({ onBatch, runMutation })).rejects.toBeInstanceOf(MeilisearchTaskFailedError);
+			expect(onBatch).not.toHaveBeenCalled();
 		});
 
+		test('retries transient task-status errors while waiting for the same task', async () => {
+			const task = await meilisearchIndex.updateSettings(meilisearchSettings);
+			const getTask = vi.spyOn(meilisearch.tasks, 'getTask')
+				.mockRejectedValueOnce(new MeilisearchApiError(new Response(null, { status: 502 })));
+
+			await ctx.service.waitForMeilisearchTask(task.taskUid);
+
+			expect(getTask.mock.calls.length).toBeGreaterThanOrEqual(2);
+			expect(getTask.mock.calls.every(([uid]) => uid === task.taskUid)).toBe(true);
+		});
 
 		test('accepts only one simultaneous request across the CLI and admin API', async () => {
 			const user = await createUser(ctx);
@@ -720,33 +744,105 @@ describe('SearchService', () => {
 				expect(accepted).toHaveLength(1);
 				const rejected = results.find(result => result.status === 'rejected');
 				expect(rejected).toMatchObject({ reason: { code: 'ALREADY_RUNNING' } });
-				expect(await queue.queueRetryJob('db', accepted[0].jobId)).toBe(false);
+				expect(await queue.queueRetryJob('searchIndexMaintenance', accepted[0].jobId)).toBe(false);
 			} finally {
-				for (const { jobId } of accepted) await queue.queueRemoveJob('db', jobId);
+				for (const { jobId } of accepted) await queue.queueRemoveJob('searchIndexMaintenance', jobId);
 			}
 		});
 
 		test('does not replay a reset after losing the submission response and can resume a known task', async () => {
-			const queue = ctx.app.get(QueueService);
-			const { jobId } = await queue.enqueueSearchIndexMaintenance({ operation: 'reset' }, null);
-			const clear = vi.spyOn(ctx.service, 'clearNoteIndex').mockRejectedValue(new Error('Missing response'));
+			const maintenance = ctx.app.get(SearchIndexMaintenanceQueue);
+			const { jobId } = await maintenance.enqueue({ operation: 'reset' }, null);
+			const submit = vi.fn().mockRejectedValue(new Error('Missing response'));
+			const clear = vi.spyOn(ctx.service, 'clearNoteIndex').mockImplementation(run => run(submit));
 			const wait = vi.spyOn(ctx.service, 'waitForMeilisearchTask').mockResolvedValue();
-			const processor = new SearchIndexMaintenanceProcessorService(ctx.service, ctx.app.get(ModerationLogService), new QueueLoggerService(ctx.app.get(LoggerService)));
+			const processor = new SearchIndexMaintenanceProcessorService(ctx.service, maintenance, ctx.app.get(ModerationLogService), new QueueLoggerService(ctx.app.get(LoggerService)));
+			const client = await maintenance.queue.getBackend().client;
+			const lockKey = maintenance.queue.toKey(`${jobId}:lock`);
 
 			try {
-				const job = (await queue.dbQueue.getJob(jobId))!;
+				const job = (await maintenance.queue.getJob(jobId))!;
 				job.token = 'current-lock';
-				vi.spyOn(job, 'extendLock').mockResolvedValue(1);
+				await client.set(lockKey, job.token);
 				await expect(processor.process(job)).rejects.toThrow('Missing response');
-				const resumed = (await queue.dbQueue.getJob(jobId))!;
+				const resumed = (await maintenance.queue.getJob(jobId))!;
 				await expect(processor.process(resumed)).rejects.toThrow('may have been submitted');
-				expect(clear).toHaveBeenCalledTimes(1);
-				await resumed.updateData({ ...resumed.data, taskUid: 0 });
+
+				const pending = await maintenance.getPendingMutation();
+				expect(pending).toMatchObject({ jobId, taskUid: undefined });
+				await maintenance.recordTask(pending!, 0);
 				await expect(processor.process(resumed)).resolves.toContain('task 0');
-				expect(wait).toHaveBeenCalledExactlyOnceWith(0);
+				expect(wait).toHaveBeenCalledExactlyOnceWith(0, undefined);
 				expect(clear).toHaveBeenCalledTimes(1);
+				expect(submit).toHaveBeenCalledTimes(1);
+				expect(await maintenance.getPendingMutation()).toBeNull();
 			} finally {
-				await queue.queueRemoveJob('db', jobId);
+				await client.del(lockKey, maintenance.queue.toKey('pending-mutation'));
+				await maintenance.queue.remove(jobId);
+			}
+		});
+
+		test('CLI reset submits a job without initializing search settings or connecting to PostgreSQL', async () => {
+			const instance = `test-cli-${randomUUID()}`;
+			const redis = { ...meiliConfig.redisForJobQueue, prefix: instance };
+			const meilisearchConfig = { ...meiliConfig.meilisearch!, index: instance };
+			const maintenance = new SearchIndexMaintenanceQueue({ ...meiliConfig, redisForJobQueue: redis });
+			const index = meilisearch.index(`${instance}---notes`);
+			const tempDir = await mkdtemp(join(tmpdir(), 'misskey-meilisearch-cli-'));
+			const configPath = join(tempDir, 'config.yml');
+			const settings = { pagination: { maxTotalHits: 4321 } };
+			try {
+				await meilisearch.tasks.waitForTask(await index.updateSettings(settings));
+				await writeFile(configPath, JSON.stringify({
+					url: meiliConfig.url, port: meiliConfig.port, id: meiliConfig.id,
+					db: { ...meiliConfig.db, port: 1 }, redis, redisForJobQueue: redis,
+					fulltextSearch: { provider: 'meilisearch' }, meilisearch: meilisearchConfig,
+				}));
+				const { stdout } = await promisify(execFile)(process.execPath, ['./built/cli.js', 'meilisearch-reset', '--confirm'], {
+					env: { ...process.env, MISSKEY_CONFIG_YML: configPath },
+					timeout: 10_000,
+				});
+
+				expect(stdout).toContain('Meilisearch maintenance job queued:');
+				expect((await index.getSettings()).pagination).toEqual(settings.pagination);
+				expect(await maintenance.queue.getWaitingCount()).toBe(1);
+			} finally {
+				await maintenance.queue.obliterate({ force: true });
+				await maintenance.queue.close();
+				await meilisearch.tasks.waitForTask(await index.delete());
+				await rm(tempDir, { recursive: true, force: true });
+			}
+		});
+
+		test('CLI terminates on bootstrap failure despite unavailable Redis', async () => {
+			const tempDir = await mkdtemp(join(tmpdir(), 'misskey-meilisearch-cli-'));
+			try {
+				const configPath = join(tempDir, 'config.yml');
+				await writeFile(configPath, JSON.stringify({
+					url: meiliConfig.url, port: meiliConfig.port, id: meiliConfig.id,
+					db: { ...meiliConfig.db, port: 1 }, redis: { ...meiliConfig.redis, port: 1 },
+					fulltextSearch: { provider: 'meilisearch' },
+				}));
+
+				await expect(promisify(execFile)(process.execPath, ['./built/cli.js', 'meilisearch-reset', '--confirm'], {
+					env: { ...process.env, MISSKEY_CONFIG_YML: configPath },
+					timeout: 7_000,
+				})).rejects.toMatchObject({ code: 1, killed: false, stderr: expect.stringContaining('Meilisearch provider is not active') });
+				await expect(promisify(execFile)(process.execPath, ['./built/cli.js', 'ping'], {
+					env: { ...process.env, MISSKEY_CONFIG_YML: configPath },
+					timeout: 7_000,
+				})).rejects.toMatchObject({ code: 1, killed: false });
+				await writeFile(configPath, JSON.stringify({
+					url: meiliConfig.url, port: meiliConfig.port, id: meiliConfig.id,
+					db: { ...meiliConfig.db, port: 1 }, redis: { ...meiliConfig.redis, port: 1 },
+					fulltextSearch: { provider: 'meilisearch' }, meilisearch: meiliConfig.meilisearch,
+				}));
+				await expect(promisify(execFile)(process.execPath, ['./built/cli.js', 'meilisearch-reset', '--confirm'], {
+					env: { ...process.env, MISSKEY_CONFIG_YML: configPath },
+					timeout: 7_000,
+				})).rejects.toMatchObject({ code: 1, killed: false });
+			} finally {
+				await rm(tempDir, { recursive: true, force: true });
 			}
 		});
 

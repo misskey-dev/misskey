@@ -247,6 +247,7 @@ export const queueTypes = [
 	'deliver',
 	'inbox',
 	'db',
+	'searchIndexMaintenance',
 	'relationship',
 	'objectStorage',
 	'userWebhookDeliver',

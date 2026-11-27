@@ -17,6 +17,7 @@ import { bindThis } from '@/decorators.js';
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { SearchIndexMaintenanceQueue } from '@/queue/SearchIndexMaintenanceQueue.js';
 import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 import { type SystemWebhookPayload } from '@/core/SystemWebhookService.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -53,6 +54,7 @@ export const QUEUE_TYPES = [
 	'deliver',
 	'inbox',
 	'db',
+	'searchIndexMaintenance',
 	'relationship',
 	'objectStorage',
 	'userWebhookDeliver',
@@ -103,16 +105,6 @@ function parseRedisInfo(infoText: string): Record<string, string> {
 	return result;
 }
 
-export class SearchIndexMaintenanceError extends Error {
-	constructor(
-		public readonly code: 'MEILISEARCH_NOT_ACTIVE' | 'ALREADY_RUNNING' | 'INVALID_PARAM',
-		message: string,
-		public readonly jobId?: string,
-	) {
-		super(message);
-	}
-}
-
 @Injectable()
 export class QueueService {
 	constructor(
@@ -127,6 +119,7 @@ export class QueueService {
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 		@Inject('queue:db') public dbQueue: DbQueue,
+		private searchIndexMaintenance: SearchIndexMaintenanceQueue,
 		@Inject('queue:relationship') public relationshipQueue: RelationshipQueue,
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:userWebhookDeliver') public userWebhookDeliverQueue: UserWebhookDeliverQueue,
@@ -352,32 +345,7 @@ export class QueueService {
 
 	@bindThis
 	public async enqueueSearchIndexMaintenance(request: SearchIndexMaintenanceRequest, actor: ThinUser | null): Promise<{ jobId: string }> {
-		if (this.config.fulltextSearch?.provider !== 'meilisearch' || !this.config.meilisearch) {
-			throw new SearchIndexMaintenanceError('MEILISEARCH_NOT_ACTIVE', 'Meilisearch provider is not active.');
-		}
-
-		if (request.operation === 'reindex') {
-			const { sinceDate, untilDate } = request;
-			const isValidDate = (date: number | null | undefined) => date == null
-				|| (Number.isSafeInteger(date) && Math.abs(date) <= 8_640_000_000_000_000);
-			if (!isValidDate(sinceDate) || !isValidDate(untilDate) || (sinceDate != null && untilDate != null && sinceDate >= untilDate)) {
-				throw new SearchIndexMaintenanceError('INVALID_PARAM', 'Provide valid timestamps with sinceDate earlier than untilDate.');
-			}
-		}
-
-		const jobId = randomUUID();
-		const job = await this.dbQueue.add(request.operation === 'reset' ? 'resetNoteIndex' : 'reIndexNotes', {
-			...request,
-			actor: actor == null ? null : { id: actor.id },
-		}, {
-			jobId,
-			deduplication: { id: 'meilisearch-note-index-maintenance' },
-			removeOnComplete: { age: 3600 * 24 * 7 },
-			removeOnFail: { age: 3600 * 24 * 30 },
-		});
-		if (job.id !== jobId) {
-			throw new SearchIndexMaintenanceError('ALREADY_RUNNING', 'A Meilisearch maintenance job is already queued or running.', job.id);
-		}
+		const { jobId } = await this.searchIndexMaintenance.enqueue(request, actor);
 
 		if (actor != null) {
 			try {
@@ -840,6 +808,7 @@ export class QueueService {
 			case 'deliver': return this.deliverQueue;
 			case 'inbox': return this.inboxQueue;
 			case 'db': return this.dbQueue;
+			case 'searchIndexMaintenance': return this.searchIndexMaintenance.queue;
 			case 'relationship': return this.relationshipQueue;
 			case 'objectStorage': return this.objectStorageQueue;
 			case 'userWebhookDeliver': return this.userWebhookDeliverQueue;
@@ -890,7 +859,7 @@ export class QueueService {
 		const queue = this.getQueue(queueType);
 		const job = await queue.getJob(jobId);
 		if (job != null) {
-			if (queueType === 'db' && (job.name === 'reIndexNotes' || job.name === 'resetNoteIndex')) return false;
+			if (queueType === 'searchIndexMaintenance' || (queueType === 'db' && (job.name === 'reIndexNotes' || job.name === 'resetNoteIndex'))) return false;
 			if (job.finishedOn != null) {
 				await job.retry();
 			} else {

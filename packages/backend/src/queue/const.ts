@@ -14,6 +14,7 @@ export const QUEUE = {
 	ENDED_POLL_NOTIFICATION: 'endedPollNotification',
 	POST_SCHEDULED_NOTE: 'postScheduledNote',
 	DB: 'db',
+	SEARCH_INDEX_MAINTENANCE: 'searchIndexMaintenance',
 	RELATIONSHIP: 'relationship',
 	OBJECT_STORAGE: 'objectStorage',
 	USER_WEBHOOK_DELIVER: 'userWebhookDeliver',

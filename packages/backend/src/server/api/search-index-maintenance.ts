@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SearchIndexMaintenanceError } from '@/core/QueueService.js';
+import { SearchIndexMaintenanceError } from '@/queue/SearchIndexMaintenanceQueue.js';
 import type { QueueService } from '@/core/QueueService.js';
 import type { MiLocalUser } from '@/models/User.js';
 import type { SearchIndexMaintenanceRequest } from '@/queue/types.js';
@@ -20,6 +20,12 @@ export const searchIndexMaintenanceMeta = {
 			message: 'A Meilisearch maintenance job is already queued or running.',
 			code: 'ALREADY_RUNNING',
 			id: 'a3c6aa4a-56a6-462a-83f9-75d92230dbd3',
+			httpStatusCode: 409,
+		},
+		SEARCH_INDEX_RECOVERY_REQUIRED: {
+			message: 'A previous Meilisearch write could not be verified. See docs/meilisearch-maintenance.md before retrying.',
+			code: 'SEARCH_INDEX_RECOVERY_REQUIRED',
+			id: '4f45a74f-de15-4756-8b30-a116d4262708',
 			httpStatusCode: 409,
 		},
 		MEILISEARCH_NOT_ACTIVE: {

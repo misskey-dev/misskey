@@ -12814,6 +12814,10 @@ export interface Locale extends ILocale {
          * このサーバーでは全文検索にMeilisearchが使われていません。
          */
         "notActive": string;
+        /**
+         * 前回のMeilisearchへの書き込み結果を確認できません。ジョブキューの詳細と運用手順（docs/meilisearch-maintenance.md）を確認してください。
+         */
+        "recoveryRequired": string;
         "_status": {
             /**
              * ジョブを受け付けました。

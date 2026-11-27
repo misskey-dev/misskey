@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { setTimeout as delay } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
+import { MeilisearchApiError, MeilisearchRequestError } from 'meilisearch';
 import { DI } from '@/di-symbols.js';
 import { type Config, FulltextSearchProvider } from '@/config.js';
 import { bindThis } from '@/decorators.js';
@@ -18,6 +20,10 @@ import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type { Index, Meilisearch } from 'meilisearch';
+
+export type RunSearchIndexMutation = (submit: () => Promise<number>) => Promise<number>;
+
+export class MeilisearchTaskFailedError extends Error {}
 
 type K = string;
 type V = string | number | boolean;
@@ -197,18 +203,38 @@ export class SearchService {
 	}
 
 	@bindThis
-	public async clearNoteIndex(): Promise<number> {
+	public async clearNoteIndex(runMutation: RunSearchIndexMutation): Promise<number> {
 		const { index } = this.requireMeilisearch();
-		return (await index.deleteAllDocuments()).taskUid;
+		return await runMutation(async () => (await index.deleteAllDocuments()).taskUid);
 	}
 
 	@bindThis
-	public async waitForMeilisearchTask(taskUid: number): Promise<void> {
+	public async waitForMeilisearchTask(taskUid: number, signal?: AbortSignal): Promise<void> {
 		const { client } = this.requireMeilisearch();
-		// Keep the job active until Meilisearch finishes, including when its task queue is backed up.
-		const task = await client.tasks.waitForTask(taskUid, { timeout: 0 });
-		if (task.status !== 'succeeded') {
-			throw new Error(`Meilisearch task ${taskUid} ${task.status}${task.error ? `: ${task.error.message}` : ''}`);
+		let retryDelay = 250;
+		for (;;) {
+			signal?.throwIfAborted();
+			const timeout = AbortSignal.timeout(10_000);
+			const requestSignal = signal == null ? timeout : AbortSignal.any([signal, timeout]);
+			let task;
+			try {
+				task = await client.tasks.getTask(taskUid, { signal: requestSignal });
+			} catch (err) {
+				signal?.throwIfAborted();
+				const status = err instanceof MeilisearchApiError ? err.response.status : null;
+				if (!(err instanceof MeilisearchRequestError) && status !== 408 && status !== 429 && (status == null || status < 500)) throw err;
+
+				await delay(retryDelay, undefined, { signal });
+				retryDelay = Math.min(retryDelay * 2, 10_000);
+				continue;
+			}
+
+			retryDelay = 250;
+			if (task.status === 'succeeded') return;
+			if (task.status === 'failed' || task.status === 'canceled') {
+				throw new MeilisearchTaskFailedError(`Meilisearch task ${taskUid} ${task.status}${task.error ? `: ${task.error.message}` : ''}`);
+			}
+			await delay(250, undefined, { signal });
 		}
 	}
 
@@ -216,6 +242,7 @@ export class SearchService {
 	public async reIndexNotes(props: {
 		sinceDate?: number | null;
 		untilDate?: number | null;
+		runMutation: RunSearchIndexMutation;
 		onBatch?: (indexedCount: number) => void | Promise<void>;
 	}): Promise<number> {
 		const { index } = this.requireMeilisearch();
@@ -251,23 +278,32 @@ export class SearchService {
 			const notes = await batchQuery.getMany();
 			if (notes.length === 0) return indexedCount;
 
-			const task = await this.addDocuments(index, notes);
-			await this.waitForMeilisearchTask(task.taskUid);
+			await props.runMutation(async () => (await this.addDocuments(index, notes)).taskUid);
 
 			// A note deleted after the batch read may have been re-added by this batch.
 			const noteIds = notes.map(note => note.id);
-			const remaining = await this.notesRepository.find({ select: { id: true }, where: { id: In(noteIds) } });
-			const remainingIds = new Set(remaining.map(note => note.id));
+			const remaining = await this.findRemainingNoteIds(noteIds);
+			const remainingIds = new Set(remaining);
 			const deletedIds = noteIds.filter(id => !remainingIds.has(id));
 			if (deletedIds.length > 0) {
-				const cleanup = await index.deleteDocuments(deletedIds);
-				await this.waitForMeilisearchTask(cleanup.taskUid);
+				await props.runMutation(async () => (await index.deleteDocuments(deletedIds)).taskUid);
 			}
 			indexedCount += remainingIds.size;
 			await props.onBatch?.(indexedCount);
 
 			if (notes.length < 100) return indexedCount;
 			cursor = notes[notes.length - 1].id;
+		}
+	}
+
+	private async findRemainingNoteIds(noteIds: MiNote['id'][]): Promise<MiNote['id'][]> {
+		// A normal delete commits on the primary before unindexing. A replica can still show that row.
+		const runner = this.notesRepository.manager.connection.createQueryRunner('master');
+		try {
+			const notes = await runner.manager.find(MiNote, { select: { id: true }, where: { id: In(noteIds) } });
+			return notes.map(note => note.id);
+		} finally {
+			await runner.release();
 		}
 	}
 

@@ -6,10 +6,8 @@
 import 'reflect-metadata';
 import { EventEmitter } from 'node:events';
 import { parseArgs } from 'node:util';
-import { NestFactory } from '@nestjs/core';
-import { CommandModule } from '@/cli/CommandModule.js';
-import { NestLogger } from '@/NestLogger.js';
-import { CommandService } from '@/cli/CommandService.js';
+import { loadConfig } from '@/config.js';
+import { SearchIndexMaintenanceQueue } from '@/queue/SearchIndexMaintenanceQueue.js';
 import type { SearchIndexMaintenanceRequest } from '@/queue/types.js';
 
 process.title = 'Misskey Cli';
@@ -67,15 +65,30 @@ async function runCommand() {
 			throw new Error(`Unrecognized command: ${command}. Use "help" to see available commands.`);
 	}
 
+	if (searchRequest != null) {
+		// Only a queue producer is needed. Booting CoreModule also updates Meilisearch index settings.
+		const maintenance = new SearchIndexMaintenanceQueue(loadConfig(), true);
+		try {
+			const { jobId } = await maintenance.enqueue(searchRequest, null);
+			console.log(`Meilisearch maintenance job queued: ${jobId}`);
+		} finally {
+			await maintenance.queue.close();
+		}
+		return;
+	}
+
+	const [{ NestFactory }, { CommandModule }, { NestLogger }, { CommandService }] = await Promise.all([
+		import('@nestjs/core'),
+		import('@/cli/CommandModule.js'),
+		import('@/NestLogger.js'),
+		import('@/cli/CommandService.js'),
+	]);
 	const app = await NestFactory.createApplicationContext(CommandModule, {
 		logger: new NestLogger(),
-		abortOnError: false,
 	});
 	try {
 		const commandService = app.get(CommandService);
-		if (searchRequest != null) {
-			await commandService.enqueueSearchIndexMaintenance(searchRequest);
-		} else if (command === 'ping') {
+		if (command === 'ping') {
 			await commandService.ping();
 		} else {
 			await commandService.resetCaptcha();

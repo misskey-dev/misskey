@@ -62,8 +62,6 @@ export type DbJobMap = {
 	importUserLists: DbUserImportJobData;
 	importCustomEmojis: DbUserImportJobData;
 	deleteAccount: DbUserDeleteJobData;
-	reIndexNotes: DbReIndexNotesJobData;
-	resetNoteIndex: DbResetNoteIndexJobData;
 };
 
 export type DbJobDataWithUser = {
@@ -110,18 +108,9 @@ export type SearchIndexMaintenanceRequest = {
 	operation: 'reset';
 };
 
-export type DbReIndexNotesJobData = {
-	operation?: 'reindex';
+export type SearchIndexMaintenanceJobData = SearchIndexMaintenanceRequest & {
 	/** Null when started by the server CLI. */
 	actor: ThinUser | null;
-	sinceDate?: number | null;
-	untilDate?: number | null;
-};
-
-export type DbResetNoteIndexJobData = {
-	operation: 'reset';
-	actor: ThinUser | null;
-	submissionStarted?: boolean;
 	taskUid?: number;
 };
 
