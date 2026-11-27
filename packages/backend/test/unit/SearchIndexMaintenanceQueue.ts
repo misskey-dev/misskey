@@ -45,4 +45,28 @@ describe('SearchIndexMaintenanceQueue', () => {
 		await maintenance.releaseMutation(mutation);
 		await expect(maintenance.enqueue({ operation: 'reindex' }, null)).resolves.toHaveProperty('jobId');
 	});
+
+	test('a cleanup taken over by a different job retains the original reindex identity', async () => {
+		const { jobId } = await maintenance.enqueue({ operation: 'reset' }, null);
+		const job = (await maintenance.queue.getJob(jobId))!;
+		const client = await maintenance.queue.getBackend().client;
+		const mutationKey = maintenance.queue.toKey('pending-mutation');
+		const lockKey = maintenance.queue.toKey(`${jobId}:lock`);
+		job.token = 'replacement-worker';
+		await client.set(lockKey, job.token);
+
+		try {
+			const original = { jobId: 'previous-reindex', id: randomUUID(), taskUid: 0, noteIds: ['deleted'] };
+			await client.hset(mutationKey, { ...original, noteIds: JSON.stringify(original.noteIds) });
+
+			const cleanup = await maintenance.beginCleanup(job, original);
+
+			expect(cleanup.jobId).toBe(original.jobId);
+			expect(await maintenance.getPendingMutation()).toMatchObject({
+				jobId: original.jobId, noteIds: original.noteIds, cleanup: true, taskUid: undefined,
+			});
+		} finally {
+			await client.del(lockKey);
+		}
+	});
 });

@@ -784,6 +784,32 @@ describe('SearchService', () => {
 			}
 		});
 
+		test('a recovered reindex cleanup cannot be reported as the new reset', async () => {
+			const maintenance = ctx.app.get(SearchIndexMaintenanceQueue);
+			const { jobId } = await maintenance.enqueue({ operation: 'reset' }, null);
+			const client = await maintenance.queue.getBackend().client;
+			const lockKey = maintenance.queue.toKey(`${jobId}:lock`);
+			const mutationKey = maintenance.queue.toKey('pending-mutation');
+			const submit = vi.fn().mockResolvedValue(2);
+			vi.spyOn(ctx.service, 'clearNoteIndex').mockImplementation(async run => (await run(submit)).taskUid);
+			const wait = vi.spyOn(ctx.service, 'waitForMeilisearchTask').mockResolvedValue();
+			const processor = new SearchIndexMaintenanceProcessorService(ctx.service, maintenance, ctx.app.get(ModerationLogService), new QueueLoggerService(ctx.app.get(LoggerService)));
+
+			try {
+				const job = (await maintenance.queue.getJob(jobId))!;
+				job.token = 'replacement-worker';
+				await client.set(lockKey, job.token);
+				// A previous reindex's cleanup was taken over by this job just before it stalled.
+				await client.hset(mutationKey, { jobId, id: randomUUID(), taskUid: 1, noteIds: '["deleted"]', cleanup: '1' });
+				await expect(processor.process(job)).resolves.toContain('task 2');
+				expect(submit).toHaveBeenCalledOnce();
+				expect(wait.mock.calls.map(([taskUid]) => taskUid)).toEqual([1, 2]);
+			} finally {
+				await client.del(lockKey, mutationKey);
+				await maintenance.queue.remove(jobId);
+			}
+		});
+
 		test('a replacement worker removes stale documents from a previously submitted reindex batch', async () => {
 			const user = await createUser(ctx);
 			const deleted = await createNote({ ...ctx, indexer: undefined }, user);

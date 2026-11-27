@@ -16,6 +16,10 @@ import type { ModerationLogPayloads } from '@/types.js';
 import type { SearchIndexMutation } from '../SearchIndexMaintenanceQueue.js';
 import type { SearchIndexMaintenanceJobData, ThinUser } from '../types.js';
 
+function isResetMutationForJob(mutation: SearchIndexMutation, job: Job<SearchIndexMaintenanceJobData>): boolean {
+	return job.data.operation === 'reset' && mutation.jobId === job.id && mutation.noteIds == null && !mutation.cleanup;
+}
+
 @Injectable()
 export class SearchIndexMaintenanceProcessorService {
 	private readonly logger: Logger;
@@ -47,7 +51,7 @@ export class SearchIndexMaintenanceProcessorService {
 			}
 
 			if (isReset) {
-				const taskUid = pending?.jobId === jobId && pending.taskUid != null
+				const taskUid = pending?.taskUid != null && isResetMutationForJob(pending, job)
 					? pending.taskUid
 					: await this.resetIndex(job, signal);
 				await this.log(data.actor, 'resetNoteIndexCompleted', { jobId, taskUid });
@@ -106,7 +110,7 @@ export class SearchIndexMaintenanceProcessorService {
 	}
 
 	private async finishMutation(job: Job<SearchIndexMaintenanceJobData>, mutation: SearchIndexMutation, taskUid: number, signal?: AbortSignal): Promise<number | undefined> {
-		if (job.data.operation === 'reset' && mutation.jobId === job.id) {
+		if (isResetMutationForJob(mutation, job)) {
 			// If the job stalls after releasing the reservation, its next owner can still find the original reset.
 			await job.updateData({ ...job.data, taskUid });
 		}

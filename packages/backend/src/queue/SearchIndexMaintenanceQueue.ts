@@ -40,7 +40,7 @@ if ARGV[5] == '' then
   if ARGV[4] ~= '' then redis.call('HSET', KEYS[1], 'noteIds', ARGV[4]) end
 else
   if redis.call('HGET', KEYS[1], 'id') ~= ARGV[5] then return 0 end
-  redis.call('HSET', KEYS[1], 'jobId', ARGV[2], 'id', ARGV[3], 'cleanup', '1')
+  redis.call('HSET', KEYS[1], 'id', ARGV[3], 'cleanup', '1')
   redis.call('HDEL', KEYS[1], 'taskUid')
 end
 return 1
@@ -155,17 +155,17 @@ export class SearchIndexMaintenanceQueue {
 	}
 
 	public async beginCleanup(job: Job<SearchIndexMaintenanceJobData>, previous: SearchIndexMutation): Promise<SearchIndexMutation> {
-		return await this.reserveMutation(job, previous.noteIds, previous.id);
+		return await this.reserveMutation(job, previous.noteIds, previous);
 	}
 
-	private async reserveMutation(job: Job<SearchIndexMaintenanceJobData>, noteIds?: string[], previousId?: string): Promise<SearchIndexMutation> {
+	private async reserveMutation(job: Job<SearchIndexMaintenanceJobData>, noteIds?: string[], previous?: SearchIndexMutation): Promise<SearchIndexMutation> {
 		if (job.id == null || !job.token) throw new Error('Lost the BullMQ job lock before sending a Meilisearch write.');
 
 		const client = await this.getClient();
-		const mutation: SearchIndexMutation = { jobId: job.id, id: randomUUID(), noteIds, cleanup: previousId != null };
+		const mutation: SearchIndexMutation = { jobId: previous?.jobId ?? job.id, id: randomUUID(), noteIds, cleanup: previous != null };
 		const result = await client.runCommand('misskeyBeginSearchMutation', [
 			this.mutationKey, this.queue.toKey(`${job.id}:lock`), job.token, job.id, mutation.id,
-			noteIds == null ? '' : JSON.stringify(noteIds), previousId ?? '',
+			noteIds == null ? '' : JSON.stringify(noteIds), previous?.id ?? '',
 		]);
 		if (result === -1) throw new Error('Lost the BullMQ job lock before sending a Meilisearch write.');
 		if (result !== 1) throw new Error('A previous Meilisearch write is still unresolved.');
