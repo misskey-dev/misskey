@@ -11,6 +11,7 @@ import { Test } from '@nestjs/testing';
 import { CoreModule } from '@/core/CoreModule.js';
 import { MfmService } from '@/core/MfmService.js';
 import { GlobalModule } from '@/GlobalModule.js';
+import {factory} from "typescript";
 
 describe('MfmService', () => {
 	let mfmService: MfmService;
@@ -132,7 +133,20 @@ describe('MfmService', () => {
 		});
 
 		test('hashtag', () => {
-			assert.deepStrictEqual(mfmService.fromHtml('<p>a <a href="https://example.com/tags/a">#a</a> d</p>', ['#a']), 'a #a d');
+			assert.deepStrictEqual(mfmService.fromHtml('<p>a <a href="https://example.com/tags/a">#a</a> d</p>', { hashtagNames: ['#a'] }), 'a #a d');
+		});
+
+		test('quote-like but misskey does not recognize', () => {
+			assert.deepStrictEqual(mfmService.fromHtml('<p class="quote-inline">RE: <a href="https://example.com/notes/id">https://example.com/notes/id</a></p><p>Note Content</p>', { hasQuote: false }), 'RE: https://example.com/notes/id\n\nNote Content');
+		});
+
+		test('quote that misskey recognizes', () => {
+			assert.deepStrictEqual(mfmService.fromHtml('<p class="quote-inline">RE: <a href="https://example.com/notes/id">https://example.com/notes/id</a></p><p>Note Content</p>', { hasQuote: true }), 'Note Content');
+		});
+
+		test('quote (real mastodon toot)', () => {
+			// mastodon quotes their toot https://mstdn.virtecam.net/@YTJVDCM/117512986116956890
+			assert.deepStrictEqual(mfmService.fromHtml('<p class="quote-inline">RE: <a href="https://mstdn.virtecam.net/@YTJVDCM/117512985585506708" target="_blank" rel="nofollow noopener" translate="no"><span class="invisible">https://</span><span class="ellipsis">mstdn.virtecam.net/@YTJVDCM/11</span><span class="invisible">7512985585506708</span></a></p><p>ここに引用先を挿入</p>', { hasQuote: true }), 'ここに引用先を挿入');
 		});
 	});
 });

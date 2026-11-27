@@ -1,0 +1,200 @@
+{
+  "timestamp": "2026-07-18T07:57:17.654Z",
+  "sampleCount": 3,
+  "aggregation": "median",
+  "comparison": {
+    "strategy": "interleaved-pairs",
+    "rounds": 3,
+    "warmupRounds": 1,
+    "startedAt": "2026-07-18T07:57:17.654Z"
+  },
+  "summary": {
+    "afterGc": {
+      "memoryUsage": {
+        "VmRSS": 218000,
+        "Pss": 218000,
+        "Private_Clean": 2020,
+        "Private_Dirty": 198000,
+        "HeapUsed": 168000,
+        "HeapTotal": 186000,
+        "External": 8200,
+        "ArrayBuffers": 2000
+      },
+      "heapSnapshot": {
+        "categories": {
+          "total": 43600000,
+          "code": 5123000,
+          "strings": 4796000,
+          "jsArrays": 4469000,
+          "typedArrays": 4142000,
+          "systemObjects": 3815000,
+          "otherJsObjects": 3488000,
+          "otherNonJsObjects": 3161000
+        },
+        "nodeCounts": {
+          "total": 436000,
+          "code": 51230,
+          "strings": 47960,
+          "jsArrays": 44690,
+          "typedArrays": 41420,
+          "systemObjects": 38150,
+          "otherJsObjects": 34880,
+          "otherNonJsObjects": 31610
+        },
+        "breakdowns": {}
+      }
+    }
+  },
+  "samples": [
+    {
+      "round": 1,
+      "timestamp": "2026-07-18T07:57:17.654Z",
+      "phases": {
+        "afterGc": {
+          "memoryUsage": {
+            "VmRSS": 217000,
+            "Pss": 217000,
+            "Private_Clean": 2010,
+            "Private_Dirty": 197000,
+            "HeapUsed": 167000,
+            "HeapTotal": 186000,
+            "External": 8100,
+            "ArrayBuffers": 2000
+          },
+          "memoryStability": {
+            "converged": true,
+            "readingCount": 3,
+            "elapsedMs": 4000,
+            "maxAbsoluteSlopesKiBPerSecond": {
+              "Pss": 10,
+              "Private_Dirty": 5
+            }
+          },
+          "heapSnapshot": {
+            "categories": {
+              "total": 43400000,
+              "code": 5099500,
+              "strings": 4774000,
+              "jsArrays": 4448500,
+              "typedArrays": 4123000,
+              "systemObjects": 3797500,
+              "otherJsObjects": 3472000,
+              "otherNonJsObjects": 3146500
+            },
+            "nodeCounts": {
+              "total": 434000,
+              "code": 50995,
+              "strings": 47740,
+              "jsArrays": 44485,
+              "typedArrays": 41230,
+              "systemObjects": 37975,
+              "otherJsObjects": 34720,
+              "otherNonJsObjects": 31465
+            },
+            "breakdowns": {}
+          }
+        }
+      }
+    },
+    {
+      "round": 2,
+      "timestamp": "2026-07-18T07:57:17.654Z",
+      "phases": {
+        "afterGc": {
+          "memoryUsage": {
+            "VmRSS": 218000,
+            "Pss": 218000,
+            "Private_Clean": 2020,
+            "Private_Dirty": 198000,
+            "HeapUsed": 168000,
+            "HeapTotal": 186000,
+            "External": 8200,
+            "ArrayBuffers": 2000
+          },
+          "memoryStability": {
+            "converged": true,
+            "readingCount": 3,
+            "elapsedMs": 4000,
+            "maxAbsoluteSlopesKiBPerSecond": {
+              "Pss": 10,
+              "Private_Dirty": 5
+            }
+          },
+          "heapSnapshot": {
+            "categories": {
+              "total": 43600000,
+              "code": 5123000,
+              "strings": 4796000,
+              "jsArrays": 4469000,
+              "typedArrays": 4142000,
+              "systemObjects": 3815000,
+              "otherJsObjects": 3488000,
+              "otherNonJsObjects": 3161000
+            },
+            "nodeCounts": {
+              "total": 436000,
+              "code": 51230,
+              "strings": 47960,
+              "jsArrays": 44690,
+              "typedArrays": 41420,
+              "systemObjects": 38150,
+              "otherJsObjects": 34880,
+              "otherNonJsObjects": 31610
+            },
+            "breakdowns": {}
+          }
+        }
+      }
+    },
+    {
+      "round": 3,
+      "timestamp": "2026-07-18T07:57:17.654Z",
+      "phases": {
+        "afterGc": {
+          "memoryUsage": {
+            "VmRSS": 219000,
+            "Pss": 219000,
+            "Private_Clean": 2030,
+            "Private_Dirty": 199000,
+            "HeapUsed": 169000,
+            "HeapTotal": 186000,
+            "External": 8300,
+            "ArrayBuffers": 2000
+          },
+          "memoryStability": {
+            "converged": true,
+            "readingCount": 3,
+            "elapsedMs": 4000,
+            "maxAbsoluteSlopesKiBPerSecond": {
+              "Pss": 10,
+              "Private_Dirty": 5
+            }
+          },
+          "heapSnapshot": {
+            "categories": {
+              "total": 43800000,
+              "code": 5146500,
+              "strings": 4818000,
+              "jsArrays": 4489500,
+              "typedArrays": 4161000,
+              "systemObjects": 3832500,
+              "otherJsObjects": 3504000,
+              "otherNonJsObjects": 3175500
+            },
+            "nodeCounts": {
+              "total": 438000,
+              "code": 51465,
+              "strings": 48180,
+              "jsArrays": 44895,
+              "typedArrays": 41610,
+              "systemObjects": 38325,
+              "otherJsObjects": 35040,
+              "otherNonJsObjects": 31755
+            },
+            "breakdowns": {}
+          }
+        }
+      }
+    }
+  ]
+}

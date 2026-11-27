@@ -54,6 +54,10 @@ const notesPaginator = markRaw(new Paginator('users/notes', {
 		withFiles: tab.value === 'files',
 	})),
 }));
+
+defineExpose({
+	reload: () => (tab.value === 'featured' ? featuredPaginator : notesPaginator).reload(),
+});
 </script>
 
 <style lang="scss" module>

@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import QRCodeStyling from 'qr-code-styling';
 import { url } from '@@/js/config.js';
 import ExifReader from 'exifreader';
 import { FN_frame } from './frame.js';
 import { ImageCompositor } from '@/lib/ImageCompositor.js';
+import { qrOptions, qrcodeImageBitmap } from '@/utility/qr-code.js';
 import { ensureSignin } from '@/i.js';
 
 const $i = ensureSignin();
@@ -83,7 +83,17 @@ export class ImageFrameRenderer {
 		const GPSLatitude = this.exif == null ? '123.000000000000123' : this.exif.GPSLatitude?.description;
 		const GPSLongitude = this.exif == null ? '456.000000000000123' : this.exif.GPSLongitude?.description;
 		return text.replaceAll(/\{(\w+)\}/g, (_: string, key: string) => {
-			const meta_date = DateTimeOriginal ?? '????:??:?? ??:??:??';
+			let meta_date = DateTimeOriginal ?? '????:??:?? ??:??:??';
+			if (meta_date.includes('T') || meta_date.includes('Z')) { // ISO 8601
+				const parsed = new Date(meta_date);
+				const yyyy = parsed.getFullYear().toString().padStart(4, '0');
+				const mm = (parsed.getMonth() + 1).toString().padStart(2, '0');
+				const dd = parsed.getDate().toString().padStart(2, '0');
+				const hh = parsed.getHours().toString().padStart(2, '0');
+				const min = parsed.getMinutes().toString().padStart(2, '0');
+				const ss = parsed.getSeconds().toString().padStart(2, '0');
+				meta_date = `${yyyy}:${mm}:${dd} ${hh}:${min}:${ss}`;
+			}
 			const date = meta_date.split(' ')[0].replaceAll(':', '/');
 			switch (key) {
 				case 'caption': return this.caption ?? '?';
@@ -154,44 +164,12 @@ export class ImageFrameRenderer {
 
 		if (withQrCode) {
 			try {
-				const qrCodeInstance = new QRCodeStyling({
-					width: labelCanvasCtx.canvas.height,
-					height: labelCanvasCtx.canvas.height,
-					margin: 0,
-					type: 'canvas',
-					data: `${url}/users/${$i.id}`,
-					//image: $i.avatarUrl,
-					qrOptions: {
-						typeNumber: 0,
-						mode: 'Byte',
-						errorCorrectionLevel: 'H',
-					},
-					imageOptions: {
-						hideBackgroundDots: true,
-						imageSize: 0.3,
-						margin: 16,
-						crossOrigin: 'anonymous',
-					},
-					dotsOptions: {
-						type: 'dots',
-						roundSize: false,
-						color: `rgb(${Math.floor(fgColor[0] * 255)}, ${Math.floor(fgColor[1] * 255)}, ${Math.floor(fgColor[2] * 255)})`,
-					},
-					backgroundOptions: {
-						color: 'transparent',
-					},
-					cornersDotOptions: {
-						type: 'dot',
-					},
-					cornersSquareOptions: {
-						type: 'extra-rounded',
-					},
+				const qrImageBitmap = await qrcodeImageBitmap(`${url}/users/${$i.id}`, {
+					...qrOptions,
+					size: labelCanvasCtx.canvas.height,
+					color: `rgb(${Math.floor(fgColor[0] * 255)}, ${Math.floor(fgColor[1] * 255)}, ${Math.floor(fgColor[2] * 255)})`,
+					background: 'transparent',
 				});
-
-				const blob = await qrCodeInstance.getRawData('png') as Blob | null;
-				if (blob == null) throw new Error('Failed to generate QR code');
-
-				const qrImageBitmap = await window.createImageBitmap(blob);
 
 				labelCanvasCtx.drawImage(
 					qrImageBitmap,

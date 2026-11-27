@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer :naked="widgetProps.transparent" :showHeader="false" data-cy-mkw-clock>
+<MkContainer :naked="widgetProps.transparent" :showHeader="false" data-testid="mkw-clock">
 	<div
 		:class="[$style.root, {
 			[$style.small]: widgetProps.size === 'small',

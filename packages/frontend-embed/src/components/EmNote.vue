@@ -123,7 +123,7 @@ import EmA from '@/components/EmA.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
 import EmUserName from '@/components/EmUserName.vue';
 import EmTime from '@/components/EmTime.vue';
-import { userPage } from '@/utils.js';
+import { userPage } from '@@/js/user.js';
 import { i18n } from '@/i18n.js';
 
 function getAppearNote(note: Misskey.entities.Note) {
@@ -149,7 +149,7 @@ const isRenote = Misskey.note.isPureRenote(note.value);
 
 const rootEl = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
-const appearNote = computed(() => getAppearNote(note.value));
+const appearNote = computed(() => getAppearNote(note.value) ?? note.value);
 const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
 const isLong = shouldCollapsed(appearNote.value, []);

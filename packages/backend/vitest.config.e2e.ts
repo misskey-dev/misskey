@@ -8,6 +8,12 @@ export default mergeConfig(
 			include: ['./test/e2e/**/*.ts'],
 			globalSetup: './built-test/entry.js',
 			setupFiles: ['./test/setup.e2e.ts'],
+			server: {
+				deps: {
+					// テスト用サーバのバンドルはViteのmodule runnerを通さずNodeに直接読み込ませる
+					external: [/\/built-test\//],
+				},
+			},
 		},
 	}),
 );

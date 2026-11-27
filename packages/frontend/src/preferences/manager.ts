@@ -548,6 +548,8 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 
 	public renameProfile(name: string) {
 		this.profile.name = name;
+		// TODO: バックアップのキーが名前ベースであることを考えると名前=IDであるから、idも再生成する方が自然かもしれない
+		// (将来名前ではなくIDをキーにするようになったとした場合、名前を変えたのにバックアップのキーが変わらないことになってしまう)
 		this.save();
 	}
 

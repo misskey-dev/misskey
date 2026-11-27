@@ -93,6 +93,24 @@ export class UserPreview {
 		this.close();
 	}
 
+	public setUser(user: string | Misskey.entities.UserDetailed) {
+		if (this.user === user) return;
+		this.user = user;
+		// 表示中のポップアップは古いユーザーのものなので閉じる
+		this.close();
+	}
+
+	public dispose() {
+		if (this.showTimer) window.clearTimeout(this.showTimer);
+		if (this.hideTimer) window.clearTimeout(this.hideTimer);
+		if (this.checkTimer) window.clearInterval(this.checkTimer);
+		this.showTimer = null;
+		this.hideTimer = null;
+		this.checkTimer = null;
+		this.close();
+		this.detach();
+	}
+
 	public attach() {
 		this.el.addEventListener('mouseover', this.onMouseover);
 		this.el.addEventListener('mouseleave', this.onMouseleave);
@@ -106,29 +124,44 @@ export class UserPreview {
 	}
 }
 
-interface UserPreviewDirectiveElement extends HTMLElement {
-	_userPreviewDirective_?: {
-		preview: UserPreview;
-	};
-}
+const states = new WeakMap<HTMLElement, UserPreview>();
 
 export const userPreviewDirective = {
 	mounted(el, binding) {
 		if (binding.value == null) return;
 		if (isTouchUsing) return;
 
-		// TODO: 新たにプロパティを作るのをやめMapを使う
-		// ただメモリ的には↓の方が省メモリかもしれないので検討中
-		el._userPreviewDirective_ = {
-			preview: new UserPreview(el, binding.value),
-		};
+		// メモリ的にはWeakMapを使わずに要素にプロパティを生やしたほうが省メモリかもしれないので検討中
+		const preview = new UserPreview(el, binding.value);
+		states.set(el, preview);
 	},
 
-	unmounted(el, binding) {
-		if (binding.value == null) return;
+	updated(el, binding) {
+		if (binding.value === binding.oldValue) return;
+		if (isTouchUsing) return;
 
-		const self = el._userPreviewDirective_;
-		if (self == null) return;
-		self.preview.detach();
+		const preview = states.get(el);
+
+		if (binding.value == null) {
+			if (preview) {
+				preview.dispose();
+				states.delete(el);
+			}
+			return;
+		}
+
+		if (preview) {
+			preview.setUser(binding.value);
+		} else {
+			states.set(el, new UserPreview(el, binding.value));
+		}
 	},
-} as Directive<UserPreviewDirectiveElement, string | Misskey.entities.UserDetailed | null | undefined>;
+
+	unmounted(el) {
+		const preview = states.get(el);
+		if (preview) {
+			preview.dispose();
+			states.delete(el);
+		}
+	},
+} as Directive<HTMLElement, string | Misskey.entities.UserDetailed | null | undefined>;

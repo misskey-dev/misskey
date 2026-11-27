@@ -112,7 +112,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<template v-else>
 					<div v-if="gridItems.length > 0" :class="$style.gridArea">
-						<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
+						<MkGrid :data="gridItems" :settings="setupGrid({ changedRow: $style.changedRow })" @event="onGridEvent"/>
 					</div>
 
 					<div :class="$style.footer">
@@ -140,7 +140,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, useCssModule } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { GridSortOrderKey, RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
 import type { GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
@@ -160,6 +160,7 @@ import { deviceKind } from '@/utility/device-kind.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 import MkSortOrderEditor from '@/components/MkSortOrderEditor.vue';
 import { useLoading } from '@/composables/use-loading.js';
+import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 
 type GridItem = {
 	checked: boolean;
@@ -169,9 +170,7 @@ type GridItem = {
 	host: string;
 };
 
-function setupGrid(): GridSetting {
-	const $style = useCssModule();
-
+function setupGrid(rowClass: { changedRow: string }): GridSetting {
 	return {
 		row: {
 			// グリッドの行数をあらかじめ100行確保する
@@ -180,7 +179,7 @@ function setupGrid(): GridSetting {
 				{
 					// チェックされたら背景色を変える
 					condition: ({ row }) => gridItems.value[row.index].checked,
-					applyStyle: { className: $style.changedRow },
+					applyStyle: { className: rowClass.changedRow },
 				},
 			],
 			contextMenuFactory: (row, context) => {
@@ -381,7 +380,9 @@ async function refreshCustomEmojis() {
 	gridItems.value = customEmojis.value.map(it => ({
 		checked: false,
 		id: it.id,
-		url: it.publicUrl,
+		// リモートのURLを管理者のブラウザから直接読み込ませないよう、メディアプロキシを経由する
+		// (生のURLは publicUrl 列で確認できる)
+		url: getProxiedImageUrl(it.publicUrl, 'emoji'),
 		name: it.name,
 		license: it.license,
 		host: it.host!,

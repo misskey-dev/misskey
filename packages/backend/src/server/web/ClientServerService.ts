@@ -10,7 +10,6 @@ import ms from 'ms';
 import sharp from 'sharp';
 import { In, IsNull } from 'typeorm';
 import fastifyStatic from '@fastify/static';
-import fastifyProxy from '@fastify/http-proxy';
 import vary from 'vary';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
@@ -47,6 +46,7 @@ import { ClientLoggerService } from './ClientLoggerService.js';
 import { HtmlTemplateService } from './HtmlTemplateService.js';
 
 import { BasePage } from './views/base.js';
+import { htmlToPlainText } from '@/misc/html-to-plain-text.js';
 import { UserPage } from './views/user.js';
 import { NotePage } from './views/note.js';
 import { PagePage } from './views/page.js';
@@ -234,7 +234,9 @@ export class ClientServerService {
 				done();
 			});
 		} else {
-			console.log('[ClientServerService] Proxying to Vite dev server.');
+			this.clientLoggerService.logger.info('[ClientServerService] Proxying to Vite dev server.');
+			const fastifyProxy = import('@fastify/http-proxy');
+
 			const urlOriginWithoutPort = configUrl.origin.replace(/:\d+$/, '');
 
 			const port = (process.env.VITE_PORT ?? '5173');
@@ -440,8 +442,8 @@ export class ClientServerService {
 			return await HtmlTemplateService.replyHtml(reply, BasePage({
 				img: this.meta.bannerUrl ?? undefined,
 				title: this.meta.name ?? 'Misskey',
-				desc: this.meta.description ?? undefined,
-				...await this.htmlTemplateService.getCommonData(),
+				desc: this.meta.description == null ? undefined : htmlToPlainText(this.meta.description),
+				...(await this.htmlTemplateService.getCommonData()),
 				...data,
 			}));
 		};
@@ -458,7 +460,13 @@ export class ClientServerService {
 				requireSigninToViewContents: false,
 			});
 
-			return user && await this.feedService.packFeed(user);
+			if (user == null) return null;
+
+			if (this.meta.ugcVisibilityForVisitor === 'none' || (this.meta.ugcVisibilityForVisitor === 'local' && user.host != null)) {
+				return null;
+			}
+
+			return await this.feedService.packFeed(user);
 		};
 
 		// Atom
@@ -541,7 +549,7 @@ export class ClientServerService {
 					user: _user,
 					profile,
 					sub: request.params.sub,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 					clientCtxJson: htmlSafeJsonStringify({
 						user: _user,
 					}),
@@ -579,7 +587,11 @@ export class ClientServerService {
 					id: request.params.note,
 					visibility: In(['public', 'home']),
 				},
-				relations: ['user', 'reply', 'renote'],
+				relations: {
+					user: true,
+					reply: true,
+					renote: true,
+				},
 			});
 
 			if (
@@ -599,7 +611,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, NotePage({
 					note: _note,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 					clientCtxJson: htmlSafeJsonStringify({
 						note: _note,
 					}),
@@ -639,7 +651,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, PagePage({
 					page: _page,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -663,7 +675,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, FlashPage({
 					flash: _flash,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -687,7 +699,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, ClipPage({
 					clip: _clip,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 					clientCtxJson: htmlSafeJsonStringify({
 						clip: _clip,
 					}),
@@ -712,7 +724,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, GalleryPostPage({
 					galleryPost: _post,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -730,7 +742,7 @@ export class ClientServerService {
 				reply.header('Cache-Control', 'public, max-age=15');
 				return await HtmlTemplateService.replyHtml(reply, ChannelPage({
 					channel: _channel,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -748,7 +760,7 @@ export class ClientServerService {
 				reply.header('Cache-Control', 'public, max-age=3600');
 				return await HtmlTemplateService.replyHtml(reply, ReversiGamePage({
 					reversiGame: _game,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -767,7 +779,7 @@ export class ClientServerService {
 				reply.header('Cache-Control', 'public, max-age=3600');
 				return await HtmlTemplateService.replyHtml(reply, AnnouncementPage({
 					announcement: _announcement,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -803,7 +815,7 @@ export class ClientServerService {
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 				embedCtxJson: htmlSafeJsonStringify({
 					user: _user,
 				}),
@@ -817,7 +829,11 @@ export class ClientServerService {
 				where: {
 					id: request.params.note,
 				},
-				relations: ['user', 'reply', 'renote'],
+				relations: {
+					user: true,
+					reply: true,
+					renote: true,
+				},
 			});
 
 			if (note == null) return;
@@ -829,7 +845,7 @@ export class ClientServerService {
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 				embedCtxJson: htmlSafeJsonStringify({
 					note: _note,
 				}),
@@ -841,6 +857,7 @@ export class ClientServerService {
 
 			const clip = await this.clipsRepository.findOneBy({
 				id: request.params.clip,
+				isPublic: true,
 			});
 
 			if (clip == null) return;
@@ -850,7 +867,7 @@ export class ClientServerService {
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 				embedCtxJson: htmlSafeJsonStringify({
 					clip: _clip,
 				}),
@@ -863,7 +880,7 @@ export class ClientServerService {
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 			}));
 		});
 
@@ -894,13 +911,28 @@ export class ClientServerService {
 			let sendHeader = true;
 
 			if (request.headers['origin']) {
-				const originURL = new URL(request.headers['origin']);
-				if (originURL.protocol !== 'https:') { // Clear-Site-Data only supports https
+				try {
+					const originURL = new URL(request.headers['origin']);
+					if (originURL.protocol !== 'https:') { // Clear-Site-Data only supports https
+						sendHeader = false;
+					}
+					if (originURL.host !== configUrl.host) {
+						sendHeader = false;
+					}
+				} catch {
+					// `Origin: null` など
 					sendHeader = false;
 				}
-				if (originURL.host !== configUrl.host) {
-					sendHeader = false;
-				}
+			}
+
+			// このページがサブリソースとして（fetchなど経由で）読み込まれた場合には送出しない
+			const secFetchDest = request.headers['sec-fetch-dest'];
+			if (secFetchDest != null && secFetchDest !== 'document') {
+				sendHeader = false;
+			}
+			const secFetchMode = request.headers['sec-fetch-mode'];
+			if (secFetchMode != null && secFetchMode !== 'navigate') {
+				sendHeader = false;
 			}
 
 			if (sendHeader) {

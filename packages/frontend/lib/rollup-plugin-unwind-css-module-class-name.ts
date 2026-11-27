@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as estreeWalker from 'estree-walker';
+import { walk } from 'oxc-walker';
 import type { Plugin } from 'vite';
 import type { ESTree } from 'rolldown/utils';
 import { RolldownMagicString } from 'rolldown';
@@ -185,7 +185,7 @@ function isClassProperty(node: ESTree.Node | null): node is Extract<ESTree.Node,
 }
 
 export function unwindCssModuleClassName(ast: ESTree.Node, magicString: RolldownMagicString): void {
-	(estreeWalker.walk as any)(ast, {
+	walk(ast, {
 		enter(node: ESTree.Node, parent: ESTree.Node | null): void {
 			//#region
 			if (parent?.type !== 'Program') return;
@@ -267,7 +267,7 @@ export function unwindCssModuleClassName(ast: ESTree.Node, magicString: Rolldown
 				 */
 				//#endregion
 				//#region
-				(estreeWalker.walk as any)(render.body, {
+				walk(render.body, {
 					enter(childNode: ESTree.Node) {
 						if (!isCssModuleReference(childNode, ctx.name, key)) return;
 						const actualKey = getMemberPropertyName(childNode.property, childNode.computed);
@@ -278,6 +278,9 @@ export function unwindCssModuleClassName(ast: ESTree.Node, magicString: Rolldown
 						this.replace({
 							type: 'Literal',
 							value: actualValue,
+							raw: JSON.stringify(actualValue),
+							start: childNode.start,
+							end: childNode.end,
 						});
 					},
 				});
@@ -314,7 +317,7 @@ export function unwindCssModuleClassName(ast: ESTree.Node, magicString: Rolldown
 				 */
 				//#endregion
 				//#region
-				(estreeWalker.walk as any)(render.body, {
+				walk(render.body, {
 					enter(childNode: ESTree.Node) {
 						if (!isCssModuleReference(childNode, ctx.name, key)) return;
 						const actualKey = getMemberPropertyName(childNode.property, childNode.computed);
@@ -357,7 +360,7 @@ export function unwindCssModuleClassName(ast: ESTree.Node, magicString: Rolldown
 				 */
 				//#endregion
 				//#region
-				(estreeWalker.walk as any)(render.body, {
+				walk(render.body, {
 					enter(childNode: ESTree.Node, childParent: ESTree.Node | null) {
 						if (childNode.type !== 'CallExpression') return;
 						if (childNode.arguments.length !== 1) return;
@@ -404,7 +407,7 @@ export function unwindCssModuleClassName(ast: ESTree.Node, magicString: Rolldown
 			}
 			const hasRemainingCssModuleReference = Array.from(moduleForest.keys()).some((key) => {
 				let found = false;
-				(estreeWalker.walk as any)(render.body, {
+				walk(render.body, {
 					enter(childNode: ESTree.Node) {
 						if (!isCssModuleAccess(childNode, ctx.name, key)) return;
 						found = true;
@@ -417,7 +420,7 @@ export function unwindCssModuleClassName(ast: ESTree.Node, magicString: Rolldown
 			//#region
 			if (node.declarations[0].init.arguments[1].elements.length === 1) {
 				if (componentNode.type === 'Identifier') {
-					(estreeWalker.walk as any)(ast, {
+					walk(ast, {
 						enter(childNode: ESTree.Node) {
 							if (childNode.type !== 'Identifier') return;
 							if (childNode.name !== componentNode.name) return;

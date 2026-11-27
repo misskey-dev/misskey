@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		></iframe>
 	</div>
 	<div :class="$style.action">
-		<MkButton :small="true" inline @click="tweetExpanded = false">
+		<MkButton :small="true" inline @click="setTweetExpanded(false)">
 			<i class="ti ti-x"></i> {{ i18n.ts.close }}
 		</MkButton>
 	</div>
@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</component>
 	<template v-if="showActions">
 		<div v-if="tweetId" :class="$style.action">
-			<MkButton :small="true" inline @click="tweetExpanded = true">
+			<MkButton :small="true" inline @click="setTweetExpanded(true)">
 				<i class="ti ti-brand-x"></i> {{ i18n.ts.expandTweet }}
 			</MkButton>
 		</div>
@@ -83,9 +83,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onDeactivated, onUnmounted, ref } from 'vue';
+import { computed, defineAsyncComponent, onActivated, onDeactivated, onUnmounted, ref } from 'vue';
 import { url as local } from '@@/js/config.js';
 import { versatileLang } from '@@/js/intl-const.js';
+import { maybeMakeRelative } from '@@/js/url.js';
 import type { SummalyResult } from '@misskey-dev/summaly';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -94,7 +95,6 @@ import MkButton from '@/components/MkButton.vue';
 import { transformPlayerUrl } from '@/utility/url-preview.js';
 import { store } from '@/store.js';
 import { prefer } from '@/preferences.js';
-import { maybeMakeRelative } from '@@/js/url.js';
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -115,29 +115,33 @@ const self = maybeRelativeUrl !== props.url;
 const attr = self ? 'to' : 'href';
 const target = self ? null : '_blank';
 const fetching = ref(true);
-const title = ref<string | null>(null);
-const description = ref<string | null>(null);
-const thumbnail = ref<string | null>(null);
-const icon = ref<string | null>(null);
-const sitename = ref<string | null>(null);
-const sensitive = ref<boolean>(false);
-const player = ref({
-	url: null,
-	width: null,
-	height: null,
-} as SummalyResult['player']);
-const playerEnabled = ref(false);
+const summalyResult = ref<SummalyResult | null>(null);
+const title = computed(() => summalyResult.value?.title ?? null);
+const description = computed(() => summalyResult.value?.description ?? null);
+const thumbnail = computed(() => summalyResult.value?.thumbnail ?? null);
+const icon = computed(() => summalyResult.value?.icon ?? null);
+const sitename = computed(() => summalyResult.value?.sitename ?? null);
+const sensitive = computed(() => summalyResult.value?.sensitive ?? false);
+const player = computed(() => summalyResult.value?.player ?? { url: null, width: null, height: null });
+const playerEnabled = ref(false); // 初期値はsummaly取り終わったあとに設定
 const tweetId = ref<string | null>(null);
-const tweetExpanded = ref(props.detail);
+const tweetExpanded = ref(false); // 初期値はsummaly取り終わったあとに設定
+let tweetExpandedByUser = false;
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
 const tweetHeight = ref(150);
 const unknownUrl = ref(false);
+let isDeactivated = false;
+
+onActivated(() => {
+	isDeactivated = false;
+});
 
 onDeactivated(() => {
+	isDeactivated = true;
 	playerEnabled.value = false;
 });
 
-const requestUrl = new URL(props.url);
+const requestUrl = new URL(props.url, window.location.href);
 if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
 
 if (requestUrl.hostname === 'twitter.com' || requestUrl.hostname === 'mobile.twitter.com' || requestUrl.hostname === 'x.com' || requestUrl.hostname === 'mobile.x.com') {
@@ -162,24 +166,41 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 
 		return res.json();
 	})
+	.catch(err => {
+		if (_DEV_) {
+			console.warn('Failed to fetch url preview', err);
+		}
+		return null;
+	})
 	.then((info: SummalyResult | null) => {
 		if (!info || info.url == null) {
 			fetching.value = false;
 			unknownUrl.value = true;
+			autoExpandTweet();
 			return;
 		}
 
 		fetching.value = false;
 		unknownUrl.value = false;
 
-		title.value = info.title;
-		description.value = info.description;
-		thumbnail.value = info.thumbnail;
-		icon.value = info.icon;
-		sitename.value = info.sitename;
-		player.value = info.player;
-		sensitive.value = info.sensitive ?? false;
+		summalyResult.value = info;
+
+		if (!info.sensitive) {
+			autoExpandTweet();
+			if (!isDeactivated) {
+				playerEnabled.value = (props.showActions && prefer.s.expandUrlPreviewAutomatically);
+			}
+		}
 	});
+
+function setTweetExpanded(expanded: boolean) {
+	tweetExpandedByUser = true;
+	tweetExpanded.value = expanded;
+}
+
+function autoExpandTweet() {
+	if (props.detail && !tweetExpandedByUser) tweetExpanded.value = true;
+}
 
 function adjustTweetHeight(message: MessageEvent) {
 	if (message.origin !== 'https://platform.twitter.com') return;
@@ -191,8 +212,10 @@ function adjustTweetHeight(message: MessageEvent) {
 }
 
 function openPlayer(): void {
+	if (!summalyResult.value) return;
+
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkYouTubePlayer.vue')), {
-		url: requestUrl.href,
+		urlOrSummalyResult: summalyResult.value,
 	}, {
 		closed: () => {
 			dispose();

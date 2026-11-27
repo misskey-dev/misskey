@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => emit('remove')">
+<XContainer :draggable="true" :dragStartCallback="dragStartCallback" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-note"></i> {{ i18n.ts._pages.blocks.note }}</template>
 
 	<section style="padding: 16px;" class="_gaps_s">
@@ -34,6 +34,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
+	dragStartCallback?: (ev: DragEvent) => void;
 	modelValue: Misskey.entities.PageBlock & { type: 'note' };
 }>();
 

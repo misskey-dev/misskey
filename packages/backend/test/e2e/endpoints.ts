@@ -6,13 +6,15 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { describe, beforeAll, test, expect } from 'vitest';
+import { describe, beforeAll, afterAll, test, expect, vi } from 'vitest';
 // node-fetch only supports it's own Blob yet
 // https://github.com/node-fetch/node-fetch/pull/1664
 import { Blob } from 'node-fetch';
-import { api, castAsError, initTestDb, post, role, signup, simpleGet, uploadFile } from '../utils.js';
+import { api, castAsError, initTestDb, post, relativeFetch, role, signup, simpleGet, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
 import { MiUser } from '@/models/_.js';
+
+const waitForPushToTlOptions = { timeout: 3000, interval: 25 };
 
 describe('Endpoints', () => {
 	let alice: misskey.entities.SignupResponse;
@@ -65,6 +67,45 @@ describe('Endpoints', () => {
 			});
 
 			assert.strictEqual(res.status, 400);
+		});
+	});
+
+	describe('signup-pending', () => {
+		beforeAll(async () => {
+			await api('admin/update-meta', {
+				emailRequiredForSignup: true,
+				enableActiveEmailValidation: false,
+			}, alice);
+		});
+
+		afterAll(async () => {
+			await api('admin/update-meta', {
+				emailRequiredForSignup: false,
+				enableActiveEmailValidation: true,
+			}, alice);
+		});
+
+		test('codeが文字列でない本文では他人の仮登録からアカウントが作成されない', async () => {
+			const pending = await api('signup', {
+				username: 'signuppendingvictim',
+				password: 'test',
+				emailAddress: 'signuppendingvictim@example.com',
+			});
+			assert.strictEqual(pending.status, 204);
+
+			const resEmpty = await relativeFetch('api/signup-pending', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({}),
+			});
+			assert.strictEqual(resEmpty.status, 400);
+
+			const resNull = await relativeFetch('api/signup-pending', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ code: null }),
+			});
+			assert.strictEqual(resNull.status, 400);
 		});
 	});
 
@@ -1149,12 +1190,14 @@ describe('Endpoints', () => {
 				visibility: 'followers',
 			});
 
-			const res = await api('notes/timeline', {}, dave);
+			await vi.waitFor(async () => {
+				const res = await api('notes/timeline', {}, dave);
 
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(Array.isArray(res.body), true);
-			assert.strictEqual(res.body.length, 1);
-			assert.strictEqual(res.body[0].id, carolPost.id);
+				assert.strictEqual(res.status, 200);
+				assert.strictEqual(Array.isArray(res.body), true);
+				assert.strictEqual(res.body.length, 1);
+				assert.strictEqual(res.body[0].id, carolPost.id);
+			}, waitForPushToTlOptions);
 		});
 	});
 

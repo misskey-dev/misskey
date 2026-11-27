@@ -58,7 +58,7 @@ async function buildSrc() {
 
 function buildDts() {
 	return execa(
-		'tsgo',
+		'tsc',
 		[
 			'--project', 'tsconfig.json',
 			'--outDir', 'built',

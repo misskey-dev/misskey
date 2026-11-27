@@ -359,6 +359,81 @@ describe('アンテナ', () => {
 			assert.deepStrictEqual(response, expected);
 		});
 
+		test('から指定したノートだけ削除でき、ノート本体や他人のアンテナには影響しないこと。', async () => {
+			const keyword = 'キーワード';
+			const antenna = await successfulApiCall({
+				endpoint: 'antennas/create',
+				parameters: { ...defaultParam, keywords: [[keyword]] },
+				user: alice,
+			});
+			const otherAntenna = await successfulApiCall({
+				endpoint: 'antennas/create',
+				parameters: { ...defaultParam, keywords: [[keyword]] },
+				user: bob,
+			});
+			const remainingNote = await post(bob, { text: `test ${keyword} remaining` });
+			const removedNote = await post(bob, { text: `test ${keyword} removed` });
+
+			await successfulApiCall({
+				endpoint: 'antennas/remove-note',
+				parameters: { antennaId: antenna.id, noteId: removedNote.id },
+				user: alice,
+			});
+
+			const response = await successfulApiCall({
+				endpoint: 'antennas/notes',
+				parameters: { antennaId: antenna.id },
+				user: alice,
+			});
+			assert.deepStrictEqual(response, [remainingNote]);
+
+			const note = await successfulApiCall({
+				endpoint: 'notes/show',
+				parameters: { noteId: removedNote.id },
+				user: alice,
+			});
+			assert.deepStrictEqual(note, removedNote);
+
+			const otherResponse = await successfulApiCall({
+				endpoint: 'antennas/notes',
+				parameters: { antennaId: otherAntenna.id },
+				user: bob,
+			});
+			assert.deepStrictEqual(otherResponse, [removedNote, remainingNote]);
+		});
+
+		test('から存在しないノートを削除しても成功すること。', async () => {
+			const antenna = await successfulApiCall({
+				endpoint: 'antennas/create',
+				parameters: defaultParam,
+				user: alice,
+			});
+
+			await successfulApiCall({
+				endpoint: 'antennas/remove-note',
+				parameters: { antennaId: antenna.id, noteId: 'doesnotexist' },
+				user: alice,
+			});
+		});
+
+		test('から他人のアンテナを指定してノートを削除できないこと。', async () => {
+			const antenna = await successfulApiCall({
+				endpoint: 'antennas/create',
+				parameters: defaultParam,
+				user: alice,
+			});
+
+			await failedApiCall({
+				endpoint: 'antennas/remove-note',
+				parameters: { antennaId: antenna.id, noteId: alicePost.id },
+				user: bob,
+			}, {
+				status: 400,
+				code: 'NO_SUCH_ANTENNA',
+				id: '850926e0-fd3b-49b6-b69a-b28a5dbd82fe',
+			});
+		});
+
 		const keyword = 'キーワード';
 		test.each([
 			{

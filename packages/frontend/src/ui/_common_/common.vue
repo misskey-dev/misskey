@@ -224,11 +224,11 @@ if ($i) {
 }
 .transition_notification_enterFrom {
 	opacity: 0;
-	transform: translateX(250px);
+	transform: translateX(var(--notificationSlideOffset, 250px));
 }
 .transition_notification_leaveTo {
 	opacity: 0;
-	transform: translateX(-250px);
+	transform: translateX(calc(-1 * var(--notificationSlideOffset, 250px)));
 }
 
 .menuDrawerBg {
@@ -279,6 +279,16 @@ if ($i) {
 	padding: 0 var(--MI-margin);
 	pointer-events: none;
 	display: flex;
+
+	&.notificationsPosition_rightTop,
+	&.notificationsPosition_rightBottom {
+		--notificationSlideOffset: 250px;
+	}
+
+	&.notificationsPosition_leftTop,
+	&.notificationsPosition_leftBottom {
+		--notificationSlideOffset: -250px;
+	}
 
 	&.notificationsPosition_leftTop {
 		top: var(--MI-margin);

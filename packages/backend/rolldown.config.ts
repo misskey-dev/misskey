@@ -1,71 +1,31 @@
 import { defineConfig } from 'rolldown';
-import type { Plugin, ExternalOption } from 'rolldown';
-import { execa, execaNode } from 'execa';
-import type { ResultPromise } from 'execa';
-import esmShim from '@rollup/plugin-esm-shim';
-
-/**
- * Watchモード時にバックエンドの起動・停止制御を行うプラグイン
- */
-function backendDevServerPlugin(): Plugin {
-	let backendProcess: ResultPromise | null = null;
-
-	async function runBuildAssets() {
-		await execa('pnpm', ['run', 'build-assets'], {
-			cwd: '../../',
-			stdout: process.stdout,
-			stderr: process.stderr,
-		});
-	}
-
-	async function killBackendProcess() {
-		if (backendProcess) {
-			backendProcess.catch(() => {}); // backendProcess.kill()によって発生する例外を無視するためにcatch()を呼び出す
-			backendProcess.kill();
-			await new Promise(resolve => backendProcess!.on('exit', resolve));
-			backendProcess = null;
-		}
-	}
-
-	return {
-		name: 'backend-dev-server',
-		async closeBundle() {
-			await runBuildAssets();
-			if (backendProcess) {
-				await killBackendProcess();
-			}
-			backendProcess = execaNode('./built/entry.js', [], {
-				stdout: process.stdout,
-				stderr: process.stderr,
-				env: {
-					NODE_ENV: 'development',
-				},
-			});
-		},
-		async watchChange() {
-			if (backendProcess) {
-				await killBackendProcess();
-				await runBuildAssets();
-			}
-		},
-	};
-}
+import { version as summalyVersion } from '@misskey-dev/summaly';
+import type { ExternalOption } from 'rolldown';
+import { backendDevServerPlugin } from './lib/backend-dev-server.ts';
+import { bullmqEsmPlugin } from './lib/bullmq-esm.ts';
+import { esmShimPlugin } from './lib/esm-shim.ts';
 
 export default defineConfig((args) => {
 	const isWatchMode = args.watch != null && args.watch !== 'false';
 	const isE2E = args.e2e != null && args.e2e !== 'false';
 
+	// 外部モジュールの判定に使う正規表現。`@/` で始まるものは内部モジュールとみなす
+	const allExternalModulesRegex = /^(?!@\/|\0)[^.\/](?!:[\/\\])/;
+
 	// 通常のビルド時にexternalとするモジュール
 	const externalModules: ExternalOption = [
 		/^slacc-.*/,
+		// CJSのreflect-metadataをバンドルすると、ESMの@nestjs/commonが行う`import 'reflect-metadata'`の評価が
+		// デコレーター適用より後ろへずれ、`Reflect.getOwnMetadata is not a function`で落ちる経路がある（cli.jsなど）
+		// externalにしてNode本来のESM評価順で読み込ませる
+		'reflect-metadata',
 		'class-transformer',
 		'class-validator',
 		/^@sentry\/.*/,
 		/^@sentry-internal\/.*/,
-		'@nestjs/websockets/socket-module',
-		'@nestjs/microservices/microservices-module',
-		'@nestjs/microservices',
-		/^@napi-rs\/.*/,
+		// @nestjs/coreはmicroservices / websocketsをoptional peerとして動的importするが、
+		// Misskeyはどちらも使わないためインストールしていない
+		/^@nestjs\/(?:microservices|websockets)(?:\/.*)?$/,
 		'mock-aws-s3',
 		'aws-sdk',
 		'nock',
@@ -73,9 +33,15 @@ export default defineConfig((args) => {
 		'jsdom',
 		're2',
 		'ipaddr.js',
-		'oauth2orize',
 		'file-type',
+		// バンドルするとSentryの自動計装が正しく行われなくなるため外しておく
+		'pg',
 	];
+
+	const define: Record<string, string> = {
+		// Summalyのバージョンを埋め込む
+		'_SUMMALY_VERSION_': JSON.stringify(summalyVersion),
+	};
 
 	if (isE2E) {
 		return {
@@ -83,16 +49,27 @@ export default defineConfig((args) => {
 			platform: 'node',
 			tsconfig: './test-server/tsconfig.json',
 			plugins: [
-				esmShim(),
+				esmShimPlugin(),
 			],
+			transform: {
+				define,
+			},
 			output: {
 				keepNames: true,
 				sourcemap: true,
+				// メモリ使用量削減に貢献するが、関数や正規表現のソース文字列がエスケープ表記になる
+				// それらに依存する処理が入った場合はここを疑うと良い
+				// https://rolldown.rs/reference/Interface.OutputOptions#charset
+				charset: 'ascii',
 				dir: './built-test',
 				cleanDir: true,
 				format: 'esm',
 			},
-			external: externalModules,
+			experimental: {
+				nativeMagicString: true,
+			},
+			// node_modulesまでバンドルしてしまうとカバレッジの収集に時間がかかるので全部外す
+			external: allExternalModulesRegex,
 		};
 	} else {
 		return {
@@ -106,13 +83,21 @@ export default defineConfig((args) => {
 			platform: 'node',
 			tsconfig: true,
 			plugins: [
-				esmShim(),
+				esmShimPlugin(),
 				(isWatchMode ? backendDevServerPlugin() : undefined),
+				(isWatchMode ? undefined : bullmqEsmPlugin()),
 			],
+			transform: {
+				define,
+			},
 			output: {
 				keepNames: true,
 				minify: !isWatchMode,
 				sourcemap: isWatchMode,
+				// メモリ使用量削減に貢献するが、関数や正規表現のソース文字列がエスケープ表記になる
+				// それらに依存する処理が入った場合はここを疑うと良い
+				// https://rolldown.rs/reference/Interface.OutputOptions#charset
+				charset: isWatchMode ? 'utf8' : 'ascii',
 				dir: './built',
 				cleanDir: !isWatchMode,
 				format: 'esm',
@@ -121,8 +106,11 @@ export default defineConfig((args) => {
 				include: ['src/**/*.{ts,js,mjs,cjs,tsx,json}'],
 				clearScreen: false,
 			},
+			experimental: {
+				nativeMagicString: true,
+			},
 			// ビルドの高速化のために、watchモードのときは外部モジュールは全てバンドルしないようにする
-			external: isWatchMode ? /^(?!@\/)[^.\/](?!:[\/\\])/ : externalModules,
+			external: isWatchMode ? allExternalModulesRegex : externalModules,
 		};
 	}
 });

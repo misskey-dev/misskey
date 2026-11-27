@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
 			<button ref="otherSettingsButton" v-tooltip="i18n.ts.other" class="_button" :class="$style.headerRightItem" @click="showOtherSettings"><i class="ti ti-dots"></i></button>
-			<button ref="submitButtonEl" v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
+			<button ref="submitButtonEl" v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-testid="post-form-submit" @click="post">
 				<div :class="$style.submitInner">
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
@@ -77,7 +77,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
 		<div v-if="targetChannel" :class="$style.colorBar" :style="{ background: targetChannel.color }"></div>
-		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @keyup="onKeyup" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"></textarea>
+		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-testid="post-form-text" @keydown="onKeydown" @keyup="onKeyup" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"></textarea>
 		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
@@ -206,7 +206,7 @@ watch(showAddMfmFunction, () => prefer.commit('enableQuickAddMfmFunction', showA
 const cw = ref<string | null>(props.initialCw ?? null);
 const localOnly = ref(props.initialLocalOnly ?? (prefer.s.rememberNoteVisibility ? store.s.localOnly : prefer.s.defaultNoteLocalOnly));
 const visibility = ref(props.initialVisibility ?? (prefer.s.rememberNoteVisibility ? store.s.visibility : prefer.s.defaultNoteVisibility));
-const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
+const visibleUsers = ref<Misskey.entities.UserLite[]>([]);
 if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(u => pushVisibleUser(u));
 }
@@ -409,9 +409,7 @@ if (replyTargetNote.value && ['home', 'followers', 'specified'].includes(replyTa
 		}
 
 		if (replyTargetNote.value.userId !== $i.id) {
-			misskeyApi('users/show', { userId: replyTargetNote.value.userId }).then(user => {
-				pushVisibleUser(user);
-			});
+			pushVisibleUser(replyTargetNote.value.user);
 		}
 	}
 }
@@ -445,7 +443,7 @@ function checkMissingMention() {
 		const ast = mfm.parse(text.value);
 
 		for (const x of extractMentions(ast)) {
-			if (!visibleUsers.value.some(u => (u.username === x.username) && (u.host === x.host))) {
+			if (!visibleUsers.value.some(u => (u.username === x.username) && ((u.host === x.host) || (x.host === host && u.host == null)))) {
 				hasNotSpecifiedMentions.value = true;
 				return;
 			}
@@ -692,7 +690,7 @@ function showOtherSettings() {
 }
 //#endregion
 
-function pushVisibleUser(user: Misskey.entities.UserDetailed) {
+function pushVisibleUser(user: Misskey.entities.UserLite) {
 	if (!visibleUsers.value.some(u => u.username === user.username && u.host === user.host)) {
 		visibleUsers.value.push(user);
 	}
@@ -719,6 +717,7 @@ function clear() {
 	poll.value = null;
 	quoteId.value = null;
 	scheduledAt.value = null;
+	uploader.reset();
 }
 
 function onKeydown(ev: KeyboardEvent) {
@@ -1278,7 +1277,8 @@ async function openAccountMenu(ev: PointerEvent) {
 						};
 					});
 				}
-				if (draft.visibleUserIds) {
+				visibleUsers.value = [];
+				if (draft.visibleUserIds != null && draft.visibleUserIds.length > 0) {
 					misskeyApi('users/show', { userIds: draft.visibleUserIds }).then(users => {
 						users.forEach(u => pushVisibleUser(u));
 					});
@@ -1289,15 +1289,6 @@ async function openAccountMenu(ev: PointerEvent) {
 				reactionAcceptance.value = draft.reactionAcceptance;
 				scheduledAt.value = draft.scheduledAt ?? null;
 				if (draft.channel) targetChannel.value = draft.channel as unknown as Misskey.entities.Channel;
-
-				visibleUsers.value = [];
-				draft.visibleUserIds?.forEach(uid => {
-					if (!visibleUsers.value.some(u => u.id === uid)) {
-						misskeyApi('users/show', { userId: uid }).then(user => {
-							pushVisibleUser(user);
-						});
-					}
-				});
 
 				serverDraftId.value = draft.id;
 			},

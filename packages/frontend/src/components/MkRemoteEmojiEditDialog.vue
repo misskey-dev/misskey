@@ -64,6 +64,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkWindow from '@/components/MkWindow.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 
 const props = defineProps<{
 	emoji: {
@@ -86,7 +87,8 @@ const windowEl = useTemplateRef('windowEl');
 const name = computed(() => props.emoji.name);
 const host = computed(() => props.emoji.host);
 const license = computed(() => props.emoji.license);
-const imgUrl = computed(() => props.emoji.url);
+// リモートのURLを管理者のブラウザから直接読み込ませないよう、メディアプロキシを経由する
+const imgUrl = computed(() => getProxiedImageUrl(props.emoji.url, 'emoji'));
 
 async function done() {
 	await os.apiWithDialog('admin/emoji/copy', {

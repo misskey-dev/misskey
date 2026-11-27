@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef, ref } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import * as Misskey from 'misskey-js';
 import gradient from 'chartjs-plugin-gradient';
@@ -37,6 +37,7 @@ const chartEl = useTemplateRef('chartEl');
 const legendEl = useTemplateRef('legendEl');
 const now = new Date();
 let chartInstance: Chart | null = null;
+let disposed = false;
 const chartLimit = 30;
 const fetching = ref(true);
 
@@ -65,6 +66,8 @@ async function renderChart() {
 	};
 
 	const raw = await misskeyApi('charts/user/following', { userId: props.user.id, limit: chartLimit, span: 'day' });
+
+	if (disposed || chartEl.value == null) return;
 
 	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
@@ -172,8 +175,13 @@ async function renderChart() {
 	fetching.value = false;
 }
 
-onMounted(async () => {
+onMounted(() => {
 	renderChart();
+});
+
+onUnmounted(() => {
+	disposed = true;
+	chartInstance?.destroy();
 });
 </script>
 

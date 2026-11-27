@@ -4,7 +4,6 @@
  */
 
 import tinycolor from 'tinycolor2';
-import JSON5 from 'json5';
 import lightTheme from '@@/themes/_light.json5';
 import type { BundledTheme } from 'shiki/themes';
 
@@ -28,6 +27,8 @@ export type Theme = {
 };
 
 export type CompiledTheme = Record<string, string>;
+
+const MAX_THEME_REFERENCE_DEPTH = 8;
 
 export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
 
@@ -56,45 +57,68 @@ export const getBuiltinThemes = () => Promise.all(
 	].map(name => import(`@@/themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
 );
 
-export function compile(theme: Theme): CompiledTheme {
-	function getColor(val: string): tinycolor.Instance {
-		if (val[0] === '@') { // ref (prop)
-			return getColor(theme.props[val.substring(1)]);
-		} else if (val[0] === '$') { // ref (const)
-			return getColor(theme.props[val]);
-		} else if (val[0] === ':') { // func
-			const parts = val.split('<');
-			const funcTxt = parts.shift();
-			const argTxt = parts.shift();
-
-			if (funcTxt && argTxt) {
-				const func = funcTxt.substring(1);
-				const arg = parseFloat(argTxt);
-				const color = getColor(parts.join('<'));
-
-				switch (func) {
-					case 'darken': return color.darken(arg);
-					case 'lighten': return color.lighten(arg);
-					case 'alpha': return color.setAlpha(arg);
-					case 'hue': return color.spin(arg);
-					case 'saturate': return color.saturate(arg);
-				}
-			}
-		}
-
-		// other case
-		return tinycolor(val);
+function getThemeReferenceColor(theme: Theme, key: string, stack: string[], depth: number): tinycolor.Instance {
+	if (depth >= MAX_THEME_REFERENCE_DEPTH) {
+		throw new Error('Theme reference limit exceeded');
 	}
 
+	if (stack.includes(key)) {
+		throw new Error('Theme contains circular references');
+	}
+
+	const nextValue = theme.props[key];
+	if (typeof nextValue !== 'string') {
+		throw new Error(`Theme references missing property: ${key}`);
+	}
+
+	return getColor(theme, nextValue, [...stack, key], depth + 1);
+}
+
+function getColor(theme: Theme, val: string, stack: string[] = [], depth = 0): tinycolor.Instance {
+	if (val[0] === '@') { // ref (prop)
+		return getThemeReferenceColor(theme, val.substring(1), stack, depth);
+	} else if (val[0] === '$') { // ref (const)
+		return getThemeReferenceColor(theme, val, stack, depth);
+	} else if (val[0] === ':') { // func
+		if (depth >= MAX_THEME_REFERENCE_DEPTH) {
+			throw new Error('Theme reference limit exceeded');
+		}
+
+		const parts = val.split('<');
+		const funcTxt = parts.shift();
+		const argTxt = parts.shift();
+
+		if (funcTxt && argTxt) {
+			const func = funcTxt.substring(1);
+			const arg = parseFloat(argTxt);
+			const color = getColor(theme, parts.join('<'), stack, depth + 1);
+
+			switch (func) {
+				case 'darken': return color.darken(arg);
+				case 'lighten': return color.lighten(arg);
+				case 'alpha': return color.setAlpha(arg);
+				case 'hue': return color.spin(arg);
+				case 'saturate': return color.saturate(arg);
+			}
+		}
+	}
+
+	// other case
+	return tinycolor(val);
+}
+
+export function compile(theme: Theme): CompiledTheme {
 	const props = {} as CompiledTheme;
 
 	for (const [k, v] of Object.entries(theme.props)) {
 		if (k.startsWith('$')) continue; // ignore const
 
-		props[k] = v.startsWith('"') ? v.replace(/^"\s*/, '') : genValue(getColor(v));
+		props[k] = v.startsWith('"') ? v.replace(/^"\s*/, '') : genValue(getColor(theme, v));
 	}
 
-	return props;
+	return Object.fromEntries(
+		Object.entries(props).filter(([key]) => themeProps.includes(key)),
+	) as CompiledTheme;
 }
 
 function genValue(c: tinycolor.Instance): string {
@@ -108,19 +132,4 @@ export function validateTheme(theme: Record<string, any>): boolean {
 	if (theme.base == null || !['light', 'dark'].includes(theme.base)) return false;
 	if (theme.props == null || typeof theme.props !== 'object') return false;
 	return true;
-}
-
-export function parseThemeCode(code: string): Theme {
-	let theme;
-
-	try {
-		theme = JSON5.parse(code);
-	} catch (_) {
-		throw new Error('Failed to parse theme json');
-	}
-	if (!validateTheme(theme)) {
-		throw new Error('This theme is invaild');
-	}
-
-	return theme;
 }

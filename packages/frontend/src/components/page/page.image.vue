@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<MkMediaList v-if="image" :mediaList="[image]" :class="$style.mediaList"/>
+	<MkMediaList v-if="image" :mediaList="[image]" :user="page.user" :class="$style.mediaList"/>
 </div>
 </template>
 

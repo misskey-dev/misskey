@@ -250,7 +250,7 @@ export class ApInboxService {
 		// relay
 		const match = activity.id?.match(/follow-relay\/(\w+)/);
 		if (match) {
-			return await this.relayService.relayAccepted(match[1]);
+			return await this.relayService.relayAccepted(match[1], actor);
 		}
 
 		await this.userFollowingService.acceptFollowRequest(actor, follower);
@@ -345,6 +345,10 @@ export class ApInboxService {
 				const noteObj = await this.noteEntityService.pack(renote, null, { skipHide: true, withReactionAndUserPairCache: true });
 				this.globalEventService.publishNotesStream(noteObj);
 				return;
+			}
+
+			if (renote.userHost === null && renote.localOnly) {
+				return 'skip: invalid actor for this activity';
 			}
 
 			if (!await this.noteEntityService.isVisibleForMe(renote, actor.id)) {
@@ -615,7 +619,7 @@ export class ApInboxService {
 		// relay
 		const match = activity.id?.match(/follow-relay\/(\w+)/);
 		if (match) {
-			return await this.relayService.relayRejected(match[1]);
+			return await this.relayService.relayRejected(match[1], actor);
 		}
 
 		await this.userFollowingService.remoteReject(actor, follower);
