@@ -129,10 +129,12 @@ useInterval(() => {
 });
 
 watch(() => props.channelId, async () => {
+	const channelId = props.channelId;
 	const _channel = await misskeyApi('channels/show', {
-		channelId: props.channelId,
+		channelId: channelId,
 	});
 
+	miLocalStorage.setItem(`channel:${channelId}`, JSON.stringify(_channel));
 	favorited.value = _channel.isFavorited ?? false;
 	if (favorited.value || _channel.isFollowing) {
 		tab.value = 'timeline';
