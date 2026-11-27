@@ -389,7 +389,10 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		const emoji = await this.emojisCache.fetch(`${name} ${host}`, queryOrNull);
 
 		if (emoji == null) return null;
-		return emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+		const url = emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+		// 過去に保存された相対URLなどはクライアントで自サーバーのパスとして解釈されてしまうため返さない
+		if (!/^https?:\/\//i.test(url)) return null;
+		return url;
 	}
 
 	/**

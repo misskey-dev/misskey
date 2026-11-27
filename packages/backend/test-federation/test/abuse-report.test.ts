@@ -1,7 +1,7 @@
-import { describe, test, beforeAll } from 'vitest';
+import { describe, test, beforeAll, vi } from 'vitest';
 import { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, createModerator, resolveRemoteUser, sleep, type LoginUser } from './utils.js';
+import { createAccount, createModerator, resolveRemoteUser, type LoginUser, WAIT_FOR_FEDERATION } from './utils.js';
 
 describe('Abuse report', () => {
 	describe('Forwarding report', () => {
@@ -31,10 +31,14 @@ describe('Abuse report', () => {
 			const reports = await aModerator.client.request('admin/abuse-user-reports', {});
 			const report = reports.filter(report => report.comment === comment)[0];
 			await aModerator.client.request('admin/forward-abuse-user-report', { reportId: report.id });
-			await sleep();
 
-			const reportsInB = await bModerator.client.request('admin/abuse-user-reports', {});
-			const reportInB = reportsInB.filter(report => report.comment.includes(comment))[0];
+			const reportInB = await vi.waitFor(async () => {
+				const reportsInB = await bModerator.client.request('admin/abuse-user-reports', {});
+				const reportInB = reportsInB.filter(report => report.comment.includes(comment))[0];
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+				strictEqual(reportInB != null, true);
+				return reportInB;
+			}, WAIT_FOR_FEDERATION);
 			// NOTE: reporter is not Alice, and is not moderator in A
 			strictEqual(reportInB.reporter.url, 'https://a.test/@system.actor');
 			strictEqual(reportInB.targetUserId, bob.id);

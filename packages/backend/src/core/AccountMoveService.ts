@@ -9,7 +9,7 @@ import { IsNull, In, MoreThan, Not } from 'typeorm';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
-import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MiMeta, MutingsRepository, UserListMembershipsRepository, UsersRepository } from '@/models/_.js';
+import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MiMeta, MutingsRepository, UsersRepository } from '@/models/_.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 
 import { IdService } from '@/core/IdService.js';
@@ -26,6 +26,7 @@ import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { AntennaService } from '@/core/AntennaService.js';
+import { UserListService } from '@/core/UserListService.js';
 
 @Injectable()
 export class AccountMoveService {
@@ -45,9 +46,6 @@ export class AccountMoveService {
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
-		@Inject(DI.userListMembershipsRepository)
-		private userListMembershipsRepository: UserListMembershipsRepository,
-
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
@@ -65,6 +63,7 @@ export class AccountMoveService {
 		private systemAccountService: SystemAccountService,
 		private roleService: RoleService,
 		private antennaService: AntennaService,
+		private userListService: UserListService,
 	) {
 	}
 
@@ -244,47 +243,7 @@ export class AccountMoveService {
 	 */
 	@bindThis
 	public async updateLists(src: ThinUser, dst: MiUser): Promise<void> {
-		// Return if there is no list to be updated.
-		const oldMemberships = await this.userListMembershipsRepository.find({
-			where: {
-				userId: src.id,
-			},
-		});
-		if (oldMemberships.length === 0) return;
-
-		const existingUserListIds = await this.userListMembershipsRepository.find({
-			where: {
-				userId: dst.id,
-			},
-		}).then(memberships => memberships.map(membership => membership.userListId));
-
-		const newMemberships: Map<string, { userId: string; userListId: string; userListUserId: string; }> = new Map();
-
-		// 重複しないようにIDを生成
-		const genId = (): string => {
-			let id: string;
-			do {
-				id = this.idService.gen();
-			} while (newMemberships.has(id));
-			return id;
-		};
-		for (const membership of oldMemberships) {
-			if (existingUserListIds.includes(membership.userListId)) continue; // skip if dst exists in this user's list
-			newMemberships.set(genId(), {
-				userId: dst.id,
-				userListId: membership.userListId,
-				userListUserId: membership.userListUserId,
-			});
-		}
-
-		const arrayToInsert = Array.from(newMemberships.entries()).map(entry => ({ ...entry[1], id: entry[0] }));
-		await this.userListMembershipsRepository.insert(arrayToInsert);
-
-		// Have the proxy account follow the new account in the same way as UserListService.push
-		if (this.userEntityService.isRemoteUser(dst)) {
-			const proxy = await this.systemAccountService.fetch('proxy');
-			this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
-		}
+		await this.userListService.copyMemberships(src, dst);
 	}
 
 	@bindThis

@@ -15,17 +15,17 @@
 		'dependencies',
 	],
 	dependencyDashboardApproval: true,
-	dependencyDashboardAutoclose: true,
+	dependencyDashboard: {
+		autoclose: true,
+		osvVulnerabilitySummary: 'unresolved',
+	},
 	osvVulnerabilityAlerts: true,
-	dependencyDashboardOSVVulnerabilitySummary: 'unresolved',
 	minimumReleaseAge: '7 days',
 	ignoreDeps: [
-		// https://github.com/misskey-dev/misskey/pull/15489#issuecomment-2660717458
-		'@typescript/lib-webworker',
 		// https://github.com/misskey-dev/misskey/pull/15494#issuecomment-2660775258
 		'nsfwjs',
-    // https://github.com/misskey-dev/misskey/issues/15920
-    'sharp',
+		// https://github.com/misskey-dev/misskey/issues/15920
+		'sharp',
 		'@misskey-dev/sharp-read-bmp',
 		'@syuilo/aiscript-0-19-0',
 	],
@@ -87,13 +87,6 @@
 			matchPackageNames: ['node'],
 		},
 		{
-			groupName: '[Node.js] Update dependencies',
-			matchDepNames: ['ghcr.io/devcontainers/features/node:1'],
-			matchFileNames: [
-				'.devcontainer/**',
-			],
-		},
-		{
 			groupName: '[Docker] Update dependencies',
 			matchFileNames: [
 				'compose.local-db.yml',
@@ -104,7 +97,6 @@
 		},
 		{
 			groupName: '[devcontainer] Update dependencies',
-			matchDepNames: ['!ghcr.io/devcontainers/features/node:1'],
 			matchFileNames: [
 				'.devcontainer/**',
 			],

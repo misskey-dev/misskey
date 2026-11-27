@@ -36,9 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</template>
 							</I18n>
 							<div>{{ i18n.ts._2fa.step2 }}</div>
-							<div>
-								<a :class="$style.qrRoot" :href="twoFactorData.url"><img :class="$style.qr" :src="twoFactorData.qr"></a>
-								<!-- QRコード側にマージンが入っているので直下でOK -->
+							<div class="_gaps_s">
+								<a :class="$style.qrRoot" :href="twoFactorData.url" v-html="qrSvg"></a>
 								<div><MkButton inline rounded type="routerLink" :to="twoFactorData.url" :linkBehavior="'browser'">{{ i18n.ts.launchApp }}</MkButton></div>
 							</div>
 							<MkKeyValue :copy="twoFactorData.url">
@@ -107,7 +106,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { hostname, port } from '@@/js/config';
-import { useTemplateRef, ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { qrcode } from 'etiket/qr';
+import { useTemplateRef, computed, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -118,15 +119,13 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkLink from '@/components/MkLink.vue';
 import { confetti } from '@/utility/confetti.js';
+import { qrOptions } from '@/utility/qr-code.js';
 import { ensureSignin } from '@/i.js';
 
 const $i = ensureSignin();
 
-defineProps<{
-	twoFactorData: {
-		qr: string;
-		url: string;
-	};
+const props = defineProps<{
+	twoFactorData: Misskey.entities.I2faRegisterResponse;
 }>();
 
 const emit = defineEmits<{
@@ -136,6 +135,11 @@ const emit = defineEmits<{
 const dialog = useTemplateRef('dialog');
 const page = ref(0);
 const token = ref<string | null>(null);
+const qrSvg = computed(() => qrcode(props.twoFactorData.url, {
+	...qrOptions,
+	color: '#000',
+	background: 'transparent',
+}));
 const backupCodes = ref<string[]>();
 
 function cancel() {
@@ -188,12 +192,16 @@ function allDone() {
 
 .qrRoot {
 	display: block;
+	background: #fff;
 	margin: 0 auto;
+	padding: 16px;
+	border-radius: var(--MI-radius);
 	width: 200px;
 	max-width: 100%;
-}
 
-.qr {
-	width: 100%;
+	& > svg {
+		width: 100%;
+		height: auto;
+	}
 }
 </style>

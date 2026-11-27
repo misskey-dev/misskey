@@ -106,6 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:file="file"
 							:folder="folder"
 							:isSelected="selectedFiles.some(x => x.id === file.id)"
+							:isDisabled="excludeSensitive && file.isSensitive"
 							@click="onFileClick($event, file)"
 							@dragstart="onFileDragstart(file, $event)"
 							@dragend="isDragSource = false"
@@ -129,6 +130,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:file="file"
 					:folder="folder"
 					:isSelected="selectedFiles.some(x => x.id === file.id)"
+					:isDisabled="excludeSensitive && file.isSensitive"
 					@click="onFileClick($event, file)"
 					@dragstart="onFileDragstart(file, $event)"
 					@dragend="isDragSource = false"
@@ -190,11 +192,13 @@ const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id'] | null;
 	type?: string;
 	multiple?: boolean;
+	excludeSensitive?: boolean;
 	select?: 'file' | 'folder' | null;
 	forceDisableInfiniteScroll?: boolean;
 }>(), {
 	initialFolder: null,
 	multiple: false,
+	excludeSensitive: false,
 	select: null,
 	forceDisableInfiniteScroll: false,
 });
@@ -471,10 +475,21 @@ async function renameFolder(folderToRename: Misskey.entities.DriveFolder) {
 	globalEvents.emit('driveFoldersUpdated', [updatedFolder]);
 }
 
-function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
+async function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
+	if (prefer.s.uploadFolder === folderToDelete.id) {
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.ts.uploadFolderDeletionConfirm,
+		});
+		if (canceled) return;
+	}
+
 	misskeyApi('drive/folders/delete', {
 		folderId: folderToDelete.id,
 	}).then(() => {
+		if (prefer.s.uploadFolder === folderToDelete.id) {
+			prefer.commit('uploadFolder', null);
+		}
 		// 削除時に親フォルダに移動
 		cd(folderToDelete.parentId);
 		globalEvents.emit('driveFoldersDeleted', [folderToDelete]);
@@ -497,6 +512,8 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 }
 
 function onFileClick(ev: PointerEvent, file: Misskey.entities.DriveFile) {
+	if (props.excludeSensitive && file.isSensitive) return;
+
 	if (ev.shiftKey) {
 		isEditMode.value = true;
 	}

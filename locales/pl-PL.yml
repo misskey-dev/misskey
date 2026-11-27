@@ -1578,6 +1578,7 @@ _deck:
     antenna: "Anteny"
     list: "Listy"
     channel: "Kanały"
+    clip: "Klip"
     mentions: "Wspomnienia"
     direct: "Bezpośredni"
 _webhookSettings:

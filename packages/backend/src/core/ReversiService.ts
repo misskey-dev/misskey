@@ -311,6 +311,21 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	private async startGame(game: MiReversiGame) {
+		if (!Reversi.isValidMap(game.map)) {
+			const updatedGame = {
+				...game,
+				user1Ready: false,
+				user2Ready: false,
+			};
+			await this.cacheGame(updatedGame);
+
+			this.globalEventService.publishReversiGameStream(game.id, 'changeReadyStates', {
+				user1: false,
+				user2: false,
+			});
+			return;
+		}
+
 		let bw: number;
 		if (game.bw === 'random') {
 			bw = Math.random() > 0.5 ? 1 : 2;
@@ -414,7 +429,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	public isValidReversiUpdateValue<K extends typeof reversiUpdateKeys[number]>(key: K, value: unknown): value is MiReversiGame[K] {
 		switch (key) {
 			case 'map':
-				return Array.isArray(value) && value.every(row => typeof row === 'string');
+				return Reversi.isValidMap(value);
 			case 'bw':
 				return typeof value === 'string' && ['random', '1', '2'].includes(value);
 			case 'isLlotheo':
