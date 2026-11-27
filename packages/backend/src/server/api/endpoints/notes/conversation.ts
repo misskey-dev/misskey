@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { In } from 'typeorm';
 import type { MiNote } from '@/models/Note.js';
 import type { MiMeta, NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -66,30 +67,33 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw err;
 			});
 
-			const conversation: MiNote[] = [];
-			let i = 0;
+			if (note.replyId == null) return [];
 
-			const get = async (id: any) => {
-				i++;
-				const p = await this.notesRepository.findOneBy({ id });
-				if (p == null) return;
+			// 負の offset は 0 として扱う
+			const offset = Math.max(ps.offset, 0);
+			const maxDepth = offset + ps.limit;
 
-				if (i > ps.offset!) {
-					conversation.push(p);
-				}
+			// これほど深い返信の連なりは存在しえないので、クエリのパラメーターとして安全に扱えない値なら空を返す
+			if (!Number.isSafeInteger(maxDepth)) return [];
 
-				if (conversation.length === ps.limit) {
-					return;
-				}
+			// 返信元を1件ずつ問い合わせると往復が返信の深さだけ発生するため、再帰クエリで1回にまとめる
+			// たどる深さは offset + limit までに明示的に制限する
+			const ancestors: { id: MiNote['id'] }[] = await this.notesRepository.query(`
+				WITH RECURSIVE "ancestor" ("id", "replyId", "depth") AS (
+					SELECT "id", "replyId", 1::bigint FROM "note" WHERE "id" = $1
+					UNION ALL
+					SELECT "note"."id", "note"."replyId", "ancestor"."depth" + 1
+					FROM "note" INNER JOIN "ancestor" ON "note"."id" = "ancestor"."replyId"
+					WHERE "ancestor"."depth" < $2
+				)
+				SELECT "id" FROM "ancestor" WHERE "depth" > $3 ORDER BY "depth"
+			`, [note.replyId, maxDepth, offset]);
 
-				if (p.replyId) {
-					await get(p.replyId);
-				}
-			};
+			if (ancestors.length === 0) return [];
 
-			if (note.replyId) {
-				await get(note.replyId);
-			}
+			const notes = await this.notesRepository.findBy({ id: In(ancestors.map(x => x.id)) });
+			const noteMap = new Map(notes.map(x => [x.id, x]));
+			const conversation = ancestors.map(x => noteMap.get(x.id)).filter(x => x != null);
 
 			return await this.noteEntityService.packMany(conversation, me);
 		});

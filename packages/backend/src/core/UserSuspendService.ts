@@ -11,6 +11,7 @@ import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RelationshipJobData } from '@/queue/types.js';
@@ -32,6 +33,7 @@ export class UserSuspendService {
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
 		private apRendererService: ApRendererService,
+		private apDeliverManagerService: ApDeliverManagerService,
 		private moderationLogService: ModerationLogService,
 	) {
 	}
@@ -86,28 +88,7 @@ export class UserSuspendService {
 			// 知り得る全SharedInboxにDelete配信
 			const content = this.apRendererService.addContext(this.apRendererService.renderDelete(this.userEntityService.genLocalUserUri(user.id), user));
 
-			const queue: string[] = [];
-
-			const followings = await this.followingsRepository.find({
-				where: [
-					{ followerSharedInbox: Not(IsNull()) },
-					{ followeeSharedInbox: Not(IsNull()) },
-				],
-				select: {
-					followerSharedInbox: true,
-					followeeSharedInbox: true,
-				},
-			});
-
-			const inboxes = followings.map(x => x.followerSharedInbox ?? x.followeeSharedInbox);
-
-			for (const inbox of inboxes) {
-				if (inbox != null && !queue.includes(inbox)) queue.push(inbox);
-			}
-
-			for (const inbox of queue) {
-				this.queueService.deliver(user, content, inbox, true);
-			}
+			await this.apDeliverManagerService.deliverToAllKnownSharedInboxes(user, content);
 		}
 	}
 
@@ -119,28 +100,7 @@ export class UserSuspendService {
 			// 知り得る全SharedInboxにUndo Delete配信
 			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderDelete(this.userEntityService.genLocalUserUri(user.id), user), user));
 
-			const queue: string[] = [];
-
-			const followings = await this.followingsRepository.find({
-				where: [
-					{ followerSharedInbox: Not(IsNull()) },
-					{ followeeSharedInbox: Not(IsNull()) },
-				],
-				select: {
-					followerSharedInbox: true,
-					followeeSharedInbox: true,
-				},
-			});
-
-			const inboxes = followings.map(x => x.followerSharedInbox ?? x.followeeSharedInbox);
-
-			for (const inbox of inboxes) {
-				if (inbox != null && !queue.includes(inbox)) queue.push(inbox);
-			}
-
-			for (const inbox of queue) {
-				this.queueService.deliver(user as any, content, inbox, true);
-			}
+			await this.apDeliverManagerService.deliverToAllKnownSharedInboxes(user, content);
 		}
 	}
 

@@ -48,6 +48,7 @@ type Source = {
 		db?: string;
 		user?: string;
 		pass?: string;
+		// 現在は使われていない
 		disableCache?: boolean;
 		extra?: { [x: string]: string };
 	};
@@ -146,6 +147,7 @@ export type Config = {
 		db: string;
 		user: string;
 		pass: string;
+		// 現在は使われていない
 		disableCache?: boolean;
 		extra?: { [x: string]: string };
 	};

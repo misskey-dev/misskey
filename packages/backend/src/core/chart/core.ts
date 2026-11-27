@@ -13,6 +13,7 @@ import * as nestedProperty from 'nested-property';
 import { EntitySchema, LessThan, Between } from 'typeorm';
 import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/misc/prelude/time.js';
 import { sqlStringEscape } from '@/misc/sql-string-escape.js';
+import { Semaphore } from '@/misc/semaphore.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { MiRepository, miRepository } from '@/models/_.js';
@@ -64,6 +65,12 @@ const camelToSnake = (str: string): string => {
 };
 
 const removeDuplicates = (array: any[]) => Array.from(new Set(array));
+
+/**
+ * save() で同時に書き込むグループの数を、プロセス内の全チャートで共有して制限する。
+ * 1 グループあたり最大 2 本のクエリを同時に発行するため、DB 接続は最大で上限の 2 倍を使う。
+ */
+const saveSemaphore = new Semaphore(2);
 
 const COLUMN_RANGE_LIMITS = {
 	small: { min: -32768, max: 32767 }, // smallint
@@ -276,7 +283,9 @@ export default abstract class Chart<T extends Schema> {
 				...Chart.convertSchemaToColumnDefinitions(schema),
 			},
 			indices: [{
-				columns: grouped ? ['date', 'group'] : ['date'],
+				// グループ付きチャートは「あるグループの最新のログ」「あるグループの期間内のログ」を引くため、group を先頭にする。
+				// date を先頭にした索引は、下の uniques (一意制約) が作る索引で賄われる。
+				columns: grouped ? ['group', 'date'] : ['date'],
 				unique: true,
 			}],
 			uniques: [{
@@ -362,8 +371,8 @@ export default abstract class Chart<T extends Schema> {
 	 * 現在(=今のHour or Day)のログをデータベースから探して、あればそれを返し、なければ作成して返します。
 	 */
 	@bindThis
-	private async claimCurrentLog(group: string | null, span: 'hour' | 'day'): Promise<RawRecord<T>> {
-		const [y, m, d, h] = Chart.getCurrentDate();
+	private async claimCurrentLog(group: string | null, span: 'hour' | 'day', now?: Date): Promise<RawRecord<T>> {
+		const [y, m, d, h] = now != null ? Chart.parseDate(now) : Chart.getCurrentDate();
 
 		const current = dateUTC(
 			span === 'hour' ? [y, m, d, h] :
@@ -468,6 +477,9 @@ export default abstract class Chart<T extends Schema> {
 		const buffer = this.buffer;
 		this.buffer = [];
 
+		// 同時実行数の制限で待たされている間に時間の区切りをまたいでも、全グループを同じ期間に記録する
+		const now = new Date();
+
 		// TODO: 前の時間のログがbufferにあった場合のハンドリング
 		// 例えば、save が20分ごとに行われるとして、前回行われたのは 01:50 だったとする。
 		// 次に save が行われるのは 02:10 ということになるが、もし 01:55 に新規ログが buffer に追加されたとすると、
@@ -552,7 +564,8 @@ export default abstract class Chart<T extends Schema> {
 			}
 
 			// ログ更新
-			await Promise.all([
+			// 片方が失敗しても、もう片方のクエリが終わるまで待つ
+			const updateResults = await Promise.allSettled([
 				this.repositoryForHour.createQueryBuilder()
 					.update()
 					.set(queryForHour as any)
@@ -564,19 +577,33 @@ export default abstract class Chart<T extends Schema> {
 					.where('id = :id', { id: logDay.id })
 					.execute(),
 			]);
+			for (const result of updateResults) {
+				if (result.status === 'rejected') throw result.reason;
+			}
 
 			this.logger.info(`${this.name + (logHour.group ? `:${logHour.group}` : '')}: Updated`);
 		};
 
 		const groups = removeDuplicates(buffer.map(log => log.group));
 
-		await Promise.all(
-			groups.map(group =>
-				Promise.all([
-					this.claimCurrentLog(group, 'hour'),
-					this.claimCurrentLog(group, 'day'),
-				]).then(([logHour, logDay]) =>
-					update(logHour, logDay))));
+		// 同時に処理するグループ数は saveSemaphore で制限する。
+		// 一部のグループで失敗しても残りのグループの書き込みは続け、最後に最初のエラーを投げる。
+		const results = await Promise.allSettled(groups.map(group => saveSemaphore.run(async () => {
+			// 片方が失敗しても、もう片方のクエリが終わるまで待つ
+			const [logHourResult, logDayResult] = await Promise.allSettled([
+				this.claimCurrentLog(group, 'hour', now),
+				this.claimCurrentLog(group, 'day', now),
+			]);
+			if (logHourResult.status === 'rejected') throw logHourResult.reason;
+			if (logDayResult.status === 'rejected') throw logDayResult.reason;
+			await update(logHourResult.value, logDayResult.value);
+		})));
+
+		const failures = results.filter(result => result.status === 'rejected');
+		if (failures.length > 0) {
+			this.logger.error(`${this.name}: Failed to save ${failures.length} of ${groups.length} groups`);
+			throw failures[0].reason;
+		}
 	}
 
 	@bindThis

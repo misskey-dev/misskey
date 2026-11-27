@@ -18,6 +18,7 @@ import type { AntennasRepository, UserListMembershipsRepository } from '@/models
 import type { MiAntenna } from '@/models/Antenna.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiUser } from '@/models/User.js';
+import type { MiUserList } from '@/models/UserList.js';
 import { CacheService } from './CacheService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
@@ -97,7 +98,8 @@ export class AntennaService implements OnApplicationShutdown {
 	@bindThis
 	public async addNoteToAntennas(note: MiNote, noteUser: { id: MiUser['id']; username: string; host: string | null; isBot: boolean; }): Promise<MiAntenna[]> {
 		const antennas = await this.getAntennas();
-		const antennasWithMatchResult = await Promise.all(antennas.map(antenna => this.checkHitAntenna(antenna, note, noteUser).then(hit => [antenna, hit] as const)));
+		const isListMember = this.createListMembershipChecker(antennas, note.userId);
+		const antennasWithMatchResult = await Promise.all(antennas.map(antenna => this.checkHitAntenna(antenna, note, noteUser, isListMember).then(hit => [antenna, hit] as const)));
 		const matchedAntennas = antennasWithMatchResult.filter(([, hit]) => hit).map(([antenna]) => antenna);
 
 		const redisPipeline = this.redisForTimelines.pipeline();
@@ -111,10 +113,43 @@ export class AntennaService implements OnApplicationShutdown {
 		return matchedAntennas;
 	}
 
+	@bindThis
+	private createListMembershipChecker(antennas: MiAntenna[], userId: MiUser['id']): (userListId: MiUserList['id']) => Promise<boolean> {
+		// 呼び出し中ここで所属情報をキャッシュすることで毎回問い合わせを行わずに済むようにする
+		let memberships: Promise<Set<MiUserList['id']>> | null = null;
+
+		// 照会するリストは、判定を始めた時点のアンテナ設定で確定させる (DB への照会は初回の判定まで遅らせる)
+		const userListIds = new Set(antennas
+			.filter(antenna => antenna.src === 'list')
+			.map(antenna => antenna.userListId)
+			.filter(userListId => userListId != null));
+
+		const fetchMemberships = async (): Promise<Set<MiUserList['id']>> => {
+			if (userListIds.size === 0) return new Set();
+
+			const rows = await this.userListMembershipsRepository.find({
+				where: { userId },
+				select: { userListId: true },
+			});
+			return new Set(rows.map(row => row.userListId).filter(id => userListIds.has(id)));
+		};
+
+		return async (userListId) => {
+			memberships ??= fetchMemberships();
+			return (await memberships).has(userListId);
+		};
+	}
+
 	// NOTE: フォローしているユーザーのノート、リストのユーザーのノート、グループのユーザーのノート指定はパフォーマンス上の理由で無効になっている
 
 	@bindThis
-	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | Packed<'Note'>), noteUser: { id: MiUser['id']; username: string; host: string | null; isBot: boolean; }): Promise<boolean> {
+	public async checkHitAntenna(
+		antenna: MiAntenna,
+		note: (MiNote | Packed<'Note'>),
+		noteUser: { id: MiUser['id']; username: string; host: string | null; isBot: boolean; },
+		isListMember?: (userListId: MiUserList['id']) => Promise<boolean>,
+	): Promise<boolean> {
+		//#region DBやキャッシュへの問い合わせが不要な条件
 		if (antenna.excludeNotesInSensitiveChannel && note.channel?.isSensitive) return false;
 
 		if (antenna.excludeBots && noteUser.isBot) return false;
@@ -130,22 +165,8 @@ export class AntennaService implements OnApplicationShutdown {
 			}
 		}
 
-		if (note.visibility === 'followers') {
-			const isFollowing = Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(antenna.userId), note.userId);
-			if (!isFollowing && antenna.userId !== note.userId) return false;
-		}
-
 		if (antenna.src === 'home') {
 			// TODO
-		} else if (antenna.src === 'list') {
-			if (antenna.userListId == null) return false;
-			const exists = await this.userListMembershipsRepository.exists({
-				where: {
-					userListId: antenna.userListId,
-					userId: note.userId,
-				},
-			});
-			if (!exists) return false;
 		} else if (antenna.src === 'users') {
 			const accts = antenna.users.map(x => {
 				const { username, host } = Acct.parse(x);
@@ -203,6 +224,27 @@ export class AntennaService implements OnApplicationShutdown {
 		if (antenna.withFile) {
 			if (note.fileIds && note.fileIds.length === 0) return false;
 		}
+		//#endregion
+
+		//#region DBやキャッシュへの問い合わせが必要な条件
+		if (note.visibility === 'followers') {
+			const isFollowing = Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(antenna.userId), note.userId);
+			if (!isFollowing && antenna.userId !== note.userId) return false;
+		}
+
+		if (antenna.src === 'list') {
+			if (antenna.userListId == null) return false;
+			const isMember = isListMember != null
+				? await isListMember(antenna.userListId)
+				: await this.userListMembershipsRepository.exists({
+					where: {
+						userListId: antenna.userListId,
+						userId: note.userId,
+					},
+				});
+			if (!isMember) return false;
+		}
+		//#endregion
 
 		// TODO: eval expression
 

@@ -25,6 +25,13 @@ import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 
+type NoteVisibilityContext = {
+	/** me がフォローしている投稿者の ID */
+	followedAuthorIds: Set<MiUser['id']>;
+	/** me のホスト (ローカルなら null) */
+	meHost: string | null;
+};
+
 // is-renote.tsとよしなにリンク
 function isPureRenote(note: MiNote): note is MiNote & { renoteId: MiNote['id']; renote: MiNote } {
 	return (
@@ -304,8 +311,32 @@ export class NoteEntityService implements OnModuleInit {
 		};
 	}
 
+	/**
+	 * `isVisibleForMe` の followers 分岐が必要とする情報を、ノート一覧からまとめて先読みする。
+	 */
 	@bindThis
-	public async isVisibleForMe(note: MiNote, meId: MiUser['id'] | null): Promise<boolean> {
+	private async buildVisibilityContext(notes: Pick<MiNote, 'userId' | 'visibility'>[], meId: MiUser['id'] | null): Promise<NoteVisibilityContext | undefined> {
+		if (meId == null) return undefined;
+
+		// followers 可視性のノートに現れる投稿者だけを対象にする
+		const authorIds = [...new Set(
+			notes.filter(note => note.visibility === 'followers').map(note => note.userId),
+		)];
+		if (authorIds.length === 0) return undefined;
+
+		const [followings, me] = await Promise.all([
+			this.followingsRepository.findBy({ followerId: meId, followeeId: In(authorIds) }),
+			this.usersRepository.findOneBy({ id: meId }),
+		]);
+
+		return {
+			followedAuthorIds: new Set(followings.map(it => it.followeeId)),
+			meHost: me?.host ?? null,
+		};
+	}
+
+	@bindThis
+	public async isVisibleForMe(note: MiNote, meId: MiUser['id'] | null, context?: NoteVisibilityContext): Promise<boolean> {
 		// This code must always be synchronized with the checks in QueryService.generateVisibilityQuery.
 		// visibility が specified かつ自分が指定されていなかったら非表示
 		if (note.visibility === 'specified') {
@@ -333,16 +364,14 @@ export class NoteEntityService implements OnModuleInit {
 				return true;
 			} else {
 				// フォロワーかどうか
-				const [following, user] = await Promise.all([
-					this.followingsRepository.count({
-						where: {
-							followeeId: note.userId,
-							followerId: meId,
-						},
-						take: 1,
-					}),
-					this.usersRepository.findOneByOrFail({ id: meId }),
-				]);
+				// shouldHideNote と同じく userFollowingsCache を使う (follow / unfollow で refresh される)
+				const isFollowing = context != null
+					// 事前にまとめて取得済みの情報から判定する (context には followers 可視性の投稿者が全て含まれている)
+					? context.followedAuthorIds.has(note.userId)
+					: Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(meId), note.userId);
+				const userHost = context != null
+					? context.meHost
+					: (await this.cacheService.findUserById(meId)).host;
 
 				/* If we know the following, everyhting is fine.
 
@@ -351,7 +380,7 @@ export class NoteEntityService implements OnModuleInit {
 				in which case we can never know the following. Instead we have
 				to assume that the users are following each other.
 				*/
-				return following > 0 || (note.userHost != null && user.host != null);
+				return isFollowing || (note.userHost != null && userHost != null);
 			}
 		}
 
@@ -654,9 +683,10 @@ export class NoteEntityService implements OnModuleInit {
 			},
 		});
 
+		const visibilityContext = await this.buildVisibilityContext(fetched, meId);
 		const notes: MiNote[] = [];
 		for (const note of fetched) {
-			if (await this.isVisibleForMe(note, meId)) {
+			if (await this.isVisibleForMe(note, meId, visibilityContext)) {
 				notes.push(note);
 			}
 		}

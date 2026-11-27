@@ -43,6 +43,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const mutings = await this.channelMutingService.list({
 				requestUserId: me.id,
 			});
+			// list() は順序を保証しないため、ID 順に並べて返す
+			mutings.sort((a, b) => a.id.localeCompare(b.id));
 			return await this.channelEntityService.packMany(mutings, me);
 		});
 	}

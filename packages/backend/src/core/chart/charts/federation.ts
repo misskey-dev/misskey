@@ -10,6 +10,7 @@ import type { FollowingsRepository, InstancesRepository, MiMeta } from '@/models
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { acquireChartInsertLock } from '@/misc/distributed-lock.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/federation.js';
@@ -36,6 +37,7 @@ export default class FederationChart extends Chart<typeof schema> { // eslint-di
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		private utilityService: UtilityService,
 		private chartLoggerService: ChartLoggerService,
 	) {
 		super(db, (k) => acquireChartInsertLock(redisClient, k), chartLoggerService.logger, name, schema);
@@ -47,70 +49,45 @@ export default class FederationChart extends Chart<typeof schema> { // eslint-di
 	}
 
 	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
-		const suspendedInstancesQuery = this.instancesRepository.createQueryBuilder('instance')
-			.select('instance.host')
-			.where('instance.suspensionState != \'none\'');
-
-		const pubsubSubQuery = this.followingsRepository.createQueryBuilder('f')
-			.select('f.followerHost')
-			.where('f.followerHost IS NOT NULL');
-
-		const subInstancesQuery = this.followingsRepository.createQueryBuilder('f')
-			.select('f.followeeHost')
-			.where('f.followeeHost IS NOT NULL');
-
-		const pubInstancesQuery = this.followingsRepository.createQueryBuilder('f')
-			.select('f.followerHost')
-			.where('f.followerHost IS NOT NULL');
-
-		const [sub, pub, pubsub, subActive, pubActive] = await Promise.all([
+		// following はサーバー全体で非常に大きくなりうるため、まずフォロー先・フォロワーのホストの一覧 (高々リモートサーバーの数) を取り出し、
+		// ブロック・停止の判定はその一覧に対して行う。
+		const [subHosts, pubHosts, suspendedHosts, activeHosts] = await Promise.all([
 			this.followingsRepository.createQueryBuilder('following')
-				.select('COUNT(DISTINCT following.followeeHost)')
+				.select('following.followeeHost', 'host')
+				.distinct(true)
 				.where('following.followeeHost IS NOT NULL')
-				.andWhere(this.meta.blockedHosts.length === 0 ? '1=1' : 'following.followeeHost NOT ILIKE ALL(ARRAY[:...blocked])', { blocked: this.meta.blockedHosts.flatMap(x => [x, `%.${x}`]) })
-				.andWhere(`following.followeeHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
-				.getRawOne()
-				.then(x => parseInt(x.count, 10)),
+				.getRawMany<{ host: string; }>()
+				.then(rows => new Set(rows.map(row => row.host))),
 			this.followingsRepository.createQueryBuilder('following')
-				.select('COUNT(DISTINCT following.followerHost)')
+				.select('following.followerHost', 'host')
+				.distinct(true)
 				.where('following.followerHost IS NOT NULL')
-				.andWhere(this.meta.blockedHosts.length === 0 ? '1=1' : 'following.followerHost NOT ILIKE ALL(ARRAY[:...blocked])', { blocked: this.meta.blockedHosts.flatMap(x => [x, `%.${x}`]) })
-				.andWhere(`following.followerHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
-				.getRawOne()
-				.then(x => parseInt(x.count, 10)),
-			this.followingsRepository.createQueryBuilder('following')
-				.select('COUNT(DISTINCT following.followeeHost)')
-				.where('following.followeeHost IS NOT NULL')
-				.andWhere(this.meta.blockedHosts.length === 0 ? '1=1' : 'following.followeeHost NOT ILIKE ALL(ARRAY[:...blocked])', { blocked: this.meta.blockedHosts.flatMap(x => [x, `%.${x}`]) })
-				.andWhere(`following.followeeHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
-				.andWhere(`following.followeeHost IN (${ pubsubSubQuery.getQuery() })`)
-				.setParameters(pubsubSubQuery.getParameters())
-				.getRawOne()
-				.then(x => parseInt(x.count, 10)),
+				.getRawMany<{ host: string; }>()
+				.then(rows => new Set(rows.map(row => row.host))),
 			this.instancesRepository.createQueryBuilder('instance')
-				.select('COUNT(instance.id)')
-				.where(`instance.host IN (${ subInstancesQuery.getQuery() })`)
-				.andWhere(this.meta.blockedHosts.length === 0 ? '1=1' : 'instance.host NOT ILIKE ALL(ARRAY[:...blocked])', { blocked: this.meta.blockedHosts.flatMap(x => [x, `%.${x}`]) })
-				.andWhere('instance.suspensionState = \'none\'')
-				.andWhere('instance.isNotResponding = false')
-				.getRawOne()
-				.then(x => parseInt(x.count, 10)),
+				.select('instance.host', 'host')
+				.where('instance.suspensionState != \'none\'')
+				.getRawMany<{ host: string; }>()
+				.then(rows => new Set(rows.map(row => row.host))),
 			this.instancesRepository.createQueryBuilder('instance')
-				.select('COUNT(instance.id)')
-				.where(`instance.host IN (${ pubInstancesQuery.getQuery() })`)
-				.andWhere(this.meta.blockedHosts.length === 0 ? '1=1' : 'instance.host NOT ILIKE ALL(ARRAY[:...blocked])', { blocked: this.meta.blockedHosts.flatMap(x => [x, `%.${x}`]) })
-				.andWhere('instance.suspensionState = \'none\'')
+				.select('instance.host', 'host')
+				.where('instance.suspensionState = \'none\'')
 				.andWhere('instance.isNotResponding = false')
-				.getRawOne()
-				.then(x => parseInt(x.count, 10)),
+				.getRawMany<{ host: string; }>()
+				.then(rows => rows.map(row => row.host)),
 		]);
 
+		const isBlocked = (host: string) => this.utilityService.isBlockedHost(this.meta.blockedHosts, host);
+		const isCounted = (host: string) => !isBlocked(host) && !suspendedHosts.has(host);
+
+		const countedSubHosts = [...subHosts].filter(isCounted);
+
 		return {
-			'sub': sub,
-			'pub': pub,
-			'pubsub': pubsub,
-			'subActive': subActive,
-			'pubActive': pubActive,
+			'sub': countedSubHosts.length,
+			'pub': [...pubHosts].filter(isCounted).length,
+			'pubsub': countedSubHosts.filter(host => pubHosts.has(host)).length,
+			'subActive': activeHosts.filter(host => subHosts.has(host) && !isBlocked(host)).length,
+			'pubActive': activeHosts.filter(host => pubHosts.has(host) && !isBlocked(host)).length,
 		};
 	}
 
