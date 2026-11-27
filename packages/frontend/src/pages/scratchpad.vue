@@ -7,6 +7,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader>
 	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div class="_gaps">
+			<MkContainer :foldable="true" :expanded="false">
+				<template #header>{{ i18n.ts.options }}</template>
+				<div :class="$style.options">
+					<MkSwitch v-model="abortOnError">
+					<template #label>{{ i18n.ts.abortOnError }}</template>
+					</MkSwitch>
+				</div>
+			</MkContainer>
+
 			<div class="_gaps_s">
 				<div :class="$style.editor" class="_panel">
 					<MkCodeEditor v-model="code" lang="aiscript"/>
@@ -62,6 +71,7 @@ import type { AsUiRoot } from '@/aiscript/ui.js';
 import type { Value } from '@syuilo/aiscript/interpreter/value.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
@@ -74,6 +84,7 @@ import MkAsUi from '@/components/MkAsUi.vue';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/utility/achievements.js';
 
+const abortOnError = ref(true);
 const parser = new Parser();
 let aiscript: Interpreter;
 const code = ref('');
@@ -130,6 +141,7 @@ async function run() {
 			root.value = _root;
 		}, components.value),
 	}), {
+		abortOnError: abortOnError.value,
 		in: aiScriptReadline,
 		out: (value) => {
 			if (value.type === 'str' && value.value.toLowerCase().replace(',', '').includes('hello world')) {
@@ -202,6 +214,10 @@ definePage(() => ({
 
 <style lang="scss" module>
 .root {
+}
+
+.options {
+	padding: 16px;
 }
 
 .editor {

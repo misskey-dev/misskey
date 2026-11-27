@@ -65,6 +65,7 @@ async function run() {
 		storageKey: 'widget',
 		token: $i?.token,
 	}), {
+		abortOnError: true,
 		in: aiScriptReadline,
 		out: (value) => {
 			// nop
