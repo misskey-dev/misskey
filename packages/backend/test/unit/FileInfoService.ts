@@ -7,15 +7,17 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { dirname, join } from 'node:path';
 import { Test } from '@nestjs/testing';
-import { afterAll, beforeAll, describe, test } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
 import { GlobalModule } from '@/GlobalModule.js';
 import { FileInfo, FileInfoService } from '@/core/FileInfoService.js';
 //import { DI } from '@/di-symbols.js';
 import { SensitiveMediaDetectionService } from '@/core/SensitiveMediaDetectionService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { createTempDir } from '@/misc/create-temp.js';
 import type { TestingModule } from '@nestjs/testing';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -25,6 +27,7 @@ const resources = `${_dirname}/../resources`;
 describe('FileInfoService', () => {
 	let app: TestingModule;
 	let fileInfoService: FileInfoService;
+	let sensitiveMediaDetectionService: SensitiveMediaDetectionService;
 	const strip = (fileInfo: FileInfo): Omit<Partial<FileInfo>, 'warnings' | 'blurhash' | 'sensitive' | 'porn'> => {
 		const fi: Partial<FileInfo> = fileInfo;
 		delete fi.warnings;
@@ -33,7 +36,7 @@ describe('FileInfoService', () => {
 		delete fi.porn;
 
 		return fi;
-	}
+	};
 
 	beforeAll(async () => {
 		app = await Test.createTestingModule({
@@ -59,6 +62,7 @@ describe('FileInfoService', () => {
 		app.enableShutdownHooks();
 
 		fileInfoService = app.get<FileInfoService>(FileInfoService);
+		sensitiveMediaDetectionService = app.get<SensitiveMediaDetectionService>(SensitiveMediaDetectionService);
 	});
 
 	afterAll(async () => {
@@ -307,6 +311,55 @@ describe('FileInfoService', () => {
 					ext: 'webm',
 				},
 			});
+		});
+	});
+
+	describe('Video sensitive detection', () => {
+		let dir: string;
+		let cleanup: () => void;
+
+		function makeVideo(name: string, source: string): string {
+			const path = join(dir, name);
+			const result = spawnSync('ffmpeg', [
+				'-hide_banner', '-loglevel', 'error', '-nostdin', '-y',
+				'-f', 'lavfi', '-i', source,
+				'-c:v', 'mpeg4', '-g', '30',
+				path,
+			], { timeout: 60 * 1000 });
+			if (result.error) throw result.error;
+			if (result.status !== 0) throw new Error(`ffmpeg failed: ${result.stderr.toString()}`);
+			return path;
+		}
+
+		beforeAll(async () => {
+			[dir, cleanup] = await createTempDir();
+		});
+
+		afterAll(() => {
+			cleanup();
+		});
+
+		afterEach(() => {
+			vi.restoreAllMocks();
+		});
+
+		test('判定対象のフレームを判定サービスに渡す', async () => {
+			const video = makeVideo('testsrc.mp4', 'testsrc=duration=3:size=320x240:rate=30');
+			const detect = vi.spyOn(sensitiveMediaDetectionService, 'detectSensitiveMany').mockImplementation(async (sources) => sources.map(() => null));
+			const info = await fileInfoService.getFileInfo(video, { skipSensitiveDetection: false, enableSensitiveMediaDetectionForVideos: true });
+			expect(info.warnings).toEqual([]);
+			expect(detect).toHaveBeenCalledOnce();
+			expect(detect.mock.calls[0][0].length).toBeGreaterThan(0);
+		});
+
+		test('全フレームがフィルタで除外される動画でも失敗しない', async () => {
+			// 真っ黒なフレームは暗部の割合が 50% 以上なので、判定対象から全て除外される
+			const video = makeVideo('black.mp4', 'color=c=black:duration=3:size=320x240:rate=30');
+			const detect = vi.spyOn(sensitiveMediaDetectionService, 'detectSensitiveMany').mockResolvedValue([]);
+			const info = await fileInfoService.getFileInfo(video, { skipSensitiveDetection: false, enableSensitiveMediaDetectionForVideos: true });
+			expect(info.warnings).toEqual([]);
+			expect(info.sensitive).toBe(false);
+			expect(detect).toHaveBeenCalledWith([]);
 		});
 	});
 });

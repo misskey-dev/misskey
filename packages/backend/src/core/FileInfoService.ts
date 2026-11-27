@@ -10,12 +10,12 @@ import * as stream from 'node:stream/promises';
 import { Injectable } from '@nestjs/common';
 import { FSWatcher } from 'chokidar';
 import * as fileType from 'file-type';
-import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import * as blurhash from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
+import { extractDetectionFrames, hasVideoStream } from '@/misc/ffmpeg.js';
 import { SensitiveMediaDetectionService } from '@/core/SensitiveMediaDetectionService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
@@ -208,52 +208,14 @@ export class FileInfoService {
 		if (analyzeVideo && (mime === 'image/apng' || mime.startsWith('video/'))) {
 			const [outDir, disposeOutDir] = await createTempDir();
 			try {
-				const command = FFmpeg()
-					.input(source)
-					.inputOptions([
-						'-skip_frame', 'nokey', // 可能ならキーフレームのみを取得してほしいとする（そうなるとは限らない）
-						'-lowres', '3', // 元の画質でデコードする必要はないので 1/8 画質でデコードしてもよいとする（そうなるとは限らない）
-					])
-					.noAudio()
-					.videoFilters([
-						{
-							filter: 'select', // フレームのフィルタリング
-							options: {
-								e: 'eq(pict_type,PICT_TYPE_I)', // I-Frame のみをフィルタする（VP9 とかはデコードしてみないとわからないっぽい）
-							},
-						},
-						{
-							filter: 'blackframe', // 暗いフレームの検出
-							options: {
-								amount: '0', // 暗さに関わらず全てのフレームで測定値を取る
-							},
-						},
-						{
-							filter: 'metadata',
-							options: {
-								mode: 'select', // フレーム選択モード
-								key: 'lavfi.blackframe.pblack', // フレームにおける暗部の百分率（前のフィルタからのメタデータを参照する）
-								value: '50',
-								function: 'less', // 50% 未満のフレームを選択する（50% 以上暗部があるフレームだと誤検知を招くかもしれないので）
-							},
-						},
-						{
-							filter: 'scale',
-							options: {
-								w: 299,
-								h: 299,
-							},
-						},
-					])
-					.format('image2')
-					.output(join(outDir, '%d.png'))
-					.outputOptions(['-vsync', '0']); // 可変フレームレートにすることで穴埋めをさせない
 				// 判定対象フレームを選定して正規化済みバッファとして集め、外部サービスへまとめて送る。
 				const frameBuffers: Buffer[] = [];
 				let frameIndex = 0;
 				let targetIndex = 0;
 				let nextIndex = 1;
-				for await (const path of this.asyncIterateFrames(outDir, command)) {
+
+				const frames = this.asyncIterateFrames(outDir, () => extractDetectionFrames(source, outDir));
+				for await (const path of frames) {
 					try {
 						const index = frameIndex++;
 						if (index !== targetIndex) {
@@ -263,9 +225,11 @@ export class FileInfoService {
 						nextIndex += index; // fibonacci sequence によってフレーム数制限を掛ける
 						frameBuffers.push(await fs.promises.readFile(path));
 					} finally {
-						fs.promises.unlink(path);
+						// 一時ディレクトリごと後で削除するので、ここでの削除の失敗は無視する
+						await fs.promises.unlink(path).catch(() => {});
 					}
 				}
+
 				const predictions = await this.sensitiveMediaDetectionService.detectSensitiveMany(frameBuffers);
 				const results = predictions.filter((x): x is Prediction[] => x != null).map(x => judgePrediction(x));
 				// 判定に成功したフレームが 0 件のとき（接続先未設定・通信失敗等）は、
@@ -300,42 +264,67 @@ export class FileInfoService {
 		return [sensitive, porn];
 	}
 
-	private async *asyncIterateFrames(cwd: string, command: FFmpeg.FfmpegCommand): AsyncGenerator<string, void> {
-		const watcher = new FSWatcher({
-			cwd,
-		});
-		let finished = false;
-		command.once('end', () => {
-			finished = true;
-			watcher.close();
-		});
-		command.run();
+	/**
+	 * start() で書き出しを始め、cwd に 1.png, 2.png, ... と書き出されるフレームのパスを、書き込みが終わった順に返す。
+	 */
+	private async *asyncIterateFrames(cwd: string, start: () => Promise<void>): AsyncGenerator<string, void> {
+		const watcher = new FSWatcher({ cwd });
+
+		// 書き出しプロセスの状態（Promise のコールバックから更新する）
+		const extraction: { finished: boolean; failure: { error: unknown } | null } = {
+			finished: false,
+			failure: null,
+		};
+
+		// 書き出しプロセスの終了を待つ Promise。失敗しても reject せず、extraction.failure に記録する
+		const done = start()
+			.catch((error: unknown) => {
+				extraction.failure = { error };
+			})
+			.then(async () => {
+				extraction.finished = true;
+				await watcher.close();
+			});
+
 		for (let i = 1; true; i++) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 			const current = `${i}.png`;
 			const next = `${i + 1}.png`;
 			const framePath = join(cwd, current);
+
+			// 次のフレームが書き出され始めているなら、現在のフレームの書き込みは終わっている
 			if (await this.exists(join(cwd, next))) {
 				yield framePath;
-			} else if (!finished) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
-				watcher.add(next);
-				await new Promise<void>((resolve, reject) => {
-					watcher.on('add', function onAdd(path) {
-						if (path === next) { // 次フレームの書き出しが始まっているなら、現在フレームの書き出しは終わっている
-							watcher.unwatch(current);
-							watcher.off('add', onAdd);
-							resolve();
-						}
-					});
-					command.once('end', resolve); // 全てのフレームを処理し終わったなら、最終フレームである現在フレームの書き出しは終わっている
-					command.once('error', reject);
-				});
-				yield framePath;
-			} else if (await this.exists(framePath)) {
-				yield framePath;
-			} else {
-				return;
+				continue;
 			}
+
+			// 次のフレームが現れる（= 現在のフレームを書き終えた）か、
+			// 書き出しプロセスが終了する（= 現在のフレームが最後だった）まで待つ
+			if (!extraction.finished) {
+				watcher.add(next);
+				await Promise.race([this.waitForAdd(watcher, next), done]);
+				watcher.unwatch(current);
+			}
+
+			if (extraction.failure != null) throw extraction.failure.error;
+
+			// フィルタで全フレームが除外されると、1 枚も書き出さずに正常終了する
+			if (!await this.exists(framePath)) return;
+
+			yield framePath;
 		}
+	}
+
+	/**
+	 * watcher に name のファイルが追加されるまで待つ。
+	 */
+	private waitForAdd(watcher: FSWatcher, name: string): Promise<void> {
+		return new Promise((resolve) => {
+			watcher.on('add', function onAdd(path) {
+				if (path !== name) return;
+				watcher.off('add', onAdd);
+				resolve();
+			});
+		});
 	}
 
 	@bindThis
@@ -364,24 +353,15 @@ export class FileInfoService {
 	 * @returns ビデオトラックがあるかどうか（エラー発生時は常に`true`を返す）
 	 */
 	@bindThis
-	private hasVideoTrackOnVideoFile(path: string): Promise<boolean> {
+	private async hasVideoTrackOnVideoFile(path: string): Promise<boolean> {
 		const sublogger = this.logger.createSubLogger('ffprobe');
 		sublogger.info(`Checking the video file. File path: ${path}`);
-		return new Promise((resolve) => {
-			try {
-				FFmpeg.ffprobe(path, (err, metadata) => {
-					if (err) {
-						sublogger.warn(`Could not check the video file. Returns true. File path: ${path}`, err);
-						resolve(true);
-						return;
-					}
-					resolve(metadata.streams.some((stream) => stream.codec_type === 'video'));
-				});
-			} catch (err) {
-				sublogger.warn(`Could not check the video file. Returns true. File path: ${path}`, err as Error);
-				resolve(true);
-			}
-		});
+		try {
+			return await hasVideoStream(path);
+		} catch (err) {
+			sublogger.warn(`Could not check the video file. Returns true. File path: ${path}`, err as Error);
+			return true;
+		}
 	}
 
 	/**
