@@ -48,6 +48,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-device-usb" style="font-size: medium;"></i>{{ i18n.ts.signinWithPasskey }}
 			</MkButton>
 		</div>
+		<MkButton v-if="oidcEnabled" type="button" rounded style="margin: 0 auto;" @click="emit('oidcClick')">
+			{{ oidcPending ? i18n.ts.cancel : i18n.ts._oidc.signin }}
+		</MkButton>
 	</div>
 </div>
 </template>
@@ -70,6 +73,8 @@ const props = withDefaults(defineProps<{
 	message?: string,
 	openOnRemote?: OpenOnRemoteOptions,
 	initialUsername?: string;
+	oidcEnabled?: boolean;
+	oidcPending?: boolean;
 }>(), {
 	message: '',
 	openOnRemote: undefined,
@@ -79,6 +84,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
 	(ev: 'usernameSubmitted', v: string): void;
 	(ev: 'passkeyClick', v: PointerEvent): void;
+	(ev: 'oidcClick'): void;
 }>();
 
 const host = toUnicode(configHost);

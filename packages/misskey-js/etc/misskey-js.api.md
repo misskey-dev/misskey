@@ -1479,6 +1479,29 @@ export type Endpoints = Overwrite<Endpoints_2, {
         req: SigninFlowRequest;
         res: SigninFlowResponse;
     };
+    'oidc/status': {
+        req: EmptyRequest;
+        res: {
+            enabled: boolean;
+            linked: boolean;
+        };
+    };
+    'oidc/start': {
+        req: {
+            mode: 'signin';
+        } | ({
+            mode: 'link';
+        } & OidcAccountAuthorization);
+        res: OidcStartResponse;
+    };
+    'oidc/finish': {
+        req: OidcFinishRequest;
+        res: OidcFinishResponse;
+    };
+    'oidc/unlink': {
+        req: OidcAccountAuthorization;
+        res: EmptyResponse;
+    };
     'signin-with-passkey': {
         req: SigninWithPasskeyRequest;
         res: {
@@ -1542,6 +1565,10 @@ declare namespace entities {
         SigninWithPasskeyRequest,
         SigninWithPasskeyInitResponse,
         SigninWithPasskeyResponse,
+        OidcAccountAuthorization,
+        OidcStartResponse,
+        OidcFinishRequest,
+        OidcFinishResponse,
         I2faRegisterKeyResponse_2 as I2faRegisterKeyResponse,
         I2faKeyDoneRequest_2 as I2faKeyDoneRequest,
         PartialRolePolicyOverride,
@@ -3155,6 +3182,41 @@ export const notificationTypes: readonly ["note", "follow", "mention", "reply", 
 
 // @public (undocumented)
 export function nyaize(text: string): string;
+
+// @public (undocumented)
+type OidcAccountAuthorization = {
+    password: string;
+    token?: string | null;
+};
+
+// @public (undocumented)
+type OidcFinishRequest = {
+    state: string;
+    browserSecret: string;
+} & ({
+    authorizationResponse: string;
+} | {
+    token: string;
+});
+
+// @public (undocumented)
+type OidcFinishResponse = {
+    result: 'linked';
+} | {
+    result: 'totp';
+} | {
+    result: 'signedIn';
+    signin: SigninFlowResponse & {
+        finished: true;
+    };
+};
+
+// @public (undocumented)
+type OidcStartResponse = {
+    url: string;
+    state: string;
+    browserSecret: string;
+};
 
 // @public (undocumented)
 type Page = components['schemas']['Page'];

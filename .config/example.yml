@@ -82,6 +82,21 @@ url: https://example.tld/
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
 # URL SETTINGS AFTER THAT!
 
+#   ┌────────────────┐
+#───┘ OpenID Connect └──────────────────────────────────────────
+
+# Optional sign-in for existing accounts.
+# Register https://example.tld/api/oidc/callback as a redirect URI.
+# Use a confidential client with Authorization Code flow and S256 PKCE.
+# Members link their identity under Settings > Security after signing in.
+# Removing the configuration disables OIDC sign-in. Members can still unlink.
+# The issuer must exactly match the provider's discovery metadata.
+# oidc:
+#  issuer: https://idp.example.tld/realms/example
+#  clientId: misskey
+#  clientSecret: replace_with_client_secret
+#  tokenEndpointAuthMethod: client_secret_basic # or client_secret_post
+
 #   ┌───────────────────────┐
 #───┘ Port and TLS settings └───────────────────────────────────
 

@@ -178,6 +178,27 @@ export type SigninWithPasskeyResponse = {
 	signinResponse: SigninFlowResponse & { finished: true };
 };
 
+export type OidcAccountAuthorization = {
+	password: string;
+	token?: string | null;
+};
+
+export type OidcStartResponse = {
+	url: string;
+	state: string;
+	browserSecret: string;
+};
+
+export type OidcFinishRequest = {
+	state: string;
+	browserSecret: string;
+} & ({ authorizationResponse: string } | { token: string });
+
+export type OidcFinishResponse =
+	| { result: 'linked' }
+	| { result: 'totp' }
+	| { result: 'signedIn'; signin: SigninFlowResponse & { finished: true } };
+
 export type I2faRegisterKeyResponse = PublicKeyCredentialCreationOptionsJSON;
 
 export type I2faKeyDoneRequest = {

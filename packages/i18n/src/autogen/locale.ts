@@ -5297,6 +5297,44 @@ export interface Locale extends ILocale {
      * パスキーでログイン
      */
     "signinWithPasskey": string;
+    "_oidc": {
+        /**
+         * OpenID Connect
+         */
+        "title": string;
+        /**
+         * OpenID Connectでログイン
+         */
+        "signin": string;
+        /**
+         * OpenID Connectアカウントを連携
+         */
+        "link": string;
+        /**
+         * 連携を解除
+         */
+        "unlink": string;
+        /**
+         * OpenID Connectアカウントとの連携を解除しますか？
+         */
+        "unlinkConfirm": string;
+        /**
+         * OpenID Connectアカウントを連携済みです。
+         */
+        "linked": string;
+        /**
+         * 外部のアカウントを連携すると、次回からOpenID Connectでログインできます。
+         */
+        "linkDescription": string;
+        /**
+         * OpenID Connectでの認証に失敗しました。連携状況や認証情報を確認し、もう一度お試しください。
+         */
+        "failed": string;
+        /**
+         * 認証ウィンドウを開けませんでした。このサイトのポップアップを許可して、もう一度お試しください。
+         */
+        "popupBlocked": string;
+    };
     /**
      * 登録されていないパスキーです。
      */

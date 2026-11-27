@@ -31,6 +31,13 @@ type SentryBackendConfig = {
 	disabledIntegrations?: string[];
 };
 
+type OidcConfig = {
+	issuer: string;
+	clientId: string;
+	clientSecret: string;
+	tokenEndpointAuthMethod?: 'client_secret_basic' | 'client_secret_post';
+};
+
 /**
  * 設定ファイルの型
  */
@@ -86,6 +93,7 @@ type Source = {
 	publishTarballInsteadOfProvideRepositoryUrl?: boolean;
 
 	setupPassword?: string;
+	oidc?: OidcConfig;
 
 	proxy?: string;
 	proxySmtp?: string;
@@ -200,6 +208,7 @@ export type Config = {
 	version: string;
 	publishTarballInsteadOfProvideRepositoryUrl: boolean;
 	setupPassword: string | undefined;
+	oidc?: OidcConfig;
 	host: string;
 	hostname: string;
 	scheme: string;
@@ -292,6 +301,7 @@ export function loadConfig(): Config {
 		version,
 		publishTarballInsteadOfProvideRepositoryUrl: !!config.publishTarballInsteadOfProvideRepositoryUrl,
 		setupPassword: config.setupPassword,
+		oidc: config.oidc,
 		url: url.origin,
 		port: config.port ?? parseInt(process.env.PORT ?? '', 10),
 		socket: config.socket,

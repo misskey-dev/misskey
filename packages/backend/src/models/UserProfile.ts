@@ -149,6 +149,10 @@ export class MiUserProfile {
 	})
 	public password: string | null;
 
+	@Index('IDX_user_profile_oidc_identity', { unique: true })
+	@Column('varchar', { length: 43, nullable: true })
+	public oidcIdentity: string | null;
+
 	@Column('varchar', {
 		length: 8192, default: '',
 	})

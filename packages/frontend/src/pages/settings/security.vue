@@ -24,6 +24,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<X2fa/>
 
+		<SearchMarker v-if="oidcStatus?.enabled || oidcStatus?.linked" :keywords="['openid', 'oidc']">
+			<FormSection>
+				<template #label><SearchLabel>{{ i18n.ts._oidc.title }}</SearchLabel></template>
+				<div class="_gaps_s">
+					<p>{{ oidcStatus.linked ? i18n.ts._oidc.linked : i18n.ts._oidc.linkDescription }}</p>
+					<MkButton v-if="oidcStatus.linked" danger @click="unlinkOidc">{{ i18n.ts._oidc.unlink }}</MkButton>
+					<MkButton v-else primary @click="linkOidc">{{ oidcAuthorization ? i18n.ts.cancel : i18n.ts._oidc.link }}</MkButton>
+				</div>
+			</FormSection>
+		</SearchMarker>
+
 		<SearchMarker :keywords="['signin', 'login', 'history', 'log']">
 			<FormSection>
 				<template #label><SearchLabel>{{ i18n.ts.signinHistory }}</SearchLabel></template>
@@ -57,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw } from 'vue';
+import { computed, markRaw, onBeforeUnmount, onMounted, shallowRef } from 'vue';
 import X2fa from './2fa.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSlot from '@/components/form/slot.vue';
@@ -65,6 +76,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { authorizeWithOidc, oidcErrorMessage } from '@/utility/oidc.js';
 import { i18n } from '@/i18n.js';
 import { cloudBackup } from '@/preferences/utility.js';
 import { signout } from '@/signout.js';
@@ -76,6 +88,56 @@ import { Paginator } from '@/utility/paginator.js';
 const paginator = markRaw(new Paginator('i/signin-history', {
 	limit: 5,
 }));
+
+const oidcStatus = shallowRef<{ enabled: boolean; linked: boolean }>();
+const oidcAuthorization = shallowRef<AbortController>();
+
+onMounted(async () => {
+	oidcStatus.value = await misskeyApi('oidc/status').catch(() => undefined);
+});
+onBeforeUnmount(() => oidcAuthorization.value?.abort());
+
+function showOidcError(error: unknown) {
+	os.alert({
+		type: 'error',
+		text: oidcErrorMessage(error),
+	});
+}
+
+async function linkOidc() {
+	if (oidcAuthorization.value != null) {
+		oidcAuthorization.value.abort();
+		return;
+	}
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
+
+	const authorization = new AbortController();
+	oidcAuthorization.value = authorization;
+	try {
+		const { response } = await authorizeWithOidc({ mode: 'link', ...auth.result }, authorization.signal);
+		if (response.result === 'linked') oidcStatus.value = { enabled: true, linked: true };
+	} catch (error) {
+		if (!authorization.signal.aborted) showOidcError(error);
+	} finally {
+		oidcAuthorization.value = undefined;
+	}
+}
+
+async function unlinkOidc() {
+	const confirm = await os.confirm({ type: 'warning', text: i18n.ts._oidc.unlinkConfirm });
+	if (confirm.canceled) return;
+
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
+
+	try {
+		await misskeyApi('oidc/unlink', auth.result);
+		oidcStatus.value = { enabled: oidcStatus.value?.enabled === true, linked: false };
+	} catch (error) {
+		showOidcError(error);
+	}
+}
 
 async function change() {
 	const { canceled: canceled2, result: newPassword } = await os.inputText({

@@ -21,9 +21,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:message="message"
 			:openOnRemote="openOnRemote"
 			:initialUsername="initialUsername"
+			:oidcEnabled="oidcEnabled"
+			:oidcPending="oidcPending"
 
 			@usernameSubmitted="onUsernameSubmitted"
 			@passkeyClick="onPasskeyLogin"
+			@oidcClick="onOidcLogin"
 		/>
 
 		<!-- 2. パスワード入力 -->
@@ -65,13 +68,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, ref, shallowRef, useTemplateRef } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, ref, shallowRef, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { browserSupportsWebAuthn } from '@simplewebauthn/browser';
 import type { PublicKeyCredentialRequestOptionsJSON, AuthenticationResponseJSON } from '@simplewebauthn/browser';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
 import type { PwResponse } from '@/components/MkSignin.password.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { authorizeWithOidc, oidcErrorMessage } from '@/utility/oidc.js';
 import { showSuspendedDialog } from '@/utility/show-suspended-dialog.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -107,6 +111,50 @@ const needCaptcha = ref(false);
 const userInfo = ref<null | Misskey.entities.UserDetailed>(null);
 const password = ref('');
 
+const oidcEnabled = ref(false);
+const oidcPending = ref(false);
+let oidcAuthorization: AbortController | undefined;
+let oidcTotp: { state: string; browserSecret: string } | undefined;
+
+onMounted(async () => {
+	const status = await misskeyApi('oidc/status', {}, null).catch(() => null);
+	oidcEnabled.value = status?.enabled === true;
+});
+
+function onOidcError(error: unknown) {
+	os.alert({
+		type: 'error',
+		title: i18n.ts.loginFailed,
+		text: oidcErrorMessage(error),
+	});
+}
+
+async function onOidcLogin() {
+	if (oidcAuthorization != null) {
+		oidcAuthorization.abort();
+		return;
+	}
+	const authorization = new AbortController();
+	oidcAuthorization = authorization;
+	oidcPending.value = true;
+	try {
+		const { response, context } = await authorizeWithOidc({ mode: 'signin' }, authorization.signal);
+		authorization.signal.throwIfAborted();
+		if (response.result === 'totp') {
+			oidcTotp = context;
+			page.value = 'totp';
+		} else if (response.result === 'signedIn') {
+			emit('login', response.signin);
+			await onLoginSucceeded(response.signin);
+		}
+	} catch (error) {
+		if (!authorization.signal.aborted) onOidcError(error);
+	} finally {
+		oidcAuthorization = undefined;
+		oidcPending.value = false;
+	}
+}
+
 //#region Passkey Passwordless
 const credentialRequest = shallowRef<PublicKeyCredentialRequestOptionsJSON | null>(null);
 const passkeyContext = ref('');
@@ -114,6 +162,7 @@ const doingPasskeyFromInputPage = ref(false);
 
 function onPasskeyLogin(): void {
 	if (browserSupportsWebAuthn()) {
+		oidcAuthorization?.abort();
 		doingPasskeyFromInputPage.value = true;
 		waiting.value = true;
 		misskeyApi('signin-with-passkey', {})
@@ -158,6 +207,7 @@ function onUseTotp(): void {
 //#endregion
 
 async function onUsernameSubmitted(username: string) {
+	oidcAuthorization?.abort();
 	waiting.value = true;
 
 	userInfo.value = await misskeyApi('users/show', {
@@ -196,6 +246,29 @@ async function onPasswordSubmitted(pw: PwResponse) {
 
 async function onTotpSubmitted(token: string) {
 	waiting.value = true;
+
+	if (oidcTotp != null) {
+		const context = oidcTotp;
+		oidcTotp = undefined;
+		const authorization = new AbortController();
+		oidcAuthorization = authorization;
+		try {
+			const response = await misskeyApi('oidc/finish', { ...context, token }, null, authorization.signal);
+			authorization.signal.throwIfAborted();
+			if (response.result !== 'signedIn') throw new Error('Unexpected OpenID Connect response.');
+			emit('login', response.signin);
+			await onLoginSucceeded(response.signin);
+		} catch (error) {
+			if (!authorization.signal.aborted) {
+				onOidcError(error);
+				page.value = 'input';
+			}
+		} finally {
+			oidcAuthorization = undefined;
+			waiting.value = false;
+		}
+		return;
+	}
 
 	if (userInfo.value == null) {
 		await os.alert({
@@ -376,6 +449,8 @@ function onSigninApiError(err?: any): void {
 }
 
 onBeforeUnmount(() => {
+	oidcAuthorization?.abort();
+	oidcTotp = undefined;
 	password.value = '';
 	needCaptcha.value = false;
 	userInfo.value = null;

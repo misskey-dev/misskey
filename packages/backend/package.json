@@ -112,6 +112,7 @@
 		"node-fetch": "3.3.2",
 		"node-html-parser": "9.0.7",
 		"nodemailer": "10.5.0",
+		"openid-client": "6.9.1",
 		"os-utils": "0.0.14",
 		"otpauth": "9.6.0",
 		"pg": "8.23.1",

@@ -16,6 +16,10 @@ import {
 	SigninWithPasskeyInitResponse,
 	SigninWithPasskeyRequest,
 	SigninWithPasskeyResponse,
+	OidcAccountAuthorization,
+	OidcStartResponse,
+	OidcFinishRequest,
+	OidcFinishResponse,
 	SignupPendingRequest,
 	SignupPendingResponse,
 	SignupRequest,
@@ -96,6 +100,22 @@ export type Endpoints = Overwrite<
 		'signin-flow': {
 			req: SigninFlowRequest;
 			res: SigninFlowResponse;
+		},
+		'oidc/status': {
+			req: EmptyRequest;
+			res: { enabled: boolean; linked: boolean };
+		},
+		'oidc/start': {
+			req: { mode: 'signin' } | ({ mode: 'link' } & OidcAccountAuthorization);
+			res: OidcStartResponse;
+		},
+		'oidc/finish': {
+			req: OidcFinishRequest;
+			res: OidcFinishResponse;
+		},
+		'oidc/unlink': {
+			req: OidcAccountAuthorization;
+			res: EmptyResponse;
 		},
 		'signin-with-passkey': {
 			req: SigninWithPasskeyRequest;
