@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Feat: コントロールパネル、管理者API、CLIから、Meilisearchのノート検索インデックスの全件削除と期間指定の再インデックスを個別に実行できるように
 
 ### Client
 -
