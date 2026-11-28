@@ -252,7 +252,8 @@ export class SearchService {
 		if (props.sinceDate != null && props.sinceDate > now) return 0;
 
 		const sinceId = props.sinceDate == null ? null : this.idService.getTimeBoundary(props.sinceDate);
-		const untilId = props.untilDate == null || props.untilDate > now ? null : this.idService.getTimeBoundary(props.untilDate);
+		if (props.sinceDate != null && sinceId == null) return 0;
+		const untilId = props.untilDate == null ? null : this.idService.getTimeBoundary(props.untilDate);
 
 		const query = this.notesRepository.createQueryBuilder('note')
 			.select(['note.id', 'note.userId', 'note.userHost', 'note.channelId', 'note.cw', 'note.text', 'note.tags'])

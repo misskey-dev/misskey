@@ -2,7 +2,7 @@
 
 Misskey runs note reindexing and index clearing in the `searchIndexMaintenance` job queue. The CLI reads the server configuration and enqueues a job. A running Misskey queue worker executes it. The control panel can show the result under **Performance** or **Job Queue**.
 
-A Meilisearch request may reach the server even when its response is lost. Before sending a write, the worker records a reservation in the job queue's Redis database. Misskey keeps it until Meilisearch reports a terminal task status. The reservation remains after the job fails if the submission or task result is unknown. Subsequent requests then return `SEARCH_INDEX_RECOVERY_REQUIRED`.
+A Meilisearch request may reach the server even when its response is lost. Before sending a write, the worker records a reservation in the job queue's Redis database. Misskey keeps it until Meilisearch reports a terminal task status. The reservation remains after the job fails if the submission or task result is unknown. Subsequent requests then return `SEARCH_INDEX_RECOVERY_REQUIRED`. If the worker is canceled just after reserving cleanup for a successful reindex batch and before sending the request, the next job can resume cleanup automatically.
 
 ## Recover after an unverified write
 

@@ -116,7 +116,9 @@ export class SearchIndexMaintenanceProcessorService {
 		}
 
 		try {
-			await this.searchService.waitForMeilisearchTask(taskUid, signal);
+			if (!mutation.batchSucceeded) {
+				await this.searchService.waitForMeilisearchTask(taskUid, signal);
+			}
 		} catch (err) {
 			// A failed cleanup leaves the deleted documents unreconciled.
 			if (err instanceof MeilisearchTaskFailedError && !mutation.cleanup) {
@@ -129,8 +131,10 @@ export class SearchIndexMaintenanceProcessorService {
 			indexedCount = await this.searchService.reconcileIndexedNotes(mutation.noteIds, async submit => {
 				signal?.throwIfAborted();
 				const cleanup = await this.maintenanceQueue.beginCleanup(job, mutation);
-				// Keep the original batch IDs in the reservation until its cleanup has finished.
-				signal?.throwIfAborted();
+				if (signal?.aborted) {
+					await this.maintenanceQueue.rollbackUnsubmittedCleanup(cleanup, taskUid);
+					signal.throwIfAborted();
+				}
 				const cleanupTaskUid = await this.submitMutation(cleanup, submit);
 				await this.searchService.waitForMeilisearchTask(cleanupTaskUid, signal);
 				await this.maintenanceQueue.releaseMutation(cleanup);

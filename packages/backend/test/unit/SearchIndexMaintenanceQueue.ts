@@ -46,6 +46,21 @@ describe('SearchIndexMaintenanceQueue', () => {
 		await expect(maintenance.enqueue({ operation: 'reindex' }, null)).resolves.toHaveProperty('jobId');
 	});
 
+	test('タスクIDがあっても再インデックスの書き込みが未確認なら新しいジョブを拒否する', async () => {
+		const { jobId } = await maintenance.enqueue({ operation: 'reindex' }, null);
+		const job = (await maintenance.queue.getJob(jobId))!;
+		const client = await maintenance.queue.getBackend().client;
+		const lockKey = maintenance.queue.toKey(`${jobId}:lock`);
+		job.token = 'original-token';
+		await client.set(lockKey, job.token);
+		const mutation = await maintenance.beginMutation(job, ['note']);
+		await maintenance.recordTask(mutation, 0);
+		await client.del(lockKey);
+		await job.remove();
+
+		await expect(maintenance.enqueue({ operation: 'reset' }, null)).rejects.toMatchObject({ code: 'SEARCH_INDEX_RECOVERY_REQUIRED', jobId });
+	});
+
 	test('別のジョブが後処理を引き継いでも、元の再インデックスジョブのIDを保持する', async () => {
 		const { jobId } = await maintenance.enqueue({ operation: 'reset' }, null);
 		const job = (await maintenance.queue.getJob(jobId))!;

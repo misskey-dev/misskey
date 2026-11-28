@@ -652,6 +652,30 @@ describe('SearchService', () => {
 			expect(documents.results.map(doc => doc.id).sort()).toEqual([...ids, existing.id, cwOnly.id].sort());
 		});
 
+		test('開始時点で未来だった終了日時も初回の検索から適用する', async () => {
+			const user = await createUser(ctx);
+			const untilDate = Date.now() - 10_000;
+			const unindexed = { ...ctx, indexer: undefined };
+			const included = await createNote(unindexed, user, {}, untilDate - 1);
+			await createNote(unindexed, user, {}, untilDate);
+			await createNote(unindexed, user, {}, untilDate + 1);
+
+			// Simulate the clock crossing the boundary between starting the job and querying PostgreSQL.
+			vi.spyOn(Date, 'now').mockReturnValueOnce(untilDate - 1);
+			await ctx.service.reIndexNotes({ untilDate, runMutation });
+
+			expect((await meilisearchIndex.getDocuments()).results.map(doc => doc.id)).toEqual([included.id]);
+		});
+
+		test('ノートIDで表せる範囲より先の終了日時でも対象のノートを再インデックスできる', async () => {
+			const user = await createUser(ctx);
+			const note = await createNote({ ...ctx, indexer: undefined }, user);
+
+			await ctx.service.reIndexNotes({ untilDate: 8_640_000_000_000_000, runMutation });
+
+			expect((await meilisearchIndex.getDocuments()).results.map(doc => doc.id)).toEqual([note.id]);
+		});
+
 		test('バッチ処理中に削除されたノートを検索インデックスから取り除く', async () => {
 			const user = await createUser(ctx);
 			const note = await createNote({ ...ctx, indexer: undefined }, user);
@@ -915,6 +939,66 @@ describe('SearchService', () => {
 			} finally {
 				await client.del(lockKey, maintenance.queue.toKey('pending-mutation'));
 				await maintenance.queue.remove(jobId);
+			}
+		});
+
+		test('後処理の予約直後にキャンセルされたジョブが終了しても次のジョブで後処理を再開できる', async () => {
+			const user = await createUser(ctx);
+			const note = await createNote(ctx, user);
+			const maintenance = ctx.app.get(SearchIndexMaintenanceQueue);
+			const processor = new SearchIndexMaintenanceProcessorService(ctx.service, maintenance, ctx.app.get(ModerationLogService), new QueueLoggerService(ctx.app.get(LoggerService)));
+			const { jobId } = await maintenance.enqueue({ operation: 'reindex' }, null);
+			const client = await maintenance.queue.getBackend().client;
+			const lockKey = maintenance.queue.toKey(`${jobId}:lock`);
+			const controller = new AbortController();
+			let resumedJobId: string | undefined;
+
+			try {
+				const job = (await maintenance.queue.getJob(jobId))!;
+				job.token = 'first-worker';
+				await client.set(lockKey, job.token);
+				const mutation = await maintenance.beginMutation(job, [note.id]);
+				await ctx.notesRepository.delete(note.id);
+				const task = await meilisearchIndex.addDocuments([{ id: note.id, text: note.text }], { primaryKey: 'id' });
+				await maintenance.recordTask(mutation, task.taskUid);
+
+				const beginCleanup = maintenance.beginCleanup.bind(maintenance);
+				vi.spyOn(maintenance, 'beginCleanup').mockImplementationOnce(async (...args) => {
+					const cleanup = await beginCleanup(...args);
+					await client.del(lockKey);
+					controller.abort(new Error('Lost the job lock'));
+					return cleanup;
+				});
+
+				await expect(processor.process(job, controller.signal)).rejects.toThrow('Lost the job lock');
+				expect((await meilisearchIndex.getDocuments()).results.map(doc => doc.id)).toEqual([note.id]);
+				// The old reservation must no longer be able to release the recovered batch.
+				await maintenance.releaseMutation(mutation);
+				expect(await maintenance.getPendingMutation()).toMatchObject({
+					jobId, taskUid: task.taskUid, noteIds: [note.id], cleanup: false,
+				});
+
+				const getTask = meilisearch.tasks.getTask.bind(meilisearch.tasks);
+				vi.spyOn(meilisearch.tasks, 'getTask').mockImplementation(async (taskUid, options) => {
+					if (taskUid === task.taskUid) throw new MeilisearchApiError(new Response(null, { status: 404 }));
+					return await getTask(taskUid, options);
+				});
+
+				await maintenance.queue.remove(jobId);
+				({ jobId: resumedJobId } = await maintenance.enqueue({ operation: 'reindex' }, null));
+				const resumed = (await maintenance.queue.getJob(resumedJobId))!;
+				resumed.token = 'replacement-worker';
+				await client.set(maintenance.queue.toKey(`${resumedJobId}:lock`), resumed.token);
+				await expect(processor.process(resumed)).resolves.toContain('Re-indexed 0 notes');
+				expect((await meilisearchIndex.getDocuments()).results).toEqual([]);
+				expect(await maintenance.getPendingMutation()).toBeNull();
+			} finally {
+				await client.del(lockKey, maintenance.queue.toKey('pending-mutation'));
+				await maintenance.queue.remove(jobId);
+				if (resumedJobId != null) {
+					await client.del(maintenance.queue.toKey(`${resumedJobId}:lock`));
+					await maintenance.queue.remove(resumedJobId);
+				}
 			}
 		});
 

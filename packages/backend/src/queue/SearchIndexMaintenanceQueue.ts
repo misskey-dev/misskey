@@ -26,6 +26,7 @@ export type SearchIndexMutation = {
 	taskUid?: number;
 	noteIds?: string[];
 	cleanup?: boolean;
+	batchSucceeded?: boolean;
 };
 
 const deduplicationId = 'meilisearch-note-index-maintenance';
@@ -41,7 +42,7 @@ if ARGV[5] == '' then
 else
   if redis.call('HGET', KEYS[1], 'id') ~= ARGV[5] then return 0 end
   redis.call('HSET', KEYS[1], 'id', ARGV[3], 'cleanup', '1')
-  redis.call('HDEL', KEYS[1], 'taskUid')
+  redis.call('HDEL', KEYS[1], 'taskUid', 'batchSucceeded')
 end
 return 1
 `;
@@ -49,6 +50,15 @@ return 1
 const recordTask = `
 if redis.call('HGET', KEYS[1], 'id') ~= ARGV[1] then return 0 end
 redis.call('HSET', KEYS[1], 'taskUid', ARGV[2])
+return 1
+`;
+
+const rollbackCleanup = `
+if redis.call('HGET', KEYS[1], 'id') ~= ARGV[1] or
+   redis.call('HGET', KEYS[1], 'cleanup') ~= '1' or
+   redis.call('HEXISTS', KEYS[1], 'taskUid') ~= 0 then return 0 end
+redis.call('HSET', KEYS[1], 'id', ARGV[2], 'taskUid', ARGV[3], 'batchSucceeded', '1')
+redis.call('HDEL', KEYS[1], 'cleanup')
 return 1
 `;
 
@@ -98,11 +108,14 @@ export class SearchIndexMaintenanceQueue {
 			const current = await this.queue.getDeduplicationJobId(deduplicationId);
 			if (current != null) throw this.alreadyRunning(current);
 
-			throw new SearchIndexMaintenanceError(
-				'SEARCH_INDEX_RECOVERY_REQUIRED',
-				'A previous Meilisearch write could not be verified. See docs/meilisearch-maintenance.md before retrying.',
-				pending.jobId,
-			);
+			// A new job can resume cleanup if the batch succeeded and cleanup was never sent.
+			if (!pending.batchSucceeded) {
+				throw new SearchIndexMaintenanceError(
+					'SEARCH_INDEX_RECOVERY_REQUIRED',
+					'A previous Meilisearch write could not be verified. See docs/meilisearch-maintenance.md before retrying.',
+					pending.jobId,
+				);
+			}
 		}
 
 		const jobId = randomUUID();
@@ -128,6 +141,7 @@ export class SearchIndexMaintenanceQueue {
 		return this.redisClient ??= this.queue.getBackend().client.then(client => {
 			client.defineCommand('misskeyBeginSearchMutation', { numberOfKeys: 2, lua: beginMutation });
 			client.defineCommand('misskeyRecordSearchTask', { numberOfKeys: 1, lua: recordTask });
+			client.defineCommand('misskeyRollbackSearchCleanup', { numberOfKeys: 1, lua: rollbackCleanup });
 			client.defineCommand('misskeyReleaseSearchMutation', { numberOfKeys: 1, lua: releaseMutation });
 			return client;
 		});
@@ -135,7 +149,7 @@ export class SearchIndexMaintenanceQueue {
 
 	public async getPendingMutation(): Promise<SearchIndexMutation | null> {
 		const client = await this.getClient();
-		const { jobId, id, taskUid, noteIds, cleanup } = await client.hgetall(this.mutationKey);
+		const { jobId, id, taskUid, noteIds, cleanup, batchSucceeded } = await client.hgetall(this.mutationKey);
 		if (jobId == null && id == null && taskUid == null) return null;
 		const uid = taskUid == null ? undefined : Number(taskUid);
 		if (!jobId || !id || (uid != null && (!Number.isSafeInteger(uid) || uid < 0))) {
@@ -147,7 +161,14 @@ export class SearchIndexMaintenanceQueue {
 			throw new Error('Invalid note IDs in the pending Meilisearch write reservation.');
 		}
 
-		return { jobId, id, taskUid: uid, noteIds: ids ?? undefined, cleanup: cleanup === '1' };
+		return {
+			jobId,
+			id,
+			taskUid: uid,
+			noteIds: ids ?? undefined,
+			cleanup: cleanup === '1',
+			batchSucceeded: batchSucceeded === '1' && cleanup !== '1' && uid != null && ids != null,
+		};
 	}
 
 	public async beginMutation(job: Job<SearchIndexMaintenanceJobData>, noteIds?: string[]): Promise<SearchIndexMutation> {
@@ -171,6 +192,12 @@ export class SearchIndexMaintenanceQueue {
 		if (result !== 1) throw new Error('A previous Meilisearch write is still unresolved.');
 
 		return mutation;
+	}
+
+	public async rollbackUnsubmittedCleanup(cleanup: SearchIndexMutation, batchTaskUid: number): Promise<void> {
+		const client = await this.getClient();
+		// Preserve the batch's job and note IDs, and keep the older reservation IDs fenced.
+		await client.runCommand('misskeyRollbackSearchCleanup', [this.mutationKey, cleanup.id, randomUUID(), batchTaskUid]);
 	}
 
 	public async recordTask(mutation: SearchIndexMutation, taskUid: number): Promise<void> {
