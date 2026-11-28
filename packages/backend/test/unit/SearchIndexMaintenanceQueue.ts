@@ -28,7 +28,7 @@ describe('SearchIndexMaintenanceQueue', () => {
 		await maintenance.queue.close();
 	});
 
-	test('keeps a pending write fenced after BullMQ loses the original worker and job', async () => {
+	test('BullMQのロックとジョブを失っても、結果が未確定の書き込みとの競合を防ぐ', async () => {
 		const { jobId } = await maintenance.enqueue({ operation: 'reset' }, null);
 		const job = (await maintenance.queue.getJob(jobId))!;
 		const client = await maintenance.queue.getBackend().client;
@@ -46,7 +46,7 @@ describe('SearchIndexMaintenanceQueue', () => {
 		await expect(maintenance.enqueue({ operation: 'reindex' }, null)).resolves.toHaveProperty('jobId');
 	});
 
-	test('a cleanup taken over by a different job retains the original reindex identity', async () => {
+	test('別のジョブが後処理を引き継いでも、元の再インデックスジョブのIDを保持する', async () => {
 		const { jobId } = await maintenance.enqueue({ operation: 'reset' }, null);
 		const job = (await maintenance.queue.getJob(jobId))!;
 		const client = await maintenance.queue.getBackend().client;

@@ -111,7 +111,7 @@ describe.each([
 		{ auth: [user, null], roles: [], status: 403, code: 'ROLE_PERMISSION_DENIED' },
 		{ auth: [user, null], roles: [{ isModerator: true, isAdministrator: false }], status: 403, code: 'ROLE_PERMISSION_DENIED' },
 		{ auth: [user, { permission: [] }], roles: [{ isAdministrator: true }], status: 400, code: 'ACCESS_DENIED' },
-	] as const)('rejects requests without administrator account credentials (%j)', async ({ auth, roles, status, code }) => {
+	] as const)('管理者アカウントによる認証要件を満たさないリクエストを拒否する（%j）', async ({ auth, roles, status, code }) => {
 		const { service } = createService([...auth], [...roles]);
 		const reply = createReply();
 		const exec = vi.fn();

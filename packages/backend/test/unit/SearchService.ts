@@ -631,7 +631,7 @@ describe('SearchService', () => {
 			return { taskUid, indexedCount };
 		};
 
-		test('backfills the selected period across batches and preserves indexed notes outside it', async () => {
+		test('指定期間を複数バッチで再インデックスし、期間外の登録済みノートを保持する', async () => {
 			const user = await createUser(ctx);
 			const sinceDate = Date.now() - 10_000;
 			const untilDate = sinceDate + 1000;
@@ -652,7 +652,7 @@ describe('SearchService', () => {
 			expect(documents.results.map(doc => doc.id).sort()).toEqual([...ids, existing.id, cwOnly.id].sort());
 		});
 
-		test('removes backfilled search documents whose notes were deleted during the batch', async () => {
+		test('バッチ処理中に削除されたノートを検索インデックスから取り除く', async () => {
 			const user = await createUser(ctx);
 			const note = await createNote({ ...ctx, indexer: undefined }, user);
 			const indexedCount = vi.fn();
@@ -671,7 +671,7 @@ describe('SearchService', () => {
 			expect(indexedCount).toHaveBeenCalledExactlyOnceWith(0);
 		});
 
-		test('keeps local notes and filters remote notes to the configured hosts', async () => {
+		test('ローカルノートを登録し、リモートノートは設定で許可されたホストだけを登録する', async () => {
 			const scopedSearch = new SearchService(
 				{ ...meiliConfig, meilisearch: { ...meiliConfig.meilisearch!, scope: ['allowed.example'] } },
 				meilisearch,
@@ -695,7 +695,7 @@ describe('SearchService', () => {
 			expect(docs.results.map(doc => doc.id).sort()).toEqual([localNote.id, includedNote.id].sort());
 		});
 
-		test('clears only note search documents and preserves settings and source notes', async () => {
+		test('ノートの検索ドキュメントだけを全件削除し、設定と元のノートを保持する', async () => {
 			const user = await createUser(ctx);
 			const note = await createNote(ctx, user);
 			const settings = await meilisearchIndex.getSettings();
@@ -780,7 +780,7 @@ describe('SearchService', () => {
 			}
 		});
 
-		test('reports a failed Meilisearch task and does not advance progress', async () => {
+		test('Meilisearchのタスクが失敗した場合はエラーを返し、進捗を更新しない', async () => {
 			const user = await createUser(ctx);
 			await createNote(ctx, user);
 			const onBatch = vi.fn();
@@ -794,7 +794,7 @@ describe('SearchService', () => {
 			expect(onBatch).not.toHaveBeenCalled();
 		});
 
-		test('retries transient task-status errors while waiting for the same task', async () => {
+		test('タスクの状態取得が一時的に失敗した場合は、同じタスクIDで再試行する', async () => {
 			const task = await meilisearchIndex.updateSettings(meilisearchSettings);
 			const getTask = vi.spyOn(meilisearch.tasks, 'getTask')
 				.mockRejectedValueOnce(new MeilisearchApiError(new Response(null, { status: 502 })));
@@ -805,7 +805,7 @@ describe('SearchService', () => {
 			expect(getTask.mock.calls.every(([uid]) => uid === task.taskUid)).toBe(true);
 		});
 
-		test('accepts only one simultaneous request across the CLI and admin API', async () => {
+		test('CLIと管理者APIから同時に要求されても、ジョブを1件だけ受け付ける', async () => {
 			const user = await createUser(ctx);
 			const queue = ctx.app.get(QueueService);
 			const endpoint = new ResetIndexEndpoint(queue);
@@ -828,7 +828,7 @@ describe('SearchService', () => {
 			}
 		});
 
-		test('does not replay a reset after losing the submission response and can resume a known task', async () => {
+		test('リセット要求の応答を受け取れなかった場合は再送を防ぎ、タスクIDが判明すれば処理を再開できる', async () => {
 			const maintenance = ctx.app.get(SearchIndexMaintenanceQueue);
 			const { jobId } = await maintenance.enqueue({ operation: 'reset' }, null);
 			const submit = vi.fn().mockRejectedValue(new Error('Missing response'));
@@ -860,7 +860,7 @@ describe('SearchService', () => {
 			}
 		});
 
-		test('a recovered reindex cleanup cannot be reported as the new reset', async () => {
+		test('再インデックスの後処理を引き継いでも、新しいリセットの完了とは判定しない', async () => {
 			const maintenance = ctx.app.get(SearchIndexMaintenanceQueue);
 			const { jobId } = await maintenance.enqueue({ operation: 'reset' }, null);
 			const client = await maintenance.queue.getBackend().client;
@@ -886,7 +886,7 @@ describe('SearchService', () => {
 			}
 		});
 
-		test('a replacement worker removes stale documents from a previously submitted reindex batch', async () => {
+		test('後任のワーカーが、前のバッチで再登録された削除済みノートを検索インデックスから取り除く', async () => {
 			const user = await createUser(ctx);
 			const deleted = await createNote({ ...ctx, indexer: undefined }, user);
 			const maintenance = ctx.app.get(SearchIndexMaintenanceQueue);
@@ -918,7 +918,7 @@ describe('SearchService', () => {
 			}
 		});
 
-		test('CLI reset submits a job without initializing search settings or connecting to PostgreSQL', async () => {
+		test('CLIのリセットは検索インデックス設定の初期化やPostgreSQLへの接続を行わずにジョブを登録する', async () => {
 			const instance = `test-cli-${randomUUID()}`;
 			const redis = { ...meiliConfig.redisForJobQueue, prefix: instance };
 			const meilisearchConfig = { ...meiliConfig.meilisearch!, index: instance };
@@ -950,7 +950,7 @@ describe('SearchService', () => {
 			}
 		});
 
-		test('CLI terminates on bootstrap failure despite unavailable Redis', async () => {
+		test('Redisが利用できない状態でも、起動に失敗したCLIはエラー終了する', async () => {
 			const tempDir = await mkdtemp(join(tmpdir(), 'misskey-meilisearch-cli-'));
 			try {
 				const configPath = join(tempDir, 'config.yml');
@@ -982,7 +982,7 @@ describe('SearchService', () => {
 			}
 		});
 
-		test('CLI exits when Redis accepts the connection but does not reply', async () => {
+		test('Redisが接続を受け付けても応答しない場合、CLIはエラー終了する', async () => {
 			let acceptedConnection = false;
 			const sockets = new Set<Socket>();
 			const silentServer = createServer(socket => {
