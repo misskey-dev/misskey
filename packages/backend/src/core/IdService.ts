@@ -4,16 +4,19 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { ulid } from 'ulid';
+import { encodeTime, TIME_MAX as MAX_ULID_TIME, ulid } from 'ulid';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { genAid, isSafeAidT, parseAid, parseAidFull } from '@/misc/id/aid.js';
-import { genAidx, isSafeAidxT, parseAidx, parseAidxFull } from '@/misc/id/aidx.js';
-import { genMeid, isSafeMeidT, parseMeid, parseMeidFull } from '@/misc/id/meid.js';
-import { genMeidg, isSafeMeidgT, parseMeidg, parseMeidgFull } from '@/misc/id/meidg.js';
-import { genObjectId, isSafeObjectIdT, parseObjectId, parseObjectIdFull } from '@/misc/id/object-id.js';
+import { genAid, getAidTime, isSafeAidT, parseAid, parseAidFull } from '@/misc/id/aid.js';
+import { genAidx, getAidxTime, isSafeAidxT, parseAidx, parseAidxFull } from '@/misc/id/aidx.js';
+import { genMeid, getMeidTime, isSafeMeidT, parseMeid, parseMeidFull } from '@/misc/id/meid.js';
+import { genMeidg, getMeidgTime, isSafeMeidgT, parseMeidg, parseMeidgFull } from '@/misc/id/meidg.js';
+import { genObjectId, getObjectIdTime, isSafeObjectIdT, parseObjectId, parseObjectIdFull } from '@/misc/id/object-id.js';
 import { bindThis } from '@/decorators.js';
 import { parseUlid, parseUlidFull } from '@/misc/id/ulid.js';
+
+// AID and AIDX both use eight base-36 digits for milliseconds since 2000.
+const MAX_AID_TIME = 946_684_800_000 + 36 ** 8 - 1;
 
 @Injectable()
 export class IdService {
@@ -54,6 +57,26 @@ export class IdService {
 			case 'meidg': return genMeidg(t);
 			case 'ulid': return ulid(t);
 			case 'objectid': return genObjectId(t);
+			default: throw new Error('unrecognized id generation method');
+		}
+	}
+
+	/** ID prefix at or immediately after the timestamp, or null beyond the ID format's range. */
+	@bindThis
+	public getTimeBoundary(time: number): string | null {
+		switch (this.method) {
+			case 'aid': return time > MAX_AID_TIME ? null : getAidTime(time);
+			case 'aidx': return time > MAX_AID_TIME ? null : getAidxTime(time);
+			case 'meid': {
+				if (time > 0x7fff_ffff_ffff) return null;
+				return time <= 0 ? '8' : getMeidTime(time);
+			}
+			case 'meidg': {
+				if (time > 0xfff_ffff_ffff) return null;
+				return time <= 0 ? 'g0' : 'g' + getMeidgTime(time);
+			}
+			case 'ulid': return time > MAX_ULID_TIME ? null : encodeTime(Math.max(0, time), 10);
+			case 'objectid': return time > 0xffff_ffff * 1000 ? null : getObjectIdTime(Math.ceil(time / 1000) * 1000);
 			default: throw new Error('unrecognized id generation method');
 		}
 	}

@@ -11552,6 +11552,30 @@ export interface Locale extends ILocale {
     };
     "_moderationLogTypes": {
         /**
+         * Meilisearchの再インデックスを依頼
+         */
+        "reIndexNotesRequested": string;
+        /**
+         * Meilisearchの再インデックスが完了
+         */
+        "reIndexNotesCompleted": string;
+        /**
+         * Meilisearchの再インデックスが失敗
+         */
+        "reIndexNotesFailed": string;
+        /**
+         * Meilisearchのノート検索インデックス全件削除を依頼
+         */
+        "resetNoteIndexRequested": string;
+        /**
+         * Meilisearchのノート検索インデックス全件削除が完了
+         */
+        "resetNoteIndexCompleted": string;
+        /**
+         * Meilisearchのノート検索インデックス全件削除が失敗
+         */
+        "resetNoteIndexFailed": string;
+        /**
          * ジョブキューをクリア
          */
         "clearQueue": string;
@@ -12744,6 +12768,78 @@ export interface Locale extends ILocale {
          * 投稿日時to
          */
         "postTo": string;
+    };
+    "_meilisearchMaintenance": {
+        /**
+         * Meilisearchのノート検索インデックス
+         */
+        "title": string;
+        /**
+         * 既存のノートを検索インデックスに登録したり、検索インデックスを全件削除したりできます。再インデックスの期間を空欄にすると、全期間が対象になります。
+         */
+        "description": string;
+        /**
+         * 開始日（この日の0時から、端末の現地時刻）
+         */
+        "sinceDate": string;
+        /**
+         * 終了日（この日の0時より前まで、端末の現地時刻）
+         */
+        "untilDate": string;
+        /**
+         * 再インデックスを開始
+         */
+        "reindex": string;
+        /**
+         * 検索インデックスを全件削除
+         */
+        "reset": string;
+        /**
+         * 指定した期間のノートを検索インデックスに登録します。完了まで時間がかかる場合があります。
+         */
+        "confirmReindex": string;
+        /**
+         * 既に登録されたノートがMeilisearchの検索結果から消えます。ノート自体は保持されます。検索対象に戻すには、別途再インデックスを実行してください。
+         */
+        "confirmReset": string;
+        /**
+         * 開始日が終了日より前になるように指定してください。
+         */
+        "invalidRange": string;
+        /**
+         * Meilisearchの検索インデックスを操作するジョブが既に登録されています。
+         */
+        "alreadyRunning": string;
+        /**
+         * このサーバーでは全文検索にMeilisearchが使われていません。
+         */
+        "notActive": string;
+        /**
+         * 前回のMeilisearchへの書き込み結果を確認できません。ジョブキューの詳細と運用手順（docs/meilisearch-maintenance.md）を確認してください。
+         */
+        "recoveryRequired": string;
+        "_status": {
+            /**
+             * ジョブを受け付けました。
+             */
+            "queued": string;
+            /**
+             * ジョブを実行中です。
+             */
+            "running": string;
+            /**
+             * ジョブが完了しました。
+             */
+            "completed": string;
+            /**
+             * ジョブが失敗しました。詳細はジョブキューで確認できます。
+             */
+            "failed": string;
+            /**
+             * ジョブの状態を取得できませんでした。
+             */
+            "unavailable": string;
+        };
     };
     "_serverSetupWizard": {
         /**

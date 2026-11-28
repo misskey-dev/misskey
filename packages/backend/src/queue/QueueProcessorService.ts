@@ -43,11 +43,12 @@ import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessor
 import { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';
 import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
 import { ArchiveAnnouncementProcessorService } from './processors/ArchiveAnnouncementProcessorService.js';
-import type { ArchiveAnnouncementJobData } from './types.js';
+import type { ArchiveAnnouncementJobData, SearchIndexMaintenanceJobData } from './types.js';
 import { BakeBufferedReactionsProcessorService } from './processors/BakeBufferedReactionsProcessorService.js';
 import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
 import { CleanRemoteNotesProcessorService } from './processors/CleanRemoteNotesProcessorService.js';
+import { SearchIndexMaintenanceProcessorService } from './processors/SearchIndexMaintenanceProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
 import { QUEUE, baseWorkerOptions } from './const.js';
 
@@ -82,6 +83,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 	private logger: Logger;
 	private systemQueueWorker: Bull.Worker;
 	private dbQueueWorker: Bull.Worker;
+	private searchIndexMaintenanceWorker: Bull.Worker<SearchIndexMaintenanceJobData>;
 	private deliverQueueWorker: Bull.Worker;
 	private inboxQueueWorker: Bull.Worker;
 	private userWebhookDeliverQueueWorker: Bull.Worker;
@@ -133,6 +135,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private checkModeratorsActivityProcessorService: CheckModeratorsActivityProcessorService,
 		private cleanProcessorService: CleanProcessorService,
 		private cleanRemoteNotesProcessorService: CleanRemoteNotesProcessorService,
+		private searchIndexMaintenanceProcessorService: SearchIndexMaintenanceProcessorService,
 	) {
 		this.logger = this.queueLoggerService.logger;
 
@@ -231,6 +234,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					case 'importCustomEmojis': return this.importCustomEmojisProcessorService.process(job);
 					case 'importAntennas': return this.importAntennasProcessorService.process(job);
 					case 'deleteAccount': return this.deleteAccountProcessorService.process(job);
+					case 'reIndexNotes':
+					case 'resetNoteIndex': throw new Bull.UnrecoverableError('Submit a new Meilisearch maintenance job on the dedicated queue.');
 					default: throw new Error(`unrecognized job type ${job.name} for db`);
 				}
 			};
@@ -261,6 +266,22 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
 		}
 		//#endregion
+
+		this.searchIndexMaintenanceWorker = new Bull.Worker<SearchIndexMaintenanceJobData>(
+			QUEUE.SEARCH_INDEX_MAINTENANCE,
+			(job, _token, signal) => runQueueJob(
+				this.telemetryService,
+				'Queue: Search index maintenance: ' + job.name,
+				() => this.searchIndexMaintenanceProcessorService.process(job, signal),
+				err => this.logger.error(`Search index maintenance failed id=${job.id}`, { job: renderJob(job), e: renderError(err) }),
+			),
+			{ ...baseWorkerOptions(this.config, QUEUE.SEARCH_INDEX_MAINTENANCE), autorun: false },
+		);
+		this.searchIndexMaintenanceWorker
+			.on('error', err => this.logger.error(err))
+			.on('lockRenewalFailed', jobIds => {
+				for (const id of jobIds) this.searchIndexMaintenanceWorker.cancelJob(id, 'Lost the search maintenance job lock.');
+			});
 
 		//#region deliver
 		{
@@ -551,6 +572,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		await Promise.all([
 			this.systemQueueWorker.run(),
 			this.dbQueueWorker.run(),
+			this.searchIndexMaintenanceWorker.run(),
 			this.deliverQueueWorker.run(),
 			this.inboxQueueWorker.run(),
 			this.userWebhookDeliverQueueWorker.run(),
@@ -564,9 +586,11 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 	@bindThis
 	public async stop(): Promise<void> {
+		this.searchIndexMaintenanceWorker.cancelAllJobs('Search maintenance worker is stopping.');
 		await Promise.all([
 			this.systemQueueWorker.close(),
 			this.dbQueueWorker.close(),
+			this.searchIndexMaintenanceWorker.close(true),
 			this.deliverQueueWorker.close(),
 			this.inboxQueueWorker.close(),
 			this.userWebhookDeliverQueueWorker.close(),

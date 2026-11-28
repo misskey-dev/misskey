@@ -15,6 +15,9 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { SearchIndexMaintenanceQueue } from '@/queue/SearchIndexMaintenanceQueue.js';
 import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 import { type SystemWebhookPayload } from '@/core/SystemWebhookService.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -24,6 +27,7 @@ import type {
 	ArchiveAnnouncementJobData,
 	DeliverJobData,
 	RelationshipJobData,
+	SearchIndexMaintenanceRequest,
 	SystemWebhookDeliverJobData,
 	ThinUser,
 	UserWebhookDeliverJobData,
@@ -50,6 +54,7 @@ export const QUEUE_TYPES = [
 	'deliver',
 	'inbox',
 	'db',
+	'searchIndexMaintenance',
 	'relationship',
 	'objectStorage',
 	'userWebhookDeliver',
@@ -105,6 +110,8 @@ export class QueueService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+		private moderationLogService: ModerationLogService,
+		private loggerService: LoggerService,
 
 		@Inject('queue:system') public systemQueue: SystemQueue,
 		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
@@ -112,6 +119,7 @@ export class QueueService {
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 		@Inject('queue:db') public dbQueue: DbQueue,
+		private searchIndexMaintenance: SearchIndexMaintenanceQueue,
 		@Inject('queue:relationship') public relationshipQueue: RelationshipQueue,
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:userWebhookDeliver') public userWebhookDeliverQueue: UserWebhookDeliverQueue,
@@ -333,6 +341,30 @@ export class QueueService {
 				count: 100,
 			},
 		});
+	}
+
+	@bindThis
+	public async enqueueSearchIndexMaintenance(request: SearchIndexMaintenanceRequest, actor: ThinUser | null): Promise<{ jobId: string }> {
+		const { jobId } = await this.searchIndexMaintenance.enqueue(request, actor);
+
+		if (actor != null) {
+			try {
+				if (request.operation === 'reset') {
+					await this.moderationLogService.log(actor, 'resetNoteIndexRequested', { jobId });
+				} else {
+					await this.moderationLogService.log(actor, 'reIndexNotesRequested', {
+						jobId,
+						sinceDate: request.sinceDate ?? null,
+						untilDate: request.untilDate ?? null,
+					});
+				}
+			} catch (err) {
+				// The job has been accepted even if the audit insert failed.
+				this.loggerService.getLogger('queue').error(`Failed to log search maintenance request ${jobId}`, { error: err });
+			}
+		}
+
+		return { jobId };
 	}
 
 	@bindThis
@@ -776,6 +808,7 @@ export class QueueService {
 			case 'deliver': return this.deliverQueue;
 			case 'inbox': return this.inboxQueue;
 			case 'db': return this.dbQueue;
+			case 'searchIndexMaintenance': return this.searchIndexMaintenance.queue;
 			case 'relationship': return this.relationshipQueue;
 			case 'objectStorage': return this.objectStorageQueue;
 			case 'userWebhookDeliver': return this.userWebhookDeliverQueue;
@@ -826,12 +859,14 @@ export class QueueService {
 		const queue = this.getQueue(queueType);
 		const job = await queue.getJob(jobId);
 		if (job != null) {
+			if (queueType === 'searchIndexMaintenance' || (queueType === 'db' && (job.name === 'reIndexNotes' || job.name === 'resetNoteIndex'))) return false;
 			if (job.finishedOn != null) {
 				await job.retry();
 			} else {
 				await job.promote();
 			}
 		}
+		return true;
 	}
 
 	@bindThis

@@ -3064,6 +3064,12 @@ _abuseReport:
     deleteConfirm: "通知先を削除しますか？"
 
 _moderationLogTypes:
+  reIndexNotesRequested: "Meilisearchの再インデックスを依頼"
+  reIndexNotesCompleted: "Meilisearchの再インデックスが完了"
+  reIndexNotesFailed: "Meilisearchの再インデックスが失敗"
+  resetNoteIndexRequested: "Meilisearchのノート検索インデックス全件削除を依頼"
+  resetNoteIndexCompleted: "Meilisearchのノート検索インデックス全件削除が完了"
+  resetNoteIndexFailed: "Meilisearchのノート検索インデックス全件削除が失敗"
   clearQueue: "ジョブキューをクリア"
   promoteQueue: "キューのジョブを再試行"
   createRole: "ロールを作成"
@@ -3407,6 +3413,26 @@ _search:
   serverHostPlaceholder: "例: misskey.example.com"
   postFrom: "投稿日時from"
   postTo: "投稿日時to"
+
+_meilisearchMaintenance:
+  title: "Meilisearchのノート検索インデックス"
+  description: "既存のノートを検索インデックスに登録したり、検索インデックスを全件削除したりできます。再インデックスの期間を空欄にすると、全期間が対象になります。"
+  sinceDate: "開始日（この日の0時から、端末の現地時刻）"
+  untilDate: "終了日（この日の0時より前まで、端末の現地時刻）"
+  reindex: "再インデックスを開始"
+  reset: "検索インデックスを全件削除"
+  confirmReindex: "指定した期間のノートを検索インデックスに登録します。完了まで時間がかかる場合があります。"
+  confirmReset: "既に登録されたノートがMeilisearchの検索結果から消えます。ノート自体は保持されます。検索対象に戻すには、別途再インデックスを実行してください。"
+  invalidRange: "開始日が終了日より前になるように指定してください。"
+  alreadyRunning: "Meilisearchの検索インデックスを操作するジョブが既に登録されています。"
+  notActive: "このサーバーでは全文検索にMeilisearchが使われていません。"
+  recoveryRequired: "前回のMeilisearchへの書き込み結果を確認できません。ジョブキューの詳細と運用手順（docs/meilisearch-maintenance.md）を確認してください。"
+  _status:
+    queued: "ジョブを受け付けました。"
+    running: "ジョブを実行中です。"
+    completed: "ジョブが完了しました。"
+    failed: "ジョブが失敗しました。詳細はジョブキューで確認できます。"
+    unavailable: "ジョブの状態を取得できませんでした。"
 
 _serverSetupWizard:
   installCompleted: "Misskeyのインストールが完了しました！"

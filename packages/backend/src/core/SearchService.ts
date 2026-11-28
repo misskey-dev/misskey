@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { setTimeout as delay } from 'node:timers/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
+import { MeilisearchApiError, MeilisearchRequestError } from 'meilisearch';
 import { DI } from '@/di-symbols.js';
 import { type Config, FulltextSearchProvider } from '@/config.js';
 import { bindThis } from '@/decorators.js';
@@ -18,6 +20,12 @@ import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type { Index, Meilisearch } from 'meilisearch';
+
+export type RunSearchIndexMutation = (
+	submit: () => Promise<number>, noteIds?: MiNote['id'][],
+) => Promise<{ taskUid: number; indexedCount?: number }>;
+
+export class MeilisearchTaskFailedError extends Error {}
 
 type K = string;
 type V = string | number | boolean;
@@ -78,6 +86,12 @@ function compileQuery(q: Q): string {
 
 @Injectable()
 export class SearchService {
+	public static MeilisearchNotActiveError = class extends Error {
+		constructor() {
+			super('Meilisearch provider is not active.');
+		}
+	};
+
 	private readonly meilisearchIndexScope: 'local' | 'global' | string[] = 'local';
 	private readonly meilisearchNoteIndex: Index | null = null;
 	private readonly provider: FulltextSearchProvider;
@@ -135,8 +149,24 @@ export class SearchService {
 	}
 
 	@bindThis
+	private async addDocuments(index: Index, notes: Pick<MiNote, 'id' | 'userId' | 'userHost' | 'channelId' | 'cw' | 'text' | 'tags'>[]) {
+		return index.addDocuments(notes.map(note => ({
+			id: note.id,
+			createdAt: this.idService.parse(note.id).date.getTime(),
+			userId: note.userId,
+			userHost: note.userHost,
+			channelId: note.channelId,
+			cw: note.cw,
+			text: note.text,
+			tags: note.tags,
+		})), {
+			primaryKey: 'id',
+		});
+	}
+
+	@bindThis
 	public async indexNote(note: MiNote): Promise<void> {
-		if (!this.meilisearch) return;
+		if (!this.meilisearchNoteIndex) return;
 		if (note.text == null && note.cw == null) return;
 		if (!['home', 'public'].includes(note.visibility)) return;
 
@@ -155,18 +185,7 @@ export class SearchService {
 			}
 		}
 
-		await this.meilisearchNoteIndex?.addDocuments([{
-			id: note.id,
-			createdAt: this.idService.parse(note.id).date.getTime(),
-			userId: note.userId,
-			userHost: note.userHost,
-			channelId: note.channelId,
-			cw: note.cw,
-			text: note.text,
-			tags: note.tags,
-		}], {
-			primaryKey: 'id',
-		});
+		await this.addDocuments(this.meilisearchNoteIndex, [note]);
 	}
 
 	@bindThis
@@ -175,6 +194,125 @@ export class SearchService {
 		if (!['home', 'public'].includes(note.visibility)) return;
 
 		await this.meilisearchNoteIndex?.deleteDocument(note.id);
+	}
+
+	private requireMeilisearch() {
+		if (this.provider !== 'meilisearch' || !this.meilisearch || !this.meilisearchNoteIndex) {
+			throw new SearchService.MeilisearchNotActiveError();
+		}
+
+		return { client: this.meilisearch, index: this.meilisearchNoteIndex };
+	}
+
+	@bindThis
+	public async clearNoteIndex(runMutation: RunSearchIndexMutation): Promise<number> {
+		const { index } = this.requireMeilisearch();
+		return (await runMutation(async () => (await index.deleteAllDocuments()).taskUid)).taskUid;
+	}
+
+	@bindThis
+	public async waitForMeilisearchTask(taskUid: number, signal?: AbortSignal): Promise<void> {
+		const { client } = this.requireMeilisearch();
+		let retryDelay = 250;
+		for (;;) {
+			signal?.throwIfAborted();
+			const timeout = AbortSignal.timeout(10_000);
+			const requestSignal = signal == null ? timeout : AbortSignal.any([signal, timeout]);
+			let task;
+			try {
+				task = await client.tasks.getTask(taskUid, { signal: requestSignal });
+			} catch (err) {
+				signal?.throwIfAborted();
+				const status = err instanceof MeilisearchApiError ? err.response.status : null;
+				if (!(err instanceof MeilisearchRequestError) && status !== 408 && status !== 429 && (status == null || status < 500)) throw err;
+
+				await delay(retryDelay, undefined, { signal });
+				retryDelay = Math.min(retryDelay * 2, 10_000);
+				continue;
+			}
+
+			retryDelay = 250;
+			if (task.status === 'succeeded') return;
+			if (task.status === 'failed' || task.status === 'canceled') {
+				throw new MeilisearchTaskFailedError(`Meilisearch task ${taskUid} ${task.status}${task.error ? `: ${task.error.message}` : ''}`);
+			}
+			await delay(250, undefined, { signal });
+		}
+	}
+
+	@bindThis
+	public async reIndexNotes(props: {
+		sinceDate?: number | null;
+		untilDate?: number | null;
+		runMutation: RunSearchIndexMutation;
+		onBatch?: (indexedCount: number) => void | Promise<void>;
+	}): Promise<number> {
+		const { index } = this.requireMeilisearch();
+		const now = Date.now();
+		if (props.sinceDate != null && props.sinceDate > now) return 0;
+
+		const sinceId = props.sinceDate == null ? null : this.idService.getTimeBoundary(props.sinceDate);
+		if (props.sinceDate != null && sinceId == null) return 0;
+		const untilId = props.untilDate == null ? null : this.idService.getTimeBoundary(props.untilDate);
+
+		const query = this.notesRepository.createQueryBuilder('note')
+			.select(['note.id', 'note.userId', 'note.userHost', 'note.channelId', 'note.cw', 'note.text', 'note.tags'])
+			.where('note.visibility IN (:...visibilities)', { visibilities: ['home', 'public'] })
+			.andWhere('(note.text IS NOT NULL OR note.cw IS NOT NULL)')
+			.orderBy('note.id', 'DESC')
+			.limit(100);
+
+		if (sinceId != null) query.andWhere('note.id >= :sinceId', { sinceId });
+		if (untilId != null) query.andWhere('note.id < :untilId', { untilId });
+
+		const scope = this.meilisearchIndexScope;
+		if (scope === 'local' || (Array.isArray(scope) && scope.length === 0)) {
+			query.andWhere('note.userHost IS NULL');
+		} else if (scope !== 'global') {
+			query.andWhere('(note.userHost IS NULL OR note.userHost IN (:...userHosts))', { userHosts: scope });
+		}
+
+		let cursor: MiNote['id'] | undefined;
+		let indexedCount = 0;
+
+		for (;;) {
+			const batchQuery = query.clone();
+			if (cursor != null) batchQuery.andWhere('note.id < :cursor', { cursor });
+			const notes = await batchQuery.getMany();
+			if (notes.length === 0) return indexedCount;
+
+			const result = await props.runMutation(
+				async () => (await this.addDocuments(index, notes)).taskUid,
+				notes.map(note => note.id),
+			);
+			indexedCount += result.indexedCount ?? notes.length;
+			await props.onBatch?.(indexedCount);
+
+			if (notes.length < 100) return indexedCount;
+			cursor = notes[notes.length - 1].id;
+		}
+	}
+
+	@bindThis
+	public async reconcileIndexedNotes(noteIds: MiNote['id'][], runCleanup: RunSearchIndexMutation): Promise<number> {
+		const { index } = this.requireMeilisearch();
+		const remainingIds = new Set(await this.findRemainingNoteIds(noteIds));
+		const deletedIds = noteIds.filter(id => !remainingIds.has(id));
+		if (deletedIds.length > 0) {
+			await runCleanup(async () => (await index.deleteDocuments(deletedIds)).taskUid);
+		}
+		return remainingIds.size;
+	}
+
+	private async findRemainingNoteIds(noteIds: MiNote['id'][]): Promise<MiNote['id'][]> {
+		// A normal delete commits on the primary before unindexing. A replica can still show that row.
+		const runner = this.notesRepository.manager.connection.createQueryRunner('master');
+		try {
+			const notes = await runner.manager.find(MiNote, { select: { id: true }, where: { id: In(noteIds) } });
+			return notes.map(note => note.id);
+		} finally {
+			await runner.release();
+		}
 	}
 
 	@bindThis
@@ -226,7 +364,7 @@ export class SearchService {
 		if (this.config.fulltextSearch?.provider === 'sqlPgroonga') {
 			query.andWhere('note.text &@~ :q', { q });
 		} else {
-			query.andWhere('LOWER(note.text) LIKE :q', { q: `%${ sqlLikeEscape(q.toLowerCase()) }%` });
+			query.andWhere('LOWER(note.text) LIKE :q', { q: `%${sqlLikeEscape(q.toLowerCase())}%` });
 		}
 
 		if (opts.host) {

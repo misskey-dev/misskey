@@ -10,7 +10,7 @@ const CHARS = '0123456789abcdef';
 // same as object-id
 export const meidRegExp = /^[0-9a-f]{24}$/;
 
-function getTime(time: number) {
+export function getMeidTime(time: number) {
 	if (time < 0) time = 0;
 	if (time === 0) {
 		return CHARS[0];
@@ -32,7 +32,7 @@ function getRandom() {
 }
 
 export function genMeid(t: number): string {
-	return getTime(t) + getRandom();
+	return getMeidTime(t) + getRandom();
 }
 
 export function parseMeid(id: string): { date: Date; } {

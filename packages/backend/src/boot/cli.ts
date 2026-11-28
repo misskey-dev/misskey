@@ -5,45 +5,103 @@
 
 import 'reflect-metadata';
 import { EventEmitter } from 'node:events';
-import { NestFactory } from '@nestjs/core';
-import { CommandModule } from '@/cli/CommandModule.js';
-import { NestLogger } from '@/NestLogger.js';
-import { CommandService } from '@/cli/CommandService.js';
+import { parseArgs } from 'node:util';
+import { loadConfig } from '@/config.js';
+import { SearchIndexMaintenanceQueue } from '@/queue/SearchIndexMaintenanceQueue.js';
+import type { SearchIndexMaintenanceRequest } from '@/queue/types.js';
 
 process.title = 'Misskey Cli';
 
 Error.stackTraceLimit = Infinity;
 EventEmitter.defaultMaxListeners = 128;
 
-const app = await NestFactory.createApplicationContext(CommandModule, {
-	logger: new NestLogger(),
-});
+function parseDate(flag: string, value: string | undefined): number | undefined {
+	if (value == null) return undefined;
 
-const commandService = app.get(CommandService);
+	const match = /^(\d{4}-\d{2}-\d{2})T(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d{1,3})?)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/.exec(value);
+	const time = Date.parse(value);
+	if (match == null || !Number.isFinite(time) || !new Date(match[1]).toISOString().startsWith(match[1])) {
+		throw new Error(`${flag} must be an ISO 8601 date and time with a timezone, such as 2026-01-01T00:00:00Z.`);
+	}
+	return time;
+}
 
-const command = process.argv[2] ?? 'help';
-
-switch (command) {
-	case 'help': {
+async function runCommand() {
+	const [command = 'help', ...args] = process.argv.slice(2);
+	if (command === 'help') {
 		console.log('Available commands:');
 		console.log('  help - Displays this help message');
+		console.log('  ping - Checks the CLI connection');
 		console.log('  reset-captcha - Resets the captcha');
-		break;
+		console.log('  meilisearch-reindex [--since <ISO 8601>] [--until <ISO 8601>] - Queues indexing of existing notes (until is exclusive)');
+		console.log('  meilisearch-reset --confirm - Queues deletion of all note search documents');
+		return;
 	}
-	case 'ping': {
-		await commandService.ping();
-		break;
+
+	let searchRequest: SearchIndexMaintenanceRequest | undefined;
+	switch (command) {
+		case 'ping':
+		case 'reset-captcha':
+			break;
+		case 'meilisearch-reindex': {
+			const { values } = parseArgs({
+				args,
+				options: { since: { type: 'string' }, until: { type: 'string' } },
+			});
+			searchRequest = {
+				operation: 'reindex',
+				sinceDate: parseDate('--since', values.since),
+				untilDate: parseDate('--until', values.until),
+			};
+			break;
+		}
+		case 'meilisearch-reset': {
+			const { values } = parseArgs({ args, options: { confirm: { type: 'boolean' } } });
+			if (!values.confirm) throw new Error('Pass --confirm to delete all documents in the Meilisearch note index.');
+			searchRequest = { operation: 'reset' };
+			break;
+		}
+		default:
+			throw new Error(`Unrecognized command: ${command}. Use "help" to see available commands.`);
 	}
-	case 'reset-captcha': {
-		await commandService.resetCaptcha();
-		console.log('Captcha has been reset.');
-		break;
+
+	if (searchRequest != null) {
+		// Only a queue producer is needed. Booting CoreModule also updates Meilisearch index settings.
+		const maintenance = new SearchIndexMaintenanceQueue(loadConfig(), true);
+		try {
+			const { jobId } = await maintenance.enqueue(searchRequest, null);
+			console.log(`Meilisearch maintenance job queued: ${jobId}`);
+		} finally {
+			await maintenance.queue.close();
+		}
+		return;
 	}
-	default: {
-		console.error(`Unrecognized command: ${command}`);
-		console.error('Use "help" to see available commands.');
-		process.exit(1);
+
+	const [{ NestFactory }, { CommandModule }, { NestLogger }, { CommandService }] = await Promise.all([
+		import('@nestjs/core'),
+		import('@/cli/CommandModule.js'),
+		import('@/NestLogger.js'),
+		import('@/cli/CommandService.js'),
+	]);
+	const app = await NestFactory.createApplicationContext(CommandModule, {
+		logger: new NestLogger(),
+	});
+	try {
+		const commandService = app.get(CommandService);
+		if (command === 'ping') {
+			await commandService.ping();
+		} else {
+			await commandService.resetCaptcha();
+			console.log('Captcha has been reset.');
+		}
+	} finally {
+		await app.close();
 	}
 }
 
-process.exit(0);
+try {
+	await runCommand();
+} catch (err) {
+	console.error(err instanceof Error ? err.message : String(err));
+	process.exitCode = 1;
+}

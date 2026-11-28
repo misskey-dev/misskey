@@ -135,6 +135,12 @@ export const moderationLogTypes = [
 	'deleteGalleryPost',
 	'deleteChatRoom',
 	'updateProxyAccountDescription',
+	'reIndexNotesRequested',
+	'reIndexNotesCompleted',
+	'reIndexNotesFailed',
+	'resetNoteIndexRequested',
+	'resetNoteIndexCompleted',
+	'resetNoteIndexFailed',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -401,6 +407,30 @@ export type ModerationLogPayloads = {
 	updateProxyAccountDescription: {
 		before: string | null;
 		after: string | null;
+	};
+	reIndexNotesRequested: {
+		jobId: string;
+		sinceDate: number | null;
+		untilDate: number | null;
+	};
+	reIndexNotesCompleted: {
+		jobId: string;
+		indexedCount: number;
+	};
+	reIndexNotesFailed: {
+		jobId: string;
+		reason: string;
+	};
+	resetNoteIndexRequested: {
+		jobId: string;
+	};
+	resetNoteIndexCompleted: {
+		jobId: string;
+		taskUid: number;
+	};
+	resetNoteIndexFailed: {
+		jobId: string;
+		reason: string;
 	};
 };
 

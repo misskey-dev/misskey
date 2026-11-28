@@ -100,6 +100,20 @@ export type DbUserImportToDbJobData = {
 	withReplies?: boolean;
 };
 
+export type SearchIndexMaintenanceRequest = {
+	operation: 'reindex';
+	sinceDate?: number | null;
+	untilDate?: number | null;
+} | {
+	operation: 'reset';
+};
+
+export type SearchIndexMaintenanceJobData = SearchIndexMaintenanceRequest & {
+	/** Null when started by the server CLI. */
+	actor: ThinUser | null;
+	taskUid?: number;
+};
+
 export type ObjectStorageJobData = ObjectStorageFileJobData | Record<string, unknown>;
 
 export type ObjectStorageFileJobData = {

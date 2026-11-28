@@ -5,7 +5,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { ApiError } from '@/server/api/error.js';
 import { QUEUE_TYPES, QueueService } from '@/core/QueueService.js';
 
 export const meta = {
@@ -14,6 +14,16 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 	kind: 'write:admin:queue',
+
+	errors: {
+		searchMaintenanceRetry: {
+			message: 'Start a new search index maintenance job from the search maintenance API or CLI.',
+			code: 'SEARCH_MAINTENANCE_RETRY_FORBIDDEN',
+			id: '88c60637-ee40-4d56-858f-4901eea7008a',
+			kind: 'permission',
+			httpStatusCode: 403,
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -28,11 +38,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		private moderationLogService: ModerationLogService,
 		private queueService: QueueService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
-			this.queueService.queueRetryJob(ps.queue, ps.jobId);
+		super(meta, paramDef, async (ps) => {
+			if (!await this.queueService.queueRetryJob(ps.queue, ps.jobId)) {
+				throw new ApiError(meta.errors.searchMaintenanceRetry);
+			}
 		});
 	}
 }

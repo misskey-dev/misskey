@@ -12,7 +12,7 @@ const CHARS = '0123456789abcdef';
 // 48bit Random value in Hex
 export const meidgRegExp = /^g[0-9a-f]{23}$/;
 
-function getTime(time: number) {
+export function getMeidgTime(time: number) {
 	if (time < 0) time = 0;
 	if (time === 0) {
 		return CHARS[0];
@@ -32,7 +32,7 @@ function getRandom() {
 }
 
 export function genMeidg(t: number): string {
-	return 'g' + getTime(t) + getRandom();
+	return 'g' + getMeidgTime(t) + getRandom();
 }
 
 export function parseMeidg(id: string): { date: Date; } {

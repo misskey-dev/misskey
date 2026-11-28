@@ -3,13 +3,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
+import { execFile } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { createServer, type Socket } from 'node:net';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { promisify } from 'node:util';
+import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
+import { QueueEvents, Worker } from 'bullmq';
+import { MeilisearchApiError } from 'meilisearch';
 import type { Index, Meilisearch } from 'meilisearch';
 import { type Config, loadConfig } from '@/config.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
-import { SearchService } from '@/core/SearchService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { QueueLoggerService } from '@/queue/QueueLoggerService.js';
+import { baseQueueOptions, baseWorkerOptions, QUEUE } from '@/queue/const.js';
+import type { SearchIndexMaintenanceJobData } from '@/queue/types.js';
+import { SearchIndexMaintenanceQueue } from '@/queue/SearchIndexMaintenanceQueue.js';
+import { SearchIndexMaintenanceProcessorService } from '@/queue/processors/SearchIndexMaintenanceProcessorService.js';
+import ResetIndexEndpoint from '@/server/api/endpoints/admin/search/reset.js';
+import { MeilisearchTaskFailedError, SearchService } from '@/core/SearchService.js';
+import type { RunSearchIndexMutation } from '@/core/SearchService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
@@ -601,6 +621,483 @@ describe('SearchService', () => {
 			await cleanupContext(ctx);
 			const clearTask = await meilisearchIndex.deleteAllDocuments();
 			await meilisearch.tasks.waitForTask(clearTask.taskUid);
+		});
+
+
+		const runMutation: RunSearchIndexMutation = async (submit, noteIds) => {
+			const taskUid = await submit();
+			await ctx.service.waitForMeilisearchTask(taskUid);
+			const indexedCount = noteIds == null ? undefined : await ctx.service.reconcileIndexedNotes(noteIds, runMutation);
+			return { taskUid, indexedCount };
+		};
+
+		test('指定期間を複数バッチで再インデックスし、期間外の登録済みノートを保持する', async () => {
+			const user = await createUser(ctx);
+			const sinceDate = Date.now() - 10_000;
+			const untilDate = sinceDate + 1000;
+			const existing = await createNote(ctx, user, {}, sinceDate - 1);
+			const unindexed = { ...ctx, indexer: undefined };
+			const ids = Array.from({ length: 101 }, () => ctx.idService.gen(sinceDate));
+			await ctx.notesRepository.insert(ids.map(id => ({ id, userId: user.id, text: 'backfill', visibility: 'home' })));
+			await createNote(unindexed, user, {}, untilDate);
+			await createNote(unindexed, user, { visibility: 'followers', cw: 'private' }, sinceDate);
+			await createNote(unindexed, user, { text: null, cw: null }, sinceDate);
+			const cwOnly = await createNote(unindexed, user, { text: null, cw: 'content warning' }, sinceDate);
+			const onBatch = vi.fn();
+
+			await ctx.service.reIndexNotes({ sinceDate, untilDate, onBatch, runMutation });
+
+			expect(onBatch.mock.calls.map(([count]) => count)).toEqual([100, 102]);
+			const documents = await meilisearchIndex.getDocuments({ limit: 200 });
+			expect(documents.results.map(doc => doc.id).sort()).toEqual([...ids, existing.id, cwOnly.id].sort());
+		});
+
+		test('開始時点で未来だった終了日時も初回の検索から適用する', async () => {
+			const user = await createUser(ctx);
+			const untilDate = Date.now() - 10_000;
+			const unindexed = { ...ctx, indexer: undefined };
+			const included = await createNote(unindexed, user, {}, untilDate - 1);
+			await createNote(unindexed, user, {}, untilDate);
+			await createNote(unindexed, user, {}, untilDate + 1);
+
+			// Simulate the clock crossing the boundary between starting the job and querying PostgreSQL.
+			vi.spyOn(Date, 'now').mockReturnValueOnce(untilDate - 1);
+			await ctx.service.reIndexNotes({ untilDate, runMutation });
+
+			expect((await meilisearchIndex.getDocuments()).results.map(doc => doc.id)).toEqual([included.id]);
+		});
+
+		test('ノートIDで表せる範囲より先の終了日時でも対象のノートを再インデックスできる', async () => {
+			const user = await createUser(ctx);
+			const note = await createNote({ ...ctx, indexer: undefined }, user);
+
+			await ctx.service.reIndexNotes({ untilDate: 8_640_000_000_000_000, runMutation });
+
+			expect((await meilisearchIndex.getDocuments()).results.map(doc => doc.id)).toEqual([note.id]);
+		});
+
+		test('バッチ処理中に削除されたノートを検索インデックスから取り除く', async () => {
+			const user = await createUser(ctx);
+			const note = await createNote({ ...ctx, indexer: undefined }, user);
+			const indexedCount = vi.fn();
+			const getTask = meilisearch.tasks.getTask.bind(meilisearch.tasks);
+			vi.spyOn(meilisearch.tasks, 'getTask').mockImplementationOnce(async (...args) => {
+				await ctx.notesRepository.delete(note.id);
+				return await getTask(...args);
+			});
+			const createRunner = vi.spyOn(ctx.notesRepository.manager.connection, 'createQueryRunner');
+
+			await ctx.service.reIndexNotes({ onBatch: indexedCount, runMutation });
+
+			expect(createRunner).toHaveBeenCalledWith('master');
+
+			expect((await meilisearchIndex.getDocuments()).results).toEqual([]);
+			expect(indexedCount).toHaveBeenCalledExactlyOnceWith(0);
+		});
+
+		test('ローカルノートを登録し、リモートノートは設定で許可されたホストだけを登録する', async () => {
+			const scopedSearch = new SearchService(
+				{ ...meiliConfig, meilisearch: { ...meiliConfig.meilisearch!, scope: ['allowed.example'] } },
+				meilisearch,
+				ctx.notesRepository,
+				ctx.cacheService,
+				ctx.app.get(QueryService),
+				ctx.idService,
+				ctx.app.get(LoggerService),
+				ctx.app.get(DI.meta),
+			);
+			const unindexed = { ...ctx, indexer: undefined };
+			const localUser = await createUser(ctx);
+			const includedUser = await createUser(ctx, { host: 'allowed.example' });
+			const excludedUser = await createUser(ctx, { host: 'excluded.example' });
+			const localNote = await createNote(unindexed, localUser);
+			const includedNote = await createNote(unindexed, includedUser);
+			await createNote(unindexed, excludedUser);
+
+			expect(await scopedSearch.reIndexNotes({ runMutation })).toBe(2);
+			const docs = await meilisearchIndex.getDocuments();
+			expect(docs.results.map(doc => doc.id).sort()).toEqual([localNote.id, includedNote.id].sort());
+		});
+
+		test('ノートの検索ドキュメントだけを全件削除し、設定と元のノートを保持する', async () => {
+			const user = await createUser(ctx);
+			const note = await createNote(ctx, user);
+			const settings = await meilisearchIndex.getSettings();
+
+			await ctx.service.clearNoteIndex(runMutation);
+
+			expect((await meilisearchIndex.getDocuments()).results).toEqual([]);
+			expect(await ctx.notesRepository.findOneBy({ id: note.id })).not.toBeNull();
+			expect(await meilisearchIndex.getSettings()).toEqual(settings);
+		});
+
+		test('全件削除後も元のノートや別のインデックスが残り、再インデックスで検索結果が復元される', async () => {
+			const author = await createUser(ctx);
+			const publicNote = await createNote(ctx, author, { text: 'recoveryprobe public' });
+			const homeNote = await createNote(ctx, author, { text: null, cw: 'recoveryprobe home', visibility: 'home' });
+			await createNote(ctx, author, { text: 'recoveryprobe followers', visibility: 'followers' });
+
+			const runId = `test-search-recovery-${randomUUID()}`;
+			const queueConfig = {
+				...meiliConfig,
+				redisForJobQueue: { ...meiliConfig.redisForJobQueue, prefix: runId },
+			};
+			const maintenance = new SearchIndexMaintenanceQueue(queueConfig);
+			const processor = new SearchIndexMaintenanceProcessorService(
+				ctx.service, maintenance, ctx.app.get(ModerationLogService),
+				new QueueLoggerService(ctx.app.get(LoggerService)),
+			);
+			const queueName = QUEUE.SEARCH_INDEX_MAINTENANCE;
+			const events = new QueueEvents(queueName, baseQueueOptions(queueConfig, queueName));
+			const worker = new Worker<SearchIndexMaintenanceJobData>(
+				queueName,
+				(job, _token, signal) => processor.process(job, signal),
+				baseWorkerOptions(queueConfig, queueName),
+			);
+			const unrelatedIndex = meilisearch.index(`${meiliConfig.meilisearch!.index}---${runId}`);
+			const readDocuments = async (index: Index) => (await index.getDocuments()).results
+				.sort((a, b) => String(a.id).localeCompare(String(b.id)));
+			const readSourceNotes = () => ctx.notesRepository.find({ order: { id: 'ASC' } });
+
+			try {
+				await Promise.all([events.waitUntilReady(), worker.waitUntilReady()]);
+				// Another index sharing the configured prefix and a document ID must be untouched.
+				await ctx.service.waitForMeilisearchTask((await unrelatedIndex.addDocuments([
+					{ id: publicNote.id, text: 'unrelated' },
+				], { primaryKey: 'id' })).taskUid);
+				const originalDocuments = await readDocuments(meilisearchIndex);
+				const originalIndex = await meilisearch.getRawIndex(meilisearchIndex.uid);
+				const originalSettings = await meilisearchIndex.getSettings();
+				const unrelatedDocuments = await readDocuments(unrelatedIndex);
+				const sourceNotes = await readSourceNotes();
+				const expectedIds = [publicNote.id, homeNote.id].sort();
+				expect(originalDocuments.map(document => document.id).sort()).toEqual(expectedIds);
+
+				const reset = await maintenance.enqueue({ operation: 'reset' }, null);
+				const resetJob = await maintenance.queue.getJob(reset.jobId);
+				expect(await resetJob?.waitUntilFinished(events, 10_000)).toContain('Cleared the Meilisearch note index');
+				expect(await readDocuments(meilisearchIndex)).toEqual([]);
+				expect(await ctx.service.searchNote('recoveryprobe', author, {}, { limit: 10 })).toEqual([]);
+				expect(await meilisearch.getRawIndex(meilisearchIndex.uid)).toMatchObject({
+					createdAt: originalIndex.createdAt,
+					primaryKey: originalIndex.primaryKey,
+				});
+				expect(await meilisearchIndex.getSettings()).toEqual(originalSettings);
+				expect(await readDocuments(unrelatedIndex)).toEqual(unrelatedDocuments);
+				expect(await readSourceNotes()).toEqual(sourceNotes);
+
+				const reindex = await maintenance.enqueue({ operation: 'reindex' }, null);
+				const reindexJob = await maintenance.queue.getJob(reindex.jobId);
+				expect(await reindexJob?.waitUntilFinished(events, 10_000)).toEqual('Re-indexed 2 notes.');
+				const restored = await ctx.service.searchNote('recoveryprobe', author, {}, { limit: 10 });
+				expect(restored.map(note => note.id).sort()).toEqual(expectedIds);
+				expect(await readDocuments(meilisearchIndex)).toEqual(originalDocuments);
+				expect(await meilisearchIndex.getSettings()).toEqual(originalSettings);
+				expect(await readDocuments(unrelatedIndex)).toEqual(unrelatedDocuments);
+				expect(await readSourceNotes()).toEqual(sourceNotes);
+				expect(await maintenance.getPendingMutation()).toBeNull();
+			} finally {
+				await Promise.all([worker.close(true), events.close()]);
+				await maintenance.queue.obliterate({ force: true });
+				await maintenance.queue.close();
+				await ctx.service.waitForMeilisearchTask((await unrelatedIndex.delete()).taskUid);
+			}
+		});
+
+		test('Meilisearchのタスクが失敗した場合はエラーを返し、進捗を更新しない', async () => {
+			const user = await createUser(ctx);
+			await createNote(ctx, user);
+			const onBatch = vi.fn();
+			const getTask = meilisearch.tasks.getTask.bind(meilisearch.tasks);
+			vi.spyOn(meilisearch.tasks, 'getTask').mockImplementationOnce(async (...args) => {
+				const task = await getTask(...args);
+				return { ...task, status: 'failed' };
+			});
+
+			await expect(ctx.service.reIndexNotes({ onBatch, runMutation })).rejects.toBeInstanceOf(MeilisearchTaskFailedError);
+			expect(onBatch).not.toHaveBeenCalled();
+		});
+
+		test('タスクの状態取得が一時的に失敗した場合は、同じタスクIDで再試行する', async () => {
+			const task = await meilisearchIndex.updateSettings(meilisearchSettings);
+			const getTask = vi.spyOn(meilisearch.tasks, 'getTask')
+				.mockRejectedValueOnce(new MeilisearchApiError(new Response(null, { status: 502 })));
+
+			await ctx.service.waitForMeilisearchTask(task.taskUid);
+
+			expect(getTask.mock.calls.length).toBeGreaterThanOrEqual(2);
+			expect(getTask.mock.calls.every(([uid]) => uid === task.taskUid)).toBe(true);
+		});
+
+		test('CLIと管理者APIから同時に要求されても、ジョブを1件だけ受け付ける', async () => {
+			const user = await createUser(ctx);
+			const queue = ctx.app.get(QueueService);
+			const endpoint = new ResetIndexEndpoint(queue);
+			await expect(endpoint.exec({ confirm: false }, user as never, null)).rejects.toMatchObject({ code: 'INVALID_PARAM' });
+			await expect(endpoint.exec({}, user as never, null)).rejects.toMatchObject({ code: 'INVALID_PARAM' });
+
+			const results = await Promise.allSettled([
+				queue.enqueueSearchIndexMaintenance({ operation: 'reindex' }, null),
+				endpoint.exec({ confirm: true }, user as never, null),
+			]);
+			const accepted = results.flatMap(result => result.status === 'fulfilled' ? [result.value] : []);
+
+			try {
+				expect(accepted).toHaveLength(1);
+				const rejected = results.find(result => result.status === 'rejected');
+				expect(rejected).toMatchObject({ reason: { code: 'ALREADY_RUNNING' } });
+				expect(await queue.queueRetryJob('searchIndexMaintenance', accepted[0].jobId)).toBe(false);
+			} finally {
+				for (const { jobId } of accepted) await queue.queueRemoveJob('searchIndexMaintenance', jobId);
+			}
+		});
+
+		test('リセット要求の応答を受け取れなかった場合は再送を防ぎ、タスクIDが判明すれば処理を再開できる', async () => {
+			const maintenance = ctx.app.get(SearchIndexMaintenanceQueue);
+			const { jobId } = await maintenance.enqueue({ operation: 'reset' }, null);
+			const submit = vi.fn().mockRejectedValue(new Error('Missing response'));
+			const clear = vi.spyOn(ctx.service, 'clearNoteIndex').mockImplementation(async run => (await run(submit)).taskUid);
+			const wait = vi.spyOn(ctx.service, 'waitForMeilisearchTask').mockResolvedValue();
+			const processor = new SearchIndexMaintenanceProcessorService(ctx.service, maintenance, ctx.app.get(ModerationLogService), new QueueLoggerService(ctx.app.get(LoggerService)));
+			const client = await maintenance.queue.getBackend().client;
+			const lockKey = maintenance.queue.toKey(`${jobId}:lock`);
+
+			try {
+				const job = (await maintenance.queue.getJob(jobId))!;
+				job.token = 'current-lock';
+				await client.set(lockKey, job.token);
+				await expect(processor.process(job)).rejects.toThrow('Missing response');
+				const resumed = (await maintenance.queue.getJob(jobId))!;
+				await expect(processor.process(resumed)).rejects.toThrow('may have been submitted');
+
+				const pending = await maintenance.getPendingMutation();
+				expect(pending).toMatchObject({ jobId, taskUid: undefined });
+				await maintenance.recordTask(pending!, 0);
+				await expect(processor.process(resumed)).resolves.toContain('task 0');
+				expect(wait).toHaveBeenCalledExactlyOnceWith(0, undefined);
+				expect(clear).toHaveBeenCalledTimes(1);
+				expect(submit).toHaveBeenCalledTimes(1);
+				expect(await maintenance.getPendingMutation()).toBeNull();
+			} finally {
+				await client.del(lockKey, maintenance.queue.toKey('pending-mutation'));
+				await maintenance.queue.remove(jobId);
+			}
+		});
+
+		test('再インデックスの後処理を引き継いでも、新しいリセットの完了とは判定しない', async () => {
+			const maintenance = ctx.app.get(SearchIndexMaintenanceQueue);
+			const { jobId } = await maintenance.enqueue({ operation: 'reset' }, null);
+			const client = await maintenance.queue.getBackend().client;
+			const lockKey = maintenance.queue.toKey(`${jobId}:lock`);
+			const mutationKey = maintenance.queue.toKey('pending-mutation');
+			const submit = vi.fn().mockResolvedValue(2);
+			vi.spyOn(ctx.service, 'clearNoteIndex').mockImplementation(async run => (await run(submit)).taskUid);
+			const wait = vi.spyOn(ctx.service, 'waitForMeilisearchTask').mockResolvedValue();
+			const processor = new SearchIndexMaintenanceProcessorService(ctx.service, maintenance, ctx.app.get(ModerationLogService), new QueueLoggerService(ctx.app.get(LoggerService)));
+
+			try {
+				const job = (await maintenance.queue.getJob(jobId))!;
+				job.token = 'replacement-worker';
+				await client.set(lockKey, job.token);
+				// A previous reindex's cleanup was taken over by this job just before it stalled.
+				await client.hset(mutationKey, { jobId, id: randomUUID(), taskUid: 1, noteIds: '["deleted"]', cleanup: '1' });
+				await expect(processor.process(job)).resolves.toContain('task 2');
+				expect(submit).toHaveBeenCalledOnce();
+				expect(wait.mock.calls.map(([taskUid]) => taskUid)).toEqual([1, 2]);
+			} finally {
+				await client.del(lockKey, mutationKey);
+				await maintenance.queue.remove(jobId);
+			}
+		});
+
+		test('後任のワーカーが、前のバッチで再登録された削除済みノートを検索インデックスから取り除く', async () => {
+			const user = await createUser(ctx);
+			const deleted = await createNote({ ...ctx, indexer: undefined }, user);
+			const maintenance = ctx.app.get(SearchIndexMaintenanceQueue);
+			const processor = new SearchIndexMaintenanceProcessorService(ctx.service, maintenance, ctx.app.get(ModerationLogService), new QueueLoggerService(ctx.app.get(LoggerService)));
+			const { jobId } = await maintenance.enqueue({ operation: 'reindex' }, null);
+			const client = await maintenance.queue.getBackend().client;
+			const lockKey = maintenance.queue.toKey(`${jobId}:lock`);
+
+			try {
+				const original = (await maintenance.queue.getJob(jobId))!;
+				original.token = 'first-worker';
+				await client.set(lockKey, original.token);
+				const mutation = await maintenance.beginMutation(original, [deleted.id]);
+
+				await ctx.notesRepository.delete(deleted.id);
+				const staleAdd = await meilisearchIndex.addDocuments([{ id: deleted.id, text: deleted.text }], { primaryKey: 'id' });
+				await maintenance.recordTask(mutation, staleAdd.taskUid);
+				await ctx.service.waitForMeilisearchTask(staleAdd.taskUid);
+
+				const resumed = (await maintenance.queue.getJob(jobId))!;
+				resumed.token = 'replacement-worker';
+				await client.set(lockKey, resumed.token);
+				await expect(processor.process(resumed)).resolves.toContain('Re-indexed 0 notes');
+				expect((await meilisearchIndex.getDocuments()).results).toEqual([]);
+				expect(await maintenance.getPendingMutation()).toBeNull();
+			} finally {
+				await client.del(lockKey, maintenance.queue.toKey('pending-mutation'));
+				await maintenance.queue.remove(jobId);
+			}
+		});
+
+		test('後処理の予約直後にキャンセルされたジョブが終了しても次のジョブで後処理を再開できる', async () => {
+			const user = await createUser(ctx);
+			const note = await createNote(ctx, user);
+			const maintenance = ctx.app.get(SearchIndexMaintenanceQueue);
+			const processor = new SearchIndexMaintenanceProcessorService(ctx.service, maintenance, ctx.app.get(ModerationLogService), new QueueLoggerService(ctx.app.get(LoggerService)));
+			const { jobId } = await maintenance.enqueue({ operation: 'reindex' }, null);
+			const client = await maintenance.queue.getBackend().client;
+			const lockKey = maintenance.queue.toKey(`${jobId}:lock`);
+			const controller = new AbortController();
+			let resumedJobId: string | undefined;
+
+			try {
+				const job = (await maintenance.queue.getJob(jobId))!;
+				job.token = 'first-worker';
+				await client.set(lockKey, job.token);
+				const mutation = await maintenance.beginMutation(job, [note.id]);
+				await ctx.notesRepository.delete(note.id);
+				const task = await meilisearchIndex.addDocuments([{ id: note.id, text: note.text }], { primaryKey: 'id' });
+				await maintenance.recordTask(mutation, task.taskUid);
+
+				const beginCleanup = maintenance.beginCleanup.bind(maintenance);
+				vi.spyOn(maintenance, 'beginCleanup').mockImplementationOnce(async (...args) => {
+					const cleanup = await beginCleanup(...args);
+					await client.del(lockKey);
+					controller.abort(new Error('Lost the job lock'));
+					return cleanup;
+				});
+
+				await expect(processor.process(job, controller.signal)).rejects.toThrow('Lost the job lock');
+				expect((await meilisearchIndex.getDocuments()).results.map(doc => doc.id)).toEqual([note.id]);
+				// The old reservation must no longer be able to release the recovered batch.
+				await maintenance.releaseMutation(mutation);
+				expect(await maintenance.getPendingMutation()).toMatchObject({
+					jobId, taskUid: task.taskUid, noteIds: [note.id], cleanup: false,
+				});
+
+				const getTask = meilisearch.tasks.getTask.bind(meilisearch.tasks);
+				vi.spyOn(meilisearch.tasks, 'getTask').mockImplementation(async (taskUid, options) => {
+					if (taskUid === task.taskUid) throw new MeilisearchApiError(new Response(null, { status: 404 }));
+					return await getTask(taskUid, options);
+				});
+
+				await maintenance.queue.remove(jobId);
+				({ jobId: resumedJobId } = await maintenance.enqueue({ operation: 'reindex' }, null));
+				const resumed = (await maintenance.queue.getJob(resumedJobId))!;
+				resumed.token = 'replacement-worker';
+				await client.set(maintenance.queue.toKey(`${resumedJobId}:lock`), resumed.token);
+				await expect(processor.process(resumed)).resolves.toContain('Re-indexed 0 notes');
+				expect((await meilisearchIndex.getDocuments()).results).toEqual([]);
+				expect(await maintenance.getPendingMutation()).toBeNull();
+			} finally {
+				await client.del(lockKey, maintenance.queue.toKey('pending-mutation'));
+				await maintenance.queue.remove(jobId);
+				if (resumedJobId != null) {
+					await client.del(maintenance.queue.toKey(`${resumedJobId}:lock`));
+					await maintenance.queue.remove(resumedJobId);
+				}
+			}
+		});
+
+		test('CLIのリセットは検索インデックス設定の初期化やPostgreSQLへの接続を行わずにジョブを登録する', async () => {
+			const instance = `test-cli-${randomUUID()}`;
+			const redis = { ...meiliConfig.redisForJobQueue, prefix: instance };
+			const meilisearchConfig = { ...meiliConfig.meilisearch!, index: instance };
+			const maintenance = new SearchIndexMaintenanceQueue({ ...meiliConfig, redisForJobQueue: redis });
+			const index = meilisearch.index(`${instance}---notes`);
+			const tempDir = await mkdtemp(join(tmpdir(), 'misskey-meilisearch-cli-'));
+			const configPath = join(tempDir, 'config.yml');
+			const settings = { pagination: { maxTotalHits: 4321 } };
+			try {
+				await meilisearch.tasks.waitForTask(await index.updateSettings(settings));
+				await writeFile(configPath, JSON.stringify({
+					url: meiliConfig.url, port: meiliConfig.port, id: meiliConfig.id,
+					db: { ...meiliConfig.db, port: 1 }, redis, redisForJobQueue: redis,
+					fulltextSearch: { provider: 'meilisearch' }, meilisearch: meilisearchConfig,
+				}));
+				const { stdout } = await promisify(execFile)(process.execPath, ['./built/cli.js', 'meilisearch-reset', '--confirm'], {
+					env: { ...process.env, MISSKEY_CONFIG_YML: configPath },
+					timeout: 10_000,
+				});
+
+				expect(stdout).toContain('Meilisearch maintenance job queued:');
+				expect((await index.getSettings()).pagination).toEqual(settings.pagination);
+				expect(await maintenance.queue.getWaitingCount()).toBe(1);
+			} finally {
+				await maintenance.queue.obliterate({ force: true });
+				await maintenance.queue.close();
+				await meilisearch.tasks.waitForTask(await index.delete());
+				await rm(tempDir, { recursive: true, force: true });
+			}
+		});
+
+		test('Redisが利用できない状態でも、起動に失敗したCLIはエラー終了する', async () => {
+			const tempDir = await mkdtemp(join(tmpdir(), 'misskey-meilisearch-cli-'));
+			try {
+				const configPath = join(tempDir, 'config.yml');
+				await writeFile(configPath, JSON.stringify({
+					url: meiliConfig.url, port: meiliConfig.port, id: meiliConfig.id,
+					db: { ...meiliConfig.db, port: 1 }, redis: { ...meiliConfig.redis, port: 1 },
+					fulltextSearch: { provider: 'meilisearch' },
+				}));
+
+				await expect(promisify(execFile)(process.execPath, ['./built/cli.js', 'meilisearch-reset', '--confirm'], {
+					env: { ...process.env, MISSKEY_CONFIG_YML: configPath },
+					timeout: 7_000,
+				})).rejects.toMatchObject({ code: 1, killed: false, stderr: expect.stringContaining('Meilisearch provider is not active') });
+				await expect(promisify(execFile)(process.execPath, ['./built/cli.js', 'ping'], {
+					env: { ...process.env, MISSKEY_CONFIG_YML: configPath },
+					timeout: 7_000,
+				})).rejects.toMatchObject({ code: 1, killed: false });
+				await writeFile(configPath, JSON.stringify({
+					url: meiliConfig.url, port: meiliConfig.port, id: meiliConfig.id,
+					db: { ...meiliConfig.db, port: 1 }, redis: { ...meiliConfig.redis, port: 1 },
+					fulltextSearch: { provider: 'meilisearch' }, meilisearch: meiliConfig.meilisearch,
+				}));
+				await expect(promisify(execFile)(process.execPath, ['./built/cli.js', 'meilisearch-reset', '--confirm'], {
+					env: { ...process.env, MISSKEY_CONFIG_YML: configPath },
+					timeout: 7_000,
+				})).rejects.toMatchObject({ code: 1, killed: false });
+			} finally {
+				await rm(tempDir, { recursive: true, force: true });
+			}
+		});
+
+		test('Redisが接続を受け付けても応答しない場合、CLIはエラー終了する', async () => {
+			let acceptedConnection = false;
+			const sockets = new Set<Socket>();
+			const silentServer = createServer(socket => {
+				acceptedConnection = true;
+				sockets.add(socket);
+				socket.once('close', () => sockets.delete(socket));
+			});
+			const tempDir = await mkdtemp(join(tmpdir(), 'misskey-meilisearch-cli-'));
+			try {
+				await new Promise<void>((resolve, reject) => {
+					silentServer.once('error', reject).listen(0, '127.0.0.1', resolve);
+				});
+				const address = silentServer.address();
+				if (address == null || typeof address === 'string') throw new Error('Expected a TCP test address.');
+				const configPath = join(tempDir, 'config.yml');
+				await writeFile(configPath, JSON.stringify({
+					url: meiliConfig.url, port: meiliConfig.port, id: meiliConfig.id,
+					db: { ...meiliConfig.db, port: 1 }, redis: { host: '127.0.0.1', port: address.port },
+					fulltextSearch: { provider: 'meilisearch' }, meilisearch: meiliConfig.meilisearch,
+				}));
+
+				await expect(promisify(execFile)(process.execPath, ['./built/cli.js', 'meilisearch-reindex'], {
+					env: { ...process.env, MISSKEY_CONFIG_YML: configPath },
+					timeout: 12_000,
+				})).rejects.toMatchObject({ code: 1, killed: false });
+				expect(acceptedConnection).toBe(true);
+			} finally {
+				for (const socket of sockets) socket.destroy();
+				silentServer.close();
+				await rm(tempDir, { recursive: true, force: true });
+			}
 		});
 
 		defineSearchNoteTests(() => ctx, { supportsFollowersVisibility: false, sinceIdOrder: 'desc' });
