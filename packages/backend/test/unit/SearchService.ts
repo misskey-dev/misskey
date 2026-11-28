@@ -12,6 +12,7 @@ import { join } from 'node:path';
 import { promisify } from 'node:util';
 import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
+import { QueueEvents, Worker } from 'bullmq';
 import { MeilisearchApiError } from 'meilisearch';
 import type { Index, Meilisearch } from 'meilisearch';
 import { type Config, loadConfig } from '@/config.js';
@@ -22,6 +23,8 @@ import { QueryService } from '@/core/QueryService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { QueueLoggerService } from '@/queue/QueueLoggerService.js';
+import { baseQueueOptions, baseWorkerOptions, QUEUE } from '@/queue/const.js';
+import type { SearchIndexMaintenanceJobData } from '@/queue/types.js';
 import { SearchIndexMaintenanceQueue } from '@/queue/SearchIndexMaintenanceQueue.js';
 import { SearchIndexMaintenanceProcessorService } from '@/queue/processors/SearchIndexMaintenanceProcessorService.js';
 import ResetIndexEndpoint from '@/server/api/endpoints/admin/search/reset.js';
@@ -702,6 +705,79 @@ describe('SearchService', () => {
 			expect((await meilisearchIndex.getDocuments()).results).toEqual([]);
 			expect(await ctx.notesRepository.findOneBy({ id: note.id })).not.toBeNull();
 			expect(await meilisearchIndex.getSettings()).toEqual(settings);
+		});
+
+		test('全件削除後も元のノートや別のインデックスが残り、再インデックスで検索結果が復元される', async () => {
+			const author = await createUser(ctx);
+			const publicNote = await createNote(ctx, author, { text: 'recoveryprobe public' });
+			const homeNote = await createNote(ctx, author, { text: null, cw: 'recoveryprobe home', visibility: 'home' });
+			await createNote(ctx, author, { text: 'recoveryprobe followers', visibility: 'followers' });
+
+			const runId = `test-search-recovery-${randomUUID()}`;
+			const queueConfig = {
+				...meiliConfig,
+				redisForJobQueue: { ...meiliConfig.redisForJobQueue, prefix: runId },
+			};
+			const maintenance = new SearchIndexMaintenanceQueue(queueConfig);
+			const processor = new SearchIndexMaintenanceProcessorService(
+				ctx.service, maintenance, ctx.app.get(ModerationLogService),
+				new QueueLoggerService(ctx.app.get(LoggerService)),
+			);
+			const queueName = QUEUE.SEARCH_INDEX_MAINTENANCE;
+			const events = new QueueEvents(queueName, baseQueueOptions(queueConfig, queueName));
+			const worker = new Worker<SearchIndexMaintenanceJobData>(
+				queueName,
+				(job, _token, signal) => processor.process(job, signal),
+				baseWorkerOptions(queueConfig, queueName),
+			);
+			const unrelatedIndex = meilisearch.index(`${meiliConfig.meilisearch!.index}---${runId}`);
+			const readDocuments = async (index: Index) => (await index.getDocuments()).results
+				.sort((a, b) => String(a.id).localeCompare(String(b.id)));
+			const readSourceNotes = () => ctx.notesRepository.find({ order: { id: 'ASC' } });
+
+			try {
+				await Promise.all([events.waitUntilReady(), worker.waitUntilReady()]);
+				// Another index sharing the configured prefix and a document ID must be untouched.
+				await ctx.service.waitForMeilisearchTask((await unrelatedIndex.addDocuments([
+					{ id: publicNote.id, text: 'unrelated' },
+				], { primaryKey: 'id' })).taskUid);
+				const originalDocuments = await readDocuments(meilisearchIndex);
+				const originalIndex = await meilisearch.getRawIndex(meilisearchIndex.uid);
+				const originalSettings = await meilisearchIndex.getSettings();
+				const unrelatedDocuments = await readDocuments(unrelatedIndex);
+				const sourceNotes = await readSourceNotes();
+				const expectedIds = [publicNote.id, homeNote.id].sort();
+				expect(originalDocuments.map(document => document.id).sort()).toEqual(expectedIds);
+
+				const reset = await maintenance.enqueue({ operation: 'reset' }, null);
+				const resetJob = await maintenance.queue.getJob(reset.jobId);
+				expect(await resetJob?.waitUntilFinished(events, 10_000)).toContain('Cleared the Meilisearch note index');
+				expect(await readDocuments(meilisearchIndex)).toEqual([]);
+				expect(await ctx.service.searchNote('recoveryprobe', author, {}, { limit: 10 })).toEqual([]);
+				expect(await meilisearch.getRawIndex(meilisearchIndex.uid)).toMatchObject({
+					createdAt: originalIndex.createdAt,
+					primaryKey: originalIndex.primaryKey,
+				});
+				expect(await meilisearchIndex.getSettings()).toEqual(originalSettings);
+				expect(await readDocuments(unrelatedIndex)).toEqual(unrelatedDocuments);
+				expect(await readSourceNotes()).toEqual(sourceNotes);
+
+				const reindex = await maintenance.enqueue({ operation: 'reindex' }, null);
+				const reindexJob = await maintenance.queue.getJob(reindex.jobId);
+				expect(await reindexJob?.waitUntilFinished(events, 10_000)).toEqual('Re-indexed 2 notes.');
+				const restored = await ctx.service.searchNote('recoveryprobe', author, {}, { limit: 10 });
+				expect(restored.map(note => note.id).sort()).toEqual(expectedIds);
+				expect(await readDocuments(meilisearchIndex)).toEqual(originalDocuments);
+				expect(await meilisearchIndex.getSettings()).toEqual(originalSettings);
+				expect(await readDocuments(unrelatedIndex)).toEqual(unrelatedDocuments);
+				expect(await readSourceNotes()).toEqual(sourceNotes);
+				expect(await maintenance.getPendingMutation()).toBeNull();
+			} finally {
+				await Promise.all([worker.close(true), events.close()]);
+				await maintenance.queue.obliterate({ force: true });
+				await maintenance.queue.close();
+				await ctx.service.waitForMeilisearchTask((await unrelatedIndex.delete()).taskUid);
+			}
 		});
 
 		test('reports a failed Meilisearch task and does not advance progress', async () => {
